@@ -1,8 +1,0 @@
-$class feature
-$short assembly GUI
-$long hand assembly assistant GUI
-$state works
-$package auto
-default buildin
-autoload 1
-
