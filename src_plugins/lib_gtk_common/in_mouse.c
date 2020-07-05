@@ -36,9 +36,9 @@
 #include <gdk/gdkkeysyms.h>
 
 #include <librnd/core/actions.h>
-#include "board.h"
-#include "crosshair.h"
-#include "conf_core.h"
+#include <librnd/core/conf.h>
+#include <librnd/core/color.h>
+
 #include <librnd/core/tool.h>
 
 #define GVT_DONT_UNDEF
