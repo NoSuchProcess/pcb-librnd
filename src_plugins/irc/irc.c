@@ -33,8 +33,6 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
 
-#include "board.h"
-
 #include <libuirc/libuirc.h>
 
 static int pcb_dlg_irc(void);
@@ -210,9 +208,10 @@ static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	rnd_hidlib_t *hidlib = rnd_gui->get_dad_hidlib(hid_ctx);
 	char *fn = rnd_gui->fileselect(rnd_gui, "Export IRC log", NULL, "pcb-rnd.irc-log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (fn != NULL) {
-		FILE *f = rnd_fopen(&PCB->hidlib, fn, "w");
+		FILE *f = rnd_fopen(hidlib, fn, "w");
 		if (f != NULL) {
 			rnd_hid_attribute_t *atxt = &irc_ctx.dlg[irc_ctx.wtxt];
 			rnd_hid_text_t *txt = atxt->wdata;
