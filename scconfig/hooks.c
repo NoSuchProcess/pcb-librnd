@@ -45,9 +45,7 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 static void help1(void)
 {
-	rnd_help1("pcb-rnd");
-
-	printf(" --dot_pcb_rnd=path         .pcb-rnd config path under $HOME/\n");
+	rnd_help1("librnd");
 }
 
 /* Runs when a custom command line argument is found
@@ -56,10 +54,6 @@ int hook_custom_arg(const char *key, const char *value)
 {
 	rnd_hook_custom_arg(key, value, disable_libs); /* call arg_auto_print_options() instead */
 
-	if (strcmp(key, "dot_pcb_rnd") == 0) {
-		put("/local/pcb/dot_pcb_rnd", value);
-		return 1;
-	}
 	if (arg_auto_set(key, value, disable_libs) == 0) {
 		fprintf(stderr, "Error: unknown argument %s\n", key);
 		exit(1);
@@ -83,7 +77,6 @@ int hook_postinit()
 
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
-	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
 	return 0;
 }
@@ -102,61 +95,19 @@ int hook_detect_host()
 	return rnd_hook_detect_host();
 }
 
-	/* figure if we need the dialogs plugin */
-static void calc_dialog_deps(void)
-{
-	int buildin, plugin;
-
-	rnd_calc_dialog_deps(); /* remove after librnd separation */
-
-	buildin = istrue(get("/target/librnd/dialogs/buildin"));
-	plugin = istrue(get("/target/librnd/dialogs/plugin"));
-
-	if (buildin) {
-		hook_custom_arg("buildin-draw_csect", NULL);
-		hook_custom_arg("buildin-draw_fontsel", NULL);
-		hook_custom_arg("buildin-dialogs", NULL);
-		hook_custom_arg("buildin-lib_hid_pcbui", NULL);
-	}
-	else if (plugin) {
-		if (!plug_is_buildin("draw_csect"))
-			hook_custom_arg("plugin-draw_csect", NULL);
-		if (!plug_is_buildin("draw_fontsel"))
-			hook_custom_arg("plugin-draw_fontsel", NULL);
-		if (!plug_is_buildin("dialogs"))
-			hook_custom_arg("plugin-dialogs", NULL);
-		if (!plug_is_buildin("lib_hid_pcbui"))
-			hook_custom_arg("plugin-lib_hid_pcbui", NULL);
-	}
-}
-
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_gd, want_stroke, want_xml2, want_freetype2, want_fuse;
+	int want_gd, want_stroke;
 
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
 	want_stroke = plug_is_enabled("stroke");
-	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway");
-	want_freetype2 = plug_is_enabled("import_ttf");
-	want_fuse = plug_is_enabled("export_vfs_fuse");
-
-/****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
-	hook_custom_arg("buildin-lib_compat_help", NULL);
 
 	plugin_db_hidlib();
 
 	rnd_hook_detect_cc();
 	if (rnd_hook_detect_sys() != 0)
 		return 1;
-
-	if (want_fuse) {
-		require("libs/sul/fuse/*", 0, 0);
-		if (!istrue(get("libs/sul/fuse/presents"))) {
-			report_repeat("WARNING: Since there's no fuse found, disabling export_vfs_fuse plugin...\n");
-			hook_custom_arg("disable-export_vfs_fuse", NULL);
-		}
-	}
 
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
@@ -166,30 +117,8 @@ int hook_detect_target()
 		}
 	}
 
-	if (want_freetype2) {
-		require("libs/sul/freetype2/presents", 0, 0);
-		if (!istrue(get("libs/sul/freetype2/presents"))) {
-			report_repeat("WARNING: Since there's no libfreetype2 found, disabling the import_ttf plugin...\n");
-			hook_custom_arg("disable-import_ttf", NULL);
-		}
-	}
-
-	rnd_hook_detect_hid(plug_is_enabled("puller"));
-
-	if (want_xml2) {
-		require("libs/sul/libxml2/presents", 0, 0);
-		if (!istrue(get("libs/sul/libxml2/presents"))) {
-			report("libxml2 is not available, disabling io_eagle...\n");
-			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO and pcbway order plugins...\n");
-			hook_custom_arg("disable-io_eagle", NULL);
-			hook_custom_arg("disable-order_pcbway", NULL);
-		}
-		put("/local/pcb/want_libxml2", strue);
-	}
-	else
-		put("/local/pcb/want_libxml2", strue);
-
-	calc_dialog_deps();
+	rnd_hook_detect_hid(0);
+	rnd_calc_dialog_deps();
 
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
@@ -198,8 +127,10 @@ int hook_detect_target()
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
+#ifdef PNG
 			hook_custom_arg("disable-export_png", NULL);
 			hook_custom_arg("disable-import_pxm_gd", NULL);
+#endif
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
@@ -312,12 +243,10 @@ int hook_generate()
 
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
-	printf("Generating pcb/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
+	printf("Generating src/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
 
 	generr |= rnd_hook_generate();
 
-	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
-	printf("Generating util/bxl2txt/Makefile (%d)\n", generr |= tmpasm("../util", "bxl2txt/Makefile.in", "bxl2txt/Makefile"));
 	printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/libporty_net/os_includes.h.in", "../src_3rd/libporty_net/os_includes.h"));
 	printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/libporty_net/pnet_config.h"));
 	printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/libporty_net/phost_types.h.in", "../src_3rd/libporty_net/phost_types.h"));
@@ -327,9 +256,6 @@ int hook_generate()
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
 
 	printf("Generating tests/librnd/inc_all.h (%d)\n", generr |= tmpasm("../tests/librnd", "inc_all.h.in", "inc_all.h"));
-
-	if (plug_is_enabled("export_vfs_fuse"))
-		printf("Generating fuse_includes.h (%d)\n", generr |= tmpasm("../src_plugins/export_vfs_fuse", "fuse_includes.h.in", "fuse_includes.h"));
 
 	generr |= pup_hook_generate("../src_3rd/puplug");
 
@@ -345,9 +271,8 @@ int hook_generate()
 
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
-	print_sum_setting_or("/local/pcb/symbols",        "Include debug symbols", istrue(get("/local/pcb/debug")));
+	print_sum_setting_or("/local/pcb/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
-	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
 
 #undef plugin_def
 #undef plugin_header
