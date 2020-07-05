@@ -38,7 +38,6 @@
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/error.h>
 
-#include "board.h"
 #include "act_dad.h"
 
 #define MAX_ENUM 128
