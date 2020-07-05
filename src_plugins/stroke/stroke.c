@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,7 @@
 
 #include <stroke.h>
 
-#include "board.h"
-#include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "crosshair.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/plugins.h>
