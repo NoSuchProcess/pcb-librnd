@@ -16,6 +16,7 @@ void rnd_calc_dialog_deps(void)
 
 	for(p = dialog_deps; *p != NULL; p++) {
 		const char *st = get(*p);
+		if (st == NULL) continue;
 		if (strcmp(st, "buildin") == 0) {
 			buildin = 1;
 			break;
