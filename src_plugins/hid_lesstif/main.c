@@ -1343,6 +1343,11 @@ static void ltf_topwin_make_top(void)
 	ltf_topwin_make_menu(menu_box);
 
 	stdarg_n = 0;
+	w = ltf_create_dockbox(menu_box, RND_HID_DOCK_TOP_LEFT, 0);
+	XtManageChild(w);
+
+
+	stdarg_n = 0;
 	w = ltf_create_dockbox(top_box, RND_HID_DOCK_TOP_RIGHT, 0);
 	XtManageChild(w);
 
