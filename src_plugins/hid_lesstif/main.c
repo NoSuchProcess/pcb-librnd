@@ -168,6 +168,7 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 {
 	docked_t *docked;
 	Widget hvbox;
+	int expfill = 0;
 
 	if (ltf_dockbox[where] == NULL)
 		return -1;
@@ -175,10 +176,14 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
 
+	if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
+		expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
+
 	stdarg_n = 0;
 	stdarg(PxmNfillBoxVertical, rnd_dock_is_vert[where]);
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
+	stdarg(PxmNfillBoxFill, expfill);
 	hvbox = PxmCreateFillBox(ltf_dockbox[where], "dockbox", stdarg_args, stdarg_n);
 
 	if (rnd_dock_has_frame[where]) {
