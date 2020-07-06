@@ -222,20 +222,20 @@ typedef struct {
 	rnd_hid_dock_t where;
 } ltf_docked_t;
 
+static void lesstif_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete);
+
 static void ShowCrosshair(rnd_bool show)
 {
 	if (crosshair_on == show)
 		return;
 
 	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_false);
-	if (pcb_marked.status)
-		pcb_notify_mark_change(rnd_false);
+	lesstif_notify_mark_change(&lesstif_hid, rnd_false);
 
 	crosshair_on = show;
 
 	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
-	if (pcb_marked.status)
-		pcb_notify_mark_change(rnd_true);
+	lesstif_notify_mark_change(&lesstif_hid, rnd_true);
 }
 
 /* This is the size of the current PCB work area.  */
