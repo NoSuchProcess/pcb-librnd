@@ -237,7 +237,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 OBJS=@/local/pcb/OBJS@ @/local/pcb/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/pcb/OBJS_C99@
 OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
-OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o ../src_3rd/puplug/*.o
+OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
 OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
 OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
@@ -346,8 +346,6 @@ buildin.hidlib.c: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 $(LIBRND)/core/buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > $(LIBRND)/core/buildin.hidlib.h
 
-../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
-	cd  ../src_3rd/libminuid && $(MAKE) libminuid.a LIBMINUID_CFLAGS="$(LIBMINUID_CFLAGS)" LIBMINUID_LDFLAGS="$(LIBMINUID_LDFLAGS)" CC=$(CC)
 @]
 
 if sys/cross
