@@ -33,10 +33,7 @@
  */
 #include "config.h"
 #include <librnd/core/conf.h>
-#include "data.h"
-#include "change.h"
 #include <librnd/core/error.h>
-#include "undo.h"
 #include <librnd/core/plugins.h>
 #include "hid-logger.h"
 #include <librnd/core/hid_init.h>
