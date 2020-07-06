@@ -51,10 +51,6 @@
 
 #include <sys/poll.h>
 
-TODO("librnd separation: remove these pcb-rnd deps:")
-#include "conf_core.h"
-
-
 const char *lesstif_cookie = "lesstif HID";
 
 rnd_hidlib_t *ltf_hidlib;
@@ -2253,8 +2249,6 @@ static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vw(gc->width);
-	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
-		return;
 #if 0
 	rnd_printf("draw_line %#mD-%#mD @%#mS", x1, y1, x2, y2, gc->width);
 #endif
@@ -2291,8 +2285,6 @@ static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 
 static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	if (conf_core.editor.thin_draw && gc->erase)
-		return;
 #if 0
 	rnd_printf("draw_arc %#mD %#mSx%#mS s %d d %d", cx, cy, width, height, start_angle, delta_angle);
 #endif
@@ -2322,15 +2314,13 @@ static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 #endif
 	set_gc(gc);
 	XDrawArc(display, pixmap, my_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
-	if (use_mask() && !conf_core.editor.thin_draw)
+	if (use_mask())
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
 }
 
 static void lesstif_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int vw = Vw(gc->width);
-	if (conf_core.editor.thin_draw && gc->erase)
-		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);
 	x2 = Vx(x2);
@@ -2361,8 +2351,6 @@ static void lesstif_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 
 static void lesstif_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
-		return;
 #if 0
 	rnd_printf("fill_circle %#mD %#mS", cx, cy, radius);
 #endif
@@ -2439,8 +2427,6 @@ static void lesstif_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t
 static void lesstif_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int vw = Vw(gc->width);
-	if (conf_core.editor.thin_draw && gc->erase)
-		return;
 	x1 = Vx(x1);
 	y1 = Vy(y1);
 	x2 = Vx(x2);
