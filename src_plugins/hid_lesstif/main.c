@@ -1361,12 +1361,6 @@ static void ltf_topwin_make_drawing(void)
 	Widget work_area_frame;
 
 	stdarg_n = 0;
-
-	stdarg(XmNtopAttachment, XmATTACH_FORM);
-	stdarg(XmNbottomAttachment, XmATTACH_FORM);
-	stdarg(XmNleftAttachment, XmATTACH_NONE);
-	stdarg(XmNrightAttachment, XmATTACH_NONE);
-
 	stdarg(XmNshadowType, XmSHADOW_IN);
 	work_area_frame = XmCreateFrame(mainwind, XmStrCast("work_area_frame"), stdarg_args, stdarg_n);
 	XtManageChild(work_area_frame);
