@@ -39,10 +39,8 @@
 #include "compat.h"
 #include "wt_preview.h"
 
-#include "board.h"
-#include "data.h"
-#include "draw.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/globalconst.h>
 
 static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy, gint *xp, gint *yp);
 

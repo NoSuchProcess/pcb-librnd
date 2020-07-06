@@ -3,14 +3,12 @@
 
 #include <stdio.h>
 
-#include "crosshair.h"
-#include "draw.h"
 #include <librnd/core/grid.h>
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
 #include <librnd/core/hid_attrib.h>
-#include "funchash_core.h"
 #include <librnd/core/pixmap.h>
+#include <librnd/core/globalconst.h>
 
 #include "../src_plugins/lib_gtk_common/pcb_gtk.h"
 #include "../src_plugins/lib_gtk_common/compat.h"

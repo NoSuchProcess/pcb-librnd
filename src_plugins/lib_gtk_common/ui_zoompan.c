@@ -34,8 +34,6 @@
 #include <librnd/core/hidlib.h>
 #include "glue_common.h"
 
-#include "../src_plugins/lib_hid_pcbui/util.h"
-
 double pcb_gtk_clamp_zoom(const pcb_gtk_view_t *vw, double coord_per_px)
 {
 	double min_zoom, max_zoom, max_zoom_w, max_zoom_h, out_zoom;

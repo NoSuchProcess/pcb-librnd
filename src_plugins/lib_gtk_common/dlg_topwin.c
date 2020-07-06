@@ -42,12 +42,9 @@
 #define _POSIX_SOURCE
 #include "config.h"
 #include "dlg_topwin.h"
-#include "conf_core.h"
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 
-#include "board.h"
-#include "crosshair.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>

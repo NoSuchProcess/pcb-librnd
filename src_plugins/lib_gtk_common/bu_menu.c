@@ -5,7 +5,6 @@
 #include <gtk/gtk.h>
 #include <liblihata/tree.h>
 
-#include "board.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/error.h>

@@ -39,8 +39,6 @@
 
 #include <gdk/gdkkeysyms.h>
 
-#include "board.h"
-#include "crosshair.h"
 #include <librnd/core/actions.h>
 
 #include "pcb_gtk.h"
