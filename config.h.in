@@ -58,10 +58,6 @@ print [@
 #define PCB_VERSION "@/local/version@"
 #define PCB_REVISION "@/local/revision@"
 
-/* the dot-dir: where to save user config under ther user's home; it's used
-   as ~/DOT_PCB_RND/ */
-#define DOT_PCB_RND "@/local/pcb/dot_pcb_rnd@"
-
 /* librnd transition */
 #define RND_DAD_CFG_NOLABEL 1
 
