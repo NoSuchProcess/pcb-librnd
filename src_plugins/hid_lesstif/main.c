@@ -18,7 +18,6 @@
 #include <setjmp.h>
 
 #include "data.h"
-#include "draw.h"
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
 #include "crosshair.h"
@@ -1481,8 +1480,6 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
-
-	pcb_board_changed(0);
 
 	lesstif_menubar = menu;
 	rnd_event(ltf_hidlib, RND_EVENT_GUI_INIT, NULL);
