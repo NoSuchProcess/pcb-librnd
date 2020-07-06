@@ -2,7 +2,6 @@
 
 #include "config.h"
 #include <librnd/core/math_helper.h>
-#include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/pixmap.h>
@@ -17,18 +16,14 @@
 #include <signal.h>
 #include <setjmp.h>
 
-#include "data.h"
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
-#include "crosshair.h"
 #include <librnd/core/conf_hid.h>
-#include "layer.h"
 #include <librnd/core/rnd_printf.h>
-#include "event.h"
 #include <librnd/core/error.h>
+#include <librnd/core/event.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
-#include "funchash_core.h"
 
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_nogui.h>
@@ -52,10 +47,14 @@
 #include "FillBox.h"
 
 #include "../src_plugins/lib_hid_common/clip.h"
-#include "../src_plugins/lib_hid_pcbui/util.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
 #include <sys/poll.h>
+
+TODO("librnd separation: remove these pcb-rnd deps:")
+#include "crosshair.h"
+#include "conf_core.h"
+
 
 const char *lesstif_cookie = "lesstif HID";
 
