@@ -1,7 +1,6 @@
 #include "xincludes.h"
 
 #include "config.h"
-#include "conf_core.h"
 
 #include <stdio.h>
 #include <stdlib.h>
