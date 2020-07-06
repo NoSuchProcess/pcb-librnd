@@ -52,7 +52,6 @@
 #include <sys/poll.h>
 
 TODO("librnd separation: remove these pcb-rnd deps:")
-#include "crosshair.h"
 #include "conf_core.h"
 
 
@@ -1967,21 +1966,6 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 
 		pcb_ltf_preview_invalidate(NULL);
-	}
-
-	{
-		static int c_x = -2, c_y = -2;
-		static rnd_mark_t saved_mark;
-		static const rnd_unit_t *old_grid_unit = NULL;
-		if (crosshair_x != c_x || crosshair_y != c_y || rnd_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(rnd_mark_t))) {
-			c_x = crosshair_x;
-			c_y = crosshair_y;
-
-			memcpy(&saved_mark, &pcb_marked, sizeof(rnd_mark_t));
-
-			if (old_grid_unit != rnd_conf.editor.grid_unit)
-				old_grid_unit = rnd_conf.editor.grid_unit;
-		}
 	}
 
 	{
