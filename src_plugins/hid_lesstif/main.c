@@ -1358,11 +1358,35 @@ static void ltf_topwin_make_top(void)
 
 static void ltf_topwin_make_drawing(void)
 {
-	Widget work_area_frame;
+	Widget work_area_frame, w, right, horiz;
+
+	stdarg_n = 0;
+	stdarg(PxmNfillBoxVertical, 0);
+	stdarg(PxmNfillBoxFill, 1);
+	horiz = PxmCreateFillBox(mainwind, XmStrCast("middle_horiz"), stdarg_args, stdarg_n);
+	XtManageChild(horiz);
+
+TODO("dock: asserts");
+#if 0
+	stdarg_n = 0;
+	w = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 0);
+	XtManageChild(w);
+#endif
+
+	stdarg_n = 0;
+	stdarg(PxmNfillBoxVertical, 1);
+	stdarg(PxmNfillBoxFill, 1);
+	right = PxmCreateFillBox(horiz, XmStrCast("middle_right"), stdarg_args, stdarg_n);
+	XtManageChild(right);
+
+	stdarg_n = 0;
+	w = ltf_create_dockbox(right, RND_HID_DOCK_TOP_INFOBAR, 0);
+	XtManageChild(w);
 
 	stdarg_n = 0;
 	stdarg(XmNshadowType, XmSHADOW_IN);
-	work_area_frame = XmCreateFrame(mainwind, XmStrCast("work_area_frame"), stdarg_args, stdarg_n);
+	stdarg(PxmNfillBoxFill, 1);
+	work_area_frame = XmCreateFrame(right, XmStrCast("work_area_frame"), stdarg_args, stdarg_n);
 	XtManageChild(work_area_frame);
 
 	stdarg_n = 0;
