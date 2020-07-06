@@ -1,4 +1,3 @@
-#include "brave.h"
 #include "xm_tree_table_widget.h"
 #include <librnd/core/hid_dad_tree.h>
 

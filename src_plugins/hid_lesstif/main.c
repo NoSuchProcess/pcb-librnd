@@ -885,7 +885,7 @@ static void zoom_to(double new_zoom, rnd_coord_t x, rnd_coord_t y)
 	double max_zoom, xfrac, yfrac;
 	rnd_coord_t cx, cy;
 
-	if (PCB == NULL)
+	if (ltf_hidlib == NULL)
 		return;
 
 	xfrac = (double) x / (double) view_width;
@@ -1485,7 +1485,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	pcb_board_changed(0);
 
 	lesstif_menubar = menu;
-	rnd_event(&PCB->hidlib, RND_EVENT_GUI_INIT, NULL);
+	rnd_event(ltf_hidlib, RND_EVENT_GUI_INIT, NULL);
 
 
 	lesstif_hid_inited = 1;

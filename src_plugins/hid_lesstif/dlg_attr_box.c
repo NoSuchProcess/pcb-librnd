@@ -28,7 +28,6 @@
 
 #include <Xm/PanedW.h>
 #include "Pages.h"
-#include "brave.h"
 
 
 static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)

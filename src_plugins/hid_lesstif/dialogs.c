@@ -11,11 +11,7 @@
 #include "FillBox.h"
 
 #include <librnd/core/compat_misc.h>
-#include "data.h"
 #include <librnd/core/event.h>
-#include "build_run.h"
-#include "crosshair.h"
-#include "layer.h"
 #include <librnd/core/rnd_printf.h>
 
 #include <librnd/core/hid.h>
@@ -25,10 +21,6 @@
 #include <librnd/core/hid_init.h>
 #include "ltf_stdarg.h"
 #include <librnd/core/misc_util.h>
-#include "search.h"
-#include "change.h"
-
-#include "plug_io.h"
 
 int pcb_ltf_ok;
 extern rnd_hidlib_t *ltf_hidlib;
