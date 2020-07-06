@@ -194,13 +194,13 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 	stdarg(XmNmarginHeight, 0);
 	hvbox = PxmCreateFillBox(ltf_dockbox[where], "dockbox", stdarg_args, stdarg_n);
 
-TODO("hidlib: dock frame");
-/*
 	if (rnd_dock_has_frame[where]) {
-		docked->frame = gtk_frame_new(id);
-		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
+		TODO("dock: insert the frame");
+/*		docked->frame = gtk_frame_new(id);
+		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);*/
+		docked->frame = hvbox;
 	}
-	else*/
+	else
 		docked->frame = hvbox;
 
 	XtManageChild(docked->frame);
