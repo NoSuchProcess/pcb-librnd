@@ -350,19 +350,6 @@ Pixel lesstif_parse_color(const rnd_color_t *value)
 
 /* ------------------------------------------------------------ */
 
-static const char *cur_clip()
-{
-	if (conf_core.editor.orthogonal_moves)
-		return "+";
-	if (conf_core.editor.all_direction_lines)
-		return "*";
-	if (conf_core.editor.line_refraction == 0)
-		return "X";
-	if (conf_core.editor.line_refraction == 1)
-		return "_/";
-	return "\\_";
-}
-
 /* Called from the core when it's busy doing something and we need to indicate that to the user.  */
 static void ltf_busy(rnd_hid_t *hid, rnd_bool busy)
 {
@@ -1966,17 +1953,6 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 
 		pcb_ltf_preview_invalidate(NULL);
-	}
-
-	{
-		static const char *old_clip = NULL;
-		static int old_tscale = -1;
-		const char *new_clip = cur_clip();
-
-		if (new_clip != old_clip || conf_core.design.text_scale != old_tscale) {
-			old_clip = new_clip;
-			old_tscale = conf_core.design.text_scale;
-		}
 	}
 
 TODO(": remove this, update-on should handle all cases")
