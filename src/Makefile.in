@@ -133,9 +133,6 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genvector/vts0.o
 	../src_3rd/genvector/vti0.o
 	../src_3rd/genvector/vtl0.o
-	../src_3rd/genregex/regex_sei.o
-	../src_3rd/genregex/regex_se.o
-	../src_3rd/genregex/regex.o
 	../src_3rd/libulzw/libulzw_comp.o
 	../src_3rd/libulzw/libulzw_decomp.o
 @]
@@ -143,7 +140,6 @@ append /local/pcb/OBJS_3RDLIB [@
 # these need special rules for compilation
 append /local/pcb/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
-	../src_3rd/libminuid/libminuid.a
 @]
 
 # these will be linked only to the hidlib, not to pcb-rnd

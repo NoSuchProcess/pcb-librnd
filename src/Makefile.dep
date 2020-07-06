@@ -1691,14 +1691,6 @@
  ../src_3rd/libporty_net/pnet_config.h \
  ../src_3rd/libporty_net/phost_types.h librnd/core/compat_misc.h \
  librnd/config.h
-../src_3rd/genregex/regex.o: ../src_3rd/genregex/regex.c \
- ../src_3rd/genregex/regex.h
-../src_3rd/genregex/regex_se.o: ../src_3rd/genregex/regex_se.c \
- ../src_3rd/genregex/regex_templ.c ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h
-../src_3rd/genregex/regex_sei.o: ../src_3rd/genregex/regex_sei.c \
- ../src_3rd/genregex/regex_templ.c ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h
 ../src_3rd/genvector/gds_char.o: ../src_3rd/genvector/gds_char.c \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
