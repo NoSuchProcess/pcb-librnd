@@ -1305,25 +1305,63 @@ static int lesstif_hid_inited = 0;
 
 #include "mouse.c"
 
-static void ltf_topwin_make_menu(void)
+static void ltf_topwin_make_menu(Widget parent)
 {
 	Widget menu;
 
 	stdarg_n = 0;
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
-	menu = lesstif_menu(mainwind, "menubar", stdarg_args, stdarg_n);
+	menu = lesstif_menu(parent, "menubar", stdarg_args, stdarg_n);
 	XtManageChild(menu);
 
 	lesstif_menubar = menu;
 }
 
+static void ltf_topwin_make_top(void)
+{
+	Widget menu_box, top_box, w, spring;
+
+/*	stdarg_n = 0;
+	stdarg(XmNorientation, XmHORIZONTAL);
+	top_box = XmCreateRowColumn(mainwind, XmStrCast("top_box"), stdarg_args, stdarg_n);
+	XtManageChild(top_box);*/
+
+	stdarg_n = 0;
+	stdarg(PxmNfillBoxVertical, 0);
+	stdarg(PxmNfillBoxFill, 1);
+
+	top_box = PxmCreateFillBox(mainwind, XmStrCast("top_box"), stdarg_args, stdarg_n);
+	XtManageChild(top_box);
+
+	stdarg_n = 0;
+	stdarg(PxmNfillBoxVertical, 1);
+	stdarg(PxmNfillBoxFill, 1);
+	menu_box = PxmCreateFillBox(top_box, XmStrCast("menu_box"), stdarg_args, stdarg_n);
+	XtManageChild(menu_box);
+
+	ltf_topwin_make_menu(menu_box);
+
+	stdarg_n = 0;
+	w = ltf_create_dockbox(top_box, RND_HID_DOCK_TOP_RIGHT, 0);
+	XtManageChild(w);
+
+	stdarg_n = 0;
+	stdarg(XmNmenuBar, top_box);
+	XtSetValues(mainwind, stdarg_args, stdarg_n);
+}
 
 static void ltf_topwin_make_drawing(void)
 {
 	Widget work_area_frame;
 
 	stdarg_n = 0;
+
+	stdarg(XmNtopAttachment, XmATTACH_FORM);
+	stdarg(XmNbottomAttachment, XmATTACH_FORM);
+	stdarg(XmNleftAttachment, XmATTACH_NONE);
+	stdarg(XmNrightAttachment, XmATTACH_NONE);
+
 	stdarg(XmNshadowType, XmSHADOW_IN);
 	work_area_frame = XmCreateFrame(mainwind, XmStrCast("work_area_frame"), stdarg_args, stdarg_n);
 	XtManageChild(work_area_frame);
@@ -1454,8 +1492,8 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
 	XtManageChild(mainwind);
 
-	ltf_topwin_make_menu();
 	ltf_topwin_make_drawing();
+	ltf_topwin_make_top();
 	ltf_topwin_make_bottom();
 
 
