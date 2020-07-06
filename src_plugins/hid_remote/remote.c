@@ -5,15 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "board.h"
 #include <librnd/core/hid.h>
-#include "data.h"
-#include "draw.h"
-#include "layer.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
-#include "funchash_core.h"
+#include <librnd/core/color.h>
 #include <librnd/core/event.h>
 
 #include "proto.h"
@@ -50,59 +46,29 @@ static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
-
-static void remote_send_all_layers()
-{
-	rnd_layer_id_t arr[128];
-	rnd_layergrp_id_t garr[128];
-	int n, used;
-
-	used = pcb_layergrp_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, garr, sizeof(garr)/sizeof(garr[0]));
-	for(n = 0; n < used; n++) {
-		rnd_layergrp_id_t gid = garr[n];
-		pcb_remote_new_layer_group(pcb_layergrp_name(PCB, gid), gid, pcb_layergrp_flags(PCB, gid));
-	}
-
-	used = pcb_layer_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
-
-TODO("layer: remove this temporary hack for virtual layers")
-	for(n = 0; n < used; n++) {
-		const char *name;
-		rnd_layer_id_t layer_id = arr[n];
-		rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, layer_id);
-		name = pcb_layer_name(PCB->Data, layer_id);
-		if ((gid < 0) && (name != NULL)) {
-			pcb_remote_new_layer_group(name, layer_id, pcb_layer_flags(PCB, layer_id));
-			pcb_remote_new_layer(name, layer_id, layer_id);
-		}
-	}
-
-
-	for(n = 0; n < used; n++) {
-		rnd_layer_id_t lid = arr[n];
-		rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
-		if (gid >= 0)
-			pcb_remote_new_layer(pcb_layer_name(PCB->Data, lid), lid, gid);
-	}
-}
-
-
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
+rnd_hidlib_t *remote_hidlib;
+
+static void remote_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+{
+	remote_hidlib = hidlib;
+}
+
 static void remote_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_hid_expose_ctx_t ctx;
+	rnd_hidlib_t *hidlib = remote_hidlib;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
-	ctx.view.X2 = PCB->hidlib.size_x;
-	ctx.view.Y2 = PCB->hidlib.size_y;
+	ctx.view.X2 = hidlib->size_x;
+	ctx.view.Y2 = hidlib->size_y;
 
 TODO(": wait for a connection?")
 	remote_proto_send_ver();
 	remote_proto_send_unit();
-	remote_proto_send_brddim(PCB->hidlib.size_x, PCB->hidlib.size_y);
-	remote_send_all_layers();
+	remote_proto_send_brddim(hidlib->size_x, hidlib->size_y);
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
@@ -135,19 +101,6 @@ static void remote_invalidate_all(rnd_hid_t *hid)
 
 static int remote_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
-	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
-		return 0;
-	if (flags & PCB_LYT_NOEXPORT)
-		return 0;
-	if (PCB_LAYER_IS_CSECT(flags, purpi)) /* do not draw cross-sect, we didn't create them */
-		return 0;
-	if (group >= 0)
-		proto_send_set_layer_group(group, purpose, is_empty);
-	else {
-TODO("layer: remove this temporary hack for virtual layers")
-		proto_send_set_layer_group(layer, purpose, is_empty);
-	}
-
 	return 1; /* do draw */
 }
 
@@ -441,6 +394,8 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
 	remote_hid.create_menu = remote_create_menu;
+	remote_hid.set_hidlib = remote_set_hidlib;
+
 
 /*	RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 

@@ -31,8 +31,6 @@
 #include "proto_lowcommon.h"
 #include "proto_lowsend.h"
 #include "proto_lowparse.h"
-#include "layer.h"
-#include "layer_grp.h"
 
 static const int proto_ver = 1;
 static proto_ctx_t pctx;
@@ -114,37 +112,6 @@ int proto_send_set_layer_group(rnd_layergrp_id_t group, const char *purpose, int
 	send_end(&pctx);
 	return 0;
 }
-
-
-static void remote_send_layer_flag_cb(void *ctx, pcb_layer_type_t bit, const char *name, int class, const char *class_name)
-{
-/*	sends(&pctx, class_name);*/
-	sends(&pctx, name);
-}
-
-static void	pcb_remote_send_layer_flags(unsigned int flags, int first_arg)
-{
-	send_open(&pctx, 0, first_arg); /* our flags and classes are nicely behaved, no need to do binary */
-	pcb_layer_type_map(flags, NULL, remote_send_layer_flag_cb);
-	send_close(&pctx);
-}
-
-int pcb_remote_new_layer_group(const char *name, rnd_layergrp_id_t idx, unsigned int flags)
-{
-	send_begin(&pctx, "newlg");
-	send_open(&pctx, str_is_bin(name), 1);
-	sends(&pctx, name);
-	sendf(&pctx, "%d", idx);
-	send_open(&pctx, 0, 0);
-	pcb_remote_send_layer_flags(flags & PCB_LYT_ANYWHERE, 1);
-	pcb_remote_send_layer_flags(flags & PCB_LYT_ANYTHING, 0);
-	pcb_remote_send_layer_flags(flags & PCB_LYT_ANYPROP, 0);
-	send_close(&pctx);
-	send_close(&pctx);
-	send_end(&pctx);
-	return 0;
-}
-
 
 int pcb_remote_new_layer(const char *name, rnd_layer_id_t lid, unsigned int gid)
 {
