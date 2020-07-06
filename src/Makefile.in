@@ -138,6 +138,10 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genregex/regex.o
 	../src_3rd/libulzw/libulzw_comp.o
 	../src_3rd/libulzw/libulzw_decomp.o
+@]
+
+# these need special rules for compilation
+append /local/pcb/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
 	../src_3rd/libminuid/libminuid.a
 @]
@@ -151,6 +155,8 @@ put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
 put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
+
+
 
 #---- modules ----#
 # extra rules for modules
@@ -194,6 +200,7 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
 uniq /local/pcb/OBJS_3RDLIB
+uniq /local/pcb/OBJS_3RDLIB_NOAUTO
 uniq /local/pcb/OBJS_POLYLIB
 uniq /local/pcb/OBJS_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_ONLY
@@ -238,7 +245,7 @@ PLUGIDIR=plugins
 SRC_3RD_DIR=$(ROOT)/src_3rd
 
 @?/local/pcb/TOPVARS@
-OBJS=@/local/pcb/OBJS@
+OBJS=@/local/pcb/OBJS@ @/local/pcb/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/pcb/OBJS_C99@
 OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
 OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o ../src_3rd/puplug/*.o
