@@ -156,15 +156,6 @@ static Widget ltf_create_dockbox(Widget parent, rnd_hid_dock_t where, int vert)
 	stdarg(XmNmarginHeight, 0);
 	ltf_dockbox[where] = PxmCreateFillBox(parent, "dockbox", stdarg_args, stdarg_n);
 
-	{
-		Widget w;
-		stdarg_n = 0;
-		stdarg(XmNlabelString, XmStringCreatePCB("TODO#12"));
-		w = XmCreateLabel(ltf_dockbox[where], XmStrCast("dock1"), stdarg_args, stdarg_n);
-		XtManageChild(w);
-	}
-
-
 	return ltf_dockbox[where];
 }
 
