@@ -1305,51 +1305,23 @@ static int lesstif_hid_inited = 0;
 
 #include "mouse.c"
 
-static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void ltf_topwin_make_menu(void)
 {
-	Dimension width, height;
 	Widget menu;
-	Widget work_area_frame;
-
-	/* this only registers in core, safe to call before anything else */
-	lesstif_init_menu();
-
-	lesstif_begin();
-
-	rnd_hid_cfg_keys_init(&lesstif_keymap);
-	lesstif_keymap.translate_key = lesstif_translate_key;
-	lesstif_keymap.key_name = lesstif_key_name;
-	lesstif_keymap.auto_chr = 1;
-	lesstif_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
-
-	stdarg_n = 0;
-	stdarg(XtNwidth, &width);
-	stdarg(XtNheight, &height);
-	XtGetValues(appwidget, stdarg_args, stdarg_n);
-
-	if (width < 1)
-		width = 640;
-	if (width > XDisplayWidth(display, screen))
-		width = XDisplayWidth(display, screen);
-	if (height < 1)
-		height = 480;
-	if (height > XDisplayHeight(display, screen))
-		height = XDisplayHeight(display, screen);
-
-	stdarg_n = 0;
-	stdarg(XmNwidth, width);
-	stdarg(XmNheight, height);
-	XtSetValues(appwidget, stdarg_args, stdarg_n);
-
-	stdarg(XmNspacing, 0);
-	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
-	XtManageChild(mainwind);
 
 	stdarg_n = 0;
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
 	menu = lesstif_menu(mainwind, "menubar", stdarg_args, stdarg_n);
 	XtManageChild(menu);
+
+	lesstif_menubar = menu;
+}
+
+
+static void ltf_topwin_make_drawing(void)
+{
+	Widget work_area_frame;
 
 	stdarg_n = 0;
 	stdarg(XmNshadowType, XmSHADOW_IN);
@@ -1385,7 +1357,10 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtManageChild(hscroll);
+}
 
+static void ltf_topwin_make_bottom(void)
+{
 	stdarg_n = 0;
 	stdarg(XmNresize, True);
 	stdarg(XmNresizePolicy, XmRESIZE_ANY);
@@ -1439,6 +1414,50 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	stdarg_n = 0;
 	stdarg(XmNmessageWindow, messages);
 	XtSetValues(mainwind, stdarg_args, stdarg_n);
+}
+
+static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+{
+	Dimension width, height;
+
+	/* this only registers in core, safe to call before anything else */
+	lesstif_init_menu();
+
+	lesstif_begin();
+
+	rnd_hid_cfg_keys_init(&lesstif_keymap);
+	lesstif_keymap.translate_key = lesstif_translate_key;
+	lesstif_keymap.key_name = lesstif_key_name;
+	lesstif_keymap.auto_chr = 1;
+	lesstif_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
+
+	stdarg_n = 0;
+	stdarg(XtNwidth, &width);
+	stdarg(XtNheight, &height);
+	XtGetValues(appwidget, stdarg_args, stdarg_n);
+
+	if (width < 1)
+		width = 640;
+	if (width > XDisplayWidth(display, screen))
+		width = XDisplayWidth(display, screen);
+	if (height < 1)
+		height = 480;
+	if (height > XDisplayHeight(display, screen))
+		height = XDisplayHeight(display, screen);
+
+	stdarg_n = 0;
+	stdarg(XmNwidth, width);
+	stdarg(XmNheight, height);
+	XtSetValues(appwidget, stdarg_args, stdarg_n);
+
+	stdarg(XmNspacing, 0);
+	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
+	XtManageChild(mainwind);
+
+	ltf_topwin_make_menu();
+	ltf_topwin_make_drawing();
+	ltf_topwin_make_bottom();
+
 
 	if ((background_image_file != NULL) && (*background_image_file != '\0'))
 		LoadBackgroundImage(background_image_file);
@@ -1453,7 +1472,6 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		XtDispatchEvent(&e);
 	}
 
-	lesstif_menubar = menu;
 	rnd_event(ltf_hidlib, RND_EVENT_GUI_INIT, NULL);
 
 
