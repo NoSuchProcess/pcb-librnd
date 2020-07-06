@@ -1375,7 +1375,7 @@ static void ltf_topwin_make_drawing(void)
 TODO("dock: asserts");
 #if 0
 	stdarg_n = 0;
-	w = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 0);
+	w = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 1);
 	XtManageChild(w);
 #endif
 
@@ -1386,7 +1386,7 @@ TODO("dock: asserts");
 	XtManageChild(right);
 
 	stdarg_n = 0;
-	w = ltf_create_dockbox(right, RND_HID_DOCK_TOP_INFOBAR, 0);
+	w = ltf_create_dockbox(right, RND_HID_DOCK_TOP_INFOBAR, 1);
 	XtManageChild(w);
 
 	stdarg_n = 0;
