@@ -201,6 +201,17 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 	return 0;
 }
 
+static void ltf_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
+{
+	docked_t *docked = sub->parent_ctx;
+
+	XtDestroyWidget(docked->frame);
+
+	gdl_remove(&ltf_dock[docked->where], sub, link);
+	free(docked);
+	RND_DAD_FREE(sub->dlg);
+}
+
 
 typedef struct {
 	void *hid_ctx;
@@ -2979,6 +2990,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.set_mouse_cursor = ltf_set_mouse_cursor;
 	lesstif_hid.set_top_title = ltf_set_top_title;
 	lesstif_hid.dock_enter = ltf_dock_enter;
+	lesstif_hid.dock_leave = ltf_dock_leave;
 	lesstif_hid.busy = ltf_busy;
 
 	lesstif_hid.draw_pixmap = pcb_ltf_draw_pixmap;
