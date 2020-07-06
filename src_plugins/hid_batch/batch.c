@@ -5,15 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "board.h"
 #include <librnd/core/hid.h>
-#include "data.h"
-#include "layer.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 
 #include <librnd/core/hid_nogui.h>
