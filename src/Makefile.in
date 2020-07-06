@@ -5,7 +5,6 @@ append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 put /local/pcb/OBJS_HIDLIB {}
-put /local/pcb/OBJS_HIDLIB_ONLY {}
 put /local/pcb/OBJS_C99_HIDLIB_PLG {}
 put /local/pcb/OBJS_HIDLIB_PLG {}
 
@@ -135,16 +134,12 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genvector/vtl0.o
 	../src_3rd/libulzw/libulzw_comp.o
 	../src_3rd/libulzw/libulzw_decomp.o
+	buildin.hidlib.o
 @]
 
 # these need special rules for compilation
 append /local/pcb/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
-@]
-
-# these will be linked only to the hidlib, not to pcb-rnd
-append /local/pcb/OBJS_HIDLIB_ONLY [@
-	buildin.hidlib.o
 @]
 
 put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
@@ -199,7 +194,6 @@ uniq /local/pcb/OBJS_3RDLIB
 uniq /local/pcb/OBJS_3RDLIB_NOAUTO
 uniq /local/pcb/OBJS_POLYLIB
 uniq /local/pcb/OBJS_HIDLIB
-uniq /local/pcb/OBJS_HIDLIB_ONLY
 uniq /local/pcb/OBJS_C99_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_PLG
 uniq /local/pcb/OBJS_C99_HIDLIB_PLG
@@ -220,7 +214,6 @@ append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_POLYLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB_ONLY
 gsub /local/pcb/SRCS {.o } {.c }
 
 # Makefile, static
@@ -246,7 +239,6 @@ OBJS_C99=@/local/pcb/OBJS_C99@
 OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
 OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o ../src_3rd/puplug/*.o
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
-OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
 OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
 OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
@@ -284,14 +276,14 @@ include $(ROOT)/Makefile.conf
 revcheck:
 	cd $(ROOT)/scconfig && ./revtest Rev.stamp < Rev.tab
 
-all_exe: pcb-rnd$(EXE) @/local/pcb/all@
+all_exe: test-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
+test-rnd$(EXE): $(OBJS) test-rnd.o $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
+	$(CC) test-rnd.o $(OBJS) $(OBJS_C99) -o test-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 ### librnd, hidlib ####
 
-OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
+OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB)
 DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
 @]
 
@@ -395,7 +387,7 @@ FORCE:
 DISTCLEANFILES = Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
-	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
+	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(CLEANFILES)
 
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
