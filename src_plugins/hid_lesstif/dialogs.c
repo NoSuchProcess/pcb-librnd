@@ -303,14 +303,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		case RND_HATT_BEGIN_HBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
-			ctx->wl[i] = w;
+			ctx->wltop[i] = ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
 		case RND_HATT_BEGIN_VBOX:
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
-			ctx->wl[i] = w;
+			ctx->wltop[i] =ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
