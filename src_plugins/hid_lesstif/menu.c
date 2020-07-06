@@ -9,10 +9,8 @@
 #include <ctype.h>
 #include <assert.h>
 
-#include "data.h"
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
-#include "layer.h"
 
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
@@ -25,7 +23,6 @@
 #include "ltf_stdarg.h"
 #include <librnd/core/event.h>
 #include <librnd/core/compat_misc.h>
-#include "layer_vis.h"
 #include <genht/hash.h>
 
 #include "../src_plugins/lib_hid_common/menu_helper.h"
