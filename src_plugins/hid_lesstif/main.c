@@ -1322,11 +1322,6 @@ static void ltf_topwin_make_top(void)
 {
 	Widget menu_box, top_box, w, spring;
 
-/*	stdarg_n = 0;
-	stdarg(XmNorientation, XmHORIZONTAL);
-	top_box = XmCreateRowColumn(mainwind, XmStrCast("top_box"), stdarg_args, stdarg_n);
-	XtManageChild(top_box);*/
-
 	stdarg_n = 0;
 	stdarg(PxmNfillBoxVertical, 0);
 	stdarg(PxmNfillBoxFill, 1);
