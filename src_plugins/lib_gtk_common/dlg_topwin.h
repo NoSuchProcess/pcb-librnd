@@ -29,5 +29,7 @@ void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title);
 gboolean ghid_idle_cb(void *topwin);
 gboolean ghid_port_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, pcb_gtk_topwin_t *tw);
 
+void pcb_gtk_tw_dock_uninit(void);
+
 #endif
 

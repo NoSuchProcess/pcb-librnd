@@ -42,6 +42,8 @@
 #define _POSIX_SOURCE
 #include "config.h"
 #include "dlg_topwin.h"
+#include <genht/htsp.h>
+#include <genht/hash.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 
@@ -67,7 +69,7 @@ static int pcb_gtk_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_
 
 typedef struct {
 	void *hid_ctx;
-	GtkWidget *frame;
+	GtkWidget *hvbox;
 	pcb_gtk_topwin_t *tw;
 	rnd_hid_dock_t where;
 } docked_t;
@@ -75,38 +77,67 @@ typedef struct {
 GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
 static GdkColor *pcb_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
+static htsp_t pck_dock_pos[RND_HID_DOCK_max];
+
+static void pcb_gtk_tw_dock_init(void)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++)
+		htsp_init(&pck_dock_pos[n], strhash, strkeyeq);
+}
+
+void pcb_gtk_tw_dock_uninit(void)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&pck_dock_pos[n]); e != NULL; e = htsp_next(&pck_dock_pos[n], e))
+			free(e->key);
+		htsp_uninit(&pck_dock_pos[n]);
+	}
+}
+
+
 int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
-	GtkWidget *hvbox;
+	GtkWidget *frame;
 	int expfill = 0;
+
 
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
 
+	/* named "frames" are packed in the docking site; when a frame has
+	   content, it's docked->hvbox; on leave, the hvbox is removed but
+	   the frame is kept so a re-enter will happen into the same frame */
+
 	if (rnd_dock_is_vert[where])
-		hvbox = gtkc_vbox_new(FALSE, 0);
+		docked->hvbox = gtkc_vbox_new(FALSE, 0);
 	else
-		hvbox = gtkc_hbox_new(TRUE, 0);
+		docked->hvbox = gtkc_hbox_new(TRUE, 0);
 
-	if (rnd_dock_has_frame[where]) {
-		docked->frame = gtk_frame_new(id);
-		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
+	frame = htsp_get(&pck_dock_pos[where], id);
+	if (frame == NULL) {
+		if (rnd_dock_has_frame[where])
+			frame = gtk_frame_new(id);
+		else
+			frame = gtkc_vbox_new(FALSE, 0);
+
+		if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
+			expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
+
+		gtk_box_pack_start(GTK_BOX(tw->dockbox[where]), frame, expfill, expfill, 0);
+		htsp_set(&pck_dock_pos[where], rnd_strdup(id), frame);
 	}
-	else
-		docked->frame = hvbox;
 
-	if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
-		expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
+	gtk_container_add(GTK_CONTAINER(frame), docked->hvbox);
 
 	if ((sub->dlg_minx > 0) && (sub->dlg_miny > 0))
-		gtk_widget_set_size_request(docked->frame, sub->dlg_minx, sub->dlg_miny);
-
-	gtk_box_pack_end(GTK_BOX(tw->dockbox[where]), docked->frame, expfill, expfill, 0);
-	gtk_widget_show_all(docked->frame);
+		gtk_widget_set_size_request(frame, sub->dlg_minx, sub->dlg_miny);
 
 	sub->parent_poke = pcb_gtk_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
 
@@ -122,16 +153,20 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 			gtk_paned_set_position(GTK_PANED(tw->hpaned_middle), sub->dlg_defx);
 	}
 
+	gtk_widget_show_all(frame);
+
 	return 0;
 }
 
 void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 {
 	docked_t *docked = sub->parent_ctx;
-	gtk_widget_destroy(docked->frame);
+	GtkWidget *frame = gtk_widget_get_parent(docked->hvbox);
+	gtk_widget_destroy(docked->hvbox);
 	gdl_remove(&tw->dock[docked->where], sub, link);
 	free(docked);
 	RND_DAD_FREE(sub->dlg);
+	gtk_widget_hide(frame);
 }
 
 /*** static top window code ***/
@@ -375,6 +410,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	GtkWidget *resize_grip;
 	GdkPixbuf *resize_grip_pixbuf;
 	GtkWidget *resize_grip_image;
+
+	pcb_gtk_tw_dock_init();
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(ghidgui->wtop_window), vbox_main);

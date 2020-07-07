@@ -194,6 +194,8 @@ static void ghid_do_exit(rnd_hid_t *hid)
 	   loop that'd block the exit until the user closes the entry */
 	ghid_cmd_close(&gctx->topwin.cmd);
 
+	pcb_gtk_tw_dock_uninit();
+
 	gtk_main_quit();
 }
 
