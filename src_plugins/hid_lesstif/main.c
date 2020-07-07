@@ -201,11 +201,6 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 
 	frame = htsp_get(&pck_dock_pos[where], id);
 	if (frame == NULL) {
-		int expfill = 0;
-
-		if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
-			expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
-
 		if (rnd_dock_has_frame[where]) {
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_END);
