@@ -471,6 +471,9 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 
 		XtUnmanageChild(m_cmd);
 		XtUnmanageChild(m_cmd_label);
+		if (rnd_conf.editor.fullscreen)
+			XtUnmanageChild(ltf_fullscreen_bottom);
+
 		cmd_is_active = 0;
 		break;
 	}
@@ -2936,6 +2939,10 @@ static void ltf_open_command(rnd_hid_t *hid)
 {
 	pcb_clihist_init();
 	pcb_clihist_reset();
+
+	if (rnd_conf.editor.fullscreen)
+		XtManageChild(ltf_fullscreen_bottom);
+
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
