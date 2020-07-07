@@ -33,6 +33,7 @@
 
 #include <librnd/core/compat_misc.h>
 
+#include "wt_xpm.h"
 
 static unsigned long hex_digit(char c)
 {
@@ -211,19 +212,19 @@ Pixmap pcb_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
 
 Widget pcb_ltf_xpm_label(Display *display, Widget parent, String name, const char **xpm)
 {
-	Widget Label1;
-	Pixel background;
-	Pixmap px_disarm;
-	Arg args[3];
+	Widget Label1 = pcb_ltf_xpm_button(display, parent, name, xpm);
+	Arg args[8];
 	int n = 0;
 
-	Label1 = XmCreateLabel(parent, name, (Arg *)NULL, (Cardinal) 0);
-	XtVaGetValues(Label1, XmNbackground, &background, NULL);
+	XtSetArg(args[n], XmNdefaultButtonShadowThickness, 0); n++;
+	XtSetArg(args[n], XmNdefaultButtonEmphasis, XmEXTERNAL_HIGHLIGHT); n++;
+	XtSetArg(args[n], XmNshadowThickness, 0); n++;
+	XtSetArg(args[n], XmNshowAsDefault, 0); n++;
+	XtSetArg(args[n], XmNmarginBottom, 0); n++;
+	XtSetArg(args[n], XmNmarginTop, 0); n++;
+	XtSetArg(args[n], XmNmarginLeft, 0); n++;
+	XtSetArg(args[n], XmNmarginRight, 0); n++;
 
-	px_disarm = pcb_ltf_parse_xpm(display, xpm, background);
-
-	XtSetArg(args[n], XmNlabelType, XmPIXMAP); n++;
-	XtSetArg(args[n], XmNlabelPixmap, px_disarm); n++;
 	XtSetValues(Label1, args, n);
 
 	return Label1;
