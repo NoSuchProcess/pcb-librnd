@@ -381,9 +381,19 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			break;
 	
 		case RND_HATT_LABEL:
-			stdarg_n = 0;
+			/* have to pretend label is a button, else it won't get the clicks */
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-			ctx->wl[i] = XmCreateLabel(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			stdarg(XmNdefaultButtonShadowThickness, 0);
+			stdarg(XmNdefaultButtonEmphasis, XmEXTERNAL_HIGHLIGHT);
+			stdarg(XmNshadowThickness, 0);
+			stdarg(XmNshowAsDefault, 0);
+			stdarg(XmNmarginBottom, 0);
+			stdarg(XmNmarginTop, 0);
+			stdarg(XmNmarginLeft, 0);
+			stdarg(XmNmarginRight, 0);
+			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str));
+			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
+			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			break;
 		case RND_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
