@@ -145,7 +145,7 @@ static gdl_list_t ltf_dock[RND_HID_DOCK_max];
 
 typedef struct {
 	void *hid_ctx;
-	Widget frame;
+	Widget hvbox;
 	rnd_hid_dock_t where;
 } docked_t;
 
@@ -164,10 +164,30 @@ static int ltf_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_even
 	return -1;
 }
 
+static htsp_t pck_dock_pos[RND_HID_DOCK_max];
+
+static void lft_dock_init(void)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++)
+		htsp_init(&pck_dock_pos[n], strhash, strkeyeq);
+}
+
+void lft_dock_uninit(void)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++) {
+		htsp_entry_t *e;
+		for(e = htsp_first(&pck_dock_pos[n]); e != NULL; e = htsp_next(&pck_dock_pos[n], e))
+			free(e->key);
+		htsp_uninit(&pck_dock_pos[n]);
+	}
+}
+
 static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
-	Widget hvbox;
+	Widget frame;
 	int expfill = 0;
 
 	if (ltf_dockbox[where] == NULL)
@@ -179,26 +199,44 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 	if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
 		expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
 
+	frame = htsp_get(&pck_dock_pos[where], id);
+	if (frame == NULL) {
+		int expfill = 0;
+
+		if (RND_HATT_IS_COMPOSITE(sub->dlg[0].type))
+			expfill = (sub->dlg[0].rnd_hatt_flags & RND_HATF_EXPFILL);
+
+		if (rnd_dock_has_frame[where]) {
+			stdarg_n = 0;
+			stdarg(XmNalignment, XmALIGNMENT_END);
+			stdarg(XmNmarginWidth, 0);
+			stdarg(XmNmarginHeight, 0);
+			stdarg(PxmNfillBoxFill, expfill);
+			frame = XmCreateFrame(ltf_dockbox[where], XmStrCast(id), stdarg_args, stdarg_n);
+		}
+		else {
+			stdarg_n = 0;
+			stdarg(PxmNfillBoxVertical, 0);
+			stdarg(XmNmarginWidth, 0);
+			stdarg(XmNmarginHeight, 0);
+			stdarg(PxmNfillBoxFill, expfill);
+			frame = PxmCreateFillBox(ltf_dockbox[where], XmStrCast(id), stdarg_args, stdarg_n);
+		}
+		htsp_set(&pck_dock_pos[where], rnd_strdup(id), frame);
+	}
+
+	XtManageChild(frame);
+
 	stdarg_n = 0;
 	stdarg(PxmNfillBoxVertical, rnd_dock_is_vert[where]);
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
 	stdarg(PxmNfillBoxFill, expfill);
-	hvbox = PxmCreateFillBox(ltf_dockbox[where], "dockbox", stdarg_args, stdarg_n);
-
-	if (rnd_dock_has_frame[where]) {
-		TODO("dock: insert the frame");
-/*		docked->frame = gtk_frame_new(id);
-		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);*/
-		docked->frame = hvbox;
-	}
-	else
-		docked->frame = hvbox;
-
-	XtManageChild(docked->frame);
+	docked->hvbox = PxmCreateFillBox(frame, "dockbox", stdarg_args, stdarg_n);
+	XtManageChild(docked->hvbox);
 
 	sub->parent_poke = ltf_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = lesstif_attr_sub_new(hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = lesstif_attr_sub_new(docked->hvbox, sub->dlg, sub->dlg_len, sub);
 	sub->parent_ctx = docked;
 
 	gdl_append(&ltf_dock[where], sub, link);
@@ -209,12 +247,15 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_
 static void ltf_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
 {
 	docked_t *docked = sub->parent_ctx;
+	Widget frame = XtParent(docked->hvbox);
 
-	XtDestroyWidget(docked->frame);
+	XtDestroyWidget(docked->hvbox);
 
 	gdl_remove(&ltf_dock[docked->where], sub, link);
 	free(docked);
 	RND_DAD_FREE(sub->dlg);
+
+	XtUnmanageChild(frame);
 }
 
 
@@ -1377,7 +1418,7 @@ static void ltf_topwin_make_drawing(void)
 	horiz = PxmCreateFillBox(mainwind, XmStrCast("middle_horiz"), stdarg_args, stdarg_n);
 	XtManageChild(horiz);
 
-TODO("dock: asserts");
+TODO("dock: layersel depends on vertical text");
 #if 0
 	stdarg_n = 0;
 	w = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 1);
@@ -1495,6 +1536,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	/* this only registers in core, safe to call before anything else */
 	lesstif_init_menu();
 
+	lft_dock_init();
 	lesstif_begin();
 
 	rnd_hid_cfg_keys_init(&lesstif_keymap);
@@ -1558,6 +1600,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static void lesstif_do_exit(rnd_hid_t *hid)
 {
 	XtAppSetExitFlag(app_context);
+	lft_dock_uninit();
 }
 
 static void lesstif_uninit(rnd_hid_t *hid)
