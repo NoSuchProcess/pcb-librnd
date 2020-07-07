@@ -366,6 +366,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 		case RND_HATT_PICTURE:
 			ctx->wl[i] = ltf_picture_create(ctx, parent, &ctx->attrs[i]);
+			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
+			XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 			break;
 
 		case RND_HATT_PICBUTTON:
