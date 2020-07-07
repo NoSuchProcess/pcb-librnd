@@ -277,6 +277,24 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 #include "dlg_attr_box.c"
 #include "dlg_attr_tree.c"
 
+XmString label_text_rotate(lesstif_attr_dlg_t *ctx, int i, const char *str)
+{
+	if ((ctx->attrs[i].rnd_hatt_flags & RND_HATF_TEXT_VERTICAL) && (str != NULL)) {
+		char tmp[16];
+		int nc;
+		for(nc = 0; str[nc] != '\0'; nc++) {
+			if (nc > 1)
+				break;
+			tmp[nc*2] = str[nc];
+			tmp[nc*2+1] = '\n';
+		}
+		tmp[nc*2 + (nc > 0 ? -1 : 0)] = '\0';
+		return XmStringCreatePCB(tmp);
+	}
+	else
+		return XmStringCreatePCB(str);
+}
+
 /* returns the index of HATT_END where the loop had to stop */
 static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int start_from)
 {
@@ -383,6 +401,8 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			break;
 	
 		case RND_HATT_LABEL:
+			if (ctx->attrs[i].rnd_hatt_flags & RND_HATF_TEXT_VERTICAL)
+				stdarg(XmNheight, 16);
 			/* have to pretend label is a button, else it won't get the clicks */
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 			stdarg(XmNdefaultButtonShadowThickness, 0);
@@ -393,7 +413,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			stdarg(XmNmarginTop, 0);
 			stdarg(XmNmarginLeft, 0);
 			stdarg(XmNmarginRight, 0);
-			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str));
+			stdarg(XmNlabelString, label_text_rotate(ctx, i, ctx->attrs[i].name));
 			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			break;
@@ -515,7 +535,10 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
 			break;
 		case RND_HATT_LABEL:
-			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
+			if (ctx->attrs[idx].rnd_hatt_flags & RND_HATF_TEXT_VERTICAL)
+				XtVaSetValues(ctx->wl[idx], XmNlabelString, label_text_rotate(ctx, idx, val->str), XmNheight, 16, NULL);
+			else
+				XtVaSetValues(ctx->wl[idx], XmNlabelString, label_text_rotate(ctx, idx, val->str), NULL);
 			break;
 		case RND_HATT_BOOL:
 			XtVaSetValues(ctx->wl[idx], XmNset, val->lng, NULL);
