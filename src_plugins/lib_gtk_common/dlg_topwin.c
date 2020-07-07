@@ -136,6 +136,8 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	if ((sub->dlg_minx > 0) && (sub->dlg_miny > 0))
 		gtk_widget_set_size_request(frame, sub->dlg_minx, sub->dlg_miny);
 
+	gtk_widget_show_all(frame); /* can not show after creating the sub: some widgets may start out as hidden! */
+
 	sub->parent_poke = pcb_gtk_dock_poke;
 	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
@@ -152,8 +154,6 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 		if (curr < sub->dlg_defx)
 			gtk_paned_set_position(GTK_PANED(tw->hpaned_middle), sub->dlg_defx);
 	}
-
-	gtk_widget_show_all(frame);
 
 	return 0;
 }
