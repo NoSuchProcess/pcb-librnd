@@ -473,6 +473,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		XtUnmanageChild(m_cmd_label);
 		if (rnd_conf.editor.fullscreen)
 			XtUnmanageChild(ltf_fullscreen_bottom);
+		XmProcessTraversal(work_area, XmTRAVERSE_CURRENT);
 
 		cmd_is_active = 0;
 		break;
@@ -1597,6 +1598,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	}
 
 	rnd_event(ltf_hidlib, RND_EVENT_GUI_INIT, NULL);
+	XmProcessTraversal(work_area, XmTRAVERSE_CURRENT);
 
 
 	lesstif_hid_inited = 1;
