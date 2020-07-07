@@ -89,7 +89,7 @@ rnd_hid_t lesstif_hid;
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", func), abort()
 
 XtAppContext app_context;
-Widget appwidget;
+Widget appwidget, ltf_fullscreen_left, ltf_fullscreen_top, ltf_fullscreen_bottom;
 Display *display;
 static Window window = 0;
 static int old_cursor_mode = -1;
@@ -1385,6 +1385,7 @@ static void ltf_topwin_make_top(void)
 
 	top_box = PxmCreateFillBox(mainwind, XmStrCast("top_box"), stdarg_args, stdarg_n);
 	XtManageChild(top_box);
+	ltf_fullscreen_top = top_box;
 
 	stdarg_n = 0;
 	stdarg(PxmNfillBoxVertical, 1);
@@ -1421,8 +1422,12 @@ static void ltf_topwin_make_drawing(void)
 TODO("dock: layersel depends on vertical text");
 #if 0
 	stdarg_n = 0;
-	w = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 1);
-	XtManageChild(w);
+	ltf_fullscreen_left = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 1);
+	XtManageChild(ltf_fullscreen_left);
+#else
+	/* provide a 'left' widget to the full screen logics when the real left dockbox is disabled */
+	stdarg_n = 0;
+	ltf_fullscreen_left = PxmCreateFillBox(horiz, XmStrCast("dummy"), stdarg_args, stdarg_n);
 #endif
 
 	stdarg_n = 0;
@@ -1527,6 +1532,8 @@ static void ltf_topwin_make_bottom(void)
 	stdarg_n = 0;
 	stdarg(XmNmessageWindow, messages);
 	XtSetValues(mainwind, stdarg_args, stdarg_n);
+
+	ltf_fullscreen_bottom = messages;
 }
 
 static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
@@ -2786,10 +2793,25 @@ static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
+static void ltf_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
+{
+	if (!lesstif_active)
+		return;
+
+	if (rnd_conf.editor.fullscreen) {
+		XtUnmanageChild(ltf_fullscreen_top);
+		XtUnmanageChild(ltf_fullscreen_left);
+		XtUnmanageChild(ltf_fullscreen_bottom);
+	}
+	else {
+		XtManageChild(ltf_fullscreen_top);
+		XtManageChild(ltf_fullscreen_left);
+		XtManageChild(ltf_fullscreen_bottom);
+	}
+}
+
 static rnd_conf_hid_id_t lesstif_conf_id = -1;
 
-TODO("decide if we'll ever need this")
-#if 0
 static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
@@ -2802,9 +2824,10 @@ static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, voi
 
 static void lesstif_conf_regs(const char *cookie)
 {
-	static rnd_conf_hid_callbacks_t cbs_grid_unit;
+	static rnd_conf_hid_callbacks_t cbs_fullscreen;
+	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ltf_confchg_fullscreen);
 }
-#endif
+
 
 #include <Xm/CutPaste.h>
 
@@ -3053,8 +3076,8 @@ int pplg_init_hid_lesstif(void)
 	rnd_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
 		lesstif_conf_id = rnd_conf_hid_reg(lesstif_cookie, &ccb);
-/*	lesstif_conf_regs(lesstif_cookie);*/
 
+	lesstif_conf_regs(lesstif_cookie);
 	return 0;
 }
 
