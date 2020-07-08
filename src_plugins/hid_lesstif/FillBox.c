@@ -757,12 +757,14 @@ static void Layout(Widget wid, Widget instigator)
 		PxmFillBoxConstraint glc = PxmFillBoxCPart(ic);
 		Boolean gmf = glc->fill;
 		Dimension cw, ch;
-		XtWidgetGeometry reply;
+		XtWidgetGeometry intend, reply;
 
 		if (!XtIsManaged(ic))
 			continue;
 
-		XtQueryGeometry(ic, NULL, &reply);
+		XtQueryGeometry(ic, NULL, &intend);
+		intend.request_mode = vert ? CWHeight : CWWidth;
+		XtQueryGeometry(ic, &intend, &reply);
 		cw = (reply.request_mode & CWWidth) ? reply.width : ic->core.width;
 		ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
 		ic->core.width = cw;
@@ -879,24 +881,29 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 	int vert = gw->fillBox.vertical;
 
 	/* minimal size is a sequential placement of children plus the margins */
+/*printf("Calcsize %p {", wid);*/
 	for(i = 0; i < gw->composite.num_children; i++) {
 		Widget ic = gw->composite.children[i];
 		Dimension width, height;
 		Dimension cw, ch, cb;
-		XtWidgetGeometry reply;
+		XtWidgetGeometry intend, reply;
 
 		if (!XtIsManaged(ic))
 			continue;
 
 		/* Get child's preferred geometry if not the instigator. */
 		if (ic != instigator) {
-			XtQueryGeometry(ic, NULL, &reply);
+			XtQueryGeometry(ic, NULL, &intend);
+			intend.request_mode = vert ? CWHeight : CWWidth;
+			XtQueryGeometry(ic, &intend, &reply);
 			cw = (reply.request_mode & CWWidth) ? reply.width : ic->core.width;
 			ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
+/*			printf(" a:[%d%d]:%d*%d",(reply.request_mode & CWWidth), (reply.request_mode & CWHeight), cw,ch);*/
 		}
 		else {
 			cw = ic->core.width;
 			ch = ic->core.height;
+/*			printf(" b:%d*%d", cw,ch);*/
 		}
 		cb = ic->core.border_width;
 
@@ -912,6 +919,7 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 			maxHeight = Max(height, maxHeight);
 		}
 	}
+/*printf("}\n");*/
 
 	*TotalWidthOfFillBoxWidget = Max(maxWidth + 2*mw, 1);
 	*TotalHeightOfFillBoxWidget = Max(maxHeight + 2*mh, 1);
