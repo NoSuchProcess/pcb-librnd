@@ -452,6 +452,16 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 static Widget m_cmd = 0, m_cmd_label;
 static int cmd_is_active = 0;
 
+static void command_hide(void)
+{
+	XtUnmanageChild(m_cmd);
+	XtUnmanageChild(m_cmd_label);
+	if (rnd_conf.editor.fullscreen)
+		XtUnmanageChild(ltf_fullscreen_bottom);
+	XmProcessTraversal(work_area, XmTRAVERSE_CURRENT);
+	cmd_is_active = 0;
+}
+
 static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruct * cbs)
 {
 	char *s;
@@ -464,13 +474,8 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 
-		XtUnmanageChild(m_cmd);
-		XtUnmanageChild(m_cmd_label);
-		if (rnd_conf.editor.fullscreen)
-			XtUnmanageChild(ltf_fullscreen_bottom);
-		XmProcessTraversal(work_area, XmTRAVERSE_CURRENT);
+		command_hide();
 
-		cmd_is_active = 0;
 		break;
 	}
 }
@@ -558,10 +563,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 					*cont = False;
 					break;
 				case XK_Escape:
-					XtUnmanageChild(m_cmd);
-					XtUnmanageChild(m_cmd_label);
-					XmTextSetString(w, XmStrCast(""));
-					cmd_is_active = 0;
+					command_hide();
 					*cont = False;
 					break;
 			}
@@ -2940,6 +2942,7 @@ static void ltf_open_command(rnd_hid_t *hid)
 	if (rnd_conf.editor.fullscreen)
 		XtManageChild(ltf_fullscreen_bottom);
 
+	/* command_show(): */
 	XtManageChild(m_cmd_label);
 	XtManageChild(m_cmd);
 	XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
