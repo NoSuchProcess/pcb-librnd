@@ -108,6 +108,7 @@ typedef struct _PxmFillBoxRec {
 /* Define the constraint part structure. */
 typedef struct _PxmFillBoxConstraintPart {
 	Boolean fill;
+	Dimension minsize;
 } PxmFillBoxConstraintPart, *PxmFillBoxConstraint;
 
 

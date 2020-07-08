@@ -183,6 +183,15 @@ static XtResource constraints[] = {
 	 XmRImmediate,
 	 (XtPointer) 0}
 	,
+	{
+	 PxmNfillBoxMinSize,
+	 PxmCFillBoxMinSize,
+	 XmRPacking,
+	 sizeof(Dimension),
+	 XtOffsetOf(PxmFillBoxConstraintRec, fillBox.minsize),
+	 XmRImmediate,
+	 (XtPointer) 0}
+	,
 };
 
 /* The preceding constraint will be handled as synthetic constraint. */
@@ -756,7 +765,7 @@ static void Layout(Widget wid, Widget instigator)
 		Dimension cb = ic->core.border_width;
 		PxmFillBoxConstraint glc = PxmFillBoxCPart(ic);
 		Boolean gmf = glc->fill;
-		Dimension cw, ch;
+		Dimension cw, ch, minsize;
 		XtWidgetGeometry intend, reply;
 
 		if (!XtIsManaged(ic))
@@ -767,6 +776,14 @@ static void Layout(Widget wid, Widget instigator)
 		XtQueryGeometry(ic, &intend, &reply);
 		cw = (reply.request_mode & CWWidth) ? reply.width : ic->core.width;
 		ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
+		XtVaGetValues(ic, PxmNfillBoxMinSize, &minsize, NULL);
+		if (minsize != 0) {
+			if (vert)
+				ch = minsize;
+			else
+				cw = minsize;
+		}
+
 		ic->core.width = cw;
 		ic->core.height = ch;
 		XtResizeWindow(ic);
@@ -893,11 +910,20 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 
 		/* Get child's preferred geometry if not the instigator. */
 		if (ic != instigator) {
+			Dimension minsize;
 			XtQueryGeometry(ic, NULL, &intend);
 			intend.request_mode = vert ? CWHeight : CWWidth;
 			XtQueryGeometry(ic, &intend, &reply);
 			cw = (reply.request_mode & CWWidth) ? reply.width : ic->core.width;
 			ch = (reply.request_mode & CWHeight) ? reply.height : ic->core.height;
+
+			XtVaGetValues(ic, PxmNfillBoxMinSize, &minsize, NULL);
+			if (minsize != 0) {
+				if (vert)
+					ch = minsize;
+				else
+					cw = minsize;
+			}
 /*			printf(" a:[%d%d]:%d*%d",(reply.request_mode & CWWidth), (reply.request_mode & CWHeight), cw,ch);*/
 		}
 		else {

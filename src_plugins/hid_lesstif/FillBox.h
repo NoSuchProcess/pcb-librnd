@@ -51,9 +51,12 @@ typedef struct _PxmFillBoxRec *PxmFillBoxWidget;
 /* Define string equivalents of new resource names. */
 #define PxmNfillBoxFill     "fillBoxFill"
 #define PxmNfillBoxVertical "fillBoxVertical"
+#define PxmNfillBoxMinSize  "fillBoxMinSize"
+
 
 #define PxmCFillBoxFill     "FillBoxFill"
 #define PxmCFillBoxVertical "FillBoxVertical"
+#define PxmCFillBoxMinSize  "FillBoxMinSize"
 
 /* Specify the API for this widget. */
 extern Widget PxmCreateFillBox(Widget parent, char *name, ArgList arglist, Cardinal argcount);
