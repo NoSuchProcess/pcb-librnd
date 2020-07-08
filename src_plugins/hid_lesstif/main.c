@@ -1419,7 +1419,7 @@ static void ltf_topwin_make_drawing(void)
 	XtManageChild(horiz);
 
 TODO("dock: layersel depends on vertical text");
-#if 0
+#if 1
 	stdarg_n = 0;
 	ltf_fullscreen_left = ltf_create_dockbox(horiz, RND_HID_DOCK_LEFT, 1);
 	XtManageChild(ltf_fullscreen_left);
