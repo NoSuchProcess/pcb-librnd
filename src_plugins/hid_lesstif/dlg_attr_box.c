@@ -47,6 +47,7 @@ static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_
 	if (want_scroll) {
 		stdarg(XmNscrollingPolicy, XmAUTOMATIC);
 		stdarg(XmNvisualPolicy, XmVARIABLE);
+		stdarg(PxmNfillBoxMinSize, 15);
 
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNtopAttachment, XmATTACH_FORM);
