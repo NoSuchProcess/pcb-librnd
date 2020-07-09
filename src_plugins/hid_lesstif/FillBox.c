@@ -765,7 +765,7 @@ static void Layout(Widget wid, Widget instigator)
 		Dimension cb = ic->core.border_width;
 		PxmFillBoxConstraint glc = PxmFillBoxCPart(ic);
 		Boolean gmf = glc->fill;
-		Dimension cw, ch, minsize;
+		Dimension cw, ch, minsize = 0;
 		XtWidgetGeometry intend, reply;
 
 		if (!XtIsManaged(ic))
@@ -910,7 +910,7 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfFillB
 
 		/* Get child's preferred geometry if not the instigator. */
 		if (ic != instigator) {
-			Dimension minsize;
+			Dimension minsize = 0;
 			XtQueryGeometry(ic, NULL, &intend);
 			intend.request_mode = vert ? CWHeight : CWWidth;
 			XtQueryGeometry(ic, &intend, &reply);
