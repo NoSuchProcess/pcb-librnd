@@ -716,9 +716,11 @@ static void CalcSize(Widget wid, Widget instigator, Dimension *TotalWidthOfPages
 		Widget ic = gw->composite.children[i];
 		Dimension cb = ic->core.border_width;
 		Dimension cw, ch;
-		XtWidgetGeometry reply;
+		XtWidgetGeometry intend, reply;
 
-		XtQueryGeometry(ic, NULL, &reply);
+		XtQueryGeometry(ic, NULL, &intend);
+		intend.request_mode = CWHeight | CWWidth;
+		XtQueryGeometry(ic, &intend, &reply);
 		cw = 2*cb + (reply.request_mode & CWWidth) ? reply.width : 0;
 		ch = 2*cb + (reply.request_mode & CWHeight) ? reply.height : 0;
 		if (cw > maxcw)
