@@ -379,6 +379,12 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			break;
 
 		case RND_HATT_TREE:
+TODO("The wrapper box would allow the table to shrink but then the dialog is always resized to minimum in widget update (library window)\n");
+/*
+			stdarg(PxmNfillBoxMinSize, 20);
+			ctx->wltop[i] = pcb_motif_box(parent, "tree top", 'v', 0, 0, 0);
+			ctx->wl[i] = ltf_tree_create(ctx, ctx->wltop[i], &ctx->attrs[i]);
+*/
 			ctx->wl[i] = ltf_tree_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
