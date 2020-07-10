@@ -44,65 +44,6 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/tool.h>
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie)";
-static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
-static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	if (rnd_gui == NULL) {
-		rnd_message(RND_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
-		RND_ACT_IRES(-1);
-		return 0;
-	}
-
-	RND_ACT_CONVARG(1, FGW_STR, CreateMenu, ;);
-	RND_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
-	RND_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
-	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
-
-	if (argc > 1) {
-		rnd_menu_prop_t props;
-
-		memset(&props, 0, sizeof(props));
-		props.action = (argc > 2) ? argv[2].val.str : NULL;
-		props.tip = (argc > 3) ? argv[3].val.str : NULL;
-		props.cookie = (argc > 4) ? argv[4].val.str : NULL;
-
-		rnd_gui->create_menu(rnd_gui, argv[1].val.str, &props);
-
-		RND_ACT_IRES(0);
-		return 0;
-	}
-
-	RND_ACT_FAIL(CreateMenu);
-}
-
-/* --------------------------------------------------------------------------- */
-
-static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
-static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
-static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	if (rnd_gui == NULL) {
-		rnd_message(RND_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
-		RND_ACT_IRES(-1);
-		return 0;
-	}
-
-	if (rnd_gui->remove_menu == NULL) {
-		rnd_message(RND_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
-		RND_ACT_IRES(-1);
-		return 0;
-	}
-
-	RND_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
-	if (rnd_gui->remove_menu(rnd_gui, argv[1].val.str) != 0) {
-		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
-		RND_ACT_IRES(-1);
-	}
-	else
-		RND_ACT_IRES(0);
-	return 0;
-}
 
 /* This action is provided for CLI convenience */
 static const char pcb_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
@@ -350,8 +291,6 @@ static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static rnd_action_t rnd_gui_action_list[] = {
 	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
-	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
-	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
 	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
 	{"MoveCursorTo", pcb_act_MoveCursorTo, pcb_acth_MoveCursorTo, pcb_acts_MoveCursorTo},
 	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
