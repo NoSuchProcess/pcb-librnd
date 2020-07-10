@@ -150,9 +150,6 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	ghid_create_pcb_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
-	/* assume rnd_gui is us */
-	rnd_gui->menu = gctx->topwin.ghid_cfg;
-
 	gctx->port.drawing_area = gctx->topwin.drawing_area;
 
 TODO(": move this to render init")
@@ -310,21 +307,21 @@ static int ghid_remove_menu(rnd_hid_t *hid, const char *menu_path)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 
-	if (gctx->topwin.ghid_cfg == NULL)
+	if (hid->menu == NULL)
 		return -1;
-	return pcb_hid_cfg_remove_menu(gctx->topwin.ghid_cfg, menu_path, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
+	return pcb_hid_cfg_remove_menu(hid->menu, menu_path, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
 static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	return pcb_hid_cfg_remove_menu_node(gctx->topwin.ghid_cfg, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
+	return pcb_hid_cfg_remove_menu_node(hid->menu, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
 static void ghid_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_hid_cfg_create_menu(gctx->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &gctx->topwin.menu);
+	pcb_hid_cfg_create_menu(hid->menu, menu_path, props, ghid_create_menu_widget, &gctx->topwin.menu);
 }
 
 static void ghid_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
@@ -339,7 +336,7 @@ rnd_hid_cfg_t *ghid_get_menu_cfg(rnd_hid_t *hid)
 	pcb_gtk_t *gctx = hid->hid_data;
 	if (!gctx->hid_active)
 		return NULL;
-	return gctx->topwin.ghid_cfg;
+	return hid->menu;
 }
 
 static int ghid_usage(rnd_hid_t *hid, const char *topic)
@@ -488,7 +485,7 @@ static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	GtkWidget *menu = NULL;
-	lht_node_t *menu_node = rnd_hid_cfg_get_menu(gctx->topwin.ghid_cfg, menupath);
+	lht_node_t *menu_node = rnd_hid_cfg_get_menu(hid->menu, menupath);
 
 	if (menu_node == NULL)
 		return 1;

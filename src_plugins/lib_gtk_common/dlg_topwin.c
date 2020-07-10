@@ -432,7 +432,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->hidlib, &tw->ghid_cfg);
+	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->hidlib);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	tw->dockbox[RND_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);

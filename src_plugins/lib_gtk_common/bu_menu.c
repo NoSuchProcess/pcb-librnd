@@ -461,7 +461,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_hid_cfg_t **cfg_out)
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
@@ -469,16 +469,15 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 	menu->hidlib = hidlib;
 
 	rnd_hid_menu_gui_ready_to_create(rnd_gui);
-	*cfg_out = rnd_gui->menu;
 
-	mr = rnd_hid_cfg_get_menu(*cfg_out, "/main_menu");
+	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/main_menu");
 	if (mr != NULL) {
 		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
 		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
 		mr->doc->root->user_data = menu;
 	}
 
-	mr = rnd_hid_cfg_get_menu(*cfg_out, "/popups");
+	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -490,8 +489,8 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 		mr->doc->root->user_data = menu;
 	}
 
-	mr = rnd_hid_cfg_get_menu(*cfg_out, "/mouse");
-	if (rnd_hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
+	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/mouse");
+	if (rnd_hid_cfg_mouse_init(rnd_gui->menu, &ghid_mouse) != 0)
 		rnd_message(RND_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
 	rnd_hid_menu_gui_ready_to_modify(rnd_gui);
