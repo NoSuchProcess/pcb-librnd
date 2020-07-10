@@ -2,9 +2,10 @@
 #define RND_HID_MENU_H
 
 #include <librnd/core/hid_cfg.h>
-/* Search and load the menu res for hidname; if not found, parse
-   embedded_fallback instead (if it is NULL, use the application default
-   instead; for explicit empty embedded: use ""). Returns NULL on error */
+/* Search and load the menu file called from fn, using the menu search
+   path (from the conf system) if not given by an absolute path; if NULL or
+   not found, parse embedded_fallback instead (if it is not NULL).
+   Returns NULL on error. */
 rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
 
 lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path);
