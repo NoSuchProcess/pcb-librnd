@@ -37,12 +37,9 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/error.h>
-#include <librnd/core/paths.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hidlib_conf.h>
 
 char hid_cfg_error_shared[1024];
 
