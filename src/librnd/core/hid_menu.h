@@ -5,8 +5,9 @@
 /* Search and load the menu file called from fn, using the menu search
    path (from the conf system) if not given by an absolute path; if NULL or
    not found, parse embedded_fallback instead (if it is not NULL).
-   Returns NULL on error. */
-rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
+   Returns 0 on success. */
+int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc);
+
 
 lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path);
 lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);

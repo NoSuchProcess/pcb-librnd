@@ -49,7 +49,7 @@
 
 typedef struct {
 	char *cookie;
-	rnd_hid_cfg_t *doc;
+	rnd_hid_cfg_t *cfg;
 	int prio;
 } rnd_menu_patch_t;
 
@@ -96,7 +96,7 @@ static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 }
 
 
-rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
+int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc;
 	rnd_hid_cfg_t *hr;
@@ -113,26 +113,31 @@ rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact
 				strcpy((*p)+strlen(*p), fn);
 				doc = rnd_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
-					rnd_file_loaded_set_at("menu", "HID main", *p, "main menu system");
+					rnd_file_loaded_set_at("menu", cookie, *p, desc);
 			}
 			free(*p);
 		}
 		free(paths);
 	}
-	else
+	else {
 		doc = rnd_hid_cfg_load_lht(hidlib, fn);
+		if (doc != NULL)
+			rnd_file_loaded_set_at("menu", cookie, fn, desc);
+	}
 
 	if ((doc == NULL) && (embedded_fallback != NULL)) {
 		doc = rnd_hid_cfg_load_str(embedded_fallback);
-		rnd_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
+		if (doc != NULL)
+			rnd_file_loaded_set_at("menu", cookie, "<internal>", desc);
 	}
 	if (doc == NULL)
-		return NULL;
+		return -1;
 
 	hr = calloc(sizeof(rnd_hid_cfg_t), 1); /* make sure the cache is cleared */
 	hr->doc = doc;
 
-	return hr;
+	hid->menu = hr;
+	return 0;
 }
 
 /*** utility ***/

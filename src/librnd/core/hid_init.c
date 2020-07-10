@@ -238,7 +238,7 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 			exact_fn = (strchr(rnd_conf.rc.menu_file, '/') != NULL);
 		}
 
-		gui->menu = rnd_hid_menu_load(hidlib, fn, exact_fn, rnd_hidlib_default_embedded_menu);
+		gui->menu = rnd_hid_menu_load(gui, hidlib, "librnd", 100, fn, exact_fn, rnd_hidlib_default_embedded_menu, "base menu file");
 		free(fn);
 		if (gui->menu == NULL) {
 			fprintf(stderr, "Failed to load the menu file - can not start a GUI HID.\n");
