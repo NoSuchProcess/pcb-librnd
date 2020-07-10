@@ -1572,13 +1572,10 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	stdarg(XmNheight, height);
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 
-fprintf(stderr, "d1 appw=%p\n", appwidget);
 	stdarg_n = 0;
 	stdarg(XmNspacing, 0);
 	mainwind = XmCreateMainWindow(appwidget, XmStrCast("mainWind"), stdarg_args, stdarg_n);
-fprintf(stderr, "d2 mw=%p\n", mainwind);
 	XtManageChild(mainwind);
-fprintf(stderr, "d3\n");
 
 
 	ltf_topwin_make_drawing();
