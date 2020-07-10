@@ -29,7 +29,6 @@
 extern rnd_hidlib_t *ltf_hidlib;
 
 Widget lesstif_menubar;
-rnd_hid_cfg_t *lesstif_cfg;
 rnd_conf_hid_id_t lesstif_menuconf_id = -1;
 htsp_t ltf_popups; /* popup_name -> Widget */
 
@@ -571,9 +570,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 
 	rnd_hid_menu_gui_ready_to_create(rnd_gui);
 
-	lesstif_cfg = rnd_gui->menu;
-
-	mr = rnd_hid_cfg_get_menu(lesstif_cfg, "/main_menu");
+	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/main_menu");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -585,7 +582,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	}
 
 	htsp_init(&ltf_popups, strhash, strkeyeq);
-	mr = rnd_hid_cfg_get_menu(lesstif_cfg, "/popups");
+	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/popups");
 	if (mr != NULL) {
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
@@ -621,7 +618,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	}
 
 
-	rnd_hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
+	rnd_hid_cfg_mouse_init(rnd_gui->menu, &lesstif_mouse);
 
 	rnd_hid_menu_gui_ready_to_modify(rnd_gui);
 
@@ -631,7 +628,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	menu_data_t *md;
-	lht_node_t *menu_node = rnd_hid_cfg_get_menu(lesstif_cfg, menupath);
+	lht_node_t *menu_node = rnd_hid_cfg_get_menu(rnd_gui->menu, menupath);
 
 	rnd_trace("ltf_open_popup: %s: %p\n", menupath, menu_node);
 
@@ -655,22 +652,22 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 
 void lesstif_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
-	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, props, lesstif_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(rnd_gui->menu, menu_path, props, lesstif_create_menu_widget, NULL);
 }
 
 int lesstif_remove_menu(rnd_hid_t *hid, const char *menu_path)
 {
-	return pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
+	return pcb_hid_cfg_remove_menu(rnd_gui->menu, menu_path, del_menu, NULL);
 }
 
 int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
-	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
+	return pcb_hid_cfg_remove_menu_node(rnd_gui->menu, node, del_menu, NULL);
 }
 
 rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid)
 {
-	return lesstif_cfg;
+	return rnd_gui->menu;
 }
 
 static const char *lesstif_menu_cookie = "hid_lesstif_menu";
