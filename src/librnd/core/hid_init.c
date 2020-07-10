@@ -230,7 +230,7 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 
 	found:;
 	if (gui->gui) {
-		gui->menu = rnd_hid_cfg_load(hidlib, NULL, 0, NULL);
+		gui->menu = rnd_hid_menu_load(hidlib, NULL, 0, NULL);
 		if (gui->menu == NULL) {
 			fprintf(stderr, "Failed to load the menu file - can not start a GUI HID.\n");
 			exit(1);

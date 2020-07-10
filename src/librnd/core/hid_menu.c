@@ -43,7 +43,7 @@
 
 #include "hid_menu.h"
 
-rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
+rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
 	rnd_hid_cfg_t *hr;
