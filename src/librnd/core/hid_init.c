@@ -60,6 +60,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/funchash.h>
+#include <librnd/core/hid_menu.h>
 
 char *rnd_conf_dot_dir = ".librnd";
 char *rnd_conf_lib_dir = "/usr/lib/librnd";
@@ -188,39 +189,54 @@ void rnd_hid_remove_hid(rnd_hid_t * hid)
 }
 
 
-rnd_hid_t *rnd_hid_find_gui(const char *preference)
+rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 {
+	rnd_hid_t *gui;
 	int i;
 
 	/* ugly hack for historical reasons: some old configs and veteran users are used to the --gui gtk option */
 	if ((preference != NULL) && (strcmp(preference, "gtk") == 0)) {
-		rnd_hid_t *g;
+		gui = rnd_hid_find_gui(hidlib, "gtk2_gl");
+		if (gui != NULL)
+			return gui;
 
-		g = rnd_hid_find_gui("gtk2_gl");
-		if (g != NULL)
-			return g;
-
-		g = rnd_hid_find_gui("gtk2_gdk");
-		if (g != NULL)
-			return g;
+		gui = rnd_hid_find_gui(hidlib, "gtk2_gdk");
+		if (gui != NULL)
+			return gui;
 
 		return NULL;
 	}
 
 	/* normal search */
 	if (preference != NULL) {
-		for (i = 0; i < rnd_hid_num_hids; i++)
-			if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter && !strcmp(rnd_hid_list[i]->name, preference))
-				return rnd_hid_list[i];
+		for (i = 0; i < rnd_hid_num_hids; i++) {
+			if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter && !strcmp(rnd_hid_list[i]->name, preference)) {
+				gui = rnd_hid_list[i];
+				goto found;
+			}
+		}
 		return NULL;
 	}
 
-	for (i = 0; i < rnd_hid_num_hids; i++)
-		if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter)
-			return rnd_hid_list[i];
+	for (i = 0; i < rnd_hid_num_hids; i++) {
+		if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter) {
+			gui = rnd_hid_list[i];
+			goto found;
+		}
+	}
 
 	fprintf(stderr, "Error: No GUI available.\n");
 	exit(1);
+
+	found:;
+	if (gui->gui) {
+		gui->menu = rnd_hid_cfg_load(hidlib, NULL, 0, NULL);
+		if (gui->menu == NULL) {
+			fprintf(stderr, "Failed to load the menu file - can not start a GUI HID.\n");
+			exit(1);
+		}
+	}
+	return gui;
 }
 
 rnd_hid_t *rnd_hid_find_printer()
@@ -439,7 +455,7 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			apg = rnd_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
-			rnd_render = rnd_gui = rnd_hid_find_gui(g);
+			rnd_render = rnd_gui = rnd_hid_find_gui(NULL, g);
 		} while(rnd_gui == NULL);
 	}
 	return 0;
@@ -622,7 +638,7 @@ int rnd_main_args_setup1(rnd_main_args_t *ga)
 		case RND_DO_PRINT:   rnd_render = rnd_exporter = rnd_gui = rnd_hid_find_printer(); break;
 		case RND_DO_EXPORT:  rnd_render = rnd_exporter = rnd_gui = rnd_hid_find_exporter(ga->hid_name); break;
 		case RND_DO_GUI:
-			rnd_render = rnd_gui = rnd_hid_find_gui(ga->hid_name);
+			rnd_render = rnd_gui = rnd_hid_find_gui(NULL, ga->hid_name);
 			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
 				return 1;
@@ -634,7 +650,7 @@ int rnd_main_args_setup1(rnd_main_args_t *ga)
 
 			rnd_render = rnd_gui = NULL;
 			rnd_conf_loop_list_str(&rnd_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
-				rnd_render = rnd_gui = rnd_hid_find_gui(g);
+				rnd_render = rnd_gui = rnd_hid_find_gui(NULL, g);
 				if (rnd_gui != NULL)
 					break;
 			}
@@ -642,7 +658,7 @@ int rnd_main_args_setup1(rnd_main_args_t *ga)
 			/* try anything */
 			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
-				rnd_render = rnd_gui = rnd_hid_find_gui(NULL);
+				rnd_render = rnd_gui = rnd_hid_find_gui(NULL, NULL);
 			}
 		}
 	}

@@ -56,7 +56,7 @@ void rnd_hid_uninit(void);
 /* When PCB runs in interactive mode, this is called to instantiate
    one GUI HID which happens to be the GUI.  This HID is the one that
    interacts with the mouse and keyboard.  */
-rnd_hid_t *rnd_hid_find_gui(const char *preference);
+rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference);
 
 /* Finds the one printer HID and instantiates it.  */
 rnd_hid_t *rnd_hid_find_printer(void);

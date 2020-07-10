@@ -63,7 +63,7 @@ static int loghid_parse_arguments_real(rnd_hid_t *hid, int *argc, char ***argv, 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str;
 
 	if (is_gui) {
-		target = rnd_hid_find_gui(target_name);
+		target = rnd_hid_find_gui(NULL, target_name);
 		me = &loghid_gui;
 	}
 	else {
