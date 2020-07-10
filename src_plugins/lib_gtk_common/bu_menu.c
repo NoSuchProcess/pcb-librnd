@@ -468,6 +468,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 
 	menu->hidlib = hidlib;
 
+	rnd_hid_menu_gui_ready_to_create(rnd_gui);
 	*cfg_out = rnd_gui->menu;
 
 	mr = rnd_hid_cfg_get_menu(*cfg_out, "/main_menu");
@@ -492,6 +493,8 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 	mr = rnd_hid_cfg_get_menu(*cfg_out, "/mouse");
 	if (rnd_hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
 		rnd_message(RND_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
+
+	rnd_hid_menu_gui_ready_to_modify(rnd_gui);
 
 	return menu_bar;
 }

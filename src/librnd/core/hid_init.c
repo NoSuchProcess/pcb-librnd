@@ -231,16 +231,16 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 	found:;
 	if (gui->gui) {
 		char *fn = NULL;
-		int exact_fn = 0;
+		int res, exact_fn = 0;
 
 		if ((rnd_conf.rc.menu_file != NULL) && (*rnd_conf.rc.menu_file != '\0')) {
 			fn = rnd_strdup_printf(rnd_menu_name_fmt, rnd_conf.rc.menu_file);
 			exact_fn = (strchr(rnd_conf.rc.menu_file, '/') != NULL);
 		}
 
-		gui->menu = rnd_hid_menu_load(gui, hidlib, "librnd", 100, fn, exact_fn, rnd_hidlib_default_embedded_menu, "base menu file");
+		res = rnd_hid_menu_load(gui, hidlib, "librnd", 100, fn, exact_fn, rnd_hidlib_default_embedded_menu, "base menu file");
 		free(fn);
-		if (gui->menu == NULL) {
+		if (res != 0) {
 			fprintf(stderr, "Failed to load the menu file - can not start a GUI HID.\n");
 			exit(1);
 		}

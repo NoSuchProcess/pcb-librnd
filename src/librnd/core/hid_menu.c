@@ -49,7 +49,7 @@
 
 typedef struct {
 	char *cookie;
-	rnd_hid_cfg_t *cfg;
+	rnd_hid_cfg_t cfg;
 	int prio;
 } rnd_menu_patch_t;
 
@@ -57,7 +57,8 @@ typedef struct {
 	vtp0_t patches; /* list of (rnd_menu_patch_t *), ordered by priority, ascending */
 	rnd_hid_cfg_t *merged;
 	int inhibit;
-	unsigned gui_ready:1;
+	unsigned gui_ready:1; /* ready for the first merge */
+	unsigned gui_nomod:1; /* do the merge but do not send any modification request - useful for the initial menu setup */
 	unsigned alloced:1;   /* whether ->merged is alloced (it is not, for the special case of patches->used <= 1 at the time of merging) */
 } rnd_menu_sys_t;
 
@@ -96,10 +97,32 @@ static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 }
 
 
+static void menu_merge(rnd_hid_t *hid)
+{
+	rnd_menu_patch_t *m;
+	if (!menu_sys.gui_ready || menu_sys.inhibit > 0)
+		return;
+	assert(menu_sys.patches.used == 1);
+	m = menu_sys.patches.array[0];
+	hid->menu = &m->cfg;
+}
+
+void rnd_hid_menu_gui_ready_to_create(rnd_hid_t *hid)
+{
+	menu_sys.gui_ready = 1;
+	menu_sys.gui_nomod = 1;
+	menu_merge(hid);
+}
+
+void rnd_hid_menu_gui_ready_to_modify(rnd_hid_t *hid)
+{
+	menu_sys.gui_nomod = 0;
+}
+
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc;
-	rnd_hid_cfg_t *hr;
+	rnd_menu_patch_t *menu;
 
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
@@ -133,10 +156,12 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	if (doc == NULL)
 		return -1;
 
-	hr = calloc(sizeof(rnd_hid_cfg_t), 1); /* make sure the cache is cleared */
-	hr->doc = doc;
+	menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
+	menu->cfg.doc = doc;
 
-	hid->menu = hr;
+	rnd_menu_sys_insert(&menu_sys, menu);
+
+	menu_merge(hid);
 	return 0;
 }
 

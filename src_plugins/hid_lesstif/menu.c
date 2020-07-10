@@ -569,6 +569,8 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	screen = DefaultScreen(display);
 	cmap = DefaultColormap(display, screen);
 
+	rnd_hid_menu_gui_ready_to_create(rnd_gui);
+
 	lesstif_cfg = rnd_gui->menu;
 
 	mr = rnd_hid_cfg_get_menu(lesstif_cfg, "/main_menu");
@@ -620,6 +622,8 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 
 
 	rnd_hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
+
+	rnd_hid_menu_gui_ready_to_modify(rnd_gui);
 
 	return mb;
 }
