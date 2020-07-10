@@ -129,55 +129,6 @@ const char *rnd_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
-{
-	lht_doc_t *doc;
-	rnd_hid_cfg_t *hr;
-
-	if (embedded_fallback == NULL)
-		embedded_fallback = rnd_hidlib_default_embedded_menu;
-
-	/* override HID defaults with the configured path */
-	if ((rnd_conf.rc.menu_file != NULL) && (*rnd_conf.rc.menu_file != '\0')) {
-		fn = rnd_conf.rc.menu_file;
-		exact_fn = (strchr(rnd_conf.rc.menu_file, '/') != NULL);
-	}
-
-	if (!exact_fn) {
-		/* try different paths to find the menu file inventing its exact name */
-		char **paths = NULL, **p;
-		int fn_len = strlen(fn);
-
-		doc = NULL;
-		rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+32, rnd_false);
-		for(p = paths; *p != NULL; p++) {
-			if (doc == NULL) {
-				char *end = *p + strlen(*p);
-				sprintf(end, rnd_menu_name_fmt, fn);
-				doc = rnd_hid_cfg_load_lht(hidlib, *p);
-				if (doc != NULL)
-					rnd_file_loaded_set_at("menu", "HID main", *p, "main menu system");
-			}
-			free(*p);
-		}
-		free(paths);
-	}
-	else
-		doc = rnd_hid_cfg_load_lht(hidlib, fn);
-
-	if (doc == NULL) {
-		doc = rnd_hid_cfg_load_str(embedded_fallback);
-		rnd_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
-	}
-	if (doc == NULL)
-		return NULL;
-
-	hr = calloc(sizeof(rnd_hid_cfg_t), 1); /* make sure the cache is cleared */
-	hr->doc = doc;
-
-	return hr;
-}
-
 /************* "parsing" **************/
 
 lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)

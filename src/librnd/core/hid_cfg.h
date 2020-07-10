@@ -38,11 +38,6 @@ struct rnd_hid_cfg_s {
 	lht_doc_t *doc;
 };
 
-/* Search and load the menu res for hidname; if not found, parse
-   embedded_fallback instead (if it is NULL, use the application default
-   instead; for explicit empty embedded: use ""). Returns NULL on error */
-rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
-
 /* Generic, low level lihata loader */
 lht_doc_t *rnd_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename);
 lht_doc_t *rnd_hid_cfg_load_str(const char *text);
@@ -82,5 +77,7 @@ void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
    anchor node */
 int rnd_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
 
+/* for backward compatibility: */
+#include "hid_menu.h"
 
 #endif
