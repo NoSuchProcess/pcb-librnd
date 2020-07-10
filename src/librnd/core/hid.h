@@ -466,7 +466,7 @@ struct rnd_hid_s {
 	void (*update_menu_checkbox)(rnd_hid_t *hid, const char *cookie);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
-	rnd_hid_cfg_t *hid_cfg;
+	rnd_hid_cfg_t *menu;
 
 
 	/* Optional: print usage string (if accepts command line arguments)

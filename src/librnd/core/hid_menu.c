@@ -197,14 +197,14 @@ void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
 {
 	vtp0_t anchors;
 
-	if ((rnd_gui == NULL) || (rnd_gui->hid_cfg == NULL) || (rnd_gui->hid_cfg->doc == NULL) || (rnd_gui->hid_cfg->doc->root == NULL))
+	if ((rnd_gui == NULL) || (rnd_gui->menu == NULL) || (rnd_gui->menu->doc == NULL) || (rnd_gui->menu->doc->root == NULL))
 		return;
 
 	/* extract anchors; don't do the callbacks from there because the tree
 	   is going to be changed from the callbacks. It is however guaranteed
 	   that anchors are not removed. */
 	vtp0_init(&anchors);
-	map_anchor_menus(&anchors, rnd_gui->hid_cfg->doc->root, name);
+	map_anchor_menus(&anchors, rnd_gui->menu->doc->root, name);
 
 	/* iterate over all anchors extracted and call the callback */
 	{
@@ -231,7 +231,7 @@ void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
 			}
 			memcpy(path+used, name, l0+1);
 /*			rnd_trace("path='%s' used=%d\n", path, used);*/
-			cb(ctx, rnd_gui->hid_cfg, node, path);
+			cb(ctx, rnd_gui->menu, node, path);
 			used = 0;
 		}
 		free(path);

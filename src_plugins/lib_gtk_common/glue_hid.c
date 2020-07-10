@@ -151,7 +151,7 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	ghid_create_pcb_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
 	/* assume rnd_gui is us */
-	rnd_gui->hid_cfg = gctx->topwin.ghid_cfg;
+	rnd_gui->menu = gctx->topwin.ghid_cfg;
 
 	gctx->port.drawing_area = gctx->topwin.drawing_area;
 
@@ -182,7 +182,7 @@ TODO(": move this to render init")
 
 	gctx->hid_active = 0;
 	gctx->gui_is_up = 0;
-	hid->hid_cfg = NULL;
+	hid->menu = NULL;
 	hid->hid_data = NULL;
 }
 

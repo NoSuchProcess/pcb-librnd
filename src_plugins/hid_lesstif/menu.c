@@ -570,7 +570,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	cmap = DefaultColormap(display, screen);
 
 	lesstif_cfg = rnd_hid_cfg_load(ltf_hidlib, "lesstif", 0, NULL);
-	lesstif_hid.hid_cfg = lesstif_cfg;
+	lesstif_hid.menu = lesstif_cfg;
 	if (lesstif_cfg == NULL) {
 		rnd_message(RND_MSG_ERROR, "FATAL: can't load the lesstif menu res either from file or from hardwired default.");
 		abort();
