@@ -469,10 +469,6 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 	menu->hidlib = hidlib;
 
 	*cfg_out = rnd_gui->menu;
-	if (*cfg_out == NULL) {
-		rnd_message(RND_MSG_ERROR, "FATAL: can't load the gtk menu res either from file or from hardwired default.");
-		abort();
-	}
 
 	mr = rnd_hid_cfg_get_menu(*cfg_out, "/main_menu");
 	if (mr != NULL) {
