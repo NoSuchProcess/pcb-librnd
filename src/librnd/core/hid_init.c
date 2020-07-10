@@ -327,6 +327,8 @@ void pcbhl_conf_postproc(void)
 	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
+extern void rnd_menu_init1(void);
+
 void rnd_hidlib_init1(void (*conf_core_init)(void))
 {
 	rnd_events_init();
@@ -339,6 +341,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	pcb_hid_dlg_init();
 	rnd_hid_init();
 	rnd_color_init();
+	rnd_menu_init1();
 }
 
 static vts0_t hidlib_conffile;

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <genvector/vtp0.h>
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
@@ -45,6 +46,55 @@
 #include "hid_menu.h"
 
 /*** load & merge ***/
+
+typedef struct {
+	char *cookie;
+	rnd_hid_cfg_t *doc;
+	int prio;
+} rnd_menu_patch_t;
+
+typedef struct {
+	vtp0_t patches; /* list of (rnd_menu_patch_t *), ordered by priority, ascending */
+	rnd_hid_cfg_t *merged;
+	int inhibit;
+	unsigned gui_ready:1;
+	unsigned alloced:1;   /* whether ->merged is alloced (it is not, for the special case of patches->used <= 1 at the time of merging) */
+} rnd_menu_sys_t;
+
+static rnd_menu_sys_t menu_sys;
+
+void rnd_menu_sys_init(rnd_menu_sys_t *msys)
+{
+	memset(msys, 0, sizeof(rnd_menu_sys_t));
+}
+
+static void rnd_menu_sys_insert(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
+{
+	int n;
+	rnd_menu_patch_t *m;
+	/* assume only a dozen of patch files -> linear search is good enough for now */
+	for(n = 0; n < msys->patches.used; n++) {
+		m = msys->patches.array[n];
+		if (m->prio > menu->prio) {
+			vtp0_insert_len(&msys->patches, n, (void **)&menu, 1);
+			return;
+		}
+	}
+	vtp0_append(&msys->patches, menu);
+}
+
+static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
+{
+	int n;
+	/* assume only a dozen of patch files -> linear search is good enough for now */
+	for(n = 0; n < msys->patches.used; n++) {
+		if (msys->patches.array[n] == menu) {
+			vtp0_remove(&msys->patches, n, 1);
+			return;
+		}
+	}
+}
+
 
 rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
@@ -337,6 +387,11 @@ static rnd_action_t rnd_menu_action_list[] = {
 	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
 	{"MenuPatch", pcb_act_MenuPatch, pcb_acth_MenuPatch, pcb_acts_MenuPatch},
 };
+
+void rnd_menu_init1(void)
+{
+	rnd_menu_sys_init(&menu_sys);
+}
 
 void rnd_menu_act_init2(void)
 {
