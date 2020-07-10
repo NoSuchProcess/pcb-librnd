@@ -56,6 +56,7 @@ typedef struct {
 typedef struct {
 	vtp0_t patches; /* list of (rnd_menu_patch_t *), ordered by priority, ascending */
 	rnd_hid_cfg_t *merged;
+	long changes, last_merged; /* if changes > last_merged, we need to merge */
 	int inhibit;
 	unsigned gui_ready:1; /* ready for the first merge */
 	unsigned gui_nomod:1; /* do the merge but do not send any modification request - useful for the initial menu setup */
@@ -78,10 +79,12 @@ static void rnd_menu_sys_insert(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 		m = msys->patches.array[n];
 		if (m->prio > menu->prio) {
 			vtp0_insert_len(&msys->patches, n, (void **)&menu, 1);
+			msys->changes++;
 			return;
 		}
 	}
 	vtp0_append(&msys->patches, menu);
+	msys->changes++;
 }
 
 static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
@@ -91,6 +94,7 @@ static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 	for(n = 0; n < msys->patches.used; n++) {
 		if (msys->patches.array[n] == menu) {
 			vtp0_remove(&msys->patches, n, 1);
+			msys->changes++;
 			return;
 		}
 	}
@@ -105,6 +109,7 @@ static void menu_merge(rnd_hid_t *hid)
 	assert(menu_sys.patches.used == 1);
 	m = menu_sys.patches.array[0];
 	hid->menu = &m->cfg;
+	menu_sys.last_merged = menu_sys.changes;
 }
 
 void rnd_hid_menu_gui_ready_to_create(rnd_hid_t *hid)
