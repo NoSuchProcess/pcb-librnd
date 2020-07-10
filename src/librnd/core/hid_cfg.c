@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* low level lihata manipulation for librnd config and menu files */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

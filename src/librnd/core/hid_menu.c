@@ -24,6 +24,11 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* menu file loading, menu merging: all files are loaded into the memory
+   where the final lihata document that represents the menu is merged;
+   then the new version is compared to the old version and differneces
+   applied to the menu system */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
