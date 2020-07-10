@@ -37,11 +37,14 @@
 #include <liblihata/tree.h>
 
 #include "hidlib.h"
+#include "actions.h"
 #include "file_loaded.h"
 #include "hidlib_conf.h"
 #include "paths.h"
 
 #include "hid_menu.h"
+
+/*** load & merge ***/
 
 rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
@@ -81,6 +84,8 @@ rnd_hid_cfg_t *rnd_hid_menu_load(rnd_hidlib_t *hidlib, const char *fn, int exact
 
 	return hr;
 }
+
+/*** utility ***/
 
 lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
@@ -252,4 +257,28 @@ int rnd_hid_cfg_del_anchor_menus(lht_node_t *node, const char *cookie)
 		rnd_gui->remove_menu_node(rnd_gui, node);
 	}
 	return 0;
+}
+
+/*** actions ***/
+
+static const char pcb_acts_MenuPatch[] = 
+	"MenuPatch(load, cookie, path)\n"
+	"MenuPatch(unload, cookie)\n"
+	"MenuPatch(list)";
+static const char pcb_acth_MenuPatch[] = "Manage menu patches";
+fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_message(RND_MSG_ERROR, "not yet implemented\n");
+	RND_ACT_IRES(-1);
+	return 0;
+}
+
+
+static rnd_action_t rnd_menu_action_list[] = {
+	{"MenuPatch", pcb_act_MenuPatch, pcb_acth_MenuPatch, pcb_acts_MenuPatch},
+};
+
+void rnd_menu_act_init2(void)
+{
+	RND_REGISTER_ACTIONS(rnd_menu_action_list, NULL);
 }

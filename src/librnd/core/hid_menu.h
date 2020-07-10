@@ -20,5 +20,4 @@ void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
    anchor node */
 int rnd_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
 
-
 #endif
