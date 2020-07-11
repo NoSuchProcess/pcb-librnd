@@ -129,6 +129,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	lht_doc_t *doc;
 	rnd_menu_patch_t *menu;
 
+	if (fn != NULL) {
 	if (!exact_fn) {
 		/* try different paths to find the menu file inventing its exact name */
 		char **paths = NULL, **p;
@@ -151,6 +152,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 		doc = rnd_hid_cfg_load_lht(hidlib, fn);
 		if (doc != NULL)
 			rnd_file_loaded_set_at("menu", cookie, fn, desc);
+	}
 	}
 
 	if ((doc == NULL) && (embedded_fallback != NULL)) {
