@@ -100,15 +100,59 @@ static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 	}
 }
 
+	/* recursive merge */
+static void menu_merge_node(lht_node_t *dst, lht_node_t *src)
+{
+}
+
+static lht_doc_t *dup_base(rnd_menu_patch_t *base)
+{
+	lht_node_t *tmp;
+	lht_doc_t *new = lht_dom_init();
+
+	new->root = lht_dom_node_alloc(LHT_HASH, "rnd-menu-v1");
+	new->root->doc = new;
+	tmp = lht_dom_duptree(base->cfg.doc->root);
+	lht_tree_merge(new->root, tmp);
+	return new;
+}
 
 static void menu_merge(rnd_hid_t *hid)
 {
-	rnd_menu_patch_t *m;
+	rnd_menu_patch_t *base = NULL;
+	int just_created = 0;
+
 	if (!menu_sys.gui_ready || (menu_sys.inhibit > 0))
 		return;
-	assert(menu_sys.patches.used == 1);
-	m = menu_sys.patches.array[0];
-	hid->menu = &m->cfg;
+
+	if (menu_sys.patches.used > 0)
+		base = menu_sys.patches.array[0];
+
+	if (base != NULL) {
+		if ((base->cfg.doc->root->type != LHT_HASH) || (strcmp(base->cfg.doc->root->name, "rnd-menu-v1") != 0)) {
+			rnd_message(RND_MSG_ERROR, "Base menu file %s has invalid root (should be: ha:rnd-menu-v1)\n");
+			base = NULL;
+		}
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: no menu file\n");
+		return;
+	}
+
+	if (hid->menu == NULL) {
+		hid->menu = calloc(sizeof(rnd_hid_cfg_t), 1); /* make sure the cache is cleared */
+		hid->menu->doc = dup_base(base);
+		just_created = 1;
+	}
+
+	if ((just_created == 0) || (menu_sys.patches.used > 1)) {
+		lht_doc_t *new = lht_dom_init();
+		new->root = lht_dom_duptree(base->cfg.doc->root);
+
+		menu_merge_node(hid->menu->doc->root, new->root);
+		lht_dom_uninit(new);
+	}
+
 	menu_sys.last_merged = menu_sys.changes;
 }
 
