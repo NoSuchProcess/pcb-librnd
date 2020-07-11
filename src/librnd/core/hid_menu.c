@@ -103,14 +103,67 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 	}
 }
 
+static lht_node_t *search_list(lht_node_t *list, const char *name)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	for(n = lht_dom_first(&it, list); n != NULL; n = lht_dom_next(&it))
+		if (strcmp(n->name, name) == 0)
+			return n;
+	return NULL;
+}
+
+void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
+{
+	lht_dom_iterator_t it;
+	lht_node_t *s, *a;
+
+	for(s = lht_dom_first(&it, src); s != NULL; s = lht_dom_next(&it)) {
+		a = search_list(dst, s->name);
+		if (a == NULL) { /* append new items at the end */
+			lht_tree_detach(s); /* removing an item from the list from the iterator is a special case that works since r584 */
+			lht_dom_list_append(dst, s);
+		}
+		else {
+			lht_tree_detach(s); /* removing an item from the list from the iterator is a special case that works since r584 */
+			recurse(a, s);
+		}
+	}
+}
+
+static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
+{
+	lht_err_t e;
+
+	switch(dst->type) {
+		case LHT_INVALID_TYPE: return LHTE_BROKEN_DOC;
+		case LHT_TEXT: lht_tree_merge_text(dst, src); break;
+		case LHT_TABLE: e = lht_tree_merge_table(dst, src); if (e != LHTE_SUCCESS) return e; break;
+		case LHT_HASH:  e = lht_tree_merge_hash(dst, src, lht_tree_merge_menu); if (e != LHTE_SUCCESS) return e; break;
+		case LHT_LIST:
+			if ((strcmp(dst->name, "submenu") == 0) || (strcmp(dst->name, "main_menu") == 0) || (strcmp(dst->name, "popups") == 0))
+				lht_tree_merge_list_submenu(dst, src, lht_tree_merge_menu);
+			else
+				lht_tree_merge_list(dst, src);
+			break;
+		case LHT_SYMLINK:
+			/* symlink text match */
+			break;
+	}
+	lht_dom_node_free(src);
+	return LHTE_SUCCESS;
+}
+
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
 	lht_node_t *tmp;
 
-	/* merging a complete menu file is easy: use lihata's default merge algorithm */
+	/* merging a complete menu file is easy: use lihata's default merge algorithm,
+	   except for submenu lists where by-name merging is required */
 	if ((src->type == LHT_HASH) && (strcmp(src->name, "rnd-menu-v1") == 0)) {
 		tmp = lht_dom_duptree(src);
-		lht_tree_merge(dst, tmp);
+		lht_tree_merge_using(dst, tmp, lht_tree_merge_menu);
 		return;
 	}
 
@@ -121,14 +174,86 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 	}
 
 	rnd_message(RND_MSG_ERROR, "Menu merging error: invalid menu file root: %s\n", src->name);
-
 }
 
+#define submenu(node) ((node->type == LHT_HASH) ? (lht_dom_hash_get((node), "submenu")) : NULL)
 
-	/* recursive merge of the final trees */
+/* execute submenu creation: call the hid to add each item in dst recursively */
+static void menu_merge_submenu_exec_add(lht_node_t *dst)
+{
+	lht_node_t *sub = submenu(dst);
+	if (sub == NULL) {
+		TODO("add plain menu");
+	}
+	else
+		menu_merge_submenu_exec_add(sub);
+}
+
+static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src)
+{
+	lht_node_t *dn, *sn, *ssub, *dsub, *tmp;
+	lht_dom_iterator_t it;
+
+	/* find nodes that are present in dst but not in src -> remove */
+	for(dn = lht_dom_first(&it, dst); dn != NULL; dn = lht_dom_next(&it)) {
+		sn = search_list(src, dn->name);
+		if (sn == NULL) {
+			TODO("remove");
+		}
+	}
+
+	/* find nodes that are present in both -> either recurse or modify */
+	for(dn = lht_dom_first(&it, dst); dn != NULL; dn = lht_dom_next(&it)) {
+		sn = search_list(src, dn->name);
+		if (sn != NULL) {
+			ssub = submenu(sn);
+			dsub = submenu(dn);
+			if ((dsub != NULL) && (ssub != NULL))
+				menu_merge_submenu(dsub, ssub); /* same submenu -> recurse */
+			else if ((dsub != NULL) && (ssub == NULL)) {
+				TODO("modify: a submenu is replaced by a plain node");
+			}
+			else if ((dsub == NULL) && (ssub != NULL)) {
+				TODO("modify: a plain node is replaced by a submenu");
+			}
+			else if ((dsub == NULL) && (ssub == NULL)) {
+				TODO("modify: plain node is replaced by a plain node");
+			}
+		}
+	}
+
+	/* find nodes that are present in src but not in dst -> add */
+	for(sn = lht_dom_first(&it, src); sn != NULL; sn = lht_dom_next(&it)) {
+		dn = search_list(dst, sn->name);
+		if (dn == NULL) {
+			TODO("merge the subtree first");
+			tmp = lht_dom_duptree(sn);
+			lht_dom_list_append(dst, tmp);
+
+			dn = search_list(dst, sn->name);
+			if (dn != NULL)
+				menu_merge_submenu_exec_add(dn);
+		}
+	}
+}
+
+	/* recursive merge of the final trees starting from the root */
 static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 {
-	
+	lht_node_t *dn, *sn;
+
+	assert(dst->type == LHT_HASH);
+	assert(src->type == LHT_HASH);
+
+	dn = lht_dom_hash_get(dst, "main_menu");
+	sn = lht_dom_hash_get(src, "main_menu");
+	menu_merge_submenu(dn, sn);
+
+	dn = lht_dom_hash_get(dst, "popups");
+	sn = lht_dom_hash_get(src, "popups");
+	menu_merge_submenu(dn, sn);
+
+	TODO("mouse, toolbar_static, scripts");
 }
 
 static lht_doc_t *dup_base(rnd_menu_patch_t *base)
@@ -179,12 +304,24 @@ static void menu_merge(rnd_hid_t *hid)
 		/* apply all patches */
 		for(n = 1; n < menu_sys.patches.used; n++) {
 			rnd_menu_patch_t *m = menu_sys.patches.array[n];
-			menu_patch_apply(new, m->cfg.doc->root);
+			menu_patch_apply(new->root, m->cfg.doc->root);
 		}
 
 		/* perform the final tree merge */
 		menu_merge_root(hid->menu->doc->root, new->root);
+
+TODO("remove debug:");
+#if 0
+		{
+#undef fopen
+			FILE *f = fopen("A_merged.lht", "w");
+			lht_dom_export(hid->menu->doc->root, f, "");
+			fclose(f);
+		}
+#endif
+
 		lht_dom_uninit(new);
+
 	}
 
 	menu_sys.last_merged = menu_sys.changes;
