@@ -104,7 +104,7 @@ static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 static void menu_merge(rnd_hid_t *hid)
 {
 	rnd_menu_patch_t *m;
-	if (!menu_sys.gui_ready || menu_sys.inhibit > 0)
+	if (!menu_sys.gui_ready || (menu_sys.inhibit > 0))
 		return;
 	assert(menu_sys.patches.used == 1);
 	m = menu_sys.patches.array[0];
