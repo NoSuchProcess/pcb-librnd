@@ -42,6 +42,7 @@
 #include "file_loaded.h"
 #include "hidlib_conf.h"
 #include "paths.h"
+#include "funchash_core.h"
 
 #include "hid_menu.h"
 
@@ -87,15 +88,17 @@ static void rnd_menu_sys_insert(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 	msys->changes++;
 }
 
-static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
+static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 {
 	int n;
+
 	/* assume only a dozen of patch files -> linear search is good enough for now */
 	for(n = 0; n < msys->patches.used; n++) {
-		if (msys->patches.array[n] == menu) {
+		rnd_menu_patch_t *m = msys->patches.array[n];
+		if (strcmp(m->cookie, cookie) == 0) {
 			vtp0_remove(&msys->patches, n, 1);
 			msys->changes++;
-			return;
+			n--;
 		}
 	}
 }
@@ -451,12 +454,38 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static const char pcb_acts_MenuPatch[] = 
-	"MenuPatch(load, cookie, path)\n"
+	"MenuPatch(load, cookie, path, desc)\n"
 	"MenuPatch(unload, cookie)\n"
 	"MenuPatch(list)";
 static const char pcb_acth_MenuPatch[] = "Manage menu patches";
 fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	int op;
+	const char *cookie = NULL, *path = NULL, *desc = "";
+	rnd_menu_patch_t *menu;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, MenuPatch, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, MenuPatch, cookie = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, MenuPatch, path = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, MenuPatch, desc = argv[4].val.str);
+
+	switch(op) {
+		case F_Load:
+			if ((cookie == NULL) || (path == NULL))
+				RND_ACT_FAIL(MenuPatch);
+			rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc);
+			RND_ACT_IRES(0);
+			return;
+		case F_Unload:
+			if (cookie == NULL)
+				RND_ACT_FAIL(MenuPatch);
+			rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+			RND_ACT_IRES(0);
+			return;
+		case F_List:
+			break;
+	}
+
 	rnd_message(RND_MSG_ERROR, "not yet implemented\n");
 	RND_ACT_IRES(-1);
 	return 0;

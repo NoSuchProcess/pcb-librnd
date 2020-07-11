@@ -5,6 +5,7 @@
 /* Search and load the menu file called from fn, using the menu search
    path (from the conf system) if not given by an absolute path; if NULL or
    not found, parse embedded_fallback instead (if it is not NULL).
+   Prio is ignored when loading a menu patch file with priority specified in the file.
    Returns 0 on success. */
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc);
 
