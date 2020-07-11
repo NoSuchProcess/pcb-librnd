@@ -103,9 +103,32 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 	}
 }
 
-	/* recursive merge */
-static void menu_merge_node(lht_node_t *dst, lht_node_t *src)
+static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
+	lht_node_t *tmp;
+
+	/* merging a complete menu file is easy: use lihata's default merge algorithm */
+	if ((src->type == LHT_HASH) && (strcmp(src->name, "rnd-menu-v1") == 0)) {
+		tmp = lht_dom_duptree(src);
+		lht_tree_merge(dst, tmp);
+		return;
+	}
+
+	/* execute patching instructions */
+	if ((src->type == LHT_HASH) && (strcmp(src->name, "rnd-menu-patch-v1") == 0)) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: patch instructions not yet supported\n");
+		return;
+	}
+
+	rnd_message(RND_MSG_ERROR, "Menu merging error: invalid menu file root: %s\n", src->name);
+
+}
+
+
+	/* recursive merge of the final trees */
+static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
+{
+	
 }
 
 static lht_doc_t *dup_base(rnd_menu_patch_t *base)
@@ -149,10 +172,18 @@ static void menu_merge(rnd_hid_t *hid)
 	}
 
 	if ((just_created == 0) || (menu_sys.patches.used > 1)) {
+		int n;
 		lht_doc_t *new = lht_dom_init();
 		new->root = lht_dom_duptree(base->cfg.doc->root);
 
-		menu_merge_node(hid->menu->doc->root, new->root);
+		/* apply all patches */
+		for(n = 1; n < menu_sys.patches.used; n++) {
+			rnd_menu_patch_t *m = menu_sys.patches.array[n];
+			menu_patch_apply(new, m->cfg.doc->root);
+		}
+
+		/* perform the final tree merge */
+		menu_merge_root(hid->menu->doc->root, new->root);
 		lht_dom_uninit(new);
 	}
 
