@@ -130,29 +130,29 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	rnd_menu_patch_t *menu;
 
 	if (fn != NULL) {
-	if (!exact_fn) {
-		/* try different paths to find the menu file inventing its exact name */
-		char **paths = NULL, **p;
-		int fn_len = strlen(fn);
+		if (!exact_fn) {
+			/* try different paths to find the menu file inventing its exact name */
+			char **paths = NULL, **p;
+			int fn_len = strlen(fn);
 
-		doc = NULL;
-		rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+4, rnd_false);
-		for(p = paths; *p != NULL; p++) {
-			if (doc == NULL) {
-				strcpy((*p)+strlen(*p), fn);
-				doc = rnd_hid_cfg_load_lht(hidlib, *p);
-				if (doc != NULL)
-					rnd_file_loaded_set_at("menu", cookie, *p, desc);
+			doc = NULL;
+			rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+4, rnd_false);
+			for(p = paths; *p != NULL; p++) {
+				if (doc == NULL) {
+					strcpy((*p)+strlen(*p), fn);
+					doc = rnd_hid_cfg_load_lht(hidlib, *p);
+					if (doc != NULL)
+						rnd_file_loaded_set_at("menu", cookie, *p, desc);
+				}
+				free(*p);
 			}
-			free(*p);
+			free(paths);
 		}
-		free(paths);
-	}
-	else {
-		doc = rnd_hid_cfg_load_lht(hidlib, fn);
-		if (doc != NULL)
-			rnd_file_loaded_set_at("menu", cookie, fn, desc);
-	}
+		else {
+			doc = rnd_hid_cfg_load_lht(hidlib, fn);
+			if (doc != NULL)
+				rnd_file_loaded_set_at("menu", cookie, fn, desc);
+		}
 	}
 
 	if ((doc == NULL) && (embedded_fallback != NULL)) {
