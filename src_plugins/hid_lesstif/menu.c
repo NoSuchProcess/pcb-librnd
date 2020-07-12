@@ -640,7 +640,7 @@ int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static int lesstif_create_menu_widget(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+int lesstif_create_menu_widget(void *ctx, int is_popup_ignore, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
@@ -649,10 +649,15 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 	return 0;
 }
 
+int lesstif_create_menu_widget_path(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+{
+	return lesstif_create_menu_widget(ctx, 0, name, is_main, parent, ins_after, menu_item);
+}
+
 
 void lesstif_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
-	pcb_hid_cfg_create_menu(rnd_gui->menu, menu_path, props, lesstif_create_menu_widget, NULL);
+	pcb_hid_cfg_create_menu(rnd_gui->menu, menu_path, props, lesstif_create_menu_widget_path, NULL);
 }
 
 int lesstif_remove_menu(rnd_hid_t *hid, const char *menu_path)

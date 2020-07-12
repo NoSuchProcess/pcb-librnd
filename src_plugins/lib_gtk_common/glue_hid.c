@@ -321,8 +321,15 @@ static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 static void ghid_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_hid_cfg_create_menu(hid->menu, menu_path, props, ghid_create_menu_widget, &gctx->topwin.menu);
+	pcb_hid_cfg_create_menu(hid->menu, menu_path, props, ghid_create_menu_widget_path, &gctx->topwin.menu);
 }
+
+static int ghid_create_menu_by_node(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+{
+	pcb_gtk_t *gctx = hid->hid_data;
+	return ghid_create_menu_widget(&gctx->topwin.menu, is_popup, name, is_main, parent, ins_after, menu_item);
+}
+
 
 static void ghid_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
 {
@@ -694,6 +701,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->command_entry = ghid_command_entry;
 
 	dst->create_menu = ghid_create_menu;
+	dst->create_menu_by_node = ghid_create_menu_by_node;
 	dst->remove_menu = ghid_remove_menu;
 	dst->remove_menu_node = ghid_remove_menu_node;
 	dst->update_menu_checkbox = ghid_update_menu_checkbox;

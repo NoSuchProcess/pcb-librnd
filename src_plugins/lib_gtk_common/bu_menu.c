@@ -396,10 +396,9 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 }
 
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
-int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+int ghid_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	pcb_gtk_menu_ctx_t *ctx = ctx_;
-	int is_popup = (strncmp(path, "/popups", 7) == 0);
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
@@ -409,6 +408,12 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 	gtk_widget_show_all(w);
 	return 0;
 }
+
+int ghid_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+{
+	return ghid_create_menu_widget(ctx_, (strncmp(path, "/popups", 7) == 0), name, is_main, parent, ins_after, menu_item);
+}
+
 
 int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 {

@@ -557,6 +557,10 @@ struct rnd_hid_s {
 
 	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback */
 	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
+
+	/*** these should be upper, but the struct has to be extended on the bottom
+	     for binary compatibility ***/
+	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 };
 
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
