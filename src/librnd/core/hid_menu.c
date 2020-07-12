@@ -155,6 +155,24 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 	return LHTE_SUCCESS;
 }
 
+static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
+{
+	lht_node_t *n, *path = lht_dom_hash_get(inst, "path");
+
+	if (path == NULL) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch instruction without a menu path\n");
+		return;
+	}
+	if (path->type != LHT_TEXT) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch instruction menu path must be text\n");
+		return;
+	}
+
+	n = rnd_hid_cfg_get_menu_at_node(dst, path->data.text.value, NULL, NULL);
+	if (n != NULL)
+		lht_tree_del(n);
+}
+
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
 	lht_node_t *tmp;
@@ -169,7 +187,23 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 
 	/* execute patching instructions */
 	if ((src->type == LHT_HASH) && (strcmp(src->name, "rnd-menu-patch-v1") == 0)) {
-		rnd_message(RND_MSG_ERROR, "Menu merging error: patch instructions not yet supported\n");
+		lht_node_t *p, *patch = lht_dom_hash_get(src, "patch");
+		if ((patch == NULL) || (patch->type != LHT_LIST)) {
+			rnd_message(RND_MSG_ERROR, "Menu merging error: patch instructions must be in a li:patch\n");
+			return;
+		}
+		for(p = patch->data.list.first; p != NULL; p = p->next) {
+			if (p->type != LHT_HASH) {
+				rnd_message(RND_MSG_ERROR, "Menu merging error: invalid patch instruction %s (not a hash)\n", p->name);
+				continue;
+			}
+			if (strcmp(p->name, "remove-menu") == 0)
+				menu_patch_apply_remove_menu(dst, p);
+			else {
+				rnd_message(RND_MSG_ERROR, "Menu merging error: unknown patch instruction %s\n", p->name);
+				continue;
+			}
+		}
 		return;
 	}
 
@@ -198,14 +232,19 @@ static void menu_merge_submenu_exec_add(lht_node_t *dst, lht_node_t *ins_after, 
 static void menu_merge_remove_recursive(lht_node_t *node)
 {
 	lht_node_t *n, *sub = submenu(node);
+TODO("The old approach is that remove_menu_node() recursively removes everything from the lihata tree; reenable this when that part is removed");
+#if 0
 	if (sub != NULL) {
 		lht_dom_iterator_t it;
 		for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it))
 			menu_merge_remove_recursive(n);
 		
 	}
+#endif
 	rnd_gui->remove_menu_node(rnd_gui, node);
+#if 0
 	lht_tree_del(node);
+#endif
 }
 
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
@@ -285,6 +324,16 @@ static lht_doc_t *dup_base(rnd_menu_patch_t *base)
 	return new;
 }
 
+static void lht_set_doc(lht_node_t *node, lht_doc_t *doc)
+{
+	lht_node_t *n;
+	lht_dom_iterator_t it;
+
+	node->doc = doc;
+	for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it))
+		lht_set_doc(n, doc);
+}
+
 static void menu_merge(rnd_hid_t *hid)
 {
 	rnd_menu_patch_t *base = NULL;
@@ -317,6 +366,7 @@ static void menu_merge(rnd_hid_t *hid)
 		int n;
 		lht_doc_t *new = lht_dom_init();
 		new->root = lht_dom_duptree(base->cfg.doc->root);
+		lht_set_doc(new->root, new);
 
 		/* apply all patches */
 		for(n = 1; n < menu_sys.patches.used; n++) {
@@ -328,7 +378,7 @@ static void menu_merge(rnd_hid_t *hid)
 		menu_merge_root(hid->menu->doc->root, new->root);
 
 TODO("remove debug:");
-#if 0
+#if 1
 		{
 #undef fopen
 			FILE *f = fopen("A_merged.lht", "w");
@@ -406,21 +456,18 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 
 /*** utility ***/
 
-lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
+lht_node_t *rnd_hid_cfg_get_menu_at_node(lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
 	lht_err_t err;
 	lht_node_t *curr;
 	int level = 0, len = strlen(menu_path), iafter = 0;
 	char *next_seg, *path;
 
-	if (hr == NULL)
-		return NULL;
-
  path = malloc(len+4); /* need a few bytes after the end for the ':' */
  strcpy(path, menu_path);
 
 	next_seg = path;
-	curr = (at == NULL) ? hr->doc->root : at;
+	curr = at;
 
 	/* Have to descend manually because of the submenu nodes */
 	for(;;) {
@@ -429,9 +476,9 @@ lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const cha
 
 		while(*next_seg == '/') next_seg++;
 
-		if (curr != hr->doc->root) {
+		if (curr != at->doc->root) {
 			if (level > 1) {
-				curr = lht_tree_path_(hr->doc, curr, "submenu", 1, 0, &err);
+				curr = lht_tree_path_(at->doc, curr, "submenu", 1, 0, &err);
 				if (curr == NULL)
 					break;
 			}
@@ -478,6 +525,14 @@ lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const cha
 
 	free(path);
 	return curr;
+}
+
+lht_node_t *rnd_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
+{
+	if (hr == NULL)
+		return NULL;
+
+	return rnd_hid_cfg_get_menu_at_node(((at == NULL) ? hr->doc->root : at), menu_path, cb, ctx);
 }
 
 lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
