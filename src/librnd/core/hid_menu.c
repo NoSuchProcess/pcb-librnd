@@ -178,18 +178,24 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 
 #define submenu(node) ((node->type == LHT_HASH) ? (lht_dom_hash_get((node), "submenu")) : NULL)
 
-/* execute submenu creation: call the hid to add each item in dst recursively */
-static void menu_merge_submenu_exec_add(lht_node_t *dst)
+static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_popup)
 {
-	lht_node_t *sub = submenu(dst);
-	if (sub == NULL) {
-		TODO("add plain menu");
-	}
-	else
-		menu_merge_submenu_exec_add(sub);
+	lht_node_t *parent = dst->parent;
+	int is_main = (strcmp(parent->name, "submenu") != 0);
+
+	if (!is_main)
+		parent = parent->parent;
+
+	rnd_gui->create_menu_by_node(rnd_gui, is_popup, dst->name, is_main, parent, ins_after, dst);
 }
 
-static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src)
+/* execute submenu creation: call the hid to add each item in dst recursively */
+static void menu_merge_submenu_exec_add(lht_node_t *dst, lht_node_t *ins_after, int is_popup)
+{
+	create_menu_by_node(dst, ins_after, is_popup);
+}
+
+static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 {
 	lht_node_t *dn, *sn, *ssub, *dsub, *tmp;
 	lht_dom_iterator_t it;
@@ -209,7 +215,7 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src)
 			ssub = submenu(sn);
 			dsub = submenu(dn);
 			if ((dsub != NULL) && (ssub != NULL))
-				menu_merge_submenu(dsub, ssub); /* same submenu -> recurse */
+				menu_merge_submenu(dsub, ssub, is_popup); /* same submenu -> recurse */
 			else if ((dsub != NULL) && (ssub == NULL)) {
 				TODO("modify: a submenu is replaced by a plain node");
 			}
@@ -226,13 +232,12 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src)
 	for(sn = lht_dom_first(&it, src); sn != NULL; sn = lht_dom_next(&it)) {
 		dn = search_list(dst, sn->name);
 		if (dn == NULL) {
-			TODO("merge the subtree first");
 			tmp = lht_dom_duptree(sn);
 			lht_dom_list_append(dst, tmp);
 
 			dn = search_list(dst, sn->name);
 			if (dn != NULL)
-				menu_merge_submenu_exec_add(dn);
+				create_menu_by_node(dn, NULL, is_popup);
 		}
 	}
 }
@@ -247,11 +252,11 @@ static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 
 	dn = lht_dom_hash_get(dst, "main_menu");
 	sn = lht_dom_hash_get(src, "main_menu");
-	menu_merge_submenu(dn, sn);
+	menu_merge_submenu(dn, sn, 0);
 
 	dn = lht_dom_hash_get(dst, "popups");
 	sn = lht_dom_hash_get(src, "popups");
-	menu_merge_submenu(dn, sn);
+	menu_merge_submenu(dn, sn, 1);
 
 	TODO("mouse, toolbar_static, scripts");
 }
