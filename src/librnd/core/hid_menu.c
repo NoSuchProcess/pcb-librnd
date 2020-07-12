@@ -757,10 +757,17 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (cookie == NULL)
 				RND_ACT_FAIL(MenuPatch);
 			rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+		case F_List:
+			{
+				int n;
+				rnd_message(RND_MSG_INFO, "Menu system (%d):\n", menu_sys.patches.used);
+				for(n = 0; n < menu_sys.patches.used; n++) {
+					rnd_menu_patch_t *m = menu_sys.patches.array[n];
+					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cfg.doc->root->file_name);
+				}
+			}
 			RND_ACT_IRES(0);
 			return;
-		case F_List:
-			break;
 	}
 
 	rnd_message(RND_MSG_ERROR, "not yet implemented\n");
