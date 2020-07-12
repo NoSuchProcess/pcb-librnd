@@ -157,22 +157,27 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 	return LHTE_SUCCESS;
 }
 
+#define GET_PATH_TEXT(instname, n, path) \
+do { \
+	path = lht_dom_hash_get(inst, "path"); \
+	if (path == NULL) { \
+		rnd_message(RND_MSG_ERROR, "Menu merging error: " instname " patch instruction without a menu path\n"); \
+		return; \
+	} \
+	if (path->type != LHT_TEXT) { \
+		rnd_message(RND_MSG_ERROR, "Menu merging error: " instname " patch instruction menu path must be text\n"); \
+		return; \
+	} \
+	n = rnd_hid_cfg_get_menu_at_node(dst, path->data.text.value, NULL, NULL); \
+	if (n == NULL) \
+		return; \
+} while(0)
+
 static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
 {
-	lht_node_t *n, *path = lht_dom_hash_get(inst, "path");
+	lht_node_t *n, *path;
 
-	if (path == NULL) {
-		rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch instruction without a menu path\n");
-		return;
-	}
-	if (path->type != LHT_TEXT) {
-		rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch instruction menu path must be text\n");
-		return;
-	}
-
-	n = rnd_hid_cfg_get_menu_at_node(dst, path->data.text.value, NULL, NULL);
-	if (n == NULL)
-		return;
+	GET_PATH_TEXT("remove-menu", n, path);
 
 	if ((strcmp(n->name, "main_menu") == 0) || (strcmp(n->name, "popups") == 0)) {
 		if (submenu(n->parent) == NULL) {
@@ -182,6 +187,27 @@ static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
 	}
 
 	lht_tree_del(n);
+}
+
+static void menu_patch_apply_append_menu(lht_node_t *dst, lht_node_t *inst)
+{
+	lht_node_t *dn, *path, *isub, *tmp, *dsub;
+
+	GET_PATH_TEXT("append-menu", dn, path);
+
+	isub = lht_dom_hash_get(inst, "submenu"); \
+	if ((isub == NULL) || (isub->type != LHT_LIST)) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: append-menu patch instruction submenu must a list\n");
+		return;
+	}
+	dsub = submenu(dn);
+	if (dsub == NULL) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: append-menu patch instruction attempted to append to a non-submenu %s\n", dn->name);
+		return;
+	}
+	
+	tmp = lht_dom_duptree(isub);
+	lht_tree_merge_using(dsub, tmp, lht_tree_merge_menu);
 }
 
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
@@ -210,6 +236,8 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 			}
 			if (strcmp(p->name, "remove-menu") == 0)
 				menu_patch_apply_remove_menu(dst, p);
+			else if (strcmp(p->name, "append-menu") == 0)
+				menu_patch_apply_append_menu(dst, p);
 			else {
 				rnd_message(RND_MSG_ERROR, "Menu merging error: unknown patch instruction %s\n", p->name);
 				continue;
