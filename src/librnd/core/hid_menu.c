@@ -788,6 +788,8 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (cookie == NULL)
 				RND_ACT_FAIL(MenuPatch);
 			rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+			RND_ACT_IRES(0);
+			return;
 		case F_List:
 			{
 				int n;
