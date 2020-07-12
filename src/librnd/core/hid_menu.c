@@ -195,6 +195,19 @@ static void menu_merge_submenu_exec_add(lht_node_t *dst, lht_node_t *ins_after, 
 	create_menu_by_node(dst, ins_after, is_popup);
 }
 
+static void menu_merge_remove_recursive(lht_node_t *node)
+{
+	lht_node_t *n, *sub = submenu(node);
+	if (sub != NULL) {
+		lht_dom_iterator_t it;
+		for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it))
+			menu_merge_remove_recursive(n);
+		
+	}
+	rnd_gui->remove_menu_node(rnd_gui, node);
+	lht_tree_del(node);
+}
+
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 {
 	lht_node_t *dn, *sn, *ssub, *dsub, *tmp;
@@ -203,9 +216,8 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 	/* find nodes that are present in dst but not in src -> remove */
 	for(dn = lht_dom_first(&it, dst); dn != NULL; dn = lht_dom_next(&it)) {
 		sn = search_list(src, dn->name);
-		if (sn == NULL) {
-			TODO("remove");
-		}
+		if (sn == NULL)
+			menu_merge_remove_recursive(dn);
 	}
 
 	/* find nodes that are present in both -> either recurse or modify */
