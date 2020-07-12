@@ -786,10 +786,10 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_List:
 			{
 				int n;
-				rnd_message(RND_MSG_INFO, "Menu system (%d):\n", menu_sys.patches.used);
+				rnd_message(RND_MSG_INFO, "Menu system:\n");
 				for(n = 0; n < menu_sys.patches.used; n++) {
 					rnd_menu_patch_t *m = menu_sys.patches.array[n];
-					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cfg.doc->root->file_name);
+					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
 				}
 			}
 			RND_ACT_IRES(0);
