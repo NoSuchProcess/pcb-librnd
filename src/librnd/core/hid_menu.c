@@ -114,6 +114,8 @@ static lht_node_t *search_list(lht_node_t *list, const char *name)
 	return NULL;
 }
 
+#define submenu(node) ((node->type == LHT_HASH) ? (lht_dom_hash_get((node), "submenu")) : NULL)
+
 void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
 {
 	lht_dom_iterator_t it;
@@ -169,8 +171,17 @@ static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
 	}
 
 	n = rnd_hid_cfg_get_menu_at_node(dst, path->data.text.value, NULL, NULL);
-	if (n != NULL)
-		lht_tree_del(n);
+	if (n == NULL)
+		return;
+
+	if ((strcmp(n->name, "main_menu") == 0) || (strcmp(n->name, "popups") == 0)) {
+		if (submenu(n->parent) == NULL) {
+			rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch attempted to remove a menu root\n");
+			return;
+		}
+	}
+
+	lht_tree_del(n);
 }
 
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
@@ -209,8 +220,6 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 
 	rnd_message(RND_MSG_ERROR, "Menu merging error: invalid menu file root: %s\n", src->name);
 }
-
-#define submenu(node) ((node->type == LHT_HASH) ? (lht_dom_hash_get((node), "submenu")) : NULL)
 
 static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_popup)
 {
