@@ -640,7 +640,7 @@ int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-int lesstif_create_menu_widget(void *ctx, int is_popup_ignore, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+int lesstif_create_menu_widget(rnd_hid_t *ctx, int is_popup_ignore, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	Widget w = (is_main) ? lesstif_menubar : ((menu_data_t *)parent->user_data)->sub;
 
