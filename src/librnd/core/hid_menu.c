@@ -750,7 +750,8 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Load:
 			if ((cookie == NULL) || (path == NULL))
 				RND_ACT_FAIL(MenuPatch);
-			rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc);
+			if (rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc) != 0)
+				rnd_message(RND_MSG_ERROR, "Failed to load menu patch %s\n", path);
 			RND_ACT_IRES(0);
 			return;
 		case F_Unload:
