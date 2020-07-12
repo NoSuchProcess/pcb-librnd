@@ -443,6 +443,30 @@ void rnd_hid_menu_gui_ready_to_modify(rnd_hid_t *hid)
 	menu_sys.gui_nomod = 0;
 }
 
+static int determine_prio(lht_node_t *node, int default_prio)
+{
+	long l;
+	char *end;
+
+	if ((node->type != LHT_HASH) || (strcmp(node->name, "rnd-menu-patch-v1") != 0))
+		return default_prio;
+	node = lht_dom_hash_get(node, "prio");
+	if (node == NULL)
+		return default_prio;
+	if (node->type != LHT_TEXT) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: ignoring prio (must be a text node)\n");
+		return default_prio;
+	}
+
+	l = strtol(node->data.text.value, &end, 10);
+	if ((*end != '\0') || (l < 1) || (l > 32767)) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: ignoring prio (must be an integer between 1 and 32k)\n");
+		return default_prio;
+	}
+
+	return l;
+}
+
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc;
@@ -484,6 +508,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 
 	menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
 	menu->cfg.doc = doc;
+	menu->prio = determine_prio(doc->root, prio);
 
 	rnd_menu_sys_insert(&menu_sys, menu);
 
