@@ -43,6 +43,7 @@
 #include "hidlib_conf.h"
 #include "paths.h"
 #include "funchash_core.h"
+#include "compat_misc.h"
 
 #include "hid_menu.h"
 
@@ -97,6 +98,9 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 		rnd_menu_patch_t *m = msys->patches.array[n];
 		if (strcmp(m->cookie, cookie) == 0) {
 			vtp0_remove(&msys->patches, n, 1);
+			lht_dom_uninit(m->cfg.doc);
+			free(m->cookie);
+			free(m);
 			msys->changes++;
 			n--;
 		}
@@ -509,6 +513,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
 	menu->cfg.doc = doc;
 	menu->prio = determine_prio(doc->root, prio);
+	menu->cookie = rnd_strdup(cookie);
 
 	rnd_menu_sys_insert(&menu_sys, menu);
 
@@ -789,7 +794,7 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_INFO, "Menu system:\n");
 				for(n = 0; n < menu_sys.patches.used; n++) {
 					rnd_menu_patch_t *m = menu_sys.patches.array[n];
-					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
+					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s: %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
 				}
 			}
 			RND_ACT_IRES(0);
