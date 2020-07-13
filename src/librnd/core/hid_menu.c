@@ -769,6 +769,9 @@ static int create_menu_manual_prop(rnd_menu_sys_t *msys, const char *path, const
 	cmc.props = *props;
 
 	/* Allow creating new nodes only under certain main paths that correspond to menus */
+	if (strncmp(path, "rnd-menu-v1/", 12) == 0)
+		path += 11; /* but keep the / */
+
 	name = path;
 	while(*name == '/') name++;
 
