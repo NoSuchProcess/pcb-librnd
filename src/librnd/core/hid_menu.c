@@ -806,7 +806,7 @@ static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 
 int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props)
 {
-	return create_menu_manual_prop(&menu_sys, path, &props);
+	return create_menu_manual_prop(&menu_sys, path, props);
 }
 
 static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *cookie)
