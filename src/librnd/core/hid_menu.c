@@ -745,29 +745,28 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *action, const char *tip, const char *cookie)
+static int create_menu_manual_prop(rnd_menu_sys_t *msys, const char *path, const rnd_menu_prop_t *props)
 {
 	const char *name;
 	rnd_menu_patch_t *mp;
 	create_menu_ctx_t cmc;
 
-	mp = rnd_menu_sys_find_cookie(msys, cookie);
+	if (props->cookie == NULL)
+		return -1;
+
+	mp = rnd_menu_sys_find_cookie(msys, props->cookie);
 	if (mp == NULL) {
 		mp = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
 		mp->cfg.doc = new_menu_file();
 		mp->prio = 500;
-		mp->cookie = rnd_strdup(cookie);
+		mp->cookie = rnd_strdup(props->cookie);
 		rnd_menu_sys_insert(msys, mp);
 	}
 
 	memset(&cmc, 0, sizeof(cmc));
 	cmc.hr = &mp->cfg;
-	cmc.parent = NULL;
-	cmc.props.action = action;
-	cmc.props.tip = tip;
-	cmc.props.cookie = cookie;
 	cmc.err = -1;
-	cmc.after = NULL;
+	cmc.props = *props;
 
 	/* Allow creating new nodes only under certain main paths that correspond to menus */
 	name = path;
@@ -793,6 +792,21 @@ static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 	}
 
 	return cmc.err;
+}
+
+static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *action, const char *tip, const char *cookie)
+{
+	rnd_menu_prop_t props = {0};
+
+	props.action = action;
+	props.tip = tip;
+	props.cookie = cookie;
+	return create_menu_manual_prop(msys, path, &props);
+}
+
+int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props)
+{
+	return create_menu_manual_prop(&menu_sys, path, &props);
 }
 
 static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *cookie)

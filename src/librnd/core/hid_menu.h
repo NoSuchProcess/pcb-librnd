@@ -30,5 +30,9 @@ void rnd_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hi
    anchor node */
 int rnd_hid_cfg_del_anchor_menus(lht_node_t *anode, const char *cookie);
 
+/* plugins can manually create dynamic menus using this call; props->cookie
+   must be set, the menu patch is identified by that cookie */
+int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props);
+
 
 #endif
