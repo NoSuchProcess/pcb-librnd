@@ -797,7 +797,19 @@ static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 
 static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *cookie)
 {
+	rnd_menu_patch_t *mp = rnd_menu_sys_find_cookie(msys, cookie);
+	lht_node_t *nd;
 
+	if (mp == NULL)
+		return -1;
+
+	nd = rnd_hid_cfg_get_menu_at(&mp->cfg, NULL, path, NULL, NULL);
+	if (nd == NULL)
+		return -1;
+	lht_tree_del(nd);
+	msys->changes++;
+	menu_merge(rnd_gui);
+	return 0;
 }
 
 /*** minimal menu support for feature plugins - needs to stay in core ***/
