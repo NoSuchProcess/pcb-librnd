@@ -939,9 +939,10 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
-		create_menu_manual(&menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
-
-		RND_ACT_IRES(0);
+		int r = create_menu_manual(&menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
+		if (r != 0)
+			rnd_message(RND_MSG_ERROR, "Error: failed to create the menu\n");
+		RND_ACT_IRES(r);
 		return 0;
 	}
 
