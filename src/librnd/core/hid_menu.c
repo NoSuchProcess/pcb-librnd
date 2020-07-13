@@ -347,10 +347,78 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 	}
 }
 
+typedef struct {
+	char *name;   /* points into path*/
+	char path[1]; /* extends longer */
+} anchor_t;
+
+static void map_anchors_submenu(vtp0_t *anch, gds_t *path, lht_node_t *root)
+{
+	lht_node_t *n, *sm;
+	assert(root->type == LHT_LIST);
+	for(n = root->data.list.first; n != NULL; n = n->next) {
+		if ((n->type == LHT_TEXT) && (n->data.text.value != NULL) && (n->data.text.value[0] == '@')) {
+			anchor_t *a;
+			int save = path->used;
+			gds_append(path, '/');
+			gds_append_str(path, n->data.text.value);
+			a = malloc(sizeof(anchor_t) + path->used+1);
+			memcpy(a->path, path->array, path->used+1);
+			a->name = a->path + save + 1;
+/*			printf(">anchor: '%s': %s\n", a->name, a->path);*/
+			gds_truncate(path, save);
+			vtp0_append(anch, a);
+		}
+		sm = submenu(n);
+		if (sm != NULL) {
+			int save = path->used;
+			gds_append(path, '/');
+			gds_append_str(path, n->name);
+			map_anchors_submenu(anch, path, sm);
+			gds_truncate(path, save);
+		}
+	}
+}
+
+static void menu_merge_anchored(vtp0_t *anch, lht_node_t *dst, lht_node_t *src)
+{
+
+	if (src->type != LHT_LIST) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: /anchored must be a list\n");
+		return;
+	}
+
+	for(src = src->data.list.first; src != NULL; src = src->next) {
+		long n, found = 0;
+
+		if ((src->name == NULL) || (src->name[0] != '@')) {
+			rnd_message(RND_MSG_ERROR, "Menu merging error: /anchored subtree names must started with a '@' (ignoring offending node: %s)\n", src->name);
+			continue;
+		}
+
+		for(n = 0; n < anch->used; n++) {
+			anchor_t *a = anch->array[n];
+			if (strcmp(src->name, a->name) == 0) {
+				lht_node_t *anode = rnd_hid_cfg_get_menu_at_node(dst, a->path, NULL, NULL);
+				if (anode != NULL) {
+					printf(" anchored! '%s' at %s: %p\n", src->name, a->path, anode);
+					found++;
+				}
+			}
+		}
+		if (found == 0) {
+			rnd_message(RND_MSG_ERROR, "Menu merging error: anchor %s not found\n", src->name);
+		}
+	}
+}
+
 	/* recursive merge of the final trees starting from the root */
 static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 {
-	lht_node_t *dn, *sn;
+	lht_node_t *dn, *sn, *sanch;
+	vtp0_t anch = {0};
+	gds_t path = {0};
+	long n;
 
 	assert(dst->type == LHT_HASH);
 	assert(src->type == LHT_HASH);
@@ -358,15 +426,25 @@ static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 	dn = lht_dom_hash_get(dst, "main_menu");
 	sn = lht_dom_hash_get(src, "main_menu");
 	menu_merge_submenu(dn, sn, 0);
+	path.used = 0;
+	gds_append_str(&path, "main_menu");
+	map_anchors_submenu(&anch, &path, dn);
+
 
 	dn = lht_dom_hash_get(dst, "popups");
 	sn = lht_dom_hash_get(src, "popups");
 	menu_merge_submenu(dn, sn, 1);
+	path.used = 0;
+	gds_append_str(&path, "popups");
+	map_anchors_submenu(&anch, &path, dn);
 
 	sn = lht_dom_hash_get(src, "anchored");
-TODO("merge anhored");
-/*	menu_merge_anchored(dst, sn, 1);*/
+	if (sn != NULL)
+		menu_merge_anchored(&anch, dst, sn);
 
+	for(n = 0; n < anch.used; n++)
+		free(anch.array[n]);
+	vtp0_uninit(&anch);
 	TODO("mouse, toolbar_static, scripts");
 }
 
