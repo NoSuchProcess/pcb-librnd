@@ -107,6 +107,19 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 	}
 }
 
+static rnd_menu_patch_t *rnd_menu_sys_find_cookie(rnd_menu_sys_t *msys, const char *cookie)
+{
+	int n;
+
+	for(n = 0; n < msys->patches.used; n++) {
+		rnd_menu_patch_t *m = msys->patches.array[n];
+		if (strcmp(m->cookie, cookie) == 0)
+			return m;
+	}
+
+	return NULL;
+}
+
 static lht_node_t *search_list(lht_node_t *list, const char *name)
 {
 	lht_node_t *n;
@@ -365,6 +378,17 @@ static lht_doc_t *dup_base(rnd_menu_patch_t *base)
 	return new;
 }
 
+static lht_doc_t *new_menu_file()
+{
+	lht_doc_t *new = lht_dom_init();
+
+	new->root = lht_dom_node_alloc(LHT_HASH, "rnd-menu-v1");
+	new->root->doc = new;
+	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "main_menu"));
+	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "popups"));
+	return new;
+}
+
 static void lht_set_doc(lht_node_t *node, lht_doc_t *doc)
 {
 	lht_node_t *n;
@@ -608,6 +632,174 @@ lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
 }
 
 
+TODO("make this public and remove from lib_hid_common/menu_helper.[ch]");
+/* Fields are retrieved using this enum so that HIDs don't need to hardwire
+   lihata node names */
+typedef enum {
+	PCB_MF_ACCELERATOR,
+	PCB_MF_SUBMENU,
+	PCB_MF_CHECKED,
+	PCB_MF_UPDATE_ON,
+	PCB_MF_SENSITIVE,
+	PCB_MF_TIP,
+	PCB_MF_ACTIVE,
+	PCB_MF_ACTION,
+	PCB_MF_FOREGROUND,
+	PCB_MF_BACKGROUND,
+	PCB_MF_FONT
+} pcb_hid_cfg_menufield_t;
+
+TODO("make this public and remove from lib_hid_common/menu_helper.[ch]");
+static lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
+{
+	lht_err_t err;
+	const char *fieldstr = NULL;
+
+	switch(field) {
+		case PCB_MF_ACCELERATOR:  fieldstr = "a"; break;
+		case PCB_MF_SUBMENU:      fieldstr = "submenu"; break;
+		case PCB_MF_CHECKED:      fieldstr = "checked"; break;
+		case PCB_MF_UPDATE_ON:    fieldstr = "update_on"; break;
+		case PCB_MF_SENSITIVE:    fieldstr = "sensitive"; break;
+		case PCB_MF_TIP:          fieldstr = "tip"; break;
+		case PCB_MF_ACTIVE:       fieldstr = "active"; break;
+		case PCB_MF_ACTION:       fieldstr = "action"; break;
+		case PCB_MF_FOREGROUND:   fieldstr = "foreground"; break;
+		case PCB_MF_BACKGROUND:   fieldstr = "background"; break;
+		case PCB_MF_FONT:         fieldstr = "font"; break;
+	}
+	if (field_name != NULL)
+		*field_name = fieldstr;
+
+	if (fieldstr == NULL)
+		return NULL;
+
+	return lht_tree_path_(submenu->doc, submenu, fieldstr, 1, 0, &err);
+}
+
+typedef struct {
+	rnd_hid_cfg_t *hr;
+	lht_node_t *parent;
+	rnd_menu_prop_t props;
+	int target_level;
+	int err;
+	lht_node_t *after;
+} create_menu_ctx_t;
+
+static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path, int rel_level)
+{
+	create_menu_ctx_t *cmc = ctx;
+	lht_node_t *psub;
+
+	if (node == NULL) { /* level does not exist, create it */
+		const char *name;
+		name = strrchr(path, '/');
+		if (name != NULL)
+			name++;
+		else
+			name = path;
+
+		if (rel_level <= 1) {
+			/* creating a main menu */
+			char *end, *name = rnd_strdup(path);
+			for(end = name; *end == '/'; end++) ;
+			end = strchr(end, '/');
+			*end = '\0';
+			psub = cmc->parent = rnd_hid_cfg_get_menu(cmc->hr, name);
+			free(name);
+		}
+		else
+			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
+
+		if (rel_level == cmc->target_level) {
+			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie, "a", cmc->props.accel, "tip", cmc->props.tip, "action", cmc->props.action, "checked", cmc->props.checked, "update_on", cmc->props.update_on, "foreground", cmc->props.foreground, "background", cmc->props.background, NULL);
+			if (node != NULL)
+				cmc->err = 0;
+		}
+		else
+			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie,  NULL);
+
+		if (node == NULL)
+			return NULL;
+
+		if ((rel_level != cmc->target_level) || (cmc->props.action == NULL))
+			lht_dom_hash_put(node, lht_dom_node_alloc(LHT_LIST, "submenu"));
+
+		if (node->parent == NULL) {
+			lht_dom_list_append(psub, node);
+		}
+		else {
+			assert(node->parent == psub);
+		}
+	}
+	else {
+		/* existing level */
+		if ((node->type == LHT_TEXT) && (node->data.text.value[0] == '@')) {
+			cmc->after = node;
+			goto skip_parent;
+		}
+	}
+	cmc->parent = node;
+
+	skip_parent:;
+	return node;
+}
+
+static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *action, const char *tip, const char *cookie)
+{
+	const char *name;
+	rnd_menu_patch_t *mp;
+	create_menu_ctx_t cmc;
+
+	mp = rnd_menu_sys_find_cookie(msys, cookie);
+	if (mp == NULL) {
+		mp = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
+		mp->cfg.doc = new_menu_file();
+		mp->prio = 500;
+		mp->cookie = rnd_strdup(cookie);
+		rnd_menu_sys_insert(msys, mp);
+	}
+
+	memset(&cmc, 0, sizeof(cmc));
+	cmc.hr = &mp->cfg;
+	cmc.parent = NULL;
+	cmc.props.action = action;
+	cmc.props.tip = tip;
+	cmc.props.cookie = cookie;
+	cmc.err = -1;
+	cmc.after = NULL;
+
+	/* Allow creating new nodes only under certain main paths that correspond to menus */
+	name = path;
+	while(*name == '/') name++;
+
+	if ((strncmp(name, "main_menu/", 10) == 0) || (strncmp(name, "popups/", 7) == 0)) {
+		/* calculate target level */
+		for(cmc.target_level = 0; *name != '\0'; name++) {
+			if (*name == '/') {
+				cmc.target_level++;
+				while(*name == '/') name++;
+				name--;
+			}
+		}
+
+		/* descend and visit each level, create missing levels */
+		rnd_hid_cfg_get_menu_at(cmc.hr, NULL, path, create_menu_cb, &cmc);
+	}
+
+	if (cmc.err == 0) {
+		msys->changes++;
+		menu_merge(rnd_gui);
+	}
+
+	return cmc.err;
+}
+
+static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *cookie)
+{
+
+}
+
 /*** minimal menu support for feature plugins - needs to stay in core ***/
 
 static void map_anchor_menus(vtp0_t *dst, lht_node_t *node, const char *name)
@@ -718,14 +910,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
-		rnd_menu_prop_t props;
-
-		memset(&props, 0, sizeof(props));
-		props.action = (argc > 2) ? argv[2].val.str : NULL;
-		props.tip = (argc > 3) ? argv[3].val.str : NULL;
-		props.cookie = (argc > 4) ? argv[4].val.str : NULL;
-
-		rnd_gui->create_menu(rnd_gui, argv[1].val.str, &props);
+		create_menu_manual(&menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
 
 		RND_ACT_IRES(0);
 		return 0;
@@ -734,7 +919,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_FAIL(CreateMenu);
 }
 
-static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path|cookie)";
+static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path, cookie)";
 static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
 static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -751,7 +936,8 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	RND_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
-	if (rnd_gui->remove_menu(rnd_gui, argv[1].val.str) != 0) {
+	RND_ACT_CONVARG(2, FGW_STR, RemoveMenu, ;);
+	if (remove_menu_manual(&menu_sys, argv[1].val.str, argv[2].val.str) != 0) {
 		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
 	}
