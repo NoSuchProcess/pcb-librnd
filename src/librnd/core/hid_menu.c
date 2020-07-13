@@ -392,6 +392,7 @@ static void menu_merge_anchored_at(vtp0_t *anch, lht_node_t *anode, lht_node_t *
 	lht_dom_iterator_t it;
 	gds_t path = {0};
 	long init_len;
+	int is_popup = (strncmp(a->path, "popups", 6) == 0);
 
 	gds_append_str(&path, a->path);
 	init_len = path.used - strlen(a->name) - 1;
@@ -399,7 +400,6 @@ static void menu_merge_anchored_at(vtp0_t *anch, lht_node_t *anode, lht_node_t *
 	for(n = lht_dom_first(&it, src_lst); n != NULL; n = lht_dom_next(&it)) {
 		lht_tree_detach(n);
 		lht_dom_list_insert_after(after, n);
-		after = n;
 
 		if ((n->type == LHT_TEXT) && (n->data.text.value != NULL) && (n->data.text.value[0] == '@')) {
 			/* we may have added an anchor */
@@ -414,6 +414,8 @@ static void menu_merge_anchored_at(vtp0_t *anch, lht_node_t *anode, lht_node_t *
 				map_anchors_submenu(anch, &path, nsub);
 			}
 		}
+		create_menu_by_node(n, after, is_popup);
+		after = n;
 	}
 
 
