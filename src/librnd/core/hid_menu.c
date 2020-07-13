@@ -352,23 +352,27 @@ typedef struct {
 	char path[1]; /* extends longer */
 } anchor_t;
 
+static void append_anchor(vtp0_t *anch, gds_t *path, lht_node_t *n)
+{
+	anchor_t *a;
+	int save = path->used;
+	gds_append(path, '/');
+	gds_append_str(path, n->data.text.value);
+	a = malloc(sizeof(anchor_t) + path->used+1);
+	memcpy(a->path, path->array, path->used+1);
+	a->name = a->path + save + 1;
+/*			printf(">anchor: '%s': %s\n", a->name, a->path);*/
+	gds_truncate(path, save);
+	vtp0_append(anch, a);
+}
+
 static void map_anchors_submenu(vtp0_t *anch, gds_t *path, lht_node_t *root)
 {
 	lht_node_t *n, *sm;
 	assert(root->type == LHT_LIST);
 	for(n = root->data.list.first; n != NULL; n = n->next) {
-		if ((n->type == LHT_TEXT) && (n->data.text.value != NULL) && (n->data.text.value[0] == '@')) {
-			anchor_t *a;
-			int save = path->used;
-			gds_append(path, '/');
-			gds_append_str(path, n->data.text.value);
-			a = malloc(sizeof(anchor_t) + path->used+1);
-			memcpy(a->path, path->array, path->used+1);
-			a->name = a->path + save + 1;
-/*			printf(">anchor: '%s': %s\n", a->name, a->path);*/
-			gds_truncate(path, save);
-			vtp0_append(anch, a);
-		}
+		if ((n->type == LHT_TEXT) && (n->data.text.value != NULL) && (n->data.text.value[0] == '@'))
+			append_anchor(anch, path, n);
 		sm = submenu(n);
 		if (sm != NULL) {
 			int save = path->used;
@@ -380,9 +384,47 @@ static void map_anchors_submenu(vtp0_t *anch, gds_t *path, lht_node_t *root)
 	}
 }
 
+/* Insert all items from a submenu list (src_lst) after the anchor node anode;
+   picks up new anchors inserted by the operation */
+static void menu_merge_anchored_at(vtp0_t *anch, lht_node_t *anode, lht_node_t *src_lst, anchor_t *a)
+{
+	lht_node_t *n, *after = anode, *nsub;
+	lht_dom_iterator_t it;
+	gds_t path = {0};
+	long init_len;
+
+	gds_append_str(&path, a->path);
+	init_len = path.used - strlen(a->name) - 1;
+
+	for(n = lht_dom_first(&it, src_lst); n != NULL; n = lht_dom_next(&it)) {
+		lht_tree_detach(n);
+		lht_dom_list_insert_after(after, n);
+		after = n;
+
+		if ((n->type == LHT_TEXT) && (n->data.text.value != NULL) && (n->data.text.value[0] == '@')) {
+			/* we may have added an anchor */
+			gds_truncate(&path, init_len);
+			append_anchor(anch, &path, n);
+		}
+		else {
+			/* if a whole submenu is appended, there might be new anchors in it */
+			nsub = submenu(n);
+			if (nsub != NULL) {
+				gds_truncate(&path, init_len);
+				map_anchors_submenu(anch, &path, nsub);
+			}
+		}
+	}
+
+
+	gds_uninit(&path);
+}
+
+/* Merge the li:anchored subtree: each item must be a ha:@anchor reference with
+   a li:submenu; look up the @anchor in the existing tree and insert each child
+   of the li_submenu after that @anchor in dst. */
 static void menu_merge_anchored(vtp0_t *anch, lht_node_t *dst, lht_node_t *src)
 {
-
 	if (src->type != LHT_LIST) {
 		rnd_message(RND_MSG_ERROR, "Menu merging error: /anchored must be a list\n");
 		return;
@@ -390,9 +432,16 @@ static void menu_merge_anchored(vtp0_t *anch, lht_node_t *dst, lht_node_t *src)
 
 	for(src = src->data.list.first; src != NULL; src = src->next) {
 		long n, found = 0;
+		lht_node_t *src_sub;
 
 		if ((src->name == NULL) || (src->name[0] != '@')) {
 			rnd_message(RND_MSG_ERROR, "Menu merging error: /anchored subtree names must started with a '@' (ignoring offending node: %s)\n", src->name);
+			continue;
+		}
+		
+		src_sub = submenu(src);
+		if (src_sub == NULL) {
+			rnd_message(RND_MSG_ERROR, "Menu merging error: /anchored node without submenu (ignoring offending node: %s)\n", src->name);
 			continue;
 		}
 
@@ -401,7 +450,8 @@ static void menu_merge_anchored(vtp0_t *anch, lht_node_t *dst, lht_node_t *src)
 			if (strcmp(src->name, a->name) == 0) {
 				lht_node_t *anode = rnd_hid_cfg_get_menu_at_node(dst, a->path, NULL, NULL);
 				if (anode != NULL) {
-					printf(" anchored! '%s' at %s: %p\n", src->name, a->path, anode);
+/*					printf(" anchored! '%s' at %s: %p\n", src->name, a->path, anode);*/
+					menu_merge_anchored_at(anch, anode, src_sub, a);
 					found++;
 				}
 			}
