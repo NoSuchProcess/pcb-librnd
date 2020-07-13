@@ -196,7 +196,7 @@ static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
 
 	GET_PATH_TEXT("remove-menu", n, path);
 
-	if ((strcmp(n->name, "main_menu") == 0) || (strcmp(n->name, "popups") == 0)) {
+	if ((strcmp(n->name, "main_menu") == 0) || (strcmp(n->name, "popups") == 0) || (strcmp(n->name, "anchored") == 0)) {
 		if (submenu(n->parent) == NULL) {
 			rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch attempted to remove a menu root\n");
 			return;
@@ -363,6 +363,10 @@ static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 	sn = lht_dom_hash_get(src, "popups");
 	menu_merge_submenu(dn, sn, 1);
 
+	sn = lht_dom_hash_get(src, "anchored");
+TODO("merge anhored");
+/*	menu_merge_anchored(dst, sn, 1);*/
+
 	TODO("mouse, toolbar_static, scripts");
 }
 
@@ -386,6 +390,7 @@ static lht_doc_t *new_menu_file()
 	new->root->doc = new;
 	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "main_menu"));
 	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "popups"));
+	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "anchored"));
 	return new;
 }
 
@@ -775,7 +780,7 @@ static int create_menu_manual_prop(rnd_menu_sys_t *msys, const char *path, const
 	name = path;
 	while(*name == '/') name++;
 
-	if ((strncmp(name, "main_menu/", 10) == 0) || (strncmp(name, "popups/", 7) == 0)) {
+	if ((strncmp(name, "main_menu/", 10) == 0) || (strncmp(name, "popups/", 7) == 0) || (strncmp(name, "anchored/", 9) == 0)) {
 		/* calculate target level */
 		for(cmc.target_level = 0; *name != '\0'; name++) {
 			if (*name == '/') {
