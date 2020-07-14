@@ -1052,14 +1052,14 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc) != 0)
 				rnd_message(RND_MSG_ERROR, "Failed to load menu patch %s\n", path);
 			RND_ACT_IRES(0);
-			return;
+			return 0;
 		case F_Unload:
 			if (cookie == NULL)
 				RND_ACT_FAIL(MenuPatch);
 			rnd_menu_sys_remove_cookie(&menu_sys, cookie);
 			menu_merge(rnd_gui);
 			RND_ACT_IRES(0);
-			return;
+			return 0;
 		case F_List:
 			{
 				int n;
@@ -1070,7 +1070,7 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 			}
 			RND_ACT_IRES(0);
-			return;
+			return 0;
 		case F_InhibitInc: rnd_hid_menu_merge_inhibit_inc(); break;
 		case F_InhibitDec: rnd_hid_menu_merge_inhibit_dec(); break;
 		default:
