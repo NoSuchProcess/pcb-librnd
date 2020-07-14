@@ -642,7 +642,7 @@ void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie)
 
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
-	lht_doc_t *doc;
+	lht_doc_t *doc = NULL;
 	rnd_menu_patch_t *menu;
 
 	if (fn != NULL) {
@@ -651,7 +651,6 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 			char **paths = NULL, **p;
 			int fn_len = strlen(fn);
 
-			doc = NULL;
 			rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+4, rnd_false);
 			for(p = paths; *p != NULL; p++) {
 				if (doc == NULL) {
