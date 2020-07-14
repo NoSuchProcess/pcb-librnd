@@ -616,7 +616,7 @@ static int determine_prio(lht_node_t *node, int default_prio)
 	long l;
 	char *end;
 
-	if ((node->type != LHT_HASH) || (strcmp(node->name, "rnd-menu-patch-v1") != 0))
+	if ((node == NULL) || (node->type != LHT_HASH) || (strcmp(node->name, "rnd-menu-patch-v1") != 0))
 		return default_prio;
 	node = lht_dom_hash_get(node, "prio");
 	if (node == NULL)
