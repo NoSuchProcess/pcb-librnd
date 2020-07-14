@@ -282,12 +282,6 @@ static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_p
 	rnd_gui->create_menu_by_node(rnd_gui, is_popup, dst->name, is_main, parent, ins_after, dst);
 }
 
-/* execute submenu creation: call the hid to add each item in dst recursively */
-static void menu_merge_submenu_exec_add(lht_node_t *dst, lht_node_t *ins_after, int is_popup)
-{
-	create_menu_by_node(dst, ins_after, is_popup);
-}
-
 static void menu_merge_remove_recursive(lht_node_t *node)
 {
 	lht_node_t *n, *sub = submenu(node);
