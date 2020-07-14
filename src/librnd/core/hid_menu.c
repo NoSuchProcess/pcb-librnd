@@ -268,9 +268,14 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 
 static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_popup)
 {
-	lht_node_t *parent = dst->parent;
-	int is_main = (strcmp(parent->name, "submenu") != 0);
+	lht_node_t *parent;
+	int is_main;
 
+	if (menu_sys.gui_nomod)
+		return;
+
+	parent = dst->parent;
+	is_main = (strcmp(parent->name, "submenu") != 0);
 	if (!is_main)
 		parent = parent->parent;
 
