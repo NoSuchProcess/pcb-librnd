@@ -410,6 +410,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 void rnd_hidlib_uninit(void)
 {
+	rnd_hid_menu_merge_inhibit_inc(); /* make sure no menu merging happens during the uninitialization */
 	rnd_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
