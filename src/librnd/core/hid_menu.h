@@ -12,6 +12,11 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 /* Unload a menu patch by cookie */
 void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie);
 
+/* inhibit menu merging: optimization for batch loading/unloading so only
+   one merge happens at the end */
+void rnd_hid_menu_merge_inhibit_inc(void);
+void rnd_hid_menu_merge_inhibit_dec(void);
+
 
 /* The GUI announces that it is ready for creating the menu; the initial
    merge should happen, but no modification callbacks are done */

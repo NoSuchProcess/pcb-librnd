@@ -690,6 +690,26 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	return 0;
 }
 
+void rnd_hid_menu_merge_inhibit_inc(void)
+{
+	if (menu_sys.inhibit < 32767)
+		menu_sys.inhibit++;
+	else
+		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_inc(): overflow\n");
+}
+
+void rnd_hid_menu_merge_inhibit_dec(void)
+{
+	if (menu_sys.inhibit > 0) {
+		menu_sys.inhibit--;
+		if (menu_sys.inhibit == 0)
+			menu_merge(rnd_gui);
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_inc(): underflow\n");
+
+}
+
 /*** utility ***/
 
 lht_node_t *rnd_hid_cfg_get_menu_at_node(lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
