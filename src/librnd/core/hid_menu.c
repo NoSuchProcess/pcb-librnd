@@ -706,8 +706,7 @@ void rnd_hid_menu_merge_inhibit_dec(void)
 			menu_merge(rnd_gui);
 	}
 	else
-		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_inc(): underflow\n");
-
+		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_dec(): underflow\n");
 }
 
 /*** utility ***/
