@@ -1144,7 +1144,8 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_MenuPatch[] = 
 	"MenuPatch(load, cookie, path, desc)\n"
 	"MenuPatch(unload, cookie)\n"
-	"MenuPatch(list)";
+	"MenuPatch(list)\n"
+	"MenuPatch(InhibitInc|InhibitDec)";
 static const char pcb_acth_MenuPatch[] = "Manage menu patches";
 fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -1183,10 +1184,13 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			RND_ACT_IRES(0);
 			return;
+		case F_InhibitInc: rnd_hid_menu_merge_inhibit_inc(); break;
+		case F_InhibitDec: rnd_hid_menu_merge_inhibit_dec(); break;
+		default:
+			RND_ACT_FAIL(MenuPatch);
 	}
 
-	rnd_message(RND_MSG_ERROR, "not yet implemented\n");
-	RND_ACT_IRES(-1);
+	RND_ACT_IRES(0);
 	return 0;
 }
 

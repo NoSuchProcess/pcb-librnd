@@ -6,4 +6,6 @@ action_entry(Toggle)
 action_entry(List)
 action_entry(Load)
 action_entry(Unload)
+action_entry(InhibitInc)
+action_entry(InhibitDec)
 
