@@ -472,7 +472,7 @@ static void menu_merge_anchored(vtp0_t *anch, lht_node_t *dst, lht_node_t *src)
 	/* recursive merge of the final trees starting from the root */
 static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 {
-	lht_node_t *dn, *sn, *sanch;
+	lht_node_t *dn, *sn;
 	vtp0_t anch = {0};
 	gds_t path = {0};
 	long n;
