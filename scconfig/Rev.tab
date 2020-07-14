@@ -1,3 +1,4 @@
+32275	configure	menu patch infra
 32120	configure	removing the old drc in favor of drc_query
 32113	configure	removing custom per hid attribute editor in favor of generic central propedit
 32103	configure	librnd DAD API transition (label cleanup)
