@@ -30,8 +30,6 @@
 
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
-#include "genht/hash.h"
-#include "genht/htsp.h"
 
 #include <librnd/core/conf.h>
 #include <librnd/core/error.h>
