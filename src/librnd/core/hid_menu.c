@@ -794,26 +794,7 @@ lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
 	return rnd_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
-
-TODO("make this public and remove from lib_hid_common/menu_helper.[ch]");
-/* Fields are retrieved using this enum so that HIDs don't need to hardwire
-   lihata node names */
-typedef enum {
-	PCB_MF_ACCELERATOR,
-	PCB_MF_SUBMENU,
-	PCB_MF_CHECKED,
-	PCB_MF_UPDATE_ON,
-	PCB_MF_SENSITIVE,
-	PCB_MF_TIP,
-	PCB_MF_ACTIVE,
-	PCB_MF_ACTION,
-	PCB_MF_FOREGROUND,
-	PCB_MF_BACKGROUND,
-	PCB_MF_FONT
-} pcb_hid_cfg_menufield_t;
-
-TODO("make this public and remove from lib_hid_common/menu_helper.[ch]");
-static lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
+lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
 {
 	lht_err_t err;
 	const char *fieldstr = NULL;

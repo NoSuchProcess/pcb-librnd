@@ -34,5 +34,24 @@ lht_node_t *rnd_hid_cfg_get_menu_at_node(lht_node_t *at, const char *menu_path, 
    must be set, the menu patch is identified by that cookie */
 int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props);
 
+/* Fields are retrieved using this enum so that HIDs don't need to hardwire
+   lihata node names */
+typedef enum {
+	PCB_MF_ACCELERATOR,
+	PCB_MF_SUBMENU,
+	PCB_MF_CHECKED,
+	PCB_MF_UPDATE_ON,
+	PCB_MF_SENSITIVE,
+	PCB_MF_TIP,
+	PCB_MF_ACTIVE,
+	PCB_MF_ACTION,
+	PCB_MF_FOREGROUND,
+	PCB_MF_BACKGROUND,
+	PCB_MF_FONT
+} pcb_hid_cfg_menufield_t;
+
+/* Return a field of a submenu and optionally fill in field_name with the
+   field name expected in the lihata document (useful for error messages) */
+lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
 
 #endif
