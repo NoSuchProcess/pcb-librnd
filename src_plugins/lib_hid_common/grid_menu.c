@@ -32,22 +32,23 @@
 #include <librnd/core/event.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/hid_menu.h>
 
 #include "grid_menu.h"
 
-#define ANCH "@grid"
+#define ANCH "/anchored/@grid"
 
 static rnd_conf_resolve_t grids_idx = {"editor.grids_idx", RND_CFN_INTEGER, 0, NULL};
 
-static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
+void rnd_grid_install_menu(void)
 {
 	rnd_conf_native_t *nat;
 	rnd_conflist_t *lst;
 	rnd_conf_listitem_t *li;
-	char *end = path + strlen(path);
 	rnd_menu_prop_t props;
 	char act[256], chk[256];
-	int idx;
+	int idx, plen;
+	gds_t path = {0};
 
 	nat = rnd_conf_get_field("editor/grids");
 	if (nat == NULL)
@@ -66,28 +67,29 @@ static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, c
 	props.action = act;
 	props.checked = chk;
 	props.update_on = "editor/grids_idx";
-	props.cookie = ANCH;
+	props.cookie = "lib_hid_common grid";
 
-	rnd_hid_cfg_del_anchor_menus(node, ANCH);
+	rnd_hid_menu_merge_inhibit_inc();
+	rnd_hid_menu_unload(rnd_gui, props.cookie);
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
+	gds_append_str(&path, ANCH);
+	gds_append(&path, '/');
+	plen = path.used;
 
 	/* have to go reverse to keep order because this will insert items */
 	idx = rnd_conflist_length(lst)-1;
 	for(li = rnd_conflist_last(lst); li != NULL; li = rnd_conflist_prev(li),idx--) {
 		sprintf(act, "grid(#%d)", idx);
 		sprintf(chk, "conf(iseq, editor/grids_idx, %d)", idx);
-		strcpy(end, li->val.string[0]);
-		rnd_gui->create_menu(rnd_gui, path, &props);
+
+		gds_truncate(&path, plen);
+		gds_append_str(&path, li->val.string[0]);
+		rnd_hid_menu_create(path.array, &props);
 	}
 
-}
-
-void rnd_grid_install_menu(void)
-{
-	rnd_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
+	rnd_hid_menu_merge_inhibit_dec();
+	gds_uninit(&path);
 }
 
 static int grid_lock = 0;
