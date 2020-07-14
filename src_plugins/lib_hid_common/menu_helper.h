@@ -77,7 +77,6 @@ const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_me
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
    is consumed (should return 0 on success) */
-int pcb_hid_cfg_remove_menu(rnd_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
 int pcb_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
 
 #endif
