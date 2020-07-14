@@ -1038,7 +1038,6 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	const char *cookie = NULL, *path = NULL, *desc = "";
-	rnd_menu_patch_t *menu;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, MenuPatch, op = fgw_keyword(&argv[1]));
 	RND_ACT_MAY_CONVARG(2, FGW_STR, MenuPatch, cookie = argv[2].val.str);
