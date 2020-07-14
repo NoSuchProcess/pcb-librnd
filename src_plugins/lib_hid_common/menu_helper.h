@@ -29,14 +29,6 @@
 #ifndef PCB_HID_COMMON_MENU_HELPER_H
 #define PCB_HID_COMMON_MENU_HELPER_H
 
-/* Create a set of resources representing a single menu item
-   If action is NULL, it's a drop-down item that has submenus.
-   The callback is called after the new lihata node is created.
-   NOTE: unlike other cookies, this cookie is strdup()'d. 
-   */
-typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const rnd_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx);
-
 /* Looks up an integer (usually boolean) value by conf path or by running
    an action (if name has a parenthesis). When an action is run, it has 0
    or 1 argument only and the return value of the action is returned.
