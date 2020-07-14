@@ -153,39 +153,16 @@ lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *pa
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
 
-static int hid_cfg_remove_item(rnd_hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
-{
-	if (gui_remove(ctx, item) != 0)
-		return -1;
-	lht_tree_del(item);
-	return 0;
-}
-
 int pcb_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if ((root == NULL) || (hr == NULL))
 		return -1;
 
-	if (root->type == LHT_HASH) {
-		lht_node_t *psub, *n, *next;
-		psub = pcb_hid_cfg_menu_field(root, PCB_MF_SUBMENU, NULL);
-		if (psub != NULL) { /* remove a whole submenu with all children */
-			int res = 0;
-			for(n = psub->data.list.first; n != NULL; n = next) {
-				next = n->next;
-				if (pcb_hid_cfg_remove_menu_node(hr, n, gui_remove, ctx) != 0)
-					res = -1;
-			}
-			if (res == 0)
-				res = hid_cfg_remove_item(hr, root, gui_remove, ctx);
-			return res;
-		}
-	}
-
 	if ((root->type != LHT_TEXT) && (root->type != LHT_HASH)) /* allow text for the sep */
 		return -1;
 
-	/* remove a simple menu item */
-	return hid_cfg_remove_item(hr, root, gui_remove, ctx);
+	if (gui_remove(ctx, root) != 0)
+		return -1;
+	return 0;
 }
 

@@ -285,19 +285,13 @@ static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_p
 static void menu_merge_remove_recursive(lht_node_t *node)
 {
 	lht_node_t *n, *sub = submenu(node);
-TODO("The old approach is that remove_menu_node() recursively removes everything from the lihata tree; reenable this when that part is removed");
-#if 0
 	if (sub != NULL) {
 		lht_dom_iterator_t it;
 		for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it))
 			menu_merge_remove_recursive(n);
-		
 	}
-#endif
 	rnd_gui->remove_menu_node(rnd_gui, node);
-#if 0
 	lht_tree_del(node);
-#endif
 }
 
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
