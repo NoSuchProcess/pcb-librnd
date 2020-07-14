@@ -9,6 +9,10 @@
    Returns 0 on success. */
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc);
 
+/* Unload a menu patch by cookie */
+void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie);
+
+
 /* The GUI announces that it is ready for creating the menu; the initial
    merge should happen, but no modification callbacks are done */
 void rnd_hid_menu_gui_ready_to_create(rnd_hid_t *hid);

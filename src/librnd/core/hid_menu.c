@@ -635,6 +635,11 @@ static int determine_prio(lht_node_t *node, int default_prio)
 	return l;
 }
 
+void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie)
+{
+	rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+}
+
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc;
