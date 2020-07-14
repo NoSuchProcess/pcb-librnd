@@ -1122,7 +1122,7 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	if (rnd_gui->remove_menu == NULL) {
+	if (rnd_gui->remove_menu_node == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't remove menu, the GUI doesn't support it\n");
 		RND_ACT_IRES(-1);
 		return 0;

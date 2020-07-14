@@ -2958,9 +2958,7 @@ static void ltf_set_top_title(rnd_hid_t *hid, const char *title)
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 }
 
-void lesstif_create_menu(rnd_hid_t *hid, const char *menu, const rnd_menu_prop_t *props);
 int lesstif_create_menu_widget(rnd_hid_t *ctx, int is_popup_ignore, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-int lesstif_remove_menu(rnd_hid_t *hid, const char *menu);
 int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node);
 rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid);
 int ltf_open_popup(rnd_hid_t *hid, const char *menupath);
@@ -3052,9 +3050,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.clip_get = ltf_clip_get;
 	lesstif_hid.clip_free = ltf_clip_free;
 
-	lesstif_hid.create_menu = lesstif_create_menu;
 	lesstif_hid.create_menu_by_node = lesstif_create_menu_widget;
-	lesstif_hid.remove_menu = lesstif_remove_menu;
 	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;
 	lesstif_hid.update_menu_checkbox = lesstif_update_widget_flags;
 	lesstif_hid.get_menu_cfg = lesstif_get_menu_cfg;

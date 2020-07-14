@@ -441,18 +441,11 @@ struct rnd_hid_s {
 
 	void (*placeholder1)(rnd_hid_t *, const char *, void *);
 
-	/* Creates a new menu and/or submenus
-	 * menu_path is a / separated path to the new menu (parents are silently created).
-	 * The last non-NULL item is the new menu item.
-	 * action, accel and tip affect the new menu item.
-	 * Cookie is strdup()'d into the lihata tree and can be used later to search
-	 * and remove menu items that are no longer needed.
-	 * If action is NULL, the menu may get submenus.
-	 */
-	void (*create_menu)(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props);
+	/* Do not use (old dynamic menu support) */
+	void (*obsolete_create_menu)(rnd_hid_t *, const char *, const rnd_menu_prop_t *);
+	int (*obsolete_remove_menu)(rnd_hid_t *, const char *);
 
 	/* Removes a menu recursively */
-	int (*remove_menu)(rnd_hid_t *hid, const char *menu_path);
 	int (*remove_menu_node)(rnd_hid_t *hid, lht_node_t *nd);
 
 	/* At the moment HIDs load the menu file. Some plugin code, like the toolbar
@@ -560,6 +553,8 @@ struct rnd_hid_s {
 
 	/*** these should be upper, but the struct has to be extended on the bottom
 	     for binary compatibility ***/
+
+	/* Creates a new menu or submenu from an existing (already merged) lihata node */
 	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 };
 

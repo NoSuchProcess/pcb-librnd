@@ -302,26 +302,10 @@ static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 	ghid_point_cursor(gctx, grabbed);
 }
 
-/* Create a new menu by path */
-static int ghid_remove_menu(rnd_hid_t *hid, const char *menu_path)
-{
-	pcb_gtk_t *gctx = hid->hid_data;
-
-	if (hid->menu == NULL)
-		return -1;
-	return pcb_hid_cfg_remove_menu(hid->menu, menu_path, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
-}
-
 static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	return pcb_hid_cfg_remove_menu_node(hid->menu, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
-}
-
-static void ghid_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
-{
-	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_hid_cfg_create_menu(hid->menu, menu_path, props, ghid_create_menu_widget_path, &gctx->topwin.menu);
 }
 
 static int ghid_create_menu_by_node(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
@@ -700,9 +684,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 
 	dst->command_entry = ghid_command_entry;
 
-	dst->create_menu = ghid_create_menu;
 	dst->create_menu_by_node = ghid_create_menu_by_node;
-	dst->remove_menu = ghid_remove_menu;
 	dst->remove_menu_node = ghid_remove_menu_node;
 	dst->update_menu_checkbox = ghid_update_menu_checkbox;
 	dst->get_menu_cfg = ghid_get_menu_cfg;

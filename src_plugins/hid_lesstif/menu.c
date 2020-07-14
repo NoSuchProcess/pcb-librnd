@@ -654,17 +654,6 @@ int lesstif_create_menu_widget_path(void *ctx, const char *path, const char *nam
 	return lesstif_create_menu_widget(ctx, 0, name, is_main, parent, ins_after, menu_item);
 }
 
-
-void lesstif_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
-{
-	pcb_hid_cfg_create_menu(rnd_gui->menu, menu_path, props, lesstif_create_menu_widget_path, NULL);
-}
-
-int lesstif_remove_menu(rnd_hid_t *hid, const char *menu_path)
-{
-	return pcb_hid_cfg_remove_menu(rnd_gui->menu, menu_path, del_menu, NULL);
-}
-
 int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	return pcb_hid_cfg_remove_menu_node(rnd_gui->menu, node, del_menu, NULL);

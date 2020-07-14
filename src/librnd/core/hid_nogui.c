@@ -412,10 +412,6 @@ int rnd_nogui_progress(long so_far, long total, const char *message)
 	return 0;
 }
 
-static void nogui_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
-{
-}
-
 static int clip_warn(void)
 {
 	static int warned = 0;
@@ -522,7 +518,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attr_dlg_property = nogui_attr_dlg_property;
 	hid->beep = nogui_beep;
-	hid->create_menu = nogui_create_menu;
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;
 	hid->clip_free = nogui_clip_free;

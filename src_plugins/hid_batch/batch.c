@@ -276,10 +276,6 @@ void batch_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 
-static void batch_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
-{
-}
-
 static void batch_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 }
@@ -375,10 +371,8 @@ int pplg_init_hid_batch(void)
 	batch_hid.stop_timer = batch_stop_timer;
 	batch_hid.watch_file = batch_watch_file;
 	batch_hid.unwatch_file = batch_unwatch_file;
-	batch_hid.create_menu = batch_create_menu;
 	batch_hid.usage = batch_usage;
 
-	batch_hid.create_menu  = batch_create_menu;
 	batch_hid.zoom_win = batch_zoom_win;
 	batch_hid.zoom = batch_zoom;
 	batch_hid.pan = batch_pan;

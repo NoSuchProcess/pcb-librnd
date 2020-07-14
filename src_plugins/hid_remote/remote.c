@@ -330,10 +330,6 @@ static void remote_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, con
 {
 }
 
-static void remote_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
-{
-}
-
 int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_remote(void)
@@ -393,7 +389,6 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_close = remote_attr_dlg_close;
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
-	remote_hid.create_menu = remote_create_menu;
 	remote_hid.set_hidlib = remote_set_hidlib;
 
 
