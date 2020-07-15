@@ -95,10 +95,17 @@ static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after
 		return;
 	}
 
-	/* insert after ins_after or append at the end */
-	for(n = lht_dom_first(&it, ins_after->parent), pos = 1; n != NULL; n = lht_dom_next(&it),pos++)
-		if (n == ins_after)
+	/* insert after ins_after or append after a specific item */
+	for(n = lht_dom_first(&it, ins_after->parent), pos = 1; n != NULL; n = lht_dom_next(&it)) {
+		if (n == ins_after) {
+			if (n->user_data != NULL)
+				pos++;
 			break;
+		}
+		if (n->user_data == NULL)
+			continue;
+		pos++;
+	}
 
 	gtk_menu_shell_insert(shell, item, pos);
 }
