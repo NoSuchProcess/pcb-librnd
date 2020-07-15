@@ -294,6 +294,25 @@ static void menu_merge_remove_recursive(lht_node_t *node)
 	lht_tree_del(node);
 }
 
+/* replace menu subtree at dst with the one at src */
+static void menu_merge_replace(lht_node_t *dst, lht_node_t *src, int is_popup)
+{
+	lht_node_t *tmp, *n, *after = NULL;;
+
+	assert(dst->parent->type = LHT_LIST);
+
+	/* figure where the previous node at dst on the list so we can insert at the
+	   same position after the removal */
+	for(n = dst->parent->data.list.first; (n != NULL) && (n != dst); n = n->next)
+		after = n;
+
+	tmp = lht_dom_duptree(src);
+	lht_dom_list_insert_after(dst, tmp);
+
+	menu_merge_remove_recursive(dst);
+	create_menu_by_node(tmp, after, is_popup);
+}
+
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 {
 	lht_node_t *dn, *sn, *ssub, *dsub, *tmp;
@@ -312,17 +331,15 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 		if (sn != NULL) {
 			ssub = submenu(sn);
 			dsub = submenu(dn);
-			if ((dsub != NULL) && (ssub != NULL))
-				menu_merge_submenu(dsub, ssub, is_popup); /* same submenu -> recurse */
-			else if ((dsub != NULL) && (ssub == NULL)) {
-				TODO("modify: a submenu is replaced by a plain node");
-			}
-			else if ((dsub == NULL) && (ssub != NULL)) {
-				TODO("modify: a plain node is replaced by a submenu");
-			}
-			else if ((dsub == NULL) && (ssub == NULL)) {
+			if ((dsub == NULL) && (ssub == NULL)) {
 				TODO("modify: plain node is replaced by a plain node");
 			}
+			else if ((dsub != NULL) && (ssub != NULL))
+				menu_merge_submenu(dsub, ssub, is_popup); /* same submenu -> recurse */
+			else if ((dsub != NULL) && (ssub == NULL))
+				menu_merge_replace(dn, sn, is_popup); /* modify: a submenu is replaced by a plain node */
+			else if ((dsub == NULL) && (ssub != NULL))
+				menu_merge_replace(dn, sn, is_popup); /* modify: a plain node is replaced by a submenu */
 		}
 	}
 
