@@ -120,14 +120,20 @@ static rnd_menu_patch_t *rnd_menu_sys_find_cookie(rnd_menu_sys_t *msys, const ch
 	return NULL;
 }
 
-static lht_node_t *search_list(lht_node_t *list, const char *name)
+static lht_node_t *search_list_for_node(lht_node_t *list, lht_node_t *target)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
 
 	for(n = lht_dom_first(&it, list); n != NULL; n = lht_dom_next(&it))
-		if (strcmp(n->name, name) == 0)
-			return n;
+		if (strcmp(n->name, target->name) == 0) {
+			if ((n->type == LHT_TEXT) && (target->type == LHT_TEXT)) { /* text nodes are normally anonymous and the have to be compared by value */
+				if (strcmp(n->data.text.value, target->data.text.value) == 0)
+					return n;
+			}
+			else
+				return n;
+		}
 	return NULL;
 }
 
@@ -139,7 +145,7 @@ void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t rec
 	lht_node_t *s, *a;
 
 	for(s = lht_dom_first(&it, src); s != NULL; s = lht_dom_next(&it)) {
-		a = search_list(dst, s->name);
+		a = search_list_for_node(dst, s);
 		if (a == NULL) { /* append new items at the end */
 			lht_tree_detach(s); /* removing an item from the list from the iterator is a special case that works since r584 */
 			lht_dom_list_append(dst, s);
@@ -333,6 +339,45 @@ static void menu_merge_replace(lht_node_t *dst, lht_node_t *src, int is_popup)
 	create_menu_by_node(tmp, after, is_popup);
 }
 
+static rnd_bool menu_plain_submenus_differ(lht_node_t *a, lht_node_t *b)
+{
+	lht_node_t *n, *m;
+	lht_dom_iterator_t it;
+
+	if (a->type != b->type)
+		return 1;
+
+	/* assume names match - the caller should have checked that in case of list */
+
+	switch(a->type) {
+		case LHT_TEXT:
+		case LHT_SYMLINK:
+			return (strcmp(a->data.text.value, b->data.text.value) != 0);
+		case LHT_HASH:
+			if (a->data.hash.tbl->used != b->data.hash.tbl->used)
+				return 1;
+			for(n = lht_dom_first(&it, a); n != NULL; n = lht_dom_next(&it)) {
+				m = lht_dom_hash_get(b, n->name);
+				if (m == NULL)
+					return 1;
+				if (menu_plain_submenus_differ(n, m))
+					return 1;
+			}
+			return 0;
+		case LHT_LIST:
+			for(n = a->data.list.first, m = b->data.list.first;; n = n->next, m = m->next) {
+				if ((n == NULL) && (m == NULL))
+					return 0;
+				if ((n == NULL) || (m == NULL)) /* list length mismatch */
+					return 1;
+				if (menu_plain_submenus_differ(n, m))
+					return 1;
+			}
+			break;
+	}
+	return 1; /* unhandled type? */
+}
+
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 {
 	lht_node_t *dn, *sn, *ssub, *dsub, *tmp;
@@ -340,19 +385,21 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 
 	/* find nodes that are present in dst but not in src -> remove */
 	for(dn = lht_dom_first(&it, dst); dn != NULL; dn = lht_dom_next(&it)) {
-		sn = search_list(src, dn->name);
+		sn = search_list_for_node(src, dn);
 		if (sn == NULL)
 			menu_merge_remove_recursive(dn);
 	}
 
 	/* find nodes that are present in both -> either recurse or modify */
 	for(dn = lht_dom_first(&it, dst); dn != NULL; dn = lht_dom_next(&it)) {
-		sn = search_list(src, dn->name);
+		sn = search_list_for_node(src, dn);
 		if (sn != NULL) {
 			ssub = submenu(sn);
 			dsub = submenu(dn);
 			if ((dsub == NULL) && (ssub == NULL)) {
-				TODO("modify: plain node is replaced by a plain node");
+				/* modify: plain node is replaced by a plain node */
+				if (menu_plain_submenus_differ(dn, sn))
+					menu_merge_replace(dn, sn, is_popup); /* if they are not the same, have to replace */
 			}
 			else if ((dsub != NULL) && (ssub != NULL))
 				menu_merge_submenu(dsub, ssub, is_popup); /* same submenu -> recurse */
@@ -365,12 +412,12 @@ static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
 
 	/* find nodes that are present in src but not in dst -> add */
 	for(sn = lht_dom_first(&it, src); sn != NULL; sn = lht_dom_next(&it)) {
-		dn = search_list(dst, sn->name);
+		dn = search_list_for_node(dst, sn);
 		if (dn == NULL) {
 			tmp = lht_dom_duptree(sn);
 			lht_dom_list_append(dst, tmp);
 
-			dn = search_list(dst, sn->name);
+			dn = search_list_for_node(dst, sn);
 			if (dn != NULL)
 				create_menu_by_node(dn, NULL, is_popup);
 		}
