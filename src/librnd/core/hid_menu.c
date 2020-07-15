@@ -151,6 +151,26 @@ void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t rec
 	}
 }
 
+lht_err_t menu_tree_merge_hash(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
+{
+	lht_dom_iterator_t it;
+	lht_node_t *d, *ssub, *dsub;
+
+	/* menu special casing: submenus don't mix with plain menus */
+	ssub = lht_dom_hash_get(src, "submenu");
+	dsub = lht_dom_hash_get(dst, "submenu");
+	if ((dsub == NULL) && (ssub != NULL)) {
+		/* overwrite plain menu with submenu */
+		for(d = lht_dom_first(&it, dst); d != NULL; d = lht_dom_next(&it))
+			lht_tree_del(d);
+	}
+	else if ((dsub != NULL) && (ssub == NULL))
+		lht_tree_del(dsub); /* overwrite submenu with plain menu */
+
+	/* after sorting that out, do the default lihata merge: */
+	return lht_tree_merge_hash(dst, src, recurse);
+}
+
 static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 {
 	lht_err_t e;
@@ -159,7 +179,7 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 		case LHT_INVALID_TYPE: return LHTE_BROKEN_DOC;
 		case LHT_TEXT: lht_tree_merge_text(dst, src); break;
 		case LHT_TABLE: e = lht_tree_merge_table(dst, src); if (e != LHTE_SUCCESS) return e; break;
-		case LHT_HASH:  e = lht_tree_merge_hash(dst, src, lht_tree_merge_menu); if (e != LHTE_SUCCESS) return e; break;
+		case LHT_HASH:  e = menu_tree_merge_hash(dst, src, lht_tree_merge_menu); if (e != LHTE_SUCCESS) return e; break;
 		case LHT_LIST:
 			if ((strcmp(dst->name, "submenu") == 0) || (strcmp(dst->name, "main_menu") == 0) || (strcmp(dst->name, "popups") == 0))
 				lht_tree_merge_list_submenu(dst, src, lht_tree_merge_menu);
