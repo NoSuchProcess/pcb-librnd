@@ -381,16 +381,17 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 	WidgetList ch;
 	Cardinal n, nch;
 	lht_node_t *nd;
+	int pos;
 
 	if (ins_after == NULL)
 		return;
 
 	XtVaGetValues(menu, XmNchildren, &ch, XmNnumChildren, &nch, NULL);
 	assert(ins_after->parent->type == LHT_LIST);
-	for(n = 0, nd = ins_after->parent->data.list.first; n < nch; n++,nd = nd->next) {
-		short pos;
-		
-		XtVaGetValues(ch[n], XmNpositionIndex, &pos, NULL);
+	for(n = 0, nd = ins_after->parent->data.list.first, pos = 0; n < nch; n++,nd = nd->next) {
+		int is_anch = (nd->type == LHT_TEXT) && (nd->data.text.value[0] == '@');
+		if (!is_anch)
+			pos++;
 		if (nd == ins_after) {
 			stdarg(XmNpositionIndex, pos);
 			break;
