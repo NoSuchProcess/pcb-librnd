@@ -51,6 +51,7 @@ lht_node_t ins_as_first, *rnd_hid_menu_ins_as_first = &ins_as_first;
 /*** load & merge ***/
 
 rnd_menu_sys_t rnd_menu_sys;
+static long next_menu_uid;
 
 void rnd_menu_sys_init(rnd_menu_sys_t *msys)
 {
@@ -61,6 +62,9 @@ static void rnd_menu_sys_insert(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 {
 	int n;
 	rnd_menu_patch_t *m;
+
+	menu->uid = next_menu_uid++;
+
 	/* assume only a dozen of patch files -> linear search is good enough for now */
 	for(n = 0; n < msys->patches.used; n++) {
 		m = msys->patches.array[n];
@@ -1167,7 +1171,7 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_INFO, "Menu system:\n");
 				for(n = 0; n < rnd_menu_sys.patches.used; n++) {
 					rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
-					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s: %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
+					rnd_message(RND_MSG_INFO, " [%ld] %s prio=%d %s: %s\n", m->uid, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
 				}
 			}
 			RND_ACT_IRES(0);

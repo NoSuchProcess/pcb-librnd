@@ -8,6 +8,7 @@ typedef struct {
 	char *cookie;
 	rnd_hid_cfg_t cfg;
 	int prio;
+	long uid;
 } rnd_menu_patch_t;
 
 typedef struct {
