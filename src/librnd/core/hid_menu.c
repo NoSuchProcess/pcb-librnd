@@ -975,6 +975,27 @@ typedef struct {
 	lht_node_t *after;
 } create_menu_ctx_t;
 
+static lht_node_t *menu_create_sep(lht_node_t *parent, lht_node_t *ins_after)
+{
+	lht_node_t *n;
+
+	if ((parent != NULL) && (parent->type != LHT_LIST))
+		return NULL;
+
+	/* ignore ins_after if we are already deeper in the tree */
+	if ((ins_after != NULL) && (ins_after->parent != parent))
+		ins_after = NULL;
+
+	n = lht_dom_node_alloc(LHT_TEXT, NULL);
+	n->data.text.value = rnd_strdup("-");
+	if (ins_after != NULL)
+		lht_dom_list_insert_after(ins_after, n);
+	else if (parent != NULL)
+		lht_dom_list_append(parent, n);
+
+	return n;
+}
+
 static const char *colorstr(const rnd_color_t *c)
 {
 	if (c == NULL) return NULL;
@@ -983,6 +1004,7 @@ static const char *colorstr(const rnd_color_t *c)
 
 static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path, int rel_level)
 {
+	int is_sep;
 	create_menu_ctx_t *cmc = ctx;
 	lht_node_t *psub;
 
@@ -1006,13 +1028,21 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 		else
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
+		is_sep = (name[0] == '-') && (name[1] == '\0');
 		if (rel_level == cmc->target_level) {
-			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie, "a", cmc->props.accel, "tip", cmc->props.tip, "action", cmc->props.action, "checked", cmc->props.checked, "update_on", cmc->props.update_on, "foreground", colorstr(cmc->props.foreground), "background", colorstr(cmc->props.background), NULL);
+			if (is_sep)
+				node = menu_create_sep(psub, cmc->after);
+			else
+				node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie, "a", cmc->props.accel, "tip", cmc->props.tip, "action", cmc->props.action, "checked", cmc->props.checked, "update_on", cmc->props.update_on, "foreground", colorstr(cmc->props.foreground), "background", colorstr(cmc->props.background), NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
-		else
-			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie,  NULL);
+		else {
+			if (is_sep)
+				node = menu_create_sep(psub, cmc->after);
+			else
+				node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie,  NULL);
+		}
 
 		if (node == NULL)
 			return NULL;
