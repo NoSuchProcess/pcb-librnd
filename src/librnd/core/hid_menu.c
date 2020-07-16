@@ -209,6 +209,8 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 		case LHT_LIST:
 			if ((strcmp(dst->name, "submenu") == 0) || (strcmp(dst->name, "main_menu") == 0) || (strcmp(dst->name, "popups") == 0))
 				lht_tree_merge_list_submenu(dst, src, lht_tree_merge_menu);
+			else if (strcmp(dst->name, "anchored") == 0)
+				lht_tree_merge_list(dst, src);
 			else
 				return lht_tree_merge_list_submenu_prop(dst, src);
 			break;
