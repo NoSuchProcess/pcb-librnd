@@ -214,6 +214,10 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 
 #define GET_PATH_TEXT(instname, n, path) \
 do { \
+	if (inst->type != LHT_HASH) { \
+		rnd_message(RND_MSG_ERROR, "Menu merging error: " instname " patch instruction must be a hash node\n"); \
+		return; \
+	} \
 	path = lht_dom_hash_get(inst, "path"); \
 	if (path == NULL) { \
 		rnd_message(RND_MSG_ERROR, "Menu merging error: " instname " patch instruction without a menu path\n"); \
@@ -265,6 +269,35 @@ static void menu_patch_apply_append_menu(lht_node_t *dst, lht_node_t *inst)
 	lht_tree_merge_using(dsub, tmp, lht_tree_merge_menu);
 }
 
+
+static void menu_patch_apply_overwrite_menu_props(lht_node_t *dst, lht_node_t *inst)
+{
+	lht_node_t *dn, *sn, *path, *n, *tmp;
+	lht_dom_iterator_t it;
+
+	GET_PATH_TEXT("overwrite_menu_props", dn, path);
+
+	if (submenu(dn) != NULL) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: overwrite_menu_props patch instruction path refers to a menu that has submenus (not properties)\n");
+		return;
+	}
+
+	sn = lht_dom_hash_get(inst, "props");
+	if ((sn == NULL) || (sn->type != LHT_HASH)) {
+		rnd_message(RND_MSG_ERROR, "Menu merging error: overwrite_menu_props patch instruction needs a ha:props child\n");
+		return;
+	}
+
+	/* replace each named child of dn enumerating src/props */
+	for(n = lht_dom_first(&it, sn); n != NULL; n = lht_dom_next(&it)) {
+		tmp = lht_dom_hash_get(dn, n->name);
+		if (tmp != NULL)
+			lht_tree_del(tmp);
+		tmp = lht_dom_duptree(n);
+		lht_dom_hash_put(dn, tmp);
+	}
+}
+
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
 	lht_node_t *tmp;
@@ -293,6 +326,8 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 				menu_patch_apply_remove_menu(dst, p);
 			else if (strcmp(p->name, "append_menu") == 0)
 				menu_patch_apply_append_menu(dst, p);
+			else if (strcmp(p->name, "overwrite_menu_props") == 0)
+				menu_patch_apply_overwrite_menu_props(dst, p);
 			else {
 				rnd_message(RND_MSG_ERROR, "Menu merging error: unknown patch instruction %s\n", p->name);
 				continue;
