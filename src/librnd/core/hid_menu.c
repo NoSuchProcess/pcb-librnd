@@ -975,6 +975,12 @@ typedef struct {
 	lht_node_t *after;
 } create_menu_ctx_t;
 
+static const char *colorstr(const rnd_color_t *c)
+{
+	if (c == NULL) return NULL;
+	return c->str;
+}
+
 static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path, int rel_level)
 {
 	create_menu_ctx_t *cmc = ctx;
@@ -1001,7 +1007,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
 
 		if (rel_level == cmc->target_level) {
-			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie, "a", cmc->props.accel, "tip", cmc->props.tip, "action", cmc->props.action, "checked", cmc->props.checked, "update_on", cmc->props.update_on, "foreground", cmc->props.foreground, "background", cmc->props.background, NULL);
+			node = rnd_hid_cfg_create_hash_node(psub, cmc->after, name, "dyn", "1", "cookie", cmc->props.cookie, "a", cmc->props.accel, "tip", cmc->props.tip, "action", cmc->props.action, "checked", cmc->props.checked, "update_on", cmc->props.update_on, "foreground", colorstr(cmc->props.foreground), "background", colorstr(cmc->props.background), NULL);
 			if (node != NULL)
 				cmc->err = 0;
 		}
