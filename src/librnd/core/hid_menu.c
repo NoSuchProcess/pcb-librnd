@@ -232,11 +232,11 @@ static void menu_patch_apply_remove_menu(lht_node_t *dst, lht_node_t *inst)
 {
 	lht_node_t *n, *path;
 
-	GET_PATH_TEXT("remove-menu", n, path);
+	GET_PATH_TEXT("remove_menu", n, path);
 
 	if ((strcmp(n->name, "main_menu") == 0) || (strcmp(n->name, "popups") == 0) || (strcmp(n->name, "anchored") == 0)) {
 		if (submenu(n->parent) == NULL) {
-			rnd_message(RND_MSG_ERROR, "Menu merging error: remove-menu patch attempted to remove a menu root\n");
+			rnd_message(RND_MSG_ERROR, "Menu merging error: remove_menu patch attempted to remove a menu root\n");
 			return;
 		}
 	}
@@ -248,16 +248,16 @@ static void menu_patch_apply_append_menu(lht_node_t *dst, lht_node_t *inst)
 {
 	lht_node_t *dn, *path, *isub, *tmp, *dsub;
 
-	GET_PATH_TEXT("append-menu", dn, path);
+	GET_PATH_TEXT("append_menu", dn, path);
 
 	isub = lht_dom_hash_get(inst, "submenu"); \
 	if ((isub == NULL) || (isub->type != LHT_LIST)) {
-		rnd_message(RND_MSG_ERROR, "Menu merging error: append-menu patch instruction submenu must a list\n");
+		rnd_message(RND_MSG_ERROR, "Menu merging error: append_menu patch instruction submenu must a list\n");
 		return;
 	}
 	dsub = submenu(dn);
 	if (dsub == NULL) {
-		rnd_message(RND_MSG_ERROR, "Menu merging error: append-menu patch instruction attempted to append to a non-submenu %s\n", dn->name);
+		rnd_message(RND_MSG_ERROR, "Menu merging error: append_menu patch instruction attempted to append to a non-submenu %s\n", dn->name);
 		return;
 	}
 	
@@ -289,9 +289,9 @@ static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 				rnd_message(RND_MSG_ERROR, "Menu merging error: invalid patch instruction %s (not a hash)\n", p->name);
 				continue;
 			}
-			if (strcmp(p->name, "remove-menu") == 0)
+			if (strcmp(p->name, "remove_menu") == 0)
 				menu_patch_apply_remove_menu(dst, p);
-			else if (strcmp(p->name, "append-menu") == 0)
+			else if (strcmp(p->name, "append_menu") == 0)
 				menu_patch_apply_append_menu(dst, p);
 			else {
 				rnd_message(RND_MSG_ERROR, "Menu merging error: unknown patch instruction %s\n", p->name);
