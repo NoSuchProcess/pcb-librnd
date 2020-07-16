@@ -79,6 +79,30 @@ static void rnd_menu_sys_insert(rnd_menu_sys_t *msys, rnd_menu_patch_t *menu)
 	msys->changes++;
 }
 
+static void menu_sys_remove(rnd_menu_sys_t *msys, int n, rnd_menu_patch_t *m)
+{
+	vtp0_remove(&msys->patches, n, 1);
+	lht_dom_uninit(m->cfg.doc);
+	free(m->cookie);
+	free(m->desc);
+	free(m);
+	msys->changes++;
+}
+
+static void rnd_menu_sys_remove(rnd_menu_sys_t *msys, rnd_menu_patch_t *mp)
+{
+	int n;
+
+	/* assume only a dozen of patch files -> linear search is good enough for now */
+	for(n = 0; n < msys->patches.used; n++) {
+		rnd_menu_patch_t *m = msys->patches.array[n];
+		if (mp == m) {
+			menu_sys_remove(msys, n, m);
+			n--;
+		}
+	}
+}
+
 static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 {
 	int n;
@@ -87,12 +111,7 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 	for(n = 0; n < msys->patches.used; n++) {
 		rnd_menu_patch_t *m = msys->patches.array[n];
 		if (strcmp(m->cookie, cookie) == 0) {
-			vtp0_remove(&msys->patches, n, 1);
-			lht_dom_uninit(m->cfg.doc);
-			free(m->cookie);
-			free(m->desc);
-			free(m);
-			msys->changes++;
+			menu_sys_remove(msys, n, m);
 			n--;
 		}
 	}
@@ -748,6 +767,12 @@ void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie)
 {
 	rnd_menu_sys_remove_cookie(&rnd_menu_sys, cookie);
 }
+
+void rnd_hid_menu_unload_patch(rnd_hid_t *hid, rnd_menu_patch_t *mp)
+{
+	rnd_menu_sys_remove(&rnd_menu_sys, mp);
+}
+
 
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {

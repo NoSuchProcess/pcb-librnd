@@ -32,6 +32,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 
 /* Unload a menu patch by cookie */
 void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie);
+void rnd_hid_menu_unload_patch(rnd_hid_t *hid, rnd_menu_patch_t *mp);
 
 /* inhibit menu merging: optimization for batch loading/unloading so only
    one merge happens at the end */
