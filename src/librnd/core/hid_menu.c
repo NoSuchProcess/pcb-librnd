@@ -44,10 +44,15 @@
 #include "funchash_core.h"
 #include "compat_misc.h"
 #include "event.h"
+#include "conf_hid.h"
 
 #include "hid_menu.h"
 
 lht_node_t ins_as_first, *rnd_hid_menu_ins_as_first = &ins_as_first;
+
+static const char menu_cookie[] = "librnd/hid_menu";
+static rnd_conf_hid_id_t menu_conf_id;
+
 
 /*** load & merge ***/
 
@@ -1268,12 +1273,31 @@ static rnd_action_t rnd_menu_action_list[] = {
 	{"MenuPatch", pcb_act_MenuPatch, pcb_acth_MenuPatch, pcb_acts_MenuPatch},
 };
 
+static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
+{
+}
+
 void rnd_menu_init1(void)
 {
+	rnd_conf_native_t *n = rnd_conf_get_field("rc/menu_patches");
+	menu_conf_id = rnd_conf_hid_reg(menu_cookie, NULL);
+
 	rnd_menu_sys_init(&rnd_menu_sys);
+
+	if (n != NULL) {
+		static rnd_conf_hid_callbacks_t cbs;
+		memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
+		cbs.val_change_post = menu_conf_chg;
+		rnd_conf_hid_set_cb(n, menu_conf_id, &cbs);
+	}
 }
 
 void rnd_menu_act_init2(void)
 {
 	RND_REGISTER_ACTIONS(rnd_menu_action_list, NULL);
+}
+
+void rnd_menu_uninit(void)
+{
+	rnd_conf_hid_unreg(menu_cookie);
 }

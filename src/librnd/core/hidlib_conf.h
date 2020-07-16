@@ -46,9 +46,9 @@ typedef struct {
 		RND_CFT_STRING cli_backend;            /* command parser action */
 		RND_CFT_BOOLEAN export_basename;       /* if an exported file contains the source file name, remove path from it, keeping the basename only */
 		RND_CFT_STRING menu_file;              /* where to load the default menu file from. If empty/unset, fall back to the legacy 'per hid ow menu file' setup. If contains slash, take it as a full path, if no slash, do a normal menu search for pcb-menu-NAME.lht */
+		RND_CFT_LIST menu_patches;             /* file paths to extra menu patches to load */
 		RND_CFT_LIST preferred_gui;            /* if set, try GUI HIDs in this order when no GUI is explicitly selected */
 		RND_CFT_BOOLEAN hid_fallback;          /* if there is no explicitly specified HID (--gui) and the preferred GUI fails, automatically fall back on other HIDs, eventually running in batch mode */
-
 		const struct {
 			RND_CFT_STRING home;                 /* user's home dir, determined run-time */
 			RND_CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
