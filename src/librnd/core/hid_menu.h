@@ -5,7 +5,7 @@
 #include <genvector/vtp0.h>
 
 typedef struct {
-	char *cookie;
+	char *cookie, *desc;
 	rnd_hid_cfg_t cfg;
 	int prio;
 	long uid;

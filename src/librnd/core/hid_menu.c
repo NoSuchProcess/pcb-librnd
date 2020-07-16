@@ -90,6 +90,7 @@ static void rnd_menu_sys_remove_cookie(rnd_menu_sys_t *msys, const char *cookie)
 			vtp0_remove(&msys->patches, n, 1);
 			lht_dom_uninit(m->cfg.doc);
 			free(m->cookie);
+			free(m->desc);
 			free(m);
 			msys->changes++;
 			n--;
@@ -790,6 +791,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	menu->cfg.doc = doc;
 	menu->prio = determine_prio(doc->root, prio);
 	menu->cookie = rnd_strdup(cookie);
+	menu->desc = rnd_strdup(desc);
 
 	rnd_menu_sys_insert(&rnd_menu_sys, menu);
 
