@@ -766,11 +766,13 @@ static int determine_prio(lht_node_t *node, int default_prio)
 void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie)
 {
 	rnd_menu_sys_remove_cookie(&rnd_menu_sys, cookie);
+	menu_merge(rnd_gui);
 }
 
 void rnd_hid_menu_unload_patch(rnd_hid_t *hid, rnd_menu_patch_t *mp)
 {
 	rnd_menu_sys_remove(&rnd_menu_sys, mp);
+	menu_merge(rnd_gui);
 }
 
 
