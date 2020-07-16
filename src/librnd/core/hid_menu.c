@@ -141,7 +141,7 @@ static lht_node_t *search_list_for_node(lht_node_t *list, lht_node_t *target)
 
 #define submenu(node) ((node->type == LHT_HASH) ? (lht_dom_hash_get((node), "submenu")) : NULL)
 
-void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
+static void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
 {
 	lht_dom_iterator_t it;
 	lht_node_t *s, *a;
@@ -169,7 +169,7 @@ static lht_err_t lht_tree_merge_list_submenu_prop(lht_node_t *dst, lht_node_t *s
 	return LHTE_SUCCESS;
 }
 
-lht_err_t menu_tree_merge_hash(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
+static lht_err_t menu_tree_merge_hash(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
 {
 	lht_dom_iterator_t it;
 	lht_node_t *d, *ssub, *dsub;
