@@ -47,6 +47,8 @@
 
 #include "hid_menu.h"
 
+lht_node_t ins_as_first, *rnd_hid_menu_ins_as_first = &ins_as_first;
+
 /*** load & merge ***/
 
 typedef struct {

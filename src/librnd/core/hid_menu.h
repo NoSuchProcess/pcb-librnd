@@ -54,4 +54,8 @@ typedef enum {
    field name expected in the lihata document (useful for error messages) */
 lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
 
+/* special value for indicating that the new menu node should be inserted on
+   top, as the first item (when passed in the ins_after argument */
+extern lht_node_t *rnd_hid_menu_ins_as_first;
+
 #endif

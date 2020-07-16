@@ -386,6 +386,11 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 	if (ins_after == NULL)
 		return;
 
+	if (ins_after == rnd_hid_menu_ins_as_first) {
+		stdarg(XmNpositionIndex, 0);
+		return;
+	}
+
 	XtVaGetValues(menu, XmNchildren, &ch, XmNnumChildren, &nch, NULL);
 	assert(ins_after->parent->type == LHT_LIST);
 	for(n = 0, nd = ins_after->parent->data.list.first, pos = 0; n < nch; n++,nd = nd->next) {

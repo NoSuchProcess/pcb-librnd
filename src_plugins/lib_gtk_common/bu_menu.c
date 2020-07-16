@@ -95,6 +95,11 @@ static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after
 		return;
 	}
 
+	if (ins_after == rnd_hid_menu_ins_as_first) {
+		gtk_menu_shell_insert(shell, item, 0);
+		return;
+	}
+
 	/* insert after ins_after or append after a specific item */
 	for(n = lht_dom_first(&it, ins_after->parent), pos = 1; n != NULL; n = lht_dom_next(&it)) {
 		if (n == ins_after) {
