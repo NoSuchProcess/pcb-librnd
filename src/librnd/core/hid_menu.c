@@ -753,6 +753,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 {
 	lht_doc_t *doc = NULL;
 	rnd_menu_patch_t *menu;
+	int has_file = 0;
 
 	if (fn != NULL) {
 		if (!exact_fn) {
@@ -765,8 +766,10 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 				if (doc == NULL) {
 					strcpy((*p)+strlen(*p), fn);
 					doc = rnd_hid_cfg_load_lht(hidlib, *p);
-					if (doc != NULL)
+					if (doc != NULL) {
 						rnd_file_loaded_set_at("menu", cookie, *p, desc);
+						has_file = 1;
+					}
 				}
 				free(*p);
 			}
@@ -774,8 +777,10 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 		}
 		else {
 			doc = rnd_hid_cfg_load_lht(hidlib, fn);
-			if (doc != NULL)
+			if (doc != NULL) {
 				rnd_file_loaded_set_at("menu", cookie, fn, desc);
+				has_file = 1;
+			}
 		}
 	}
 
@@ -792,6 +797,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	menu->prio = determine_prio(doc->root, prio);
 	menu->cookie = rnd_strdup(cookie);
 	menu->desc = rnd_strdup(desc);
+	menu->has_file = has_file;
 
 	rnd_menu_sys_insert(&rnd_menu_sys, menu);
 

@@ -9,6 +9,7 @@ typedef struct {
 	rnd_hid_cfg_t cfg;
 	int prio;
 	long uid;
+	unsigned has_file:1; /* loaded from a file, can be reloaded any time */
 } rnd_menu_patch_t;
 
 typedef struct {
