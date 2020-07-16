@@ -96,7 +96,7 @@ static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after
 	}
 
 	if (ins_after == rnd_hid_menu_ins_as_first) {
-		gtk_menu_shell_insert(shell, item, 0);
+		gtk_menu_shell_insert(shell, item, 1); /* 0th is the tear-off */
 		return;
 	}
 
