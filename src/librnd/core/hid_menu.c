@@ -334,7 +334,7 @@ static void menu_merge_remove_recursive(lht_node_t *node)
 /* replace menu subtree at dst with the one at src */
 static void menu_merge_replace(lht_node_t *dst, lht_node_t *src, int is_popup)
 {
-	lht_node_t *tmp, *n, *after = NULL;;
+	lht_node_t *tmp, *n, *after = rnd_hid_menu_ins_as_first;
 
 	assert(dst->parent->type = LHT_LIST);
 
