@@ -1284,7 +1284,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 	/* figure which menu files have conf patch associated (which are already loaded) */
 	for(n = 0; n < rnd_menu_sys.patches.used; n++) {
 		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
-
+		if (!m->has_file) continue;
 		mfn = m->cfg.doc->root->file_name;
 		m->cfg_found = 0;
 		if (mfn == NULL)
@@ -1301,6 +1301,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 	/* remove anything we loaded for the config and we don't need anymore */
 	for(n = 0; n < rnd_menu_sys.patches.used; n++) {
 		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+		if (!m->has_file) continue;
 		if (m->loaded_for_conf && !m->cfg_found) {
 			mfn = m->cfg.doc->root->file_name;
 /*			pcb_trace("cfg unload %s\n", mfn); */
@@ -1315,6 +1316,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 
 		for(n = 0; n < rnd_menu_sys.patches.used; n++) {
 			rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+			if (!m->has_file) continue;
 			mfn = m->cfg.doc->root->file_name;
 			if ((mfn != NULL) && (strcmp(*cfn, mfn) == 0)) {
 				found = 1;
