@@ -157,6 +157,15 @@ void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t rec
 	}
 }
 
+static lht_err_t lht_tree_merge_list_submenu_prop(lht_node_t *dst, lht_node_t *src)
+{
+	lht_node_t *parent = dst->parent;
+	lht_tree_del(dst);
+	lht_tree_detach(src);
+	lht_dom_hash_put(parent, src);
+	return LHTE_SUCCESS;
+}
+
 lht_err_t menu_tree_merge_hash(lht_node_t *dst, lht_node_t *src, lht_err_t recurse(lht_node_t *, lht_node_t *))
 {
 	lht_dom_iterator_t it;
@@ -190,7 +199,7 @@ static lht_err_t lht_tree_merge_menu(lht_node_t *dst, lht_node_t *src)
 			if ((strcmp(dst->name, "submenu") == 0) || (strcmp(dst->name, "main_menu") == 0) || (strcmp(dst->name, "popups") == 0))
 				lht_tree_merge_list_submenu(dst, src, lht_tree_merge_menu);
 			else
-				lht_tree_merge_list(dst, src);
+				return lht_tree_merge_list_submenu_prop(dst, src);
 			break;
 		case LHT_SYMLINK:
 			/* symlink text match */
