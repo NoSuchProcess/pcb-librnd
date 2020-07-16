@@ -43,6 +43,7 @@
 #include "paths.h"
 #include "funchash_core.h"
 #include "compat_misc.h"
+#include "event.h"
 
 #include "hid_menu.h"
 
@@ -703,6 +704,7 @@ TODO("remove debug:");
 	}
 
 	rnd_menu_sys.last_merged = rnd_menu_sys.changes;
+	rnd_event(NULL, RND_EVENT_MENU_CHANGED, NULL);
 }
 
 void rnd_hid_menu_gui_ready_to_create(rnd_hid_t *hid)

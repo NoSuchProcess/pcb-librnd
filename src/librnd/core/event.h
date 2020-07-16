@@ -70,6 +70,8 @@ typedef enum {
 	RND_EVENT_LOAD_PRE,               /* called before loading a new design (required for window placement) */
 	RND_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not (required for window placement) */
 
+	RND_EVENT_MENU_CHANGED,           /* called after a menu merging (which means actual menu system change) */
+
 	RND_EVENT_last                    /* not a real event */
 } rnd_event_id_t;
 
