@@ -162,6 +162,7 @@ void lht_tree_merge_list_submenu(lht_node_t *dst, lht_node_t *src, lht_err_t rec
 static lht_err_t lht_tree_merge_list_submenu_prop(lht_node_t *dst, lht_node_t *src)
 {
 	lht_node_t *parent = dst->parent;
+	assert(parent->type == LHT_HASH);
 	lht_tree_del(dst);
 	lht_tree_detach(src);
 	lht_dom_hash_put(parent, src);
