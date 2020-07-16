@@ -2,6 +2,25 @@
 #define RND_HID_MENU_H
 
 #include <librnd/core/hid_cfg.h>
+#include <genvector/vtp0.h>
+
+typedef struct {
+	char *cookie;
+	rnd_hid_cfg_t cfg;
+	int prio;
+} rnd_menu_patch_t;
+
+typedef struct {
+	vtp0_t patches; /* list of (rnd_menu_patch_t *), ordered by priority, ascending */
+	rnd_hid_cfg_t *merged;
+	long changes, last_merged; /* if changes > last_merged, we need to merge */
+	int inhibit;
+	unsigned gui_ready:1; /* ready for the first merge */
+	unsigned gui_nomod:1; /* do the merge but do not send any modification request - useful for the initial menu setup */
+	unsigned alloced:1;   /* whether ->merged is alloced (it is not, for the special case of patches->used <= 1 at the time of merging) */
+} rnd_menu_sys_t;
+
+
 /* Search and load the menu file called from fn, using the menu search
    path (from the conf system) if not given by an absolute path; if NULL or
    not found, parse embedded_fallback instead (if it is not NULL).
@@ -57,5 +76,8 @@ lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufi
 /* special value for indicating that the new menu node should be inserted on
    top, as the first item (when passed in the ins_after argument */
 extern lht_node_t *rnd_hid_menu_ins_as_first;
+
+/* expose the menu system for the preferences dialog */
+extern rnd_menu_sys_t rnd_menu_sys;
 
 #endif

@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include <genvector/vtp0.h>
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
@@ -51,23 +50,7 @@ lht_node_t ins_as_first, *rnd_hid_menu_ins_as_first = &ins_as_first;
 
 /*** load & merge ***/
 
-typedef struct {
-	char *cookie;
-	rnd_hid_cfg_t cfg;
-	int prio;
-} rnd_menu_patch_t;
-
-typedef struct {
-	vtp0_t patches; /* list of (rnd_menu_patch_t *), ordered by priority, ascending */
-	rnd_hid_cfg_t *merged;
-	long changes, last_merged; /* if changes > last_merged, we need to merge */
-	int inhibit;
-	unsigned gui_ready:1; /* ready for the first merge */
-	unsigned gui_nomod:1; /* do the merge but do not send any modification request - useful for the initial menu setup */
-	unsigned alloced:1;   /* whether ->merged is alloced (it is not, for the special case of patches->used <= 1 at the time of merging) */
-} rnd_menu_sys_t;
-
-static rnd_menu_sys_t rnd_menu_sys;
+rnd_menu_sys_t rnd_menu_sys;
 
 void rnd_menu_sys_init(rnd_menu_sys_t *msys)
 {
