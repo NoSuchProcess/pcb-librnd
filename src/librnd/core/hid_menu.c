@@ -783,7 +783,7 @@ void rnd_hid_menu_unload_patch(rnd_hid_t *hid, rnd_menu_patch_t *mp)
 }
 
 
-int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
+rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc = NULL;
 	rnd_menu_patch_t *menu;
@@ -824,7 +824,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 			rnd_file_loaded_set_at("menu", cookie, "<internal>", desc);
 	}
 	if (doc == NULL)
-		return -1;
+		return NULL;
 
 	menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
 	menu->cfg.doc = doc;
@@ -836,7 +836,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	rnd_menu_sys_insert(&rnd_menu_sys, menu);
 
 	menu_merge(hid);
-	return 0;
+	return menu;
 }
 
 void rnd_hid_menu_merge_inhibit_inc(void)
@@ -1234,7 +1234,7 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Load:
 			if ((cookie == NULL) || (path == NULL))
 				RND_ACT_FAIL(MenuPatch);
-			if (rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc) != 0)
+			if (rnd_hid_menu_load(rnd_gui, NULL, cookie, 500, path, 1, NULL, desc) == NULL)
 				rnd_message(RND_MSG_ERROR, "Failed to load menu patch %s\n", path);
 			RND_ACT_IRES(0);
 			return 0;
