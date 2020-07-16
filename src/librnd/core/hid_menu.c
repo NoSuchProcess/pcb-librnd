@@ -1303,7 +1303,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
 		if (m->loaded_for_conf && !m->cfg_found) {
 			mfn = m->cfg.doc->root->file_name;
-			printf("cfg unload %s\n", mfn);
+/*			pcb_trace("cfg unload %s\n", mfn); */
 			rnd_hid_menu_unload_patch(rnd_gui, m);
 		}
 	}
@@ -1315,6 +1315,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 
 		for(n = 0; n < rnd_menu_sys.patches.used; n++) {
 			rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+			mfn = m->cfg.doc->root->file_name;
 			if ((mfn != NULL) && (strcmp(*cfn, mfn) == 0)) {
 				found = 1;
 				break;
@@ -1322,7 +1323,10 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 		}
 
 		if (!found) {
-			printf("cfg load %s\n", *cfn);
+/*			pcb_trace("cfg load %s\n", *cfn);*/
+			rnd_menu_patch_t *m = rnd_hid_menu_load(rnd_gui, NULL, "cfg", 250, *cfn, 1, NULL, "Loaded from config node rc/menu_patches");
+			if (m != NULL)
+				m->loaded_for_conf = 1;
 		}
 	}
 
