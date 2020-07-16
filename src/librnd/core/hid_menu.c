@@ -67,7 +67,7 @@ typedef struct {
 	unsigned alloced:1;   /* whether ->merged is alloced (it is not, for the special case of patches->used <= 1 at the time of merging) */
 } rnd_menu_sys_t;
 
-static rnd_menu_sys_t menu_sys;
+static rnd_menu_sys_t rnd_menu_sys;
 
 void rnd_menu_sys_init(rnd_menu_sys_t *msys)
 {
@@ -344,7 +344,7 @@ static void create_menu_by_node(lht_node_t *dst, lht_node_t *ins_after, int is_p
 	lht_node_t *parent;
 	int is_main;
 
-	if (menu_sys.gui_nomod)
+	if (rnd_menu_sys.gui_nomod)
 		return;
 
 	parent = dst->parent;
@@ -663,11 +663,11 @@ static void menu_merge(rnd_hid_t *hid)
 	rnd_menu_patch_t *base = NULL;
 	int just_created = 0;
 
-	if (!menu_sys.gui_ready || (menu_sys.inhibit > 0))
+	if (!rnd_menu_sys.gui_ready || (rnd_menu_sys.inhibit > 0))
 		return;
 
-	if (menu_sys.patches.used > 0)
-		base = menu_sys.patches.array[0];
+	if (rnd_menu_sys.patches.used > 0)
+		base = rnd_menu_sys.patches.array[0];
 
 	if (base != NULL) {
 		if ((base->cfg.doc->root->type != LHT_HASH) || (strcmp(base->cfg.doc->root->name, "rnd-menu-v1") != 0)) {
@@ -686,15 +686,15 @@ static void menu_merge(rnd_hid_t *hid)
 		just_created = 1;
 	}
 
-	if ((just_created == 0) || (menu_sys.patches.used > 1)) {
+	if ((just_created == 0) || (rnd_menu_sys.patches.used > 1)) {
 		int n;
 		lht_doc_t *new = lht_dom_init();
 		new->root = lht_dom_duptree(base->cfg.doc->root);
 		lht_set_doc(new->root, new);
 
 		/* apply all patches */
-		for(n = 1; n < menu_sys.patches.used; n++) {
-			rnd_menu_patch_t *m = menu_sys.patches.array[n];
+		for(n = 1; n < rnd_menu_sys.patches.used; n++) {
+			rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
 			menu_patch_apply(new->root, m->cfg.doc->root);
 		}
 
@@ -715,19 +715,19 @@ TODO("remove debug:");
 
 	}
 
-	menu_sys.last_merged = menu_sys.changes;
+	rnd_menu_sys.last_merged = rnd_menu_sys.changes;
 }
 
 void rnd_hid_menu_gui_ready_to_create(rnd_hid_t *hid)
 {
-	menu_sys.gui_ready = 1;
-	menu_sys.gui_nomod = 1;
+	rnd_menu_sys.gui_ready = 1;
+	rnd_menu_sys.gui_nomod = 1;
 	menu_merge(hid);
 }
 
 void rnd_hid_menu_gui_ready_to_modify(rnd_hid_t *hid)
 {
-	menu_sys.gui_nomod = 0;
+	rnd_menu_sys.gui_nomod = 0;
 }
 
 static int determine_prio(lht_node_t *node, int default_prio)
@@ -756,7 +756,7 @@ static int determine_prio(lht_node_t *node, int default_prio)
 
 void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie)
 {
-	rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+	rnd_menu_sys_remove_cookie(&rnd_menu_sys, cookie);
 }
 
 int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
@@ -802,7 +802,7 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 	menu->prio = determine_prio(doc->root, prio);
 	menu->cookie = rnd_strdup(cookie);
 
-	rnd_menu_sys_insert(&menu_sys, menu);
+	rnd_menu_sys_insert(&rnd_menu_sys, menu);
 
 	menu_merge(hid);
 	return 0;
@@ -810,17 +810,17 @@ int rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, 
 
 void rnd_hid_menu_merge_inhibit_inc(void)
 {
-	if (menu_sys.inhibit < 32767)
-		menu_sys.inhibit++;
+	if (rnd_menu_sys.inhibit < 32767)
+		rnd_menu_sys.inhibit++;
 	else
 		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_inc(): overflow\n");
 }
 
 void rnd_hid_menu_merge_inhibit_dec(void)
 {
-	if (menu_sys.inhibit > 0) {
-		menu_sys.inhibit--;
-		if (menu_sys.inhibit == 0)
+	if (rnd_menu_sys.inhibit > 0) {
+		rnd_menu_sys.inhibit--;
+		if (rnd_menu_sys.inhibit == 0)
 			menu_merge(rnd_gui);
 	}
 	else
@@ -1072,7 +1072,7 @@ static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 
 int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props)
 {
-	return create_menu_manual_prop(&menu_sys, path, props);
+	return create_menu_manual_prop(&rnd_menu_sys, path, props);
 }
 
 static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *cookie)
@@ -1110,7 +1110,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
-		int r = create_menu_manual(&menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
+		int r = create_menu_manual(&rnd_menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
 		if (r != 0)
 			rnd_message(RND_MSG_ERROR, "Error: failed to create the menu\n");
 		RND_ACT_IRES(r);
@@ -1138,7 +1138,7 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_CONVARG(1, FGW_STR, RemoveMenu, ;);
 	RND_ACT_CONVARG(2, FGW_STR, RemoveMenu, ;);
-	if (remove_menu_manual(&menu_sys, argv[1].val.str, argv[2].val.str) != 0) {
+	if (remove_menu_manual(&rnd_menu_sys, argv[1].val.str, argv[2].val.str) != 0) {
 		rnd_message(RND_MSG_ERROR, "failed to remove some of the menu items\n");
 		RND_ACT_IRES(-1);
 	}
@@ -1174,7 +1174,7 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Unload:
 			if (cookie == NULL)
 				RND_ACT_FAIL(MenuPatch);
-			rnd_menu_sys_remove_cookie(&menu_sys, cookie);
+			rnd_menu_sys_remove_cookie(&rnd_menu_sys, cookie);
 			menu_merge(rnd_gui);
 			RND_ACT_IRES(0);
 			return 0;
@@ -1182,8 +1182,8 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				int n;
 				rnd_message(RND_MSG_INFO, "Menu system:\n");
-				for(n = 0; n < menu_sys.patches.used; n++) {
-					rnd_menu_patch_t *m = menu_sys.patches.array[n];
+				for(n = 0; n < rnd_menu_sys.patches.used; n++) {
+					rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
 					rnd_message(RND_MSG_INFO, " [%d] %s prio=%d %s: %s\n", n, (n == 0 ? "base " : "addon"), m->prio, m->cookie, m->cfg.doc->root->file_name);
 				}
 			}
@@ -1208,7 +1208,7 @@ static rnd_action_t rnd_menu_action_list[] = {
 
 void rnd_menu_init1(void)
 {
-	rnd_menu_sys_init(&menu_sys);
+	rnd_menu_sys_init(&rnd_menu_sys);
 }
 
 void rnd_menu_act_init2(void)
