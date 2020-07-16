@@ -10,6 +10,10 @@ typedef struct {
 	int prio;
 	long uid;
 	unsigned has_file:1; /* loaded from a file, can be reloaded any time */
+	unsigned loaded_for_conf:1; /* loaded for rc.menu_patches */
+
+	/* internal/cache */
+	unsigned cfg_found:1;
 } rnd_menu_patch_t;
 
 typedef struct {

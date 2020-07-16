@@ -1275,6 +1275,58 @@ static rnd_action_t rnd_menu_action_list[] = {
 
 static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 {
+	int n;
+	rnd_conf_listitem_t *i;
+	const char *mfn;
+
+	rnd_hid_menu_merge_inhibit_inc();
+
+	/* figure which menu files have conf patch associated (which are already loaded) */
+	for(n = 0; n < rnd_menu_sys.patches.used; n++) {
+		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+
+		mfn = m->cfg.doc->root->file_name;
+		m->cfg_found = 0;
+		if (mfn == NULL)
+			continue;
+		for(i = rnd_conflist_first(&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
+			const char **cfn = i->val.string;
+			if (strcmp(*cfn, mfn) == 0) {
+				m->cfg_found = 1;
+				break;
+			}
+		}
+	}
+
+	/* remove anything we loaded for the config and we don't need anymore */
+	for(n = 0; n < rnd_menu_sys.patches.used; n++) {
+		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+		if (m->loaded_for_conf && !m->cfg_found) {
+			mfn = m->cfg.doc->root->file_name;
+			printf("cfg unload %s\n", mfn);
+			rnd_hid_menu_unload_patch(rnd_gui, m);
+		}
+	}
+
+	/* load all files that are in the config but not in the menu system */
+	for(i = rnd_conflist_first(&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
+		const char **cfn = i->val.string;
+		int found = 0;
+
+		for(n = 0; n < rnd_menu_sys.patches.used; n++) {
+			rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+			if ((mfn != NULL) && (strcmp(*cfn, mfn) == 0)) {
+				found = 1;
+				break;
+			}
+		}
+
+		if (!found) {
+			printf("cfg load %s\n", *cfn);
+		}
+	}
+
+	rnd_hid_menu_merge_inhibit_dec();
 }
 
 void rnd_menu_init1(void)
