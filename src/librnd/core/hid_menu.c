@@ -1291,7 +1291,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 		m->cfg_found = 0;
 		if (mfn == NULL)
 			continue;
-		for(i = rnd_conflist_first(&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
+		for(i = rnd_conflist_first((rnd_conflist_t *)&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
 			const char **cfn = i->val.string;
 			if (strcmp(*cfn, mfn) == 0) {
 				m->cfg_found = 1;
@@ -1312,7 +1312,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 	}
 
 	/* load all files that are in the config but not in the menu system */
-	for(i = rnd_conflist_first(&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
+	for(i = rnd_conflist_first((rnd_conflist_t *)&rnd_conf.rc.menu_patches); i != NULL; i = rnd_conflist_next(i)) {
 		const char **cfn = i->val.string;
 		int found = 0;
 
