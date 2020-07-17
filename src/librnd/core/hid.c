@@ -29,6 +29,7 @@
 
 #include <librnd/config.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/event.h>
 
 void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete)
