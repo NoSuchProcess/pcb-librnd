@@ -37,3 +37,38 @@ void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete
 		rnd_gui->notify_crosshair_change(rnd_gui, changes_complete);
 	rnd_event(hl, RND_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
+
+/*** GUI batch timer ***/
+
+#define BTMR_REFRESH_TIME_MS 300
+
+static int btmr_timer_active = 0;
+static rnd_hidval_t btmr_timer;
+static rnd_hidlib_t *btmr_hidlib;
+
+static void btmr_cb(rnd_hidval_t user_data)
+{
+	btmr_timer_active = 0;
+	rnd_hid_menu_merge_inhibit_inc();
+	rnd_event(btmr_hidlib, RND_EVENT_GUI_BATCH_TIMER, NULL);
+	rnd_hid_menu_merge_inhibit_dec();
+}
+
+void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib)
+{
+	rnd_hidval_t timerdata;
+
+	if ((rnd_gui == NULL) || (!rnd_gui->gui))
+		return;
+
+	if (btmr_timer_active) {
+		rnd_gui->stop_timer(rnd_gui, btmr_timer);
+		btmr_timer_active = 0;
+	}
+
+	timerdata.ptr = NULL;
+	btmr_timer = rnd_gui->add_timer(rnd_gui, btmr_cb, BTMR_REFRESH_TIME_MS, timerdata);
+	btmr_timer_active = 1;
+	btmr_hidlib = hidlib;
+}
+

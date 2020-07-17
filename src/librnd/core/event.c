@@ -62,7 +62,8 @@ static const char *rnd_evnames_lib[] = {
 	"pcbev_save_post",
 	"pcbev_load_pre",
 	"pcbev_load_post",
-	"pcbev_menu_changed"
+	"pcbev_menu_changed",
+	"pcbev_gui_batch_timer"
 };
 
 static const char **rnd_evnames_app = NULL;

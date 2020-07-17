@@ -644,5 +644,11 @@ do { \
  * location of existing attached drawing. */
 void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete);
 
+/* Plugin helper: timed batch updates; any plugin may trigger the update, multiple
+   triggers are batched and only a single RND_EVENT_GUI_BATCH_TIMER is emitted
+   after a certain time passed since the last trigger. The event is emitted
+   with the last hidlib argument passed. If there's no GUI available, no event
+   is emitted. */
+void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib);
 
 #endif
