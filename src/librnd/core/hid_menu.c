@@ -436,8 +436,10 @@ static rnd_bool menu_plain_submenus_differ(lht_node_t *a, lht_node_t *b)
 					return 1;
 			}
 			break;
+		default:
+			return 1; /* unhandled type - shouldn't be in a menu, but when it is, it surely differs */
 	}
-	return 1; /* unhandled type? */
+	return 1; /* can't get here anyway */
 }
 
 static void menu_merge_submenu(lht_node_t *dst, lht_node_t *src, int is_popup)
