@@ -30,7 +30,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/event.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include "grid_menu.h"
 #include "cli_history.h"
@@ -50,7 +50,9 @@ conf_dialogs_t dialogs_conf;
 
 void rnd_hid_announce_gui_init(rnd_hidlib_t *hidlib)
 {
+	rnd_hid_menu_merge_inhibit_inc();
 	rnd_event(hidlib, RND_EVENT_GUI_INIT, NULL);
+	rnd_hid_menu_merge_inhibit_dec();
 }
 
 static const char *grid_cookie = "lib_hid_common/grid";
