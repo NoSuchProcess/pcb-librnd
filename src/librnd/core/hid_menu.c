@@ -313,13 +313,18 @@ static void menu_patch_apply_overwrite_menu_props(lht_node_t *dst, lht_node_t *i
 	}
 }
 
+/* check if node is a menu file root (not menu patch root!); for backward
+   compatibility: accept anonymous node as menu file if it has a main_menu child */
+#define is_menu_file_root(node) \
+	(((node)->type == LHT_HASH) && ((strcmp((node)->name, "rnd-menu-v1") == 0) || (((node)->name[0] == '\0')) && (lht_dom_hash_get(node, "main_menu") != NULL)))
+
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
 	lht_node_t *tmp;
 
 	/* merging a complete menu file is easy: use lihata's default merge algorithm,
 	   except for submenu lists where by-name merging is required */
-	if ((src->type == LHT_HASH) && (strcmp(src->name, "rnd-menu-v1") == 0)) {
+	if (is_menu_file_root(src)) {
 		tmp = lht_dom_duptree(src);
 		lht_tree_merge_using(dst, tmp, lht_tree_merge_menu);
 		return;
@@ -641,18 +646,6 @@ static void menu_merge_root(lht_node_t *dst, lht_node_t *src)
 	TODO("mouse, toolbar_static, scripts");
 }
 
-static lht_doc_t *dup_base(rnd_menu_patch_t *base)
-{
-	lht_node_t *tmp;
-	lht_doc_t *new = lht_dom_init();
-
-	new->root = lht_dom_node_alloc(LHT_HASH, "rnd-menu-v1");
-	new->root->doc = new;
-	tmp = lht_dom_duptree(base->cfg.doc->root);
-	lht_tree_merge(new->root, tmp);
-	return new;
-}
-
 static lht_doc_t *new_menu_file()
 {
 	lht_doc_t *new = lht_dom_init();
@@ -662,6 +655,22 @@ static lht_doc_t *new_menu_file()
 	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "main_menu"));
 	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "popups"));
 	lht_dom_hash_put(new->root, lht_dom_node_alloc(LHT_LIST, "anchored"));
+	return new;
+}
+
+static lht_doc_t *dup_base(rnd_menu_patch_t *base)
+{
+	lht_node_t *tmp;
+	lht_doc_t *new;
+
+	if ((base == NULL) || (base->cfg.doc == NULL) || (base->cfg.doc->root == NULL))
+		return new_menu_file();
+
+	new = lht_dom_init();
+	new->root = lht_dom_node_alloc(LHT_HASH, "rnd-menu-v1");
+	new->root->doc = new;
+	tmp = lht_dom_duptree(base->cfg.doc->root);
+	lht_tree_merge(new->root, tmp);
 	return new;
 }
 
@@ -687,7 +696,7 @@ static void menu_merge(rnd_hid_t *hid)
 		base = rnd_menu_sys.patches.array[0];
 
 	if (base != NULL) {
-		if ((base->cfg.doc->root->type != LHT_HASH) || (strcmp(base->cfg.doc->root->name, "rnd-menu-v1") != 0)) {
+		if (!is_menu_file_root(base->cfg.doc->root)) {
 			rnd_message(RND_MSG_ERROR, "Base menu file %s has invalid root (should be: ha:rnd-menu-v1)\n");
 			base = NULL;
 		}
@@ -705,9 +714,15 @@ static void menu_merge(rnd_hid_t *hid)
 
 	if ((just_created == 0) || (rnd_menu_sys.patches.used > 1)) {
 		int n;
-		lht_doc_t *new = lht_dom_init();
-		new->root = lht_dom_duptree(base->cfg.doc->root);
-		lht_set_doc(new->root, new);
+		lht_doc_t *new;
+
+		if ((base != NULL) && (base->cfg.doc != NULL) && (base->cfg.doc->root != NULL)) {
+			new = lht_dom_init();
+			new->root = lht_dom_duptree(base->cfg.doc->root);
+			lht_set_doc(new->root, new);
+		}
+		else
+			new = new_menu_file();
 
 		/* apply all patches */
 		for(n = 1; n < rnd_menu_sys.patches.used; n++) {
