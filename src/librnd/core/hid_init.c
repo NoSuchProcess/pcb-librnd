@@ -388,16 +388,8 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 	pup_init(&rnd_pup);
 	rnd_pup.error_stack_enable = 1;
-	pup_buildin_load(&rnd_pup, buildins);
-	if (local_buildins != NULL)
-		pup_buildin_load(&rnd_pup, local_buildins);
-	pup_autoload_dir(&rnd_pup, NULL, NULL);
 
-	rnd_conf_load_extra(NULL, NULL);
-	rnd_units_init();
-	rnd_funchash_init();
-
-	/* actions */
+	/* core actions */
 	pcb_hidlib_error_init2();
 	pcb_hid_dlg_init2();
 	pcb_hid_nogui_init2();
@@ -406,6 +398,16 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_gui_act_init2();
 	rnd_main_act_init2();
 	rnd_menu_act_init2();
+
+	/* plugins: buildins */
+	pup_buildin_load(&rnd_pup, buildins);
+	if (local_buildins != NULL)
+		pup_buildin_load(&rnd_pup, local_buildins);
+	pup_autoload_dir(&rnd_pup, NULL, NULL);
+
+	rnd_conf_load_extra(NULL, NULL);
+	rnd_units_init();
+	rnd_funchash_init();
 }
 
 
