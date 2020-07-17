@@ -48,6 +48,10 @@
 conf_dialogs_t dialogs_conf;
 #define DIALOGS_CONF_FN "dialogs.conf"
 
+void rnd_hid_announce_gui_init(rnd_hidlib_t *hidlib)
+{
+	rnd_event(hidlib, RND_EVENT_GUI_INIT, NULL);
+}
 
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *lead_cookie = "lib_hid_common/user_lead";

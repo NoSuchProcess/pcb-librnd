@@ -46,6 +46,7 @@
 
 #include "FillBox.h"
 
+#include "../src_plugins/lib_hid_common/lib_hid_common.h"
 #include "../src_plugins/lib_hid_common/clip.h"
 #include "../src_plugins/lib_hid_common/cli_history.h"
 
@@ -1596,7 +1597,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		XtDispatchEvent(&e);
 	}
 
-	rnd_event(ltf_hidlib, RND_EVENT_GUI_INIT, NULL);
+	rnd_hid_announce_gui_init(ltf_hidlib);
 	XmProcessTraversal(work_area, XmTRAVERSE_CURRENT);
 
 

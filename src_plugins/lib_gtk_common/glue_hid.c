@@ -22,6 +22,7 @@
 #include "hid_gtk_conf.h"
 #include "lib_gtk_config.h"
 #include "glue_common.h"
+#include "../src_plugins/lib_hid_common/lib_hid_common.h"
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
 extern rnd_hid_cfg_keys_t ghid_keymap;
@@ -115,7 +116,7 @@ static void ghid_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 
 	if (im && ic && first) {
 		first = 0;
-		rnd_event(gctx->hidlib, RND_EVENT_GUI_INIT, NULL);
+		rnd_hid_announce_gui_init(gctx->hidlib);
 		pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
 	}
 }
