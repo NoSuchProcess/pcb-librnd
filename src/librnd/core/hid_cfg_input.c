@@ -388,8 +388,7 @@ int rnd_hid_cfg_keys_add_by_strdesc_(rnd_hid_cfg_keys_t *km, const char *keydesc
 		s = rnd_hid_cfg_keys_add_under(km, lasts, mods[n], key_raws[n], key_trs[n], terminal, &errmsg);
 		if (s == NULL) {
 			rnd_message(RND_MSG_ERROR, "Failed to add hotkey binding: %s: %s\n", keydesc, errmsg);
-TODO(": free stuff?")
-			return -1;
+			return -1; /* no need to free anything, uninit will recursively free the leftover at exit */
 		}
 		if (terminal)
 			s->action_node = action_node;
