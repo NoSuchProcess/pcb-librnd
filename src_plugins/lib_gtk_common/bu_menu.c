@@ -207,7 +207,6 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		else {
 			/* NORMAL ITEM */
 			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel, FALSE);
-			accel = NULL;
 			ins_menu(item, shell, ins_after);
 			sub_res->user_data = handle_alloc(item, item, NULL);
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer) n_action);
@@ -218,6 +217,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 				s = rnd_concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
 				gtk_widget_set_tooltip_text(item, s);
 				free(s);
+				free(acc);
 			}
 		}
 
@@ -236,9 +236,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		sub_res->user_data = handle_alloc(item, item, action);
 	}
 
-	/* unused accel key - generated, but never stored, time to free it */
-	if (accel != NULL)
-		free(accel);
+	free(accel);
 
 	return action;
 }
