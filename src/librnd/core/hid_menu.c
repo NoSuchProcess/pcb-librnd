@@ -316,7 +316,7 @@ static void menu_patch_apply_overwrite_menu_props(lht_node_t *dst, lht_node_t *i
 /* check if node is a menu file root (not menu patch root!); for backward
    compatibility: accept anonymous node as menu file if it has a main_menu child */
 #define is_menu_file_root(node) \
-	(((node)->type == LHT_HASH) && ((strcmp((node)->name, "rnd-menu-v1") == 0) || (((node)->name[0] == '\0')) && (lht_dom_hash_get(node, "main_menu") != NULL)))
+	(((node)->type == LHT_HASH) && ((strcmp((node)->name, "rnd-menu-v1") == 0) || ((((node)->name[0] == '\0')) && (lht_dom_hash_get(node, "main_menu") != NULL))))
 
 static void menu_patch_apply(lht_node_t *dst, lht_node_t *src)
 {
