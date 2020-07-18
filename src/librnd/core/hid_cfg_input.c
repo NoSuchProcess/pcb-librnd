@@ -52,23 +52,23 @@ static rnd_hid_cfg_mod_t parse_mods(const char *value, const char **last, unsign
 	while(isspace(*value)) value++;
 
 	if (*value != '<') {
-	for(;;) {
-		if ((vlen >= 5) && (rnd_strncasecmp(value, "shift", 5) == 0))        m |= RND_M_Shift;
-		else if ((vlen >= 4) && (rnd_strncasecmp(value, "ctrl", 4) == 0))    m |= RND_M_Ctrl;
-		else if ((vlen >= 3) && (rnd_strncasecmp(value, "alt", 3) == 0))     m |= RND_M_Alt;
-		else if ((vlen >= 7) && (rnd_strncasecmp(value, "release", 7) == 0)) m |= RND_M_Release;
-		else if ((vlen >= 5) && (rnd_strncasecmp(value, "press", 5) == 0))   press = 1;
-		else
-			rnd_message(RND_MSG_ERROR, "Unknown modifier: %s\n", value);
-		/* skip to next word */
-		next = strpbrk(value, "<- \t");
-		if (next == NULL)
-			break;
-		if (*next == '<')
-			break;
-		vlen -= (next - value);
-		value = next+1;
-	}
+		for(;;) {
+			if ((vlen >= 5) && (rnd_strncasecmp(value, "shift", 5) == 0))        m |= RND_M_Shift;
+			else if ((vlen >= 4) && (rnd_strncasecmp(value, "ctrl", 4) == 0))    m |= RND_M_Ctrl;
+			else if ((vlen >= 3) && (rnd_strncasecmp(value, "alt", 3) == 0))     m |= RND_M_Alt;
+			else if ((vlen >= 7) && (rnd_strncasecmp(value, "release", 7) == 0)) m |= RND_M_Release;
+			else if ((vlen >= 5) && (rnd_strncasecmp(value, "press", 5) == 0))   press = 1;
+			else
+				rnd_message(RND_MSG_ERROR, "Unknown modifier: %s\n", value);
+			/* skip to next word */
+			next = strpbrk(value, "<- \t");
+			if (next == NULL)
+				break;
+			if (*next == '<')
+				break;
+			vlen -= (next - value);
+			value = next+1;
+		}
 	}
 
 	if (last != NULL)
