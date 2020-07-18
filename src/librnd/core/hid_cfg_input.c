@@ -197,9 +197,25 @@ int rnd_hid_cfg_keys_init(rnd_hid_cfg_keys_t *km)
 	return 0;
 }
 
+static void rnd_hid_cfg_keys_free(htpp_t *ht);
+
+static void rnd_hid_cfg_key_free(rnd_hid_cfg_keyseq_t *ns)
+{
+	rnd_hid_cfg_keys_free(&ns->seq_next);
+	htpp_uninit(&ns->seq_next);
+	free(ns);
+}
+
+static void rnd_hid_cfg_keys_free(htpp_t *ht)
+{
+	htpp_entry_t *e;
+	for(e = htpp_first(ht); e != NULL; e = htpp_next(ht, e))
+		 rnd_hid_cfg_key_free(e->value);
+}
+
 int rnd_hid_cfg_keys_uninit(rnd_hid_cfg_keys_t *km)
 {
-TODO(": recursive free of nodes")
+	rnd_hid_cfg_keys_free(&km->keys);
 	htpp_uninit(&km->keys);
 	return 0;
 }
@@ -428,6 +444,7 @@ int pcb_hid_cfg_keys_del_by_strdesc(rnd_hid_cfg_keys_t *km, const char *keydesc)
 	htpp_t *phash = &km->keys;
 	rnd_hid_cfg_keyseq_t *ns;
 	rnd_hid_cfg_keyhash_t addr;
+	htpp_entry_t *e;
 
 	slen = parse_keydesc(km, keydesc, mods, key_raws, key_trs, RND_HIDCFG_MAX_KEYSEQ_LEN, NULL);
 	if (slen <= 0)
@@ -448,7 +465,9 @@ int pcb_hid_cfg_keys_del_by_strdesc(rnd_hid_cfg_keys_t *km, const char *keydesc)
 			phash = &ns->seq_next;
 	}
 
-	htpp_pop(phash, &addr);
+	e = htpp_popentry(phash, &addr);
+	if (e != NULL)
+		rnd_hid_cfg_key_free(e->value);
 
 	return 0;
 }
