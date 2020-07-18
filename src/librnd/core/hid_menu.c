@@ -733,8 +733,7 @@ static void menu_merge(rnd_hid_t *hid)
 		/* perform the final tree merge */
 		menu_merge_root(hid->menu->doc->root, new->root);
 
-TODO("remove debug:");
-#if 1
+#if 0
 		{
 #undef fopen
 			FILE *f = fopen("A_merged.lht", "w");
