@@ -400,31 +400,6 @@ rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 	return ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 1);
 }
 
-
-/* set up x and y multiplier for an octa poly, depending on square pin style
-   (used in early versions of pcb-rnd, before custom shape padstacks) */
-void rnd_poly_square_pin_factors(int style, double *xm, double *ym)
-{
-	int i;
-	const double factor = 2.0;
-
-	/* reset multipliers */
-	for (i = 0; i < 8; i++) {
-		xm[i] = 1;
-		ym[i] = 1;
-	}
-
-	style--;
-	if (style & 1)
-		xm[0] = xm[1] = xm[6] = xm[7] = factor;
-	if (style & 2)
-		xm[2] = xm[3] = xm[4] = xm[5] = factor;
-	if (style & 4)
-		ym[4] = ym[5] = ym[6] = ym[7] = factor;
-	if (style & 8)
-		ym[0] = ym[1] = ym[2] = ym[3] = factor;
-}
-
 /* NB: This function will free the passed rnd_polyarea_t.
        It must only be passed a single rnd_polyarea_t (pa->f == pa->b == pa) */
 static void r_NoHolesPolygonDicer(rnd_polyarea_t * pa, void (*emit) (rnd_pline_t *, void *), void *user_data)

@@ -4,8 +4,6 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/poly/polyarea.h>
 
-void rnd_poly_square_pin_factors(int style, double *xm, double *ym);
-
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl);
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);
 
