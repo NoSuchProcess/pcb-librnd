@@ -117,7 +117,7 @@ static void ghid_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 	if (im && ic && first) {
 		first = 0;
 		rnd_hid_announce_gui_init(gctx->hidlib);
-		pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
+		pcb_gtk_zoom_view_win(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
 	}
 }
 
@@ -431,7 +431,7 @@ static void ghid_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
 static void ghid_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_gtk_zoom_view_win_side(&gctx->port.view, x1, y1, x2, y2, set_crosshair);
+	pcb_gtk_zoom_view_win(&gctx->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
 static void ghid_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
@@ -513,7 +513,7 @@ static void ghid_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 		return;
 
 	pcb_gtk_tw_ranges_scale(gctx);
-	pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	pcb_gtk_zoom_view_win(&gctx->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
 }
 
 static void ghid_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
