@@ -81,7 +81,7 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_box_t *data_vi
 	if (preview->view.height > preview->view.max_height)
 		preview->view.max_height = preview->view.height;
 
-	pcb_gtk_zoom_view_win(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2);
+	pcb_gtk_zoom_view_win_side(&preview->view, data_view->X1, data_view->Y1, data_view->X2, data_view->Y2, 0);
 	pcb_gtk_preview_update_x0y0(preview);
 	preview->view.inhibit_pan_common = orig;
 }
