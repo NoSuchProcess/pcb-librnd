@@ -32,16 +32,18 @@
 
 #include <librnd/core/rnd_bool.h>
 
-#define SIDE_X_(hidlib, x)      ((rnd_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
-#define SIDE_Y_(hidlib, y)      ((rnd_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))
-#define SIDE_X(v, x)            SIDE_X_((v)->ctx->hidlib, (x))
-#define SIDE_Y(v, y)            SIDE_Y_((v)->ctx->hidlib, (y))
+#define LOCALFLIPX(v) ((v)->local_flip ? (v)->flip_x : rnd_conf.editor.view.flip_x)
+#define LOCALFLIPY(v) ((v)->local_flip ? (v)->flip_y : rnd_conf.editor.view.flip_y)
+#define SIDE_X_(flip, hidlib, x)      ((flip ? hidlib->size_x - (x) : (x)))
+#define SIDE_Y_(flip, hidlib, y)      ((flip ? hidlib->size_y - (y) : (y)))
+#define SIDE_X(v, x)            SIDE_X_(LOCALFLIPX(v), (v)->ctx->hidlib, (x))
+#define SIDE_Y(v, y)            SIDE_Y_(LOCALFLIPY(v), (v)->ctx->hidlib, (y))
 
 #define DRAW_X(view, x)         (gint)((SIDE_X((view), x) - (view)->x0) / (view)->coord_per_px)
 #define DRAW_Y(view, y)         (gint)((SIDE_Y((view), y) - (view)->y0) / (view)->coord_per_px)
 
-#define EVENT_TO_PCB_X_(hidlib, view, x) (rnd_coord_t)rnd_round(SIDE_X_((hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
-#define EVENT_TO_PCB_Y_(hidlib, view, y) (rnd_coord_t)rnd_round(SIDE_Y_((hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
+#define EVENT_TO_PCB_X_(hidlib, view, x) (rnd_coord_t)rnd_round(SIDE_X_(LOCALFLIPX(view), (hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
+#define EVENT_TO_PCB_Y_(hidlib, view, y) (rnd_coord_t)rnd_round(SIDE_Y_(LOCALFLIPY(view), (hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
 #define EVENT_TO_PCB_X(view, x)  EVENT_TO_PCB_X_((view)->ctx->hidlib, view, (x))
 #define EVENT_TO_PCB_Y(view, y)  EVENT_TO_PCB_Y_((view)->ctx->hidlib, view, (y))
@@ -56,6 +58,8 @@ typedef struct {
 
 	unsigned inhibit_pan_common:1; /* when 1, do not call pcb_gtk_pan_common() */
 	unsigned use_max_pcb:1;  /* when 1, use PCB->Max*; when 0, use the following two: */
+	unsigned local_flip:1;   /* ignore hidlib's flip and use the local one */
+	unsigned flip_x:1, flip_y:1; /* local version of flips when ->local_flip is enabled */
 	rnd_coord_t max_width;
 	rnd_coord_t max_height;
 

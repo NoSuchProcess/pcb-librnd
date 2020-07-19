@@ -528,6 +528,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	memset(&prv->view, 0, sizeof(prv->view));
 	prv->view.width = RND_MM_TO_COORD(110);
 	prv->view.height = RND_MM_TO_COORD(110);
+	prv->view.local_flip = 1;
 	prv->view.use_max_pcb = 0;
 	prv->view.max_width = RND_MAX_COORD;
 	prv->view.max_height = RND_MAX_COORD;
