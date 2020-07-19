@@ -156,24 +156,6 @@ void pcb_gtk_zoom_view_rel(pcb_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t 
 	pcb_gtk_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
-TODO(": remove this and make the side-correct version the default (rename that to this short name); check when looking from the bottom: library window, drc window")
-void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-	double xf, yf;
-
-	if ((v->canvas_width < 1) || (v->canvas_height < 1))
-		return;
-
-	xf = (x2 - x1) / v->canvas_width;
-	yf = (y2 - y1) / v->canvas_height;
-	v->coord_per_px = (xf > yf ? xf : yf);
-
-	v->x0 = x1;
-	v->y0 = y1;
-
-	uiz_pan_common(v);
-}
-
 /* Side-correct version - long term this will be kept and the other is removed */
 void pcb_gtk_zoom_view_win_side(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch)
 {
