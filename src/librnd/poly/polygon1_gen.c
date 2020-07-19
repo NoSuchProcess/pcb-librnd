@@ -197,51 +197,6 @@ rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 	return rnd_poly_from_contour(contour);
 }
 
-rnd_polyarea_t *rnd_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style)
-{
-	rnd_pline_t *contour = NULL;
-	rnd_vector_t v;
-	double xm[8], ym[8];
-
-	rnd_poly_square_pin_factors(style, xm, ym);
-
-TODO(": rewrite this to use the same table as the square/oct pin draw function")
-	/* point 7 */
-	v[0] = x + ROUND(radius * 0.5) * xm[7];
-	v[1] = y + ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[7];
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
-		return NULL;
-	/* point 6 */
-	v[0] = x + ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[6];
-	v[1] = y + ROUND(radius * 0.5) * ym[6];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 5 */
-	v[0] = x - ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[5];
-	v[1] = y + ROUND(radius * 0.5) * ym[5];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 4 */
-	v[0] = x - ROUND(radius * 0.5) * xm[4];
-	v[1] = y + ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[4];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 3 */
-	v[0] = x - ROUND(radius * 0.5) * xm[3];
-	v[1] = y - ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[3];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 2 */
-	v[0] = x - ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[2];
-	v[1] = y - ROUND(radius * 0.5) * ym[2];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 1 */
-	v[0] = x + ROUND(radius * RND_TAN_22_5_DEGREE_2) * xm[1];
-	v[1] = y - ROUND(radius * 0.5) * ym[1];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	/* point 0 */
-	v[0] = x + ROUND(radius * 0.5) * xm[0];
-	v[1] = y - ROUND(radius * RND_TAN_22_5_DEGREE_2) * ym[0];
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	return rnd_poly_from_contour(contour);
-}
-
 static void pcb_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range, int add_last)
 {
 	double oe1, oe2, e1, e2, t1;

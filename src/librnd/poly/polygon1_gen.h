@@ -10,7 +10,6 @@ rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl);
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);
 
 rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius);
-rnd_polyarea_t *rnd_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style);
 rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2);
 rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t);
 
