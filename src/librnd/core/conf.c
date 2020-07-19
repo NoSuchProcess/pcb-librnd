@@ -1950,7 +1950,6 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 		}
 
 		if (f != NULL) {
-TODO("CONF: a project file needs to be loaded from disk, merged from memory, then written back to file (to preserve non-config nodes)")
 			lht_dom_export(r->doc->root, f, "");
 			fail = 0;
 			pcb_conf_lht_dirty[role] = 0;
