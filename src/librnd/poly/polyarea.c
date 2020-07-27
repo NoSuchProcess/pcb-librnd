@@ -2576,9 +2576,13 @@ typedef struct pip {
 
 static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 {
-	struct seg *s = (struct seg *) b;
-	struct pip *p = (struct pip *) cl;
+	struct seg *s = (struct seg *) b;   /* polygon edge, line segment */
+	struct pip *p = (struct pip *) cl;  /* horizontal cutting line */
 
+	/* the horizontal cutting line is between vectors s->v and s->v->next, but
+	   these two can be in any order; because poly contour is CCW, this means if
+	   the edge is going up, we went from inside to outside, else we went
+	   from outside to inside */
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) {
 			rnd_vector_t v1, v2;
@@ -2586,7 +2590,7 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
 			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
-			if (cross == 0) {
+			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				longjmp(p->env, 1);
 			}
@@ -2601,7 +2605,7 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
 			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
-			if (cross == 0) {
+			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				longjmp(p->env, 1);
 			}
@@ -2609,6 +2613,11 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 				p->f -= 1;
 		}
 	}
+
+	/* NOTE: when the ray hits horizontal poly edges, it probably (TODO!) won't
+	   fail because there's no horizontal edge without a pair of non-horizontal
+	   edges, which are also hit: \_/ */
+
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
@@ -2619,6 +2628,9 @@ int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
 
 	if (!cntrbox_pointin(c, p))
 		return rnd_false;
+
+	/* run a horizontal ray from the point to x->infinity and count (in info.f)
+	   how it crosses poly edges with different winding */
 	info.f = 0;
 	info.p[0] = ray.X1 = p[0];
 	info.p[1] = ray.Y1 = p[1];
