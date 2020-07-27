@@ -2584,7 +2584,7 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 	   the edge is going up, we went from inside to outside, else we went
 	   from outside to inside */
 	if (s->v->point[1] <= p->p[1]) {
-		if (s->v->next->point[1] > p->p[1]) {
+		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
 			rnd_vector_t v1, v2;
 			pcb_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
@@ -2598,7 +2598,7 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 				p->f += 1;
 		}
 	}
-	else {
+	else { /* since the other side was <=, when we get here we also blocked horizontal lines of the negative direction */
 		if (s->v->next->point[1] <= p->p[1]) {
 			rnd_vector_t v1, v2;
 			pcb_long64_t cross;
@@ -2613,10 +2613,6 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 				p->f -= 1;
 		}
 	}
-
-	/* NOTE: when the ray hits horizontal poly edges, it probably (TODO!) won't
-	   fail because there's no horizontal edge without a pair of non-horizontal
-	   edges, which are also hit: \_/ */
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
