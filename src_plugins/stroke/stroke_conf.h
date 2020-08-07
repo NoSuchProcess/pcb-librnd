@@ -1,5 +1,5 @@
-#ifndef PCB_VENDOR_CONF_H
-#define PCB_VENDOR_CONF_H
+#ifndef PCB_STROKE_CONF_H
+#define PCB_STROKE_CONF_H
 
 #include <librnd/core/conf.h>
 
