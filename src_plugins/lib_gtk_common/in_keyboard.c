@@ -83,43 +83,60 @@ ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierT
 	return mk;
 }
 
+int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv)
+{
+	GdkModifierType state;
+	int mods = 0;
+	unsigned short int key_raw = 0, kv;
+	guint *keyvals;
+	GdkKeymapKey *keys;
+	gint n_entries;
+
+
+	if (kev->keyval > 0xffff)
+		return -1;
+
+	state = (GdkModifierType)(kev->state);
+	kv = kev->keyval;
+
+	pcb_gtk_glob_mask = state;
+
+	if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
+	if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
+	if (state & GDK_SHIFT_MASK)   mods |= RND_M_Shift;
+
+	/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
+	if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
+		key_raw = keyvals[0];
+		g_free(keys);
+		g_free(keyvals);
+	}
+
+	if (kv == PCB_GTK_KEY(ISO_Left_Tab)) kv = PCB_GTK_KEY(Tab);
+	if (kv == PCB_GTK_KEY(KP_Add)) key_raw = kv = '+';
+	if (kv == PCB_GTK_KEY(KP_Subtract)) key_raw = kv = '-';
+	if (kv == PCB_GTK_KEY(KP_Multiply)) key_raw = kv = '*';
+	if (kv == PCB_GTK_KEY(KP_Divide)) key_raw = kv = '/';
+	if (kv == PCB_GTK_KEY(KP_Enter)) key_raw = kv = PCB_GTK_KEY(Return);
+
+	*out_mods = mods;
+	*out_key_raw = key_raw;
+	*out_kv = kv;
+
+	return 0;
+}
+
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
 	pcb_gtk_t *gctx = data;
+	int slen, mods;
+	unsigned short int key_raw, kv;
 
 	if (ghid_is_modifier_key_sym(kev->keyval))
 		return FALSE;
 
-	if (kev->keyval <= 0xffff) {
-		GdkModifierType state = (GdkModifierType) (kev->state);
-		int slen, mods = 0;
-		unsigned short int key_raw = 0;
-		unsigned short int kv = kev->keyval;
-		guint *keyvals;
-		GdkKeymapKey *keys;
-		gint n_entries;
-
+	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) == 0) {
 		pcb_gtk_note_event_location(NULL);
-
-		pcb_gtk_glob_mask = state;
-
-		if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
-		if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
-		if (state & GDK_SHIFT_MASK)   mods |= RND_M_Shift;
-
-		/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
-		if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
-			key_raw = keyvals[0];
-			g_free(keys);
-			g_free(keyvals);
-		}
-
-		if (kv == PCB_GTK_KEY(ISO_Left_Tab)) kv = PCB_GTK_KEY(Tab);
-		if (kv == PCB_GTK_KEY(KP_Add)) key_raw = kv = '+';
-		if (kv == PCB_GTK_KEY(KP_Subtract)) key_raw = kv = '-';
-		if (kv == PCB_GTK_KEY(KP_Multiply)) key_raw = kv = '*';
-		if (kv == PCB_GTK_KEY(KP_Divide)) key_raw = kv = '/';
-		if (kv == PCB_GTK_KEY(KP_Enter)) key_raw = kv = PCB_GTK_KEY(Return);
 
 		slen = rnd_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
 		if (slen > 0) {

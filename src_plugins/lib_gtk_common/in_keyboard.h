@@ -38,4 +38,7 @@ unsigned short int ghid_translate_key(const char *desc, int len);
    Return 0 upon success. */
 int ghid_key_name(unsigned short int key_char, char *out, int out_len);
 
+/* low level key-event-to-hid translation; returns 0 on success */
+int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv);
+
 #endif
