@@ -6,31 +6,6 @@
 #include <genht/htpp.h>
 #include <librnd/core/hid_cfg.h>
 
-#define RND_M_Mod0(n)  (1u<<(n))
-typedef enum {
-	RND_M_Shift   = RND_M_Mod0(0),
-	RND_M_Ctrl    = RND_M_Mod0(1),
-	RND_M_Alt     = RND_M_Mod0(2),
-	RND_M_Mod1    = RND_M_Alt,
-	/* RND_M_Mod(3) is RND_M_Mod0(4) */
-	/* RND_M_Mod(4) is RND_M_Mod0(5) */
-	RND_M_Release = RND_M_Mod0(6), /* mouse button release; there might be a random number of modkeys, but hopefully not this many */
-
-	RND_MB_LEFT   = RND_M_Mod0(7),
-	RND_MB_MIDDLE = RND_M_Mod0(8),
-	RND_MB_RIGHT  = RND_M_Mod0(9),
-
-/* scroll wheel */
-	RND_MB_SCROLL_UP     = RND_M_Mod0(10),
-	RND_MB_SCROLL_DOWN   = RND_M_Mod0(11),
-	RND_MB_SCROLL_LEFT   = RND_M_Mod0(12),
-	RND_MB_SCROLL_RIGHT  = RND_M_Mod0(13)
-} rnd_hid_cfg_mod_t;
-#undef RND_M_Mod0
-
-#define RND_MB_ANY (RND_MB_LEFT | RND_MB_MIDDLE | RND_MB_RIGHT | RND_MB_SCROLL_UP | RND_MB_SCROLL_DOWN | RND_MB_SCROLL_LEFT | RND_MB_SCROLL_RIGHT)
-#define RND_M_ANY  (RND_M_Release-1)
-
 /************************** MOUSE ***************************/
 
 typedef struct {
