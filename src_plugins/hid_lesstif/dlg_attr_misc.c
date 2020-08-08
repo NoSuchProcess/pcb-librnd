@@ -128,7 +128,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 		pcb_ltf_preview_redraw(pd);
 }
 
-static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
+static void ltf_preview_input_mouse(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
 	pcb_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
@@ -155,6 +155,31 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 	if (prv->user_mouse_cb(attr, prv, kind, x, y))
 		pcb_ltf_preview_redraw(pd);
 }
+
+static void ltf_preview_input_key(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
+{
+	pcb_ltf_preview_t *pd = pd_;
+	rnd_hid_attribute_t *attr = pd->attr;
+	rnd_hid_preview_t *prv = attr->wdata;
+	rnd_coord_t x, y;
+	rnd_hid_mouse_ev_t kind = -1;
+
+	if (prv->user_key_cb == NULL)
+		return;
+
+/*
+	if (prv->user_key_cb(attr, prv, ))
+		pcb_ltf_preview_redraw(pd);*/
+}
+
+static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
+{
+	if ((cbs->event->type == KeyPress) || (cbs->event->type == KeyRelease))
+		ltf_preview_input_key(w, pd_, cbs);
+	else
+		ltf_preview_input_mouse(w, pd_, cbs);
+}
+
 
 static void ltf_preview_destroy(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
