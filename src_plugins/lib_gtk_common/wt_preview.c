@@ -377,6 +377,8 @@ static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpoint
 
 static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
 {
+	gtk_widget_grab_focus(w);
+
 	switch (ev->direction) {
 	case GDK_SCROLL_UP:
 		return button_press(w, RND_MB_SCROLL_UP);
@@ -384,6 +386,7 @@ static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer dat
 		return button_press(w, RND_MB_SCROLL_DOWN);
 	default:;
 	}
+
 	return FALSE;
 }
 
@@ -425,6 +428,8 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, save_fx);
 	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, save_fy);
 
+	gtk_widget_grab_focus(w);
+
 	return FALSE;
 }
 
@@ -463,17 +468,15 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 	return FALSE;
 }
 
-/*
 static gboolean preview_key_press_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
 {
-	printf("kp\n");
+	rnd_trace("kp prv\n");
 }
 
 static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
 {
-	printf("kr\n");
+	rnd_trace("kr prv\n");
 }
-*/
 
 /* API */
 
@@ -552,11 +555,11 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
 
-
-/*
 	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
-*/
+
+	/* keyboard handling needs focusable */
+	GTK_WIDGET_SET_FLAGS(prv, GTK_CAN_FOCUS);
 
 	gdl_insert(&ctx->previews, prv, link);
 	return GTK_WIDGET(prv);
