@@ -72,6 +72,14 @@ static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_
 	return rnd_false;
 }
 
+static rnd_bool ghid_preview_key(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+{
+	rnd_hid_preview_t *prv = draw_data;
+	if (prv->user_key_cb != NULL)
+		return prv->user_key_cb(prv->attrib, prv, release, mods, key_raw, key_tr);
+	return rnd_false;
+}
+
 void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_box_t *view)
 {
 	attr_dlg_t *ctx = hid_ctx;
@@ -115,6 +123,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (pcb_gtk_preview_t *) prv;
 	p->mouse_cb = ghid_preview_mouse;
+	p->key_cb = ghid_preview_key;
 
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
 TODO("TODO make these configurable:")

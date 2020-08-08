@@ -36,6 +36,7 @@
 #include <librnd/core/hidlib_conf.h>
 
 #include "in_mouse.h"
+#include "in_keyboard.h"
 #include "compat.h"
 #include "wt_preview.h"
 
@@ -468,14 +469,29 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 	return FALSE;
 }
 
-static gboolean preview_key_press_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
+static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data, rnd_bool release)
 {
-	rnd_trace("kp prv\n");
+	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
+	int mods;
+	unsigned short int key_raw, key_tr;
+
+	if ((preview->key_cb == NULL) || (rnd_gtk_key_translate(kev, &mods, &key_raw, &key_tr) != 0))
+		return FALSE;
+
+	if (preview->key_cb(w, preview->expose_data.draw_data, release, mods, key_raw, key_tr))
+		gtk_widget_queue_draw(w);
+
+	return TRUE;
 }
 
-static gboolean preview_key_release_cb(GtkWidget *preview, GdkEventKey *kev, gpointer data)
+static gboolean preview_key_press_cb(GtkWidget *w, GdkEventKey *kev, gpointer data)
 {
-	rnd_trace("kr prv\n");
+	return preview_key_any_cb(w, kev, data, 0);
+}
+
+static gboolean preview_key_release_cb(GtkWidget *w, GdkEventKey *kev, gpointer data)
+{
+	return preview_key_any_cb(w, kev, data, 1);
 }
 
 /* API */
