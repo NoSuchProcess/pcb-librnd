@@ -31,6 +31,7 @@
 #include <assert.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_cfg.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/global_typedefs.h>
 
@@ -136,6 +137,7 @@ struct rnd_hid_preview_s {
 	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
 	void (*user_expose_cb)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
 	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
+	rnd_bool (*user_key_cb)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
