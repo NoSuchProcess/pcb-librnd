@@ -14,7 +14,7 @@ typedef enum {
 	RND_M_Mod1    = RND_M_Alt,
 	/* RND_M_Mod(3) is RND_M_Mod0(4) */
 	/* RND_M_Mod(4) is RND_M_Mod0(5) */
-	RND_M_Release = RND_M_Mod0(6), /* there might be a random number of modkeys, but hopefully not this many */
+	RND_M_Release = RND_M_Mod0(6), /* mouse button release; there might be a random number of modkeys, but hopefully not this many */
 
 	RND_MB_LEFT   = RND_M_Mod0(7),
 	RND_MB_MIDDLE = RND_M_Mod0(8),
