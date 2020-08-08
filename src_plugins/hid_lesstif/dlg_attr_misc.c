@@ -156,20 +156,22 @@ static void ltf_preview_input_mouse(Widget w, XtPointer pd_, XmDrawingAreaCallba
 		pcb_ltf_preview_redraw(pd);
 }
 
+extern int lesstif_key_translate(XKeyEvent *e, int *out_mods, KeySym *out_sym);
+
 static void ltf_preview_input_key(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
 	pcb_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
 	rnd_hid_preview_t *prv = attr->wdata;
-	rnd_coord_t x, y;
-	rnd_hid_mouse_ev_t kind = -1;
+	int mods, release;
+	KeySym sym;
 
-	if (prv->user_key_cb == NULL)
+	release = (cbs->event->type == KeyRelease);
+	if ((prv->user_key_cb == NULL) || (lesstif_key_translate(&cbs->event->xkey, &mods, &sym) != 0))
 		return;
 
-/*
-	if (prv->user_key_cb(attr, prv, ))
-		pcb_ltf_preview_redraw(pd);*/
+	if (prv->user_key_cb(attr, prv, release, mods, sym, sym))
+		pcb_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
