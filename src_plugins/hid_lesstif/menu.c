@@ -234,7 +234,8 @@ static void note_accelerator(const lht_node_t *node)
 
 int lesstif_key_translate(XKeyEvent *e, int *out_mods, KeySym *out_sym)
 {
-	int mods = 0, sym;
+	int mods = 0;
+	KeySym sym;
 	char buf[10];
 
 	if (e->state & ShiftMask)
