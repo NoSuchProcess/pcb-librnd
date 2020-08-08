@@ -232,12 +232,10 @@ static void note_accelerator(const lht_node_t *node)
 		rnd_hid_cfg_error(node, "No action specified for key accel\n");
 }
 
-int lesstif_key_event(XKeyEvent * e)
+int lesstif_key_translate(XKeyEvent *e, int *out_mods, KeySym *out_sym)
 {
+	int mods = 0, sym;
 	char buf[10];
-	KeySym sym;
-	int slen;
-	int mods = 0;
 
 	if (e->state & ShiftMask)
 		mods |= RND_M_Shift;
@@ -250,7 +248,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 	if (e->state & ShiftMask)
 		e->state &= ~ShiftMask;
-	slen = XLookupString(e, buf, sizeof(buf), &sym, NULL);
+	XLookupString(e, buf, sizeof(buf), &sym, NULL);
 
 	switch (sym) {
 	/* Ignore these.  */
@@ -284,6 +282,20 @@ int lesstif_key_event(XKeyEvent * e)
 			mods &= ~RND_M_Shift;
 		}
 	}
+
+	*out_mods = mods;
+	*out_sym = sym;
+
+	return 0;
+}
+
+int lesstif_key_event(XKeyEvent * e)
+{
+	KeySym sym;
+	int slen, mods;
+
+	if (lesstif_key_translate(e, &mods, &sym) != 0)
+		return 1;
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 TODO("TODO#3: pass on raw and translated keys")
