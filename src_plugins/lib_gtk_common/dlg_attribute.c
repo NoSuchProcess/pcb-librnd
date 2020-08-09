@@ -551,6 +551,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		}
 		if (ctx->wltop[j] == NULL)
 			ctx->wltop[j] = ctx->wl[j];
+		if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_INIT_FOCUS)
+			gtk_widget_grab_focus(ctx->wl[j]);
 	}
 	return j;
 }
