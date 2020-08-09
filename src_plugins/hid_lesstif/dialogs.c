@@ -504,6 +504,13 @@ TODO("The wrapper box would allow the table to shrink but then the dialog is alw
 			ctx->wltop[i] = ctx->wl[i];
 		else
 			XtManageChild(ctx->wltop[i]);
+		if (ctx->attrs[i].rnd_hatt_flags & RND_HATF_INIT_FOCUS) {
+			Widget w, p;
+			for(w = ctx->wl[i]; w != ctx->dialog; w = p) {
+				p = XtParent(w);
+				XtVaSetValues(p, XmNinitialFocus, w, NULL);
+			}
+		}
 	}
 	return i;
 }
