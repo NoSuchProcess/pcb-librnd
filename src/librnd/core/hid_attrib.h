@@ -33,7 +33,8 @@ typedef enum rnd_hatt_compflags_e {
 	RND_HATF_TEXT_VERTICAL  = 1024,/* label: rotate text 90 degrees so it can be read from the right */
 	RND_HATF_PRV_BOARD   = 2048,   /* indicates that a preview widget is showing a section of the board so it needs to be redrawn when the board is redrawn */
 	RND_HATF_WIDTH_CHR   = 4096,   /* ->geo_width is specified in charactes */
-	RND_HATF_HEIGHT_CHR  = 8192    /* ->geo_width is specified in charactes */
+	RND_HATF_HEIGHT_CHR  = 8192,   /* ->geo_width is specified in charactes */
+	RND_HATF_INIT_FOCUS  = 16384   /* this widget has (keyboard) focus on widget creation */
 } rnd_hatt_compflags_t;
 
 typedef enum rnd_hid_attr_type_e {
