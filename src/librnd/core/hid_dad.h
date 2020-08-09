@@ -344,12 +344,13 @@ do { \
 	RND_DAD_ALLOC(table, RND_HATT_PROGRESS); \
 } while(0)
 
-#define RND_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
+#define RND_DAD_PREVIEW(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
 do { \
 	rnd_hid_preview_t *prv = calloc(sizeof(rnd_hid_preview_t), 1); \
 	prv->user_ctx = user_ctx_; \
 	prv->user_expose_cb = expose_cb; \
 	prv->user_mouse_cb = mouse_cb; \
+	prv->user_key_cb = key_cb; \
 	prv->user_free_cb = free_cb; \
 	prv->min_sizex_px = min_sizex_px_; \
 	prv->min_sizey_px = min_sizey_px_; \
