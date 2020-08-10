@@ -424,7 +424,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		uctx->act_free = rnd_concat(prefix, "free", NULL);
 		uctx->udata = rnd_strdup(suctx);
 		uctx->hidlib = RND_ACT_HIDLIB;
-		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, dad_prv_free_cb, &vb, sx, sy, uctx);
+		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, NULL, dad_prv_free_cb, &vb, sx, sy, uctx);
 	}
 	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {
 		char **values = tmp_new_strlist(dad);
