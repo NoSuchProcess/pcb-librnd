@@ -90,6 +90,9 @@ struct pcb_gtk_preview_s {
 	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
 	unsigned redraw_with_board:1;
 	unsigned redrawing:1;
+
+	unsigned flip_global:1;  /* flip status is tied to board's flip; ignored if flip_local is set */
+	unsigned flip_local:1;   /* local flip enabled on tab; if both local and global flips are off, the preview is permanently on no-flip mode */
 };
 
 GType pcb_gtk_preview_get_type(void);

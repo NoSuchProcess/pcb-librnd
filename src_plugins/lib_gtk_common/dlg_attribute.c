@@ -499,7 +499,15 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case RND_HATT_PREVIEW:
-				ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
+				{
+					pcb_gtk_preview_t *p;
+					ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
+					p = (pcb_gtk_preview_t *)ctx->wl[j];
+					p->flip_local = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_LFLIP);
+					p->flip_global = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_GFLIP);
+					p->view.local_flip = (p->flip_local && !p->flip_global);
+					
+				}
 				break;
 
 			case RND_HATT_TEXT:

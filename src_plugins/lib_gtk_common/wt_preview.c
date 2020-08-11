@@ -231,8 +231,10 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	preview->expose_data.view.Y2 = preview->y_max;
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	if (!preview->flip_global) {
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	}
 
 	res = preview->expose(widget, ev, rnd_expose_preview, &preview->expose_data);
 
@@ -355,13 +357,16 @@ do_zoom:;
 
 static gboolean button_press(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 {
+	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
 	int save_fx, save_fy;
 	gboolean r;
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	if (!preview->flip_global) {
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	}
 
 	r = button_press_(w, btn);
 
@@ -401,8 +406,10 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	if (!preview->flip_global) {
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	}
 
 	draw_data = preview->expose_data.draw_data;
 
@@ -444,8 +451,10 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	if (!preview->flip_global) {
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
+	}
 
 	draw_data = preview->expose_data.draw_data;
 
