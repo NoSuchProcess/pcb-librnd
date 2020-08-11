@@ -231,7 +231,11 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	preview->expose_data.view.Y2 = preview->y_max;
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	if (!preview->flip_global) {
+	if (preview->flip_local) {
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, preview->view.flip_x);
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, preview->view.flip_y);
+	}
+	else if (!preview->flip_global) {
 		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
 		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
 	}
@@ -478,6 +482,8 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 	return FALSE;
 }
 
+#include <gdk/gdkkeysyms.h>
+
 static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data, rnd_bool release)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *)w;
@@ -486,6 +492,13 @@ static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data
 
 	if ((preview->key_cb == NULL) || (rnd_gtk_key_translate(kev, &mods, &key_raw, &key_tr) != 0))
 		return FALSE;
+
+	if (preview->flip_local && release) {
+		if (kev->keyval == PCB_GTK_KEY(Tab)) {
+			preview->view.flip_y = !preview->view.flip_y;
+			gtk_widget_queue_draw(w);
+		}
+	}
 
 	if (preview->key_cb(w, preview->expose_data.draw_data, release, mods, key_raw, key_tr))
 		gtk_widget_queue_draw(w);
