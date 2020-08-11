@@ -34,7 +34,9 @@ typedef enum rnd_hatt_compflags_e {
 	RND_HATF_PRV_BOARD   = 2048,   /* indicates that a preview widget is showing a section of the board so it needs to be redrawn when the board is redrawn */
 	RND_HATF_WIDTH_CHR   = 4096,   /* ->geo_width is specified in charactes */
 	RND_HATF_HEIGHT_CHR  = 8192,   /* ->geo_width is specified in charactes */
-	RND_HATF_INIT_FOCUS  = 16384   /* this widget has (keyboard) focus on widget creation */
+	RND_HATF_INIT_FOCUS  = 16384,  /* this widget has (keyboard) focus on widget creation */
+	RND_HATF_PRV_GFLIP   = 32768,  /* global board flip determines preview flip */
+	RND_HATF_PRV_LFLIP   = 65536   /* local flip determines preview flip; when set RND_HATF_PRV_GFLIP is ignored */
 } rnd_hatt_compflags_t;
 
 typedef enum rnd_hid_attr_type_e {
@@ -96,7 +98,7 @@ struct rnd_hid_attribute_s {
 	void (*right_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);  /* called upon right click by the user */
 	void (*enter_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
 	void *user_data; /* ignored; the caller is free to use it */
-	unsigned int hatt_flags;
+	rnd_hatt_compflags_t hatt_flags;
 
 	/* geometry */
 	int geo_width; /* when RND_HATF_WIDTH_CHR is set, width of the widget in characters, on creation-time */
