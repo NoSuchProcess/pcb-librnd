@@ -600,14 +600,14 @@ void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *he
 static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy, gint *xp, gint *yp)
 {
 	gdkc_window_get_pointer(GTK_WIDGET(preview), xp, yp, NULL);
-#undef SIDE_X
-#undef SIDE_Y
-#define SIDE_X(x) x
-#define SIDE_Y(y) y
+#undef SIDE_X_
+#undef SIDE_Y_
+#define SIDE_X_(flip, hidlib, x) x
+#define SIDE_Y_(flip, hidlib, y) y
 	*cx = EVENT_TO_PCB_X(&preview->view, *xp) + preview->xoffs;
 	*cy = EVENT_TO_PCB_Y(&preview->view, *yp) + preview->yoffs;
-#undef SIDE_X
-#undef SIDE_Y
+#undef SIDE_X_
+#undef SIDE_Y_
 }
 
 void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen)
