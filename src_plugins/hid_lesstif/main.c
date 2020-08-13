@@ -1053,8 +1053,10 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	switch (e->type) {
 	case KeyPress:
 		mod_changed(&(e->xkey), 1);
-		if (lesstif_key_event(&(e->xkey)))
+		if (lesstif_key_event(&(e->xkey))) {
+			e->type = 0; /* avoid motif code to handle the key, e.g. tab pressed in drawing window */
 			return;
+		}
 		break;
 
 	case KeyRelease:
