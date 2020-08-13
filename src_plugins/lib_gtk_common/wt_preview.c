@@ -491,7 +491,19 @@ static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data
 
 	if (preview->flip_local && release) {
 		if (kev->keyval == PCB_GTK_KEY(Tab)) {
+			rnd_box_t box;
+
+			box.X1 = preview->view.x0;
+			if (preview->view.flip_y)
+				box.Y1 = preview->view.ctx->hidlib->size_y - (preview->view.y0 + preview->view.height);
+			else
+				box.Y1 = preview->view.y0;
+			box.X2 = box.X1 + preview->view.width;
+			box.Y2 = box.Y1 + preview->view.height;
+
 			preview->view.flip_y = !preview->view.flip_y;
+
+			pcb_gtk_preview_zoomto(preview, &box);
 			gtk_widget_queue_draw(w);
 		}
 	}
