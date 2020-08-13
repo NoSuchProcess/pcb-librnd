@@ -218,6 +218,18 @@ static void ghid_preview_get_property(GObject *object, guint property_id, GValue
 	}
 }
 
+#define flip_apply(preview) \
+do { \
+	if (preview->flip_local) { \
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, preview->view.flip_x); \
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, preview->view.flip_y); \
+	} \
+	else if (!preview->flip_global) { \
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0); \
+		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0); \
+	} \
+} while(0)
+
 /* Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 {
@@ -231,14 +243,7 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	preview->expose_data.view.Y2 = preview->y_max;
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	if (preview->flip_local) {
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, preview->view.flip_x);
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, preview->view.flip_y);
-	}
-	else if (!preview->flip_global) {
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
-	}
+	flip_apply(preview);
 
 	res = preview->expose(widget, ev, rnd_expose_preview, &preview->expose_data);
 
@@ -367,10 +372,7 @@ static gboolean button_press(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	if (!preview->flip_global) {
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
-	}
+	flip_apply(preview);
 
 	r = button_press_(w, btn);
 
@@ -410,10 +412,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	if (!preview->flip_global) {
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
-	}
+	flip_apply(preview);
 
 	draw_data = preview->expose_data.draw_data;
 
@@ -455,10 +454,7 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 
 	save_fx = rnd_conf.editor.view.flip_x;
 	save_fy = rnd_conf.editor.view.flip_y;
-	if (!preview->flip_global) {
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, 0);
-		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0);
-	}
+	flip_apply(preview);
 
 	draw_data = preview->expose_data.draw_data;
 
