@@ -31,6 +31,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 #include <genht/hash.h>
+#include <genht/ht_utils.h>
 #include <genvector/gds_char.h>
 
 #include <librnd/config.h>
@@ -624,10 +625,103 @@ int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsi
 	return 0;
 }
 
+
+/*** key translation hash ***/
+static int xlate_conf_rev = -1; /* last conf rev the translation table got checked on */
+static int xlate_avail = 0;
+static htpp_t xlate_hash;
+
+static void xlate_uninit(void)
+{
+	genht_uninit_deep(htpp, &xlate_hash, {
+		free(htent->key);
+		free(htent->value);
+	});
+}
+
+static void xlate_reload(rnd_hid_cfg_keys_t *km, rnd_conf_native_t *nat)
+{
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *kt;
+
+	if (xlate_avail) {
+		xlate_uninit();
+		xlate_avail = 0;
+	}
+
+	if (rnd_conflist_length(nat->val.list) < 1)
+		return;
+
+	htpp_init(&xlate_hash, keyb_hash, keyb_eq);
+	rnd_conflist_foreach(nat->val.list, &it, kt) {
+		rnd_hid_cfg_keyhash_t k, v, *hk, *hv;
+		rnd_hid_cfg_mod_t m;
+
+		/* parse key and value to temporary k & v */
+		if (parse_keydesc(km, kt->name, &m, &k.key_raw, &k.key_tr, 1, kt->prop.src) != 1) {
+			rnd_message(RND_MSG_ERROR, "Invalid key translation left side: '%s'\n (config problem, check your editor/translate_key)\n", kt->name);
+			continue;
+		}
+		k.mods = m;
+		if (parse_keydesc(km, kt->payload, &m, &v.key_raw, &v.key_tr, 1, kt->prop.src) != 1) {
+			rnd_message(RND_MSG_ERROR, "Invalid key translation left side: '%s'\n (config problem, check your editor/translate_key)\n", kt->payload);
+			continue;
+		}
+		v.mods = m;
+		hv = htpp_get(&xlate_hash, &k);
+		if (hv != NULL) {
+			rnd_message(RND_MSG_ERROR, "Ignoring redundant key translation: '%s'\n (config problem, check your editor/translate_key)\n", kt->payload);
+			continue;
+		}
+		else {
+			/* new key-val pair, add */
+			hk = malloc(sizeof(rnd_hid_cfg_keyhash_t)); memcpy(hk, &k, sizeof(k));
+			hv = malloc(sizeof(rnd_hid_cfg_keyhash_t)); memcpy(hv, &v, sizeof(v));
+			htpp_insert(&xlate_hash, hk, hv);
+		}
+	}
+	xlate_avail = 1;
+}
+
 int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
 {
+	rnd_hid_cfg_keyhash_t ck, *cv;
+
+	if (rnd_conf_rev > xlate_conf_rev) {
+		rnd_conf_native_t *nat = rnd_conf_get_field("editor/translate_key");
+		if ((nat != NULL) && (nat->rnd_conf_rev > xlate_conf_rev))
+			xlate_reload(km, nat);
+		xlate_conf_rev = rnd_conf_rev;
+	}
+
+	if (xlate_avail) {
+		/* apply the key translation table from our config */
+		ck.mods = mods;
+		ck.key_raw = key_raw;
+		ck.key_tr = 0;
+
+		/* check by raw... */
+		cv = htpp_get(&xlate_hash, &ck);
+		if (cv == NULL) {
+			/* if not found also check by translated */
+			ck.key_raw = 0;
+			ck.key_tr = key_tr;
+			cv = htpp_get(&xlate_hash, &ck);
+		}
+
+		/* hit: replace input key from the xlate table */
+		if (cv != NULL) {
+			mods = cv->mods;
+			if (cv->key_raw != 0)
+				key_tr = key_raw = cv->key_raw;
+			if (cv->key_tr != 0)
+				key_tr = key_raw = cv->key_tr;
+		}
+	}
+
 	return rnd_hid_cfg_keys_input_(km, mods, key_raw, key_tr, km->seq, &km->seq_len);
 }
+/*** key translation hash ends **/
 
 int rnd_hid_cfg_keys_action_(rnd_hidlib_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len)
 {
@@ -704,3 +798,10 @@ int rnd_hid_cfg_keys_seq(rnd_hid_cfg_keys_t *km, char *dst, int dst_len)
 	else
 		return rnd_hid_cfg_keys_seq_(km, km->seq, km->seq_len, dst, dst_len);
 }
+
+void rnd_hid_cfg_keys_uninit_module(void)
+{
+	if (xlate_avail)
+		xlate_uninit();
+}
+

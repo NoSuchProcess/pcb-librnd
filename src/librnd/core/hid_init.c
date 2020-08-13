@@ -412,6 +412,8 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 
 extern void rnd_menu_uninit(void);
+extern void rnd_hid_cfg_keys_uninit_module(void);
+
 
 void rnd_hidlib_uninit(void)
 {
@@ -429,6 +431,7 @@ void rnd_hidlib_uninit(void)
 	rnd_plugin_uninit();
 	rnd_actions_uninit();
 	rnd_dad_unit_uninit();
+	rnd_hid_cfg_keys_uninit_module();
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */

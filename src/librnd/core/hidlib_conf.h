@@ -88,6 +88,7 @@ typedef struct {
 		RND_CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		RND_CFT_INTEGER crosshair_shape_idx;   /* OBSOLETE: do not use */
 		RND_CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
+		RND_CFT_LIST translate_key;
 
 		const struct {
 			RND_CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
