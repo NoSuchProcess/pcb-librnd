@@ -21,8 +21,8 @@ void rnd_hid_cfg_mouse_action(rnd_hidlib_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_
 #define RND_HIDCFG_MAX_KEYSEQ_LEN 32
 typedef struct hid_cfg_keyhash_s {
 	unsigned short int mods;          /* of rnd_hid_cfg_mod_t */
-	unsigned short int key_raw;
-	unsigned short int key_tr;
+	unsigned short int key_raw;       /* raw keyboard code (0 means use ->key_tr instead); this is <key> in the config; e.g. on US keyboard shift+3 this is Shift<key>3 */
+	unsigned short int key_tr;        /* rendered: gui-translated keyboard code (0 means use ->key_raw instead); this is <char> in the config; e.g. on US keyboard shift+3 this is <char># */
 } rnd_hid_cfg_keyhash_t;
 
 
