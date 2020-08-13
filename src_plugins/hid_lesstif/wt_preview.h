@@ -23,6 +23,10 @@ typedef struct pcb_ltf_preview_s {
 	unsigned pan:1;
 	unsigned expose_lock:1;
 	unsigned redraw_with_board:1;
+	unsigned flip_local:1;
+	unsigned flip_global:1;
+	unsigned flip_x:1; /* local flip, when flip_local is enabled */
+	unsigned flip_y:1; /* local flip, when flip_local is enabled */
 	int pan_ox, pan_oy;
 	rnd_coord_t pan_opx, pan_opy;
 	gdl_elem_t link; /* in the list of all previews in ltf_previews */

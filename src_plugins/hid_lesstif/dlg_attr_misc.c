@@ -167,10 +167,18 @@ static void ltf_preview_input_key(Widget w, XtPointer pd_, XmDrawingAreaCallback
 	KeySym sym;
 
 	release = (cbs->event->type == KeyRelease);
-	if ((prv->user_key_cb == NULL) || (lesstif_key_translate(&cbs->event->xkey, &mods, &sym) != 0))
+
+	if (lesstif_key_translate(&cbs->event->xkey, &mods, &sym) != 0)
 		return;
 
-	if (prv->user_key_cb(attr, prv, release, mods, sym, sym))
+	if (pd->flip_local && !release) {
+		if (sym == XK_Tab) {
+			pd->flip_y = !pd->flip_y;
+			pcb_ltf_preview_redraw(pd);
+		}
+	}
+
+	if ((prv->user_key_cb != NULL) && (prv->user_key_cb(attr, prv, release, mods, sym, sym)))
 		pcb_ltf_preview_redraw(pd);
 }
 
@@ -202,6 +210,9 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 	memset(&pd->exp_ctx, 0, sizeof(pd->exp_ctx));
 	pd->exp_ctx.draw_data = pd;
 	pd->exp_ctx.expose_cb = ltf_preview_expose;
+	pd->flip_global = !!(attr->rnd_hatt_flags & RND_HATF_PRV_GFLIP);
+	pd->flip_local = !!(attr->rnd_hatt_flags & RND_HATF_PRV_LFLIP);
+	pd->flip_x = pd->flip_y = 0;
 
 	pd->hid_ctx = ctx;
 	prv->hid_zoomto_cb = ltf_preview_zoomto;
