@@ -94,6 +94,11 @@ static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
 	ghid_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
+static void ghid_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)
+{
+	pcb_gtk_previews_flip(ghidgui);
+}
+
 static void ghid_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (!ghidgui->hid_active)
@@ -117,7 +122,7 @@ static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, voi
 
 static void ghid_conf_regs(const char *cookie)
 {
-	static rnd_conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3];
+	static rnd_conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3], cbs_flip[2];
 
 	ghidgui->conf_id = rnd_conf_hid_reg(cookie, NULL);
 
@@ -129,6 +134,9 @@ static void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_color[0], "appearance/color/background", ghid_confchg_spec_color);
 	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", ghid_confchg_spec_color);
 	init_conf_watch(&cbs_color[2], "appearance/color/grid", ghid_confchg_spec_color);
+
+	init_conf_watch(&cbs_flip[0], "editor/view/flip_x", ghid_confchg_flip);
+	init_conf_watch(&cbs_flip[1], "editor/view/flip_y", ghid_confchg_flip);
 
 	ghidgui->topwin.menu.ghid_menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
 	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;

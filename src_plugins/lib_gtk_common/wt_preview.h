@@ -109,6 +109,10 @@ void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_box_t *data_vi
    the screen box; if screen is NULL, redraw all */
 void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen);
 
+/* called when the global view got flipped - updates all previews with global flip follow */
+void pcb_gtk_previews_flip(pcb_gtk_t *ctx);
+
+
 void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv);
 
 #endif /* PCB_GTK_WT_REVIEW_H */

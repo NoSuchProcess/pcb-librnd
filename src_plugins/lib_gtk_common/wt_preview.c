@@ -657,6 +657,28 @@ void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen)
 	}
 }
 
+void pcb_gtk_previews_flip(pcb_gtk_t *ctx)
+{
+	pcb_gtk_preview_t *prv;
+
+	for(prv = gdl_first(&ctx->previews); prv != NULL; prv = prv->link.next) {
+		if (prv->flip_global) {
+			rnd_box_t box;
+
+			box.X1 = prv->view.x0;
+			if (!rnd_conf.editor.view.flip_y)
+				box.Y1 = prv->view.ctx->hidlib->size_y - (prv->view.y0 + prv->view.height);
+			else
+				box.Y1 = prv->view.y0;
+			box.X2 = box.X1 + prv->view.width;
+			box.Y2 = box.Y1 + prv->view.height;
+
+			pcb_gtk_preview_zoomto(prv, &box);
+		}
+	}
+}
+
+
 void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv)
 {
 	if (prv->link.parent == &ctx->previews)
