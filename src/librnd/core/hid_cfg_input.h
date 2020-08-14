@@ -110,6 +110,10 @@ int rnd_hid_cfg_keys_del_by_desc(rnd_hid_cfg_keys_t *km, const lht_node_t *keyde
    */
 char *rnd_hid_cfg_keys_gen_accel(rnd_hid_cfg_keys_t *km, const lht_node_t *keydescn, unsigned long mask, const char *sep);
 
+/* Allocate a new string and generate a key-desc; returns NULL on error */
+char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
+
+
 /* Process next input key stroke.
    Seq and seq_len must not be NULL as they are the internal state of multi-key
    processing. Load seq array with pointers pointing to each key in the

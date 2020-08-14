@@ -561,6 +561,32 @@ char *rnd_hid_cfg_keys_gen_accel(rnd_hid_cfg_keys_t *km, const lht_node_t *keyde
 	return s.array;
 }
 
+char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+{
+	gds_t s = {0};
+
+	if (key_tr != 0) {
+		if ((key_tr <= 32) || (key_tr >= 127))
+			return NULL;
+		gds_append_str(&s, "<char>");
+		gds_append(&s, key_tr);
+		return s.array;
+	}
+
+
+	TODO("We should call km->key_name, but where this call is coming from, km is not available");
+	if ((key_raw <= 32) || (key_raw >= 127))
+		return NULL;
+
+	if (mods & RND_M_Alt)   gds_append_str(&s, "Alt-");
+	if (mods & RND_M_Ctrl)  gds_append_str(&s, "Ctrl-");
+	if (mods & RND_M_Shift) gds_append_str(&s, "Shift-");
+	if (s.used > 0) s.used--; /* remove the trailing '-' */
+	gds_append_str(&s, "<key>");
+	gds_append(&s, key_raw);
+	return s.array;
+}
+
 
 int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
 {
