@@ -142,6 +142,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 		return;
 
 	memset(ctx, 0, sizeof(log_ctx_t));
+	ctx->gui_inited = 1;
 	ctx->hidlib = hidlib;
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
