@@ -313,12 +313,15 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	return ret;
 }
 
-fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_actionv_bin_(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_bool print_error)
 {
 	fgw_func_t *f = rnd_act_lookup(name);
 
-	if (f == NULL)
+	if (f == NULL) {
+		if (print_error)
+			rnd_message(RND_MSG_ERROR, "Action '%s' not found\n", name);
 		return FGW_ERR_NOT_FOUND;
+	}
 
 	argv[0].type = FGW_FUNC;
 	argv[0].val.argv0.func = f;
@@ -328,6 +331,10 @@ fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, 
 	return rnd_actionv_(f, res, argc, argv);
 }
 
+fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	return rnd_actionv_bin_(hl, name, res, argc, argv, 0);
+}
 
 int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv)
 {
@@ -450,7 +457,7 @@ another:
 		retcode = is_res_non_zero(res);
 		if (retcode)
 			goto cleanup;
-		retcode = rnd_actionv_bin(hl, aname, res, 1, argv);
+		retcode = rnd_actionv_bin_(hl, aname, res, 1, argv, 1);
 		if (retcode == 0)
 			retcode = is_res_non_zero(res);
 		goto cleanup;
