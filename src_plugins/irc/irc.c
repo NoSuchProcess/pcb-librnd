@@ -66,24 +66,6 @@ static void maybe_scroll_to_bottom()
 		txt->hid_scroll_to_bottom(atxt, irc_ctx.dlg_hid_ctx);
 }
 
-static void irc_poll(void)
-{
-	uirc_event_t ev = uirc_poll(&irc_ctx.irc);
-	if (ev & UIRC_CONNECT) {
-		char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);
-		uirc_raw(&irc_ctx.irc, tmp);
-		free(tmp);
-	}
-}
-
-static void timer_cb(rnd_hidval_t hv)
-{
-	if (irc_ctx.state != IRC_OFF) {
-		irc_poll();
-		rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
-	}
-}
-
 static void irc_append(irc_ctx_t *ctx, const char *str, int may_hilight)
 {
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
@@ -98,12 +80,41 @@ static void irc_append(irc_ctx_t *ctx, const char *str, int may_hilight)
 	}
 }
 
+
 #define irc_printf(may_hiliht, fmt) \
 do { \
 	char *__tmp__ = rnd_strdup_printf fmt; \
 	irc_append(&irc_ctx, __tmp__, may_hiliht); \
 	free(__tmp__); \
 } while(0)
+
+static void irc_poll(void)
+{
+	static int connected = 0;
+	uirc_event_t ev = uirc_poll(&irc_ctx.irc);
+
+	if (ev & UIRC_CONNECT) {
+		char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);
+		uirc_raw(&irc_ctx.irc, tmp);
+		free(tmp);
+	}
+	if (ev & UIRC_DISCONNECT) {
+		if (irc_ctx.state != IRC_DISCONNECTED) {
+			irc_printf(0, ("*** Disconnected. ***\n"));
+			irc_printf(0, ("*** You may want to reconnect. ***\n"));
+			rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
+			irc_ctx.state = IRC_DISCONNECTED;
+		}
+	}
+}
+
+static void timer_cb(rnd_hidval_t hv)
+{
+	if (irc_ctx.state != IRC_OFF) {
+		irc_poll();
+		rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
+	}
+}
 
 void on_me_join(uirc_t *ctx, int query, char *chan)
 {
