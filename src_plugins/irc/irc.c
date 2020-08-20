@@ -248,6 +248,7 @@ static int pcb_dlg_irc(void)
 			irc_ctx.wtxt = RND_DAD_CURRENT(irc_ctx.dlg);
 
 		RND_DAD_STRING(irc_ctx.dlg);
+			RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_INIT_FOCUS);
 			RND_DAD_WIDTH_CHR(irc_ctx.dlg, 80);
 			irc_ctx.winput = RND_DAD_CURRENT(irc_ctx.dlg);
 			RND_DAD_ENTER_CB(irc_ctx.dlg, enter_cb);
