@@ -173,6 +173,9 @@ void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 /* sync the menu checkboxes with actual pcb state */
 void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const char *cookie)
 {
+	if (rnd_menu_sys.inhibit)
+		return;
+
 	ghid_main_menu_update_toggle_state(hidlib, GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
