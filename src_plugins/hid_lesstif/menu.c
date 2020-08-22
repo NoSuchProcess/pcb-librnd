@@ -95,6 +95,9 @@ void lesstif_update_widget_flags(rnd_hid_t *hid, const char *cookie)
 	if (ltf_hidlib == NULL)
 		return;
 
+	if (rnd_menu_sys.inhibit)
+		return;
+
 	for (i = 0; i < n_wflags; i++) {
 		int v;
 		Arg args[2];
