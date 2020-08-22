@@ -867,8 +867,10 @@ void rnd_hid_menu_merge_inhibit_dec(void)
 {
 	if (rnd_menu_sys.inhibit > 0) {
 		rnd_menu_sys.inhibit--;
-		if (rnd_menu_sys.inhibit == 0)
+		if (rnd_menu_sys.inhibit == 0) {
 			menu_merge(rnd_gui);
+			rnd_gui->update_menu_checkbox(rnd_gui, NULL);
+		}
 	}
 	else
 		rnd_message(RND_MSG_ERROR, "rnd_hid_menu_merge_inhibit_dec(): underflow\n");
