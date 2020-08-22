@@ -75,4 +75,7 @@ void rnd_grid_inval(void);
 /* Reinstall grid menus */
 void rnd_grid_install_menu(void);
 
+void rnd_grid_init(void);
+void rnd_grid_uninit(void);
+
 #endif

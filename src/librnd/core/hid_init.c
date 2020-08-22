@@ -59,6 +59,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/grid.h>
 #include <librnd/core/funchash.h>
 #include <librnd/core/hid_menu.h>
 
@@ -341,6 +342,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_hidlib_event_init();
 	pcb_hid_dlg_init();
 	rnd_hid_init();
+	rnd_grid_init();
 	rnd_color_init();
 	rnd_menu_init1();
 }
@@ -418,6 +420,7 @@ extern void rnd_hid_cfg_keys_uninit_module(void);
 void rnd_hidlib_uninit(void)
 {
 	rnd_hid_menu_merge_inhibit_inc(); /* make sure no menu merging happens during the uninitialization */
+	rnd_grid_uninit();
 	rnd_menu_uninit();
 	rnd_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();

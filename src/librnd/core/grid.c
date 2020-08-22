@@ -44,6 +44,10 @@
 #include <librnd/core/misc_util.h>
 #include <librnd/core/rnd_bool.h>
 #include <librnd/core/rnd_printf.h>
+#include <librnd/core/conf_hid.h>
+
+static const char grid_cookie[] = "librnd grid";
+static int grid_idx_lock;
 
 rnd_coord_t rnd_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset)
 {
@@ -191,18 +195,25 @@ rnd_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst)
 	if (dst < 0)
 		return rnd_false;
 
+	grid_idx_lock++;
+
 	rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", dst);
 
 	li = rnd_conflist_nth((rnd_conflist_t *)&rnd_conf.editor.grids, dst);
 	/* clamp */
-	if (li == NULL)
+	if (li == NULL) {
+		grid_idx_lock--;
 		return rnd_false;
+	}
 
-	if (!rnd_grid_parse(&g, li->payload))
+	if (!rnd_grid_parse(&g, li->payload)) {
+		grid_idx_lock--;
 		return rnd_false;
+	}
 	rnd_grid_set(hidlib, &g);
 	rnd_grid_free(&g);
 
+	grid_idx_lock--;
 	return rnd_true;
 }
 
@@ -218,5 +229,56 @@ void rnd_grid_inval(void)
 {
 	if (rnd_conf.editor.grids_idx > 0)
 		rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", -1 - rnd_conf.editor.grids_idx);
+}
+
+/*** catch editor/grid changes to update editor/grids_idx */
+
+static void grid_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
+{
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *ge;
+	int idx = 0, found = -1;
+
+	if (grid_idx_lock)
+		return;
+
+	grid_idx_lock++;
+	rnd_conflist_foreach((rnd_conflist_t *)&rnd_conf.editor.grids, &it, ge) {
+		rnd_grid_t g;
+/*		g.ox = hidlib->grid_ox; g.oy = hidlib->grid_oy; */
+		if (rnd_grid_parse(&g, ge->payload)) {
+			if ((g.size == rnd_conf.editor.grid) /*&& (g.ox == hidlib->grid_ox) && (g.oy == hidlib->grid_oy)*/) {
+				found = idx;
+				rnd_grid_free(&g);
+				break;
+			}
+			rnd_grid_free(&g);
+		}
+		idx++;
+	}
+
+	if (rnd_conf.editor.grids_idx != found)
+		rnd_conf_setf(RND_CFR_DESIGN, "editor/grids_idx", -1, "%d", found);
+	grid_idx_lock--;
+}
+
+void rnd_grid_init(void)
+{
+	rnd_conf_native_t *n = rnd_conf_get_field("editor/grid");
+	static rnd_conf_hid_id_t grid_conf_id;
+
+	if (n != NULL) {
+		static rnd_conf_hid_callbacks_t cbs;
+		grid_conf_id = rnd_conf_hid_reg(grid_cookie, NULL);
+		memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
+		cbs.val_change_post = grid_conf_chg;
+		rnd_conf_hid_set_cb(n, grid_conf_id, &cbs);
+	}
+
+}
+
+void rnd_grid_uninit(void)
+{
+	rnd_conf_hid_unreg(grid_cookie);
 }
 
