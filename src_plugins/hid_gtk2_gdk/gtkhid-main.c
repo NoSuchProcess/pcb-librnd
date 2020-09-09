@@ -5,8 +5,8 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid_init.h>
 
-#include "../src_plugins/lib_gtk_common/glue_common.h"
-#include "../src_plugins/lib_gtk_common/glue_hid.h"
+#include "../lib_gtk_common/glue_common.h"
+#include "../lib_gtk_common/glue_hid.h"
 
 const char *ghid_cookie = "gtk2 hid, gdk";
 

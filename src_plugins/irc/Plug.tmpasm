@@ -1,6 +1,6 @@
 put /local/pcb/mod {irc}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/irc/irc.o
+	$(LIBRND_PLUGDIR)/irc/irc.o
 	$(SRC_3RD_DIR)/libuirc/libuirc.o
 @]
 

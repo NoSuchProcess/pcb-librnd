@@ -1,17 +1,17 @@
 put /local/pcb/mod {hid_lesstif}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/hid_lesstif/dialogs.o
-	$(PLUGDIR)/hid_lesstif/dlg_fileselect.o
-	$(PLUGDIR)/hid_lesstif/main.o
-	$(PLUGDIR)/hid_lesstif/menu.o
-	$(PLUGDIR)/hid_lesstif/ltf_stdarg.o
-	$(PLUGDIR)/hid_lesstif/wt_colorbtn.o
-	$(PLUGDIR)/hid_lesstif/wt_xpm.o
-	$(PLUGDIR)/hid_lesstif/xm_tree_table_pixmaps.o
-	$(PLUGDIR)/hid_lesstif/xm_tree_table_priv.o
-	$(PLUGDIR)/hid_lesstif/xm_tree_table_widget.o
-	$(PLUGDIR)/hid_lesstif/FillBox.o
-	$(PLUGDIR)/hid_lesstif/Pages.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/dialogs.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/dlg_fileselect.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/main.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/menu.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/ltf_stdarg.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/wt_colorbtn.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/wt_xpm.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/xm_tree_table_pixmaps.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/xm_tree_table_priv.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/xm_tree_table_widget.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/FillBox.o
+	$(LIBRND_PLUGDIR)/hid_lesstif/Pages.o
 @]
 
 switch /local/pcb/hid_lesstif/controls

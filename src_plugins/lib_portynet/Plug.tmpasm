@@ -1,6 +1,6 @@
 put /local/pcb/mod {lib_portynet}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/lib_portynet/lib_portynet.o
+	$(LIBRND_PLUGDIR)/lib_portynet/lib_portynet.o
 	$(SRC_3RD_DIR)/libporty_net/libportytcp4.o
 @]
 

@@ -17,7 +17,7 @@
 #include "bu_menu.h"
 #include "in_keyboard.h"
 
-#include "../src_plugins/lib_hid_common/menu_helper.h"
+#include "../lib_hid_common/menu_helper.h"
 
 static int action_counter;
 

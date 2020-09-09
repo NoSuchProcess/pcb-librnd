@@ -8,21 +8,21 @@
 #include <librnd/core/pixmap.h>
 #include <librnd/core/globalconst.h>
 
-#include "../src_plugins/lib_hid_common/clip.h"
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
+#include "../lib_hid_common/clip.h"
+#include "../lib_gtk_common/hid_gtk_conf.h"
+#include "../lib_gtk_common/lib_gtk_config.h"
 
-#include "../src_plugins/lib_gtk_common/pcb_gtk.h"
-#include "../src_plugins/lib_gtk_common/coord_conv.h"
-#include "../src_plugins/lib_gtk_common/glue_common.h"
+#include "../lib_gtk_common/pcb_gtk.h"
+#include "../lib_gtk_common/coord_conv.h"
+#include "../lib_gtk_common/glue_common.h"
 
-#include "../src_plugins/lib_hid_gl/opengl.h"
-#include "../src_plugins/lib_hid_gl/draw_gl.h"
+#include "../lib_hid_gl/opengl.h"
+#include "../lib_hid_gl/draw_gl.h"
 #include <gtk/gtkgl.h>
-#include "../src_plugins/lib_hid_gl/hidgl.h"
-#include "../src_plugins/lib_hid_gl/stencil_gl.h"
+#include "../lib_hid_gl/hidgl.h"
+#include "../lib_hid_gl/stencil_gl.h"
 
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
+#include "../lib_gtk_common/hid_gtk_conf.h"
 
 #define Z_NEAR 3.0
 extern rnd_hid_t gtk2_gl_hid;

@@ -6,10 +6,10 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
-#include "../src_plugins/lib_hid_gl/draw_gl.h"
+#include "../lib_hid_gl/draw_gl.h"
 
-#include "../src_plugins/lib_gtk_common/glue_common.h"
-#include "../src_plugins/lib_gtk_common/glue_hid.h"
+#include "../lib_gtk_common/glue_common.h"
+#include "../lib_gtk_common/glue_hid.h"
 
 const char *ghid_gl_cookie = "gtk2 hid, gl";
 

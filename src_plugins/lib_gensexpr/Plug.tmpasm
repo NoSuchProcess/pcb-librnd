@@ -1,6 +1,6 @@
 put /local/pcb/mod {lib_gensexpr}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/lib_gensexpr/lib_gensexpr.o
+	$(LIBRND_PLUGDIR)/lib_gensexpr/lib_gensexpr.o
 	$(SRC_3RD_DIR)/gensexpr/gsxl.o
 	$(SRC_3RD_DIR)/gensexpr/gsx_parse.o
 @]

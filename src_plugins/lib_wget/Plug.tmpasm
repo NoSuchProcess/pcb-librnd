@@ -1,6 +1,6 @@
 put /local/pcb/mod {lib_wget}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/lib_wget/lib_wget.o
+	$(LIBRND_PLUGDIR)/lib_wget/lib_wget.o
 @]
 
 switch /local/pcb/lib_wget/controls

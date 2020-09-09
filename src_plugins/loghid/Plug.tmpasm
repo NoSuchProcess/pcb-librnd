@@ -1,7 +1,7 @@
 put /local/pcb/mod {loghid}
 put /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/loghid/loghid.o
-	$(PLUGDIR)/loghid/hid-logger.o
+	$(LIBRND_PLUGDIR)/loghid/loghid.o
+	$(LIBRND_PLUGDIR)/loghid/hid-logger.o
 @]
 
 switch /local/pcb/loghid/controls

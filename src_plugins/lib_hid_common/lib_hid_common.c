@@ -42,8 +42,8 @@
 #include "dlg_comm_m.h"
 #include "dlg_log.h"
 #include "act_dad.h"
-#include "../src_plugins/lib_hid_common/zoompan.h"
-#include "../src_plugins/lib_hid_common/conf_internal.c"
+#include "zoompan.h"
+#include "conf_internal.c"
 
 conf_dialogs_t dialogs_conf;
 #define DIALOGS_CONF_FN "dialogs.conf"

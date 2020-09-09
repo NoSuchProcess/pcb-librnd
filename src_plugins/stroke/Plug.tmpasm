@@ -1,6 +1,6 @@
 put /local/pcb/mod {stroke}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/stroke/stroke.o @]
-put /local/pcb/mod/CONF {$(PLUGDIR)/stroke/stroke_conf.h}
+put /local/pcb/mod/OBJS [@ $(LIBRND_PLUGDIR)/stroke/stroke.o @]
+put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/stroke/stroke_conf.h}
 put /local/pcb/mod/CONFFILE {stroke.conf}
 put /local/pcb/mod/CONFVAR {stroke_conf_internal}
 

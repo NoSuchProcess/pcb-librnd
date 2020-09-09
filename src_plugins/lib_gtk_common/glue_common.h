@@ -1,7 +1,7 @@
 #include <librnd/core/hid.h>
 #include "pcb_gtk.h"
 
-#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
+#include "../lib_gtk_common/dlg_topwin.h"
 
 
 void ghid_glue_common_init(const char *cookie);

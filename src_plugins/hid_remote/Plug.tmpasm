@@ -1,7 +1,7 @@
 put /local/pcb/mod {hid_remote}
 append /local/pcb/mod/OBJS [@
-	$(PLUGDIR)/hid_remote/remote.o
-	$(PLUGDIR)/hid_remote/proto.o
+	$(LIBRND_PLUGDIR)/hid_remote/remote.o
+	$(LIBRND_PLUGDIR)/hid_remote/proto.o
 @]
 
 switch /local/pcb/hid_remote/controls

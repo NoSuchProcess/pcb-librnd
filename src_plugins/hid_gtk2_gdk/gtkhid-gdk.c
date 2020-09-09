@@ -10,15 +10,15 @@
 #include <librnd/core/pixmap.h>
 #include <librnd/core/globalconst.h>
 
-#include "../src_plugins/lib_gtk_common/pcb_gtk.h"
-#include "../src_plugins/lib_gtk_common/compat.h"
-#include "../src_plugins/lib_gtk_common/glue_common.h"
-#include "../src_plugins/lib_gtk_common/coord_conv.h"
+#include "../lib_gtk_common/pcb_gtk.h"
+#include "../lib_gtk_common/compat.h"
+#include "../lib_gtk_common/glue_common.h"
+#include "../lib_gtk_common/coord_conv.h"
 
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
-#include "../src_plugins/lib_gtk_common/lib_gtk_config.h"
+#include "../lib_gtk_common/hid_gtk_conf.h"
+#include "../lib_gtk_common/lib_gtk_config.h"
 
-#include "../src_plugins/lib_hid_common/clip.h"
+#include "../lib_hid_common/clip.h"
 
 extern rnd_hid_t gtk2_gdk_hid;
 static void ghid_gdk_screen_update(void);

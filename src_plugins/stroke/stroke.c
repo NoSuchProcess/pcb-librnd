@@ -38,7 +38,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/tool.h>
 
-#include "../src_plugins/stroke/conf_internal.c"
+#include "../stroke/conf_internal.c"
 #include "stroke_conf.h"
 
 #define STROKE_CONF_FN "stroke.conf"

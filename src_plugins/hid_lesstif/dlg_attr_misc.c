@@ -34,7 +34,7 @@
 
 #include <librnd/core/hid_dad.h>
 
-#include "../src_plugins/lib_hid_common/dad_markup.h"
+#include "../lib_hid_common/dad_markup.h"
 
 static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 {

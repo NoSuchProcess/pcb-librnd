@@ -32,7 +32,7 @@
 #include "lib_gtk_config.h"
 #include "hid_gtk_conf.h"
 #include <librnd/core/plugins.h>
-#include "src_plugins/lib_hid_common/place.h"
+#include "../lib_hid_common/place.h"
 
 static const char *lib_gtk_config_cookie = "lib_gtk_config";
 
@@ -101,7 +101,7 @@ void pcb_gtk_conf_init(void)
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(pcb_conf_hid_gtk, field,isarray,type_name,cpath,cname,desc,flags);
-#include "../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h"
+#include "../lib_gtk_common/hid_gtk_conf_fields.h"
 
 	/* check for legacy win geo settings */
 	for(p = legacy_paths; *p != NULL; p+=2) {

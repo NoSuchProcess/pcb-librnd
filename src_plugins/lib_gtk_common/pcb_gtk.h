@@ -75,7 +75,7 @@ struct pcb_gtk_impl_s {
 	void (*uninit_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm);
 };
 
-#include "../src_plugins/lib_gtk_common/ui_zoompan.h"
+#include "../lib_gtk_common/ui_zoompan.h"
 
 typedef struct {
 	GdkCursorType shape;
@@ -134,7 +134,7 @@ struct pcb_gtk_topwin_s {
 };
 
 /* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not required for the structs! */
-#include "../src_plugins/lib_gtk_common/dlg_topwin.h"
+#include "../lib_gtk_common/dlg_topwin.h"
 
 #include <librnd/core/event.h>
 #include <librnd/core/conf_hid.h>
