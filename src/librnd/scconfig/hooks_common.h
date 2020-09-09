@@ -388,6 +388,7 @@ static int rnd_hook_generate()
 	printf("Generating librnd.mak (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "librnd.mak.in", "librnd.mak"));
 	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "compat_inc.h.in", "compat_inc.h"));
 	printf("Generating librnd config.h (%d)\n", generr |= tmpasm(LIBRND_ROOT, "config.h.in", "config.h"));
+	printf("Generating opengl.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "opengl.h.in", "opengl.h"));
 
 	return generr;
 }
