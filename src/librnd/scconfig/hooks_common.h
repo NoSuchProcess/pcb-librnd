@@ -385,9 +385,9 @@ static int rnd_hook_generate()
 {
 	int generr = 0;
 
-	printf("Generating librnd.mak (%d)\n", generr |= tmpasm("../src/librnd/core", "librnd.mak.in", "librnd.mak"));
-	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm("../src/librnd/core", "compat_inc.h.in", "compat_inc.h"));
-	printf("Generating librnd config.h (%d)\n", generr |= tmpasm("../src/librnd", "config.h.in", "config.h"));
+	printf("Generating librnd.mak (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "librnd.mak.in", "librnd.mak"));
+	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "compat_inc.h.in", "compat_inc.h"));
+	printf("Generating librnd config.h (%d)\n", generr |= tmpasm(LIBRND_ROOT, "config.h.in", "config.h"));
 
 	return generr;
 }
