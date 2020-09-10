@@ -530,7 +530,7 @@
  librnd/poly/polyarea.h librnd/poly/self_isc.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h
-../src_plugins/hid_batch/batch.o: ../src_plugins/hid_batch/batch.c \
+../src/librnd/plugins/hid_batch/batch.o: ../src/librnd/plugins/hid_batch/batch.c \
  ../config.h librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -551,8 +551,8 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_init.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h
-../src_plugins/hid_gtk2_gdk/gtkhid-gdk.o: \
- ../src_plugins/hid_gtk2_gdk/gtkhid-gdk.c ../config.h librnd/config.h \
+../src/librnd/plugins/hid_gtk2_gdk/gtkhid-gdk.o: \
+ ../src/librnd/plugins/hid_gtk2_gdk/gtkhid-gdk.c ../config.h librnd/config.h \
  librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -569,24 +569,24 @@
  ../src_3rd/genlist/gendlist.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/pixmap.h librnd/core/globalconst.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_dad_spin.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_gtk_common/coord_conv.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h \
- ../src_plugins/lib_hid_common/clip.h
-../src_plugins/hid_gtk2_gdk/gtkhid-main.o: \
- ../src_plugins/hid_gtk2_gdk/gtkhid-main.c ../config.h librnd/config.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h \
+ ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
+ ../src/librnd/plugins/lib_hid_common/clip.h
+../src/librnd/plugins/hid_gtk2_gdk/gtkhid-main.o: \
+ ../src/librnd/plugins/hid_gtk2_gdk/gtkhid-main.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
@@ -598,24 +598,24 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h \
- ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/bu_menu.h \
- librnd/core/conf_hid.h ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/hid_dad_spin.h librnd/core/event.h librnd/core/hidlib.h \
- ../src_plugins/lib_gtk_common/glue_hid.h
-../src_plugins/hid_gtk2_gl/gtkhid-gl.o: \
- ../src_plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_hid.h
+../src/librnd/plugins/hid_gtk2_gl/gtkhid-gl.o: \
+ ../src/librnd/plugins/hid_gtk2_gl/gtkhid-gl.c ../config.h librnd/config.h \
  librnd/core/color_cache.h ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/color.h \
@@ -631,27 +631,27 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/pixmap.h \
- librnd/core/globalconst.h ../src_plugins/lib_hid_common/clip.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h librnd/core/event.h \
+ librnd/core/globalconst.h ../src/librnd/plugins/lib_hid_common/clip.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/coord_conv.h \
- ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/draw_gl.h \
- ../src_plugins/lib_hid_gl/opengl.h ../src_plugins/lib_hid_gl/hidgl.h \
- ../src_plugins/lib_hid_gl/stencil_gl.h
-../src_plugins/hid_gtk2_gl/gtkhid-main.o: \
- ../src_plugins/hid_gtk2_gl/gtkhid-main.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
+ ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
+../src/librnd/plugins/hid_gtk2_gl/gtkhid-main.o: \
+ ../src/librnd/plugins/hid_gtk2_gl/gtkhid-main.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
@@ -667,33 +667,33 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- librnd/core/color.h ../src_plugins/lib_hid_gl/draw_gl.h \
- ../src_plugins/lib_hid_gl/opengl.h \
- ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ librnd/core/color.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/bu_menu.h \
- librnd/core/conf_hid.h ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
  librnd/core/event.h librnd/core/hidlib.h \
- ../src_plugins/lib_gtk_common/glue_hid.h
-../src_plugins/hid_lesstif/FillBox.o: \
- ../src_plugins/hid_lesstif/FillBox.c ../config.h librnd/config.h \
- ../src_plugins/hid_lesstif/FillBoxP.h \
- ../src_plugins/hid_lesstif/FillBox.h \
- ../src_plugins/hid_lesstif/pxm_helper.h
-../src_plugins/hid_lesstif/Pages.o: ../src_plugins/hid_lesstif/Pages.c \
- ../config.h librnd/config.h ../src_plugins/hid_lesstif/PagesP.h \
- ../src_plugins/hid_lesstif/Pages.h \
- ../src_plugins/hid_lesstif/pxm_helper.h
-../src_plugins/hid_lesstif/dialogs.o: \
- ../src_plugins/hid_lesstif/dialogs.c \
- ../src_plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_hid.h
+../src/librnd/plugins/hid_lesstif/FillBox.o: \
+ ../src/librnd/plugins/hid_lesstif/FillBox.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/hid_lesstif/FillBoxP.h \
+ ../src/librnd/plugins/hid_lesstif/FillBox.h \
+ ../src/librnd/plugins/hid_lesstif/pxm_helper.h
+../src/librnd/plugins/hid_lesstif/Pages.o: ../src/librnd/plugins/hid_lesstif/Pages.c \
+ ../config.h librnd/config.h ../src/librnd/plugins/hid_lesstif/PagesP.h \
+ ../src/librnd/plugins/hid_lesstif/Pages.h \
+ ../src/librnd/plugins/hid_lesstif/pxm_helper.h
+../src/librnd/plugins/hid_lesstif/dialogs.o: \
+ ../src/librnd/plugins/hid_lesstif/dialogs.c \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
  librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -705,31 +705,31 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- ../src_plugins/hid_lesstif/FillBox.h librnd/core/compat_misc.h \
+ ../src/librnd/plugins/hid_lesstif/FillBox.h librnd/core/compat_misc.h \
  librnd/core/event.h librnd/core/hidlib.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
- librnd/core/misc_util.h ../src_plugins/hid_lesstif/lesstif.h \
+ librnd/core/misc_util.h ../src/librnd/plugins/hid_lesstif/lesstif.h \
  librnd/core/hid_cfg_input.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h librnd/core/hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_plugins/hid_lesstif/ltf_stdarg.h \
- ../src_plugins/hid_lesstif/dlg_attr_misc.c \
- ../src_plugins/hid_lesstif/wt_xpm.h \
- ../src_plugins/hid_lesstif/wt_colorbtn.h librnd/core/hid_dad.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_hid_common/dad_markup.h \
- ../src_plugins/hid_lesstif/wt_preview.h \
- ../src_plugins/hid_lesstif/dlg_attr_box.c \
- ../src_plugins/hid_lesstif/Pages.h \
- ../src_plugins/hid_lesstif/dlg_attr_tree.c \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src_3rd/puplug/libs.h ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
+ ../src/librnd/plugins/hid_lesstif/dlg_attr_misc.c \
+ ../src/librnd/plugins/hid_lesstif/wt_xpm.h \
+ ../src/librnd/plugins/hid_lesstif/wt_colorbtn.h librnd/core/hid_dad.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_hid_common/dad_markup.h \
+ ../src/librnd/plugins/hid_lesstif/wt_preview.h \
+ ../src/librnd/plugins/hid_lesstif/dlg_attr_box.c \
+ ../src/librnd/plugins/hid_lesstif/Pages.h \
+ ../src/librnd/plugins/hid_lesstif/dlg_attr_tree.c \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.h \
  librnd/core/hid_dad_tree.h ../src_3rd/genht/hash.h
-../src_plugins/hid_lesstif/dlg_fileselect.o: \
- ../src_plugins/hid_lesstif/dlg_fileselect.c ../config.h librnd/config.h \
- ../src_plugins/hid_lesstif/xincludes.h \
- ../src_plugins/hid_lesstif/lesstif.h librnd/core/hid_cfg_input.h \
+../src/librnd/plugins/hid_lesstif/dlg_fileselect.o: \
+ ../src/librnd/plugins/hid_lesstif/dlg_fileselect.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h \
+ ../src/librnd/plugins/hid_lesstif/lesstif.h librnd/core/hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
@@ -737,23 +737,23 @@
  librnd/core/rnd_bool.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/unit.h librnd/core/hid_menu.h \
- ../src_plugins/hid_lesstif/ltf_stdarg.h librnd/core/color.h \
+ ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
  librnd/core/event.h librnd/core/hidlib.h \
- ../src_plugins/hid_lesstif/dlg_fileselect.h
-../src_plugins/hid_lesstif/ltf_stdarg.o: \
- ../src_plugins/hid_lesstif/ltf_stdarg.c \
- ../src_plugins/hid_lesstif/ltf_stdarg.h \
- ../src_plugins/hid_lesstif/xincludes.h librnd/core/color.h \
+ ../src/librnd/plugins/hid_lesstif/dlg_fileselect.h
+../src/librnd/plugins/hid_lesstif/ltf_stdarg.o: \
+ ../src/librnd/plugins/hid_lesstif/ltf_stdarg.c \
+ ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h librnd/core/color.h \
  librnd/core/global_typedefs.h librnd/config.h librnd/core/rnd_bool.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h
-../src_plugins/hid_lesstif/main.o: ../src_plugins/hid_lesstif/main.c \
- ../src_plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
+../src/librnd/plugins/hid_lesstif/main.o: ../src/librnd/plugins/hid_lesstif/main.c \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
  librnd/core/math_helper.h librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -773,22 +773,22 @@
  ../src_3rd/puplug/error.h librnd/core/safe_fs.h librnd/core/hid.h \
  librnd/core/box.h librnd/core/misc_util.h librnd/core/hid_nogui.h \
  librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/hid_lesstif/lesstif.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/hid_lesstif/lesstif.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_init.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h \
  librnd/core/hid_dad_spin.h librnd/core/actions.h \
- ../src_3rd/libfungw/fungw.h ../src_plugins/hid_lesstif/ltf_stdarg.h \
+ ../src_3rd/libfungw/fungw.h ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
  librnd/core/grid.h librnd/core/tool.h librnd/core/globalconst.h \
- ../src_plugins/hid_lesstif/wt_preview.h \
- ../src_plugins/hid_lesstif/dlg_fileselect.h \
- ../src_plugins/hid_lesstif/FillBox.h \
- ../src_plugins/lib_hid_common/clip.h \
- ../src_plugins/lib_hid_common/cli_history.h \
- ../src_plugins/hid_lesstif/mouse.c ../src_3rd/genvector/genvector_impl.c \
- ../src_plugins/hid_lesstif/wt_preview.c
-../src_plugins/hid_lesstif/menu.o: ../src_plugins/hid_lesstif/menu.c \
- ../src_plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
+ ../src/librnd/plugins/hid_lesstif/wt_preview.h \
+ ../src/librnd/plugins/hid_lesstif/dlg_fileselect.h \
+ ../src/librnd/plugins/hid_lesstif/FillBox.h \
+ ../src/librnd/plugins/lib_hid_common/clip.h \
+ ../src/librnd/plugins/lib_hid_common/cli_history.h \
+ ../src/librnd/plugins/hid_lesstif/mouse.c ../src_3rd/genvector/genvector_impl.c \
+ ../src/librnd/plugins/hid_lesstif/wt_preview.c
+../src/librnd/plugins/hid_lesstif/menu.o: ../src/librnd/plugins/hid_lesstif/menu.c \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h ../config.h librnd/config.h \
  librnd/core/error.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -803,46 +803,46 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_plugins/hid_lesstif/lesstif.h librnd/core/paths.h \
+ ../src/librnd/plugins/hid_lesstif/lesstif.h librnd/core/paths.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
- ../src_plugins/hid_lesstif/ltf_stdarg.h librnd/core/color.h \
+ ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h librnd/core/color.h \
  librnd/core/event.h librnd/core/hidlib.h librnd/core/compat_misc.h \
- ../src_3rd/genht/hash.h ../src_plugins/lib_hid_common/menu_helper.h
-../src_plugins/hid_lesstif/wt_colorbtn.o: \
- ../src_plugins/hid_lesstif/wt_colorbtn.c librnd/core/compat_misc.h \
+ ../src_3rd/genht/hash.h ../src/librnd/plugins/lib_hid_common/menu_helper.h
+../src/librnd/plugins/hid_lesstif/wt_colorbtn.o: \
+ ../src/librnd/plugins/hid_lesstif/wt_colorbtn.c librnd/core/compat_misc.h \
  librnd/config.h librnd/core/color.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h
-../src_plugins/hid_lesstif/wt_xpm.o: ../src_plugins/hid_lesstif/wt_xpm.c \
+../src/librnd/plugins/hid_lesstif/wt_xpm.o: ../src/librnd/plugins/hid_lesstif/wt_xpm.c \
  librnd/core/compat_misc.h librnd/config.h \
- ../src_plugins/hid_lesstif/wt_xpm.h
-../src_plugins/hid_lesstif/xm_tree_table_pixmaps.o: \
- ../src_plugins/hid_lesstif/xm_tree_table_pixmaps.c \
- ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src/librnd/plugins/hid_lesstif/wt_xpm.h
+../src/librnd/plugins/hid_lesstif/xm_tree_table_pixmaps.o: \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_pixmaps.c \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
-../src_plugins/hid_lesstif/xm_tree_table_priv.o: \
- ../src_plugins/hid_lesstif/xm_tree_table_priv.c ../config.h \
+../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.o: \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.c ../config.h \
  librnd/config.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
-../src_plugins/hid_lesstif/xm_tree_table_widget.o: \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.c ../config.h \
- librnd/config.h ../src_plugins/hid_lesstif/xm_tree_table_priv.h \
- ../src_plugins/hid_lesstif/xm_tree_table_widget.h \
+../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.o: \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.c ../config.h \
+ librnd/config.h ../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.h \
+ ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
-../src_plugins/hid_remote/proto.o: ../src_plugins/hid_remote/proto.c \
+../src/librnd/plugins/hid_remote/proto.o: ../src/librnd/plugins/hid_remote/proto.c \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
  librnd/core/global_typedefs.h librnd/config.h librnd/core/rnd_bool.h \
- ../src_plugins/hid_remote/proto_lowcommon.h \
- ../src_plugins/hid_remote/proto_lowsend.h librnd/core/base64.h \
- ../src_plugins/hid_remote/proto_lowparse.h
-../src_plugins/hid_remote/remote.o: ../src_plugins/hid_remote/remote.c \
+ ../src/librnd/plugins/hid_remote/proto_lowcommon.h \
+ ../src/librnd/plugins/hid_remote/proto_lowsend.h librnd/core/base64.h \
+ ../src/librnd/plugins/hid_remote/proto_lowparse.h
+../src/librnd/plugins/hid_remote/remote.o: ../src/librnd/plugins/hid_remote/remote.c \
  ../config.h librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -855,11 +855,11 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
  librnd/core/compat_misc.h librnd/core/color.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/hid_remote/proto.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/hid_remote/proto.h \
  librnd/core/hid_nogui.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_init.h ../src_3rd/genvector/vtp0.h
-../src_plugins/irc/irc.o: ../src_plugins/irc/irc.c ../config.h \
+../src/librnd/plugins/irc/irc.o: ../src/librnd/plugins/irc/irc.c ../config.h \
  librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -882,15 +882,15 @@
  ../src_3rd/libporty_net/os_includes.h \
  ../src_3rd/libporty_net/pnet_config.h \
  ../src_3rd/libporty_net/phost_types.h
-../src_plugins/lib_gensexpr/lib_gensexpr.o: \
- ../src_plugins/lib_gensexpr/lib_gensexpr.c ../config.h librnd/config.h \
+../src/librnd/plugins/lib_gensexpr/lib_gensexpr.o: \
+ ../src/librnd/plugins/lib_gensexpr/lib_gensexpr.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
-../src_plugins/lib_gtk_common/bu_command.o: \
- ../src_plugins/lib_gtk_common/bu_command.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/rnd_bool.h \
+../src/librnd/plugins/lib_gtk_common/bu_command.o: \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/rnd_bool.h \
  librnd/core/global_typedefs.h librnd/core/hidlib_conf.h \
  librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -904,31 +904,31 @@
  librnd/core/hid.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_hid_common/cli_history.h
-../src_plugins/lib_gtk_common/bu_dwg_tooltip.o: \
- ../src_plugins/lib_gtk_common/bu_dwg_tooltip.c ../config.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_hid_common/cli_history.h
+../src/librnd/plugins/lib_gtk_common/bu_dwg_tooltip.o: \
+ ../src/librnd/plugins/lib_gtk_common/bu_dwg_tooltip.c ../config.h \
  librnd/config.h librnd/core/actions.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h
-../src_plugins/lib_gtk_common/bu_menu.o: \
- ../src_plugins/lib_gtk_common/bu_menu.c ../config.h librnd/config.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/plugins/lib_gtk_common/bu_dwg_tooltip.h
+../src/librnd/plugins/lib_gtk_common/bu_menu.o: \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.c ../config.h librnd/config.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/rnd_printf.h \
@@ -941,24 +941,24 @@
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  librnd/core/hidlib.h librnd/core/hid_cfg.h librnd/core/hid.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/hid_menu.h \
- librnd/core/hid_cfg_action.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ librnd/core/hid_cfg_action.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_hid_common/menu_helper.h
-../src_plugins/lib_gtk_common/dlg_attribute.o: \
- ../src_plugins/lib_gtk_common/dlg_attribute.c ../config.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_hid_common/menu_helper.h
+../src/librnd/plugins/lib_gtk_common/dlg_attribute.o: \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attribute.c ../config.h \
  librnd/config.h librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -970,35 +970,35 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- ../src_plugins/lib_gtk_common/dlg_attribute.h librnd/core/hid.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attribute.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
- librnd/core/misc_util.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ librnd/core/misc_util.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/hid_dad_tree.h ../src_3rd/genht/hash.h \
  librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/dlg_attr_tree.c \
- ../src_plugins/lib_gtk_common/dlg_attr_misc.c \
- ../src_plugins/lib_gtk_common/wt_preview.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_hid_common/dad_markup.h \
- ../src_plugins/lib_gtk_common/dlg_attr_txt.c \
- ../src_plugins/lib_gtk_common/dlg_attr_box.c
-../src_plugins/lib_gtk_common/dlg_fileselect.o: \
- ../src_plugins/lib_gtk_common/dlg_fileselect.c ../config.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attr_tree.c \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attr_misc.c \
+ ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_hid_common/dad_markup.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attr_txt.c \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attr_box.c
+../src/librnd/plugins/lib_gtk_common/dlg_fileselect.o: \
+ ../src/librnd/plugins/lib_gtk_common/dlg_fileselect.c ../config.h \
  librnd/config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -1009,25 +1009,25 @@
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/compat.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/safe_fs.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_plugins/lib_gtk_common/dlg_attribute.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attribute.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h
-../src_plugins/lib_gtk_common/dlg_topwin.o: \
- ../src_plugins/lib_gtk_common/dlg_topwin.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h
+../src/librnd/plugins/lib_gtk_common/dlg_topwin.o: \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -1039,104 +1039,104 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/event.h \
  librnd/core/hidlib.h ../src_3rd/genht/hash.h librnd/core/hidlib_conf.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
- ../src_plugins/lib_gtk_common/dlg_attribute.h \
- ../src_plugins/lib_gtk_common/util_listener.h \
- ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/glue_common.o: \
- ../src_plugins/lib_gtk_common/glue_common.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attribute.h \
+ ../src/librnd/plugins/lib_gtk_common/util_listener.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/glue_common.o: \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.c ../config.h librnd/config.h \
  librnd/core/pixmap.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h ../src_plugins/lib_gtk_common/glue_common.h \
+ librnd/core/rnd_bool.h ../src/librnd/plugins/lib_gtk_common/glue_common.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
- librnd/core/unit.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
+ librnd/core/unit.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
  librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/dlg_topwin.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/wt_preview.h
-../src_plugins/lib_gtk_common/glue_hid.o: \
- ../src_plugins/lib_gtk_common/glue_hid.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/glue_hid.h librnd/core/hid.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/wt_preview.h
+../src/librnd/plugins/lib_gtk_common/glue_hid.o: \
+ ../src/librnd/plugins/lib_gtk_common/glue_hid.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_hid.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
  librnd/core/hid_nogui.h librnd/core/pixmap.h \
- ../src_plugins/lib_gtk_common/coord_conv.h librnd/core/hidlib_conf.h \
- ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/bu_dwg_tooltip.h \
- ../src_plugins/lib_gtk_common/ui_crosshair.h \
- ../src_plugins/lib_gtk_common/dlg_fileselect.h \
- ../src_plugins/lib_gtk_common/dlg_attribute.h \
- ../src_plugins/lib_gtk_common/util_listener.h \
- ../src_plugins/lib_gtk_common/util_timer.h \
- ../src_plugins/lib_gtk_common/util_watch.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
- ../src_plugins/lib_gtk_common/lib_gtk_config.h \
- ../src_plugins/lib_gtk_common/glue_common.h \
- ../src_plugins/lib_hid_common/menu_helper.h
-../src_plugins/lib_gtk_common/in_keyboard.o: \
- ../src_plugins/lib_gtk_common/in_keyboard.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/in_keyboard.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/coord_conv.h librnd/core/hidlib_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_dwg_tooltip.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_crosshair.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_fileselect.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_attribute.h \
+ ../src/librnd/plugins/lib_gtk_common/util_listener.h \
+ ../src/librnd/plugins/lib_gtk_common/util_timer.h \
+ ../src/librnd/plugins/lib_gtk_common/util_watch.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h \
+ ../src/librnd/plugins/lib_hid_common/menu_helper.h
+../src/librnd/plugins/lib_gtk_common/in_keyboard.o: \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h librnd/core/hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
@@ -1144,27 +1144,27 @@
  librnd/core/rnd_bool.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/unit.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/in_mouse.o: \
- ../src_plugins/lib_gtk_common/in_mouse.c ../config.h librnd/config.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/in_mouse.o: \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1177,30 +1177,30 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/tool.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h ../src_3rd/genvector/genvector_impl.c \
- ../src_plugins/lib_gtk_common/in_keyboard.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/lib_gtk_common.o: \
- ../src_plugins/lib_gtk_common/lib_gtk_common.c ../config.h \
+ ../src/librnd/plugins/lib_gtk_common/in_keyboard.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/lib_gtk_common.o: \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_common.c ../config.h \
  librnd/config.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h ../src_plugins/lib_gtk_common/lib_gtk_config.h \
+ ../src_3rd/puplug/error.h ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1213,9 +1213,9 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h
-../src_plugins/lib_gtk_common/lib_gtk_config.o: \
- ../src_plugins/lib_gtk_common/lib_gtk_config.c ../config.h \
- librnd/config.h ../src_plugins/lib_gtk_common/lib_gtk_config.h \
+../src/librnd/plugins/lib_gtk_common/lib_gtk_config.o: \
+ ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.c ../config.h \
+ librnd/config.h ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1228,70 +1228,70 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf.h librnd/core/plugins.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h librnd/core/plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/lib_hid_common/place.h \
- ../src_plugins/lib_gtk_common/hid_gtk_conf_fields.h
-../src_plugins/lib_gtk_common/ui_crosshair.o: \
- ../src_plugins/lib_gtk_common/ui_crosshair.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/ui_crosshair.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h librnd/core/rnd_bool.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_hid_common/place.h \
+ ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf_fields.h
+../src/librnd/plugins/lib_gtk_common/ui_crosshair.o: \
+ ../src/librnd/plugins/lib_gtk_common/ui_crosshair.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_crosshair.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h librnd/core/rnd_bool.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_cfg.h librnd/core/global_typedefs.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/hid_gtk_conf.h
-../src_plugins/lib_gtk_common/ui_zoompan.o: \
- ../src_plugins/lib_gtk_common/ui_zoompan.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h librnd/core/rnd_bool.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h
+../src/librnd/plugins/lib_gtk_common/ui_zoompan.o: \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h librnd/core/rnd_bool.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_cfg.h librnd/core/global_typedefs.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/hidlib_conf.h \
- ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/util_listener.o: \
- ../src_plugins/lib_gtk_common/util_listener.c ../config.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/util_listener.o: \
+ ../src/librnd/plugins/lib_gtk_common/util_listener.c ../config.h \
  librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1299,83 +1299,83 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h librnd/core/compat_misc.h \
- ../src_plugins/lib_gtk_common/util_listener.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/util_listener.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/color.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h
-../src_plugins/lib_gtk_common/util_timer.o: \
- ../src_plugins/lib_gtk_common/util_timer.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/util_timer.h librnd/core/hid.h \
+../src/librnd/plugins/lib_gtk_common/util_timer.o: \
+ ../src/librnd/plugins/lib_gtk_common/util_timer.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/util_timer.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/util_watch.o: \
- ../src_plugins/lib_gtk_common/util_watch.c ../config.h librnd/config.h \
- ../src_plugins/lib_gtk_common/util_watch.h librnd/core/hid.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/util_watch.o: \
+ ../src/librnd/plugins/lib_gtk_common/util_watch.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/util_watch.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/lib_gtk_common/glue_common.h
-../src_plugins/lib_gtk_common/wt_preview.o: \
- ../src_plugins/lib_gtk_common/wt_preview.c ../config.h librnd/config.h \
+ librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/in_mouse.h \
+ ../src/librnd/plugins/lib_gtk_common/glue_common.h
+../src/librnd/plugins/lib_gtk_common/wt_preview.o: \
+ ../src/librnd/plugins/lib_gtk_common/wt_preview.c ../config.h librnd/config.h \
  librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -1387,26 +1387,26 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
  librnd/core/hid.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/hid_menu.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/compat.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h \
- ../src_plugins/lib_gtk_common/in_mouse.h \
- ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
- ../src_plugins/lib_gtk_common/bu_command.h \
- ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/compat.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/in_mouse.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h \
+ ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/pcb_gtk.h \
- ../src_plugins/lib_gtk_common/bu_menu.h \
- ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
- librnd/core/hidlib.h ../src_plugins/lib_gtk_common/wt_preview.h \
- ../src_plugins/lib_gtk_common/ui_zoompan.h librnd/core/globalconst.h
-../src_plugins/lib_hid_common/act_dad.o: \
- ../src_plugins/lib_hid_common/act_dad.c librnd/config.h \
+ ../src/librnd/plugins/lib_gtk_common/pcb_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h librnd/core/globalconst.h
+../src/librnd/plugins/lib_hid_common/act_dad.o: \
+ ../src/librnd/plugins/lib_hid_common/act_dad.c librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  ../src_3rd/genvector/vts0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
@@ -1419,13 +1419,13 @@
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
- ../src_plugins/lib_hid_common/act_dad.h
-../src_plugins/lib_hid_common/cli_history.o: \
- ../src_plugins/lib_hid_common/cli_history.c librnd/config.h \
+ ../src/librnd/plugins/lib_hid_common/act_dad.h
+../src/librnd/plugins/lib_hid_common/cli_history.o: \
+ ../src/librnd/plugins/lib_hid_common/cli_history.c librnd/config.h \
  ../src_3rd/genlist/gendlist.h \
- ../src_plugins/lib_hid_common/cli_history.h \
- ../src_plugins/lib_hid_common/lib_hid_common.h \
- ../src_plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
+ ../src/librnd/plugins/lib_hid_common/cli_history.h \
+ ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
+ ../src/librnd/plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -1436,8 +1436,8 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/safe_fs.h librnd/core/paths.h
-../src_plugins/lib_hid_common/dlg_comm_m.o: \
- ../src_plugins/lib_hid_common/dlg_comm_m.c librnd/config.h \
+../src/librnd/plugins/lib_hid_common/dlg_comm_m.o: \
+ ../src/librnd/plugins/lib_hid_common/dlg_comm_m.c librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1449,15 +1449,15 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/hidlib.h ../src_plugins/lib_hid_common/xpm.h \
- ../src_plugins/lib_hid_common/dlg_comm_m.h \
- ../src_plugins/lib_hid_common/lib_hid_common.h \
- ../src_plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
+ librnd/core/hidlib.h ../src/librnd/plugins/lib_hid_common/xpm.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_comm_m.h \
+ ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
+ ../src/librnd/plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h
-../src_plugins/lib_hid_common/dlg_log.o: \
- ../src_plugins/lib_hid_common/dlg_log.c librnd/config.h \
+../src/librnd/plugins/lib_hid_common/dlg_log.o: \
+ ../src/librnd/plugins/lib_hid_common/dlg_log.c librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1473,9 +1473,9 @@
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/hid_dad_spin.h librnd/core/event.h librnd/core/hidlib.h \
- ../src_plugins/lib_hid_common/dlg_log.h
-../src_plugins/lib_hid_common/grid_menu.o: \
- ../src_plugins/lib_hid_common/grid_menu.c librnd/config.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_log.h
+../src/librnd/plugins/lib_hid_common/grid_menu.o: \
+ ../src/librnd/plugins/lib_hid_common/grid_menu.c librnd/config.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -1490,17 +1490,17 @@
  librnd/core/hidlib.h librnd/core/hid_cfg.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/hid_menu.h \
- ../src_plugins/lib_hid_common/grid_menu.h
-../src_plugins/lib_hid_common/lead_user.o: \
- ../src_plugins/lib_hid_common/lead_user.c librnd/config.h \
+ ../src/librnd/plugins/lib_hid_common/grid_menu.h
+../src/librnd/plugins/lib_hid_common/lead_user.o: \
+ ../src/librnd/plugins/lib_hid_common/lead_user.c librnd/config.h \
  librnd/core/unit.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/event.h librnd/core/hidlib.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h
-../src_plugins/lib_hid_common/lib_hid_common.o: \
- ../src_plugins/lib_hid_common/lib_hid_common.c librnd/config.h \
+../src/librnd/plugins/lib_hid_common/lib_hid_common.o: \
+ ../src/librnd/plugins/lib_hid_common/lib_hid_common.c librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
@@ -1518,20 +1518,20 @@
  librnd/core/hidlib.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- ../src_plugins/lib_hid_common/grid_menu.h \
- ../src_plugins/lib_hid_common/cli_history.h \
- ../src_plugins/lib_hid_common/lead_user.h \
- ../src_plugins/lib_hid_common/place.h \
- ../src_plugins/lib_hid_common/lib_hid_common.h \
- ../src_plugins/lib_hid_common/dialogs_conf.h \
- ../src_plugins/lib_hid_common/dlg_comm_m.h \
- ../src_plugins/lib_hid_common/dlg_log.h \
- ../src_plugins/lib_hid_common/act_dad.h \
- ../src_plugins/lib_hid_common/zoompan.h \
- ../src_plugins/lib_hid_common/conf_internal.c \
- ../src_plugins/lib_hid_common/dialogs_conf_fields.h
-../src_plugins/lib_hid_common/menu_helper.o: \
- ../src_plugins/lib_hid_common/menu_helper.c librnd/config.h \
+ ../src/librnd/plugins/lib_hid_common/grid_menu.h \
+ ../src/librnd/plugins/lib_hid_common/cli_history.h \
+ ../src/librnd/plugins/lib_hid_common/lead_user.h \
+ ../src/librnd/plugins/lib_hid_common/place.h \
+ ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
+ ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_comm_m.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_log.h \
+ ../src/librnd/plugins/lib_hid_common/act_dad.h \
+ ../src/librnd/plugins/lib_hid_common/zoompan.h \
+ ../src/librnd/plugins/lib_hid_common/conf_internal.c \
+ ../src/librnd/plugins/lib_hid_common/dialogs_conf_fields.h
+../src/librnd/plugins/lib_hid_common/menu_helper.o: \
+ ../src/librnd/plugins/lib_hid_common/menu_helper.c librnd/config.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/tree.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -1546,9 +1546,9 @@
  librnd/core/hid.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- librnd/core/compat_misc.h ../src_plugins/lib_hid_common/menu_helper.h
-../src_plugins/lib_hid_common/place.o: \
- ../src_plugins/lib_hid_common/place.c librnd/config.h \
+ librnd/core/compat_misc.h ../src/librnd/plugins/lib_hid_common/menu_helper.h
+../src/librnd/plugins/lib_hid_common/place.o: \
+ ../src/librnd/plugins/lib_hid_common/place.c librnd/config.h \
  librnd/core/event.h librnd/core/unit.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/hidlib.h librnd/core/compat_misc.h \
  librnd/core/error.h librnd/core/conf.h librnd/core/rnd_printf.h \
@@ -1559,11 +1559,11 @@
  ../src_3rd/genht/ht.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- librnd/core/safe_fs.h ../src_plugins/lib_hid_common/dialogs_conf.h \
+ librnd/core/safe_fs.h ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
  ../src_3rd/genht/ht_inlines.h ../src_3rd/genht/hash.h
-../src_plugins/lib_hid_common/toolbar.o: \
- ../src_plugins/lib_hid_common/toolbar.c librnd/config.h \
+../src/librnd/plugins/lib_hid_common/toolbar.o: \
+ ../src/librnd/plugins/lib_hid_common/toolbar.c librnd/config.h \
  ../src_3rd/genvector/vti0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/liblihata/tree.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -1580,14 +1580,14 @@
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/conf_hid.h \
- ../src_plugins/lib_hid_common/toolbar.h librnd/core/event.h \
+ ../src/librnd/plugins/lib_hid_common/toolbar.h librnd/core/event.h \
  librnd/core/hidlib.h
-../src_plugins/lib_hid_common/xpm.o: ../src_plugins/lib_hid_common/xpm.c \
+../src/librnd/plugins/lib_hid_common/xpm.o: ../src/librnd/plugins/lib_hid_common/xpm.c \
  ../config.h librnd/config.h \
- ../src_plugins/lib_hid_common/xpm/question.xpm \
- ../src_plugins/lib_hid_common/xpm/warning.xpm
-../src_plugins/lib_hid_common/zoompan.o: \
- ../src_plugins/lib_hid_common/zoompan.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_hid_common/xpm/question.xpm \
+ ../src/librnd/plugins/lib_hid_common/xpm/warning.xpm
+../src/librnd/plugins/lib_hid_common/zoompan.o: \
+ ../src/librnd/plugins/lib_hid_common/zoompan.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1595,8 +1595,8 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/compat_misc.h librnd/core/hidlib.h \
- ../src_plugins/lib_hid_common/zoompan.h
-../src_plugins/lib_hid_gl/hidgl.o: ../src_plugins/lib_hid_gl/hidgl.c \
+ ../src/librnd/plugins/lib_hid_common/zoompan.h
+../src/librnd/plugins/lib_hid_gl/hidgl.o: ../src/librnd/plugins/lib_hid_gl/hidgl.c \
  ../config.h librnd/config.h librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -1610,28 +1610,28 @@
  ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/grid.h \
  librnd/core/hid.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h \
- ../src_plugins/lib_hid_gl/hidgl.h librnd/poly/rtree.h \
+ ../src/librnd/plugins/lib_hid_gl/hidgl.h librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h librnd/core/hidlib.h \
- ../src_plugins/lib_hid_gl/draw_gl.c \
- ../src_plugins/lib_hid_gl/stencil_gl.h \
- ../src_plugins/lib_hid_gl/opengl.h
-../src_plugins/lib_hid_gl/lib_hid_gl.o: \
- ../src_plugins/lib_hid_gl/lib_hid_gl.c ../config.h librnd/config.h \
+ ../src/librnd/plugins/lib_hid_gl/draw_gl.c \
+ ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h
+../src/librnd/plugins/lib_hid_gl/lib_hid_gl.o: \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
-../src_plugins/lib_hid_gl/stencil_gl.o: \
- ../src_plugins/lib_hid_gl/stencil_gl.c \
- ../src_plugins/lib_hid_gl/stencil_gl.h \
- ../src_plugins/lib_hid_gl/opengl.h
-../src_plugins/lib_portynet/lib_portynet.o: \
- ../src_plugins/lib_portynet/lib_portynet.c ../config.h librnd/config.h \
+../src/librnd/plugins/lib_hid_gl/stencil_gl.o: \
+ ../src/librnd/plugins/lib_hid_gl/stencil_gl.c \
+ ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h
+../src/librnd/plugins/lib_portynet/lib_portynet.o: \
+ ../src/librnd/plugins/lib_portynet/lib_portynet.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
-../src_plugins/lib_wget/lib_wget.o: ../src_plugins/lib_wget/lib_wget.c \
+../src/librnd/plugins/lib_wget/lib_wget.o: ../src/librnd/plugins/lib_wget/lib_wget.c \
  ../config.h librnd/config.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
@@ -1645,9 +1645,9 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h ../src_plugins/lib_wget/lib_wget.h
-../src_plugins/loghid/hid-logger.o: ../src_plugins/loghid/hid-logger.c \
- ../config.h librnd/config.h ../src_plugins/loghid/hid-logger.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_wget/lib_wget.h
+../src/librnd/plugins/loghid/hid-logger.o: ../src/librnd/plugins/loghid/hid-logger.c \
+ ../config.h librnd/config.h ../src/librnd/plugins/loghid/hid-logger.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
@@ -1656,7 +1656,7 @@
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/color.h
-../src_plugins/loghid/loghid.o: ../src_plugins/loghid/loghid.c \
+../src/librnd/plugins/loghid/loghid.o: ../src/librnd/plugins/loghid/loghid.c \
  ../config.h librnd/config.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -1671,11 +1671,11 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
- ../src_plugins/loghid/hid-logger.h librnd/core/hid.h librnd/core/box.h \
+ ../src/librnd/plugins/loghid/hid-logger.h librnd/core/hid.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/hid_init.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/color.h librnd/core/hid_nogui.h
-../src_plugins/stroke/stroke.o: ../src_plugins/stroke/stroke.c \
+../src/librnd/plugins/stroke/stroke.o: ../src/librnd/plugins/stroke/stroke.c \
  ../config.h librnd/config.h librnd/core/hidlib_conf.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -1695,9 +1695,9 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/compat_misc.h librnd/core/event.h \
  librnd/core/hidlib.h librnd/core/tool.h \
- ../src_plugins/stroke/conf_internal.c \
- ../src_plugins/stroke/stroke_conf.h \
- ../src_plugins/stroke/stroke_conf_fields.h
+ ../src/librnd/plugins/stroke/conf_internal.c \
+ ../src/librnd/plugins/stroke/stroke_conf.h \
+ ../src/librnd/plugins/stroke/stroke_conf_fields.h
 ../src_3rd/gensexpr/gsx_parse.o: ../src_3rd/gensexpr/gsx_parse.c \
  ../src_3rd/gensexpr/gsx_parse.h
 ../src_3rd/gensexpr/gsxl.o: ../src_3rd/gensexpr/gsxl.c \
