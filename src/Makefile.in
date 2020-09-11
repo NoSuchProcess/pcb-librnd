@@ -412,7 +412,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
-	$(SCCBOX) $(HOW) "../scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf"
+	$(SCCBOX) $(HOW) "librnd/scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf.sh"
 	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
 	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
