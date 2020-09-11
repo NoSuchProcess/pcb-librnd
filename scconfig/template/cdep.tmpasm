@@ -16,7 +16,7 @@ include Makefile.dep
 DEPDEPS=@/local/pcb/DEPDEPS_SORTED@
 
 dep: FORCE $(DEPDEPS)
-	make -f Makefile.depgen PLUGDIR=$(PLUGDIR) SRC_3RD_DIR=$(SRC_3RD_DIR)
+	make -f Makefile.depgen PLUGDIR=$(PLUGDIR) LIBRND_PLUGDIR=$(LIBRND_PLUGDIR) SRC_3RD_DIR=$(SRC_3RD_DIR)
 @]
 
 append /local/dep/CFLAGS {-D_PCB_DEP_}
@@ -45,7 +45,10 @@ foreach /local/c in /local/dep/SRCS_SORTED
 	sub {/local/o} {.c$} {.o}
 	sub {/local/c} {.o$} {.c}
 	switch /local/c
-		case {/src_plugins/} end
+		case {/plugins/} end
+		case {$(LIBRND_PLUGDIR)}
+			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep
+@]; end
 		case {$(PLUGDIR)}
 			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep
 @]; end
