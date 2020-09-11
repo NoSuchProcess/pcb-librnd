@@ -46,9 +46,9 @@
 
 #include "FillBox.h"
 
-#include "../lib_hid_common/lib_hid_common.h"
-#include "../lib_hid_common/clip.h"
-#include "../lib_hid_common/cli_history.h"
+#include <librnd/plugins/lib_hid_common/lib_hid_common.h>
+#include <librnd/plugins/lib_hid_common/clip.h>
+#include <librnd/plugins/lib_hid_common/cli_history.h>
 
 #include <sys/poll.h>
 

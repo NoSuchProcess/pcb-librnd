@@ -24,7 +24,7 @@
 #include <librnd/core/compat_misc.h>
 #include <genht/hash.h>
 
-#include "../lib_hid_common/menu_helper.h"
+#include <librnd/plugins/lib_hid_common/menu_helper.h>
 
 extern rnd_hidlib_t *ltf_hidlib;
 

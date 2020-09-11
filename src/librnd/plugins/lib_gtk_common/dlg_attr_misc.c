@@ -28,7 +28,7 @@
 
 #include "wt_preview.h"
 
-#include "../lib_hid_common/dad_markup.h"
+#include <librnd/plugins/lib_hid_common/dad_markup.h>
 
 static int ghid_progress_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {

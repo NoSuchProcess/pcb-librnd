@@ -43,7 +43,7 @@
 
 #include "pcb_gtk.h"
 #include "hid_gtk_conf.h"
-#include "../lib_hid_common/cli_history.h"
+#include <librnd/plugins/lib_hid_common/cli_history.h>
 
 
 #include "compat.h"
