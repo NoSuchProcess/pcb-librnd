@@ -2,7 +2,6 @@ all: FORCE
 	cd src_3rd/puplug/util && $(MAKE) CC=$(PCB_RND_HOST_CC)
 	cd src && $(MAKE)
 	cd util && $(MAKE)
-	cd pcblib && $(MAKE)
 #	cd doc && $(MAKE)
 
 test: FORCE
@@ -11,7 +10,6 @@ test: FORCE
 clean: FORCE
 	cd src && $(MAKE) clean
 	cd util && $(MAKE) clean
-	cd pcblib && $(MAKE) clean
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/sphash && $(MAKE) clean
@@ -38,19 +36,16 @@ distclean: FORCE
 install: FORCE
 	cd src && $(MAKE) install
 	cd util && $(MAKE) install
-	cd pcblib && $(MAKE) install
 	cd doc && $(MAKE) install
 
 linstall: FORCE
 	cd src && $(MAKE) linstall
 	cd util && $(MAKE) linstall
-	cd pcblib && $(MAKE) linstall
 	cd doc && $(MAKE) linstall
 
 uninstall: FORCE
 	cd src && $(MAKE) uninstall
 	cd util && $(MAKE) uninstall
-	cd pcblib && $(MAKE) uninstall
 	cd doc && $(MAKE) uninstall
 
 include Makefile.conf

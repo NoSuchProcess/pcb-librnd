@@ -24,44 +24,24 @@ install_main:
 
 install:
 	$(SCCBOX) mkdir -p "$(DOCDIR)"
-	cd man && $(MAKE) install
-	cd user && $(MAKE) install
-	cd tutorials && $(MAKE) install
-	cd security && $(MAKE) install
 	cd conf && $(MAKE) install
 	cd developer && $(MAKE) install
 	$(MAKE) install_main HOW="install -f -d"
 
 linstall:
-	cd man && $(MAKE) linstall
-	cd user && $(MAKE) linstall
-	cd tutorials && $(MAKE) linstall
-	cd security && $(MAKE) linstall
 	cd conf && $(MAKE) linstall
 	cd developer && $(MAKE) linstall
 	$(MAKE) install_main HOW="install -f -l -d"
 
 uninstall:
-	cd man && $(MAKE) uninstall
-	cd user && $(MAKE) uninstall
-	cd tutorials && $(MAKE) uninstall
-	cd security && $(MAKE) uninstall
 	cd conf && $(MAKE) uninstall
 	cd developer && $(MAKE) uninstall
 	$(MAKE) install_main HOW="install -f -u -d"
 
 clean:
-	cd man && $(MAKE) clean
-	cd user && $(MAKE) clean
-	cd tutorials && $(MAKE) clean
-	cd security && $(MAKE) clean
 	cd conf && $(MAKE) clean
 	cd developer && $(MAKE) clean
 
 distclean:
-	cd man && $(MAKE) distclean
-	cd user && $(MAKE) distclean
-	cd tutorials && $(MAKE) distclean
-	cd security && $(MAKE) distclean
 	cd conf && $(MAKE) distclean
 	cd developer && $(MAKE) distclean
