@@ -332,7 +332,10 @@ HIDLIB_CLEAN_FILES=\
 	librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.a \
 	librnd-poly.so.$(PCB_RND_VER) librnd-poly.a
 
-librnd: $(HIDLIB_CLEAN_FILES)
+librnd: $(HIDLIB_CLEAN_FILES) ../src_3rd/genht/version.h
+
+../src_3rd/genht/version.h:
+	cd ../src_3rd/genht && $(MAKE) version.h
 
 ### pcb-rnd infra ###
 
@@ -412,6 +415,20 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "../scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf"
 	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
 	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
+	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
+	$(SCCBOX) $(HOW) ../src_3rd/genht/hash.h       $(HL_INCDIR)/src_3rd/genht/hash.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/ht.h         $(HL_INCDIR)/src_3rd/genht/ht.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/version.h    $(HL_INCDIR)/src_3rd/genht/version.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/ht_inlines.h $(HL_INCDIR)/src_3rd/genht/ht_inlines.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/ht_utils.h   $(HL_INCDIR)/src_3rd/genht/ht_utils.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/htip.h       $(HL_INCDIR)/src_3rd/genht/htip.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/htsi.h       $(HL_INCDIR)/src_3rd/genht/htsi.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/htsp.h       $(HL_INCDIR)/src_3rd/genht/htsp.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/htss.h       $(HL_INCDIR)/src_3rd/genht/htss.h
+	$(SCCBOX) $(HOW) ../src_3rd/genht/htpp.h       $(HL_INCDIR)/src_3rd/genht/htpp.h
+	$(SCCBOX) $(HOW) ../src_3rd/libfungw/fungw.h          $(HL_INCDIR)/src_3rd/libfungw/fungw.h
+	$(SCCBOX) $(HOW) ../src_3rd/libfungw/fungw_conv.h     $(HL_INCDIR)/src_3rd/libfungw/fungw_conv.h
+	$(SCCBOX) $(HOW) ../src_3rd/libfungw/scconfig_hooks.h $(HL_INCDIR)/src_3rd/libfungw/scconfig_hooks.h
 	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"
 @]
 
