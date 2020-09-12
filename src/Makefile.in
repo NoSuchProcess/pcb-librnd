@@ -421,8 +421,8 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/plugin_intconf.tmpasm"  "$(HL_LIBDIR)/librnd/scconfig/template/plugin_intconf.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/plugin_intmenu.tmpasm"  "$(HL_LIBDIR)/librnd/scconfig/template/plugin_intmenu.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/plugin_sphash.tmpasm"   "$(HL_LIBDIR)/librnd/scconfig/template/plugin_sphash.tmpasm"
-	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
-	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
+	$(SCCBOX) $(HOW) "librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
+	$(SCCBOX) $(HOW) "librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd/plugins/map_plugins.sh"
 	$(SCCBOX) $(HOW) ../src_3rd/genht/hash.h       $(HL_INCDIR)/src_3rd/genht/hash.h
