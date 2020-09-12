@@ -473,10 +473,7 @@ another:
 
 	/* get the parameters to pass to the action */
 	while (1) {
-		/*
-		 * maybe_empty == 0 means that the last char examined was not a
-		 * ","
-		 */
+		/* maybe_empty == 0 means that the last char examined was not a "," */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
 			fgw_arg_t argv[RND_ACTION_MAX_ARGS+1];
 			int an;
