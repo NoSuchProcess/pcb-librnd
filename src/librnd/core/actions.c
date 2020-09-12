@@ -520,16 +520,13 @@ another:
 			list[num++] = cp;
 
 			/* search for the end of the argument, we want to keep going
-			 * if we are in quotes or the char is not a delimiter
-			 */
+			   if we are in quotes or the char is not a delimiter */
 			while (*sp && (in_quotes || ((*sp != ',')
 																	 && (!parens || *sp != ')')
 																	 && (parens || !isspace((int) *sp))))) {
-				/*
-				 * single quotes give literal value inside, including '\'.
-				 * you can't have a single inside single quotes.
-				 * doubles quotes gives literal value inside, but allows escape.
-				 */
+				/* single quotes give literal value inside, including '\'.
+				   you can't have a single inside single quotes.
+				   doubles quotes gives literal value inside, but allows escape. */
 				if ((*sp == '"' || *sp == '\'') && (!in_quotes || *sp == in_quotes)) {
 					in_quotes = in_quotes ? 0 : *sp;
 					sp++;
