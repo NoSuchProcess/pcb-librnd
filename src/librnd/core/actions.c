@@ -505,10 +505,8 @@ another:
 		else {
 			maybe_empty = 0;
 			in_quotes = 0;
-			/*
-			 * if we have more parameters than memory in our array of
-			 * pointers, then either allocate some or grow the array
-			 */
+			/* if we have more parameters than memory in our array of
+				 pointers, then either allocate some or grow the array */
 			if (num >= max) {
 				max += 10;
 				if (list)
