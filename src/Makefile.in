@@ -282,7 +282,7 @@ revcheck:
 
 all_exe: test-rnd$(EXE) @/local/pcb/all@
 
-test-rnd$.o: $(LIBRND)/core/buildin.hidlib.h
+test-rnd.o: $(LIBRND)/core/buildin.hidlib.h
 
 test-rnd$(EXE): $(OBJS) test-rnd.o $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
 	$(CC) test-rnd.o $(OBJS) $(OBJS_C99) -o test-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
