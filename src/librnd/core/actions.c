@@ -438,8 +438,7 @@ another:
 
 	aname = cp;
 
-	/* copy the action name, assumes name does not have a space or '('
-	 * in its name */
+	/* copy the action name, assumes name does not have a space or '(' in its name */
 	while (*sp && !isspace((int) *sp) && *sp != '(')
 		*cp++ = *sp++;
 	*cp++ = 0;
@@ -448,10 +447,7 @@ another:
 	while (*sp && isspace((int) *sp))
 		sp++;
 
-	/*
-	 * we only have an action name, so invoke the action
-	 * with no parameters or event.
-	 */
+	/* we only have an action name, so invoke the action with no parameters or event. */
 	if (*sp == '\0') {
 		fgw_arg_t argv[2];
 		retcode = is_res_non_zero(res);
