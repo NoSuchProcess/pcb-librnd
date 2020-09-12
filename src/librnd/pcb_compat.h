@@ -67,7 +67,6 @@
 #define base64_parse_grow rnd_base64_parse_grow
 #define pcb_box_list_s rnd_box_list_s
 #define pcb_box_list_t rnd_box_list_t
-#define PCB_BOX_ROTATE_CW RND_BOX_ROTATE_CW
 #define PCB_BOX_ROTATE_TO_NORTH RND_BOX_ROTATE_TO_NORTH
 #define PCB_BOX_ROTATE_FROM_NORTH RND_BOX_ROTATE_FROM_NORTH
 #define PCB_BOX_CENTER_X RND_BOX_CENTER_X

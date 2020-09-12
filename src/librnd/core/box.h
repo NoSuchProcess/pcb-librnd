@@ -60,14 +60,6 @@ typedef enum {
 	RND_NE = 4, RND_SE = 5, RND_SW = 6, RND_NW = 7, RND_ANY_DIR = 8
 } rnd_direction_t;
 
-/* rotates box 90-degrees cw */
-/* that's a strange rotation! */
-#define RND_BOX_ROTATE_CW(box) \
-do { rnd_coord_t t;\
-	t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-	(box).X2 = -(box).Y1; (box).Y1 = t;\
-} while(0)
-
 #define RND_BOX_ROTATE_TO_NORTH(box, dir) \
 do { rnd_coord_t t;\
 	switch(dir) {\
