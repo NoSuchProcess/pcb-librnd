@@ -77,8 +77,8 @@ rnd_hid_t **rnd_hid_enumerate(void);
 int rnd_hid_parse_command_line(int *argc, char ***argv);
 
 /* Called by the init funcs, used to set up rnd_hid_list.  */
-extern void rnd_hid_register_hid(rnd_hid_t * hid);
-void rnd_hid_remove_hid(rnd_hid_t * hid);
+extern void rnd_hid_register_hid(rnd_hid_t *hid);
+void rnd_hid_remove_hid(rnd_hid_t *hid);
 
 typedef struct rnd_plugin_dir_s rnd_plugin_dir_t;
 struct rnd_plugin_dir_s {

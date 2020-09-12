@@ -151,7 +151,7 @@ void rnd_hid_uninit(void)
 	rnd_plugin_dir_first = rnd_plugin_dir_last = NULL;
 }
 
-void rnd_hid_register_hid(rnd_hid_t * hid)
+void rnd_hid_register_hid(rnd_hid_t *hid)
 {
 	int i;
 	int sz = (rnd_hid_num_hids + 2) * sizeof(rnd_hid_t *);
@@ -175,7 +175,7 @@ void rnd_hid_register_hid(rnd_hid_t * hid)
 	rnd_hid_list[rnd_hid_num_hids] = 0;
 }
 
-void rnd_hid_remove_hid(rnd_hid_t * hid)
+void rnd_hid_remove_hid(rnd_hid_t *hid)
 {
 	int i;
 
