@@ -1,5 +1,4 @@
 test:
-	cd conf && $(MAKE) all && $(MAKE) test
 	cd pcb-printf && $(MAKE) all && $(MAKE) test
 	cd remote && $(MAKE) all && $(MAKE) test
 # This uses make instead of $(MAKE) on purpose as a "portbale" -j1 to work aroudn GNU make
@@ -10,7 +9,6 @@ test:
 	@echo "+-------------------------------------------------+"
 
 clean:
-	cd conf && $(MAKE) clean
 	cd pcb-printf && $(MAKE) clean
 	cd remote && $(MAKE) clean
 	cd librnd && $(MAKE) clean
