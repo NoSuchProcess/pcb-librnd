@@ -55,45 +55,6 @@ struct rnd_box_list_s {
 
 #include <librnd/core/misc_util.h>
 
-typedef enum {
-	RND_NORTH = 0, RND_EAST = 1, RND_SOUTH = 2, RND_WEST = 3,
-	RND_NE = 4, RND_SE = 5, RND_SW = 6, RND_NW = 7, RND_ANY_DIR = 8
-} rnd_direction_t;
-
-#define RND_BOX_ROTATE_TO_NORTH(box, dir) \
-do { rnd_coord_t t;\
-	switch(dir) {\
-	case RND_EAST: \
-		t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
-		(box).X2 = (box).Y2; (box).Y2 = -t; break;\
-	case RND_SOUTH: \
-		t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
-		t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-	case RND_WEST: \
-		t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-		(box).X2 = -(box).Y1; (box).Y1 = t; break;\
-	case RND_NORTH: break;\
-	default: assert(0);\
-	}\
-} while (0)
-
-#define RND_BOX_ROTATE_FROM_NORTH(box, dir) \
-do { rnd_coord_t t;\
-	switch(dir) {\
-	case RND_WEST: \
-		t = (box).X1; (box).X1 = (box).Y1; (box).Y1 = -(box).X2;\
-		(box).X2 = (box).Y2; (box).Y2 = -t; break;\
-	case RND_SOUTH: \
-		t = (box).X1; (box).X1 = -(box).X2; (box).X2 = -t;\
-		t = (box).Y1; (box).Y1 = -(box).Y2; (box).Y2 = -t; break;\
-	case RND_EAST: \
-		t = (box).X1; (box).X1 = -(box).Y2; (box).Y2 = (box).X2;\
-		(box).X2 = -(box).Y1; (box).Y1 = t; break;\
-	case RND_NORTH: break;\
-	default: assert(0);\
-	}\
-} while (0)
-
 /* to avoid overflow, we calculate centers this way */
 #define RND_BOX_CENTER_X(b) ((b).X1 + ((b).X2 - (b).X1)/2)
 #define RND_BOX_CENTER_Y(b) ((b).Y1 + ((b).Y2 - (b).Y1)/2)
