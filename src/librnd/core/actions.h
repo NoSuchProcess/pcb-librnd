@@ -176,8 +176,8 @@ RND_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */
-#define RND_ACT_CALL_C(func, res, argc, argv) \
-	rnd_act_result(res, func(res, argc, argv))
+#define RND_ACT_CALL_C(hidlib, funcp, res, argc, argv) \
+	((argv)[0].type = FGW_FUNC, (argv)[0].val.argv0.func = funcp, (argv)[0].val.argv0.user_call_ctx = (hidlib), rnd_act_result(res, funcp(res, argc, argv)))
 
 /* Require argument idx to exist and convert it to type; on success, also execute stmt */
 #define RND_ACT_CONVARG(idx, type, aname, stmt) \
