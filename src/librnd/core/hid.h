@@ -211,6 +211,9 @@ struct rnd_hid_s {
 	   (e.g. draw progress bar while loading a command line file) */
 	unsigned allow_dad_before_init:1;
 
+ /* when 1 and this hid is rnd_render, do not change rnd_render even if an export plugin or GUI is calling the render code */
+	unsigned override_render:1;
+
 	/* called by core when the global hidlib context changes (e.g. board changed)
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
 	void (*set_hidlib)(rnd_hid_t *hid, rnd_hidlib_t *hidlib);
@@ -556,6 +559,8 @@ struct rnd_hid_s {
 
 	/* Creates a new menu or submenu from an existing (already merged) lihata node */
 	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
+
+
 };
 
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
