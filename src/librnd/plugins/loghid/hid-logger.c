@@ -31,6 +31,12 @@ static void log_do_exit(rnd_hid_t *hid)
 	delegatee_->do_exit(delegatee_);
 }
 
+static void log_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *opt)
+{
+	rnd_fprintf(out_, "do_export()\n");
+	delegatee_->do_export(delegatee_, opt);
+}
+
 static int log_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_fprintf(out_, "parse_arguments()\n");
@@ -213,10 +219,12 @@ void create_log_hid(FILE *log_out, rnd_hid_t *loghid, rnd_hid_t *delegatee)
 	 * We only log 'interesting' functions for now.
 	 */
 	*loghid = *delegatee;
+	loghid->override_render = 1;
 
 #define REGISTER_IF_NOT_NULL(fun) loghid->fun = delegatee->fun ? log_##fun : NULL
 	REGISTER_IF_NOT_NULL(get_export_options);
 	REGISTER_IF_NOT_NULL(do_exit);
+	REGISTER_IF_NOT_NULL(do_export);
 	REGISTER_IF_NOT_NULL(parse_arguments);
 	REGISTER_IF_NOT_NULL(invalidate_lr);
 	REGISTER_IF_NOT_NULL(invalidate_all);
