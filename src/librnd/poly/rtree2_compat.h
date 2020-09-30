@@ -92,7 +92,4 @@ rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
 /* Get the next item, return can be casted to an object; returns NULL if no more items */
 rnd_box_t *rnd_r_next(rnd_rtree_it_t *it);
 
-/* Free fields of the iterator - not needed anymore, will be removed */
-void rnd_r_end(rnd_rtree_it_t *it);
-
 #endif

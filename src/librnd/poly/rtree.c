@@ -166,7 +166,3 @@ rnd_box_t *rnd_r_next(rnd_rtree_it_t *it)
 {
 	return (rnd_box_t *)rnd_rtree_all_next(it);
 }
-
-void rnd_r_end(rnd_rtree_it_t *it)
-{
-}
