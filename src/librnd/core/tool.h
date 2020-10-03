@@ -122,6 +122,11 @@ void rnd_tool_do_press(rnd_hidlib_t *hidlib);
 /**** Low level, for internal use ****/
 
 /* Get the tool pointer of a tool by id */
-#define rnd_tool_get(id) ((const rnd_tool_t *)*vtp0_get(&rnd_tools, id, 0))
+RND_INLINE const rnd_tool_t *rnd_tool_get(long id)
+{
+	rnd_tool_t **tp = (rnd_tool_t **)vtp0_get(&rnd_tools, id, 0);
+	if (tp == NULL) return NULL;
+	return *tp;
+}
 
 #endif
