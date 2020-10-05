@@ -75,6 +75,7 @@ const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 
 rnd_hid_t **rnd_hid_list = 0;
 int rnd_hid_num_hids = 0;
+int rnd_hid_in_main_loop = 0;
 
 rnd_hid_t *rnd_gui = NULL;
 rnd_hid_t *rnd_render = NULL;
@@ -741,8 +742,10 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_emp
 
 void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib)
 {
+	rnd_hid_in_main_loop = 1;
 	if (rnd_gui->set_hidlib != NULL)
 		rnd_gui->set_hidlib(rnd_gui, hidlib);
 	rnd_gui->do_export(rnd_gui, 0);
+	rnd_hid_in_main_loop = 0;
 }
 

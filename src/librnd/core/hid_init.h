@@ -43,6 +43,9 @@
    calls.  */
 extern rnd_hid_t **rnd_hid_list;
 
+/* set to 1 when librnd is running the main loop */
+extern int rnd_hid_in_main_loop;
+
 /* Count of entries in the above.  */
 extern int rnd_hid_num_hids;
 
