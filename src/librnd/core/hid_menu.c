@@ -45,6 +45,7 @@
 #include "compat_misc.h"
 #include "event.h"
 #include "conf_hid.h"
+#include "safe_fs.h"
 
 #include "hid_menu.h"
 
@@ -1285,11 +1286,42 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_MenuDebug[] = 
+	"MenuDebug(save, path)\n";
+static const char pcb_acth_MenuDebug[] = "Menu debug helpers: save the merged menu in a file";
+fgw_error_t pcb_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *op, *path;
+	FILE *f;
+
+
+	RND_ACT_CONVARG(1, FGW_STR, MenuDebug, op = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, MenuDebug, path = argv[2].val.str);
+
+
+	RND_ACT_IRES(1);
+
+	if (rnd_strcasecmp(op, "save") == 0) {
+		f = rnd_fopen(RND_ACT_HIDLIB, path, "w");
+		if (f != NULL) {
+			lht_dom_export(rnd_gui->menu->doc->root, f, "");
+			fclose(f);
+			RND_ACT_IRES(0);
+		}
+		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path);
+	}
+	else
+		RND_ACT_FAIL(MenuDebug);
+
+
+	return 0;
+}
 
 static rnd_action_t rnd_menu_action_list[] = {
 	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
 	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
 	{"MenuPatch", pcb_act_MenuPatch, pcb_acth_MenuPatch, pcb_acts_MenuPatch},
+	{"MenuDebug", pcb_act_MenuDebug, pcb_acth_MenuDebug, pcb_acts_MenuDebug}
 };
 
 static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
