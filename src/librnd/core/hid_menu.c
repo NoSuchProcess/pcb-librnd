@@ -1286,6 +1286,20 @@ fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+
+static int create_menu_by_node_debug(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+{
+	printf("menu debug: create: %s\n", name);
+	return 0;
+}
+
+
+static int remove_menu_node_debug(rnd_hid_t *hid, lht_node_t *nd)
+{
+	printf("menu debug: remove\n");
+	return 0;
+}
+
 static const char pcb_acts_MenuDebug[] = 
 	"MenuDebug(save, path)\n";
 static const char pcb_acth_MenuDebug[] = "Menu debug helpers: save the merged menu in a file";
@@ -1296,19 +1310,27 @@ fgw_error_t pcb_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	RND_ACT_CONVARG(1, FGW_STR, MenuDebug, op = argv[1].val.str);
-	RND_ACT_CONVARG(2, FGW_STR, MenuDebug, path = argv[2].val.str);
-
 
 	RND_ACT_IRES(1);
 
 	if (rnd_strcasecmp(op, "save") == 0) {
+		RND_ACT_CONVARG(2, FGW_STR, MenuDebug, path = argv[2].val.str);
 		f = rnd_fopen(RND_ACT_HIDLIB, path, "w");
 		if (f != NULL) {
 			lht_dom_export(rnd_gui->menu->doc->root, f, "");
 			fclose(f);
 			RND_ACT_IRES(0);
 		}
-		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path);
+		else
+			rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path);
+	}
+	else if (rnd_strcasecmp(op, "force-enable") == 0) {
+		if (rnd_gui->create_menu_by_node == NULL)
+			rnd_gui->create_menu_by_node = create_menu_by_node_debug;
+		if (rnd_gui->remove_menu_node == NULL)
+			rnd_gui->remove_menu_node = remove_menu_node_debug;
+		rnd_menu_sys.gui_ready = 1;
+		menu_merge(rnd_gui);
 	}
 	else
 		RND_ACT_FAIL(MenuDebug);
