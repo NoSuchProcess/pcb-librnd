@@ -72,6 +72,7 @@ typedef enum {
 
 	RND_EVENT_MENU_CHANGED,           /* called after a menu merging (which means actual menu system change) */
 	RND_EVENT_GUI_BATCH_TIMER,        /* */
+	RND_EVENT_MAINLOOP_CHANGE,        /* called after the mainloop variable has changed */
 
 	RND_EVENT_last                    /* not a real event */
 } rnd_event_id_t;

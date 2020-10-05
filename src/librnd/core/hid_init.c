@@ -743,9 +743,10 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_emp
 void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib)
 {
 	rnd_hid_in_main_loop = 1;
+	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
 	if (rnd_gui->set_hidlib != NULL)
 		rnd_gui->set_hidlib(rnd_gui, hidlib);
 	rnd_gui->do_export(rnd_gui, 0);
 	rnd_hid_in_main_loop = 0;
+	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
 }
-
