@@ -64,6 +64,7 @@
  *          units
  *   %ma    output an angle in degrees (expects degrees)
  *   %mf    output an a double (same as %f, expect it understands the .0n modifier)
+ *   %mw    output an fgw_arg_t value
  *
  * Exotic formats, DO NOT USE:
  *   %mr    output a measure in a unit readable by io_pcb parse_l.l

@@ -41,6 +41,7 @@
 #include <math.h>
 #include <librnd/config.h>
 #include <librnd/core/rnd_printf.h>
+#include "actions.h"
 
 const char *rnd_printf_slot[RND_PRINTF_SLOT_max] =
 {
@@ -410,6 +411,56 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 	return 0;
 }
 
+static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
+{
+	if ((a.type & FGW_STR) == FGW_STR) {
+		gds_append_str(string, a.val.str);
+		return;
+	}
+
+	if (a.type == FGW_COORD) {
+		rnd_append_printf(string, "%m+%ms", mask, fgw_coord(&a));
+		return;
+	}
+
+	switch(a.type) {
+		case FGW_CHAR:
+		case FGW_UCHAR:
+		case FGW_SCHAR:
+			gds_append(string, a.val.nat_char);
+			return;
+		case FGW_SHORT:
+			rnd_append_printf(string, "%d", a.val.nat_short);
+			return;
+		case FGW_USHORT:
+			rnd_append_printf(string, "%u", a.val.nat_ushort);
+			return;
+		case FGW_INT:
+			rnd_append_printf(string, "%d", a.val.nat_int);
+			return;
+		case FGW_UINT:
+			rnd_append_printf(string, "%u", a.val.nat_uint);
+			return;
+		case FGW_LONG:
+			rnd_append_printf(string, "%ld", a.val.nat_long);
+			return;
+		case FGW_ULONG:
+			rnd_append_printf(string, "%lu", a.val.nat_ulong);
+			return;
+		case FGW_SIZE_T:
+			rnd_append_printf(string, "%ld", (long)a.val.nat_size_t);
+			return;
+		case FGW_FLOAT:
+			rnd_append_printf(string, "%f", a.val.nat_float);
+			return;
+		case FGW_DOUBLE:
+			rnd_append_printf(string, "%f", a.val.nat_double);
+			return;
+		default: break;
+	}
+	rnd_append_printf(string, "<invalid fgw_arg_t %d>", a.type);
+}
+
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
  * output pcb coords as various units. See the comment at the top
@@ -719,6 +770,9 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if ((dot != NULL) && (dot[1] == '0'))
 						tmplen = do_trunc0(tmp);
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+					break;
+				case 'w':
+					print_fgw_arg(string, va_arg(args, fgw_arg_t), mask);
 					break;
 				case '+':
 					mask = va_arg(args, enum rnd_allow_e);
