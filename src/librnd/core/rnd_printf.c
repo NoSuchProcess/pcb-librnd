@@ -419,7 +419,7 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
 	}
 
 	if (a.type == FGW_COORD) {
-		rnd_append_printf(string, "%m+%ms", mask, fgw_coord(&a));
+		rnd_append_printf(string, "%m+%$ms", mask, fgw_coord(&a));
 		return;
 	}
 
