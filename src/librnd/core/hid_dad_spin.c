@@ -368,6 +368,26 @@ void rnd_dad_spin_down_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	rnd_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
+static int is_str_zero(const char *s)
+{
+	if (s == NULL) return 0;
+
+	/* leading whitepsace */
+	while(isspace(*s)) s++;
+
+	/* 00.000 */
+	while(*s == '0') s++;
+	if (*s == '.') {
+		s++;
+		while(*s == '0') s++;
+	}
+
+	/* trailing whitepsace */
+	while(isspace(*s)) s++;
+
+	return *s == '\0';
+}
+
 void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
@@ -398,6 +418,12 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			end->val.dbl = d;
 			break;
 		case RND_DAD_SPIN_COORD:
+			/* special case: 0 is okay without unit */
+			if (is_str_zero(str->val.str)) {
+				end->val.crd = 0;
+				spin->last_good_crd = 0;
+				break;
+			}
 			succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 			if (succ) {
 				SPIN_CLAMP(d);
