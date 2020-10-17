@@ -883,13 +883,13 @@ static void ghid_gdk_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 			continue;
 		}
 		if (sup) { /* before a big jump, make sure to use the accurate coords of the last (suppressed) point of the crowd */
-			points[len].x = Vx(lsx);
-			points[len].y = Vy(lsy);
+			points[len].x = MIN(Vx(lsx), 32767);
+			points[len].y = MIN(Vy(lsy), 32767);
 			len++;
 			sup = 0;
 		}
-		points[len].x = Vx(x[i]);
-		points[len].y = Vy(y[i]);
+		points[len].x = MIN(Vx(x[i]), 32767);
+		points[len].y = MIN(Vy(y[i]), 32767);
 		len++;
 		lastx = x[i];
 		lasty = y[i];
