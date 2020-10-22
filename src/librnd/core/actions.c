@@ -488,7 +488,7 @@ another:
 				argv[an+1].type = FGW_STR;
 				argv[an+1].val.str = (char *)list[an];
 			}
-			retcode = rnd_actionv_bin(hl, aname, res, num+1, argv);
+			retcode = rnd_actionv_bin_(hl, aname, res, num+1, argv, 1);
 			if (retcode)
 				goto cleanup;
 			if (last_int_fail && (retcode = is_res_non_zero(res))) /* if we are allowed to check last action, check them all after the execution */
