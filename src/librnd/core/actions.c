@@ -821,6 +821,8 @@ char *fgw_str2coord_unit = NULL;
 #define conv_str2coord(dst, src) \
 do { \
 	rnd_bool succ; \
+	if (src == NULL) \
+		return -1; \
 	dst = rnd_get_value_ex(src, NULL, NULL, NULL, fgw_str2coord_unit, &succ); \
 	if (!succ) \
 		return -1; \
