@@ -697,8 +697,12 @@ static void menu_merge(rnd_hid_t *hid)
 		base = rnd_menu_sys.patches.array[0];
 
 	if (base != NULL) {
-		if (!is_menu_file_root(base->cfg.doc->root)) {
-			rnd_message(RND_MSG_ERROR, "Base menu file %s has invalid root (should be: ha:rnd-menu-v1)\n");
+		if (base->cfg.doc->root == NULL) {
+			rnd_message(RND_MSG_ERROR, "Failed to load base menu file\n");
+			base = NULL;
+		}
+		else if (!is_menu_file_root(base->cfg.doc->root)) {
+			rnd_message(RND_MSG_ERROR, "Base menu file %s has invalid root (should be: ha:rnd-menu-v1)\n", base->cfg.doc->root->name);
 			base = NULL;
 		}
 	}
