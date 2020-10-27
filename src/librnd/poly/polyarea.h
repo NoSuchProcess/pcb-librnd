@@ -101,6 +101,9 @@ void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node);
 
 rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po);
 
+/* pline->tree boxes are opaq seg structs; this call converts them to vnode */
+rnd_vnode_t *rnd_pline_seg2vnode(void *box);
+
 /**********************************************************************/
 
 struct rnd_polyarea_s {

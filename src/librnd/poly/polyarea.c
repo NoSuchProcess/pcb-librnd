@@ -473,6 +473,12 @@ typedef struct seg {
 	int intersected;
 } seg;
 
+rnd_vnode_t *rnd_pline_seg2vnode(void *box)
+{
+	seg *seg = box;
+	return seg->v;
+}
+
 typedef struct _insert_node_task insert_node_task;
 
 struct _insert_node_task {
