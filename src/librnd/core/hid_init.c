@@ -138,11 +138,12 @@ void rnd_hid_uninit(void)
 				rnd_hid_list[i]->uninit(rnd_hid_list[i]);
 		}
 	}
-	free(rnd_hid_list);
 
 	pup_uninit(&rnd_pup);
 
 	rnd_export_uninit();
+
+	free(rnd_hid_list);
 
 	for(pd = rnd_plugin_dir_first; pd != NULL; pd = next) {
 		next = pd->next;
