@@ -83,6 +83,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 	int i, e, ok;
 	char *filename = NULL;
 
+	/* set defaults */
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
@@ -125,6 +126,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 			}
 		}
 
+	/* parse the command line and overwrite with values read from argc/argv */
 	while(*argc > 0)
 	if (*argc && (*argv)[0][0] == '-' && (*argv)[0][1] == '-') {
 		int bool_val;
