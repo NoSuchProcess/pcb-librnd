@@ -82,6 +82,10 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 	rnd_hid_attr_node_t *ha;
 	int i, e, ok;
 	char *filename = NULL;
+	rnd_hid_attr_val_t *backup = NULL;
+
+	if (rnd_exporter != NULL)
+		backup = rnd_exporter->argument_array;
 
 	/* set defaults */
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
@@ -91,30 +95,44 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 			case RND_HATT_LABEL:
 				break;
 			case RND_HATT_INTEGER:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].lng;
 				if (a->value)
 					*(int *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_COORD:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].crd;
 				if (a->value)
 					*(rnd_coord_t *) a->value = a->default_val.crd;
 				break;
 			case RND_HATT_BOOL:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].lng;
 				if (a->value)
 					*(char *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_REAL:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].dbl;
 				if (a->value)
 					*(double *) a->value = a->default_val.dbl;
 				break;
 			case RND_HATT_STRING:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].str;
 				if (a->value)
 					*(const char **) a->value = rnd_strdup(RND_EMPTY(a->default_val.str));
 				break;
 			case RND_HATT_ENUM:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].lng;
 				if (a->value)
 					*(int *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_UNIT:
+				if ((backup != NULL) && (a->value == NULL))
+					a->value = &backup[i].lng;
 				if (a->value)
 					*(int *) a->value = a->default_val.lng;
 				break;

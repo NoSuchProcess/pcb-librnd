@@ -560,7 +560,9 @@ struct rnd_hid_s {
 	/* Creates a new menu or submenu from an existing (already merged) lihata node */
 	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 
-
+	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
+	   value backing memory from this array */
+	rnd_hid_attr_val_t *argument_array;
 };
 
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
