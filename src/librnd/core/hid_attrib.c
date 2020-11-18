@@ -35,7 +35,7 @@
 
 rnd_hid_attr_node_t *rnd_hid_attr_nodes = 0;
 
-void rnd_export_register_opts(rnd_export_opt_t *a, int n, const char *cookie, int copy)
+void rnd_export_register_opts2(rnd_hid_t *hid, rnd_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	rnd_hid_attr_node_t *ha;
 
@@ -46,6 +46,12 @@ void rnd_export_register_opts(rnd_export_opt_t *a, int n, const char *cookie, in
 	ha->opts = a;
 	ha->n = n;
 	ha->cookie = cookie;
+	ha->hid = hid;
+}
+
+void rnd_export_register_opts(rnd_export_opt_t *a, int n, const char *cookie, int copy)
+{
+	rnd_export_register_opts2(NULL, a, n, cookie, copy);
 }
 
 void rnd_export_uninit(void)
@@ -82,13 +88,13 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 	rnd_hid_attr_node_t *ha;
 	int i, e, ok;
 	char *filename = NULL;
-	rnd_hid_attr_val_t *backup = NULL;
-
-	if (rnd_exporter != NULL)
-		backup = rnd_exporter->argument_array;
 
 	/* set defaults */
-	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
+	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next) {
+		rnd_hid_attr_val_t *backup = NULL;
+		if (ha->hid != NULL)
+			backup = ha->hid->argument_array;
+
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
@@ -143,6 +149,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 				abort();
 			}
 		}
+	}
 
 	/* parse the command line and overwrite with values read from argc/argv */
 	while(*argc > 0)
