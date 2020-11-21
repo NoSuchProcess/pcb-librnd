@@ -278,7 +278,7 @@ include $(ROOT)/Makefile.conf
 revcheck:
 	cd $(ROOT)/scconfig && ./revtest Rev.stamp < Rev.tab
 
-all_exe: test-rnd$(EXE) @/local/pcb/all@
+all_exe: $(SPHASH) test-rnd$(EXE) @/local/pcb/all@
 
 test-rnd.o: $(LIBRND)/core/buildin.hidlib.h
 
@@ -411,6 +411,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
+	$(SCCBOX) $(HOW) "$(SPHASH)" "$(HL_LIBDIR)/librnd/sphash"
 	$(SCCBOX) $(HOW) "librnd/scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/scconfig/gen_conf.sh"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/cdep.tmpasm"            "$(HL_LIBDIR)/librnd/scconfig/template/cdep.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/comp_var.tmpasm"        "$(HL_LIBDIR)/librnd/scconfig/template/comp_var.tmpasm"
