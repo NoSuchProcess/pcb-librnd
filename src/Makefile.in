@@ -424,7 +424,6 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
 	$(SCCBOX) $(HOW) "librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/buildin.hidlib.h" "$(HL_INCDIR)/core/buildin.hidlib.h"
-	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd/plugins/map_plugins.sh"
 	$(SCCBOX) $(HOW) ../src_3rd/genht/hash.h       $(HL_INCDIR)/src_3rd/genht/hash.h
 	$(SCCBOX) $(HOW) ../src_3rd/genht/ht.h         $(HL_INCDIR)/src_3rd/genht/ht.h
