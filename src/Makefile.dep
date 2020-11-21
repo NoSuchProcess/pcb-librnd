@@ -355,8 +355,9 @@
  ../src/librnd/core/funchash_core.h ../src/librnd/core/funchash.h \
  ../src/librnd/core/funchash_core_list.h ../src/librnd/core/compat_misc.h \
  ../src/librnd/core/event.h ../src/librnd/core/hidlib.h \
- ../src/librnd/core/conf_hid.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h
+ ../src/librnd/core/conf_hid.h ../src/librnd/core/safe_fs.h \
+ ../src/librnd/core/hid_menu.h ../src/librnd/core/hid_cfg.h \
+ ../src/librnd/core/hid_menu.h
 ../src/librnd/core/hid_nogui.o: ../src/librnd/core/hid_nogui.c \
  ../src/librnd/config.h ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -476,7 +477,13 @@
  ../src/librnd/config.h ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
- ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src/librnd/core/error.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h
 ../src/librnd/core/safe_fs.o: ../src/librnd/core/safe_fs.c \
  ../src/librnd/core/compat_inc.h ../src/librnd/config.h ../src/librnd/core/safe_fs.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/conf.h \
