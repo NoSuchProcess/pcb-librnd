@@ -11,8 +11,6 @@ distclean:
 
 install_all:
 #	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
-	$(SCCBOX) $(HOW) "pcb-prj2lht" "$(BINDIR)/pcb-prj2lht"
-	$(SCCBOX) $(HOW) "pcb-rnd-svg" "$(BINDIR)/pcb-rnd-svg"
 
 install:
 	$(MAKE) install_all HOW="install -f"
