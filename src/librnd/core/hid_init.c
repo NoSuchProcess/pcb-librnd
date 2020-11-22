@@ -62,6 +62,7 @@
 #include <librnd/core/grid.h>
 #include <librnd/core/funchash.h>
 #include <librnd/core/hid_menu.h>
+#include "../../config.h"
 
 char *rnd_conf_dot_dir = ".librnd";
 char *rnd_conf_lib_dir = "/usr/lib/librnd";
@@ -92,6 +93,15 @@ void rnd_hid_init()
 	/* Setup a "nogui" default HID */
 	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
+	/* librnd's own */
+	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins" RND_DIR_SEPARATOR_S HOST;
+	rnd_plugin_add_dir(tmp);
+
+	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins";
+	rnd_plugin_add_dir(tmp);
+
+
+	/* host app's */
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	rnd_plugin_add_dir(tmp);
