@@ -8,7 +8,7 @@ uniq /local/pcb/CFLAGS_GENERIC
 
 # calculate the /local/confdir: either specified conf-time or compatibility fallback
 switch /local/confdir
-	case {^$}  put /local/confdir_final_m [@@/local/prefix@/share/pcb-rnd@]; end
+	case {^$}  put /local/confdir_final_m [@@/local/prefix@/share/librnd@]; end
 	default    put /local/confdir_final_m /local/confdir; end
 end
 

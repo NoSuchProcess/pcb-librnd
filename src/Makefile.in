@@ -398,10 +398,10 @@ distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
 
 install_librnd: librnd
-	$(MAKE) install_librnd_
+	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(CONFDIR)"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
@@ -438,7 +438,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) ../src_3rd/libfungw/fungw.h          $(HL_INCDIR)/src_3rd/libfungw/fungw.h
 	$(SCCBOX) $(HOW) ../src_3rd/libfungw/fungw_conv.h     $(HL_INCDIR)/src_3rd/libfungw/fungw_conv.h
 	$(SCCBOX) $(HOW) ../src_3rd/libfungw/scconfig_hooks.h $(HL_INCDIR)/src_3rd/libfungw/scconfig_hooks.h
-	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"
+	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"@/local/pcb/rules/install_@
 @]
 
 # rndlib: build a list of header files to be installed with the hidlib
@@ -521,15 +521,15 @@ install_librnd_sy:
 
 install:
 	$(MAKE) install_librnd HOW="install -f"
-	$(MAKE) install_librnd_sy HOW="ln -f --relative"
+	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
 
 linstall:
 	$(MAKE) install_librnd HOW="linstall -f"
-	$(MAKE) install_librnd_sy HOW="ln -f --relative"
+	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
 
 uninstall:
 	$(MAKE) install_librnd_sy HOW="uninstall"
-	$(MAKE) install_librnd_ HOW="uninstall"
+	$(MAKE) install_librnd_ HOW="uninstall" LIBDIR=$(HL_LIBDIR)/librnd
 
 map_plugins:
 	cd librnd/plugins && INCLUDE_PREFIX=../src/librnd/plugins/ PUPLUG=../../../src_3rd/puplug/util/puplug ./map_plugins.sh "."
