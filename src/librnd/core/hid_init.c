@@ -62,7 +62,7 @@
 #include <librnd/core/grid.h>
 #include <librnd/core/funchash.h>
 #include <librnd/core/hid_menu.h>
-#include "../../config.h"
+#include "../../../config.h"
 
 char *rnd_conf_dot_dir = ".librnd";
 char *rnd_conf_lib_dir = "/usr/lib/librnd";
