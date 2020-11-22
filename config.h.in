@@ -31,7 +31,7 @@ print [@
 switch sys/class
 	case {win32}
 		print [@
-#define PCB_PREFIX rnd_w32_root
+#define RND_PREFIX rnd_w32_root
 #define PCBSHAREDIR rnd_w32_sharedir
 #define PCBLIBDIR rnd_w32_libdir
 #define BINDIR rnd_w32_bindir
@@ -40,10 +40,10 @@ switch sys/class
 		end;
 	default
 		print [@
-#define PCB_PREFIX "@/local/prefix@"
-#define PCBSHAREDIR PCB_PREFIX "/share/pcb-rnd"
-#define PCBLIBDIR PCB_PREFIX "/lib/pcb-rnd"
-#define BINDIR PCB_PREFIX "/bin"
+#define RND_PREFIX "@/local/prefix@"
+#define LIBRNDSHAREDIR RND_PREFIX "/share/librnd"
+#define LIBRNDLIBDIR RND_PREFIX "/lib/librnd"
+#define BINDIR RND_PREFIX "/bin"
 #define PCBCONFDIR @/local/confdir_final@
 @]
 		end;
