@@ -39,6 +39,7 @@ static void rnd_help1(const char *progname)
 	printf(" --confdir=path             change installed conf path (normally matches sharedir)\n");
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
+	printf(" --disable-so               do not compile or install dynamic libs (.so files)\n");
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -139,6 +140,11 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		}
 		put("/local/pcb/coord_bits", value);
 		want_coord_bits = v;
+		return 1;
+	}
+	if (strcmp(key, "disable-so") == 0) {
+		put("/local/pcb/disable_so", strue);
+		pup_set_debug(strue);
 		return 1;
 	}
 	if (arg_auto_set(key, value, rnd_disable_libs) > 0)
