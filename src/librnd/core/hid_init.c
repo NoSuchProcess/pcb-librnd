@@ -93,13 +93,14 @@ void rnd_hid_init()
 	/* Setup a "nogui" default HID */
 	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
+#ifdef LIBRNDLIBDIR
 	/* librnd's own */
 	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins" RND_DIR_SEPARATOR_S HOST;
 	rnd_plugin_add_dir(tmp);
 
 	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins";
 	rnd_plugin_add_dir(tmp);
-
+#endif
 
 	/* host app's */
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
