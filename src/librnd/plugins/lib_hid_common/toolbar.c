@@ -38,6 +38,7 @@
 #include <librnd/core/tool.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/actions.h>
 
 #include "toolbar.h"
 
@@ -229,8 +230,13 @@ static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[],
 	return conf_id;
 }
 
+static int rnd_toolbar_inited = 0;
+
 void rnd_toolbar_uninit(void)
 {
+	if (!rnd_toolbar_inited)
+		return;
+
 	rnd_event_unbind_allcookie(toolbar_cookie);
 	rnd_conf_hid_unreg(toolbar_cookie);
 }
@@ -240,7 +246,29 @@ void rnd_toolbar_init(void)
 	const char *tpaths[] = {"editor/mode",  NULL};
 	static rnd_conf_hid_callbacks_t tcb[sizeof(tpaths)/sizeof(tpaths[0])];
 
+	if (rnd_toolbar_inited)
+		return;
+
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
 	rnd_event_bind(RND_EVENT_TOOL_REG, pcb_toolbar_reg_ev, NULL, toolbar_cookie);
 	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);
+	rnd_toolbar_inited = 1;
+}
+
+const char pcb_acts_rnd_toolbar_init[] = "rnd_toolbar_init()\n";
+const char pcb_acth_rnd_toolbar_init[] = "For ringdove apps: initialize the toolbar.";
+fgw_error_t pcb_act_rnd_toolbar_init(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_toolbar_init();
+	RND_ACT_IRES(0);
+	return 0;
+}
+
+const char pcb_acts_rnd_toolbar_uninit[] = "rnd_toolbar_uninit()\n";
+const char pcb_acth_rnd_toolbar_uninit[] = "For ringdove apps: uninitialize the toolbar.";
+fgw_error_t pcb_act_rnd_toolbar_uninit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_toolbar_uninit();
+	RND_ACT_IRES(0);
+	return 0;
 }

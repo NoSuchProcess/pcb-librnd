@@ -42,6 +42,7 @@
 #include "dlg_comm_m.h"
 #include "dlg_log.h"
 #include "act_dad.h"
+#include "toolbar.h"
 #include "zoompan.h"
 #include "conf_internal.c"
 
@@ -88,7 +89,9 @@ rnd_action_t hid_common_action_list[] = {
 	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
 	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
 	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
-	{"gui_MayOverwriteFile", pcb_act_gui_MayOverwriteFile, pcb_acth_gui, NULL}
+	{"gui_MayOverwriteFile", pcb_act_gui_MayOverwriteFile, pcb_acth_gui, NULL},
+	{"rnd_toolbar_init", pcb_act_rnd_toolbar_init, pcb_acth_rnd_toolbar_init, NULL},
+	{"rnd_toolbar_uninit", pcb_act_rnd_toolbar_uninit, pcb_acth_rnd_toolbar_uninit, NULL}
 };
 
 static const char *hid_common_cookie = "lib_hid_common plugin";
