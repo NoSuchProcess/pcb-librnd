@@ -152,7 +152,7 @@ append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
 #---- modules ----#
 # extra rules for modules
 put /local/pcb/RULES {}
-put /local/pcb/CLEANFILES {}
+put /local/pcb/CLEANFILES {test-rnd$(EXE)}
 put /local/pcb/CLEANRULES {}
 put /local/pcb/EXEDEPS {}
 put /local/pcb/all {}
@@ -389,7 +389,7 @@ $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h
 
 FORCE:
 
-DISTCLEANFILES = Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(CLEANFILES)

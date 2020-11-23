@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl.o
   $(LIBRND_PLUGDIR)/lib_hid_gl/stencil_gl.o
 @]
+append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/lib_hid_gl/opengl.h }
 
 switch /local/pcb/lib_hid_gl/controls
 	case {disable} end;
