@@ -91,8 +91,12 @@ rnd_action_t hid_common_action_list[] = {
 	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
 	{"gui_MayOverwriteFile", pcb_act_gui_MayOverwriteFile, pcb_acth_gui, NULL},
 	{"rnd_toolbar_init", pcb_act_rnd_toolbar_init, pcb_acth_rnd_toolbar_init, NULL},
-	{"rnd_toolbar_uninit", pcb_act_rnd_toolbar_uninit, pcb_acth_rnd_toolbar_uninit, NULL}
+	{"rnd_toolbar_uninit", pcb_act_rnd_toolbar_uninit, pcb_acth_rnd_toolbar_uninit, NULL},
+	{"rnd_zoom", pcb_gui_act_zoom, pcb_acth_Zoom_default, pcb_acts_Zoom_default}
 };
+
+extern const char *pcb_acts_Zoom;
+extern const char pcb_acts_Zoom_default[];
 
 static const char *hid_common_cookie = "lib_hid_common plugin";
 

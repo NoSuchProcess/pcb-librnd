@@ -35,6 +35,7 @@
 #include "zoompan.h"
 
 const char *pcb_acts_Zoom;
+const char pcb_acth_Zoom_default[] = "Change zoom level (relative, absolute, window, ...)\n";
 const char pcb_acts_Zoom_default[] = pcb_gui_acts_zoom;
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
