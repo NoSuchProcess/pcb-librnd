@@ -280,6 +280,7 @@ void rnd_hook_postinit()
 	put("/local/pcb/debug", sfalse);
 	put("/local/pcb/profile", sfalse);
 	put("/local/pcb/symbols", sfalse);
+	put("/local/pcb/disable_so", sfalse);
 
 #undef plugin_def
 #undef plugin_header
