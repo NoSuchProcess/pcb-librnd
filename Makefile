@@ -13,6 +13,7 @@ clean: FORCE
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/sphash && $(MAKE) clean
+	cd src_3rd/genht && $(MAKE) clean
 	cd src_3rd/puplug && $(MAKE) clean
 	cd src_3rd/libminuid && $(MAKE) clean ; true
 	cd src_3rd/libuundo && $(MAKE) clean ; true
