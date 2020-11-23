@@ -425,6 +425,31 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_funchash_init();
 }
 
+static void print_pup_err(pup_err_stack_t *entry, char *string)
+{
+	rnd_message(RND_MSG_ERROR, "puplug: %s\n", string);
+}
+
+void rnd_hidlib_init3_auto(void)
+{
+	char **sp;
+
+	if (rnd_pup.err_stack != NULL) {
+		rnd_message(RND_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
+		pup_err_stack_process_str(&rnd_pup, print_pup_err);
+	}
+
+	for(sp = rnd_pup_paths; *sp != NULL; sp++) {
+		rnd_message(RND_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
+		pup_autoload_dir(&rnd_pup, *sp, (const char **)rnd_pup_paths);
+	}
+
+	if (rnd_pup.err_stack != NULL) {
+		rnd_message(RND_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
+		pup_err_stack_process_str(&rnd_pup, print_pup_err);
+	}
+}
+
 
 extern void rnd_menu_uninit(void);
 extern void rnd_hid_cfg_keys_uninit_module(void);
