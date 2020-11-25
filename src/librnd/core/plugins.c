@@ -42,6 +42,8 @@ static int paths_used = 0, paths_alloced = 0;
 
 void rnd_plugin_add_dir(const char *dir)
 {
+	if ((dir == NULL) || (*dir == '\0'))
+		return;
 	if (paths_used+1 >= paths_alloced) {
 		paths_alloced += 16;
 		rnd_pup_paths = realloc(rnd_pup_paths, sizeof(char *) * paths_alloced);
