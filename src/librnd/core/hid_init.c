@@ -102,9 +102,6 @@ void rnd_hid_init()
 	rnd_plugin_add_dir(tmp);
 #endif
 
-	/* fungw script pups */
-	rnd_plugin_add_dir(FGW_CFG_PUPDIR);
-
 	/* host app's */
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
