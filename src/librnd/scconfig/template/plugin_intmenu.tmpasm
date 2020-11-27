@@ -4,8 +4,15 @@
 
 switch ?/local/pcb/mod/MENUFILE
 case {...}
-put /local/pcb/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
-put /local/pcb/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+
+if ?/local/pcb/mod/is_hidlib
+then
+	put /local/pcb/MMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
+	put /local/pcb/IMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+else
+	put /local/pcb/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
+	put /local/pcb/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+end
 
 append /local/pcb/DEPDEPS [@ @/local/pcb/IMENU@ @]
 append /local/pcb/DISTCLEANFILES [@ @/local/pcb/IMENU@ @]
