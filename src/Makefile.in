@@ -136,6 +136,9 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genvector/vtl0.o
 	../src_3rd/libulzw/libulzw_comp.o
 	../src_3rd/libulzw/libulzw_decomp.o
+	../src_3rd/genregex/regex_sei.o
+	../src_3rd/genregex/regex_se.o
+	../src_3rd/genregex/regex.o
 @]
 
 # these need special rules for compilation

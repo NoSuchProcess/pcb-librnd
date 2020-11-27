@@ -12,4 +12,5 @@ include {../src/librnd/plugins/lib_hid_gl/Plug.tmpasm}
 include {../src/librnd/plugins/lib_portynet/Plug.tmpasm}
 include {../src/librnd/plugins/lib_wget/Plug.tmpasm}
 include {../src/librnd/plugins/loghid/Plug.tmpasm}
+include {../src/librnd/plugins/script/Plug.tmpasm}
 include {../src/librnd/plugins/stroke/Plug.tmpasm}

@@ -16,6 +16,7 @@ plugin_header("\nFeature plugins:\n")
 plugin_def("irc",              "on-line support (IRC)",           sbuildin, 1, 0)
 plugin_def("loghid",           "diagnostics: log HID calls",      sdisable, 1, 0)
 plugin_def("stroke",           "mouse gestures",                  sbuildin, 1, 1)
+plugin_def("script",           "fungw turing complete scripting", sbuildin, 1, 1)
 
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",        "batch process (no-gui HID)",      sbuildin, 1, 1)
