@@ -660,7 +660,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				++fmt;
 				if (*fmt == '*')
 					ext_unit = va_arg(args, const char *);
-				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q')
+				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q' && *fmt != 'w')
 					value[0] = va_arg(args, rnd_coord_t);
 				count = 1;
 				switch (*fmt) {
