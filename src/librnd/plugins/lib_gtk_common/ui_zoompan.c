@@ -177,6 +177,8 @@ void pcb_gtk_zoom_view_win(pcb_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
 		v->pcb_y = (y1+y2)/2;
 		rnd_hidcore_crosshair_move_to(v->ctx->hidlib, v->pcb_x, v->pcb_y, 0);
 	}
+
+	pcb_gtk_tw_ranges_scale(ghidgui);
 }
 
 void pcb_gtk_pan_view_abs(pcb_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y)
