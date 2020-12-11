@@ -1,3 +1,4 @@
+#include <string.h>
 #include "libportytcp4.h"
 /*
     libporty - collection of random system-dependent network code
