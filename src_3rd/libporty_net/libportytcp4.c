@@ -1,3 +1,5 @@
+
+/* autobuild fails on AIX if <string.h> is not included first */
 #include <string.h>
 #include "libportytcp4.h"
 /*
@@ -82,7 +84,6 @@ int P_poll_select(struct P_pollfd *fds, nfds_t nfds, int timeout)
 	snfds = -1;
 	FD_ZERO(&rd);
 	FD_ZERO(&wr);
-/*# warning TODO: reproduce odd behavior of poll() returning HUP even if events is 0*/
 	for(n = 0; n < nfds; n++) {
 		if ((fds[n].events != 0) && (fds[n].fd >= 0)) {
 			if (fds[n].fd >= snfds)
@@ -94,7 +95,6 @@ int P_poll_select(struct P_pollfd *fds, nfds_t nfds, int timeout)
 		} else {
 			fds[n].revents = 0;
 		}
-/*# warning add support for POLLPRI?*/
 	}
 	if (snfds == -1) {
 		P_usleep(timeout * 1000);
@@ -115,7 +115,6 @@ int P_poll_select(struct P_pollfd *fds, nfds_t nfds, int timeout)
 			fds[n].revents |= P_POLLOUT;
 		if (fds[n].revents != 0)
 			ret++;
-/*# warning add support for the other standard poll outputs*/
 	}
 	return ret;
 }
