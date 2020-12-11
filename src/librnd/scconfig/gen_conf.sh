@@ -42,7 +42,7 @@ $AWK -v "docdir=$1" '
 
 	function doc_foot(fn)
 	{
-		print "</table></body></html>" > fn
+		print "</table></body></html>" >> fn
 	}
 
 	function gen(path, src_line,state_tags,          id, name, type, array, desc, flags,path_tmp,type2,fn)
@@ -100,7 +100,8 @@ $AWK -v "docdir=$1" '
 			type2 = tolower(type)
 			sub("^cfn_", "", type2)
 
-			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", state_tags desc > fn
+			print "<tr><td>", name, "<td><a href=\"" type ".html\">", type2, "</a><td>", flags, "<td>", state_tags desc >> fn
+			close(fn)
 		}
 	}
 
@@ -200,7 +201,9 @@ $AWK -v "docdir=$1" '
 				gen(path, SRC[uid, n], SRC_STATE[uid, n])
 		}
 
-		for(fn in DOCS)
+		for(fn in DOCS) {
 			doc_foot(fn)
+			close(fn)
+		}
 	}
 '
