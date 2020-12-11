@@ -16,6 +16,8 @@ cp net/os_includes.h.in .
 
 (echo '
 #define _DEFAULT_SOURCE
+/* autobuild fails on AIX if <string.h> is not included first */
+#include <string.h>
 #ifndef WIN32
 #include <unistd.h>
 #endif
@@ -25,10 +27,7 @@ cp net/os_includes.h.in .
 '
 cat $tmp/os_dep.h time.h $tmp/network.h $tmp/tcp4.h $tmp/dns4.h $tmp/uninit_chain.h | fixinc) > libportytcp4.h
 
-(echo '
-/* autobuild fails on AIX if <string.h> is not included first */
-#include <string.h>
-#include "libportytcp4.h"'
+(echo '#include "libportytcp4.h"'
 cat $tmp/os_dep.c time.c $tmp/tcp4.c $tmp/dns4.c $tmp/uninit_chain.c | fixinc) > libportytcp4.c
 
 

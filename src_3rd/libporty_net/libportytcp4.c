@@ -1,6 +1,3 @@
-
-/* autobuild fails on AIX if <string.h> is not included first */
-#include <string.h>
 #include "libportytcp4.h"
 /*
     libporty - collection of random system-dependent network code

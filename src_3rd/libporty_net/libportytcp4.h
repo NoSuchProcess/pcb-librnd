@@ -1,5 +1,7 @@
 
 #define _DEFAULT_SOURCE
+/* autobuild fails on AIX if <string.h> is not included first */
+#include <string.h>
 #ifndef WIN32
 #include <unistd.h>
 #endif
