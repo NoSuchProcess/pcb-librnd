@@ -209,15 +209,30 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 	const int r2 = radius * radius;
 	const int n = r2 * 3 + r2 / 4 + 1;
 
-	reserve_grid_points(n, 0);
+	reserve_grid_points(cross_grid ? n*5 : n, 0);
 
 	for(y = -radius; y <= radius; y++) {
 		int y2 = y * y;
 		for(x = -radius; x <= radius; x++) {
 			if (x * x + y2 < r2) {
-				grid_points[npoints * 2] = x * hidlib->grid + cx;
-				grid_points[npoints * 2 + 1] = y * hidlib->grid + cy;
+				double px = x * hidlib->grid + cx, py = y * hidlib->grid + cy;
+				grid_points[npoints * 2] = px;
+				grid_points[npoints * 2 + 1] = py;
 				npoints++;
+				if (cross_grid) {
+					grid_points[npoints * 2] = px-scale;
+					grid_points[npoints * 2 + 1] = py;
+					npoints++;
+					grid_points[npoints * 2] = px+scale;
+					grid_points[npoints * 2 + 1] = py;
+					npoints++;
+					grid_points[npoints * 2] = px;
+					grid_points[npoints * 2 + 1] = py-scale;
+					npoints++;
+					grid_points[npoints * 2] = px;
+					grid_points[npoints * 2 + 1] = py+scale;
+					npoints++;
+				}
 			}
 		}
 	}
