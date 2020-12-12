@@ -140,9 +140,9 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	rnd_coord_t x, y, x1, y1, x2, y2, grd;
-	int n, i;
-	static GdkPoint *points = NULL;
-	static int npoints = 0;
+	int n, n3, i;
+	static GdkPoint *points = NULL, *points3 = NULL;
+	static int npoints = 0, npoints3 = 0;
 
 	x1 = rnd_grid_fit(MAX(0, SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0)), hidlib->grid, hidlib->grid_ox);
 	y1 = rnd_grid_fit(MAX(0, SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0)), hidlib->grid, hidlib->grid_oy);
@@ -182,15 +182,34 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	n = (x2 - x1) / grd + 1;
 	if (n <= 0)
 		n = 1;
+
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (GdkPoint *) realloc(points, npoints * sizeof(GdkPoint));
 	}
-	n = 0;
-	for (x = x1; x <= x2; x += grd) {
-		points[n].x = Vx(x);
-		n++;
+
+	if (rnd_conf.editor.cross_grid) {
+		n = n*2;
+
+		if (n > npoints3) {
+			npoints3 = n + 30;
+			points3 = (GdkPoint *) realloc(points3, npoints3 * sizeof(GdkPoint));
+		}
 	}
+
+	/* 1 pixel per grid point */
+	for(n = 0, x = x1; x <= x2; x += grd)
+		points[n++].x = Vx(x);
+
+	/* 2 pixels per grid point in x.x pattern */
+	if (rnd_conf.editor.cross_grid) {
+		for(n3 = 0, x = x1; x <= x2; x += grd) {
+			points3[n3++].x = Vx(x)-1;
+			points3[n3++].x = Vx(x)+1;
+		}
+	}
+
+
 	if (n == 0)
 		return;
 	for (y = y1; y <= y2; y += grd) {
@@ -198,6 +217,19 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 		for (i = 0; i < n; i++)
 			points[i].y = vy;
 		gdk_draw_points(priv->out_pixel, priv->grid_gc, points, n);
+
+		if (rnd_conf.editor.cross_grid) {
+			for (i = 0; i < n3; i++)
+				points3[i].y = vy;
+			gdk_draw_points(priv->out_pixel, priv->grid_gc, points3, n3);
+
+			for (i = 0; i < n; i++)
+				points[i].y = vy-1;
+			gdk_draw_points(priv->out_pixel, priv->grid_gc, points, n);
+			for (i = 0; i < n; i++)
+				points[i].y = vy+1;
+			gdk_draw_points(priv->out_pixel, priv->grid_gc, points, n);
+		}
 	}
 }
 
@@ -214,6 +246,10 @@ static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_
 	/* PI is approximated with 3.25 here - allows a minimal overallocation, speeds up calculations */
 	r2 = radius * radius;
 	n = r2 * 3 + r2 / 4 + 1;
+
+	if (rnd_conf.editor.cross_grid)
+		n *= 5;
+
 	if (n > apoints) {
 		apoints = n;
 		points_base = (GdkPoint *) realloc(points_base, apoints * sizeof(GdkPoint));
@@ -238,9 +274,16 @@ static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_
 			int y2 = y*y;
 			for(x = -radius; x <= radius; x++) {
 				if (x*x + y2 < r2) {
-					points_base[npoints].x = x*hidlib->grid;
-					points_base[npoints].y = y*hidlib->grid;
-					npoints++;
+					int cx = x*hidlib->grid, cy = y*hidlib->grid;
+					points_base[npoints  ].x = cx;
+					points_base[npoints++].y = cy;
+					if (rnd_conf.editor.cross_grid) {
+						int k;
+						for(k = 0; k < 4; k++) {
+							points_base[npoints  ].x = cx;
+							points_base[npoints++].y = cy;
+						}
+					}
 				}
 			}
 		}
@@ -250,6 +293,20 @@ static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_
 	for(n = 0; n < npoints; n++) {
 		points_abs[n].x = Vx(points_base[n].x + cx);
 		points_abs[n].y = Vy(points_base[n].y + cy);
+		if (rnd_conf.editor.cross_grid) {
+			n++;
+			points_abs[n].x = Vx(points_base[n].x + cx)-1;
+			points_abs[n].y = Vy(points_base[n].y + cy);
+			n++;
+			points_abs[n].x = Vx(points_base[n].x + cx)+1;
+			points_abs[n].y = Vy(points_base[n].y + cy);
+			n++;
+			points_abs[n].x = Vx(points_base[n].x + cx);
+			points_abs[n].y = Vy(points_base[n].y + cy)-1;
+			n++;
+			points_abs[n].x = Vx(points_base[n].x + cx);
+			points_abs[n].y = Vy(points_base[n].y + cy)+1;
+		}
 	}
 
 	gdk_draw_points(priv->out_pixel, priv->grid_gc, points_abs, npoints);

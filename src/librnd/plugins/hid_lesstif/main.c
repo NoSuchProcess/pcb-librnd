@@ -1928,11 +1928,11 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 static void draw_grid()
 {
-	static XPoint *points = 0;
-	static int npoints = 0;
-	rnd_coord_t x1, y1, x2, y2, prevx;
+	static XPoint *points = 0, *points3 = 0;
+	static int npoints = 0, npoints3 = 0;
+	rnd_coord_t x1, y1, x2, y2, prevx, prevx3;
 	rnd_coord_t x, y;
-	int n;
+	int n, n3;
 	static GC grid_gc = 0;
 
 	if (!rnd_conf.editor.draw_grid)
@@ -1976,12 +1976,24 @@ static void draw_grid()
 		if (Vy(y2) >= view_height)
 			y2 -= ltf_hidlib->grid;
 	}
+
+	/* one point in the center of the crossing */
 	n = (x2 - x1) / ltf_hidlib->grid + 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (XPoint *) realloc(points, npoints * sizeof(XPoint));
 	}
-	n = 0;
+
+	if (rnd_conf.editor.cross_grid) {
+		/* two points per grid crossing in x.x pattern */
+		n3 = n*2;
+		if (n3 > npoints3) {
+			npoints3 = n3 + 10;
+			points3 = (XPoint *) realloc(points3, npoints3 * sizeof(XPoint));
+		}
+	}
+
+	n3 = n = 0;
 	prevx = 0;
 	for (x = x1; x <= x2; x += ltf_hidlib->grid) {
 		int temp = Vx(x);
@@ -1990,6 +2002,20 @@ static void draw_grid()
 			points[n].x -= prevx;
 			points[n].y = 0;
 		}
+
+		if (rnd_conf.editor.cross_grid) {
+			points3[n3].x = temp-1;
+			if (n) {
+				points3[n3].x -= prevx3;
+				points3[n3].y = 0;
+			}
+			n3++;
+			points3[n3].x = 2;
+			points3[n3].y = 0;
+			n3++;
+		}
+
+		prevx3 = temp-1+2;
 		prevx = temp;
 		n++;
 	}
@@ -1997,6 +2023,15 @@ static void draw_grid()
 		int vy = Vy(y);
 		points[0].y = vy;
 		XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
+
+		if (rnd_conf.editor.cross_grid) {
+			points3[0].y = vy;
+			XDrawPoints(display, pixmap, grid_gc, points3, n3, CoordModePrevious);
+			points[0].y = vy-1;
+			XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
+			points[0].y = vy+1;
+			XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
+		}
 	}
 }
 

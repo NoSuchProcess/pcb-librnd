@@ -84,6 +84,7 @@ typedef struct {
 		RND_CFT_LIST grids;                    /* grid in grid-string format */
 		RND_CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
 		RND_CFT_BOOLEAN draw_grid;             /* draw grid points */
+		RND_CFT_BOOLEAN cross_grid;            /* when drawing the grid, draw little 3x3 pixel crosses instead of single pixel dots */
 		RND_CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		RND_CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
 		RND_CFT_INTEGER crosshair_shape_idx;   /* OBSOLETE: do not use */

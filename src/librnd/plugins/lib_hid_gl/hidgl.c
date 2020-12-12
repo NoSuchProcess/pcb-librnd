@@ -53,8 +53,8 @@ static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;
 static int comp_stencil_bit = 0;
 
-static GLfloat *grid_points = NULL;
-static int grid_point_capacity = 0;
+static GLfloat *grid_points = NULL, *grid_points3 = NULL;
+static int grid_point_capacity = 0, grid_point_capacity3 = 0;
 
 
 static inline void mode_reset(rnd_bool direct, const rnd_box_t *screen)
@@ -188,15 +188,19 @@ void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t
 }
 
 
-static inline void reserve_grid_points(int n)
+static inline void reserve_grid_points(int n, int n3)
 {
 	if (n > grid_point_capacity) {
 		grid_point_capacity = n + 10;
 		grid_points = realloc(grid_points, grid_point_capacity * 2 * sizeof(GLfloat));
 	}
+	if (n3 > grid_point_capacity3) {
+		grid_point_capacity3 = n3 + 10;
+		grid_points3 = realloc(grid_points3, grid_point_capacity3 * 2 * sizeof(GLfloat));
+	}
 }
 
-void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius)
+void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid)
 {
 	int npoints = 0;
 	rnd_coord_t x, y;
@@ -205,7 +209,7 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 	const int r2 = radius * radius;
 	const int n = r2 * 3 + r2 / 4 + 1;
 
-	reserve_grid_points(n);
+	reserve_grid_points(n, 0);
 
 	for(y = -radius; y <= radius; y++) {
 		int y2 = y * y;
@@ -225,9 +229,9 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 
 }
 
-void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
+void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
 {
-	rnd_coord_t x1, y1, x2, y2, n, i;
+	rnd_coord_t x1, y1, x2, y2, n, i, n3;
 	double x, y;
 
 	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
@@ -248,8 +252,9 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 	}
 
 	n = (int)((x2 - x1) / hidlib->grid + 0.5) + 1;
-	reserve_grid_points(n);
+	reserve_grid_points(n, cross_grid ? n*2 : 0);
 
+	/* draw grid center points and y offset points */
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, grid_points);
 
@@ -261,6 +266,34 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 		for(i = 0; i < n; i++)
 			grid_points[2 * i + 1] = y;
 		glDrawArrays(GL_POINTS, 0, n);
+		if (cross_grid) {
+			for(i = 0; i < n; i++)
+				grid_points[2 * i + 1] = y-scale;
+			glDrawArrays(GL_POINTS, 0, n);
+			for(i = 0; i < n; i++)
+				grid_points[2 * i + 1] = y+scale;
+			glDrawArrays(GL_POINTS, 0, n);
+		}
+	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	if (cross_grid) {
+		/* draw grid points around the crossings in x.x pattern */
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, grid_points3);
+
+		n3 = 0;
+		for(x = x1; x <= x2; x += hidlib->grid) {
+			grid_points3[2 * n3 + 0] = x - scale; n3++;
+			grid_points3[2 * n3 + 0] = x + scale; n3++;
+		}
+
+		for(y = y1; y <= y2; y += hidlib->grid) {
+			for(i = 0; i < n3; i++)
+				grid_points3[2 * i + 1] = y;
+			glDrawArrays(GL_POINTS, 0, n3);
+		}
 	}
 
 	glDisableClientState(GL_VERTEX_ARRAY);
