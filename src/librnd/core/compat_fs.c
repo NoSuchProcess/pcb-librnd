@@ -39,7 +39,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include <string.h>
-#include <memory.h>
 #include <ctype.h>
 #include <signal.h>
 #include <limits.h>
