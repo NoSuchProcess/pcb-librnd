@@ -1,7 +1,5 @@
 int libporty_net_detect_target()
 {
-return 1;
-
 	require("sys/byte_order", 1, 1);
 	require("cc/inline", 1, 0);
 
