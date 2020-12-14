@@ -117,10 +117,8 @@ static void rnd_hook_detect_cc(void)
 
 static int rnd_hook_detect_sys(void)
 {
-	int can_live_without_dynlib = 0; /* special optional exception for windows cross compilation for now */
-
-	if (istrue(get("/target/pcb/can_live_without_dynlib")))
-		can_live_without_dynlib = 1;
+	if (istrue(get("/local/pcb/disable_so")))
+		put("/local/pup/disable_dynlib", strue);
 
 	pup_hook_detect_target();
 
@@ -160,15 +158,10 @@ static int rnd_hook_detect_sys(void)
 
 	require("libs/time/gettimeofday/*",  0, 1);
 
-	if (require("libs/ldl",  0, 0) != 0) {
-		if (require("libs/LoadLibrary",  0, 0) != 0) {
-			if (can_live_without_dynlib) {
-				report_repeat("\nWARNING: no dynamic linking found on your system. Dynamic plugin loading will fail.\n\n");
-			}
-			else {
-				report_repeat("\nERROR: no dynamic linking found on your system. Can not compile pcb-rnd.\n\n");
-				return 1;
-			}
+	if (istrue(get("/local/pcb/disable_so"))) {
+		if (require("libs/ldl",  0, 0) != 0) {
+			if (require("libs/LoadLibrary",  0, 0) != 0)
+				report_repeat("\nWARNING: no dynamic linking found on your system. Dynamic plugin loading is disabled.\n\n");
 		}
 	}
 
