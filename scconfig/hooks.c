@@ -182,7 +182,10 @@ int hook_detect_target()
 		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
 
-	libporty_net_detect_target();
+	if (libporty_net_detect_target() != 0) {
+		hook_custom_arg("disable-lib_portynet", NULL);
+		report_repeat("WARNING: porty-net did not configure, some network-related features are disabled\n");
+	}
 
 	/* plugin dependencies */
 	plugin_deps(1);
