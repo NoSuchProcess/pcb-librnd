@@ -35,6 +35,8 @@
 #include <math.h>
 #include <genvector/gds_char.h>
 #include <librnd/core/compat_misc.h>
+#include <genht/htss.h>
+#include <genht/hash.h>
 
 /* On some old systems random() works better than rand(). Unfortunately
 random() is less portable than rand(), which is C89. By default, just
@@ -176,14 +178,33 @@ int rnd_setenv(const char *name, const char *val, int overwrite)
 	return setenv(name, val, overwrite);
 #else
 #	ifdef RND_HAVE_PUTENV
+	static htss_t cache; /* not freed on exit - acceptable leak because it is all the env */
+	static int cache_inited = 0;
+	htss_entry_t *e;
 	int res;
 	gds_t tmp;
+
+	if (!cache_inited) {
+		htss_init(&cache, strhash, strkeyeq);
+		cache_inited = 1;
+	}
+
 	gds_init(&tmp);
 	gds_append_str(&tmp, name);
 	gds_append(&tmp, '=');
 	gds_append_str(&tmp, val);
 	res = putenv(tmp.array);
-	gds_uninit(&tmp);
+
+	/* free previous value */
+	e = htss_popentry(&cache, name);
+	if (e != NULL) {
+		free(e->key);
+		free(e->value);
+	}
+
+	/* remember new value so it can be freed later */
+	htss_set(&cache, rnd_strdup(name), tmp.array);
+
 	return res;
 #	else
 	return -1;
