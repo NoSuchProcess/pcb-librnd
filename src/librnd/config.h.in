@@ -148,6 +148,8 @@ print {\n\n/* Wether fungw is system installed */\n}
 print_ternary /local/pcb/fungw_system {#define RND_HAVE_SYS_FUNGW 1} {/* #undef RND_HAVE_SYS_FUNGW */}
 
 print {\n/* Code warnings for TODO, portable (unlike #warning) */}
+if ?/local/pcb/debug
+then
 if ?cc/pragma_message
 then
 print [@
@@ -156,6 +158,9 @@ print [@
 @]
 else
 print {\n/* Not available */\n#define TODO(x)\n}
+end
+else
+print {\n/* Not emitted in release */\n#define TODO(x)\n}
 end
 
 print [@
