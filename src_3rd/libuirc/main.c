@@ -5,7 +5,12 @@
 
 static void on_me_part(uirc_t *ctx, int query, char *chan)
 {
-	printf("### left channel %s\n", chan);
+	printf("### me left channel %s\n", chan);
+}
+
+static void on_me_join(uirc_t *ctx, int query, char *chan)
+{
+	printf("### me joined channel %s\n", chan);
 }
 
 static void on_msg(uirc_t *ctx, char *from, int query, char *to, char *text)
@@ -56,6 +61,7 @@ int main()
 
 	memset(&irc, 0, sizeof(irc));
 	irc.on_me_part = on_me_part;
+	irc.on_me_join = on_me_join;
 	irc.on_msg = on_msg;
 	irc.on_notice = on_notice;
 	irc.on_topic = on_topic;
