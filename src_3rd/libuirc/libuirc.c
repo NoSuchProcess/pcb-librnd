@@ -77,8 +77,21 @@ void uirc_disconnect(uirc_t *ctx)
 
 static uirc_event_t uirc_parse_001(uirc_t *ctx, char *arg)
 {
+	char *end, *nick = arg;
+
+	/* nick may have been truncated */
+	end = strpbrk(nick, " \t\r\n");
+	if (end != NULL) {
+		*end = '\0';
+		if (strcmp(nick, ctx->nick) != 0) {
+			free(ctx->nick);
+			ctx->nick = rnd_strdup(nick);
+		}
+	}
+
 	if (ctx->on_connect != NULL)
 		ctx->on_connect(ctx);
+
 	return UIRC_CONNECT;
 }
 
