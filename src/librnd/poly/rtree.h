@@ -37,7 +37,7 @@ typedef rnd_coord_t rnd_rtree_coord_t;
 #define RTRU(n) rnd_RTREE_ ## n
 #define rnd_rtree_privfunc static
 #define rnd_rtree_size 6
-#define rnd_rtree_stack_max 1024
+#define rnd_rtree_stack_max 4096
 
 #define RTREE_NO_TREE_TYPEDEFS
 
