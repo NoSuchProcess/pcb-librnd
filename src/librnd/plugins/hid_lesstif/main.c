@@ -808,8 +808,12 @@ static void pcb_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, 
 		lpm->pxm = pixmap;
 		pixmap->hid_data = lpm;
 	}
-	if (pixmap->hid_data != NULL)
-		pcb_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
+	if (pixmap->hid_data != NULL) {
+		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
+		rsx = (double)sx * ca + (double)sy * sa;
+		rsy = (double)sy * ca + (double)sx * sa;
+		pcb_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - rsx/2, cy - rsy/2, rsx, rsy);
+	}
 }
 
 static void pcb_ltf_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
