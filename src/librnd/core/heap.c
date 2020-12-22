@@ -35,9 +35,6 @@
  *
  */
 
-
-/* operations on heaps. */
-
 #include <stdlib.h>
 #include <assert.h>
 #include <librnd/config.h>
