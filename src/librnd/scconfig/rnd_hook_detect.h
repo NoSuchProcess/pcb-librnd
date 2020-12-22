@@ -58,6 +58,7 @@ static void rnd_hook_detect_cc(void)
 	target_no_pie = get("/target/cc/argstd/no-pie");
 	require("cc/pragma_message",  0, 0);
 	require("fstools/ar",  0, 1);
+	require("fstools/ranlib",  0, 0);
 
 	/* need to set debug flags here to make sure libs are detected with the modified cflags; -ansi matters in what #defines we need for some #includes */
 	fpic = get("/target/cc/fpic");
