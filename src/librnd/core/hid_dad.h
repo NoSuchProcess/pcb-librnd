@@ -457,9 +457,9 @@ do { \
 
 
 /* Set properties of the current item */
-#define RND_DAD_MINVAL(table, val)       RND_DAD_SET_ATTR_FIELD(table, min_val, val)
-#define RND_DAD_MAXVAL(table, val)       RND_DAD_SET_ATTR_FIELD(table, max_val, val)
-#define RND_DAD_MINMAX(table, min, max)  (RND_DAD_SET_ATTR_FIELD(table, min_val, min),RND_DAD_SET_ATTR_FIELD(table, max_val, max))
+#define RND_DAD_MINVAL(table, val)       RND_DAD_SET_ATTR_FIELD_SE(table, min_val, val)
+#define RND_DAD_MAXVAL(table, val)       RND_DAD_SET_ATTR_FIELD_SE(table, max_val, val)
+#define RND_DAD_MINMAX(table, min, max)  do { RND_DAD_SET_ATTR_FIELD_SE(table, min_val, min); RND_DAD_SET_ATTR_FIELD_SE(table, max_val, max); } while(0)
 #define RND_DAD_CHANGE_CB(table, cb)     RND_DAD_SET_ATTR_FIELD(table, change_cb, cb)
 #define RND_DAD_RIGHT_CB(table, cb)      RND_DAD_SET_ATTR_FIELD(table, right_cb, cb)
 #define RND_DAD_ENTER_CB(table, cb)      RND_DAD_SET_ATTR_FIELD(table, enter_cb, cb)
@@ -566,6 +566,12 @@ do { \
 #define RND_DAD_SET_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field = (value)
 
+#define RND_DAD_SET_ATTR_FIELD_SE(table, field, value) \
+	do { \
+		table[table ## _len - 1].field = (value); \
+		RND_DAD_SET_ATTR_FIELD_SIDE_EFFECT(table, field, value); \
+	} while(0)
+
 #define RND_DAD_OR_ATTR_FIELD(table, field, value) \
 	table[table ## _len - 1].field |= (value)
 
@@ -612,6 +618,25 @@ do { \
 	} \
 } while(0)
 
+/* call compount set field */
+#define RND_DAD_SET_ATTR_FIELD_SIDE_EFFECT(table, field, val_) \
+do { \
+	switch(table[table ## _len - 1].type) { \
+		case RND_HATT_BEGIN_COMPOUND: \
+		case RND_HATT_END: \
+			{ \
+				rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
+				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
+					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
+				else \
+					assert(0); \
+			} \
+			break; \
+		default:; \
+	} \
+} while(0)
+
+
 #define RND_DAD_SET_ATTR_FIELD_NUM(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
@@ -650,14 +675,8 @@ do { \
 			assert(0); \
 		case RND_HATT_BEGIN_COMPOUND: \
 		case RND_HATT_END: \
-			{ \
-				rnd_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
-				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
-					cmp->set_field_num(&table[table ## _len - 1], #field, (long)(val_), (double)(val_), (rnd_coord_t)(val_)); \
-				else \
-					assert(0); \
-			} \
-			break; \
+			RND_DAD_SET_ATTR_FIELD_SIDE_EFFECT(table, field, val_); \
+		break; \
 	} \
 } while(0)
 

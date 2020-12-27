@@ -656,3 +656,17 @@ void rnd_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, in
 		str->geo_width = geo;
 	}
 }
+
+void rnd_dad_spin_set_field_num(rnd_hid_attribute_t *end, const char *fieldname, long l, double d, rnd_coord_t c)
+{
+	rnd_hid_dad_spin_t *spin = end->wdata;
+	if (strcmp(fieldname, "max_val") == 0) {
+		spin->vmax_valid = 1;
+		spin->vmax = d;
+	}
+	else if (strcmp(fieldname, "min_val") == 0) {
+		spin->vmin_valid = 1;
+		spin->vmin = d;
+	}
+}
+

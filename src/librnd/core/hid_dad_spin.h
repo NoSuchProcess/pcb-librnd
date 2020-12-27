@@ -118,6 +118,7 @@ do { \
 	spin->cmp.set_value = rnd_dad_spin_set_value; \
 	spin->cmp.set_help = rnd_dad_spin_set_help; \
 	spin->cmp.set_geo = rnd_dad_spin_set_geo; \
+	spin->cmp.set_field_num = rnd_dad_spin_set_field_num; \
 	spin->type = typ; \
 	spin->wtype = wtyp; \
 	spin->attrs = &table; \
@@ -149,6 +150,7 @@ int rnd_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, r
 int rnd_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 void rnd_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help);
 void rnd_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, int geo);
+void rnd_dad_spin_set_field_num(rnd_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c);
 
 void rnd_dad_spin_update_internal(rnd_hid_dad_spin_t *spin); /* update the widget from spin, before or after the dialog is realized */
 
