@@ -139,6 +139,8 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genregex/regex_sei.o
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o
+	../src_3rd/ureglex/exec.o
+	../src_3rd/ureglex/strtree_exec.o
 @]
 
 # these need special rules for compilation
