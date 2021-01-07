@@ -44,6 +44,7 @@ typedef struct render_priv_s {
 	int subcomposite_stencil_bit;
 	unsigned long current_color_packed;
 	double current_alpha_mult;
+	int current_color_xor;
 
 	/* color cache for set_color */
 	rnd_clrcache_t ccache;
@@ -293,16 +294,18 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 	static GdkColormap *colormap = NULL;
 	double r, g, b, a;
 	rnd_composite_op_t composite_op = hidgl_get_drawing_mode();
+	int is_xor = (composite_op == RND_HID_COMP_POSITIVE_XOR);
 
 	if (*gc->pcolor->str == '\0') {
 		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = 0, setting to magenta\n");
 		gc->pcolor = rnd_color_magenta;
 	}
 
-	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult))
+	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult) && (priv->current_color_xor == is_xor))
 		return;
 
-  priv->current_color_packed = (composite_op == RND_HID_COMP_POSITIVE_XOR ? ~gc->pcolor->packed : gc->pcolor->packed);
+	priv->current_color_packed = (is_xor ? ~gc->pcolor->packed : gc->pcolor->packed);
+	priv->current_color_xor = is_xor;
 	priv->current_alpha_mult = gc->alpha_mult;
 
 	if (colormap == NULL)
