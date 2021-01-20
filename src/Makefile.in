@@ -345,6 +345,22 @@ librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
 	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
 
+
+# these are required in case librnd is used from source checkout in dynamic
+# lib mode
+
+librnd-hid.so: librnd-hid.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so
+	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so.$(PCB_RND_VER_MAJOR)
+
+librnd-3rd.so: librnd-3rd.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.so
+	$(SCCBOX) ln -f librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.so.$(PCB_RND_VER_MAJOR)
+
+librnd-poly.so: librnd-poly.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-poly.so.$(PCB_RND_VER) librnd-poly.so
+	$(SCCBOX) ln -f librnd-poly.so.$(PCB_RND_VER) librnd-poly.so.$(PCB_RND_VER_MAJOR)
+
 @]
 
 
