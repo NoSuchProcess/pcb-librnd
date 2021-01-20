@@ -1,39 +1,8 @@
-pcb-rnd 2.2.2
+librnd 2.3.1
 ~~~~~~~~~~~~~
 
-This version is mainly a feature release which extends I/O support and
-the DRC. There are some smallish features and a lot of bugfixes, please
-refer to the changelog for detauls.
-
-Feature highlight:
-
-1. BXL support: footprints available in the (binary) BXL format can be
-   loaded, imported or used from the library (directy, or using any of
-   the schematics import methods). A BXL file may contain multiple
-   footprints; in the library such a BXL file shows up as a virtual
-   subdirectory. When importing a BXL file name directly, if there are
-   multiple footprints in it pcb-rnd will offer the choice which one to load.
-
-2. query/drc_query: access a list of layers, network segments, net segment
-   lengths, more geometrical and mathematical functions for more powerful
-   DRC rules.
-
-3. Save/load DRC rules: implemented native lihata format and tEDAx format.
-   Importing a tEDAx netlist automatically loads DRC rules, allowing
-   schematics to specify rules.
-
-4. Dedicated GUI and network dialog upgrade for easier network length
-   tracking.
-
-5. Lihata board v7: new native file format version with more powerful text
-   object support, new gfx object support and more.
-
-6. Online help/support: minimalistic IRC client for direct real-time contact
-   to the developers to reach out for yet passive users.
-
-7. Alien format handling: upgrade text object load to a bounding box based
-   algorithm to overcome text alignment and font difference problems
-
-8. librnd (hidlib) separation: rename all public API symbols to start with
-   rnd instead of pcb
-
+This version or librnd focuses on separation from its origins, pcb-rnd. Beside
+a lot of smallish fixes and build system upgrades, the main step is the script
+plugin relocation from pcb-rnd to librnd. This means the dozen-language
+scripting of pcb-rnd is now available in any librnd app. This includes the
+live script dialog as well.
