@@ -415,12 +415,18 @@ const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *d
    subtree if needed */
 lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
-/* (un)register a custom config file name (not path, just file name);
-   if intern is not NULL, it is the internal (executable-embedded)
-   version; it's not strdup'd, the caller needs to keep the string available
-   until rnd_conf_unreg_file(). path is strdup'd */
+/* (un)register a custom config file internal (executable-embedded) version;
+   it's not strdup'd, the caller needs to keep the string available
+   until rnd_conf_unreg_file(). */
+void rnd_conf_reg_intern(const char *intern);
+void rnd_conf_unreg_intern(const char *intern);
+
+/* Same as rnd_conf_*reg_intern(), but older API, where the conf file had
+   to be explicitly named. Path is ignored now. Use the *reg_intern() calls
+   instead. */
 void rnd_conf_reg_file(const char *path, const char *intern);
 void rnd_conf_unreg_file(const char *path, const char *intern);
+
 
 void rnd_conf_files_uninit(void);
 

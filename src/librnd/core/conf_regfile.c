@@ -31,30 +31,20 @@
 
 static void conf_files_init(void)
 {
-	htsi_init(&conf_files, strhash, strkeyeq);
 	htsi_init(&conf_interns, strhash, strkeyeq);
 	conf_files_inited = 1;
 }
 
 void rnd_conf_files_uninit(void)
 {
-	htsi_entry_t *e;
-	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e))
-		free(e->key);
-	htsi_uninit(&conf_files);
 	htsi_uninit(&conf_interns);
 	conf_files_inited = 0;
 }
 
-void rnd_conf_reg_file(const char *path, const char *intern)
+void rnd_conf_reg_intern(const char *intern)
 {
 	htsi_entry_t *e;
 	if (!conf_files_inited) conf_files_init();
-	e = htsi_getentry(&conf_files, path);
-	if (e == NULL)
-		htsi_set(&conf_files, rnd_strdup(path), 1);
-	else
-		e->value++;
 	e = htsi_getentry(&conf_interns, intern);
 	if (e == NULL)
 		htsi_set(&conf_interns, (char *)intern, 1);
@@ -66,6 +56,12 @@ void rnd_conf_reg_file(const char *path, const char *intern)
 			pcb_conf_merge_all(NULL);
 	}
 }
+
+void rnd_conf_reg_file(const char *path, const char *intern)
+{
+	rnd_conf_reg_intern(intern);
+}
+
 
 static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)
 {
@@ -83,12 +79,16 @@ static void conf_unreg_any(htsi_t *ht, const char *key, int free_key)
 	}
 }
 
-void rnd_conf_unreg_file(const char *path, const char *intern)
+void rnd_conf_unreg_intern(const char *intern)
 {
 	assert(conf_files_inited);
 	if (!conf_files_inited) return;
 
-	conf_unreg_any(&conf_files, path, 1);
 	conf_unreg_any(&conf_interns, intern, 0);
+}
+
+void rnd_conf_unreg_file(const char *path, const char *intern)
+{
+	rnd_conf_unreg_intern(intern);
 }
 

@@ -46,13 +46,13 @@
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/fptr_cast.h>
+#include <librnd/core/safe_fs_dir.h>
 
 /* conf list node's name */
 const char *pcb_conf_list_name = "pcb-rnd-conf-v1";
 static const char *flcat = "conf";
 
 /* plugin config files and interns */
-static htsi_t conf_files;
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
@@ -269,7 +269,8 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 {
 	char path[RND_PATH_MAX], *fn;
 	int dlen, cnt = 0;
-	htsi_entry_t *e;
+	DIR *d;
+	struct dirent *e;
 
 	if (pcb_conf_plug_root[role] != NULL) {
 		lht_dom_uninit(pcb_conf_plug_root[role]);
@@ -278,13 +279,24 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 
 	if (!conf_files_inited) return 0;
 
+	d = rnd_opendir(NULL, dir);
+	if (d == NULL) return 0;
+
 	dlen = strlen(dir);
 	memcpy(path, dir, dlen);
 	path[dlen] = '/';
 	fn = path+dlen+1;
 
-	for (e = htsi_first(&conf_files); e; e = htsi_next(&conf_files, e)) {
-		strcpy(fn, e->key);
+	for(e = rnd_readdir(d); e != NULL; e = rnd_readdir(d)) {
+		int len = strlen(e->d_name);
+		char *end;
+		
+		if ((e->d_name[0] == '.') || (len < 5) || strcmp(e->d_name + len - 5, ".conf") != 0)
+			continue;
+
+		strcpy(fn, e->d_name);
+rnd_trace("new conf load: '%s'\n", fn);
+
 		if (rnd_file_readable(path)) {
 			lht_doc_t *d = conf_load_plug_file(path, 0);
 			if (d != NULL) {
@@ -298,6 +310,8 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 			}
 		}
 	}
+
+	rnd_closedir(d);
 
 	return cnt;
 }
