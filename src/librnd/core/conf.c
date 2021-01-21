@@ -295,7 +295,6 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 			continue;
 
 		strcpy(fn, e->d_name);
-rnd_trace("new conf load: '%s'\n", fn);
 
 		if (rnd_file_readable(path)) {
 			lht_doc_t *d = conf_load_plug_file(path, 0);
