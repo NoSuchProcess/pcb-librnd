@@ -41,8 +41,6 @@
 #include <librnd/plugins/stroke/conf_internal.c>
 #include "stroke_conf.h"
 
-#define STROKE_CONF_FN "stroke.conf"
-
 conf_stroke_t conf_stroke;
 
 #define SIDE_X(hl, x)  ((rnd_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
@@ -155,7 +153,7 @@ int pplg_check_ver_stroke(int ver_needed) { return 0; }
 
 int pplg_uninit_stroke(void)
 {
-	rnd_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
+	rnd_conf_unreg_intern(stroke_conf_internal);
 	rnd_conf_unreg_fields("plugins/stroke/");
 	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
 	rnd_event_unbind_allcookie(pcb_stroke_cookie);
@@ -166,7 +164,7 @@ int pplg_init_stroke(void)
 {
 	RND_API_CHK_VER;
 	stroke_init();
-	rnd_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
+	rnd_conf_reg_intern(stroke_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);

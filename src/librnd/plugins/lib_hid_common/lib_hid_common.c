@@ -47,7 +47,6 @@
 #include "conf_internal.c"
 
 conf_dialogs_t dialogs_conf;
-#define DIALOGS_CONF_FN "dialogs.conf"
 
 void rnd_hid_announce_gui_init(rnd_hidlib_t *hidlib)
 {
@@ -106,7 +105,7 @@ static rnd_conf_hid_id_t conf_id;
 
 void pplg_uninit_lib_hid_common(void)
 {
-	rnd_conf_unreg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	rnd_conf_unreg_intern(dialogs_conf_internal);
 	pcb_clihist_save();
 	pcb_clihist_uninit();
 	rnd_event_unbind_allcookie(grid_cookie);
@@ -135,7 +134,7 @@ int pplg_init_lib_hid_common(void)
 	RND_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
 	pcb_act_dad_init();
 
-	rnd_conf_reg_file(DIALOGS_CONF_FN, dialogs_conf_internal);
+	rnd_conf_reg_intern(dialogs_conf_internal);
 
 	pcb_dialog_place_init();
 
