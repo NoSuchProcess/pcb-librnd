@@ -289,8 +289,7 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 
 	for(e = rnd_readdir(d); e != NULL; e = rnd_readdir(d)) {
 		int len = strlen(e->d_name);
-		char *end;
-		
+
 		if ((e->d_name[0] == '.') || (len < 5) || strcmp(e->d_name + len - 5, ".conf") != 0)
 			continue;
 
