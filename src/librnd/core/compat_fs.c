@@ -166,12 +166,11 @@ char *rnd_tempfile_name_new(const char *name)
 	return res;
 #else
 #ifdef RND_HAVE_MKDTEMP
-#ifdef inline
-	/* Suppress compiler warnings; -Dinline means we are compiling in
-	   --debug with -ansi -pedantic; we do know that mkdtemp exists on the system,
-	   since RND_HAVE_MKDTEMP is set. */
+	/* Suppress compiler warnings; on some systems (e.g. OSX) feature macros
+	   turn off mkdtemp even tho the detection worked; we do know that mkdtemp
+	   exists on the system, since RND_HAVE_MKDTEMP is set. */
 	char *mkdtemp(char *template);
-#endif
+
 	const char *tmpdir;
 	char *mytmpdir;
 	size_t len;
