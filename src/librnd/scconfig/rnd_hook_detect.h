@@ -212,11 +212,14 @@ static int rnd_hook_detect_sys(void)
 	require("libs/fs/getcwd", 0, 0);
 	require("libs/fs/stat/macros/*", 0, 0);
 
-	/* libporty net type detections */
+	/* libporty net detections */
 		require("sys/ptrwidth", 1, 1);
 		require("sys/types/size_t/broken", 1, 0);
 		require("sys/types/off_t/broken", 1, 0);
 		require("sys/types/ptrdiff_t/broken", 1, 0);
+		require("libs/socket/ioctl/presents", 1, 0);
+		require("libs/socket/ioctl/fionbio/presents", 1, 1); /* fatal because there is no alternative at the moment */
+
 
 	if (get("cc/rdynamic") == NULL)
 		put("cc/rdynamic", "");
