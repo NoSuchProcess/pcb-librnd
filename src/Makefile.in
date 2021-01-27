@@ -206,7 +206,6 @@ uniq /local/pcb/OBJS_C99_HIDLIB_PLG
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
-uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
 uniq /local/pcb/LIBS_3RD
@@ -221,6 +220,14 @@ append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_POLYLIB
 append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
 gsub /local/pcb/SRCS {.o } {.c }
+
+# apple requires multiple "-framework something" instead of -lsomething
+# we need to keep all -frameworks but uniq would keep only the first if it
+# is a word on its own
+gsub /local/pcb/LDFLAGS {-framework } {-framework-}
+uniq /local/pcb/LDFLAGS
+gsub /local/pcb/LDFLAGS {-framework-} {-framework }
+
 
 # dummy ranlib is echo
 switch ?/target/fstools/ranlib
