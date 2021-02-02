@@ -114,12 +114,12 @@ static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, c
 static void rnd_script_fawk_langs(pup_list_parse_pup_t *ctx)
 {
 	const char **s, *pup[] = {
-		{"fawk .awk"},
-		{"fawk .fawk"},
-		{"fpas .pas"},
-		{"fpas .fpas"},
-		{"fbas .bas"},
-		{"fbas .fbas"},
+		"fawk .awk",
+		"fawk .fawk",
+		"fpas .pas",
+		"fpas .fpas",
+		"fbas .bas",
+		"fbas .fbas",
 		NULL
 	};
 
