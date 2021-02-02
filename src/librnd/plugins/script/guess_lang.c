@@ -109,6 +109,28 @@ static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, c
 	return 0;
 }
 
+/* fawk is normally built-in, without fungw installed, so the pup file won't
+   be found. This workaround registers it so oneliner lang detection works */
+static void rnd_script_fawk_langs(pup_list_parse_pup_t *ctx)
+{
+	const char **s, *pup[] = {
+		{"fawk .awk"},
+		{"fawk .fawk"},
+		{"fpas .pas"},
+		{"fpas .fpas"},
+		{"fbas .bas"},
+		{"fbas .fbas"},
+		NULL
+	};
+
+	guess_lang_open(ctx, NULL, "fungw_fawk");
+	for(s = pup; *s != NULL; s++) {
+		char tmp[64];
+		strcpy(tmp, *s);
+		guess_lang_line_split(ctx, "fungw_fawk", "$script-ext", tmp);
+	}
+}
+
 static void rnd_script_guess_lang_init(void)
 {
 	if (!guess_lang_inited) {
@@ -122,6 +144,8 @@ static void rnd_script_guess_lang_init(void)
 
 		ctx.open = guess_lang_open;
 		ctx.line_split = guess_lang_line_split;
+
+		rnd_script_fawk_langs(&ctx);
 
 		paths[0] = FGW_CFG_PUPDIR;
 		paths[1] = NULL;
