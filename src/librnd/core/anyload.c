@@ -34,6 +34,7 @@
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/hidlib.h>
 
 #include "anyload.h"
 
@@ -174,17 +175,17 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 	char *real_cwd = NULL;
 
 	if (root->type != LHT_HASH) {
-		rnd_message(RND_MSG_ERROR, "anyload: pcb-rnd-anyload-v* root node must be a hash\n");
+		rnd_message(RND_MSG_ERROR, "anyload: %s-anyload-v* root node must be a hash\n", rnd_app_package);
 		return -1;
 	}
 
 	rsc = lht_dom_hash_get(root, "resources");
 	if (rsc == NULL) {
-		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v* without li:resources node - nothing loaded\n(this is probably not what you wanted)\n");
+		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v* without li:resources node - nothing loaded\n(this is probably not what you wanted)\n", rnd_app_package);
 		return -1;
 	}
 	if (rsc->type != LHT_LIST) {
-		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v*/resources must be a list\n");
+		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v*/resources must be a list\n", rnd_app_package);
 		return -1;
 	}
 
@@ -244,7 +245,10 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
    a single root one of our backends can handle; retruns non-zero on error */
 int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
 {
-	if (strcmp(root->name, "pcb-rnd-anyload-v1") == 0)
+	static int applen = -1;
+	if (applen < 0)
+		applen = strlen(rnd_app_package);
+	if ((strncmp(root->name, rnd_app_package, applen) == 0) && (strcmp(root->name + applen, "-anyload-v1") == 0))
 		return rnd_anyload_parse_anyload_v1(hidlib, root, inst_role, cwd);
 	return rnd_anyload_parse_subtree(hidlib, root, inst_role);
 }
