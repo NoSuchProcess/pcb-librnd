@@ -129,7 +129,7 @@ int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_con
 	return -1;
 }
 
-int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
+int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, lht_node_t *nd, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
 {
 	rnd_aload_t *al;
 	char *fpath = rnd_lrealpath(path);
@@ -148,7 +148,7 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next) {
 		if (re_se_exec(al->rx, type)) {
 			if (al->al->load_file != NULL)
-				return al->al->load_file(al->al, hidlib, fpath, type, inst_role);
+				return al->al->load_file(al->al, hidlib, fpath, type, nd, inst_role);
 			if (al->al->load_subtree != NULL) {
 				int res;
 				lht_doc_t *doc = load_lht(hidlib, fpath);
@@ -227,7 +227,7 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 					res = -1;
 					goto error;
 			}
-			r = rnd_anyload_ext_file(hidlib, path, type, inst_role, real_cwd, real_cwd_len);
+			r = rnd_anyload_ext_file(hidlib, path, type, n, inst_role, real_cwd, real_cwd_len);
 		}
 		else
 		 r = rnd_anyload_parse_subtree(hidlib, n, inst_role);

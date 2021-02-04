@@ -31,7 +31,7 @@ typedef struct rnd_anyload_s rnd_anyload_t;
 
 struct rnd_anyload_s {
 	int (*load_subtree)(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root, rnd_conf_role_t install);
-	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, rnd_conf_role_t install);
+	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd, rnd_conf_role_t install);
 	const char *cookie;
 };
 
