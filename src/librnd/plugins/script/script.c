@@ -36,6 +36,7 @@
 #include <genregex/regex_se.h>
 
 #include <librnd/core/actions.h>
+#include <librnd/core/anyload.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
@@ -422,12 +423,40 @@ int script_oneliner(rnd_hidlib_t *hl, const char *lang, const char *src)
 
 char *script_cookie = "script plugin";
 
+static rnd_anyload_t script_anyload = {0};
+
+
+static int script_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd, rnd_conf_role_t install)
+{
+	lht_node_t *nlang, *nid;
+	const char *lang, *id;
+
+	rnd_trace("script anyload!\n");
+	assert(nd->type == LHT_HASH);
+	nlang = lht_dom_hash_get(nd, "lang");
+	if ((nlang == NULL) || (nlang->type != LHT_TEXT)) {
+		rnd_message(RND_MSG_ERROR, "anyload user_script: missing or non-text lang node\n");
+		return -1;
+	}
+	lang = nlang->data.text.value;
+
+	nid = lht_dom_hash_get(nd, "id");
+	if ((nid == NULL) || (nid->type != LHT_TEXT)) {
+		rnd_message(RND_MSG_ERROR, "anyload user_script: missing or non-text id node\n");
+		return -1;
+	}
+	id = nid->data.text.value;
+
+	return rnd_script_load(hl, id, filename, lang);
+}
+
 int pplg_check_ver_script(int ver_needed) { return 0; }
 
 void pplg_uninit_script(void)
 {
 	htsp_entry_t *e;
 
+	rnd_anyload_unreg_by_cookie(script_cookie);
 	rnd_live_script_uninit();
 	rnd_remove_actions_by_cookie(script_cookie);
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
@@ -467,5 +496,11 @@ int pplg_init_script(void)
 	else
 		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, script_mainloop_perma_ev, NULL, script_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, script_timer_gui_init_ev, NULL, script_cookie);
+
+
+	script_anyload.load_file = script_anyload_file;
+	script_anyload.cookie = script_cookie;
+	rnd_anyload_reg("^user_script$", &script_anyload);
+
 	return 0;
 }
