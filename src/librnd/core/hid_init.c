@@ -138,6 +138,8 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	rnd_plugin_add_dir("plugins");
 }
 
+extern void rnd_anyload_uninit(void);
+
 void rnd_hid_uninit(void)
 {
 	rnd_plugin_dir_t *pd, *next;
@@ -152,6 +154,7 @@ void rnd_hid_uninit(void)
 
 	pup_uninit(&rnd_pup);
 
+	rnd_anyload_uninit();
 	rnd_export_uninit();
 
 	free(rnd_hid_list);
@@ -370,6 +373,7 @@ extern void rnd_tool_act_init2(void);
 extern void rnd_gui_act_init2(void);
 extern void rnd_main_act_init2(void);
 extern void rnd_menu_act_init2(void);
+extern void rnd_anyload_init2(void);
 
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
@@ -413,6 +417,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_gui_act_init2();
 	rnd_main_act_init2();
 	rnd_menu_act_init2();
+	rnd_anyload_init2();
 
 	/* plugins: buildins */
 	pup_buildin_load(&rnd_pup, buildins);

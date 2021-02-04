@@ -59,6 +59,7 @@ put /local/pcb/OBJS_C99_HIDLIB [@
 
 append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/actions.o
+	$(LIBRND)/core/anyload.o
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
 	$(LIBRND)/core/color.o
