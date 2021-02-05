@@ -44,3 +44,5 @@ void rnd_anyload_unreg_by_cookie(const char *cookie);
    Return 0 on success. */
 int rnd_anyload(rnd_hidlib_t *hidlib, const char *path);
 
+/* if non-zero: merge and update the conf after loading anyloads */
+extern int rnd_anyload_conf_needs_update;

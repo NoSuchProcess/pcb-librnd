@@ -2224,7 +2224,8 @@ static int conf_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_n
 		rnd_message(RND_MSG_ERROR, "menu anyload: failed to load menu patch from %s\n", doc->root->file_name);
 		return -1;
 	}
-	pcb_conf_merge_all(NULL);
+	pcb_conf_lht_dirty[RND_CFR_USER]++;
+	rnd_anyload_conf_needs_update = 1;
 	return 0;
 }
 

@@ -271,6 +271,31 @@ int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, const char *c
 }
 
 
+
+int rnd_anyload_conf_needs_update = 0;
+static int al_conf_inhibit;
+static void anyload_conf_update(vpod)
+{
+	if (al_conf_inhibit || !rnd_anyload_conf_needs_update)
+		return;
+
+	rnd_anyload_conf_needs_update = 0;
+	pcb_conf_merge_all(NULL);
+	rnd_conf_update(NULL, -1);
+}
+
+static void anyload_conf_inhibit_inc(void)
+{
+	al_conf_inhibit++;
+}
+
+static void anyload_conf_inhibit_dec(void)
+{
+	al_conf_inhibit--;
+	if (al_conf_inhibit == 0)
+		anyload_conf_update();
+}
+
 int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 {
 	char *path_free = NULL, *cwd_free = NULL;
@@ -304,6 +329,8 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 			res = rnd_anyload_parse_root(hidlib, doc->root, cwd);
 		lht_dom_uninit(doc);
 	}
+
+	anyload_conf_update();
 
 	free(path_free);
 	free(cwd_free);
@@ -344,7 +371,7 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 {
 	rnd_conf_listitem_t *ci;
 
-	rnd_trace("anyload_persist!\n");
+	anyload_conf_inhibit_inc();
 
 	for(ci = rnd_conflist_first((rnd_conflist_t *)&rnd_conf.rc.anyload_persist); ci != NULL; ci = rnd_conflist_next(ci)) {
 		const char *p = ci->val.string[0];
@@ -364,7 +391,7 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 			continue;
 		}
 
-rnd_trace(" path='%s' -> '%s'\n", p, p_exp);
+/*rnd_trace(" path='%s' -> '%s'\n", p, p_exp);*/
 		if (!rnd_is_dir(hidlib, p_exp)) {
 			if (!silent_fail)
 				rnd_message(RND_MSG_ERROR, "anyload persist: '%s' (really '%s') is not a directory\n", p, p_exp);
@@ -373,6 +400,8 @@ rnd_trace(" path='%s' -> '%s'\n", p, p_exp);
 
 		anyload_persistent_load_dir(hidlib, p_exp, silent_fail);
 	}
+
+	anyload_conf_inhibit_dec();
 }
 
 static const char pcb_acts_AnyLoad[] = "AnyLoad(path)";
