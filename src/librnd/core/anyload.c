@@ -140,7 +140,12 @@ int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree)
 int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, lht_node_t *nd, const char *real_cwd, int real_cwd_len)
 {
 	rnd_aload_t *al;
-	char *fpath = rnd_lrealpath(path);
+	char *fpath, *tmp;
+
+	/* relative path needs to be relative to real_cwd */
+	tmp = rnd_concat(real_cwd, RND_DIR_SEPARATOR_S, path, NULL);
+	fpath = rnd_lrealpath(tmp);
+	free(tmp);
 
 	if ((memcmp(fpath, real_cwd, real_cwd_len) != 0) || (fpath[real_cwd_len] != '/')) {
 		rnd_message(RND_MSG_WARNING, "anyload: external file '%s' (really '%s') not within directory tree '%s' (or the file does not exist)\n", path, fpath, real_cwd);
