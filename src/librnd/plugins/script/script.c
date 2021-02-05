@@ -253,7 +253,7 @@ static char *script_fn(const char *fn)
 
 int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char *lang)
 {
-	pup_plugin_t *pup;
+	pup_plugin_t *pup = NULL;
 	script_t *s;
 	const char *old_id;
 
@@ -311,7 +311,7 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 	script_persistency_id = old_id;
 
 	if (s->obj == NULL) {
-		rnd_message(RND_MSG_ERROR, "Failed to parse/execute %s script from file %s (using %s)\n", id, fn, s->pup->name);
+		rnd_message(RND_MSG_ERROR, "Failed to parse/execute %s script from file %s (using %s)\n", id, fn, s->pup == NULL ? "unknown" : s->pup->name);
 		script_free(s, NULL, NULL);
 		return -1;
 	}
