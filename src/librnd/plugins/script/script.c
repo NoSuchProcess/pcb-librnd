@@ -426,7 +426,7 @@ char *script_cookie = "script plugin";
 static rnd_anyload_t script_anyload = {0};
 
 
-static int script_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd, rnd_conf_role_t install)
+static int script_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd)
 {
 	lht_node_t *nlang, *nid;
 	const char *lang, *id;

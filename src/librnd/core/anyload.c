@@ -116,20 +116,20 @@ static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
 }
 
 
-/* call a loader to load/install a subtree; retruns non-zero on error */
-int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_conf_role_t inst_role)
+/* call a loader to load a subtree; retruns non-zero on error */
+int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree)
 {
 	rnd_aload_t *al;
 
 	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next)
 		if (re_se_exec(al->rx, subtree->name))
-			return al->al->load_subtree(al->al, hidlib, subtree, inst_role);
+			return al->al->load_subtree(al->al, hidlib, subtree);
 
 	rnd_message(RND_MSG_ERROR, "anyload: root node '%s' is not recognized by any loader\n", subtree->name);
 	return -1;
 }
 
-int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, lht_node_t *nd, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
+int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, lht_node_t *nd, const char *real_cwd, int real_cwd_len)
 {
 	rnd_aload_t *al;
 	char *fpath = rnd_lrealpath(path);
@@ -142,13 +142,13 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 /*	rnd_trace("ext file: '%s' '%s' PATHS: '%s' in '%s'\n", path, type, fpath, real_cwd);*/
 
 	if (type == NULL) /* must be a lihata file */
-		return rnd_anyload(hidlib, fpath, inst_role);
+		return rnd_anyload(hidlib, fpath);
 
 	/* we have an explicit type, look for a plugin to handle that */
 	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next) {
 		if (re_se_exec(al->rx, type)) {
 			if (al->al->load_file != NULL)
-				return al->al->load_file(al->al, hidlib, fpath, type, nd, inst_role);
+				return al->al->load_file(al->al, hidlib, fpath, type, nd);
 			if (al->al->load_subtree != NULL) {
 				int res;
 				lht_doc_t *doc = load_lht(hidlib, fpath);
@@ -156,7 +156,7 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 					rnd_message(RND_MSG_ERROR, "anyload: '%s' (really '%s') with type '%s' should be a lihata document but fails to parse\n", path, fpath, type);
 					return -1;
 				}
-				res = al->al->load_subtree(al->al, hidlib, doc->root, inst_role);
+				res = al->al->load_subtree(al->al, hidlib, doc->root);
 				lht_dom_uninit(doc);
 				return res;
 			}
@@ -167,8 +167,8 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 	return -1;
 }
 
-/* parse an anyload file, load/install all roots; retruns non-zero on any error */
-int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
+/* parse an anyload file, load all roots; retruns non-zero on any error */
+int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, const char *cwd)
 {
 	lht_node_t *rsc, *n;
 	int res = 0, real_cwd_len = 0;
@@ -227,10 +227,10 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 					res = -1;
 					goto error;
 			}
-			r = rnd_anyload_ext_file(hidlib, path, type, n, inst_role, real_cwd, real_cwd_len);
+			r = rnd_anyload_ext_file(hidlib, path, type, n, real_cwd, real_cwd_len);
 		}
 		else
-		 r = rnd_anyload_parse_subtree(hidlib, n, inst_role);
+		 r = rnd_anyload_parse_subtree(hidlib, n);
 
 		if (r != 0)
 			res = r;
@@ -243,18 +243,18 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 
 /* parse the root of a random file, which will either be an anyload pack or
    a single root one of our backends can handle; retruns non-zero on error */
-int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
+int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, const char *cwd)
 {
 	static int applen = -1;
 	if (applen < 0)
 		applen = strlen(rnd_app_package);
 	if ((strncmp(root->name, rnd_app_package, applen) == 0) && (strcmp(root->name + applen, "-anyload-v1") == 0))
-		return rnd_anyload_parse_anyload_v1(hidlib, root, inst_role, cwd);
-	return rnd_anyload_parse_subtree(hidlib, root, inst_role);
+		return rnd_anyload_parse_anyload_v1(hidlib, root, cwd);
+	return rnd_anyload_parse_subtree(hidlib, root);
 }
 
 
-int rnd_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role)
+int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 {
 	char *path_free = NULL, *cwd_free = NULL;
 	const char *cwd;
@@ -282,9 +282,9 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_rol
 	doc = load_lht(hidlib, path);
 	if (doc != NULL) {
 		if (req_anyload)
-			res = rnd_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
+			res = rnd_anyload_parse_anyload_v1(hidlib, doc->root, cwd);
 		else
-			res = rnd_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
+			res = rnd_anyload_parse_root(hidlib, doc->root, cwd);
 		lht_dom_uninit(doc);
 	}
 
@@ -293,27 +293,15 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_rol
 	return res;
 }
 
-static const char pcb_acts_AnyLoad[] = "AnyLoad(path, [role])";
-static const char pcb_acth_AnyLoad[] =
-	"Load \"anything\" from path; if role is specified, try to install or store\n"
-	"the loaded objects persistently somewhere that is equivalent to the specified config role.";
+static const char pcb_acts_AnyLoad[] = "AnyLoad(path)";
+static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path\n";
 fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *path = NULL, *srole = NULL;
-	rnd_conf_role_t role = RND_CFR_invalid;
+	const char *path = NULL;
 
 	RND_ACT_CONVARG(1, FGW_STR, AnyLoad, path = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_STR, AnyLoad, srole = argv[2].val.str);
 
-	if (srole != NULL) {
-		role = rnd_conf_role_parse(srole);
-		if (role == RND_CFR_invalid) {
-			rnd_message(RND_MSG_ERROR, "AnyLoad: invalid role '%s'\n", srole);
-			return FGW_ERR_ARG_CONV;
-		}
-	}
-
-	RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path, role));
+	RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path));
 	return 0;
 }
 

@@ -30,8 +30,8 @@
 typedef struct rnd_anyload_s rnd_anyload_t;
 
 struct rnd_anyload_s {
-	int (*load_subtree)(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root, rnd_conf_role_t install);
-	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd, rnd_conf_role_t install);
+	int (*load_subtree)(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root);
+	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd);
 	const char *cookie;
 };
 
@@ -41,7 +41,6 @@ void rnd_anyload_unreg_by_cookie(const char *cookie);
 
 /* Load a file or pack: path may be a lihata file (either anything we can load
    or a pcb-rnd-anyload-v*) or a directory that has an anyload.lht in it.
-   If inst_role is not invalid, also try to install it.
    Return 0 on success. */
-int rnd_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role);
+int rnd_anyload(rnd_hidlib_t *hidlib, const char *path);
 
