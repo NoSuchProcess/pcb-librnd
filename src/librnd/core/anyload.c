@@ -43,6 +43,8 @@
 
 #include "anyload.h"
 
+static const char anyload_cookie[] = "core/anyload";
+
 typedef struct {
 	const rnd_anyload_t *al;
 	re_se_t *rx;
@@ -98,6 +100,7 @@ void rnd_anyload_uninit(void)
 		rnd_message(RND_MSG_ERROR, "rnd_anyload: '%s' left anyloader regs in\n", al->al->cookie);
 		rnd_anyload_free(al);
 	}
+	rnd_event_unbind_allcookie(anyload_cookie);
 }
 
 static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
@@ -393,6 +396,6 @@ void rnd_anyload_init2(void)
 	if (rnd_hid_in_main_loop)
 		anyload_persistent_init(NULL);
 	else
-		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, anyload_mainloop_perma_ev, NULL, NULL);
+		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, anyload_mainloop_perma_ev, NULL, anyload_cookie);
 }
 
