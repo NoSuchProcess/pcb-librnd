@@ -34,10 +34,12 @@
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/event.h>
+#include <librnd/core/paths.h>
 #include <librnd/core/hid_init.h>
-
+#include <librnd/core/hidlib_conf.h>
 
 #include "anyload.h"
 
@@ -266,7 +268,7 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 
 	if (rnd_is_dir(hidlib, path)) {
 		cwd = path;
-		path = path_free = rnd_concat(cwd, RND_DIR_SEPARATOR_S, "anyload.lht");
+		path = path_free = rnd_concat(cwd, RND_DIR_SEPARATOR_S, "anyload.lht", NULL);
 		req_anyload = 1;
 	}
 	else {
@@ -296,9 +298,69 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 	return res;
 }
 
+static void anyload_persistent_load_dir(rnd_hidlib_t *hidlib, const char *path, int silent_fail)
+{
+	DIR *d = rnd_opendir(hidlib, path);
+	struct dirent *de;
+	gds_t fullp = {0};
+	long base;
+
+	if (d == NULL) {
+		if (!silent_fail)
+			rnd_message(RND_MSG_ERROR, "anyload persist: unable list content of dir '%s'\n", path);
+		return;
+	}
+
+	gds_append_str(&fullp, path);
+	gds_append(&fullp, RND_DIR_SEPARATOR_C);
+	base = fullp.used;
+
+	while((de = rnd_readdir(d)) != NULL) {
+		if (de->d_name[0] == '.')
+			continue;
+		fullp.used = base;
+		gds_append_str(&fullp, de->d_name);
+		if (rnd_anyload(hidlib, fullp.array) != 0)
+			rnd_message(RND_MSG_ERROR, "anyload persist: failed to load '%s' in '%s'\n", de->d_name, path);
+	}
+
+	gds_uninit(&fullp);
+	rnd_closedir(d);
+}
+
 static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 {
+	rnd_conf_listitem_t *ci;
+
 	rnd_trace("anyload_persist!\n");
+
+	for(ci = rnd_conflist_first((rnd_conflist_t *)&rnd_conf.rc.anyload_persist); ci != NULL; ci = rnd_conflist_next(ci)) {
+		const char *p = ci->val.string[0];
+		char *p_exp;
+		int silent_fail = 0;
+
+		/* make ? prefixed paths optional */
+		if (*p == '?') {
+			silent_fail = 1;
+			p++;
+		}
+
+		p_exp = rnd_build_fn(hidlib, p);
+		if (p_exp == NULL) {
+			if (!silent_fail)
+				rnd_message(RND_MSG_ERROR, "anyload persist: unable to resolve path '%s'\n", p);
+			continue;
+		}
+
+rnd_trace(" path='%s' -> '%s'\n", p, p_exp);
+		if (!rnd_is_dir(hidlib, p_exp)) {
+			if (!silent_fail)
+				rnd_message(RND_MSG_ERROR, "anyload persist: '%s' (really '%s') is not a directory\n", p, p_exp);
+			continue;
+		}
+
+		anyload_persistent_load_dir(hidlib, p_exp, silent_fail);
+	}
 }
 
 static const char pcb_acts_AnyLoad[] = "AnyLoad(path)";
