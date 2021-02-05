@@ -53,6 +53,7 @@ typedef struct {
 			RND_CFT_STRING home;                 /* user's home dir, determined run-time */
 			RND_CFT_STRING exec_prefix;          /* exec prefix path (extracted from argv[0]) */
 		} path;
+		RND_CFT_LIST anyload_persist;          /* if not empty, load all anyload directories/files from this path on startup */
 	} rc;
 
 	const struct {
