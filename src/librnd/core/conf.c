@@ -32,6 +32,7 @@
 #include <liblihata/tree.h>
 #include <stdarg.h>
 #include <librnd/config.h>
+#include <librnd/core/anyload.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/color.h>
 #include <librnd/core/conf.h>
@@ -51,6 +52,8 @@
 /* conf list node's name */
 const char *pcb_conf_list_name = "pcb-rnd-conf-v1";
 static const char *flcat = "conf";
+
+static const char conf_cookie_al[] = "core/conf/anyload";
 
 /* plugin config files and interns */
 static htsi_t conf_interns;
@@ -2205,6 +2208,29 @@ int rnd_conf_print_native(rnd_conf_pfn pfn, void *ctx, const char * prefix, int 
 
 
 /****************/
+static int conf_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+{
+	lht_doc_t *doc;
+	int res;
+
+	/* copy the root to a new doc, keep file name for at least the root node */
+	doc = lht_dom_init();
+	doc->root = lht_dom_duptree(root);
+	lht_dom_loc_newfile(doc, root->file_name);
+	doc->root->file_name = doc->active_file;
+	doc->root->doc = doc;
+	res = conf_merge_plug(doc, RND_CFR_USER, doc->root->file_name);
+	if (!res) {
+		rnd_message(RND_MSG_ERROR, "menu anyload: failed to load menu patch from %s\n", doc->root->file_name);
+		return -1;
+	}
+	pcb_conf_merge_all(NULL);
+	return 0;
+}
+
+static rnd_anyload_t conf_anyload = {0};
+
+/****************/
 
 void rnd_conf_init(void)
 {
@@ -2216,10 +2242,20 @@ void rnd_conf_init(void)
 	rnd_conf_reset(RND_CFR_binary, "<pcb_conf_init>");
 }
 
+void rnd_conf_init2(void)
+{
+	conf_anyload.load_subtree = conf_anyload_subtree;
+	conf_anyload.cookie = conf_cookie_al;
+	rnd_anyload_reg("^[a-z]*-rnd-conf-v[0-9]*$", &conf_anyload);
+	rnd_anyload_reg("^rnd-conf-v[0-9]*$", &conf_anyload);
+}
+
 void rnd_conf_uninit(void)
 {
 	int n;
 	htsp_entry_t *e;
+
+	rnd_anyload_unreg_by_cookie(conf_cookie_al);
 
 	rnd_conf_fields_foreach(e) {
 		if (strncmp(e->key, "plugins/", 8) == 0)
