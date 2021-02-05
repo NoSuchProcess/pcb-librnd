@@ -36,6 +36,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
+#include "anyload.h"
 #include "hidlib.h"
 #include "actions.h"
 #include "file_loaded.h"
@@ -52,6 +53,7 @@
 lht_node_t ins_as_first, *rnd_hid_menu_ins_as_first = &ins_as_first;
 
 static const char menu_cookie[] = "librnd/hid_menu";
+static const char menu_cookie_al[] = "librnd/hid_menu/anyload";
 static rnd_conf_hid_id_t menu_conf_id;
 
 
@@ -803,11 +805,26 @@ void rnd_hid_menu_unload_patch(rnd_hid_t *hid, rnd_menu_patch_t *mp)
 	menu_merge(rnd_gui);
 }
 
+static rnd_menu_patch_t *rnd_hid_menu_store_doc(rnd_hid_t *hid, lht_doc_t *doc, const char *cookie, int prio, const char *desc, rnd_bool has_file)
+{
+	rnd_menu_patch_t *menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
+
+	menu->cfg.doc = doc;
+	menu->prio = determine_prio(doc->root, prio);
+	menu->cookie = rnd_strdup(cookie);
+	menu->desc = rnd_strdup(desc);
+	menu->has_file = has_file;
+
+	rnd_menu_sys_insert(&rnd_menu_sys, menu);
+
+	menu_merge(hid);
+
+	return menu;
+}
 
 rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc = NULL;
-	rnd_menu_patch_t *menu;
 	int has_file = 0;
 
 	if (fn != NULL) {
@@ -847,17 +864,7 @@ rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const 
 	if (doc == NULL)
 		return NULL;
 
-	menu = calloc(sizeof(rnd_menu_patch_t), 1); /* make sure the cache is cleared */
-	menu->cfg.doc = doc;
-	menu->prio = determine_prio(doc->root, prio);
-	menu->cookie = rnd_strdup(cookie);
-	menu->desc = rnd_strdup(desc);
-	menu->has_file = has_file;
-
-	rnd_menu_sys_insert(&rnd_menu_sys, menu);
-
-	menu_merge(hid);
-	return menu;
+	return rnd_hid_menu_store_doc(hid, doc, cookie, prio, desc, has_file);
 }
 
 void rnd_hid_menu_merge_inhibit_inc(void)
@@ -1412,6 +1419,32 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 	rnd_hid_menu_merge_inhibit_dec();
 }
 
+static int menu_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+{
+	lht_doc_t *doc;
+	rnd_menu_patch_t *menu;
+
+	if (rnd_gui == NULL)
+		return 0;
+
+	/* copy the root to a new doc, keep file name for at least the root node */
+	doc = lht_dom_init();
+	doc->root = lht_dom_duptree(root);
+	lht_dom_loc_newfile(doc, root->file_name);
+	doc->root->file_name = doc->active_file;
+
+	menu = rnd_hid_menu_store_doc(rnd_gui, doc, menu_cookie_al, 500, "anyload", 1);
+
+	if (menu == NULL) {
+		rnd_message(RND_MSG_ERROR, "menu anyload: failed to load menu patch from %s\n", doc->root->file_name);
+		lht_dom_uninit(doc);
+		return -1;
+	}
+	return 0;
+}
+
+static rnd_anyload_t menu_anyload = {0};
+
 void rnd_menu_init1(void)
 {
 	rnd_conf_native_t *n = rnd_conf_get_field("rc/menu_patches");
@@ -1425,6 +1458,10 @@ void rnd_menu_init1(void)
 		cbs.val_change_post = menu_conf_chg;
 		rnd_conf_hid_set_cb(n, menu_conf_id, &cbs);
 	}
+
+	menu_anyload.load_subtree = menu_anyload_subtree;
+	menu_anyload.cookie = menu_cookie_al;
+	rnd_anyload_reg("^rnd-menu-v[0-9]*$", &menu_anyload);
 }
 
 void rnd_menu_act_init2(void)
@@ -1434,5 +1471,6 @@ void rnd_menu_act_init2(void)
 
 void rnd_menu_uninit(void)
 {
+	rnd_anyload_unreg_by_cookie(menu_cookie_al);
 	rnd_conf_hid_unreg(menu_cookie);
 }
