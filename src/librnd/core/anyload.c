@@ -35,6 +35,9 @@
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/event.h>
+#include <librnd/core/hid_init.h>
+
 
 #include "anyload.h"
 
@@ -293,6 +296,11 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 	return res;
 }
 
+static void anyload_persistent_init(rnd_hidlib_t *hidlib)
+{
+	rnd_trace("anyload_persist!\n");
+}
+
 static const char pcb_acts_AnyLoad[] = "AnyLoad(path)";
 static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path\n";
 fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -310,9 +318,19 @@ static rnd_action_t anyload_action_list[] = {
 	{"AnyLoad", pcb_act_AnyLoad, pcb_acth_AnyLoad, pcb_acts_AnyLoad},
 };
 
+static void anyload_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if (rnd_hid_in_main_loop)
+		anyload_persistent_init(hidlib);
+}
 
 void rnd_anyload_init2(void)
 {
 	RND_REGISTER_ACTIONS(anyload_action_list, NULL);
+
+	if (rnd_hid_in_main_loop)
+		anyload_persistent_init(NULL);
+	else
+		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, anyload_mainloop_perma_ev, NULL, NULL);
 }
 
