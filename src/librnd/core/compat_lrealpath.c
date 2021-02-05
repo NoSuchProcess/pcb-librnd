@@ -77,7 +77,7 @@ char *rnd_lrealpath(const char *filename)
 		char buf[REALPATH_LIMIT];
 		const char *rp = realpath(filename, buf);
 		if (rp == NULL)
-			rp = filename;
+			return NULL;
 		return rnd_strdup(rp);
 	}
 	/* REALPATH_LIMIT */
@@ -89,7 +89,7 @@ char *rnd_lrealpath(const char *filename)
 	{
 		char *rp = canonicalize_file_name(filename);
 		if (rp == NULL)
-			return rnd_strdup(filename);
+			return NULL;
 		else
 			return rp;
 	}
@@ -120,7 +120,7 @@ char *rnd_lrealpath(const char *filename)
 			if (buf == NULL)
 				return NULL;
 			rp = realpath(filename, buf);
-			ret = rnd_strdup(rp ? rp : filename);
+			ret = ((rp == NULL) ? NULL : rnd_strdup(rp));
 			free(buf);
 			return ret;
 		}
@@ -140,7 +140,7 @@ char *rnd_lrealpath(const char *filename)
 		char *basename;
 		DWORD len = GetFullPathName(filename, MAX_PATH, buf, &basename);
 		if (len == 0 || len > MAX_PATH - 1)
-			return rnd_strdup(filename);
+			return NULL;
 		else {
 			/* The file system is case-preserving but case-insensitive,
 			   Canonicalize to lowercase, using the codepage associated

@@ -147,8 +147,12 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 	fpath = rnd_lrealpath(tmp);
 	free(tmp);
 
+	if (fpath == NULL) {
+		rnd_message(RND_MSG_ERROR, "anyload: external file '%s' not found\n", path);
+		return -1;
+	}
 	if ((memcmp(fpath, real_cwd, real_cwd_len) != 0) || (fpath[real_cwd_len] != '/')) {
-		rnd_message(RND_MSG_WARNING, "anyload: external file '%s' (really '%s') not within directory tree '%s' (or the file does not exist)\n", path, fpath, real_cwd);
+		rnd_message(RND_MSG_ERROR, "anyload: external file '%s' (really '%s') not within directory tree '%s' (or the file does not exist)\n", path, fpath, real_cwd);
 		return -1;
 	}
 
