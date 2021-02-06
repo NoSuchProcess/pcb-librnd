@@ -138,8 +138,6 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	rnd_plugin_add_dir("plugins");
 }
 
-extern void rnd_anyload_uninit(void);
-
 void rnd_hid_uninit(void)
 {
 	rnd_plugin_dir_t *pd, *next;
@@ -154,7 +152,6 @@ void rnd_hid_uninit(void)
 
 	pup_uninit(&rnd_pup);
 
-	rnd_anyload_uninit();
 	rnd_export_uninit();
 
 	free(rnd_hid_list);
@@ -460,6 +457,7 @@ void rnd_hidlib_init3_auto(void)
 
 
 extern void rnd_menu_uninit(void);
+extern void rnd_anyload_uninit(void);
 extern void rnd_hid_cfg_keys_uninit_module(void);
 
 
@@ -475,12 +473,13 @@ void rnd_hidlib_uninit(void)
 		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
 
 	rnd_hid_uninit();
-	rnd_events_uninit();
 	rnd_conf_uninit();
 	rnd_plugin_uninit();
 	rnd_actions_uninit();
 	rnd_dad_unit_uninit();
 	rnd_hid_cfg_keys_uninit_module();
+	rnd_anyload_uninit();
+	rnd_events_uninit();
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
