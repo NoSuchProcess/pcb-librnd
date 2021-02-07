@@ -582,6 +582,12 @@ static void ghid_gdk_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
+/* gc width in pixels */
+#define GCWP(gc) ((gc->width < 0) ? -gc->width : Vz(gc->width))
+
+/* gc width in coords */
+#define GCWC(gc) ((gc->width < 0) ?  (-gc->width * ghidgui->port.view.coord_per_px) : gc->width)
+
 static void ghid_gdk_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	switch (style) {
@@ -599,25 +605,18 @@ static void ghid_gdk_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 		gc->join = GDK_JOIN_ROUND;
 	}
 	if (gc->pixel_gc)
-		gdk_gc_set_line_attributes(gc->pixel_gc, Vz(gc->width), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+		gdk_gc_set_line_attributes(gc->pixel_gc, GCWP(gc), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_gdk_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	/* If width is negative then treat it as pixel width, otherwise it is world coordinates. */
-	if(width < 0) {
-		gc->width = -width;
-		width = -width;
-	}
-	else {
-		gc->width = width;
-		width = Vz(width);
-	}
+	gc->width = width;
 
 	if (gc->pixel_gc)
-		gdk_gc_set_line_attributes(gc->pixel_gc, width, GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+		gdk_gc_set_line_attributes(gc->pixel_gc, GCWP(gc), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 	if (gc->clip_gc)
-		gdk_gc_set_line_attributes(gc->clip_gc, width, GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
+		gdk_gc_set_line_attributes(gc->clip_gc, GCWP(gc), GDK_LINE_SOLID, (GdkCapStyle) gc->cap, (GdkJoinStyle) gc->join);
 }
 
 static void ghid_gdk_set_draw_xor(rnd_hid_gc_t gc, int xor_mask)
@@ -698,8 +697,8 @@ static void ghid_gdk_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	dy1 = Vy((double) y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if ((gc->core_gc.width > 0) && (pcb_gtk_1dot(gc->width, x1, y1, x2, y2))) {
-		if (pcb_gtk_dot_in_canvas(gc->width, dx1, dy1)) {
+	if ((gc->core_gc.width > 0) && (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2))) {
+		if (pcb_gtk_dot_in_canvas(GCWP(gc), dx1, dy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, dx1, dy1);
 			if (priv->out_clip != NULL)
@@ -711,7 +710,7 @@ static void ghid_gdk_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
-	if (!pcb_line_clip(0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, &dx1, &dy1, &dx2, &dy2, gc->width / ghidgui->port.view.coord_per_px))
+	if (!pcb_line_clip(0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, &dx1, &dy1, &dx2, &dy2, GCWC(gc)))
 		return;
 
 	USE_GC(gc);
@@ -779,7 +778,7 @@ static void ghid_gdk_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 
 	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
-	lw = gc->width;
+	lw = GCWC(gc);
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;
 	h = ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px;
 
@@ -793,8 +792,8 @@ static void ghid_gdk_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	sy1 = Vy(y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
-		if (pcb_gtk_dot_in_canvas(gc->width, sx1, sy1)) {
+	if (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2)) {
+		if (pcb_gtk_dot_in_canvas(GCWP(gc), sx1, sy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
 		}
@@ -1028,7 +1027,7 @@ static void ghid_gdk_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 
 	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
-	lw = gc->width;
+	lw = GCWC(gc);
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;
 	h = ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px;
 
@@ -1042,8 +1041,8 @@ static void ghid_gdk_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	sy1 = Vy(y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
-		if (pcb_gtk_dot_in_canvas(gc->width, sx1, sy1)) {
+	if (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2)) {
+		if (pcb_gtk_dot_in_canvas(GCWP(gc), sx1, sy1)) {
 			USE_GC_NOPEN(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
 		}
