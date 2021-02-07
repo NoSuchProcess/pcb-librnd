@@ -317,7 +317,7 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 				sep = s;
 
 		if (sep != NULL)
-			cwd = cwd_free = rnd_strndup(path, s-path);
+			cwd = cwd_free = rnd_strndup(path, sep-path);
 		else
 			cwd = ".";
 	}
