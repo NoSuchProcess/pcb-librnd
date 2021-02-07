@@ -407,6 +407,7 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 
 static const char pcb_acts_AnyLoad[] = "AnyLoad([path])";
 static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path (or offer a file selectio dialog if no path specified)\n";
+/* DOC: anyload.html */
 fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *path = NULL;
