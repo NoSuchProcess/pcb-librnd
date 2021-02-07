@@ -38,6 +38,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/event.h>
 #include <librnd/core/paths.h>
+#include <librnd/core/hid.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
@@ -404,15 +405,25 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 	anyload_conf_inhibit_dec();
 }
 
-static const char pcb_acts_AnyLoad[] = "AnyLoad(path)";
-static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path\n";
+static const char pcb_acts_AnyLoad[] = "AnyLoad([path])";
+static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path (or offer a file selectio dialog if no path specified)\n";
 fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *path = NULL;
+	char *path_free = NULL;
 
-	RND_ACT_CONVARG(1, FGW_STR, AnyLoad, path = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, AnyLoad, path = argv[1].val.str);
 
-	RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path));
+	if (path == NULL)
+		path = path_free = rnd_gui->fileselect(rnd_gui, "Import an anyload", NULL, "anyload.lht", NULL, NULL, "anyload", RND_HID_FSD_READ, NULL);
+
+	if (path != NULL)
+		RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path));
+	else
+		RND_ACT_IRES(-1);
+
+	free(path_free);
+
 	return 0;
 }
 
