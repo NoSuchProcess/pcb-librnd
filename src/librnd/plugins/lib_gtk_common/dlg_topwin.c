@@ -271,17 +271,17 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
    theme whilst we are running. */
 static void fix_topbar_theming(pcb_gtk_topwin_t *tw)
 {
-	GtkSettings *settings;
-
 	do_fix_topbar_theming(tw);
-
-	settings = gtk_widget_get_settings(tw->top_bar_background);
 
 	/* disabled for now: it crashes on some user but there is no easy way
 	   to reproduce it; risking a crash is not worth the feature of auto-updating
 	   the toolbar without restart.
-	g_signal_connect(settings, "notify::gtk-theme-name", G_CALLBACK(do_fix_topbar_theming), NULL);
-	g_signal_connect(settings, "notify::gtk-font-name", G_CALLBACK(do_fix_topbar_theming), NULL);
+	{
+		GtkSettings *settings;
+		settings = gtk_widget_get_settings(tw->top_bar_background);
+		g_signal_connect(settings, "notify::gtk-theme-name", G_CALLBACK(do_fix_topbar_theming), NULL);
+		g_signal_connect(settings, "notify::gtk-font-name", G_CALLBACK(do_fix_topbar_theming), NULL);
+	}
 	*/
 }
 
