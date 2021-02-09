@@ -33,6 +33,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/error.h>
+#include <librnd/core/conf.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/hidlib.h>
