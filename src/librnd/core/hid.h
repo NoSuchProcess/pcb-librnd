@@ -315,7 +315,7 @@ struct rnd_hid_s {
 	void (*fill_polygon_offs)(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
 	void (*fill_rect)(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 
-	void (*draw_pixmap)(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const rnd_pixmap_t *pixmap);
+	void (*draw_pixmap)(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap);
 	void (*uninit_pixmap)(rnd_hid_t *hid, rnd_pixmap_t *pixmap);
 
 	/* This is for the printer. If xval_ and yval_ are

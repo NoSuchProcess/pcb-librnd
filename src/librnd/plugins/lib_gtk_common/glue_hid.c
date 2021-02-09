@@ -613,7 +613,7 @@ static void ghid_uninit_pixmap_(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 	free(pxm->hid_data);
 }
 
-static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const rnd_pixmap_t *pixmap)
+static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 
