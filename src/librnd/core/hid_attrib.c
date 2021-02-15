@@ -134,7 +134,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 				if ((backup != NULL) && (a->value == NULL))
 					a->value = &backup[i].lng;
 				if (a->value)
-					*(int *) a->value = a->default_val.lng;
+					*(long *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_UNIT:
 				if ((backup != NULL) && (a->value == NULL))
