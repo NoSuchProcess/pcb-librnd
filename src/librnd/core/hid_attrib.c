@@ -104,7 +104,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 				if ((backup != NULL) && (a->value == NULL))
 					a->value = &backup[i].lng;
 				if (a->value)
-					*(long *) a->value = a->default_val.lng;
+					*(int *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_COORD:
 				if ((backup != NULL) && (a->value == NULL))
@@ -134,7 +134,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 				if ((backup != NULL) && (a->value == NULL))
 					a->value = &backup[i].lng;
 				if (a->value)
-					*(long *) a->value = a->default_val.lng;
+					*(int *) a->value = a->default_val.lng;
 				break;
 			case RND_HATT_UNIT:
 				if ((backup != NULL) && (a->value == NULL))
@@ -171,7 +171,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						break;
 					case RND_HATT_INTEGER:
 						if (a->value)
-							*(long *) a->value = strtol((*argv)[1], 0, 0);
+							*(int *) a->value = strtol((*argv)[1], 0, 0);
 						else
 							a->default_val.lng = strtol((*argv)[1], 0, 0);
 						(*argc)--;
