@@ -3502,7 +3502,7 @@ rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	if ((cnt % 2) == 0)
 		return rnd_false;
 
-	/* ray to the right */
+	/* ray to the left */
 	bx.X1 = -RND_COORD_MAX;
 	bx.X2 = cx - r;
 	cnt = 0;
