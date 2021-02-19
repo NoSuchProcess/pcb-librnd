@@ -3478,36 +3478,70 @@ rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
  * (or intersecting).
  * (C) 2017 Tibor 'Igor2' Palinkas
 */
+typedef struct {
+	int cnt;
+	rnd_coord_t cx, cy;
+	int dx;
+} pline_embrace_t;
+
 static rnd_r_dir_t pline_embraces_circ_cb(const rnd_box_t * b, void *cl)
 {
-	int *cnt = (int *)cl;
-	(*cnt)++;
+	pline_embrace_t *e = cl;
+	struct seg *s = (struct seg *)b;
+	double dx;
+	rnd_coord_t lx;
+	rnd_coord_t x1 = s->v->point[0];
+	rnd_coord_t y1 = s->v->point[1];
+	rnd_coord_t x2 = s->v->next->point[0];
+	rnd_coord_t y2 = s->v->next->point[1];
+
+	/* ray is below or above the line - no chance */
+	if ((e->cy < y1) && (e->cy < y2))
+		return RND_R_DIR_NOT_FOUND;
+	if ((e->cy >= y1) && (e->cy >= y2))
+		return RND_R_DIR_NOT_FOUND;
+
+	/* calculate line's X for e->cy */
+	dx = (double)(x2 - x1) / (double)(y2 - y1);
+	lx = rnd_round((double)x1 + (double)(e->cy - y1) * dx);
+	if (e->dx < 0) { /* going left */
+		if (lx < e->cx)
+			e->cnt++;
+	}
+	else { /* going roght */
+		if (lx > e->cx)
+			e->cnt++;
+	}
+
 	return RND_R_DIR_NOT_FOUND;
 }
 
 rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	rnd_box_t bx;
-	int cnt;
+	pline_embrace_t e;
 
 	bx.Y1 = cy; bx.Y2 = cy+1;
+	e.cy = cy;
 	if (pl->tree == NULL)
 		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
 
 	/* ray to the right */
-	bx.X1 = cx + r;
+	bx.X1 = e.cx = cx + r;
 	bx.X2 = RND_COORD_MAX;
-	cnt = 0;
-	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
-	if ((cnt % 2) == 0)
+	e.dx = +1;
+	e.cnt = 0;
+	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &e, NULL);
+	if ((e.cnt % 2) == 0)
 		return rnd_false;
 
 	/* ray to the left */
 	bx.X1 = -RND_COORD_MAX;
-	bx.X2 = cx - r;
-	cnt = 0;
-	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
-	if ((cnt % 2) == 0)
+	bx.X2 = e.cx = cx - r;
+	e.dx = -1;
+	e.cnt = 0;
+	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &e, NULL);
+	if ((e.cnt % 2) == 0)
 		return rnd_false;
 
 	return rnd_true;
