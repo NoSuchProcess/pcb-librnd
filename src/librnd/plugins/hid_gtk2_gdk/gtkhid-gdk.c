@@ -1386,10 +1386,12 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 static void ghid_gdk_screen_update(void)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
-	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
+	GdkWindow *window;
 
-	if (priv->base_pixel == NULL)
+	if ((priv->base_pixel == NULL) || (ghidgui->port.drawing_area == NULL))
 		return;
+
+	window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 
 	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel, 0, 0, 0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height);
 	show_crosshair(TRUE);
