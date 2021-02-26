@@ -189,7 +189,7 @@ static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static const char pcb_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
-	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n";
+	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n" "grid(get)\n";
 static const char pcb_acth_grid[] = "Set the grid.";
 static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -216,6 +216,10 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (op[0] == '#') {
 		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(op+1));
+	}
+	else if (strcmp(op, "get") == 0) {
+		res->type = FGW_COORD;
+		fgw_coord(res) = rnd_conf.editor.grid;
 	}
 	else
 		RND_ACT_FAIL(grid);
