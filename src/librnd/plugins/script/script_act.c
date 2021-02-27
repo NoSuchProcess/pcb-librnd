@@ -423,6 +423,20 @@ static fgw_error_t pcb_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return rnd_parse_command_res(RND_ACT_HIDLIB, res, act, 1);
 }
 
+static const char pcb_acth_pcb_math0[] = "No-argument math functions";
+static const char pcb_acts_pcb_math0[] = "pcb_MATHFUNC()";
+static fgw_error_t pcb_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *actname = argv[0].val.func->name;
+
+	switch(actname[4]) {
+		case 'r':
+			res->type = FGW_INT;
+			res->val.nat_int = rand();
+			return 0;
+	}
+	return FGW_ERR_ARG_CONV;
+}
 
 static const char pcb_acth_pcb_math1[] = "Single-argument math functions";
 static const char pcb_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
@@ -445,6 +459,7 @@ static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			switch(actname[5]) {
 				case 'i': res->val.nat_double = sin(a); return 0;
 				case 'q': res->val.nat_double = sqrt(a); return 0;
+				case 'r': res->val.nat_double = 0; srand(a); return 0;
 			}
 			break;
 		case 'c': res->val.nat_double = cos(a); return 0;
@@ -507,6 +522,8 @@ static rnd_action_t script_action_list[] = {
 	{"ActionString", pcb_act_ActionString, pcb_acth_ActionString, pcb_acts_ActionString},
 
 	/* math */
+	{"pcb_rand",    pcb_act_pcb_math0, NULL, NULL},
+
 	{"pcb_sin",     pcb_act_pcb_math1, NULL, NULL},
 	{"pcb_cos",     pcb_act_pcb_math1, NULL, NULL},
 	{"pcb_asin",    pcb_act_pcb_math1, NULL, NULL},
@@ -514,6 +531,7 @@ static rnd_action_t script_action_list[] = {
 	{"pcb_atan",    pcb_act_pcb_math1, NULL, NULL},
 	{"pcb_tan",     pcb_act_pcb_math1, NULL, NULL},
 	{"pcb_sqrt",    pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_srand",   pcb_act_pcb_math1, NULL, NULL},
 
 	{"pcb_atan2",   pcb_act_pcb_math2, NULL, NULL}
 };
