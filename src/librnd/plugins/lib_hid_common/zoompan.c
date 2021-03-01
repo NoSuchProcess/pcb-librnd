@@ -113,8 +113,7 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB_GUI_NOGUI();
 
-	if (mode == 1)
-		rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
+	rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
 	RND_ACT_CONVARG(1, FGW_INT, Pan, mode = argv[1].val.nat_int);
 	rnd_gui->pan_mode(rnd_gui, x, y, mode);
