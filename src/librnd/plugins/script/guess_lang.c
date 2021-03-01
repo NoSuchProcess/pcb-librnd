@@ -123,7 +123,7 @@ static void rnd_script_fawk_langs(pup_list_parse_pup_t *ctx)
 		NULL
 	};
 
-	guess_lang_open(ctx, NULL, "fungw_fawk");
+	guess_lang_open(ctx, NULL, "fungw_fawk.pup");
 	for(s = pup; *s != NULL; s++) {
 		char tmp[64];
 		strcpy(tmp, *s);
