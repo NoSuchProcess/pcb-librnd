@@ -488,6 +488,8 @@ static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
 		return 1;
 	}
 
+	gctx->port.view.panning = 0; /* corner case: on a popup gtk won't deliver button releases because the popup takes focus; it's safer to turn off panning */
+
 	gtk_widget_grab_focus(gctx->port.drawing_area);
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
 	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(gctx->port.drawing_area)));
