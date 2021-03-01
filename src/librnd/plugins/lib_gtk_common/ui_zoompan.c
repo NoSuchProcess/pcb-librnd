@@ -201,7 +201,8 @@ int pcb_gtk_get_coords(pcb_gtk_t *ctx, pcb_gtk_view_t *vw, const char *msg, rnd_
 {
 	int res = 0;
 	if ((force || !vw->has_entered) && msg) {
-		res = ghid_get_user_xy(ctx, msg);
+		if (!vw->panning) /* we are outside of the drawing area; query xy only if we are not already panning; corner case: pan ends outside of the drawing area -> get_xy makes the grey GUI lockup */
+			res = ghid_get_user_xy(ctx, msg);
 		if (res > 0)
 			return 1;
 	}
