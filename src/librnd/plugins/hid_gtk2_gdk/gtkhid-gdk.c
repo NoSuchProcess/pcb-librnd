@@ -697,7 +697,7 @@ static void ghid_gdk_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	dy1 = Vy((double) y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if ((gc->core_gc.width > 0) && (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2))) {
+	if ((gc->core_gc.width > 0) && (pcb_gtk_1dot(gc->width, x1, y1, x2, y2))) {
 		if (pcb_gtk_dot_in_canvas(GCWP(gc), dx1, dy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, dx1, dy1);
@@ -792,7 +792,7 @@ static void ghid_gdk_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	sy1 = Vy(y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2)) {
+	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
 		if (pcb_gtk_dot_in_canvas(GCWP(gc), sx1, sy1)) {
 			USE_GC(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
@@ -1041,7 +1041,7 @@ static void ghid_gdk_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	sy1 = Vy(y1);
 
 	/* optimization: draw a single dot if object is too small */
-	if (pcb_gtk_1dot(GCWP(gc), x1, y1, x2, y2)) {
+	if (pcb_gtk_1dot(gc->width, x1, y1, x2, y2)) {
 		if (pcb_gtk_dot_in_canvas(GCWP(gc), sx1, sy1)) {
 			USE_GC_NOPEN(gc);
 			gdk_draw_point(priv->out_pixel, priv->pixel_gc, sx1, sy1);
