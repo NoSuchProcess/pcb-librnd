@@ -71,10 +71,14 @@ static void rnd_hook_detect_cc(void)
 	/* for --debug mode, use -ansi -pedantic for all detection */
 	put("/local/cc_flags_save", get("/target/cc/cflags"));
 	if (istrue(get("/local/pcb/debug"))) {
-		append("/target/cc/cflags", " ");
-		append("/target/cc/cflags", target_ansi);
-		append("/target/cc/cflags", " ");
-		append("/target/cc/cflags", target_ped);
+		if (target_ansi != NULL) {
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_ansi);
+		}
+		if (target_ped != NULL) {
+			append("/target/cc/cflags", " ");
+			append("/target/cc/cflags", target_ped);
+		}
 	}
 	if (istrue(get("/local/pcb/profile"))) {
 		append("/target/cc/cflags", " ");
