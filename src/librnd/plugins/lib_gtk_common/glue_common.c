@@ -62,7 +62,7 @@ static void ghid_win32_init(void)
 	if (!rnd_file_readable(cache)) {
 		cmd = rnd_concat(rnd_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
 		fprintf(stderr, "pcb-rnd: updating gdk loader cache: '%s'...\n", cache);
-		system(cmd);
+		rnd_system(cmd);
 		free(cmd);
 	}
 	free(cache);
