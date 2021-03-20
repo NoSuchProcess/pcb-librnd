@@ -35,6 +35,7 @@ typedef struct {
 	double next, period;
 	long count;
 	char *user_data;
+	rnd_hidlib_t *hidlib;
 	char aname[1];
 } script_timer_t;
 
@@ -71,7 +72,8 @@ static void timer_cb(rnd_hidval_t hv)
 				goto remove;
 			argv[0].type = FGW_FUNC;
 			argv[0].val.argv0.func = f;
-			argv[0].val.argv0.user_call_ctx = NULL;
+TODO("this hidlib was registered on timer reg; may get invalidated if the proejct is unloaded while the timer is running");
+			argv[0].val.argv0.user_call_ctx = t->hidlib;
 			argv[1].type = FGW_DOUBLE;
 			argv[1].val.nat_double = now;
 			argv[2].type = FGW_LONG;
@@ -146,6 +148,7 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	t->next = rnd_dtime() + period;
 	t->period = period;
 	t->count = count;
+	t->hidlib = RND_ACT_HIDLIB;
 	strcpy(t->aname, fn);
 	if (user_data != NULL)
 		t->user_data = rnd_strdup(user_data);
