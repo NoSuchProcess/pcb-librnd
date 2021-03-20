@@ -425,10 +425,8 @@ if sys/cross
 then
 print [@
 ../src_3rd/puplug/libpuplug.a $(PUPLUG):
-	cd ../src_3rd/puplug && make clean
-	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC)
-	cd ../src_3rd/puplug && rm *.o
 	cd ../src_3rd/puplug && make libpuplug.a CC=$(CC)
+	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC) PUP_O_PREFIX=-host
 @]
 else
 print [@
