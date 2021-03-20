@@ -40,6 +40,7 @@ static void rnd_help1(const char *progname)
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 	printf(" --disable-so               do not compile or install dynamic libs (.so files)\n");
+	printf(" --static-librnd            static link librnd (will fail with plugins!)\n");
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -144,6 +145,12 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 	}
 	if (strcmp(key, "disable-so") == 0) {
 		put("/local/pcb/disable_so", strue);
+		put("/local/pcb/want_static_librnd", strue);
+		pup_set_debug(strue);
+		return 1;
+	}
+	if (strcmp(key, "static-librnd") == 0) {
+		put("/local/pcb/want_static_librnd", strue);
 		pup_set_debug(strue);
 		return 1;
 	}
@@ -281,6 +288,7 @@ void rnd_hook_postinit()
 	put("/local/pcb/profile", sfalse);
 	put("/local/pcb/symbols", sfalse);
 	put("/local/pcb/disable_so", sfalse);
+	put("/local/pcb/want_static_librnd", sfalse);
 
 #undef plugin_def
 #undef plugin_header
