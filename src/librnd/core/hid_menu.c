@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2020,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1158,13 +1158,14 @@ static int create_menu_manual_prop(rnd_menu_sys_t *msys, const char *path, const
 	return cmc.err;
 }
 
-static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *action, const char *tip, const char *cookie)
+static int create_menu_manual(rnd_menu_sys_t *msys, const char *path, const char *action, const char *tip, const char *cookie, const char *accel)
 {
 	rnd_menu_prop_t props = {0};
 
 	props.action = action;
 	props.tip = tip;
 	props.cookie = cookie;
+	props.accel = accel;
 	return create_menu_manual_prop(msys, path, &props);
 }
 
@@ -1192,7 +1193,7 @@ static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 
 /*** actions ***/
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie)";
+static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie, [accel])";
 static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
 static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -1206,9 +1207,10 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(2, FGW_STR, CreateMenu, ;);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, CreateMenu, ;);
 	RND_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
-		int r = create_menu_manual(&rnd_menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL);
+		int r = create_menu_manual(&rnd_menu_sys, argv[1].val.str, (argc > 2) ? argv[2].val.str : NULL, (argc > 3) ? argv[3].val.str : NULL, (argc > 4) ? argv[4].val.str : NULL, (argc > 5) ? argv[5].val.str : NULL);
 		if (r != 0)
 			rnd_message(RND_MSG_ERROR, "Error: failed to create the menu\n");
 		RND_ACT_IRES(r);
