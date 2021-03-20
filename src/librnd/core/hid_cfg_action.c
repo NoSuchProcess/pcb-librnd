@@ -43,6 +43,8 @@ int rnd_hid_cfg_action(rnd_hidlib_t *hl, const lht_node_t *node)
 
 	switch(node->type) {
 		case LHT_TEXT:
+			if (node->data.text.value == NULL)
+				return -1;
 			return rnd_parse_actions(hl, node->data.text.value);
 		case LHT_LIST:
 			for(node = node->data.list.first; node != NULL; node = node->next) {
