@@ -290,7 +290,7 @@ static live_script_t *rnd_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 static int live_stop(live_script_t *lvs)
 {
 	if (lvs->loaded) {
-		rnd_script_unload(lvs->longname, NULL);
+		rnd_script_unload(lvs->longname, "stop");
 		lvs->loaded = 0;
 	}
 
