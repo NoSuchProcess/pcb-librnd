@@ -2,7 +2,7 @@ ha:rnd-menu-v1 {
 	li:anchored {
 		ha:@scripts {
 			li:submenu {
-				ha:Open live script dialog... = { action = LiveScript(new) }
+				ha:Open live script dialog... = { a={<Key>p;<Key>s;<Key>l;}; action = LiveScript(new) }
 			}
 		}
 	}
