@@ -383,7 +383,7 @@ static void menu_merge_remove_recursive(lht_node_t *node)
 	lht_node_t *n, *sub = submenu(node);
 	if (sub != NULL) {
 		lht_dom_iterator_t it;
-		for(n = lht_dom_first(&it, node); n != NULL; n = lht_dom_next(&it))
+		for(n = lht_dom_first(&it, sub); n != NULL; n = lht_dom_next(&it))
 			menu_merge_remove_recursive(n);
 	}
 	rnd_gui->remove_menu_node(rnd_gui, node);
