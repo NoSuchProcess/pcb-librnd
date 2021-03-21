@@ -83,7 +83,7 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	htsp_popentry(&rnd_live_scripts, lvs->name);
 
 	if (lvs->loaded)
-		rnd_script_unload(lvs->longname, NULL);
+		rnd_script_unload(lvs->longname, "close");
 
 	if (rnd_gui != NULL)
 		RND_DAD_FREE(lvs->dlg);
