@@ -40,11 +40,10 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR)
 		return FALSE;
 
-	if (!gctx->topwin.cmd.command_entry_status_line_active) {
-		out->view.has_entered = TRUE;
-		force_update = 1; /* force a redraw for the crosshair */
-		gtk_widget_grab_focus(out->drawing_area); /* Make sure drawing area has keyboard focus when we are in it. */
-	}
+	out->view.has_entered = TRUE;
+	force_update = 1; /* force a redraw for the crosshair */
+	if (!gctx->topwin.cmd.command_entry_status_line_active)
+		gtk_widget_grab_focus(out->drawing_area); /* Make sure drawing area has keyboard focus when we are in it (don't steal keys from the command line, tho) */
 
 	/* Following expression is true if a you open a menu from the menu bar,
 	   move the mouse to the viewport and click on it. This closes the menu
