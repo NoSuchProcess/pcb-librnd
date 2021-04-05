@@ -1,8 +1,11 @@
-librnd 2.3.1
-~~~~~~~~~~~~~
+librnd 2.3.2
+~~~~~~~~~~~~
 
-This version or librnd focuses on separation from its origins, pcb-rnd. Beside
-a lot of smallish fixes and build system upgrades, the main step is the script
-plugin relocation from pcb-rnd to librnd. This means the dozen-language
-scripting of pcb-rnd is now available in any librnd app. This includes the
-live script dialog as well.
+Mainly a bugfix release. There are two major new features:
+
+1. Simpler plugin conf loading from the user dir: load *.conf, plugins
+   don't need to register specific file names.
+
+2. Anyload: load menu patches, config files, and whatever resource files
+   plugins may register through an unified interface (CLI and GUI).
+
