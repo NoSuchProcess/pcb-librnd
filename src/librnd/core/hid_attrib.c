@@ -96,7 +96,8 @@ static void opt2attr(rnd_hid_attr_val_t *dst, const rnd_export_opt_t *src)
 			*dst = src->default_val;
 			break;
 		case RND_HATT_STRING:
-			dst->str = rnd_strdup(RND_EMPTY(src->default_val.str));
+			free(dst->str);
+			dst->str = src->default_val.str == NULL ? NULL : rnd_strdup(src->default_val.str);
 			break;
 		default:
 		if (RND_HATT_IS_COMPOSITE(src->type)) /* function callback */
