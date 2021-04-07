@@ -150,7 +150,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 
 			for (i = 0; i < ha->n; i++)
 				if (strcmp((*argv)[0] + arg_ofs, ha->opts[i].name) == 0) {
-					rnd_export_opt_t *a = ha->opts + i;
+					const rnd_export_opt_t *a = ha->opts + i;
 					char *ep;
 					const rnd_unit_t *unit;
 					switch (ha->opts[i].type) {

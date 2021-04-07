@@ -142,7 +142,7 @@ void rnd_export_uninit(void);
 typedef struct rnd_hid_attr_node_s {
 	struct rnd_hid_attr_node_s *next;
 	rnd_hid_t *hid;
-	rnd_export_opt_t *opts;
+	const rnd_export_opt_t *opts;
 	int n;
 	const char *cookie;
 } rnd_hid_attr_node_t;
