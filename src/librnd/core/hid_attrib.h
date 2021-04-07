@@ -114,10 +114,10 @@ struct rnd_export_opt_s {
 	const char **enumerations; /* NULL terminated list of values for a RND_HATT_ENUM */
 
 
-	/* If set, this is used for global attributes (i.e. those set
-	   statically with REGISTER_ATTRIBUTES below) instead of changing
-	   the default_val. */
-	void *value;
+	/* This used to be an alternative value target but as a void * it did
+	   no work on all platforms - it was not clear what different HATT types
+	   should write, especially for an enum: int *, long *...  */
+	short *value_REMOVED;
 };
 
 /* Only when ran with -x: the selected export plugin (and potentially

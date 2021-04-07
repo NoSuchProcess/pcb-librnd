@@ -95,54 +95,27 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 		if (ha->hid != NULL)
 			backup = ha->hid->argument_array;
 
+		if (backup == NULL) {
+			fprintf(stderr, "rnd_hid_parse_command_line(): no backup storage. Direct ->value field is not supported anymore. Your hid/export plugin (%s, %s) needs to be fixed.\n", ha->hid->name, ha->cookie);
+			return -1;
+		}
+
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
-			case RND_HATT_LABEL:
-				break;
-			case RND_HATT_INTEGER:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].lng;
-				if (a->value)
-					*(int *) a->value = a->default_val.lng;
-				break;
-			case RND_HATT_COORD:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].crd;
-				if (a->value)
-					*(rnd_coord_t *) a->value = a->default_val.crd;
-				break;
-			case RND_HATT_BOOL:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].lng;
-				if (a->value)
-					*(char *) a->value = a->default_val.lng;
-				break;
-			case RND_HATT_REAL:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].dbl;
-				if (a->value)
-					*(double *) a->value = a->default_val.dbl;
-				break;
-			case RND_HATT_STRING:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].str;
-				if (a->value)
-					*(const char **) a->value = rnd_strdup(RND_EMPTY(a->default_val.str));
-				break;
-			case RND_HATT_ENUM:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].lng;
-				if (a->value)
-					*(int *) a->value = a->default_val.lng;
-				break;
-			case RND_HATT_UNIT:
-				if ((backup != NULL) && (a->value == NULL))
-					a->value = &backup[i].lng;
-				if (a->value)
-					*(int *) a->value = a->default_val.lng;
-				break;
-			default:
+				case RND_HATT_LABEL:
+				case RND_HATT_INTEGER:
+				case RND_HATT_COORD:
+				case RND_HATT_BOOL:
+				case RND_HATT_REAL:
+				case RND_HATT_ENUM:
+				case RND_HATT_UNIT:
+					backup[i] = a->default_val;
+					break;
+				case RND_HATT_STRING:
+					backup[i].str = rnd_strdup(RND_EMPTY(a->default_val.str));
+					break;
+				default:
 				if (RND_HATT_IS_COMPOSITE(a->type)) /* function callback */
 					break;
 				rnd_message(RND_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", a->type, a->name);
@@ -160,7 +133,9 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 		bool_val = 1;
 		arg_ofs = 2;
 	try_no_arg:
-		for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
+		for (ha = rnd_hid_attr_nodes; ha; ha = ha->next) {
+			rnd_hid_attr_val_t *backup = ha->hid->argument_array;
+
 			for (i = 0; i < ha->n; i++)
 				if (strcmp((*argv)[0] + arg_ofs, ha->opts[i].name) == 0) {
 					rnd_export_opt_t *a = ha->opts + i;
@@ -170,42 +145,27 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 					case RND_HATT_LABEL:
 						break;
 					case RND_HATT_INTEGER:
-						if (a->value)
-							*(int *) a->value = strtol((*argv)[1], 0, 0);
-						else
-							a->default_val.lng = strtol((*argv)[1], 0, 0);
+						backup[i].lng = strtol((*argv)[1], 0, 0);
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_COORD:
-						if (a->value)
-							*(rnd_coord_t *) a->value = rnd_get_value((*argv)[1], NULL, NULL, NULL);
-						else
-							a->default_val.crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
+						backup[i].crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_REAL:
-						if (a->value)
-							*(double *) a->value = strtod((*argv)[1], 0);
-						else
-							a->default_val.dbl = strtod((*argv)[1], 0);
+						backup[i].dbl = strtod((*argv)[1], 0);
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_STRING:
-						if (a->value)
-							*(char **) a->value = rnd_strdup(RND_EMPTY((*argv)[1]));
-						else
-							a->default_val.str = rnd_strdup(RND_EMPTY((*argv)[1]));
+						backup[i].str = rnd_strdup(RND_EMPTY((*argv)[1]));
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_BOOL:
-						if (a->value)
-							*(char *) a->value = bool_val;
-						else
-							a->default_val.lng = bool_val;
+						backup[i].lng = bool_val;
 						break;
 					case RND_HATT_ENUM:
 						ep = (*argv)[1];
@@ -213,8 +173,8 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						for (e = 0; a->enumerations[e]; e++)
 							if (strcmp(a->enumerations[e], ep) == 0) {
 								ok = 1;
-								a->default_val.lng = e;
-								a->default_val.str = ep;
+								backup[i].lng = e;
+								backup[i].str = ep;
 								break;
 							}
 						if (!ok) {
@@ -230,8 +190,8 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
 							exit(1);
 						}
-						a->default_val.lng = unit->index;
-						a->default_val.str = unit->suffix;
+						backup[i].lng = unit->index;
+						backup[i].str = unit->suffix;
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -243,6 +203,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 					ha = 0;
 					goto got_match;
 				}
+		}
 		if (bool_val == 1 && strncmp((*argv)[0], "--no-", 5) == 0) {
 			bool_val = 0;
 			arg_ofs = 5;
