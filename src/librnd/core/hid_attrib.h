@@ -149,7 +149,7 @@ typedef struct rnd_hid_attr_node_s {
 
 extern rnd_hid_attr_node_t *rnd_hid_attr_nodes;
 
-void rnd_hid_usage(rnd_export_opt_t *a, int numa);
+void rnd_hid_usage(const rnd_export_opt_t *a, int numa);
 void rnd_hid_usage_option(const char *name, const char *help);
 
 /* Count the number of direct children, start_from the first children */
@@ -172,6 +172,6 @@ typedef enum rnd_hid_export_opt_func_action_e {
 	RND_HIDEOF_DAD    /* call_ctx is a rnd_hid_export_opt_func_dad_t */
 } rnd_hid_export_opt_func_action_t;
 
-typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
+typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, const rnd_export_opt_t *opt);
 
 #endif

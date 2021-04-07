@@ -96,7 +96,7 @@ static void opt2attr(rnd_hid_attr_val_t *dst, const rnd_export_opt_t *src)
 			*dst = src->default_val;
 			break;
 		case RND_HATT_STRING:
-			free(dst->str);
+			free((char *)dst->str);
 			dst->str = src->default_val.str == NULL ? NULL : rnd_strdup(src->default_val.str);
 			break;
 		default:
@@ -252,7 +252,7 @@ void rnd_hid_usage_option(const char *name, const char *help)
 	fprintf(stderr, "--%-20s %s\n", name, help);
 }
 
-void rnd_hid_usage(rnd_export_opt_t *a, int numa)
+void rnd_hid_usage(const rnd_export_opt_t *a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;
