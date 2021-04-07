@@ -85,25 +85,25 @@ void rnd_export_remove_opts_by_cookie(const char *cookie)
 
 static void opt2attr(rnd_hid_attr_val_t *dst, rnd_export_opt_t *src)
 {
-			switch (src->type) {
-				case RND_HATT_LABEL:
-				case RND_HATT_INTEGER:
-				case RND_HATT_COORD:
-				case RND_HATT_BOOL:
-				case RND_HATT_REAL:
-				case RND_HATT_ENUM:
-				case RND_HATT_UNIT:
-					*dst = src->default_val;
-					break;
-				case RND_HATT_STRING:
-					dst->str = rnd_strdup(RND_EMPTY(src->default_val.str));
-					break;
-				default:
-				if (RND_HATT_IS_COMPOSITE(src->type)) /* function callback */
-					break;
-				rnd_message(RND_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", src->type, src->name);
-				abort();
-			}
+	switch (src->type) {
+		case RND_HATT_LABEL:
+		case RND_HATT_INTEGER:
+		case RND_HATT_COORD:
+		case RND_HATT_BOOL:
+		case RND_HATT_REAL:
+		case RND_HATT_ENUM:
+		case RND_HATT_UNIT:
+			*dst = src->default_val;
+			break;
+		case RND_HATT_STRING:
+			dst->str = rnd_strdup(RND_EMPTY(src->default_val.str));
+			break;
+		default:
+		if (RND_HATT_IS_COMPOSITE(src->type)) /* function callback */
+			break;
+		rnd_message(RND_MSG_ERROR, "Invalid attribute type %d for attribute %s\n", src->type, src->name);
+		abort();
+	}
 }
 
 int rnd_hid_parse_command_line(int *argc, char ***argv)
