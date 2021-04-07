@@ -35,7 +35,7 @@
 
 rnd_hid_attr_node_t *rnd_hid_attr_nodes = 0;
 
-void rnd_export_register_opts2(rnd_hid_t *hid, rnd_export_opt_t *a, int n, const char *cookie, int copy)
+void rnd_export_register_opts2(rnd_hid_t *hid, const rnd_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	rnd_hid_attr_node_t *ha;
 

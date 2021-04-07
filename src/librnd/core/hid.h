@@ -222,10 +222,9 @@ struct rnd_hid_s {
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
-	   the number of attributes is stored there.
-	   The caller must not free the returned table but may modify the
-	   default values in it. */
-	rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
+	   the number of attributes is stored there. Note: the table is read-only
+	   and persistent. */
+	const rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from

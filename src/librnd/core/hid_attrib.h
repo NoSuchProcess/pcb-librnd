@@ -131,7 +131,7 @@ void rnd_hid_load_defaults(rnd_hid_t *hid, const rnd_export_opt_t *opts, int len
    after the export because pcb-rnd exits. Cam or dialog box direct exporting
    won't go through this. */
 extern void rnd_export_register_opts(rnd_export_opt_t *, int, const char *cookie, int copy);
-void rnd_export_register_opts2(rnd_hid_t *hid, rnd_export_opt_t *a, int n, const char *cookie, int copy);
+void rnd_export_register_opts2(rnd_hid_t *hid, const rnd_export_opt_t *a, int n, const char *cookie, int copy);
 
 /* Remove all attributes registered with the given cookie */
 void rnd_export_remove_opts_by_cookie(const char *cookie);
