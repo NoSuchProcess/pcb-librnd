@@ -1874,40 +1874,31 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			val_union *v = new_values + rcount;
+			rnd_hid_attr_val_t *backup = NULL;
+			if (ha->hid != NULL)
+				backup = ha->hid->argument_array;
+
+			assert(backup != NULL);
+
 			switch (a->type) {
 			case RND_HATT_INTEGER:
-				if (a->value)
-					*(int *) a->value = v->i;
-				else
-					a->default_val.lng = v->i;
+				backup[i].lng = v->i;
 				rcount++;
 				break;
 			case RND_HATT_COORD:
-				if (a->value)
-					*(rnd_coord_t *) a->value = v->c;
-				else
-					a->default_val.crd = v->c;
+				backup[i].crd = v->c;
 				rcount++;
 				break;
 			case RND_HATT_BOOL:
-				if (a->value)
-					*(char *) a->value = v->i;
-				else
-					a->default_val.lng = v->i;
+				backup[i].lng = v->i;
 				rcount++;
 				break;
 			case RND_HATT_REAL:
-				if (a->value)
-					*(double *) a->value = v->f;
-				else
-					a->default_val.dbl = v->f;
+				backup[i].dbl = v->f;
 				rcount++;
 				break;
 			case RND_HATT_STRING:
-				if (a->value)
-					*(char **) a->value = v->s;
-				else
-					a->default_val.str = v->s;
+				backup[i].str = v->s;
 				rcount++;
 				break;
 			default:
