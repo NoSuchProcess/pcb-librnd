@@ -120,6 +120,10 @@ struct rnd_export_opt_s {
 	short *value_REMOVED;
 };
 
+/* Load export plugin's read-write hid->attribute_array with defaults from
+   read-only opts; do this once, at init. */
+void rnd_hid_load_defaults(rnd_hid_t *hid, const rnd_export_opt_t *opts, int len);
+
 /* Only when ran with -x: the selected export plugin (and potentially
    dependent exporter plugins) register their optioins and command line
    options will be looked up in these. Plugins not participating in the

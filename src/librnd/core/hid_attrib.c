@@ -83,7 +83,7 @@ void rnd_export_remove_opts_by_cookie(const char *cookie)
 	}
 }
 
-static void opt2attr(rnd_hid_attr_val_t *dst, rnd_export_opt_t *src)
+static void opt2attr(rnd_hid_attr_val_t *dst, const rnd_export_opt_t *src)
 {
 	switch (src->type) {
 		case RND_HATT_LABEL:
@@ -106,6 +106,16 @@ static void opt2attr(rnd_hid_attr_val_t *dst, rnd_export_opt_t *src)
 	}
 }
 
+void rnd_hid_load_defaults(rnd_hid_t *hid, const rnd_export_opt_t *opts, int len)
+{
+	int n;
+	rnd_hid_attr_val_t *values = hid->argument_array;
+
+	for(n = 0; n < len; n++)
+		opt2attr(&values[n], opts + n);
+}
+
+
 int rnd_hid_parse_command_line(int *argc, char ***argv)
 {
 	rnd_hid_attr_node_t *ha;
@@ -122,9 +132,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 			fprintf(stderr, "rnd_hid_parse_command_line(): no backup storage. Direct ->value field is not supported anymore. Your hid/export plugin (%s, %s) needs to be fixed.\n", ha->hid->name, ha->cookie);
 			return -1;
 		}
-
-		for (i = 0; i < ha->n; i++)
-			opt2attr(&backup[i], ha->opts + i);
+		rnd_hid_load_defaults(ha->hid, ha->opts, ha->n);
 	}
 
 	/* parse the command line and overwrite with values read from argc/argv */
