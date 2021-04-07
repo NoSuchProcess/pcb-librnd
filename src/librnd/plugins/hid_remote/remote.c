@@ -27,7 +27,7 @@ typedef struct rnd_hid_gc_s {
 	int nop;
 } rnd_hid_gc_s;
 
-static rnd_export_opt_t *remote_get_export_options(rnd_hid_t *hid, int *n_ret)
+static const rnd_export_opt_t *remote_get_export_options(rnd_hid_t *hid, int *n_ret)
 {
 	if (n_ret != NULL)
 		*n_ret = 0;

@@ -45,7 +45,7 @@ static const char *loghid_cookie = "loghid plugin";
 static rnd_hid_t loghid_gui;
 static rnd_hid_t loghid_exp;
 
-rnd_export_opt_t loghid_attribute_list[] = {
+static const rnd_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
@@ -97,7 +97,7 @@ static int loghid_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static rnd_export_opt_t *loghid_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *loghid_get_export_options(rnd_hid_t *hid, int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = rnd_strdup("default?");*/
 

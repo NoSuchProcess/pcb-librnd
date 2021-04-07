@@ -284,7 +284,7 @@ static int use_private_colormap = 0;
 static int stdin_listen = 0;
 static char *background_image_file = 0;
 
-rnd_export_opt_t lesstif_attribute_list[] = {
+const rnd_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
 		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
@@ -856,7 +856,7 @@ static void LoadBackgroundImage(const char *fn)
 
 /* ---------------------------------------------------------------------- */
 
-static rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n != NULL)
 		*n = sizeof(lesstif_attribute_list) / sizeof(rnd_export_opt_t);

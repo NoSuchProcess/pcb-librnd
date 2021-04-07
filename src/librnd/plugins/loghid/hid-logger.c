@@ -15,9 +15,9 @@
 static rnd_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
 
-static rnd_export_opt_t *log_get_export_options(rnd_hid_t *hid, int *ret)
+static const rnd_export_opt_t *log_get_export_options(rnd_hid_t *hid, int *ret)
 {
-	rnd_export_opt_t *result = delegatee_->get_export_options(hid, ret);
+	const rnd_export_opt_t *result = delegatee_->get_export_options(hid, ret);
 	if (ret != NULL)
 		rnd_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
 	else
