@@ -49,7 +49,7 @@ void rnd_export_register_opts2(rnd_hid_t *hid, const rnd_export_opt_t *a, int n,
 	ha->hid = hid;
 }
 
-void rnd_export_register_opts(rnd_export_opt_t *a, int n, const char *cookie, int copy)
+void rnd_export_register_opts(const rnd_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	rnd_export_register_opts2(NULL, a, n, cookie, copy);
 }
