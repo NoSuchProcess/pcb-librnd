@@ -279,11 +279,11 @@ void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 				/* anchor; ignore */
 			}
 			else
-				rnd_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @");
+				rnd_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @\n");
 		}
 		break;
 	default:
-		rnd_hid_cfg_error(base, "Unexpected node type; should be hash (submenu) or text (separator or @special)");
+		rnd_hid_cfg_error(base, "Unexpected node type; should be hash (submenu) or text (separator or @special)\n");
 	}
 }
 
@@ -352,7 +352,7 @@ void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 
 	submenu = pcb_hid_cfg_menu_field_path(base, "submenu");
 	if (submenu == NULL) {
-		rnd_hid_cfg_error(base, "can not create popup without submenu list");
+		rnd_hid_cfg_error(base, "can not create popup without submenu list\n");
 		return;
 	}
 
@@ -500,7 +500,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
 		}
 		else
-			rnd_hid_cfg_error(mr, "/popups should be a list");
+			rnd_hid_cfg_error(mr, "/popups should be a list\n");
 		mr->doc->root->user_data = menu;
 	}
 
