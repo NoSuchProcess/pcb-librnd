@@ -277,10 +277,6 @@ static void ShowCrosshair(rnd_bool show)
 	lesstif_notify_mark_change(&lesstif_hid, rnd_true);
 }
 
-/* This is the size of the current PCB work area.  */
-/* Use ltf_hidlib->size_x, ltf_hidlib->size_y.  */
-/* static int pcb_width, pcb_height; */
-
 const rnd_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
 		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
