@@ -316,9 +316,6 @@ automatically scaled to fit the canvas.
 
 rnd_hid_attr_val_t ltf_values[NUM_OPTIONS];
 
-TODO("menu: pcb-menu should be generic and not depend on the HID")
-
-
 static int lesstif_direct = 0;
 static rnd_composite_op_t lesstif_drawing_mode = 0;
 #define use_mask() ((!lesstif_direct) && ((lesstif_drawing_mode == RND_HID_COMP_POSITIVE) || (lesstif_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (lesstif_drawing_mode == RND_HID_COMP_NEGATIVE)))
