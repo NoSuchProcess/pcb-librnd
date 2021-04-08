@@ -280,13 +280,10 @@ static void ShowCrosshair(rnd_bool show)
 /* This is the size of the current PCB work area.  */
 /* Use ltf_hidlib->size_x, ltf_hidlib->size_y.  */
 /* static int pcb_width, pcb_height; */
-static int use_private_colormap = 0;
-static int stdin_listen = 0;
-static char *background_image_file = 0;
 
 const rnd_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
-		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
+		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_colormap 0
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -297,7 +294,7 @@ Listen for actions on stdin.
 %end-doc
 */
 	{"listen", "Listen on standard input for actions",
-		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
+		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_listen 1
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -310,9 +307,14 @@ automatically scaled to fit the canvas.
 %end-doc
 */
 	{"bg-image", "Background Image",
-		RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
+		RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_bg_image 2
 };
+
+
+#define NUM_OPTIONS ((sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0])))
+
+rnd_hid_attr_val_t ltf_values[NUM_OPTIONS];
 
 TODO("menu: pcb-menu should be generic and not depend on the HID")
 
@@ -1590,8 +1592,8 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	ltf_topwin_make_bottom();
 
 
-	if ((background_image_file != NULL) && (*background_image_file != '\0'))
-		LoadBackgroundImage(background_image_file);
+	if ((ltf_values[HA_bg_image].str != NULL) && (*ltf_values[HA_bg_image].str != '\0'))
+		LoadBackgroundImage(ltf_values[HA_bg_image].str);
 
 	XtRealizeWidget(appwidget);
 	pcb_ltf_winplace(display, XtWindow(appwidget), "top", 640, 480);
@@ -1720,7 +1722,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			rnd_export_opt_t *a = ha->opts + i;
+			const rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
 			case RND_HATT_INTEGER:
 			case RND_HATT_COORD:
@@ -1756,7 +1758,8 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			rnd_export_opt_t *a = ha->opts + i;
+			const rnd_export_opt_t *a = ha->opts + i;
+			rnd_hid_attr_val_t *val = &ltf_values[i];
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -1798,35 +1801,35 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 				r->resource_type = XtRInt;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
-				r->default_addr = &(a->default_val.lng);
+				r->default_addr = &(val->lng);
 				rcount++;
 				break;
 			case RND_HATT_COORD:
 				r->resource_type = XmStrCast(XtRPCBCoord);
 				r->default_type = XmStrCast(XtRPCBCoord);
 				r->resource_size = sizeof(rnd_coord_t);
-				r->default_addr = &(a->default_val.crd);
+				r->default_addr = &(val->crd);
 				rcount++;
 				break;
 			case RND_HATT_REAL:
 				r->resource_type = XmStrCast(XtRDouble);
 				r->default_type = XmStrCast(XtRDouble);
 				r->resource_size = sizeof(double);
-				r->default_addr = &(a->default_val.dbl);
+				r->default_addr = &(val->dbl);
 				rcount++;
 				break;
 			case RND_HATT_STRING:
 				r->resource_type = XtRString;
 				r->default_type = XtRString;
 				r->resource_size = sizeof(char *);
-				r->default_addr = (char *) a->default_val.str;
+				r->default_addr = (char *) val->str;
 				rcount++;
 				break;
 			case RND_HATT_BOOL:
 				r->resource_type = XtRBoolean;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
-				r->default_addr = &(a->default_val.lng);
+				r->default_addr = &(val->lng);
 				rcount++;
 				break;
 			default:
@@ -1872,7 +1875,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	rcount = 0;
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			rnd_export_opt_t *a = ha->opts + i;
+			const rnd_export_opt_t *a = ha->opts + i;
 			val_union *v = new_values + rcount;
 			rnd_hid_attr_val_t *backup = NULL;
 			if (ha->hid != NULL)
@@ -1909,13 +1912,13 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	rnd_hid_parse_command_line(argc, argv);
 
 	/* redefine lesstif_colormap, if requested via "-install" */
-	if (use_private_colormap) {
+	if (ltf_values[HA_colormap].lng) {
 		lesstif_colormap = XCopyColormapAndFree(display, lesstif_colormap);
 		XtVaSetValues(appwidget, XtNcolormap, lesstif_colormap, NULL);
 	}
 
 	/* listen on standard input for actions */
-	if (stdin_listen) {
+	if (ltf_values[HA_listen].lng) {
 		XtAppAddInput(app_context, rnd_fileno(stdin), (XtPointer) XtInputReadMask, lesstif_listener_cb, NULL);
 	}
 	return 0;
@@ -3113,6 +3116,8 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.get_dad_hidlib = ltf_attr_get_dad_hidlib;
 
+	lesstif_hid.argument_array = ltf_values;
+
 	rnd_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
 		lesstif_conf_id = rnd_conf_hid_reg(lesstif_cookie, &ccb);
@@ -3125,7 +3130,7 @@ static int lesstif_attrs_regd = 0;
 static void lesstif_reg_attrs(void)
 {
 	if (!lesstif_attrs_regd)
-		rnd_export_register_opts(lesstif_attribute_list, sizeof(lesstif_attribute_list)/sizeof(lesstif_attribute_list[0]), lesstif_cookie, 0);
+		rnd_export_register_opts2(&lesstif_hid, lesstif_attribute_list, sizeof(lesstif_attribute_list)/sizeof(lesstif_attribute_list[0]), lesstif_cookie, 0);
 	lesstif_attrs_regd = 1;
 }
 
