@@ -52,15 +52,17 @@ static const rnd_export_opt_t loghid_attribute_list[] = {
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
 
+static rnd_hid_attr_val_t loghid_values[NUM_OPTIONS];
+
 static int loghid_parse_arguments_real(rnd_hid_t *hid, int *argc, char ***argv, int is_gui)
 {
 	rnd_hid_t *target, *me;
 	const char *target_name;
 
-	rnd_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
+	rnd_export_register_opts2(&loghid_exp, loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
 	rnd_hid_parse_command_line(argc, argv);
 
-	target_name = loghid_attribute_list[HA_target_hid].default_val.str;
+	target_name = loghid_values[HA_target_hid].str;
 
 	if (is_gui) {
 		target = rnd_hid_find_gui(NULL, target_name);
@@ -130,6 +132,7 @@ int pplg_init_loghid(void)
 
 	loghid_gui.usage = loghid_usage;
 	loghid_gui.parse_arguments = loghid_parse_arguments_gui;
+	loghid_gui.argument_array = loghid_values;
 
 	rnd_hid_register_hid(&loghid_gui);
 
@@ -143,6 +146,7 @@ int pplg_init_loghid(void)
 
 	loghid_exp.usage = loghid_usage;
 	loghid_exp.parse_arguments = loghid_parse_arguments_exp;
+	loghid_exp.argument_array = loghid_values;
 
 	rnd_hid_register_hid(&loghid_exp);
 
