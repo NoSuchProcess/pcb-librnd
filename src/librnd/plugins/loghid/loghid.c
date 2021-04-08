@@ -47,7 +47,7 @@ static rnd_hid_t loghid_exp;
 
 static const rnd_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
 #define HA_target_hid 0
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
