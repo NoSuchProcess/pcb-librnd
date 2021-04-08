@@ -117,7 +117,7 @@ struct rnd_export_opt_s {
 	/* This used to be an alternative value target but as a void * it did
 	   no work on all platforms - it was not clear what different HATT types
 	   should write, especially for an enum: int *, long *...  */
-	short *value_REMOVED;
+	/* void *value; */
 };
 
 /* Load export plugin's read-write hid->attribute_array with defaults from
