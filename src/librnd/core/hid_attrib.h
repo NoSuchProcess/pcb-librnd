@@ -171,6 +171,6 @@ typedef enum rnd_hid_export_opt_func_action_e {
 	RND_HIDEOF_DAD    /* call_ctx is a rnd_hid_export_opt_func_dad_t */
 } rnd_hid_export_opt_func_action_t;
 
-typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, const rnd_export_opt_t *opt);
+typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, const rnd_export_opt_t *opt, rnd_hid_attr_val_t *val);
 
 #endif

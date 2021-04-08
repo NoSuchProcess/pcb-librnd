@@ -256,7 +256,7 @@ void rnd_hid_usage(const rnd_export_opt_t *a, int numa)
 		if (RND_HATT_IS_COMPOSITE(a->type)) {
 			rnd_hid_export_opt_func_t fnc = a->default_val.func;
 			if (fnc != NULL)
-				fnc(RND_HIDEOF_USAGE, stderr, a);
+				fnc(RND_HIDEOF_USAGE, stderr, a, NULL);
 		}
 		else
 			rnd_hid_usage_option(a->name, help);
