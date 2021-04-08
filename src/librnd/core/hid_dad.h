@@ -441,7 +441,8 @@ do { \
 	RND_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
-#define RND_DAD_DUP_EXPOPT_COMMON_(table, opt) \
+#define RND_DAD_DUP_EXPOPT_VAL(table, opt, val_attr) \
+do { \
 	const rnd_export_opt_t *__opt__ = (opt); \
 	RND_DAD_ALLOC(table, 0); \
 	table[table ## _len-1].name = __opt__->name; \
@@ -449,18 +450,7 @@ do { \
 	table[table ## _len-1].type = __opt__->type; \
 	table[table ## _len-1].min_val = __opt__->min_val; \
 	table[table ## _len-1].max_val = __opt__->max_val; \
-	table[table ## _len-1].wdata = __opt__->enumerations;
-
-#define RND_DAD_DUP_EXPOPT(table, opt) \
-do { \
-	RND_DAD_DUP_EXPOPT_COMMON_(table, opt) \
-	table[table ## _len-1].val = __opt__->default_val; \
-	RND_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
-} while(0)
-
-#define RND_DAD_DUP_EXPOPT_VAL(table, opt, val_attr) \
-do { \
-	RND_DAD_DUP_EXPOPT_COMMON_(table, opt) \
+	table[table ## _len-1].wdata = __opt__->enumerations; \
 	table[table ## _len-1].val = (val_attr); \
 	RND_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
