@@ -442,7 +442,7 @@ do { \
 } while(0)
 
 #define RND_DAD_DUP_EXPOPT_COMMON_(table, opt) \
-	rnd_export_opt_t *__opt__ = (opt); \
+	const rnd_export_opt_t *__opt__ = (opt); \
 	RND_DAD_ALLOC(table, 0); \
 	table[table ## _len-1].name = __opt__->name; \
 	table[table ## _len-1].help_text = __opt__->help_text; \
