@@ -384,6 +384,11 @@ HIDLIB_CLEAN_FILES_SO=\
 	librnd-hid.so.$(PCB_RND_VER) \
 	librnd-3rd.so.$(PCB_RND_VER) \
 	librnd-poly.so.$(PCB_RND_VER)
+
+HIDLIB_CLEAN_FILES_SO_SY=\
+	librnd-hid.so \
+	librnd-3rd.so \
+	librnd-poly.so
 @]
 end
 
@@ -393,7 +398,7 @@ HIDLIB_CLEAN_FILES_A=\
 	librnd-3rd.a \
 	librnd-poly.a
 
-HIDLIB_CLEAN_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO)
+HIDLIB_CLEAN_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
 
 librnd: $(HIDLIB_CLEAN_FILES) ../src_3rd/genht/version.h
 

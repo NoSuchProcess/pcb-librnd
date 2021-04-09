@@ -1,3 +1,4 @@
+32615	configure	make sure the local .so symlinks are updated on make all so they don't point to old version .so's
 32537	configure	new infrastructure: anyload
 32275	configure	menu patch infra
 32120	configure	removing the old drc in favor of drc_query
