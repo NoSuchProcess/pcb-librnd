@@ -53,3 +53,12 @@ void pcb_gtk_pan_common(void);
 void ghid_init_pixmap_low(pcb_gtk_pixmap_t *gpm);
 void ghid_uninit_pixmap_low(pcb_gtk_pixmap_t *gpm);
 
+
+/* extend a 8 bit color component to 16 bits and guarantee round trip */
+RND_INLINE unsigned pcb_gtk_color8to16(unsigned c)
+{
+	unsigned res = c << 8;
+	if (c > 0x7F)
+		res |= 0x00FF;
+	return res;
+}

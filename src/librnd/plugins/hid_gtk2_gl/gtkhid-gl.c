@@ -89,9 +89,9 @@ static rnd_bool map_color(const rnd_color_t *inclr, pcb_gtk_color_t *color)
 	if (color->red || color->green || color->blue)
 		gdk_colormap_free_colors(colormap, color, 1);
 
-	color->red = (unsigned)inclr->r << 8;
-	color->green = (unsigned)inclr->g << 8;
-	color->blue = (unsigned)inclr->b << 8;
+	color->red = pcb_gtk_color8to16(inclr->r);
+	color->green = pcb_gtk_color8to16(inclr->g);
+	color->blue = pcb_gtk_color8to16(inclr->b);
 	gdk_color_alloc(colormap, color);
 
 	return TRUE;
