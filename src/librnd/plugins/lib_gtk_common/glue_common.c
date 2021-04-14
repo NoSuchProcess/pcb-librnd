@@ -39,6 +39,7 @@
 #include "hid_gtk_conf.h"
 #include "in_keyboard.h"
 #include "wt_preview.h"
+#include <librnd/core/safe_fs.h>
 
 pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 
@@ -56,13 +57,15 @@ static void ghid_win32_init(void)
 	cache = rnd_concat(rnd_w32_cachedir, "\\gdk-pixmap-loaders.cache", NULL);
 	rnd_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
 
+
 	for(s = cache; *s != '\0'; s++)
 		if (*s == '\\')
 			*s = '/';
 	if (!rnd_file_readable(cache)) {
+		fprintf(stderr, "setenv: GDK_PIXBUF_MODULE_FILE: '%s'\n", cache);
 		cmd = rnd_concat(rnd_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
 		fprintf(stderr, "pcb-rnd: updating gdk loader cache: '%s'...\n", cache);
-		rnd_system(cmd);
+		rnd_system(NULL, cmd);
 		free(cmd);
 	}
 	free(cache);
