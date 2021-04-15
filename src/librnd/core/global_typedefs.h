@@ -43,7 +43,6 @@ typedef struct rnd_unit_s rnd_unit_t;
 
 typedef struct rnd_point_s rnd_point_t;
 typedef struct rnd_box_s rnd_box_t;
-typedef struct rnd_box_list_s rnd_box_list_t;
 typedef struct rnd_polyarea_s rnd_polyarea_t;
 
 typedef struct rnd_rtree_s rnd_rtree_t;

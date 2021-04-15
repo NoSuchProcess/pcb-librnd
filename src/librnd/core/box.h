@@ -47,12 +47,6 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/rnd_bool.h>
 
-struct rnd_box_list_s {
-	rnd_cardinal_t BoxN;   /* the number of boxes contained */
-	rnd_cardinal_t BoxMax; /* max boxes from malloc */
-	rnd_box_t *Box;
-};
-
 #include <librnd/core/misc_util.h>
 
 /* to avoid overflow, we calculate centers this way */
