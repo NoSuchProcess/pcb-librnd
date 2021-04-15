@@ -62,6 +62,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/anyload.o
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
+	$(LIBRND)/core/box_isc.o
 	$(LIBRND)/core/color.o
 	$(LIBRND)/core/conf.o
 	$(LIBRND)/core/conf_act.o
