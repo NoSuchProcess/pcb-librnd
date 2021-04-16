@@ -2619,11 +2619,6 @@ static void lesstif_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 		XFillRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	CRASH("lesstif_calibrate");
-}
-
 static int lesstif_shift_is_pressed(rnd_hid_t *hid)
 {
 	return shift_pressed;
@@ -3047,7 +3042,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.fill_polygon_offs = lesstif_fill_polygon_offs;
 	lesstif_hid.fill_rect = lesstif_fill_rect;
 
-	lesstif_hid.calibrate = lesstif_calibrate;
 	lesstif_hid.shift_is_pressed = lesstif_shift_is_pressed;
 	lesstif_hid.control_is_pressed = lesstif_control_is_pressed;
 	lesstif_hid.mod1_is_pressed = lesstif_mod1_is_pressed;

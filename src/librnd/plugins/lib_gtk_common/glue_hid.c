@@ -242,11 +242,6 @@ int gtkhid_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return 0;
 }
 
-static void ghid_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	printf("ghid_calibrate() -- not implemented\n");
-}
-
 static void ghid_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
@@ -653,7 +648,6 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->iterate = ghid_iterate;
 	dst->parse_arguments = gtkhid_parse_arguments;
 
-	dst->calibrate = ghid_calibrate;
 	dst->shift_is_pressed = ghid_shift_is_pressed;
 	dst->control_is_pressed = ghid_control_is_pressed;
 	dst->mod1_is_pressed = ghid_mod1_is_pressed;

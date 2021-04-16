@@ -252,10 +252,6 @@ static void remote_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 1);
 }
 
-static void remote_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-}
-
 static int remote_shift_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
@@ -373,7 +369,6 @@ int pplg_init_hid_remote(void)
 	remote_hid.fill_polygon = remote_fill_polygon;
 	remote_hid.fill_polygon_offs = remote_fill_polygon_offs;
 	remote_hid.fill_rect = remote_fill_rect;
-	remote_hid.calibrate = remote_calibrate;
 	remote_hid.shift_is_pressed = remote_shift_is_pressed;
 	remote_hid.control_is_pressed = remote_control_is_pressed;
 	remote_hid.mod1_is_pressed = remote_mod1_is_pressed;

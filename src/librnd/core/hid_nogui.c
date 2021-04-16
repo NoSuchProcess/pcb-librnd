@@ -164,11 +164,6 @@ static void nogui_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd
 	CRASH("fill_rect");
 }
 
-static void nogui_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	CRASH("calibrate");
-}
-
 static int nogui_shift_is_pressed(rnd_hid_t *hid)
 {
 	/* This is called from pcb_crosshair_grid_fit() when the board is loaded.  */
@@ -500,7 +495,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->fill_circle = nogui_fill_circle;
 	hid->fill_polygon = nogui_fill_polygon;
 	hid->fill_rect = nogui_fill_rect;
-	hid->calibrate = nogui_calibrate;
 	hid->shift_is_pressed = nogui_shift_is_pressed;
 	hid->control_is_pressed = nogui_control_is_pressed;
 	hid->mod1_is_pressed = nogui_mod1_is_pressed;

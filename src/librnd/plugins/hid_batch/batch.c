@@ -224,10 +224,6 @@ static void batch_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd
 {
 }
 
-static void batch_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-}
-
 static int batch_shift_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
@@ -361,7 +357,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.fill_polygon = batch_fill_polygon;
 	batch_hid.fill_polygon_offs = batch_fill_polygon_offs;
 	batch_hid.fill_rect = batch_fill_rect;
-	batch_hid.calibrate = batch_calibrate;
 	batch_hid.shift_is_pressed = batch_shift_is_pressed;
 	batch_hid.control_is_pressed = batch_control_is_pressed;
 	batch_hid.mod1_is_pressed = batch_mod1_is_pressed;

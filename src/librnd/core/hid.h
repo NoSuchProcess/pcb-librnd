@@ -317,12 +317,8 @@ struct rnd_hid_s {
 	void (*draw_pixmap)(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap);
 	void (*uninit_pixmap)(rnd_hid_t *hid, rnd_pixmap_t *pixmap);
 
-	/* This is for the printer. If xval_ and yval_ are
-	   zero, a calibration page is printed with instructions for
-	   calibrating your printer.  After calibrating, nonzero xval_ and
-	   yval_ are passed according to the instructions.  Metric is nonzero
-	   if the user prefers metric units, else inches are used. */
-	void (*calibrate)(rnd_hid_t *hid, double xval, double yval);
+	/* OBSOLETE: used to be printer calibration */
+	void (*obsolete_calibrate)(rnd_hid_t *hid, double xval, double yval);
 
 
 	/*** GUI layout functions.  Not used or defined for print/export HIDs. ***/
