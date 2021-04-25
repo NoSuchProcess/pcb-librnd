@@ -37,7 +37,7 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 
 	/* See comment in ghid_port_window_leave_cb() */
 
-	if (ev->mode != GDK_CROSSING_NORMAL && ev->detail != GDK_NOTIFY_NONLINEAR)
+	if (ev->mode != GDK_CROSSING_NORMAL && ev->mode != GDK_CROSSING_UNGRAB && ev->detail != GDK_NOTIFY_NONLINEAR)
 		return FALSE;
 
 	out->view.has_entered = TRUE;
