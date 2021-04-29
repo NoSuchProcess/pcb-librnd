@@ -282,7 +282,7 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *arg
 }
 
 static const char pcb_acts_SetGrid[] = "SetGrid(delta|*mult|/div, [unit])";
-static const char pcb_acth_SetGrid[] = "Change various board-wide values and sizes.";
+static const char pcb_acth_SetGrid[] = "Change grid size.";
 /* for doc: copy from SetValue(grid,...) */
 static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
