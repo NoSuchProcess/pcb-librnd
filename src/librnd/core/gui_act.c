@@ -43,6 +43,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/tool.h>
+#include <librnd/core/hid_dad.h>
 
 
 /* This action is provided for CLI convenience */
@@ -187,9 +188,42 @@ static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 }
 
 
+static void grid_ask_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_dad_retovr_t **retovr = caller_data;
+	rnd_hid_dad_close(hid_ctx, *retovr, 0);
+}
+
+static rnd_coord_t grid_ask(void)
+{
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
+	int wc;
+	rnd_coord_t res = -1;
+	RND_DAD_DECL(dlg);
+
+	RND_DAD_BEGIN_VBOX(dlg);
+		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HBOX(dlg);
+			RND_DAD_LABEL(dlg, "New grid size:");
+			RND_DAD_COORD(dlg, "");
+				wc = RND_DAD_CURRENT(dlg);
+				RND_DAD_ENTER_CB(dlg, grid_ask_enter_cb);
+		RND_DAD_END(dlg);
+		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
+	RND_DAD_END(dlg);
+
+	RND_DAD_NEW("grid_ask", dlg, "Set custom grid size", &dlg_ret_override, rnd_true, NULL);
+	if (RND_DAD_RUN(dlg) == 0)
+		res = dlg[wc].val.crd;
+	RND_DAD_FREE(dlg);
+
+	return res;
+}
+
+
 static const char pcb_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
-	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n" "grid(get)\n";
+	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n" "grid(get)\n" "grid(ask)\n";
 static const char pcb_acth_grid[] = "Set the grid.";
 static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -220,6 +254,16 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (strcmp(op, "get") == 0) {
 		res->type = FGW_COORD;
 		fgw_coord(res) = rnd_conf.editor.grid;
+	}
+	else if (strcmp(op, "ask") == 0) {
+		rnd_grid_t g = {0};
+
+		if (!RND_HAVE_GUI_ATTR_DLG)
+			return -1;
+
+		g.size = grid_ask();
+		if (g.size > 0)
+			rnd_grid_set(RND_ACT_HIDLIB, &g);
 	}
 	else
 		RND_ACT_FAIL(grid);
