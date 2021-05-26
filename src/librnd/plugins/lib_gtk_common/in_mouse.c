@@ -409,7 +409,7 @@ void ghid_port_reg_mouse_cursor(pcb_gtk_t *ctx, int idx, const char *name, const
 
 void ghid_port_set_mouse_cursor(pcb_gtk_t *ctx, int idx)
 {
-	ghid_cursor_t *mc = vtmc_get(&ctx->mouse.cursor, idx, 0);
+	ghid_cursor_t *mc = (idx >= 0) ? vtmc_get(&ctx->mouse.cursor, idx, 0) : NULL;
 	GdkWindow *window;
 
 	ctx->mouse.last_cursor_idx = idx;
