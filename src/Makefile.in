@@ -549,6 +549,7 @@ append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_impl.c ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
 
 if ?libs/script/fungw/presents
 then
