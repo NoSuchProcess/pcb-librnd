@@ -471,7 +471,7 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(CONFDIR)"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(CONFDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
@@ -535,6 +535,9 @@ sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
 sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
 sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}
 append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
+append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/zoompan.h }
+append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
+
 # extra core headers to install
 append /local/pcb/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
 # compatibility layer: remove this when librnd goes separate:
