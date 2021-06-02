@@ -1,11 +1,13 @@
-librnd 2.3.2
+librnd 2.4.0
 ~~~~~~~~~~~~
 
-Mainly a bugfix release. There are two major new features:
+Mainly a bugfix release with an API change for a broken (non-portable)
+data conversioin fix:
 
-1. Simpler plugin conf loading from the user dir: load *.conf, plugins
-   don't need to register specific file names.
+1. API CHANGE: remove ->value field from export options; export options
+   should be const and current values should be maintained in
+   hid->argument_array; this fixs a bug caused by unknown sizeof(enum) vs.
+   sizeof(void *)
 
-2. Anyload: load menu patches, config files, and whatever resource files
-   plugins may register through an unified interface (CLI and GUI).
+2. Many smallish, random bugfixes, mostly on the gtk side
 
