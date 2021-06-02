@@ -545,7 +545,7 @@ gsub /local/pcb/HDRS_3RDLIB {../src_3rd/ureglex/strtree_exec.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_impl.c ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 
 if ?libs/script/fungw/presents
