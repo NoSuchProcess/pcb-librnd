@@ -208,6 +208,18 @@ void generator_callback(char *cmd, char *args)
 }
 #endif
 
+static int rnd_hook_generate()
+{
+	int generr = 0;
+
+	printf("Generating librnd.mak (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "librnd.mak.in", "librnd.mak"));
+	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "compat_inc.h.in", "compat_inc.h"));
+	printf("Generating librnd config.h (%d)\n", generr |= tmpasm(LIBRND_ROOT, "config.h.in", "config.h"));
+	printf("Generating opengl.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "opengl.h.in", "opengl.h"));
+
+	return generr;
+}
+
 /* Runs after detection hooks, should generate the output (Makefiles, etc.) */
 int hook_generate()
 {
