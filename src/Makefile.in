@@ -489,6 +489,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/plugin_intmenu.tmpasm"  "$(HL_LIBDIR)/librnd/scconfig/template/plugin_intmenu.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/plugin_sphash.tmpasm"   "$(HL_LIBDIR)/librnd/scconfig/template/plugin_sphash.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
+	$(SCCBOX) $(HOW) "librnd/scconfig/rnd_hook_detect.h" "$(HL_INCDIR)/scconfig/rnd_hook_detect.h"
 	$(SCCBOX) $(HOW) "librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/buildin.hidlib.h" "$(HL_INCDIR)/core/buildin.hidlib.h"
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd/plugins/map_plugins.sh"
