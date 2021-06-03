@@ -32,8 +32,7 @@ structure, and invoke functions through its members.  Code in the
 pcb-rnd core may *not* rely on HID internals (*anything* other than what's
 defined in this file).  Code in the HID layers *may* rely on data and
 functions in hidlib (like, board size and such), but not on anything
-in pcb-rnd core (because other, non-pcb-rnd applications are using the HID
-API as well).
+in application core.
 
 Coordinates are ALWAYS in pcb's internal units rnd_coord_t. Positive X is
 right, positive Y is down, unless flip is activated.  Angles are

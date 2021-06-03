@@ -128,8 +128,8 @@ void rnd_hid_load_defaults(rnd_hid_t *hid, const rnd_export_opt_t *opts, int len
    dependent exporter plugins) register their options and command line
    options will be looked up in these. Plugins not participating in the
    current session won't register and the registration is lost immediately
-   after the export because pcb-rnd exits. Cam or dialog box direct exporting
-   won't go through this. */
+   after the export because the application exits. Cam or dialog box direct
+   exporting won't go through this. */
 void rnd_export_register_opts2(rnd_hid_t *hid, const rnd_export_opt_t *a, int n, const char *cookie, int copy);
 
 /* Remove all attributes registered with the given cookie */

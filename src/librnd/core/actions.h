@@ -97,7 +97,7 @@ fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    hid_actionv for each action found.  Accepts both "action(arg1,
    arg2)" and command-style "action arg1 arg2", allowing only one
    action in the later case. If force_action_mode is true, str
-   is interpreted as pcb-rnd action despite of the cli mode.
+   is interpreted as action command despite of the cli mode.
    Returns nonzero if the action handler(s) return nonzero. */
 int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_mode);
 
