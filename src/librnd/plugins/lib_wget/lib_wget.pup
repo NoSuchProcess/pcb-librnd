@@ -4,4 +4,4 @@ $long retrieve files from the web using wget(1)
 $state works
 $package cloud
 $hidlib 1
-default disable-all
+default buildin
