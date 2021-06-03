@@ -227,8 +227,8 @@ static void note_accelerator(const lht_node_t *node)
 {
 	lht_node_t *anode, *knode;
 	assert(node != NULL);
-	anode = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
-	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
+	anode = rnd_hid_cfg_menu_field(node, RND_MF_ACTION, NULL);
+	knode = rnd_hid_cfg_menu_field(node, RND_MF_ACCELERATOR, NULL);
 	if ((anode != NULL) && (knode != NULL))
 		rnd_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode);
 	else
@@ -345,7 +345,7 @@ static int del_menu(void *ctx, lht_node_t *node)
 	if (md == NULL)
 		return 0;
 
-	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
+	knode = rnd_hid_cfg_menu_field(node, RND_MF_ACCELERATOR, NULL);
 	if (knode != NULL)
 		rnd_hid_cfg_keys_del_by_desc(&lesstif_keymap, knode);
 
@@ -384,7 +384,7 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 
 	if (pcb_hid_cfg_has_submenus(node)) {
 		lht_node_t *i;
-		i = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, NULL);
+		i = rnd_hid_cfg_menu_field(node, RND_MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
 			add_node_to_menu(md->sub, NULL, i, callback, 1);
 	}
@@ -432,15 +432,15 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 	menu_data_t *md;
 
 	stdarg_n = 0;
-	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FOREGROUND);
+	v = rnd_hid_cfg_menu_field_str(node, RND_MF_FOREGROUND);
 	if (v != NULL)
 		stdarg_do_color_str(v, XmNforeground);
 
-	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_BACKGROUND);
+	v = rnd_hid_cfg_menu_field_str(node, RND_MF_BACKGROUND);
 	if (v != NULL)
 		stdarg_do_color_str(v, XmNbackground);
 
-	v = pcb_hid_cfg_menu_field_str(node, PCB_MF_FONT);
+	v = rnd_hid_cfg_menu_field_str(node, RND_MF_FONT);
 	if (v != NULL) {
 		XFontStruct *fs = XLoadQueryFont(display, v);
 		if (fs) {
@@ -449,7 +449,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 		}
 	}
 
-	kacc = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
+	kacc = rnd_hid_cfg_menu_field(node, RND_MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
 		char *acc_str = rnd_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
 
@@ -471,7 +471,7 @@ TODO(": remove this call")
 		int nn = stdarg_n;
 		lht_node_t *i;
 		const char *field_name;
-		lht_node_t *submenu_node = pcb_hid_cfg_menu_field(node, PCB_MF_SUBMENU, &field_name);
+		lht_node_t *submenu_node = rnd_hid_cfg_menu_field(node, RND_MF_SUBMENU, &field_name);
 
 		stdarg(XmNtearOffModel, XmTEAR_OFF_ENABLED);
 		md->sub = XmCreatePulldownMenu(menu, rnd_strdup(v), stdarg_args + nn, stdarg_n - nn);
@@ -487,10 +487,10 @@ TODO(": remove this call")
 	}
 	else {
 		/* doesn't have submenu */
-		const char *checked = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
-		const char *label = pcb_hid_cfg_menu_field_str(node, PCB_MF_SENSITIVE);
+		const char *checked = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
+		const char *label = rnd_hid_cfg_menu_field_str(node, RND_MF_SENSITIVE);
 
-		act = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
+		act = rnd_hid_cfg_menu_field(node, RND_MF_ACTION, NULL);
 		if (checked) {
 			if (strchr(checked, '='))
 				stdarg(XmNindicatorType, XmONE_OF_MANY);
@@ -510,16 +510,16 @@ TODO(": remove this call")
 			XtAddCallback(md->btn, XmNactivateCallback, callback, (XtPointer) act);
 		}
 
-		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
+		v = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
 		if (v != NULL) {
 			const char *uo;
 
 			md->wflag_idx = note_widget_flag(md->btn, XmNset, v);
 
 			/* set up the update-on callback */
-			uo = pcb_hid_cfg_menu_field_str(node, PCB_MF_UPDATE_ON);
+			uo = rnd_hid_cfg_menu_field_str(node, RND_MF_UPDATE_ON);
 			if (uo == NULL)
-				uo = pcb_hid_cfg_menu_field_str(node, PCB_MF_CHECKED);
+				uo = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
 			if (uo != NULL) {
 				static rnd_conf_hid_callbacks_t cbs;
 				static int cbs_inited = 0;
@@ -540,7 +540,7 @@ TODO(": remove this call")
 			}
 		}
 
-		v = pcb_hid_cfg_menu_field_str(node, PCB_MF_ACTIVE);
+		v = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
 		if (v != NULL)
 			note_widget_flag(md->btn, XmNsensitive, v);
 
@@ -624,7 +624,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 					pmw = XmCreateRowColumn(md->sub, XmStrCast(n->name), a, an);
 				}
 
-				i = pcb_hid_cfg_menu_field(n, PCB_MF_SUBMENU, NULL);
+				i = rnd_hid_cfg_menu_field(n, RND_MF_SUBMENU, NULL);
 				for(i = i->data.list.first; i != NULL; i = i->next)
 					add_node_to_menu(pmw, NULL, i, (XtCallbackProc)callback, 1);
 

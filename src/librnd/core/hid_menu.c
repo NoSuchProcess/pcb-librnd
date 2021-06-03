@@ -975,23 +975,23 @@ lht_node_t *rnd_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
 	return rnd_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
 
-lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name)
+lht_node_t *rnd_hid_cfg_menu_field(const lht_node_t *submenu, rnd_hid_cfg_menufield_t field, const char **field_name)
 {
 	lht_err_t err;
 	const char *fieldstr = NULL;
 
 	switch(field) {
-		case PCB_MF_ACCELERATOR:  fieldstr = "a"; break;
-		case PCB_MF_SUBMENU:      fieldstr = "submenu"; break;
-		case PCB_MF_CHECKED:      fieldstr = "checked"; break;
-		case PCB_MF_UPDATE_ON:    fieldstr = "update_on"; break;
-		case PCB_MF_SENSITIVE:    fieldstr = "sensitive"; break;
-		case PCB_MF_TIP:          fieldstr = "tip"; break;
-		case PCB_MF_ACTIVE:       fieldstr = "active"; break;
-		case PCB_MF_ACTION:       fieldstr = "action"; break;
-		case PCB_MF_FOREGROUND:   fieldstr = "foreground"; break;
-		case PCB_MF_BACKGROUND:   fieldstr = "background"; break;
-		case PCB_MF_FONT:         fieldstr = "font"; break;
+		case RND_MF_ACCELERATOR:  fieldstr = "a"; break;
+		case RND_MF_SUBMENU:      fieldstr = "submenu"; break;
+		case RND_MF_CHECKED:      fieldstr = "checked"; break;
+		case RND_MF_UPDATE_ON:    fieldstr = "update_on"; break;
+		case RND_MF_SENSITIVE:    fieldstr = "sensitive"; break;
+		case RND_MF_TIP:          fieldstr = "tip"; break;
+		case RND_MF_ACTIVE:       fieldstr = "active"; break;
+		case RND_MF_ACTION:       fieldstr = "action"; break;
+		case RND_MF_FOREGROUND:   fieldstr = "foreground"; break;
+		case RND_MF_BACKGROUND:   fieldstr = "background"; break;
+		case RND_MF_FONT:         fieldstr = "font"; break;
 	}
 	if (field_name != NULL)
 		*field_name = fieldstr;
@@ -1062,7 +1062,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 			free(name);
 		}
 		else
-			psub = pcb_hid_cfg_menu_field(cmc->parent, PCB_MF_SUBMENU, NULL);
+			psub = rnd_hid_cfg_menu_field(cmc->parent, RND_MF_SUBMENU, NULL);
 
 		is_sep = (name[0] == '-') && (name[1] == '\0');
 		if (rel_level == cmc->target_level) {

@@ -41,11 +41,11 @@ int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Return a lihata node using a relative lihata path from parent - this is
    just a wrapper around lht_tree_path_ */
-lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
+lht_node_t *rnd_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
 /* Return a text field of a submenu; return NULL and generate a rnd_message(RND_MSG_ERROR, ) if
    the given field is not text */
-const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field);
+const char *rnd_hid_cfg_menu_field_str(const lht_node_t *submenu, rnd_hid_cfg_menufield_t field);
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
    is consumed (should return 0 on success) */

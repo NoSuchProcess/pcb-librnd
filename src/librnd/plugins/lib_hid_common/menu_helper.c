@@ -119,10 +119,10 @@ int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 	return -1;
 }
 
-const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field)
+const char *rnd_hid_cfg_menu_field_str(const lht_node_t *submenu, rnd_hid_cfg_menufield_t field)
 {
 	const char *fldname;
-	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, field, &fldname);
+	lht_node_t *n = rnd_hid_cfg_menu_field(submenu, field, &fldname);
 
 	if (n == NULL)
 		return NULL;
@@ -136,7 +136,7 @@ const char *pcb_hid_cfg_menu_field_str(const lht_node_t *submenu, pcb_hid_cfg_me
 int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
 {
 	const char *fldname;
-	lht_node_t *n = pcb_hid_cfg_menu_field(submenu, PCB_MF_SUBMENU, &fldname);
+	lht_node_t *n = rnd_hid_cfg_menu_field(submenu, RND_MF_SUBMENU, &fldname);
 	if (n == NULL)
 		return 0;
 	if (n->type != LHT_LIST) {
@@ -146,7 +146,7 @@ int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
 	return 1;
 }
 
-lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
+lht_node_t *rnd_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path)
 {
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }

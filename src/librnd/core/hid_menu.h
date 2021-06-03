@@ -63,22 +63,22 @@ int rnd_hid_menu_create(const char *path, const rnd_menu_prop_t *props);
 /* Fields are retrieved using this enum so that HIDs don't need to hardwire
    lihata node names */
 typedef enum {
-	PCB_MF_ACCELERATOR,
-	PCB_MF_SUBMENU,
-	PCB_MF_CHECKED,
-	PCB_MF_UPDATE_ON,
-	PCB_MF_SENSITIVE,
-	PCB_MF_TIP,
-	PCB_MF_ACTIVE,
-	PCB_MF_ACTION,
-	PCB_MF_FOREGROUND,
-	PCB_MF_BACKGROUND,
-	PCB_MF_FONT
-} pcb_hid_cfg_menufield_t;
+	RND_MF_ACCELERATOR,
+	RND_MF_SUBMENU,
+	RND_MF_CHECKED,
+	RND_MF_UPDATE_ON,
+	RND_MF_SENSITIVE,
+	RND_MF_TIP,
+	RND_MF_ACTIVE,
+	RND_MF_ACTION,
+	RND_MF_FOREGROUND,
+	RND_MF_BACKGROUND,
+	RND_MF_FONT
+} rnd_hid_cfg_menufield_t;
 
 /* Return a field of a submenu and optionally fill in field_name with the
    field name expected in the lihata document (useful for error messages) */
-lht_node_t *pcb_hid_cfg_menu_field(const lht_node_t *submenu, pcb_hid_cfg_menufield_t field, const char **field_name);
+lht_node_t *rnd_hid_cfg_menu_field(const lht_node_t *submenu, rnd_hid_cfg_menufield_t field, const char **field_name);
 
 /* special value for indicating that the new menu node should be inserted on
    top, as the first item (when passed in the ins_after argument */
