@@ -42,7 +42,7 @@ rnd_conf_hid_id_t rnd_conf_hid_reg(const char *cookie, const rnd_conf_hid_callba
 /* Unregister a hid; if unreg_item cb is specified, call it on each config item */
 void rnd_conf_hid_unreg(const char *cookie);
 
-void rnd_conf_pcb_hid_uninit(void);
+void rnd_conf_hid_uninit(void);
 
 
 /* Call the local callback of a native item */

@@ -2267,7 +2267,7 @@ void rnd_conf_uninit(void)
 			fprintf(stderr, "pcb-rnd conf ERROR: conf node '%s' is not unregistered\n", e->key);
 	}
 
-	rnd_conf_pcb_hid_uninit();
+	rnd_conf_hid_uninit();
 
 	for(n = 0; n < RND_CFR_max_alloc; n++) {
 		if (pcb_conf_main_root[n] != NULL)

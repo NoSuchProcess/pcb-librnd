@@ -42,7 +42,7 @@ static void conf_pcb_hid_init(void)
 		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
 }
 
-void rnd_conf_pcb_hid_uninit(void)
+void rnd_conf_hid_uninit(void)
 {
 #ifndef NDEBUG
 	if (conf_hid_ids != NULL) {
