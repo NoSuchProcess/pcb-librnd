@@ -1014,7 +1014,7 @@ static void conf_merge_all_top(rnd_conf_role_t role, const char *path, lht_node_
 	}
 }
 
-int pcb_conf_merge_all(const char *path)
+int rnd_conf_merge_all(const char *path)
 {
 	int n, ret = 0;
 	vmst_truncate(&merge_subtree, 0);
@@ -1117,7 +1117,7 @@ void rnd_conf_update(const char *path, int arr_idx)
 	}
 
 	/* merge all memory-lht data to memory-bin */
-	pcb_conf_merge_all(path);
+	rnd_conf_merge_all(path);
 	if (rnd_conf_core_postproc != NULL)
 		rnd_conf_core_postproc();
 	pcbhl_conf_postproc();
@@ -1283,7 +1283,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	pc = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
 		rnd_conf_load_as(RND_CFR_PROJECT, pc, 0);
-	pcb_conf_merge_all(NULL);
+	rnd_conf_merge_all(NULL);
 
 	/* create the user config (in-memory-lht) if it does not exist on disk;
 	   this is needed so if the user makes config changes from the GUI things
@@ -1301,7 +1301,7 @@ void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn)
 	cnt += conf_load_plug_files(RND_CFR_USER, rnd_conf_userdir_path);
 	cnt += conf_load_plug_interns(RND_CFR_INTERNAL);
 	if (cnt > 0)
-		pcb_conf_merge_all(NULL);
+		rnd_conf_merge_all(NULL);
 }
 
 

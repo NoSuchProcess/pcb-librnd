@@ -282,7 +282,7 @@ static void anyload_conf_update(vpod)
 		return;
 
 	rnd_anyload_conf_needs_update = 0;
-	pcb_conf_merge_all(NULL);
+	rnd_conf_merge_all(NULL);
 	rnd_conf_update(NULL, -1);
 }
 

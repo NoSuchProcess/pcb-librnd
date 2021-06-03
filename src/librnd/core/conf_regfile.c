@@ -53,7 +53,7 @@ void rnd_conf_reg_intern(const char *intern)
 
 	if (rnd_conf_in_production) {
 		if (conf_load_plug_interns(RND_CFR_INTERNAL))
-			pcb_conf_merge_all(NULL);
+			rnd_conf_merge_all(NULL);
 	}
 }
 
