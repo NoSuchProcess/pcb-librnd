@@ -1418,6 +1418,8 @@ void rnd_conf_unreg_field(rnd_conf_native_t *field)
 
 rnd_conf_native_t *rnd_conf_get_field(const char *path)
 {
+	if (rnd_conf_fields == NULL)
+		return NULL;
 	return htsp_get(rnd_conf_fields, path);
 }
 
