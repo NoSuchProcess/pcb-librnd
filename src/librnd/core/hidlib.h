@@ -119,7 +119,7 @@ extern const char *rnd_menu_name_fmt;
 
 /* path to the user's config directory and main config file (RND_CFR_USER) */
 extern const char *rnd_conf_userdir_path;
-extern const char *rnd_pcphl_conf_user_path;
+extern const char *rnd_conf_user_path;
 
 /* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
 extern const char *rnd_conf_sysdir_path;

@@ -57,7 +57,7 @@ const char *rnd_menu_name_fmt = "foobar-menu.lht";
 #define FOOBARSHAREDIR "/usr/share/foobar"
 #define CONF_USER_DIR "~/.foobar"
 const char *rnd_conf_userdir_path = CONF_USER_DIR;
-const char *rnd_pcphl_conf_user_path = CONF_USER_DIR "/foobar-conf.lht";
+const char *rnd_conf_user_path = CONF_USER_DIR "/foobar-conf.lht";
 const char *rnd_conf_sysdir_path = FOOBARSHAREDIR;
 const char *rnd_conf_sys_path = FOOBARSHAREDIR "/foobar-conf.lht";
 const char *rnd_app_package = "foobar";
