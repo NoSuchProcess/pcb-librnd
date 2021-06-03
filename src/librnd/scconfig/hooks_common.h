@@ -121,8 +121,8 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 	}
 	if (strncmp(key, "workaround-", 11) == 0) {
 		const char *what = key+11;
-		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_CTRL 1");
-		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define PCB_WORKAROUND_GTK_SHIFT 1");
+		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
+		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
 		else {
 			report("ERROR: unknown workaround '%s'\n", what);
 			exit(1);

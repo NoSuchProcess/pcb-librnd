@@ -550,7 +550,7 @@ static int ghid_shift_is_pressed(rnd_hid_t *hid)
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
 
-#ifdef PCB_WORKAROUND_GTK_SHIFT
+#ifdef RND_WORKAROUND_GTK_SHIFT
 	/* On some systems the above query fails and we need to return the last known state instead */
 	return pcb_gtk_glob_mask & GDK_SHIFT_MASK;
 #else
@@ -569,7 +569,7 @@ static int ghid_control_is_pressed(rnd_hid_t *hid)
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
 
-#ifdef PCB_WORKAROUND_GTK_CTRL
+#ifdef RND_WORKAROUND_GTK_CTRL
 	/* On some systems the above query fails and we need to return the last known state instead */
 	return pcb_gtk_glob_mask & GDK_CONTROL_MASK;
 #else
