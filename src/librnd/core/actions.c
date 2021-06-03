@@ -998,6 +998,9 @@ void rnd_actions_uninit(void)
 {
 	htsp_entry_t *e;
 
+	if (rnd_fgw_obj == NULL) /* action system is not initialized; e.g. rnd_hidlib_init2() not called */
+		return;
+
 	for (e = htsp_first(&rnd_fgw.func_tbl); e; e = htsp_next(&rnd_fgw.func_tbl, e)) {
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
