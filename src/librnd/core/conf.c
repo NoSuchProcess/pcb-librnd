@@ -92,7 +92,7 @@ const int rnd_conf_default_prio[] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0 /* make sure the array is addressable until RND_CFR_max_alloc */
 };
 
-extern const char *pcb_conf_internal;
+extern const char *rnd_conf_internal;
 
 
 static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
@@ -1275,7 +1275,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 
 	/* the ultimate fallback: all essential values are built in the executable
 	   on a low priority */
-	rnd_conf_load_as(RND_CFR_INTERNAL, pcb_conf_internal, 1);
+	rnd_conf_load_as(RND_CFR_INTERNAL, rnd_conf_internal, 1);
 
 	/* load config files */
 	rnd_conf_load_as(RND_CFR_SYSTEM, rnd_conf_sys_path, 0);

@@ -47,9 +47,8 @@
 extern const pup_buildin_t pup_buildins[];
 
 
-const char *pcb_conf_internal = ""; /* should be generated from the conf */
+const char *rnd_conf_internal = ""; /* should be generated from the conf */
 const char *rnd_hidlib_default_embedded_menu = "";
-const char *rnd_conf_internal = "";
 const char *rnd_menu_file_paths[] = { "./", "~/.foobar/", NULL };
 const char *rnd_menu_name_fmt = "foobar-menu.lht";
 
