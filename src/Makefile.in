@@ -292,6 +292,7 @@ PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
 LIBRND=../src/librnd
+LIBRND_LIBDIR=../src/librnd
 
 all:
 	$(MAKE) revcheck
