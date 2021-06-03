@@ -54,7 +54,7 @@ typedef wingeo_t htsw_value_t;
 
 static htsw_t wingeo;
 
-static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
+static void rnd_dialog_store(const char *id, int x, int y, int w, int h)
 {
 	htsw_entry_t *e;
 	wingeo_t wg;
@@ -78,7 +78,7 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 }
 
 
-void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
@@ -100,13 +100,13 @@ void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event
 /*	rnd_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((argc < 7) || (argv[1].type != RND_EVARG_PTR) || (argv[2].type != RND_EVARG_STR))
 		return;
 
 /*	hid_ctx = argv[1].d.p;*/
-	pcb_dialog_store(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
+	rnd_dialog_store(argv[2].d.s, argv[3].d.i, argv[4].d.i, argv[5].d.i, argv[6].d.i);
 }
 
 static vtp0_t cleanup_later;
@@ -159,7 +159,7 @@ static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 }
 
 #define BASEPATH "plugins/dialogs/window_geometry/"
-void pcb_wplc_load(rnd_conf_role_t role)
+void rnd_wplc_load(rnd_conf_role_t role)
 {
 	char *end, *end2, path[128 + sizeof(BASEPATH)];
 	lht_node_t *nd, *root;
@@ -190,7 +190,7 @@ void pcb_wplc_load(rnd_conf_role_t role)
 		strcpy(end2, "y"); place_conf_load(role, path, &y);
 		strcpy(end2, "width"); place_conf_load(role, path, &w);
 		strcpy(end2, "height"); place_conf_load(role, path, &h);
-		pcb_dialog_store(nd->name, x, y, w, h);
+		rnd_dialog_store(nd->name, x, y, w, h);
 	}
 }
 
@@ -243,16 +243,16 @@ static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	pcb_wplc_load(RND_CFR_PROJECT);
-	pcb_wplc_load(RND_CFR_DESIGN);
+	rnd_wplc_load(RND_CFR_PROJECT);
+	rnd_wplc_load(RND_CFR_DESIGN);
 }
 
-void pcb_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
+void rnd_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
 }
 
-int pcb_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
+int rnd_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
 {
 	htsw_entry_t *e;
 	FILE *f;
@@ -286,7 +286,7 @@ int pcb_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
 	return 0;
 }
 
-void pcb_dialog_place_uninit(void)
+void rnd_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;
 	int n;
@@ -305,14 +305,14 @@ void pcb_dialog_place_uninit(void)
 	vtp0_uninit(&cleanup_later);
 }
 
-void pcb_dialog_place_init(void)
+void rnd_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
 	rnd_event_bind(RND_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
-	pcb_wplc_load(RND_CFR_INTERNAL);
-	pcb_wplc_load(RND_CFR_ENV);
-	pcb_wplc_load(RND_CFR_SYSTEM);
-	pcb_wplc_load(RND_CFR_USER);
-	pcb_wplc_load(RND_CFR_CLI);
+	rnd_wplc_load(RND_CFR_INTERNAL);
+	rnd_wplc_load(RND_CFR_ENV);
+	rnd_wplc_load(RND_CFR_SYSTEM);
+	rnd_wplc_load(RND_CFR_USER);
+	rnd_wplc_load(RND_CFR_CLI);
 }

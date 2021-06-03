@@ -112,7 +112,7 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_event_unbind_allcookie(lead_cookie);
 	rnd_event_unbind_allcookie(wplc_cookie);
 	rnd_conf_hid_unreg(grid_cookie);
-	pcb_dialog_place_uninit();
+	rnd_dialog_place_uninit();
 	rnd_remove_actions_by_cookie(hid_common_cookie);
 	pcb_act_dad_uninit();
 	rnd_conf_unreg_fields("plugins/lib_hid_common/");
@@ -136,13 +136,13 @@ int pplg_init_lib_hid_common(void)
 
 	rnd_conf_reg_intern(dialogs_conf_internal);
 
-	pcb_dialog_place_init();
+	rnd_dialog_place_init();
 
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
 	rnd_event_bind(RND_EVENT_GUI_LEAD_USER, pcb_lead_user_ev, NULL, lead_cookie);
 	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, pcb_lead_user_draw_ev, NULL, lead_cookie);
-	rnd_event_bind(RND_EVENT_DAD_NEW_DIALOG, pcb_dialog_place, NULL, wplc_cookie);
-	rnd_event_bind(RND_EVENT_DAD_NEW_GEO, pcb_dialog_resize, NULL, wplc_cookie);
+	rnd_event_bind(RND_EVENT_DAD_NEW_DIALOG, rnd_dialog_place, NULL, wplc_cookie);
+	rnd_event_bind(RND_EVENT_DAD_NEW_GEO, rnd_dialog_resize, NULL, wplc_cookie);
 
 	conf_id = rnd_conf_hid_reg(grid_cookie, NULL);
 

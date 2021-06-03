@@ -130,5 +130,5 @@ void pcb_gtk_conf_init(void)
 	}
 	for(r = 0; r < RND_CFR_max_real; r++)
 		if (dirty[r])
-			pcb_wplc_load(r);
+			rnd_wplc_load(r);
 }
