@@ -83,7 +83,7 @@ htsp_t *rnd_conf_fields = NULL;
 const int rnd_conf_default_prio[] = {
 /*	RND_CFR_INTERNAL */   100,
 /*	RND_CFR_SYSTEM */     200,
-/*	RND_CFR_DEFAULTPCB */ 300,
+/*	RND_CFR_DEFAULTDSG */ 300,
 /*	RND_CFR_USER */       400,
 /*	RND_CFR_ENV */        500,
 /*	RND_CFR_PROJECT */    600,
@@ -382,7 +382,9 @@ rnd_conf_role_t rnd_conf_role_parse(const char *s)
 {
 	if (rnd_strcasecmp(s, "internal") == 0)   return RND_CFR_INTERNAL;
 	if (rnd_strcasecmp(s, "system") == 0)     return RND_CFR_SYSTEM;
-	if (rnd_strcasecmp(s, "defaultpcb") == 0) return RND_CFR_DEFAULTPCB;
+	if (rnd_strcasecmp(s, "defaultpcb") == 0) return RND_CFR_DEFAULTDSG; /* for compatibility */
+	if (rnd_strcasecmp(s, "defaultdesign") == 0) return RND_CFR_DEFAULTDSG; /* alias */
+	if (rnd_strcasecmp(s, "defaultdsg") == 0) return RND_CFR_DEFAULTDSG;
 	if (rnd_strcasecmp(s, "user") == 0)       return RND_CFR_USER;
 	if (rnd_strcasecmp(s, "env") == 0)        return RND_CFR_ENV;
 	if (rnd_strcasecmp(s, "project") == 0)    return RND_CFR_PROJECT;
@@ -396,7 +398,7 @@ const char *rnd_conf_role_name(rnd_conf_role_t r)
 	switch(r) {
 		case RND_CFR_INTERNAL:    return "internal";
 		case RND_CFR_SYSTEM:      return "system";
-		case RND_CFR_DEFAULTPCB:  return "defaultpcb";
+		case RND_CFR_DEFAULTDSG:  return "defaultdsg";
 		case RND_CFR_USER:        return "user";
 		case RND_CFR_ENV:         return "env";
 		case RND_CFR_PROJECT:     return "project";

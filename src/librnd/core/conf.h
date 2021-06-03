@@ -136,7 +136,7 @@ struct conf_listitem_s {
 typedef enum {
 	RND_CFR_INTERNAL,
 	RND_CFR_SYSTEM,
-	RND_CFR_DEFAULTPCB, /* default.pcb */
+	RND_CFR_DEFAULTDSG, /* default design (e.g. default.pcb) */
 	RND_CFR_USER,
 	RND_CFR_ENV,        /* env vars */
 	RND_CFR_PROJECT,    /* project specific, from a local file */
@@ -301,7 +301,7 @@ void rnd_conf_ro(const char *path);
 /****** utility ******/
 
 #define rnd_conf_is_read_only(role) \
-	(((role) == RND_CFR_INTERNAL) || ((role) == RND_CFR_SYSTEM) || ((role) == RND_CFR_DEFAULTPCB))
+	(((role) == RND_CFR_INTERNAL) || ((role) == RND_CFR_SYSTEM) || ((role) == RND_CFR_DEFAULTDSG))
 
 void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
