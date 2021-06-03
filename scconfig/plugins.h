@@ -5,12 +5,12 @@
 ******************************************************************************/
 
 plugin_header("\nLibrary plugins:\n")
-plugin_def("lib_gensexpr",     "#s-expression library",           sdisable, 0, 0)
+plugin_def("lib_gensexpr",     "#s-expression library",           sbuildin, 0, 0)
 plugin_def("lib_gtk_common",   "all-hid_gtk common code",         sdisable, 0, 0)
 plugin_def("lib_hid_common",   "all-gui-hid common code",         sdisable, 0, 1)
 plugin_def("lib_hid_gl",       "openGL rendering",                sdisable, 0, 0)
 plugin_def("lib_portynet",     "#IPv4 tcp",                       sbuildin, 1, 0)
-plugin_def("lib_wget",         "wget(1) wrapper",                 sdisable, 0, 0)
+plugin_def("lib_wget",         "wget(1) wrapper",                 sbuildin, 0, 0)
 
 plugin_header("\nFeature plugins:\n")
 plugin_def("irc",              "on-line support (IRC)",           sbuildin, 1, 0)
