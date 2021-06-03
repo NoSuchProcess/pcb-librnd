@@ -214,7 +214,7 @@ static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 
 static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	irc_msg("pcb-rnd version: " PCB_VERSION " (" PCB_REVISION ")");
+	irc_msg("librnd version: " RND_VERSION " (" RND_REVISION ")");
 }
 
 static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
