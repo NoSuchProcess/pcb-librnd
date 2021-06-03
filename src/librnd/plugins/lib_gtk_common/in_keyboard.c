@@ -43,7 +43,7 @@ GdkModifierType pcb_gtk_glob_mask;
 
 gboolean ghid_is_modifier_key_sym(gint ksym)
 {
-	if (ksym == PCB_GTK_KEY(Shift_R) || ksym == PCB_GTK_KEY(Shift_L) || ksym == PCB_GTK_KEY(Control_R) || ksym == PCB_GTK_KEY(Control_L))
+	if (ksym == RND_GTK_KEY(Shift_R) || ksym == RND_GTK_KEY(Shift_L) || ksym == RND_GTK_KEY(Control_R) || ksym == RND_GTK_KEY(Control_L))
 		return TRUE;
 	return FALSE;
 }
@@ -112,12 +112,12 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 		g_free(keyvals);
 	}
 
-	if (kv == PCB_GTK_KEY(ISO_Left_Tab)) kv = PCB_GTK_KEY(Tab);
-	if (kv == PCB_GTK_KEY(KP_Add)) key_raw = kv = '+';
-	if (kv == PCB_GTK_KEY(KP_Subtract)) key_raw = kv = '-';
-	if (kv == PCB_GTK_KEY(KP_Multiply)) key_raw = kv = '*';
-	if (kv == PCB_GTK_KEY(KP_Divide)) key_raw = kv = '/';
-	if (kv == PCB_GTK_KEY(KP_Enter)) key_raw = kv = PCB_GTK_KEY(Return);
+	if (kv == RND_GTK_KEY(ISO_Left_Tab)) kv = RND_GTK_KEY(Tab);
+	if (kv == RND_GTK_KEY(KP_Add)) key_raw = kv = '+';
+	if (kv == RND_GTK_KEY(KP_Subtract)) key_raw = kv = '-';
+	if (kv == RND_GTK_KEY(KP_Multiply)) key_raw = kv = '*';
+	if (kv == RND_GTK_KEY(KP_Divide)) key_raw = kv = '/';
+	if (kv == RND_GTK_KEY(KP_Enter)) key_raw = kv = RND_GTK_KEY(Return);
 
 	*out_mods = mods;
 	*out_key_raw = key_raw;

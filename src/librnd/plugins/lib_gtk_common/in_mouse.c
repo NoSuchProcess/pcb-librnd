@@ -131,12 +131,12 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 		return TRUE;
 
 	switch (ksym) {
-	case PCB_GTK_KEY(Return):  /* Accept cursor location */
+	case RND_GTK_KEY(Return):  /* Accept cursor location */
 		if (g_main_loop_is_running(lctx->loop))
 			g_main_loop_quit(lctx->loop);
 		break;
 
-	case PCB_GTK_KEY(Escape):
+	case RND_GTK_KEY(Escape):
 		lctx->pressed_esc = TRUE;
 		/* fall through */
 

@@ -209,7 +209,7 @@ typedef @/local/pcb/coord_type@ rnd_coord_t;
 typedef @/local/pcb/long64@    rnd_long64_t;
 
 /* gtk */
-#define PCB_GTK_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)
+#define RND_GTK_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)
 
 
 /* ./configure --workaround requests: */

@@ -102,13 +102,13 @@ static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 {
 	gint ksym = kev->keyval;
 
-	if (ksym == PCB_GTK_KEY(Tab)) {
+	if (ksym == RND_GTK_KEY(Tab)) {
 		rnd_cli_tab(ghidgui->hidlib);
 		return TRUE;
 	}
 
 	/* escape key handling */
-	if (ksym == PCB_GTK_KEY(Escape)) {
+	if (ksym == RND_GTK_KEY(Escape)) {
 		ghid_cmd_close(ctx);
 		return TRUE;
 	}

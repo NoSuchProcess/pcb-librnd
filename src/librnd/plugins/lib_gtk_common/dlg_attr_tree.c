@@ -238,17 +238,17 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	arrow_key = ((event->keyval == PCB_GTK_KEY(Up)) || (event->keyval == PCB_GTK_KEY(KP_Up))
-		|| (event->keyval == PCB_GTK_KEY(Down)) || (event->keyval == PCB_GTK_KEY(KP_Down))
-		|| (event->keyval == PCB_GTK_KEY(KP_Page_Down)) || (event->keyval == PCB_GTK_KEY(KP_Page_Up))
-		|| (event->keyval == PCB_GTK_KEY(Page_Down)) || (event->keyval == PCB_GTK_KEY(Page_Up))
-		|| (event->keyval == PCB_GTK_KEY(KP_Home)) || (event->keyval == PCB_GTK_KEY(KP_End))
-		|| (event->keyval == PCB_GTK_KEY(Home)) || (event->keyval == PCB_GTK_KEY(End)));
-	enter_key = (event->keyval == PCB_GTK_KEY(Return)) || (event->keyval == PCB_GTK_KEY(KP_Enter));
+	arrow_key = ((event->keyval == RND_GTK_KEY(Up)) || (event->keyval == RND_GTK_KEY(KP_Up))
+		|| (event->keyval == RND_GTK_KEY(Down)) || (event->keyval == RND_GTK_KEY(KP_Down))
+		|| (event->keyval == RND_GTK_KEY(KP_Page_Down)) || (event->keyval == RND_GTK_KEY(KP_Page_Up))
+		|| (event->keyval == RND_GTK_KEY(Page_Down)) || (event->keyval == RND_GTK_KEY(Page_Up))
+		|| (event->keyval == RND_GTK_KEY(KP_Home)) || (event->keyval == RND_GTK_KEY(KP_End))
+		|| (event->keyval == RND_GTK_KEY(Home)) || (event->keyval == RND_GTK_KEY(End)));
+	enter_key = (event->keyval == RND_GTK_KEY(Return)) || (event->keyval == RND_GTK_KEY(KP_Enter));
 	key_handled = (enter_key || arrow_key);
 
 	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
-	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == PCB_GTK_KEY(c)) || (event->keyval == PCB_GTK_KEY(C)))) {
+	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == RND_GTK_KEY(c)) || (event->keyval == RND_GTK_KEY(C)))) {
 		rnd_hid_tree_t *tree = attr->wdata;
 		rnd_hid_row_t *r;
 		const char *cliptext;

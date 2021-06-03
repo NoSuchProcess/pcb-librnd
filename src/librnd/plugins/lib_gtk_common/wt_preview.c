@@ -490,7 +490,7 @@ static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data
 		return FALSE;
 
 	if (preview->flip_local && release) {
-		if (kev->keyval == PCB_GTK_KEY(Tab)) {
+		if (kev->keyval == RND_GTK_KEY(Tab)) {
 			rnd_box_t box;
 
 			box.X1 = preview->view.x0;
