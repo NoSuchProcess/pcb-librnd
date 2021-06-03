@@ -119,7 +119,7 @@ const rnd_unit_t *get_unit_by_suffix(const char *suffix);
 /* Convert x to the given unit */
 double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x);
 
-/* Return how many PCB-internal-Coord-unit a unit translates to */
+/* Return how many rnd-internal-coord-unit a unit translates to */
 double rnd_unit_to_factor(const rnd_unit_t *unit);
 
 /* Convert a given unit to pcb coords; clamp at the end of the ranges */
@@ -134,7 +134,7 @@ rnd_angle_t rnd_normalize_angle(rnd_angle_t a);
    the units for GUI display. */
 void rnd_units_init(void);
 
-/* PCB/physical unit conversions */
+/* internal<->physical unit conversions */
 #define RND_COORD_TO_MIL(n)      ((n) / 25400.0)
 #define RND_MIL_TO_COORD(n)      ((n) * 25400.0)
 #define RND_COORD_TO_MM(n)       ((n) / 1000000.0)

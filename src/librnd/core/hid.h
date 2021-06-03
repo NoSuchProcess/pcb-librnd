@@ -179,7 +179,7 @@ struct rnd_hid_s {
 	   coordinate itself.  */
 	unsigned gui:1;
 
-	/* If set, this is the printer-class HID.  The common part of PCB
+	/* If set, this is the printer-class HID.  The application
 	   may use this to do command-line printing, without having
 	   instantiated any GUI HIDs.  Only one printer HID is normally
 	   defined at a time.  */
@@ -226,7 +226,7 @@ struct rnd_hid_s {
 	   and persistent. */
 	const rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
 
-	/* Exports (or print) the current PCB.  The options given represent
+	/* Exports (or print) the current design.  The options given represent
 	   the choices made from the options returned from
 	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
@@ -588,7 +588,7 @@ extern rnd_hid_t *rnd_exporter;
    called. The action launcher sets and unsets this variable. */
 extern const rnd_action_t *rnd_current_action;
 
-/* The GUI may set this to be approximately the PCB size of a pixel,
+/* The GUI may set this to be approximately the physical size of a pixel,
    to allow for near-misses in selection and changes in drawing items
    smaller than a screen pixel.  */
 extern int rnd_pixel_slop;

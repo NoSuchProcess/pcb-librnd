@@ -56,7 +56,7 @@ void rnd_hid_init(void);
 /* Call this at exit */
 void rnd_hid_uninit(void);
 
-/* When PCB runs in interactive mode, this is called to instantiate
+/* When the application runs in interactive mode, this is called to instantiate
    one GUI HID which happens to be the GUI.  This HID is the one that
    interacts with the mouse and keyboard.  */
 rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference);
@@ -72,7 +72,7 @@ rnd_hid_t *rnd_hid_find_exporter(const char *);
 rnd_hid_t **rnd_hid_enumerate(void);
 
 /* HID internal interfaces.  These may ONLY be called from the HID
-   modules, not from the common PCB code.  */
+   modules, not from the common application code.  */
 
 /* A HID may use this if it does not need command line arguments in
    any special format; for example, the Lesstif HID needs to use the

@@ -26,8 +26,6 @@
  *
  */
 
-/* misc - independent of PCB data types */
-
 #ifndef RND_MISC_UTIL_H
 #define RND_MISC_UTIL_H
 
