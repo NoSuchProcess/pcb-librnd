@@ -227,12 +227,10 @@ int hook_generate()
 	int generr = 0;
 	int res = 0;
 	char apiver[32], version_major[32];
-	long r = 0;
 	int v1, v2, v3;
 
 	tmp = svn_info(0, "../src", "Revision:");
 	if (tmp != NULL) {
-		r = strtol(tmp, NULL, 10);
 		rev = str_concat("", "svn r", tmp, NULL);
 		free(tmp);
 	}
@@ -242,7 +240,7 @@ int hook_generate()
 	curr = next+1; next = strchr(curr, '.'); *next = '\n';
 	v2 = atoi(curr);
 	v3 = atoi(next+1);
-	sprintf(apiver, "%01d%01d%02d%05ld", v1, v2, v3, r);
+	sprintf(apiver, "0x%02d%02d%02d", v1, v2, v3);
 
 	strcpy(version_major, version);
 	sep = strchr(version_major, '.');

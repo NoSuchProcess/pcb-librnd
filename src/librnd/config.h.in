@@ -193,8 +193,9 @@ print [@
 /* Define if canonicalize_file_name is not declared in system header files. */
 /* #undef NEED_DECLARATION_CANONICALIZE_FILE_NAME */
 
-/* Format: abccrrrrr where a, b and c are pcb-rnd version numbers and r is
-   the svn revision number (optional) */
+/* Format: aabbcc where a, b and c are librnd version numbers (major, minor,
+   patch). Major must match, minor of the lib should be at least as high as
+   the user requires */
 #define RND_API_VER @/local/apiver@
 
 @?/local/pcb/include_stdint@

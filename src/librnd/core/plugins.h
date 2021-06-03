@@ -33,11 +33,17 @@
 /* core's version stored in plugins.o */
 extern unsigned long rnd_api_ver;
 
-#define RND_API_VER_MATCH (RND_API_VER == rnd_api_ver)
+/* RND_API_VER is what the app/plugin has on compile time; rnd_api_ver is
+   what the installed lib has. MAJOR version (first 2 digits) must match.
+   Minor version of the lib must be at least what the app/plugin requires */
+#define RND_API_VER_MATCH_MAJOR ((RND_API_VER & 0xFF0000) == (rnd_api_ver & 0xFF0000))
+#define RND_API_VER_MATCH_MINOR ((RND_API_VER & 0x00FF00) <= (rnd_api_ver & 0x00FF00))
+
+#define RND_API_VER_MATCH (RND_API_VER_MATCH_MAJOR && RND_API_VER_MATCH_MINOR)
 #define RND_API_CHK_VER \
 do { \
 	if (!RND_API_VER_MATCH) {\
-		fprintf(stderr, "librnd API version incompatibility: " __FILE__ "=%lu core=%lu\n(not loading this plugin)\n", (unsigned long)RND_API_VER, rnd_api_ver); \
+		fprintf(stderr, "librnd API version incompatibility: " __FILE__ "=%x core=%x\n(not loading this plugin)\n", (unsigned long)RND_API_VER, rnd_api_ver); \
 		return 1; \
 	} \
 } while(0)
