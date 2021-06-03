@@ -102,7 +102,7 @@ typedef struct {
 	rnd_conf_native_type_t type;
 	rnd_conf_flag_t flags;
 	struct {
-		unsigned io_pcb_no_attrib:1;
+		unsigned io_pcb_no_attrib:1;  /* leftover from pcb-rnd - DO NOT USE (but do not remove, pcb-rnd depends on it) */
 		unsigned read_only:1;         /* set by conf_core, has no lihata, should not be overwritten */
 		unsigned dyn_hash_path:1;     /* free(->hash_path) on node destroy */
 		unsigned dyn_desc:1;          /* free(->description) on node destroy */
