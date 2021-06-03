@@ -143,6 +143,8 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/genregex/regex.o
 	../src_3rd/ureglex/exec.o
 	../src_3rd/ureglex/strtree_exec.o
+	../src_3rd/genlist/genadlist.o
+	../src_3rd/genlist/genlistalloc.o
 @]
 
 # these need special rules for compilation
@@ -552,6 +554,7 @@ gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/ureglex/strtree_exec.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
+gsub /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/[^ ]*.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
@@ -621,17 +624,17 @@ print [@
 install:
 	$(MAKE) install_librnd HOW="install -f"
 	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
-	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) install -f" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) install -f -q" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 linstall:
 	$(MAKE) install_librnd HOW="linstall -f"
 	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
-	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) linstall -f" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) linstall -f -q" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 uninstall:
 	$(MAKE) install_librnd_sy HOW="uninstall"
 	$(MAKE) install_librnd_ HOW="uninstall" LIBDIR=$(HL_LIBDIR)/librnd
-	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) uninstall" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) uninstall -q" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 map_plugins:
 	cd librnd/plugins && INCLUDE_PREFIX=../src/librnd/plugins/ PUPLUG=../../../src_3rd/puplug/util/puplug ./map_plugins.sh "."
