@@ -261,6 +261,9 @@ PLUGIDIR=plugins
 # src_3rd dir for the lib_ wrapper plugins
 SRC_3RD_DIR=$(ROOT)/src_3rd
 
+# where to install src_3rd files that are diverted
+INST_DUMMY=/tmp/librnd-dummy
+
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@ @/local/pcb/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/pcb/OBJS_C99@
@@ -472,7 +475,7 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(CONFDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd/plugins" "$(HL_LIBDIR)/librnd/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(CONFDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
@@ -551,7 +554,6 @@ gsub /local/pcb/HDRS_3RDLIB {../src_3rd/ureglex/strtree_exec.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_impl.c ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
 
@@ -619,14 +621,17 @@ print [@
 install:
 	$(MAKE) install_librnd HOW="install -f"
 	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) install -f" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 linstall:
 	$(MAKE) install_librnd HOW="linstall -f"
 	$(MAKE) install_librnd_sy HOW="ln -f --relative" LIBDIR=$(HL_LIBDIR)/librnd
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) linstall -f" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 uninstall:
 	$(MAKE) install_librnd_sy HOW="uninstall"
 	$(MAKE) install_librnd_ HOW="uninstall" LIBDIR=$(HL_LIBDIR)/librnd
+	cd ../src_3rd/genlist && $(MAKE) install_ CP="../$(SCCBOX) uninstall" INCDIR=$(HL_INCDIR)/src_3rd/genlist LIBDIR=$(INST_DUMMY)
 
 map_plugins:
 	cd librnd/plugins && INCLUDE_PREFIX=../src/librnd/plugins/ PUPLUG=../../../src_3rd/puplug/util/puplug ./map_plugins.sh "."
