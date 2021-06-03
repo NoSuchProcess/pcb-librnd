@@ -2592,10 +2592,10 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
 			rnd_vector_t v1, v2;
-			pcb_long64_t cross;
+			rnd_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
-			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
+			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				longjmp(p->env, 1);
@@ -2607,10 +2607,10 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 	else { /* since the other side was <=, when we get here we also blocked horizontal lines of the negative direction */
 		if (s->v->next->point[1] <= p->p[1]) {
 			rnd_vector_t v1, v2;
-			pcb_long64_t cross;
+			rnd_long64_t cross;
 			Vsub2(v1, s->v->next->point, s->v->point);
 			Vsub2(v2, p->p, s->v->point);
-			cross = (pcb_long64_t) v1[0] * v2[1] - (pcb_long64_t) v2[0] * v1[1];
+			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				longjmp(p->env, 1);

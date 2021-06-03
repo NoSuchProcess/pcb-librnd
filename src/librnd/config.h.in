@@ -206,7 +206,7 @@ typedef @/local/pcb/coord_type@ rnd_coord_t;
 #define coord_abs rnd_coord_abs
 
 /* Other autodetected types */
-typedef @/local/pcb/long64@    pcb_long64_t;
+typedef @/local/pcb/long64@    rnd_long64_t;
 
 /* gtk */
 #define PCB_GTK_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)
