@@ -35,7 +35,7 @@
 
 const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
 
-static char *pcb_wget_command(const char *url, const char *ofn, int update, const pcb_wget_opts_t *opts)
+static char *rnd_wget_command(const char *url, const char *ofn, int update, const rnd_wget_opts_t *opts)
 {
 	gds_t tmp;
 
@@ -66,20 +66,20 @@ static char *pcb_wget_command(const char *url, const char *ofn, int update, cons
 	return tmp.array;
 }
 
-int pcb_wget_disk(const char *url, const char *ofn, int update, const pcb_wget_opts_t *opts)
+int rnd_wget_disk(const char *url, const char *ofn, int update, const rnd_wget_opts_t *opts)
 {
 	int res;
-	char *cmd = pcb_wget_command(url, ofn, update, opts);
+	char *cmd = rnd_wget_command(url, ofn, update, opts);
 
 	res = rnd_system(NULL, cmd);
 	free(cmd);
 	return res;
 }
 
-FILE *pcb_wget_popen(const char *url, int update, const pcb_wget_opts_t *opts)
+FILE *rnd_wget_popen(const char *url, int update, const rnd_wget_opts_t *opts)
 {
 	FILE *f;
-	char *cmd = pcb_wget_command(url, "-", update, opts);
+	char *cmd = rnd_wget_command(url, "-", update, opts);
 
 	f = rnd_popen(NULL, cmd, "r");
 	free(cmd);

@@ -24,21 +24,21 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_LIB_WGET
-#define PCB_LIB_WGET
+#ifndef RND_LIB_WGET
+#define RND_LIB_WGET
 
 typedef struct {
 	const char **header;
 	const char *post_file;
-} pcb_wget_opts_t;
+} rnd_wget_opts_t;
 
 /* download the document at url to a local file ofn; if update is non-zero,
    try to continue the download or update the file */
-int pcb_wget_disk(const char *url, const char *ofn, int update, const pcb_wget_opts_t *opts);
+int rnd_wget_disk(const char *url, const char *ofn, int update, const rnd_wget_opts_t *opts);
 
 
 /* download and stream the document at url; if update is non-zero,
    try to continue the download or update the file */
-FILE *pcb_wget_popen(const char *url, int update, const pcb_wget_opts_t *opts);
+FILE *rnd_wget_popen(const char *url, int update, const rnd_wget_opts_t *opts);
 
 #endif
