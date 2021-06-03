@@ -38,7 +38,7 @@
 long rnd_rand(void);
 
 /* Gets the user's real name when available; normally shouldn't be used,
-   consider using an app-specific function like pcb_author() that
+   consider using an app-specific function like rnd_author() that
    allows config override */
 const char *rnd_get_user_name(void);
 
