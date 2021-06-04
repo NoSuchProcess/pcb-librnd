@@ -107,6 +107,14 @@ typedef struct rnd_app_s {
    of a mouse motion event */
 	void (*crosshair_move_to)(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
+/* Optional: draw any fixed mark on XOR overlay; if inhibit_drawing_mode is
+   true, do not call ->set_drawing_mode */
+	void (*draw_marks)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+
+
+	/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
+	void (*draw_attached)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
@@ -129,11 +137,6 @@ void rnd_log_print_uninit_errs(const char *title);
 
 
 
-/* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
-
-/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, board or preview). The expose

@@ -758,8 +758,10 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_invalidate_current_gc();
 
-	rnd_draw_attached(hidlib, 0);
-	rnd_draw_marks(hidlib, 0);
+	if (rnd_app.draw_attached != NULL)
+		rnd_app.draw_attached(hidlib, 0);
+	if (rnd_app.draw_marks != NULL)
+		rnd_app.draw_marks(hidlib, 0);
 	drawgl_flush();
 
 	ghid_gl_show_crosshair(hidlib, TRUE, ctx.view.X1, ctx.view.Y1, ctx.view.X2, ctx.view.Y2);

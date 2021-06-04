@@ -80,7 +80,7 @@ void foobar_crosshair_gui_uninit(void)
 	rnd_hid_destroy_gc(foobar_crosshair_gc);
 }
 
-void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+static void my_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, 1, NULL);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE_XOR, 1, NULL);
@@ -89,11 +89,6 @@ void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 /*	foobar_tool_draw_attached(hidlib);*/
 
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, 1, NULL);
-}
-
-void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
-{
-
 }
 
 static void my_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
@@ -186,6 +181,7 @@ int main(int argc, char *argv[])
 	rnd_app.conf_sys_path = FOOBARSHAREDIR "/foobar-conf.lht";
 
 	rnd_app.crosshair_move_to = my_crosshair_move_to;
+	rnd_app.draw_attached = my_draw_attached;
 
 	rnd_fix_locale_and_env();
 

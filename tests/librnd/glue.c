@@ -36,14 +36,6 @@ void conf_core_init()
 	rnd_conf_reg_field_(NULL, 1, RND_CFN_COORD, "should_never_match", "dummy", 0);
 }
 
-void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
-{
-}
-
-void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
-{
-}
-
 void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller)
 {
 }
