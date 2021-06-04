@@ -15,6 +15,9 @@ typedef struct rnd_conf_hid_callbacks_s {
 
 	/* Called during rnd_conf_hid_unreg to get hid-data cleaned up */
 	void (*unreg_item)(rnd_conf_native_t *cfg, int arr_idx);
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 } rnd_conf_hid_callbacks_t;
 
 typedef int rnd_conf_hid_id_t;
