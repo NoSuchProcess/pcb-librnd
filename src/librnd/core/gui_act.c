@@ -205,7 +205,7 @@ static rnd_coord_t grid_ask(void)
 		RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		RND_DAD_BEGIN_HBOX(dlg);
 			RND_DAD_LABEL(dlg, "New grid size:");
-			RND_DAD_COORD(dlg, "");
+			RND_DAD_COORD(dlg);
 				wc = RND_DAD_CURRENT(dlg);
 				RND_DAD_ENTER_CB(dlg, grid_ask_enter_cb);
 		RND_DAD_END(dlg);
