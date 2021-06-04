@@ -180,13 +180,13 @@ static void toolbar_create(void)
 	}
 }
 
-void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((RND_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
 		toolbar_create();
 }
 
-void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((toolbar.sub_inited) && (argv[1].type == RND_EVARG_PTR)) {
 		rnd_tool_t *tool = argv[1].d.p;
@@ -202,7 +202,7 @@ void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_eve
 	}
 }
 
-void pcb_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	toolbar_pcb2dlg();
 }
@@ -249,9 +249,9 @@ void rnd_toolbar_init(void)
 	if (rnd_toolbar_inited)
 		return;
 
-	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_toolbar_gui_init_ev, NULL, toolbar_cookie);
-	rnd_event_bind(RND_EVENT_TOOL_REG, pcb_toolbar_reg_ev, NULL, toolbar_cookie);
-	install_events(toolbar_cookie, tpaths, tcb, pcb_toolbar_update_conf);
+	rnd_event_bind(RND_EVENT_GUI_INIT, rnd_toolbar_gui_init_ev, NULL, toolbar_cookie);
+	rnd_event_bind(RND_EVENT_TOOL_REG, rnd_toolbar_reg_ev, NULL, toolbar_cookie);
+	install_events(toolbar_cookie, tpaths, tcb, rnd_toolbar_update_conf);
 	rnd_toolbar_inited = 1;
 }
 
