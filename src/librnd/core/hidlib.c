@@ -33,6 +33,8 @@
 
 static const char *hidlib_cookie = "hidlib";
 
+rnd_app_t rnd_app;
+
 void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	if (mouse_mot)

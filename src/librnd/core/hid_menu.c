@@ -834,19 +834,21 @@ rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const 
 			char **paths = NULL, **p;
 			int fn_len = strlen(fn);
 
-			rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+4, rnd_false);
-			for(p = paths; *p != NULL; p++) {
-				if (doc == NULL) {
-					strcpy((*p)+strlen(*p), fn);
-					doc = rnd_hid_cfg_load_lht(hidlib, *p);
-					if (doc != NULL) {
-						rnd_file_loaded_set_at("menu", cookie, *p, desc);
-						has_file = 1;
+			if (rnd_app.menu_file_paths != NULL) {
+				rnd_paths_resolve_all(hidlib, rnd_app.menu_file_paths, paths, fn_len+4, rnd_false);
+				for(p = paths; *p != NULL; p++) {
+					if (doc == NULL) {
+						strcpy((*p)+strlen(*p), fn);
+						doc = rnd_hid_cfg_load_lht(hidlib, *p);
+						if (doc != NULL) {
+							rnd_file_loaded_set_at("menu", cookie, *p, desc);
+							has_file = 1;
+						}
 					}
+					free(*p);
 				}
-				free(*p);
+				free(paths);
 			}
-			free(paths);
 		}
 		else {
 			doc = rnd_hid_cfg_load_lht(hidlib, fn);

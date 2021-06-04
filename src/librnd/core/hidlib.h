@@ -67,6 +67,24 @@ struct rnd_hidlib_s {
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
+/* Global application callbacks and configuration: these do not depend on
+   the designbeing edited, but on the application implementation. The
+   app is required to fill in global rnd_app fields before calling
+   the first librnd call. */
+typedef struct rnd_app_s {
+	const char **menu_file_paths;      /* optional: NULL terminated list of search paths for the menu file */
+	const char *menu_name_fmt;         /* optional: printf format string for the menu file name; may contain one %s that will be substituted with rc.menu_file. */
+	const char *default_embedded_menu; /* optional: the whole default menu file embedded in the executable; NULL if not present */
+
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
+} rnd_app_t;
+extern rnd_app_t rnd_app;
+
 void rnd_hidlib_event_uninit(void);
 void rnd_hidlib_event_init(void);
 
@@ -91,8 +109,6 @@ void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
    event */
 void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
-/* The whole default menu file embedded in the executable; NULL if not present */
-extern const char *rnd_hidlib_default_embedded_menu;
 
 /* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
 void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
@@ -116,14 +132,6 @@ void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xfo
 /* Preview expose: generic, dialog based, used in preview widgets */
 void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
-
-
-/* NULL terminated list of paths where the menu file should be looked at for */
-extern const char *rnd_menu_file_paths[];
-
-/* printf format string for the menu file name; may contain one %s that
-   will be substituted with "default" or the HID's short name. */
-extern const char *rnd_menu_name_fmt;
 
 /* path to the user's config directory and main config file (RND_CFR_USER) */
 extern const char *rnd_conf_userdir_path;
