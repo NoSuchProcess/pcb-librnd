@@ -109,6 +109,7 @@ struct rnd_hid_attribute_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 };
 
 struct rnd_export_opt_s {

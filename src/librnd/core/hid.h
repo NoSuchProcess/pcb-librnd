@@ -72,6 +72,7 @@ typedef struct {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 } rnd_core_gc_t;
 
 
@@ -134,6 +135,7 @@ typedef struct {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2;
 	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 } rnd_hid_fsd_filter_t;
 
 extern const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[];
@@ -570,6 +572,7 @@ struct rnd_hid_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4, spare_l5, spare_l6, spare_l7, spare_l8;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4, *spare_p5, *spare_p6;
 	double spare_d1, spare_d2, spare_d3, spare_d4, spare_d5, spare_d6;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
@@ -584,6 +587,7 @@ struct rnd_hid_expose_ctx_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);

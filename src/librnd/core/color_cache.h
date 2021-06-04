@@ -47,6 +47,7 @@ struct rnd_clrcache_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 RND_INLINE void rnd_clrcache_init(rnd_clrcache_t *cache, int hidsize, rnd_clrcache_free_t hidfree)

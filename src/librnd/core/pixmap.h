@@ -47,6 +47,7 @@ struct rnd_pixmap_import_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 struct rnd_pixmap_s {
@@ -77,6 +78,7 @@ struct rnd_pixmap_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 void rnd_pixmap_reg_import(const rnd_pixmap_import_t *imp, const char *cookie);
