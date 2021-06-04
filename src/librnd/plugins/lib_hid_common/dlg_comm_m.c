@@ -28,8 +28,6 @@
    Even the core will run some of these, through a dispatcher (e.g.
    action). */
 
-#define RND_DAD_CFG_NOLABEL 1
-
 #include <librnd/config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>

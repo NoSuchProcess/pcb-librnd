@@ -37,19 +37,6 @@
 
 #include <genlist/gendlist.h>
 
-/* temporary, until 3.0.0: omit labels for new code */
-#ifdef RND_DAD_CFG_NOLABEL
-#	define RND_DAD_BOOL(table) RND_DAD_BOOL_(table)
-#	define RND_DAD_INTEGER(table) RND_DAD_INTEGER_(table)
-#	define RND_DAD_REAL(table) RND_DAD_REAL_(table)
-#	define RND_DAD_COORD(table) RND_DAD_COORD_(table)
-#else
-#	define RND_DAD_BOOL(table, label) RND_DAD_BOOL_(table)
-#	define RND_DAD_INTEGER(table, label) RND_DAD_INTEGER_(table)
-#	define RND_DAD_REAL(table, label) RND_DAD_REAL_(table)
-#	define RND_DAD_COORD(table, label) RND_DAD_COORD_(table)
-#endif
-
 typedef enum {
 	RND_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
 	RND_HID_TEXT_REPLACE,          /* replace the entire text */
@@ -289,11 +276,11 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, wdata, choices); \
 } while(0)
 
-#define RND_DAD_BOOL_(table)      RND_DAD_ALLOC(table, RND_HATT_BOOL);
+#define RND_DAD_BOOL(table)       RND_DAD_ALLOC(table, RND_HATT_BOOL);
 #define RND_DAD_STRING(table)     RND_DAD_ALLOC(table, RND_HATT_STRING);
-#define RND_DAD_INTEGER_(table)   RND_DAD_SPIN_INT(table);
-#define RND_DAD_REAL_(table)      RND_DAD_SPIN_DOUBLE(table);
-#define RND_DAD_COORD_(table)     RND_DAD_SPIN_COORD(table);
+#define RND_DAD_INTEGER(table)    RND_DAD_SPIN_INT(table);
+#define RND_DAD_REAL(table)       RND_DAD_SPIN_DOUBLE(table);
+#define RND_DAD_COORD(table)      RND_DAD_SPIN_COORD(table);
 
 #define RND_DAD_TEXT(table, user_ctx_) \
 do { \

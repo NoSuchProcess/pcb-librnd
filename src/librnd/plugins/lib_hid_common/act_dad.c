@@ -24,8 +24,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#define RND_DAD_CFG_NOLABEL 1
-
 #include <librnd/config.h>
 
 #include <genht/htsp.h>
