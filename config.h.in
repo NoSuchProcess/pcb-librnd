@@ -52,8 +52,5 @@ print [@
 #define RND_VERSION "@/local/version@"
 #define RND_REVISION "@/local/revision@"
 
-/* librnd transition */
-#define RND_DAD_CFG_NOLABEL 1
-
 #endif
 @]
