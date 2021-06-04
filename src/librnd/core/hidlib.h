@@ -83,6 +83,14 @@ typedef struct rnd_app_s {
 	const char *menu_name_fmt;         /* optional: printf format string for the menu file name; may contain one %s that will be substituted with rc.menu_file. */
 	const char *default_embedded_menu; /* optional: the whole default menu file embedded in the executable; NULL if not present */
 
+/* path to the user's config directory and main config file (RND_CFR_USER) */
+	const char *conf_userdir_path;
+	const char *conf_user_path;
+
+/* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
+	const char *conf_sysdir_path;
+	const char *conf_sys_path;
+
 
 
 	/* Spare: see doc/developer/spare.txt */
@@ -141,13 +149,6 @@ void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xfo
 void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
 
-/* path to the user's config directory and main config file (RND_CFR_USER) */
-extern const char *rnd_conf_userdir_path;
-extern const char *rnd_conf_user_path;
-
-/* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
-extern const char *rnd_conf_sysdir_path;
-extern const char *rnd_conf_sys_path;
 
 
 /*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/

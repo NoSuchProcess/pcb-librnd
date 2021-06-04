@@ -123,8 +123,8 @@ static void perma_script_init(rnd_hidlib_t *hl)
 
 	if (inited) return;
 
-	perma_script_load_conf(hl, rnd_conf_userdir_path);
-	perma_script_load_conf(hl, rnd_conf_sysdir_path);
+	perma_script_load_conf(hl, rnd_app.conf_userdir_path);
+	perma_script_load_conf(hl, rnd_app.conf_sysdir_path);
 
 	inited = 1;
 }
