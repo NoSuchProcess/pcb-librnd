@@ -72,7 +72,8 @@ struct rnd_hidlib_s {
    app is required to fill in global rnd_app fields before calling
    the first librnd call. */
 typedef struct rnd_app_s {
-/* application information (to be displayed on the UI) */
+
+	/* application information (to be displayed on the UI) */
 	const char *package;
 	const char *version;
 	const char *url;
@@ -83,11 +84,11 @@ typedef struct rnd_app_s {
 	const char *menu_name_fmt;         /* optional: printf format string for the menu file name; may contain one %s that will be substituted with rc.menu_file. */
 	const char *default_embedded_menu; /* optional: the whole default menu file embedded in the executable; NULL if not present */
 
-/* path to the user's config directory and main config file (RND_CFR_USER) */
+	/* path to the user's config directory and main config file (RND_CFR_USER) */
 	const char *conf_userdir_path;
 	const char *conf_user_path;
 
-/* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
+	/* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
 	const char *conf_sysdir_path;
 	const char *conf_sys_path;
 
@@ -146,18 +147,6 @@ void rnd_hidlib_event_init(void);
 
 /* print pending log messages to stderr after gui uninit */
 void rnd_log_print_uninit_errs(const char *title);
-
-
-/*** The following API is implemented by the host application ***/
-
-
-
-
-
-
-
-
-
 
 /*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/
 void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
