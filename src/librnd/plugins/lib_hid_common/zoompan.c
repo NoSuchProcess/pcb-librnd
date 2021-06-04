@@ -44,7 +44,7 @@ fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double v;
 	rnd_coord_t x = 0, y = 0;
 
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	if (argc < 2) {
 		rnd_gui->zoom_win(rnd_gui, 0, 0, hidlib->size_x, hidlib->size_y, 1);
@@ -111,7 +111,7 @@ fgw_error_t rnd_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int mode;
 	rnd_coord_t x, y;
 
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	rnd_hid_get_coords("Click on a place to pan", &x, &y, 0);
 
@@ -128,7 +128,7 @@ const char rnd_acth_Center[] = "Moves the pointer to the center of the window.";
 fgw_error_t rnd_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	rnd_hid_get_coords("Click to center", &x, &y, 0);
 

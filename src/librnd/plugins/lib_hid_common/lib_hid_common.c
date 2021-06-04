@@ -70,7 +70,7 @@ const char rnd_acth_Command[] = "Displays the command line input in the status a
 /* DOC: command */
 fgw_error_t rnd_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 	rnd_gui->open_command(rnd_gui);
 	RND_ACT_IRES(0);
 	return 0;
