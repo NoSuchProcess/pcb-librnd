@@ -185,9 +185,9 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 }
 
 
-const char pcb_acts_LogDialog[] = "LogDialog()\n";
-const char pcb_acth_LogDialog[] = "Open the log dialog.";
-fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acts_LogDialog[] = "LogDialog()\n";
+const char rnd_acth_LogDialog[] = "Open the log dialog.";
+fgw_error_t rnd_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	log_window_create(RND_ACT_HIDLIB);
 	RND_ACT_IRES(0);

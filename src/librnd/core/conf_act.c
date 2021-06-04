@@ -34,14 +34,14 @@
 #include <librnd/core/grid.h>
 #include <librnd/core/compat_misc.h>
 
-static const char pcb_acts_Conf[] =
+static const char rnd_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"
 	"conf(delta, path, value, [role], [policy]) - change a config setting by a delta value (numerics-only)\n"
 	"conf(toggle, path, [role]) - invert boolean value of a flag; if no role given, overwrite the highest prio config\n"
 	"conf(reset, role) - reset the in-memory lihata of a role\n"
 	"conf(iseq, path, value) - returns whether the value of a conf item matches value (for menu checked's)\n"
 	;
-static const char pcb_acth_Conf[] = "Perform various operations on the configuration tree.";
+static const char rnd_acth_Conf[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
 static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
@@ -54,7 +54,7 @@ static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
 	return res;
 }
 
-static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	const char *a1, *a2, *a3, *a4;
@@ -231,9 +231,9 @@ static fgw_error_t pcb_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_ChkMode[] = "ChkMode(expected_mode)" ;
-static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
-static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_ChkMode[] = "ChkMode(expected_mode)" ;
+static const char rnd_acth_ChkMode[] = "Return 1 if the currently selected mode is the expected_mode";
+static fgw_error_t rnd_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dst;
 	rnd_toolid_t id;
@@ -250,12 +250,12 @@ static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_ChkGridSize[] =
+static const char rnd_acts_ChkGridSize[] =
 	"ChkGridSize(expected_size)\n"
 	"ChkGridSize(none)\n"
 	;
-static const char pcb_acth_ChkGridSize[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
-static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_ChkGridSize[] = "Return 1 if the currently selected grid matches the expected_size. If argument is \"none\" return 1 if there is no grid.";
+static fgw_error_t rnd_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dst;
 
@@ -271,9 +271,9 @@ static fgw_error_t pcb_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 }
 
 
-static const char pcb_acts_ChkGridUnits[] = "ChkGridUnits(expected)";
-static const char pcb_acth_ChkGridUnits[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
-static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_ChkGridUnits[] = "ChkGridUnits(expected)";
+static const char rnd_acth_ChkGridUnits[] = "Return 1 if currently selected grid unit matches the expected (normally mm or mil)";
+static fgw_error_t rnd_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *expected;
 	RND_ACT_CONVARG(1, FGW_STR, ChkGridUnits, expected = argv[1].val.str);
@@ -281,10 +281,10 @@ static fgw_error_t pcb_act_ChkGridUnits(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_acts_SetGrid[] = "SetGrid(delta|*mult|/div, [unit])";
-static const char pcb_acth_SetGrid[] = "Change grid size.";
+static const char rnd_acts_SetGrid[] = "SetGrid(delta|*mult|/div, [unit])";
+static const char rnd_acth_SetGrid[] = "Change grid size.";
 /* for doc: copy from SetValue(grid,...) */
-static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *val, *units = NULL;
 	rnd_bool absolute;
@@ -331,10 +331,10 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_setunits[] = "SetUnits(mm|mil)";
-static const char pcb_acth_setunits[] = "Set the default measurement units.";
+static const char rnd_acts_setunits[] = "SetUnits(mm|mil)";
+static const char rnd_acth_setunits[] = "Set the default measurement units.";
 /* DOC: setunits.html */
-static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const rnd_unit_t *new_unit;
 	const char *name;
@@ -350,12 +350,12 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static rnd_action_t rnd_conf_action_list[] = {
-	{"conf", pcb_act_Conf, pcb_acth_Conf, pcb_acts_Conf},
-	{"ChkMode", pcb_act_ChkMode, pcb_acth_ChkMode, pcb_acts_ChkMode},
-	{"ChkGridSize", pcb_act_ChkGridSize, pcb_acth_ChkGridSize, pcb_acts_ChkGridSize},
-	{"ChkGridUnits", pcb_act_ChkGridUnits, pcb_acth_ChkGridUnits, pcb_acts_ChkGridUnits},
-	{"SetGrid", pcb_act_SetGrid, pcb_acth_SetGrid, pcb_acts_SetGrid},
-	{"SetUnits", pcb_act_SetUnits, pcb_acth_setunits, pcb_acts_setunits}
+	{"conf", rnd_act_Conf, rnd_acth_Conf, rnd_acts_Conf},
+	{"ChkMode", rnd_act_ChkMode, rnd_acth_ChkMode, rnd_acts_ChkMode},
+	{"ChkGridSize", rnd_act_ChkGridSize, rnd_acth_ChkGridSize, rnd_acts_ChkGridSize},
+	{"ChkGridUnits", rnd_act_ChkGridUnits, rnd_acth_ChkGridUnits, rnd_acts_ChkGridUnits},
+	{"SetGrid", rnd_act_SetGrid, rnd_acth_SetGrid, rnd_acts_SetGrid},
+	{"SetUnits", rnd_act_SetUnits, rnd_acth_setunits, rnd_acts_setunits}
 };
 
 void rnd_conf_act_init2(void)

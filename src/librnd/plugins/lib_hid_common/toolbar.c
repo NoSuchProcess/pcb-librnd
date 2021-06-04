@@ -255,18 +255,18 @@ void rnd_toolbar_init(void)
 	rnd_toolbar_inited = 1;
 }
 
-const char pcb_acts_rnd_toolbar_init[] = "rnd_toolbar_init()\n";
-const char pcb_acth_rnd_toolbar_init[] = "For ringdove apps: initialize the toolbar.";
-fgw_error_t pcb_act_rnd_toolbar_init(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acts_rnd_toolbar_init[] = "rnd_toolbar_init()\n";
+const char rnd_acth_rnd_toolbar_init[] = "For ringdove apps: initialize the toolbar.";
+fgw_error_t rnd_act_rnd_toolbar_init(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_toolbar_init();
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-const char pcb_acts_rnd_toolbar_uninit[] = "rnd_toolbar_uninit()\n";
-const char pcb_acth_rnd_toolbar_uninit[] = "For ringdove apps: uninitialize the toolbar.";
-fgw_error_t pcb_act_rnd_toolbar_uninit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acts_rnd_toolbar_uninit[] = "rnd_toolbar_uninit()\n";
+const char rnd_acth_rnd_toolbar_uninit[] = "For ringdove apps: uninitialize the toolbar.";
+fgw_error_t rnd_act_rnd_toolbar_uninit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_toolbar_uninit();
 	RND_ACT_IRES(0);

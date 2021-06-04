@@ -4,7 +4,7 @@
 #ifndef RND_RND_CONFIG_H
 #define RND_RND_CONFIG_H
 
-#define RND_APP_PREFIX(x)  pcb_ ## x
+#define RND_APP_PREFIX(x)  rnd_ ## x
 
 #include "config.h"
 

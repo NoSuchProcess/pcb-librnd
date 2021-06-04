@@ -44,10 +44,10 @@ static void prompt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hid_dad_close(hid_ctx, *ro, 0);
 }
 
-fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *label, *default_str = "";
-	const char *pcb_acts_gui_PromptFor =  nope;
+	const char *rnd_acts_gui_PromptFor =  nope;
 	char *title = NULL;
 	int ws, ft = 0;
 	rnd_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {NULL, 0}};
@@ -88,10 +88,10 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *icon, *title, *label, *txt;
-	const char *pcb_acts_gui_MessageBox = nope;
+	const char *rnd_acts_gui_MessageBox = nope;
 	const char **xpm;
 	int n, ret;
 
@@ -156,10 +156,10 @@ static void color_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wclr, &val);
 }
 
-fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *sclr;
-	const char *pcb_acts_gui_PromptFor =  nope;
+	const char *rnd_acts_gui_PromptFor =  nope;
 	rnd_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {"cancel", 1}, {NULL, 0}};
 	clrpick_t ctx;
 	rnd_hid_attr_val_t val;
@@ -217,11 +217,11 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
-fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib;
 	const char *fn;
-	const char *pcb_acts_gui_MayOverwriteFile = nope;
+	const char *rnd_acts_gui_MayOverwriteFile = nope;
 	const char **xpm;
 	int multi, wdontask;
 	rnd_hid_dad_buttons_t clbtn_s[] = {{"yes", 1}, {"no", 0}, {NULL, 0}};

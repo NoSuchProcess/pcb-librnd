@@ -58,10 +58,10 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 	return FGW_ERR_NOT_FOUND;
 }
 
-static const char pcb_acts_PromptFor[] = "PromptFor([message[,default[,title]]])";
-static const char pcb_acth_PromptFor[] = "Prompt for a string. Returns the string (or NULL on cancel)";
+static const char rnd_acts_PromptFor[] = "PromptFor([message[,default[,title]]])";
+static const char rnd_acth_PromptFor[] = "Prompt for a string. Returns the string (or NULL on cancel)";
 /* DOC: promptfor.html */
-static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return call_dialog("promptfor", res, argc, argv);
 }
@@ -84,10 +84,10 @@ char *rnd_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_
 	return NULL;
 }
 
-static const char pcb_acts_MessageBox[] = "MessageBox(icon, title, label, button_txt, button_retval, ...)";
-static const char pcb_acth_MessageBox[] = "Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.";
+static const char rnd_acts_MessageBox[] = "MessageBox(icon, title, label, button_txt, button_retval, ...)";
+static const char rnd_acth_MessageBox[] = "Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.";
 /* DOC: messagebox.html */
-static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return call_dialog("messagebox", res, argc, argv);
 }
@@ -254,10 +254,10 @@ int rnd_hid_progress(long so_far, long total, const char *message)
 	return rnd_nogui_progress(so_far, total, message);
 }
 
-static const char pcb_acts_Print[] = "Print()";
-static const char pcb_acth_Print[] = "Present the print export dialog for printing the layout from the GUI.";
+static const char rnd_acts_Print[] = "Print()";
+static const char rnd_acth_Print[] = "Present the print export dialog for printing the layout from the GUI.";
 /* DOC: print.html */
-static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (RND_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
 		return rnd_actionv_bin(RND_ACT_HIDLIB, "printgui", res, argc, argv);
@@ -267,9 +267,9 @@ static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static rnd_action_t hid_dlg_action_list[] = {
-	{"PromptFor", pcb_act_PromptFor, pcb_acth_PromptFor, pcb_acts_PromptFor},
-	{"MessageBox", pcb_act_MessageBox, pcb_acth_MessageBox, pcb_acts_MessageBox},
-	{"Print", pcb_act_Print, pcb_acth_Print, pcb_acts_Print}
+	{"PromptFor", rnd_act_PromptFor, rnd_acth_PromptFor, rnd_acts_PromptFor},
+	{"MessageBox", rnd_act_MessageBox, rnd_acth_MessageBox, rnd_acts_MessageBox},
+	{"Print", rnd_act_Print, rnd_acth_Print, rnd_acts_Print}
 };
 
 static const char *event_dlg_cookie = "hid_dlg";

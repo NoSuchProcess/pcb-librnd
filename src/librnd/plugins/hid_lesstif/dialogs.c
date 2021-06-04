@@ -878,10 +878,10 @@ void lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
 }
 
 
-static const char pcb_acts_DoWindows[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
-static const char pcb_acth_DoWindows[] = "Open various GUI windows.";
+static const char rnd_acts_DoWindows[] = "DoWindows(1|2|3|4)\n" "DoWindows(Layout|Library|Log|Netlist)";
+static const char rnd_acth_DoWindows[] = "Open various GUI windows.";
 /* DOC: dowindows.html */
-static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a = "";
 	RND_ACT_MAY_CONVARG(1, FGW_STR, DoWindows, a = argv[1].val.str);
@@ -905,9 +905,9 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_AdjustSizes[] = "AdjustSizes()";
-static const char pcb_acth_AdjustSizes[] = "not supported, please use Preferences() instead";
-static fgw_error_t pcb_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_AdjustSizes[] = "AdjustSizes()";
+static const char rnd_acth_AdjustSizes[] = "not supported, please use Preferences() instead";
+static fgw_error_t rnd_act_AdjustSizes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_message(RND_MSG_ERROR, "AdjustSizes() is not supported anymore, please use the Preferences() action\n");
 	RND_ACT_IRES(1);
@@ -928,8 +928,8 @@ rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 /* ------------------------------------------------------------ */
 
 static rnd_action_t ltf_dialog_action_list[] = {
-	{"DoWindows", pcb_act_DoWindows, pcb_acth_DoWindows, pcb_acts_DoWindows},
-	{"AdjustSizes", pcb_act_AdjustSizes, pcb_acth_AdjustSizes, pcb_acts_AdjustSizes}
+	{"DoWindows", rnd_act_DoWindows, rnd_acth_DoWindows, rnd_acts_DoWindows},
+	{"AdjustSizes", rnd_act_AdjustSizes, rnd_acth_AdjustSizes, rnd_acts_AdjustSizes}
 };
 
 void pcb_ltf_dialogs_init2(void)

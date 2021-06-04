@@ -456,13 +456,13 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 }
 
 
-const char pcb_acts_LiveScript[] = 
+const char rnd_acts_LiveScript[] = 
 	"LiveScript([new], [name])\n"
 	"LiveScript(load|save, name, [filame])\n"
 	"LiveScript(run|stop|rerun|undo, name)\n";
-const char pcb_acth_LiveScript[] = "Manage a live script";
+const char rnd_acth_LiveScript[] = "Manage a live script";
 /* DOC: livescript.html */
-fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	live_script_t *lvs;
 	const char *cmd = "new", *name = NULL, *arg = NULL;

@@ -103,9 +103,9 @@ static void pcb_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 
 /*** action ***/
 
-static const char pcb_acts_stroke[] = "stroke(gesture, seq)";
-static const char pcb_acth_stroke[] = "Various gesture recognition related functions";
-static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_stroke[] = "stroke(gesture, seq)";
+static const char rnd_acth_stroke[] = "Various gesture recognition related functions";
+static fgw_error_t rnd_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *arg = NULL;
 
@@ -146,7 +146,7 @@ static fgw_error_t pcb_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /*** administration ***/
 
 rnd_action_t stroke_action_list[] = {
-	{"stroke", pcb_act_stroke, pcb_acth_stroke, pcb_acts_stroke}
+	{"stroke", rnd_act_stroke, rnd_acth_stroke, rnd_acts_stroke}
 };
 
 int pplg_check_ver_stroke(int ver_needed) { return 0; }

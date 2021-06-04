@@ -288,13 +288,13 @@ void rnd_tool_do_press(rnd_hidlib_t *hidlib)
 }
 
 
-static const char pcb_acts_Tool[] =
+static const char rnd_acts_Tool[] =
 	"Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)\n"
 	"Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)\n" "Tool(Press|Release|Cancel|Stroke)\n" "Tool(Save|Restore)";
 
-static const char pcb_acth_Tool[] = "Change or use the tool mode.";
+static const char rnd_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
-static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *cmd;
@@ -358,8 +358,8 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t tool_action_list[] = {
-	{"Tool", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool},
-	{"Mode", pcb_act_Tool, pcb_acth_Tool, pcb_acts_Tool}
+	{"Tool", rnd_act_Tool, rnd_acth_Tool, rnd_acts_Tool},
+	{"Mode", rnd_act_Tool, rnd_acth_Tool, rnd_acts_Tool}
 };
 
 void rnd_tool_act_init2(void)

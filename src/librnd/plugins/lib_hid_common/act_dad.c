@@ -228,7 +228,7 @@ static int split_tablist(dad_t *dad, char **values, const char *txt, const char 
 	return 0;
 }
 
-const char pcb_acts_dad[] =
+const char rnd_acts_dad[] =
 	"dad(dlgname, new) - create new dialog\n"
 	"dad(dlgname, label, text) - append a label widget\n"
 	"dad(dlgname, button, text) - append a button widget\n"
@@ -260,8 +260,8 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
 	"dad(dlgname, get, widgetID, [unit]) - return the current value of a widget\n"
 	;
-const char pcb_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
-fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
+fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *cmd, *dlgname, *txt;
 	dad_t *dad;
@@ -693,12 +693,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-void pcb_act_dad_init(void)
+void rnd_act_dad_init(void)
 {
 	htsp_init(&dads, strhash, strkeyeq);
 }
 
-void pcb_act_dad_uninit(void)
+void rnd_act_dad_uninit(void)
 {
 	htsp_entry_t *e;
 	for(e = htsp_first(&dads); e != NULL; e = htsp_next(&dads, e))

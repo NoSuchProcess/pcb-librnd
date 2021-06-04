@@ -65,10 +65,10 @@ static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx)
 	pcb_dad_spin_update_global_coords();
 }
 
-const char pcb_acts_Command[] = "Command()";
-const char pcb_acth_Command[] = "Displays the command line input in the status area.";
+const char rnd_acts_Command[] = "Command()";
+const char rnd_acth_Command[] = "Displays the command line input in the status area.";
 /* DOC: command */
-fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	PCB_GUI_NOGUI();
 	rnd_gui->open_command(rnd_gui);
@@ -76,26 +76,26 @@ fgw_error_t pcb_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
+static const char rnd_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
 rnd_action_t hid_common_action_list[] = {
-	{"dad", pcb_act_dad, pcb_acth_dad, pcb_acts_dad},
-	{"Pan", pcb_act_Pan, pcb_acth_Pan, pcb_acts_Pan},
-	{"Center", pcb_act_Center, pcb_acth_Center, pcb_acts_Center},
-	{"Scroll", pcb_act_Scroll, pcb_acth_Scroll, pcb_acts_Scroll},
-	{"LogDialog", pcb_act_LogDialog, pcb_acth_LogDialog, pcb_acts_LogDialog},
-	{"Command", pcb_act_Command, pcb_acth_Command, pcb_acts_Command},
-	{"gui_PromptFor", pcb_act_gui_PromptFor, pcb_acth_gui, NULL},
-	{"gui_MessageBox", pcb_act_gui_MessageBox, pcb_acth_gui, NULL},
-	{"gui_FallbackColorPick", pcb_act_gui_FallbackColorPick, pcb_acth_gui, NULL},
-	{"gui_MayOverwriteFile", pcb_act_gui_MayOverwriteFile, pcb_acth_gui, NULL},
-	{"rnd_toolbar_init", pcb_act_rnd_toolbar_init, pcb_acth_rnd_toolbar_init, NULL},
-	{"rnd_toolbar_uninit", pcb_act_rnd_toolbar_uninit, pcb_acth_rnd_toolbar_uninit, NULL},
-	{"rnd_zoom", pcb_gui_act_zoom, pcb_acth_Zoom_default, pcb_acts_Zoom_default}
+	{"dad", rnd_act_dad, rnd_acth_dad, rnd_acts_dad},
+	{"Pan", rnd_act_Pan, rnd_acth_Pan, rnd_acts_Pan},
+	{"Center", rnd_act_Center, rnd_acth_Center, rnd_acts_Center},
+	{"Scroll", rnd_act_Scroll, rnd_acth_Scroll, rnd_acts_Scroll},
+	{"LogDialog", rnd_act_LogDialog, rnd_acth_LogDialog, rnd_acts_LogDialog},
+	{"Command", rnd_act_Command, rnd_acth_Command, rnd_acts_Command},
+	{"gui_PromptFor", rnd_act_gui_PromptFor, rnd_acth_gui, NULL},
+	{"gui_MessageBox", rnd_act_gui_MessageBox, rnd_acth_gui, NULL},
+	{"gui_FallbackColorPick", rnd_act_gui_FallbackColorPick, rnd_acth_gui, NULL},
+	{"gui_MayOverwriteFile", rnd_act_gui_MayOverwriteFile, rnd_acth_gui, NULL},
+	{"rnd_toolbar_init", rnd_act_rnd_toolbar_init, rnd_acth_rnd_toolbar_init, NULL},
+	{"rnd_toolbar_uninit", rnd_act_rnd_toolbar_uninit, rnd_acth_rnd_toolbar_uninit, NULL},
+	{"rnd_zoom", pcb_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default}
 };
 
-extern const char *pcb_acts_Zoom;
-extern const char pcb_acts_Zoom_default[];
+extern const char *rnd_acts_Zoom;
+extern const char rnd_acts_Zoom_default[];
 
 static const char *hid_common_cookie = "lib_hid_common plugin";
 
@@ -114,7 +114,7 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_conf_hid_unreg(grid_cookie);
 	rnd_dialog_place_uninit();
 	rnd_remove_actions_by_cookie(hid_common_cookie);
-	pcb_act_dad_uninit();
+	rnd_act_dad_uninit();
 	rnd_conf_unreg_fields("plugins/lib_hid_common/");
 	pcb_dlg_log_uninit();
 }
@@ -132,7 +132,7 @@ int pplg_init_lib_hid_common(void)
 
 	pcb_dlg_log_init();
 	RND_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
-	pcb_act_dad_init();
+	rnd_act_dad_init();
 
 	rnd_conf_reg_intern(dialogs_conf_internal);
 

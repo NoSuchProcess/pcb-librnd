@@ -34,9 +34,9 @@
 
 #include "zoompan.h"
 
-const char *pcb_acts_Zoom;
-const char pcb_acth_Zoom_default[] = "Change zoom level (relative, absolute, window, ...)\n";
-const char pcb_acts_Zoom_default[] = pcb_gui_acts_zoom;
+const char *rnd_acts_Zoom;
+const char rnd_acth_Zoom_default[] = "Change zoom level (relative, absolute, window, ...)\n";
+const char rnd_acts_Zoom_default[] = pcb_gui_acts_zoom;
 fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
@@ -103,10 +103,10 @@ fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-const char pcb_acts_Pan[] = "Pan(Mode)";
-const char pcb_acth_Pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n";
+const char rnd_acts_Pan[] = "Pan(Mode)";
+const char rnd_acth_Pan[] = "Start or stop panning (Mode = 1 to start, 0 to stop)\n";
 /* DOC: pan.html */
-fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int mode;
 	rnd_coord_t x, y;
@@ -122,10 +122,10 @@ fgw_error_t pcb_act_Pan(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-const char pcb_acts_Center[] = "Center()\n";
-const char pcb_acth_Center[] = "Moves the pointer to the center of the window.";
+const char rnd_acts_Center[] = "Center()\n";
+const char rnd_acth_Center[] = "Moves the pointer to the center of the window.";
 /* DOC: center.html */
-fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
 	PCB_GUI_NOGUI();
@@ -141,10 +141,10 @@ fgw_error_t pcb_act_Center(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-const char pcb_acts_Scroll[] = "Scroll(up|down|left|right, [pixels])";
-const char pcb_acth_Scroll[] = "Scroll the viewport.";
+const char rnd_acts_Scroll[] = "Scroll(up|down|left|right, [pixels])";
+const char rnd_acth_Scroll[] = "Scroll the viewport.";
 /* DOC: scroll.html */
-fgw_error_t pcb_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_Scroll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op;
 	double dx = 0.0, dy = 0.0, pixels = 100.0;

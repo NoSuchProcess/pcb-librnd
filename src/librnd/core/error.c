@@ -198,11 +198,11 @@ void rnd_log_uninit(void)
 }
 
 
-static const char pcb_acts_Log[] =
+static const char rnd_acts_Log[] =
 	"Log(clear, [fromID, [toID])\n"
 	"Log(export, [filename, [text|lihata])\n";
-static const char pcb_acth_Log[] = "Manages the central, in-memory log.";
-static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_Log[] = "Manages the central, in-memory log.";
+static fgw_error_t rnd_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ret;
 	const char *op = "";
@@ -245,10 +245,10 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Message[] = "message([ERROR|WARNING|INFO|DEBUG,] message)";
-static const char pcb_acth_Message[] = "Writes a message to the log window.";
+static const char rnd_acts_Message[] = "message([ERROR|WARNING|INFO|DEBUG,] message)";
+static const char rnd_acth_Message[] = "Writes a message to the log window.";
 /* DOC: message.html */
-static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int i, how = RND_MSG_INFO;
 
@@ -278,8 +278,8 @@ static fgw_error_t pcb_act_Message(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t log_action_list[] = {
-	{"Log", pcb_act_Log, pcb_acth_Log, pcb_acts_Log},
-	{"Message", pcb_act_Message, pcb_acth_Message, pcb_acts_Message}
+	{"Log", rnd_act_Log, rnd_acth_Log, rnd_acts_Log},
+	{"Message", rnd_act_Message, rnd_acth_Message, rnd_acts_Message}
 };
 
 void pcb_hidlib_error_init2(void)

@@ -47,10 +47,10 @@
 
 
 /* This action is provided for CLI convenience */
-static const char pcb_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
-static const char pcb_acth_FullScreen[] = "Hide widgets to get edit area full screen";
+static const char rnd_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
+static const char rnd_acth_FullScreen[] = "Hide widgets to get edit area full screen";
 
-static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
 	RND_ACT_MAY_CONVARG(1, FGW_STR, FullScreen, cmd = argv[1].val.str);
@@ -68,10 +68,10 @@ static fgw_error_t pcb_act_FullScreen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
-static const char pcb_acth_Cursor[] = "Move the cursor.";
+static const char rnd_acts_Cursor[] = "Cursor(Type,DeltaUp,DeltaRight,Units)";
+static const char rnd_acth_Cursor[] = "Move the cursor.";
 /* DOC: cursor.html */
-static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	rnd_unit_list_t extra_units_x = {
@@ -170,9 +170,9 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_MoveCursorTo[] = "MoveCursorTo(x,y)";
-static const char pcb_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
-static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_MoveCursorTo[] = "MoveCursorTo(x,y)";
+static const char rnd_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
+static fgw_error_t rnd_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	rnd_coord_t x, y;
@@ -221,11 +221,11 @@ static rnd_coord_t grid_ask(void)
 }
 
 
-static const char pcb_acts_grid[] =
+static const char rnd_acts_grid[] =
 	"grid(set, [name:]size[@offs][!unit])\n"
 	"grid(+|up)\n" "grid(-|down)\n" "grid(#N)\n" "grid(idx, N)\n" "grid(get)\n" "grid(ask)\n";
-static const char pcb_acth_grid[] = "Set the grid.";
-static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_grid[] = "Set the grid.";
+static fgw_error_t rnd_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op, *a;
 
@@ -271,10 +271,10 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_GetXY[] = "GetXY([message, [x|y]])";
-static const char pcb_acth_GetXY[] = "Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.";
+static const char rnd_acts_GetXY[] = "GetXY([message, [x|y]])";
+static const char rnd_acth_GetXY[] = "Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.";
 /* DOC: getxy.html */
-static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
 	const char *op = NULL, *msg = "Click to enter a coordinate.";
@@ -301,10 +301,10 @@ static fgw_error_t pcb_act_GetXY(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Benchmark[] = "Benchmark()";
-static const char pcb_acth_Benchmark[] = "Benchmark the GUI speed.";
+static const char rnd_acts_Benchmark[] = "Benchmark()";
+static const char rnd_acth_Benchmark[] = "Benchmark the GUI speed.";
 /* DOC: benchmark.html */
-static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	double fps = 0;
 
@@ -319,18 +319,18 @@ static fgw_error_t pcb_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_Help[] = "Help()";
-static const char pcb_acth_Help[] = "On-line action help";
-static fgw_error_t pcb_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_Help[] = "Help()";
+static const char rnd_acth_Help[] = "On-line action help";
+static fgw_error_t rnd_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_print_actions();
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-static const char pcb_acts_Redraw[] = "Redraw()";
-static const char pcb_acth_Redraw[] = "Redraw the entire screen";
-static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_Redraw[] = "Redraw()";
+static const char rnd_acth_Redraw[] = "Redraw the entire screen";
+static fgw_error_t rnd_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_gui->invalidate_all(rnd_gui);
 	RND_ACT_IRES(0);
@@ -338,14 +338,14 @@ static fgw_error_t pcb_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t rnd_gui_action_list[] = {
-	{"FullScreen", pcb_act_FullScreen, pcb_acth_FullScreen, pcb_acts_FullScreen},
-	{"Cursor", pcb_act_Cursor, pcb_acth_Cursor, pcb_acts_Cursor},
-	{"MoveCursorTo", pcb_act_MoveCursorTo, pcb_acth_MoveCursorTo, pcb_acts_MoveCursorTo},
-	{"Grid", pcb_act_grid, pcb_acth_grid, pcb_acts_grid},
-	{"GetXY", pcb_act_GetXY, pcb_acth_GetXY, pcb_acts_GetXY},
-	{"Benchmark", pcb_act_Benchmark, pcb_acth_Benchmark, pcb_acts_Benchmark},
-	{"Help", pcb_act_Help, pcb_acth_Help, pcb_acts_Help},
-	{"Redraw", pcb_act_Redraw, pcb_acth_Redraw, pcb_acts_Redraw}
+	{"FullScreen", rnd_act_FullScreen, rnd_acth_FullScreen, rnd_acts_FullScreen},
+	{"Cursor", rnd_act_Cursor, rnd_acth_Cursor, rnd_acts_Cursor},
+	{"MoveCursorTo", rnd_act_MoveCursorTo, rnd_acth_MoveCursorTo, rnd_acts_MoveCursorTo},
+	{"Grid", rnd_act_grid, rnd_acth_grid, rnd_acts_grid},
+	{"GetXY", rnd_act_GetXY, rnd_acth_GetXY, rnd_acts_GetXY},
+	{"Benchmark", rnd_act_Benchmark, rnd_acth_Benchmark, rnd_acts_Benchmark},
+	{"Help", rnd_act_Help, rnd_acth_Help, rnd_acts_Help},
+	{"Redraw", rnd_act_Redraw, rnd_acth_Redraw, rnd_acts_Redraw}
 };
 
 void rnd_gui_act_init2(void)

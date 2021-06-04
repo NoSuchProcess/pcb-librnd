@@ -1194,9 +1194,9 @@ static int remove_menu_manual(rnd_menu_sys_t *msys, const char *path, const char
 
 /*** actions ***/
 
-static const char pcb_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie, [accel])";
-static const char pcb_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
-static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_CreateMenu[] = "CreateMenu(path)\nCreateMenu(path, action, tooltip, cookie, [accel])";
+static const char rnd_acth_CreateMenu[] = "Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)";
+static fgw_error_t rnd_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (rnd_gui == NULL) {
 		rnd_message(RND_MSG_ERROR, "Error: can't create menu, there's no GUI hid loaded\n");
@@ -1221,9 +1221,9 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_FAIL(CreateMenu);
 }
 
-static const char pcb_acts_RemoveMenu[] = "RemoveMenu(path, cookie)";
-static const char pcb_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
-static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_RemoveMenu[] = "RemoveMenu(path, cookie)";
+static const char rnd_acth_RemoveMenu[] = "Recursively removes a new menu, popup (only path specified) or submenu. ";
+static fgw_error_t rnd_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (rnd_gui == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't remove menu, there's no GUI hid loaded\n");
@@ -1248,13 +1248,13 @@ static fgw_error_t pcb_act_RemoveMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_MenuPatch[] = 
+static const char rnd_acts_MenuPatch[] = 
 	"MenuPatch(load, cookie, path, desc)\n"
 	"MenuPatch(unload, cookie)\n"
 	"MenuPatch(list)\n"
 	"MenuPatch(InhibitInc|InhibitDec)";
-static const char pcb_acth_MenuPatch[] = "Manage menu patches";
-fgw_error_t pcb_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_MenuPatch[] = "Manage menu patches";
+fgw_error_t rnd_act_MenuPatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	const char *cookie = NULL, *path = NULL, *desc = "";
@@ -1314,10 +1314,10 @@ static int remove_menu_node_debug(rnd_hid_t *hid, lht_node_t *nd)
 	return 0;
 }
 
-static const char pcb_acts_MenuDebug[] = 
+static const char rnd_acts_MenuDebug[] = 
 	"MenuDebug(save, path)\n";
-static const char pcb_acth_MenuDebug[] = "Menu debug helpers: save the merged menu in a file";
-fgw_error_t pcb_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_MenuDebug[] = "Menu debug helpers: save the merged menu in a file";
+fgw_error_t rnd_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *op, *path;
 	FILE *f;
@@ -1354,10 +1354,10 @@ fgw_error_t pcb_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t rnd_menu_action_list[] = {
-	{"CreateMenu", pcb_act_CreateMenu, pcb_acth_CreateMenu, pcb_acts_CreateMenu},
-	{"RemoveMenu", pcb_act_RemoveMenu, pcb_acth_RemoveMenu, pcb_acts_RemoveMenu},
-	{"MenuPatch", pcb_act_MenuPatch, pcb_acth_MenuPatch, pcb_acts_MenuPatch},
-	{"MenuDebug", pcb_act_MenuDebug, pcb_acth_MenuDebug, pcb_acts_MenuDebug}
+	{"CreateMenu", rnd_act_CreateMenu, rnd_acth_CreateMenu, rnd_acts_CreateMenu},
+	{"RemoveMenu", rnd_act_RemoveMenu, rnd_acth_RemoveMenu, rnd_acts_RemoveMenu},
+	{"MenuPatch", rnd_act_MenuPatch, rnd_acth_MenuPatch, rnd_acts_MenuPatch},
+	{"MenuDebug", rnd_act_MenuDebug, rnd_acth_MenuDebug, rnd_acts_MenuDebug}
 };
 
 static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)

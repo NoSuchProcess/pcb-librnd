@@ -274,10 +274,10 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acth_LoadScript[] = "Load a fungw script";
-static const char pcb_acts_LoadScript[] = "LoadScript(id, filename, [language])";
+static const char rnd_acth_LoadScript[] = "Load a fungw script";
+static const char rnd_acts_LoadScript[] = "LoadScript(id, filename, [language])";
 /* DOC: loadscript.html */
-static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id, *fn, *lang = NULL;
 	RND_ACT_CONVARG(1, FGW_STR, LoadScript, id = argv[1].val.str);
@@ -291,10 +291,10 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acth_UnloadScript[] = "Unload a fungw script";
-static const char pcb_acts_UnloadScript[] = "UnloadScript(id)";
+static const char rnd_acth_UnloadScript[] = "Unload a fungw script";
+static const char rnd_acts_UnloadScript[] = "UnloadScript(id)";
 /* DOC: unloadscript.html */
-static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
 	RND_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
@@ -305,10 +305,10 @@ static fgw_error_t pcb_act_UnloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_acth_ReloadScript[] = "Reload a fungw script";
-static const char pcb_acts_ReloadScript[] = "ReloadScript(id)";
+static const char rnd_acth_ReloadScript[] = "Reload a fungw script";
+static const char rnd_acts_ReloadScript[] = "ReloadScript(id)";
 /* DOC: reloadscript.html */
-static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *id = NULL;
 	RND_ACT_CONVARG(1, FGW_STR, UnloadScript, id = argv[1].val.str);
@@ -320,20 +320,20 @@ static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_acth_ScriptPersistency[] = "Read or remove script persistency data savd on preunload";
-static const char pcb_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)";
+static const char rnd_acth_ScriptPersistency[] = "Read or remove script persistency data savd on preunload";
+static const char rnd_acts_ScriptPersistency[] = "ScriptPersistency(read|remove)";
 /* DOC: scriptpersistency.html */
-static fgw_error_t pcb_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_ScriptPersistency(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd = NULL;
 	RND_ACT_CONVARG(1, FGW_STR, ScriptPersistency, cmd = argv[1].val.str);
 	return script_persistency(res, cmd);
 }
 
-static const char pcb_acth_ListScripts[] = "List fungw scripts, optionally filtered wiht regex pat.";
-static const char pcb_acts_ListScripts[] = "ListScripts([pat])";
+static const char rnd_acth_ListScripts[] = "List fungw scripts, optionally filtered wiht regex pat.";
+static const char rnd_acts_ListScripts[] = "ListScripts([pat])";
 /* DOC: listscripts.html */
-static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *pat = NULL;
 	RND_ACT_MAY_CONVARG(1, FGW_STR, ListScripts, pat = argv[1].val.str);
@@ -344,19 +344,19 @@ static fgw_error_t pcb_act_ListScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
-static const char pcb_acth_BrowseScripts[] = "Present a dialog box for browsing scripts";
-static const char pcb_acts_BrowseScripts[] = "BrowseScripts()";
-static fgw_error_t pcb_act_BrowseScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_BrowseScripts[] = "Present a dialog box for browsing scripts";
+static const char rnd_acts_BrowseScripts[] = "BrowseScripts()";
+static fgw_error_t rnd_act_BrowseScripts(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	script_dlg_open();
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-static const char pcb_acth_ScriptCookie[] = "Return a cookie specific to the current script instance during script initialization";
-static const char pcb_acts_ScriptCookie[] = "ScriptCookie()";
+static const char rnd_acth_ScriptCookie[] = "Return a cookie specific to the current script instance during script initialization";
+static const char rnd_acts_ScriptCookie[] = "ScriptCookie()";
 /* DOC: scriptcookie.html */
-static fgw_error_t pcb_act_ScriptCookie(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_ScriptCookie(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = script_gen_cookie(NULL);
@@ -365,10 +365,10 @@ static fgw_error_t pcb_act_ScriptCookie(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
-static const char pcb_acth_Oneliner[] = "Execute a script one-liner using a specific language";
-static const char pcb_acts_Oneliner[] = "Oneliner(lang, script)";
+static const char rnd_acth_Oneliner[] = "Execute a script one-liner using a specific language";
+static const char rnd_acts_Oneliner[] = "Oneliner(lang, script)";
 /* DOC: onliner.html */
-static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first = NULL, *lang = argv[0].val.func->name, *scr = NULL;
 
@@ -414,18 +414,18 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acth_ActionString[] = "Execute a pcb-rnd action parsing a string; syntac: \"action(arg,arg,arg)\"";
-static const char pcb_acts_ActionString[] = "ActionString(action)";
-static fgw_error_t pcb_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_ActionString[] = "Execute a pcb-rnd action parsing a string; syntac: \"action(arg,arg,arg)\"";
+static const char rnd_acts_ActionString[] = "ActionString(action)";
+static fgw_error_t rnd_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *act;
 	RND_ACT_CONVARG(1, FGW_STR, ActionString, act = argv[1].val.str);
 	return rnd_parse_command_res(RND_ACT_HIDLIB, res, act, 1);
 }
 
-static const char pcb_acth_pcb_math0[] = "No-argument math functions";
-static const char pcb_acts_pcb_math0[] = "pcb_MATHFUNC()";
-static fgw_error_t pcb_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_pcb_math0[] = "No-argument math functions";
+static const char rnd_acts_pcb_math0[] = "pcb_MATHFUNC()";
+static fgw_error_t rnd_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 
@@ -438,9 +438,9 @@ static fgw_error_t pcb_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return FGW_ERR_ARG_CONV;
 }
 
-static const char pcb_acth_pcb_math1[] = "Single-argument math functions";
-static const char pcb_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
-static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_pcb_math1[] = "Single-argument math functions";
+static const char rnd_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
+static fgw_error_t rnd_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 	double a;
@@ -468,9 +468,9 @@ static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return FGW_ERR_ARG_CONV;
 }
 
-static const char pcb_acth_pcb_math2[] = "Two-argument math functions";
-static const char pcb_acts_pcb_math2[] = "pcb_MATHFUNC(a,b)";
-static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_pcb_math2[] = "Two-argument math functions";
+static const char rnd_acts_pcb_math2[] = "pcb_MATHFUNC(a,b)";
+static fgw_error_t rnd_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 	double a, b;
@@ -486,52 +486,52 @@ static fgw_error_t pcb_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static rnd_action_t script_action_list[] = {
-	{"LoadScript", pcb_act_LoadScript, pcb_acth_LoadScript, pcb_acts_LoadScript},
-	{"UnloadScript", pcb_act_UnloadScript, pcb_acth_UnloadScript, pcb_acts_UnloadScript},
-	{"ReloadScript", pcb_act_ReloadScript, pcb_acth_ReloadScript, pcb_acts_ReloadScript},
-	{"ScriptPersistency", pcb_act_ScriptPersistency, pcb_acth_ScriptPersistency, pcb_acts_ScriptPersistency},
-	{"ListScripts", pcb_act_ListScripts, pcb_acth_ListScripts, pcb_acts_ListScripts},
-	{"BrowseScripts", pcb_act_BrowseScripts, pcb_acth_BrowseScripts, pcb_acts_BrowseScripts},
-	{"AddTimer", pcb_act_AddTimer, pcb_acth_AddTimer, pcb_acts_AddTimer},
-	{"ScriptCookie", pcb_act_ScriptCookie, pcb_acth_ScriptCookie, pcb_acts_ScriptCookie},
-	{"LiveScript", pcb_act_LiveScript, pcb_acth_LiveScript, pcb_acts_LiveScript},
+	{"LoadScript", rnd_act_LoadScript, rnd_acth_LoadScript, rnd_acts_LoadScript},
+	{"UnloadScript", rnd_act_UnloadScript, rnd_acth_UnloadScript, rnd_acts_UnloadScript},
+	{"ReloadScript", rnd_act_ReloadScript, rnd_acth_ReloadScript, rnd_acts_ReloadScript},
+	{"ScriptPersistency", rnd_act_ScriptPersistency, rnd_acth_ScriptPersistency, rnd_acts_ScriptPersistency},
+	{"ListScripts", rnd_act_ListScripts, rnd_acth_ListScripts, rnd_acts_ListScripts},
+	{"BrowseScripts", rnd_act_BrowseScripts, rnd_acth_BrowseScripts, rnd_acts_BrowseScripts},
+	{"AddTimer", rnd_act_AddTimer, rnd_acth_AddTimer, rnd_acts_AddTimer},
+	{"ScriptCookie", rnd_act_ScriptCookie, rnd_acth_ScriptCookie, rnd_acts_ScriptCookie},
+	{"LiveScript", rnd_act_LiveScript, rnd_acth_LiveScript, rnd_acts_LiveScript},
 	
 	/* script shorthands */
-	{"fawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"fpas",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"pas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"fbas",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"bas",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"fawk",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"fpas",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"pas",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"fbas",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"bas",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
 #ifdef RND_HAVE_SYS_FUNGW
-	{"awk",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"mawk",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"lua",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"tcl",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"javascript",  pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"duktape",     pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"js",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"stt",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"estutter",    pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"perl",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"ruby",        pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"mruby",       pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"py",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"python",      pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"awk",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"mawk",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"lua",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"tcl",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"javascript",  rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"duktape",     rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"js",          rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"stt",         rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"estutter",    rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"perl",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"ruby",        rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"mruby",       rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"py",          rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"python",      rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
 #endif
-	{"Oneliner", pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
-	{"ActionString", pcb_act_ActionString, pcb_acth_ActionString, pcb_acts_ActionString},
+	{"Oneliner", rnd_act_Oneliner, rnd_acth_Oneliner, rnd_acts_Oneliner},
+	{"ActionString", rnd_act_ActionString, rnd_acth_ActionString, rnd_acts_ActionString},
 
 	/* math */
-	{"pcb_rand",    pcb_act_pcb_math0, NULL, NULL},
+	{"pcb_rand",    rnd_act_pcb_math0, NULL, NULL},
 
-	{"pcb_sin",     pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_cos",     pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_asin",    pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_acos",    pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_atan",    pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_tan",     pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_sqrt",    pcb_act_pcb_math1, NULL, NULL},
-	{"pcb_srand",   pcb_act_pcb_math1, NULL, NULL},
+	{"pcb_sin",     rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_cos",     rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_asin",    rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_acos",    rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_atan",    rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_tan",     rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_sqrt",    rnd_act_pcb_math1, NULL, NULL},
+	{"pcb_srand",   rnd_act_pcb_math1, NULL, NULL},
 
-	{"pcb_atan2",   pcb_act_pcb_math2, NULL, NULL}
+	{"pcb_atan2",   rnd_act_pcb_math2, NULL, NULL}
 };

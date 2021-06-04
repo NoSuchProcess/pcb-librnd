@@ -44,26 +44,26 @@
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/safe_fs.h>
 
-static const char pcb_acts_PrintActions[] = "PrintActions()";
-static const char pcb_acth_PrintActions[] = "Print all actions available.";
-fgw_error_t pcb_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_PrintActions[] = "PrintActions()";
+static const char rnd_acth_PrintActions[] = "Print all actions available.";
+fgw_error_t rnd_act_PrintActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_print_actions();
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-static const char pcb_acts_DumpActions[] = "DumpActions()";
-static const char pcb_acth_DumpActions[] = "Dump all actions available.";
-fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_DumpActions[] = "DumpActions()";
+static const char rnd_acth_DumpActions[] = "Dump all actions available.";
+fgw_error_t rnd_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_dump_actions();
 	RND_ACT_IRES(0);
 	return 0;
 }
 
-static const char pcb_acts_PrintFiles[] = "PrintFiles()";
-static const char pcb_acth_PrintFiles[] = "Print files currently loaded.";
+static const char rnd_acts_PrintFiles[] = "PrintFiles()";
+static const char rnd_acth_PrintFiles[] = "Print files currently loaded.";
 static void print_cat(rnd_file_loaded_t *cat)
 {
 	htsp_entry_t *e;
@@ -73,7 +73,7 @@ static void print_cat(rnd_file_loaded_t *cat)
 		printf(" %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
 	}
 }
-fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
 	printf("# Data files loaded\n");
@@ -83,9 +83,9 @@ fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_DumpPlugins[] = "DumpPlugins()";
-static const char pcb_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
-fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_DumpPlugins[] = "DumpPlugins()";
+static const char rnd_acth_DumpPlugins[] = "Print plugins loaded in a format digestable by scripts.";
+fgw_error_t rnd_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pup_plugin_t *p;
 	const pup_buildin_t **bu;
@@ -108,9 +108,9 @@ fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_DumpPluginDirs[] = "DumpPluginDirs()";
-static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
-fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acts_DumpPluginDirs[] = "DumpPluginDirs()";
+static const char rnd_acth_DumpPluginDirs[] = "Print plugins directories in a format digestable by scripts.";
+fgw_error_t rnd_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char **p;
 	for(p = rnd_pup_paths; *p != NULL; p++)
@@ -121,11 +121,11 @@ fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t rnd_main_action_list[] = {
-	{"PrintActions", pcb_act_PrintActions, pcb_acth_PrintActions, pcb_acts_PrintActions},
-	{"DumpActions", pcb_act_DumpActions, pcb_acth_DumpActions, pcb_acts_DumpActions},
-	{"PrintFiles", pcb_act_PrintFiles, pcb_acth_PrintFiles, pcb_acts_PrintFiles},
-	{"DumpPlugins", pcb_act_DumpPlugins, pcb_acth_DumpPlugins, pcb_acts_DumpPlugins},
-	{"DumpPluginDirs", pcb_act_DumpPluginDirs, pcb_acth_DumpPluginDirs, pcb_acts_DumpPluginDirs},
+	{"PrintActions", rnd_act_PrintActions, rnd_acth_PrintActions, rnd_acts_PrintActions},
+	{"DumpActions", rnd_act_DumpActions, rnd_acth_DumpActions, rnd_acts_DumpActions},
+	{"PrintFiles", rnd_act_PrintFiles, rnd_acth_PrintFiles, rnd_acts_PrintFiles},
+	{"DumpPlugins", rnd_act_DumpPlugins, rnd_acth_DumpPlugins, rnd_acts_DumpPlugins},
+	{"DumpPluginDirs", rnd_act_DumpPluginDirs, rnd_acth_DumpPluginDirs, rnd_acts_DumpPluginDirs},
 };
 
 void rnd_main_act_init2(void)

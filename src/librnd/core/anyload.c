@@ -406,10 +406,10 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 	anyload_conf_inhibit_dec();
 }
 
-static const char pcb_acts_AnyLoad[] = "AnyLoad([path])";
-static const char pcb_acth_AnyLoad[] = "Load \"anything\" from path (or offer a file selectio dialog if no path specified)\n";
+static const char rnd_acts_AnyLoad[] = "AnyLoad([path])";
+static const char rnd_acth_AnyLoad[] = "Load \"anything\" from path (or offer a file selectio dialog if no path specified)\n";
 /* DOC: anyload.html */
-fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *path = NULL;
 	char *path_free = NULL;
@@ -431,7 +431,7 @@ fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static rnd_action_t anyload_action_list[] = {
-	{"AnyLoad", pcb_act_AnyLoad, pcb_acth_AnyLoad, pcb_acts_AnyLoad},
+	{"AnyLoad", rnd_act_AnyLoad, rnd_acth_AnyLoad, rnd_acts_AnyLoad},
 };
 
 static void anyload_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

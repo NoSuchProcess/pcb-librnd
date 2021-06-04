@@ -126,10 +126,10 @@ static void script_timer_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int 
 		start_timer();
 }
 
-static const char pcb_acth_AddTimer[] = "Add a new timer";
-static const char pcb_acts_AddTimer[] = "AddTimer(action, period, [repeat], [userdata])";
+static const char rnd_acth_AddTimer[] = "Add a new timer";
+static const char rnd_acts_AddTimer[] = "AddTimer(action, period, [repeat], [userdata])";
 /* DOC: addtimer.html */
-static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *act, *user_data = NULL;
 	double period;

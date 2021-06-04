@@ -46,7 +46,7 @@
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called GUI function %s without having a GUI available.\n", func); abort()
 
-static const char pcb_acth_cli[] = "Intenal: CLI frontend action. Do not use directly.";
+static const char rnd_acth_cli[] = "Intenal: CLI frontend action. Do not use directly.";
 
 static rnd_hid_t nogui_hid;
 
@@ -247,11 +247,11 @@ static char *read_stdin_line(void)
 
 #undef MAX_LINE_LENGTH
 
-static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *answer;
 	const char *label, *default_str = "", *title = NULL;
-	const char *pcb_acts_cli_PromptFor = pcb_acth_cli;
+	const char *rnd_acts_cli_PromptFor = rnd_acth_cli;
 
 	RND_ACT_CONVARG(1, FGW_STR, cli_PromptFor, label = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, cli_PromptFor, default_str = argv[2].val.str);
@@ -280,9 +280,9 @@ static fgw_error_t pcb_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t rnd_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *pcb_acts_cli_MessageBox = pcb_acth_cli;
+	const char *rnd_acts_cli_MessageBox = rnd_acth_cli;
 	const char *icon, *title, *label, *txt, *answer;
 	char *end;
 	int n, ret;
@@ -536,8 +536,8 @@ rnd_hid_t *rnd_hid_nogui_get_hid(void)
 
 
 static rnd_action_t cli_dlg_action_list[] = {
-	{"cli_PromptFor", pcb_act_cli_PromptFor, pcb_acth_cli, NULL},
-	{"cli_MessageBox", pcb_act_cli_MessageBox, pcb_acth_cli, NULL}
+	{"cli_PromptFor", rnd_act_cli_PromptFor, rnd_acth_cli, NULL},
+	{"cli_MessageBox", rnd_act_cli_MessageBox, rnd_acth_cli, NULL}
 };
 
 
