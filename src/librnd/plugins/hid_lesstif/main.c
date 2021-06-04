@@ -514,7 +514,11 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 	if (panning)
 		Pan(2, e->x, e->y);
 	rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(e->x), Py(e->y), 1);
-	rnd_hidlib_adjust_attached_objects(ltf_hidlib);
+	if (rnd_app.adjust_attached_objects != NULL)
+		rnd_app.adjust_attached_objects(ltf_hidlib);
+	else
+		rnd_tool_adjust_attached(ltf_hidlib);
+
 	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
 	in_move_event = 0;
 }

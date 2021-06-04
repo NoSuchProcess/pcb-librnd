@@ -36,23 +36,6 @@ void conf_core_init()
 	rnd_conf_reg_field_(NULL, 1, RND_CFN_COORD, "should_never_match", "dummy", 0);
 }
 
-void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
-{
-}
-
-void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
-{
-	return NULL;
-}
-
-void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
-{
-}
-
-void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
-{
-}
-
 void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 }

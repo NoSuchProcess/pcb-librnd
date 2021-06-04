@@ -171,7 +171,7 @@ static int run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	static int getting_loc = 0;
 	loop_ctx_t lctx;
 	gulong button_handler, key_handler1, key_handler2;
-	void *chst;
+	void *chst = NULL;
 
 	/* Do not enter the loop recursively (ask for coord only once); also don't
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
@@ -182,8 +182,8 @@ static int run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	getting_loc = 1;
 	rnd_actionva(ctx->hidlib, "StatusSetText", message, NULL);
 
-	
-	chst = rnd_hidlib_crosshair_suspend(ctx->hidlib);
+	if (rnd_app.crosshair_suspend != NULL)
+		chst = rnd_app.crosshair_suspend(ctx->hidlib);
 	ghid_hand_cursor(ctx);
 
 	/*  Stop the top level GMainLoop from getting user input from keyboard
@@ -214,7 +214,8 @@ static int run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	pcb_gtk_interface_input_signals_connect(); /* return to normal */
 	pcb_gtk_interface_set_sensitive(TRUE);
 
-	rnd_hidlib_crosshair_restore(ctx->hidlib, chst);
+	if (rnd_app.crosshair_restore != NULL)
+		rnd_app.crosshair_restore(ctx->hidlib, chst);
 	ghid_restore_cursor(ctx);
 
 	rnd_actionva(ctx->hidlib, "StatusSetText", NULL);
@@ -299,7 +300,11 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 
 	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
-	rnd_hidlib_adjust_attached_objects(ctx->hidlib);
+	if (rnd_app.adjust_attached_objects != NULL)
+		rnd_app.adjust_attached_objects(ctx->hidlib);
+	else
+		rnd_tool_adjust_attached(ctx->hidlib);
+
 	rnd_gui->invalidate_all(rnd_gui);
 	g_idle_add(ghid_idle_cb, &ctx->topwin);
 

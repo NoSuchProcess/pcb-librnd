@@ -96,26 +96,13 @@ void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 
 }
 
-void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+static void my_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	/* do the grid fit/snap then: update the GUI */
 	rnd_hid_notify_crosshair_change(hl, rnd_false);
 	rnd_gui->set_crosshair(rnd_gui, abs_x, abs_y, 0);
 /*	rnd_tool_adjust_attached(hl);*/
 	rnd_hid_notify_crosshair_change(hl, rnd_true);
-}
-
-void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
-{
-}
-
-void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
-{
-	return NULL;
-}
-
-void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
-{
 }
 
 
@@ -198,6 +185,7 @@ int main(int argc, char *argv[])
 	rnd_app.conf_sysdir_path = FOOBARSHAREDIR;
 	rnd_app.conf_sys_path = FOOBARSHAREDIR "/foobar-conf.lht";
 
+	rnd_app.crosshair_move_to = my_crosshair_move_to;
 
 	rnd_fix_locale_and_env();
 

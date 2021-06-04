@@ -471,7 +471,11 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 	rnd_hid_cfg_action(ghidgui->hidlib, node);
 
 	/* GUI updates to reflect the result of the above action */
-	rnd_hidlib_adjust_attached_objects(ghidgui->hidlib);
+	if (rnd_app.adjust_attached_objects != NULL)
+		rnd_app.adjust_attached_objects(ghidgui->hidlib);
+	else
+		rnd_tool_adjust_attached(ghidgui->hidlib);
+
 	rnd_gui->invalidate_all(rnd_gui);
 }
 

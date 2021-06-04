@@ -214,7 +214,11 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	if (ghid_is_modifier_key_sym(ksym))
 		pcb_gtk_note_event_location(NULL);
 
-	rnd_hidlib_adjust_attached_objects(ghidgui->hidlib);
+	if (rnd_app.adjust_attached_objects != NULL)
+		rnd_app.adjust_attached_objects(ghidgui->hidlib);
+	else
+		rnd_tool_adjust_attached(ghidgui->hidlib);
+
 	rnd_gui->invalidate_all(rnd_gui);
 	g_idle_add(ghid_idle_cb, tw);
 	return FALSE;

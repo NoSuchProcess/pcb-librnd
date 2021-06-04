@@ -152,9 +152,10 @@ int lesstif_button_event(Widget w, XEvent * e)
 int lesstif_get_xy(const char *message)
 {
 	XmString ls = XmStringCreatePCB(message);
-	void *chst;
+	void *chst = NULL;
 
-	chst = rnd_hidlib_crosshair_suspend(ltf_hidlib);
+	if (rnd_app.crosshair_suspend != NULL)
+		chst = rnd_app.crosshair_suspend(ltf_hidlib);
 	XtManageChild(m_click);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, ls);
@@ -171,7 +172,8 @@ int lesstif_get_xy(const char *message)
 	need_xy = 0;
 	have_xy = 1;
 	XtUnmanageChild(m_click);
-	rnd_hidlib_crosshair_restore(ltf_hidlib, chst);
+	if (rnd_app.crosshair_restore != NULL)
+		rnd_app.crosshair_restore(ltf_hidlib, chst);
 	return pressed_esc ? -1 : 0;
 }
 

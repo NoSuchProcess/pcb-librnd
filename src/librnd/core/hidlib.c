@@ -39,7 +39,8 @@ void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_
 {
 	if (mouse_mot)
 		rnd_event(hidlib, RND_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
-	rnd_hidlib_crosshair_move_to(hidlib, abs_x, abs_y, mouse_mot);
+	if (rnd_app.crosshair_move_to != NULL)
+		rnd_app.crosshair_move_to(hidlib, abs_x, abs_y, mouse_mot);
 }
 
 

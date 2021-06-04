@@ -91,6 +91,21 @@ typedef struct rnd_app_s {
 	const char *conf_sysdir_path;
 	const char *conf_sys_path;
 
+	/*** callbacks ***/
+	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
+	void (*adjust_attached_objects)(rnd_hidlib_t *hl); 
+
+/* Optional: Suspend the crosshair: save all crosshair states in a newly
+   allocated and returned temp buffer, then reset the crosshair to initial
+   state; the returned buffer is used to restore the crosshair states later
+   on. Used in the get location loop. */
+	void *(*crosshair_suspend)(rnd_hidlib_t *hl);
+	void (*crosshair_restore)(rnd_hidlib_t *hl, void *susp_data);
+
+/* Optional: move the crosshair to an absolute x;y coord on the board and
+   update the GUI; if mouse_mot is non-zero, the request is a direct result
+   of a mouse motion event */
+	void (*crosshair_move_to)(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 
 	/* Spare: see doc/developer/spare.txt */
@@ -110,20 +125,8 @@ void rnd_log_print_uninit_errs(const char *title);
 
 /*** The following API is implemented by the host application ***/
 
-/* update crosshair-attached object because crosshair coords likely changed */
-void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl);
 
-/* Suspend the crosshair: save all crosshair states in a newly allocated
-   and returned temp buffer, then reset the crosshair to initial state;
-   the returned buffer is used to restore the crosshair states later on.
-   Used in the get location loop. */
-void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl);
-void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
 
-/* Move the crosshair to an absolute x;y coord on the board and update the GUI;
-   if mouse_mot is non-zero, the request is a direct result of a mouse motion
-   event */
-void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 
 /* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
