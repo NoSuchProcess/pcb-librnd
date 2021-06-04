@@ -316,10 +316,6 @@ struct rnd_hid_s {
 	void (*draw_pixmap)(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap);
 	void (*uninit_pixmap)(rnd_hid_t *hid, rnd_pixmap_t *pixmap);
 
-	/* OBSOLETE: used to be printer calibration */
-	void (*obsolete_calibrate)(rnd_hid_t *hid, double xval, double yval);
-
-
 	/*** GUI layout functions.  Not used or defined for print/export HIDs. ***/
 
 	/* Temporary */
@@ -435,12 +431,6 @@ struct rnd_hid_s {
 
 	/* Something to alert the user.  */
 	void (*beep)(rnd_hid_t *hid);
-
-	void (*placeholder1)(rnd_hid_t *, const char *, void *);
-
-	/* Do not use (old dynamic menu support) */
-	void (*obsolete_create_menu)(rnd_hid_t *, const char *, const rnd_menu_prop_t *);
-	int (*obsolete_remove_menu)(rnd_hid_t *, const char *);
 
 	/* Removes a menu recursively */
 	int (*remove_menu_node)(rnd_hid_t *hid, lht_node_t *nd);
