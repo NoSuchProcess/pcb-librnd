@@ -25,7 +25,7 @@
  */
 
 #include <assert.h>
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/fptr_cast.h>
 
 void *rnd_cast_f2d(rnd_fptr_t f)

@@ -30,7 +30,7 @@
 /* opendir, readdir */
 #include <librnd/core/compat_inc.h>
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 
 #include <stdio.h>

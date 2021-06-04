@@ -28,7 +28,7 @@
    Even the core will run some of these, through a dispatcher (e.g.
    action). */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hidlib.h>

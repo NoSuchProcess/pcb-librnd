@@ -27,7 +27,7 @@
  *
  */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 #include <stdlib.h>
 #include <string.h>

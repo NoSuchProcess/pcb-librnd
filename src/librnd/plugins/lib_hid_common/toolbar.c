@@ -27,7 +27,7 @@
 /* optional, generic toolbar docked DAD dialog that uses librnd tool infra
    (and in turn works from the menu file) */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 #include <genvector/vti0.h>
 #include <liblihata/tree.h>

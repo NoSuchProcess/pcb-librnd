@@ -219,7 +219,13 @@ do { \
 	res->val.nat_double = v; \
 } while(0)
 
-#define RND_ACT_FAIL(x) { rnd_message(RND_MSG_ERROR, "Syntax error.  Usage:\n%s\n", (pcb_acts_ ## x)); return FGW_ERR_ARG_CONV; }
+#ifndef RND_APP_PREFIX
+#	error Please define RND_APP_PREFIX(x) e.g. in config.h, to: pcb_ ## x
+#endif
+
+#define RND_ACTION_SYNTAX(x) RND_APP_PREFIX(acts_ ## x)
+
+#define RND_ACT_FAIL(x) { rnd_message(RND_MSG_ERROR, "Syntax error.  Usage:\n%s\n", RND_ACTION_SYNTAX(x)); return FGW_ERR_ARG_CONV; }
 
 /*** The default unit to use when a coord value doesn't have its own unit ***/
 extern char *fgw_str2coord_unit; /* saved is char * too */

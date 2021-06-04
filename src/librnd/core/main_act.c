@@ -36,7 +36,7 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>

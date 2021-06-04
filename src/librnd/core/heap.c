@@ -37,7 +37,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/heap.h>
 
 /* define this for more thorough self-checking of data structures */

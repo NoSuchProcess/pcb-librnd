@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/hid_cfg_action.h>
 #include <librnd/core/actions.h>
 #include <liblihata/tree.h>

@@ -36,6 +36,7 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
+#include <librnd/rnd_config.h>
 #include "anyload.h"
 #include "hidlib.h"
 #include "actions.h"

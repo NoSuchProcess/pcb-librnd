@@ -30,7 +30,7 @@
 /* misc functions used by several modules */
 
 #define RND_SAFE_FS
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 #include <librnd/core/compat_inc.h>
 

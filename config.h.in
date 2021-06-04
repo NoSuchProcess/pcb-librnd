@@ -55,5 +55,7 @@ print [@
 /* librnd transition */
 #define RND_DAD_CFG_NOLABEL 1
 
+#define RND_APP_PREFIX(x)  pcb_ ## x
+
 #endif
 @]

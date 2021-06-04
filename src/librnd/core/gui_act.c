@@ -32,7 +32,7 @@
  *  haceaton@aplcomm.jhuapl.edu
  *
  */
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/tool.h>
 #include <librnd/core/grid.h>

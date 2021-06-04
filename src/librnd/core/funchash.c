@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <genht/htpi.h>
 #include <genht/hash.h>
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/funchash.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>

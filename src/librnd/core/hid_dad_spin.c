@@ -26,7 +26,7 @@
 
 /* Compound DAD widget for numeric value entry, creating a spinbox */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 #include <ctype.h>
 

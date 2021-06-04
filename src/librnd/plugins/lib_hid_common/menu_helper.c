@@ -26,7 +26,7 @@
  *
  */
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>

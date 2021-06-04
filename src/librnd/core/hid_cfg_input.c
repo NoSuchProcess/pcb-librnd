@@ -34,7 +34,7 @@
 #include <genht/ht_utils.h>
 #include <genvector/gds_char.h>
 
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/hid_cfg_input.h>
 #include <librnd/core/hid_cfg_action.h>
 #include <librnd/core/hidlib_conf.h>

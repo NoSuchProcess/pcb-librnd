@@ -39,7 +39,7 @@
 #include <locale.h>
 #include <ctype.h>
 #include <math.h>
-#include <librnd/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/rnd_printf.h>
 #include "actions.h"
 
