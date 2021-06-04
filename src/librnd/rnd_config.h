@@ -6,7 +6,7 @@
 
 #define RND_APP_PREFIX(x)  pcb_ ## x
 
-#include <librnd/config.h>
+#include "config.h"
 
 #endif
 

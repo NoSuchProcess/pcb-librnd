@@ -40,7 +40,7 @@
 |  there in ghid_port_key_press_cb().
 */
 #define _POSIX_SOURCE
-#include "config.h"
+#include <librnd/rnd_config.h>
 #include "dlg_topwin.h"
 #include <genht/htsp.h>
 #include <genht/hash.h>

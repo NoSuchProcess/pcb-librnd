@@ -26,7 +26,7 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <stdio.h>
 #include <stdlib.h>

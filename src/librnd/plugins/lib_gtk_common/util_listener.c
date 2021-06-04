@@ -27,7 +27,7 @@
  */
 
 #define _POSIX_SOURCE
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <stdio.h>
 #include <glib.h>

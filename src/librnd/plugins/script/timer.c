@@ -27,7 +27,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <genvector/vtp0.h>
 

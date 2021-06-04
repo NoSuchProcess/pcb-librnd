@@ -26,7 +26,7 @@
 
 /* Configurable mouse gestures using libstroke */
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <stroke.h>
 

@@ -32,7 +32,7 @@
 
 /* Drawing area tooltips */
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
 #include "bu_dwg_tooltip.h"
 

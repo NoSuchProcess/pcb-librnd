@@ -30,7 +30,7 @@
 /* This file was originally written by Bill Wilson for the PCB Gtk port;
    refactored for pcb-rnd by Tibor 'Igor2' Palinkas */
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>

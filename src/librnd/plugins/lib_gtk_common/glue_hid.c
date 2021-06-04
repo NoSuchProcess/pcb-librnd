@@ -1,4 +1,4 @@
-#include "config.h"
+#include <librnd/rnd_config.h>
 #include "glue_hid.h"
 
 #include <locale.h>

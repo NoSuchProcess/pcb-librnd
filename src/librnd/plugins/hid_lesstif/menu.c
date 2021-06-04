@@ -1,6 +1,6 @@
 #include "xincludes.h"
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <stdio.h>
 #include <stdlib.h>

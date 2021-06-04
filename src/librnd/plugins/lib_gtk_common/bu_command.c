@@ -33,7 +33,7 @@
 /* provides an interface for getting user input for executing a command. */
 
 
-#include "config.h"
+#include <librnd/rnd_config.h>
 #include "bu_command.h"
 #include <librnd/core/hidlib_conf.h>
 
