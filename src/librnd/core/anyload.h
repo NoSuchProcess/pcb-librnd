@@ -33,6 +33,12 @@ struct rnd_anyload_s {
 	int (*load_subtree)(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root);
 	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd);
 	const char *cookie;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 };
 
 
