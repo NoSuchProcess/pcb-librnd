@@ -65,6 +65,13 @@ typedef struct {
 	int xor;               /* as set by set_draw_xor */
 	int faded;             /* as set by set_draw_faded */
 	rnd_hid_t *hid;        /* the HID that owns this gc */
+
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_core_gc_t;
 
 
@@ -121,6 +128,12 @@ typedef struct {
 	const char *name;
 	const char *mime;
 	const char **pat; /* NULL terminated array of file name patterns */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2;
+	double spare_d1, spare_d2;
 } rnd_hid_fsd_filter_t;
 
 extern const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[];
@@ -135,6 +148,10 @@ typedef struct rnd_menu_prop_s {
 	const rnd_color_t *foreground;
 	const rnd_color_t *background;
 	const char *cookie;     /* used for cookie based removal */
+
+	/* Spare: see doc/developer/spare.txt */
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 } rnd_menu_prop_t;
 
 typedef enum rnd_hid_clipfmt_e {
@@ -547,6 +564,12 @@ struct rnd_hid_s {
 	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
 	   value backing memory from this array */
 	rnd_hid_attr_val_t *argument_array;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4, spare_l5, spare_l6, spare_l7, spare_l8;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4, *spare_p5, *spare_p6;
+	double spare_d1, spare_d2, spare_d3, spare_d4, spare_d5, spare_d6;
 };
 
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
@@ -555,6 +578,12 @@ struct rnd_hid_expose_ctx_s {
 	rnd_box_t view;
 	rnd_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 };
 
 typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
