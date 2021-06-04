@@ -41,6 +41,12 @@ struct rnd_clrcache_s {
 	rnd_clrcache_free_t hidfree;
 
 	void *user_data; /* the caller can set this up after rnd_clrcache_init and use it in hidfree() */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 };
 
 RND_INLINE void rnd_clrcache_init(rnd_clrcache_t *cache, int hidsize, rnd_clrcache_free_t hidfree)
