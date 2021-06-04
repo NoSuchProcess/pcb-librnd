@@ -1,3 +1,28 @@
+RATIONALE
+~~~~~~~~~
+
+On breaking API change, the major version number is increased and old
+applications will not work with the new version of librnd. When a new minor
+version of librnd is released, it may contain new features and existing
+applications designed for older minor version of librnd must work without
+recompilation. In other words, a new minor version may introduce new
+features (new functions, new variables, new macros, new header files,
+new plugins) but must not change any existing API.
+
+The only area where it is non-trivial to achieve is state/context structs
+in the API. These structs are typically allocated by the caller, often on
+stack. If the size of the structure changes (increases) in a new minor version,
+an old application will still allocate for the old (smaller) size which
+will lead to invalid memory access when the lib tries to read or write the
+new fields.
+
+This document describes a method to overcome this problem by using spare
+struct fields.
+
+
+SPARE FIELDS
+~~~~~~~~~~~~
+
 To provide binary compatibility when adding new features, the following
 precaution/mechanism is used in many of the public API structs:
 
