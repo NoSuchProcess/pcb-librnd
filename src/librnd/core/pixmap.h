@@ -34,12 +34,19 @@
 typedef struct rnd_pixmap_import_s rnd_pixmap_import_t;
 
 struct rnd_pixmap_import_s {
+	/* configured by the caller at registration */
 	const char *name;
 	int (*load)(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn);
 
 	/* filled in by code */
 	rnd_pixmap_import_t *next;
 	const char *cookie;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 };
 
 struct rnd_pixmap_s {
@@ -64,6 +71,12 @@ struct rnd_pixmap_s {
 	unsigned transp_valid:1;   /* 1 if transparent pixel is available */
 	unsigned hash_valid:1;     /* 1 if the has value has been calculated */
 	unsigned hid_data_valid:1; /* 1 if hid_data is already generated and no data changed since - maintained by core, HIDs don't need to check */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 };
 
 void rnd_pixmap_reg_import(const rnd_pixmap_import_t *imp, const char *cookie);
