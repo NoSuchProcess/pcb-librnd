@@ -1,0 +1,33 @@
+To provide binary compatibility when adding new features, the following
+precaution/mechanism is used in many of the public API structs:
+
+1. The struct has a bunch of fields prefixed with spare_; these fields
+   are of different type and are not used for anything in the current version
+
+2. The user/caller, who allocates the structure, initializes all bytes of
+   the structure to zero, including these spare fields. For the spare
+   fields this is done implicitly, by zeroing the struct (by struct size),
+   not by listing the spare fields. Most typical ways to do this are:
+   - global variable (auto-initialized to 0)
+   - local variable initialized to {0}
+   - dynamically allocated memory via calloc()
+
+3. If a new, _optional_ field is required in the struct, one of the
+   spare field with matching type is renamed. The default, "called did not
+   know/care about this field" value is 0. The size of the structure or
+   the offset of any member do not change.
+
+4. The rename happens in-place, so the new field is under the "spare fields"
+   comment within the struct.
+
+5. Any code dealing with the new field _must_ be prepared for value 0 and
+   _must_ assume that may be due to an older app version that did not yet
+   know about the field or feature associated with the field.
+
+6. A TODO entry needs to be written about the struct->field under the group
+   of entries for the next major version, in doc/TODO.
+
+7. When breaking changes are introduced in the API, bumping the major version
+   of the lib, all new fields created from spares should be moved out from the
+   spare section and the spare field restored for reuse. (This does increase the
+   size of the struct.)
