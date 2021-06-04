@@ -1,5 +1,5 @@
-#ifndef PCB_DIALOGS_CONF_H
-#define PCB_DIALOGS_CONF_H
+#ifndef RND_DIALOGS_CONF_H
+#define RND_DIALOGS_CONF_H
 
 #include <librnd/core/conf.h>
 
