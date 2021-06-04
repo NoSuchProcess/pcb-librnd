@@ -33,6 +33,12 @@ typedef struct rnd_mark_s {
 	rnd_bool status;
 	rnd_coord_t X, Y;
 	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_mark_t;
 
 struct rnd_hidlib_s {
@@ -52,11 +58,12 @@ struct rnd_hidlib_s {
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */
 
-	/* spare - sacrifice these when increasing struct size without breaking API binary compatibility */
-	int ispare[8];
-	double dspare[8];
-	rnd_coord_t cspare[8];
-	void *pspare[8];
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
 void rnd_hidlib_event_uninit(void);
