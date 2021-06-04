@@ -26,7 +26,7 @@
 
 /* Return error from an action if there's no GUI, or set result to 0
    if there's GUI */
-#define PCB_GUI_NOGUI() \
+#define RND_GUI_NOGUI() \
 do { \
 	if ((rnd_gui == NULL) || (!rnd_gui->gui)) { \
 		RND_ACT_IRES(1); \
