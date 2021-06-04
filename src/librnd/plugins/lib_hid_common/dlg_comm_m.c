@@ -68,7 +68,7 @@ fgw_error_t rnd_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_END(dlg);
 
 	if (title == NULL) {
-		title = rnd_concat(rnd_app_package, " user input", NULL);
+		title = rnd_concat(rnd_app.package, " user input", NULL);
 		ft = 1;
 	}
 	RND_DAD_NEW("prompt_for", dlg, title, NULL, rnd_true, NULL);

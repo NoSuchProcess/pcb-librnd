@@ -126,8 +126,8 @@ static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	log_import();
 
 	if ((interactive) && (!rnd_conf.rc.quiet)) {
-		printf("Entering %s version %s batch mode.\n", rnd_app_package, rnd_app_version);
-		printf("See %s for project information\n", rnd_app_url);
+		printf("Entering %s version %s batch mode.\n", rnd_app.package, rnd_app.version);
+		printf("See %s for project information\n", rnd_app.url);
 	}
 
 	batch_stay = 1;

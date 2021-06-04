@@ -48,20 +48,18 @@ extern const pup_buildin_t pup_buildins[];
 
 
 const char *rnd_conf_internal = ""; /* should be generated from the conf */
-const char *rnd_hidlib_default_embedded_menu = "";
-const char *rnd_menu_file_paths[] = { "./", "~/.foobar/", NULL };
-const char *rnd_menu_name_fmt = "foobar-menu.lht";
+static const char *default_embedded_menu = "";
+static const char *menu_file_paths[] = { "./", "~/.foobar/", NULL };
+static const char *menu_name_fmt = "foobar-menu.lht";
 
 #define FOOBAR_VERSION "1.0.0"
 #define FOOBARSHAREDIR "/usr/share/foobar"
 #define CONF_USER_DIR "~/.foobar"
+
 const char *rnd_conf_userdir_path = CONF_USER_DIR;
 const char *rnd_conf_user_path = CONF_USER_DIR "/foobar-conf.lht";
 const char *rnd_conf_sysdir_path = FOOBARSHAREDIR;
 const char *rnd_conf_sys_path = FOOBARSHAREDIR "/foobar-conf.lht";
-const char *rnd_app_package = "foobar";
-const char *rnd_app_version = FOOBAR_VERSION;
-const char *rnd_app_url = "http://repo.hu/projects/foobar";
 
 /*** the data model ***/
 #include <librnd/core/hidlib.h>
@@ -190,6 +188,14 @@ int main(int argc, char *argv[])
 {
 	int n;
 	rnd_main_args_t ga;
+
+	rnd_app.package = "foobar";
+	rnd_app.version = FOOBAR_VERSION;
+	rnd_app.url = "http://repo.hu/projects/foobar";
+
+	rnd_app.default_embedded_menu = default_embedded_menu = "";
+	rnd_app.menu_file_paths = menu_file_paths;
+	rnd_app.menu_name_fmt = menu_name_fmt;
 
 	rnd_fix_locale_and_env();
 

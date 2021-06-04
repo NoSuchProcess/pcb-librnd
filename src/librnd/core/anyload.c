@@ -194,17 +194,17 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, const c
 	char *real_cwd = NULL;
 
 	if (root->type != LHT_HASH) {
-		rnd_message(RND_MSG_ERROR, "anyload: %s-anyload-v* root node must be a hash\n", rnd_app_package);
+		rnd_message(RND_MSG_ERROR, "anyload: %s-anyload-v* root node must be a hash\n", rnd_app.package);
 		return -1;
 	}
 
 	rsc = lht_dom_hash_get(root, "resources");
 	if (rsc == NULL) {
-		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v* without li:resources node - nothing loaded\n(this is probably not what you wanted)\n", rnd_app_package);
+		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v* without li:resources node - nothing loaded\n(this is probably not what you wanted)\n", rnd_app.package);
 		return -1;
 	}
 	if (rsc->type != LHT_LIST) {
-		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v*/resources must be a list\n", rnd_app_package);
+		rnd_message(RND_MSG_WARNING, "anyload: %s-anyload-v*/resources must be a list\n", rnd_app.package);
 		return -1;
 	}
 
@@ -266,8 +266,8 @@ int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, const char *c
 {
 	static int applen = -1;
 	if (applen < 0)
-		applen = strlen(rnd_app_package);
-	if ((strncmp(root->name, rnd_app_package, applen) == 0) && (strcmp(root->name + applen, "-anyload-v1") == 0))
+		applen = strlen(rnd_app.package);
+	if ((strncmp(root->name, rnd_app.package, applen) == 0) && (strcmp(root->name + applen, "-anyload-v1") == 0))
 		return rnd_anyload_parse_anyload_v1(hidlib, root, cwd);
 	return rnd_anyload_parse_subtree(hidlib, root);
 }
