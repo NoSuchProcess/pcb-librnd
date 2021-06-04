@@ -40,7 +40,7 @@ do { \
    implemented by the application so it can extend it with things like
    Zoom(Selected). */
 
-#define pcb_gui_acts_zoom \
+#define rnd_gui_acts_zoom \
 	"Zoom()\n" \
 	"Zoom([+|-|=]factor)\n" \
 	"Zoom(x1, y1, x2, y2)\n" \
@@ -50,7 +50,7 @@ do { \
 extern const char *rnd_acts_Zoom;
 extern const char rnd_acth_Zoom_default[];
 extern const char rnd_acts_Zoom_default[];
-fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
 
 /*** actions ***/

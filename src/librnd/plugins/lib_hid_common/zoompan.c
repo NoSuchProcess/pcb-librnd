@@ -36,8 +36,8 @@
 
 const char *rnd_acts_Zoom;
 const char rnd_acth_Zoom_default[] = "Change zoom level (relative, absolute, window, ...)\n";
-const char rnd_acts_Zoom_default[] = pcb_gui_acts_zoom;
-fgw_error_t pcb_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acts_Zoom_default[] = rnd_gui_acts_zoom;
+fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
 	const char *vp, *ovp;

@@ -91,7 +91,7 @@ rnd_action_t hid_common_action_list[] = {
 	{"gui_MayOverwriteFile", rnd_act_gui_MayOverwriteFile, rnd_acth_gui, NULL},
 	{"rnd_toolbar_init", rnd_act_rnd_toolbar_init, rnd_acth_rnd_toolbar_init, NULL},
 	{"rnd_toolbar_uninit", rnd_act_rnd_toolbar_uninit, rnd_acth_rnd_toolbar_uninit, NULL},
-	{"rnd_zoom", pcb_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default}
+	{"rnd_zoom", rnd_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default}
 };
 
 extern const char *rnd_acts_Zoom;
