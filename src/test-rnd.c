@@ -100,17 +100,6 @@ static void my_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_
 	rnd_hid_notify_crosshair_change(hl, rnd_true);
 }
 
-
-/*** draw ***/
-void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller)
-{
-}
-
-void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
-{
-}
-
-
 /*** gui support ***/
 static void gui_support_plugins(int load)
 {

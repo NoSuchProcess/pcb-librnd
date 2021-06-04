@@ -749,7 +749,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ghid_gl_invalidate_current_gc();
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	rnd_expose_main(&gtk2_gl_hid, &ctx, NULL);
+	rnd_app.expose_main(&gtk2_gl_hid, &ctx, NULL);
 	drawgl_flush();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

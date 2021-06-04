@@ -245,7 +245,7 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	save_fy = rnd_conf.editor.view.flip_y;
 	flip_apply(preview);
 
-	res = preview->expose(widget, ev, rnd_expose_preview, &preview->expose_data);
+	res = preview->expose(widget, ev, rnd_app.expose_preview, &preview->expose_data);
 
 	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, save_fx);
 	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, save_fy);

@@ -618,7 +618,7 @@ static double ltf_benchmark(rnd_hid_t *hid)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		rnd_expose_main(&lesstif_hid, &ctx, NULL);
+		rnd_app.expose_main(&lesstif_hid, &ctx, NULL);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -2104,7 +2104,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		rnd_expose_main(&lesstif_hid, &ctx, NULL);
+		rnd_app.expose_main(&lesstif_hid, &ctx, NULL);
 		lesstif_drawing_mode = RND_HID_COMP_POSITIVE;
 		draw_grid();
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */

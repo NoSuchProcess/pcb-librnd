@@ -115,6 +115,22 @@ typedef struct rnd_app_s {
 	/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
 	void (*draw_attached)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
+	/*** One of these two functions will be called whenever (parts of) the screen
+     needs redrawing (on screen, print or export, board or preview). The expose
+     function does the following:
+      - allocate any GCs needed
+      - set drawing mode
+      - cycle through the layers, calling set_layer for each layer to be
+        drawn, and only drawing objects (all or specified) of desired
+        layers. ***/
+
+	/* Mandatory: main expose: draw the design in the top window
+	   (in pcb-rnd: all layers with all flags (no .content is used) */
+	void (*expose_main)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
+
+	/* Mandatory: preview expose: generic, dialog based, used in preview
+	   widgets */
+	void (*expose_preview)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
@@ -122,6 +138,7 @@ typedef struct rnd_app_s {
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_app_t;
+
 extern rnd_app_t rnd_app;
 
 void rnd_hidlib_event_uninit(void);
@@ -138,21 +155,6 @@ void rnd_log_print_uninit_errs(const char *title);
 
 
 
-/*** One of these two functions will be called whenever (parts of) the screen
-     needs redrawing (on screen, print or export, board or preview). The expose
-     function does the following:
-      - allocate any GCs needed
-      - set drawing mode
-      - cycle through the layers, calling set_layer for each layer to be
-        drawn, and only drawing objects (all or specified) of desired
-        layers. ***/
-
-/* Main expose: draw the design in the top window
-   (in pcb-rnd: all layers with all flags (no .content is used) */
-void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
-
-/* Preview expose: generic, dialog based, used in preview widgets */
-void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
 
 

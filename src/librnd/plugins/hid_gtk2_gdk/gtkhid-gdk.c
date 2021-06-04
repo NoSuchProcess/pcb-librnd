@@ -1141,7 +1141,7 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 
 	ghid_gdk_draw_bg_image(hidlib);
 
-	rnd_expose_main(&gtk2_gdk_hid, &ctx, NULL);
+	rnd_app.expose_main(&gtk2_gdk_hid, &ctx, NULL);
 	ghid_gdk_draw_grid(hidlib);
 
 	/* In some cases we are called with the crosshair still off */
