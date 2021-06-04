@@ -53,6 +53,12 @@ typedef struct {
 	} type;
 	rnd_hid_attr_type_t wtype;
 	gdl_elem_t link;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_hid_dad_spin_t;
 
 #define RND_DAD_SPIN_INT(table) RND_DAD_SPIN_ANY(table, RND_DAD_SPIN_INT, RND_HATT_INTEGER, 0, 0)
