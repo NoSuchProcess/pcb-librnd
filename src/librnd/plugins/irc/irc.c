@@ -394,9 +394,9 @@ static int pcb_dlg_login_irc_login(void)
 }
 
 
-const char pcb_acts_irc[] = "irc()";
-const char pcb_acth_irc[] = "non-modal, single-instance, single-server, single-channel irc window for online support";
-fgw_error_t pcb_act_irc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+const char rnd_acts_irc[] = "irc()";
+const char rnd_acth_irc[] = "non-modal, single-instance, single-server, single-channel irc window for online support";
+fgw_error_t rnd_act_irc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	RND_ACT_IRES(pcb_dlg_login_irc_login());
 	return 0;
@@ -404,7 +404,7 @@ fgw_error_t pcb_act_irc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 rnd_action_t irc_action_list[] = {
-	{"irc", pcb_act_irc, pcb_acth_irc, pcb_acts_irc}
+	{"irc", rnd_act_irc, rnd_acth_irc, rnd_acts_irc}
 };
 
 static const char *irc_cookie = "irc plugin";
