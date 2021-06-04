@@ -103,6 +103,12 @@ struct rnd_hid_attribute_s {
 	/* geometry */
 	int geo_width; /* when RND_HATF_WIDTH_CHR is set, width of the widget in characters, on creation-time */
 	int geo_height;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
 };
 
 struct rnd_export_opt_s {
