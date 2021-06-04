@@ -92,6 +92,9 @@ typedef struct rnd_app_s {
 	const char *conf_sysdir_path;
 	const char *conf_sys_path;
 
+	/* Recommended: embedded/internal config data (lihata document) */
+	const char *conf_internal;
+
 	/*** callbacks ***/
 	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
 	void (*adjust_attached_objects)(rnd_hidlib_t *hl); 

@@ -47,7 +47,6 @@
 extern const pup_buildin_t pup_buildins[];
 
 
-const char *rnd_conf_internal = ""; /* should be generated from the conf */
 static const char *default_embedded_menu = "";
 static const char *menu_file_paths[] = { "./", "~/.foobar/", NULL };
 static const char *menu_name_fmt = "foobar-menu.lht";
