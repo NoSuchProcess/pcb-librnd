@@ -2096,7 +2096,8 @@ void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn)
 		lht_dom_uninit(rnd_conf_main_root[target]);
 
 	rnd_conf_main_root[target] = lht_dom_init();
-	lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
+	if (source_fn != NULL)
+		lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
 	rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name);
 	rnd_conf_main_root[target]->root->doc = rnd_conf_main_root[target];
 	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
