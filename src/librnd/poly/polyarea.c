@@ -3368,7 +3368,7 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 }																/* vect_inters2 */
 
 /*
- * pcb_pline_isect_line()
+ * rnd_pline_isect_line()
  * (C) 2017, 2018 Tibor 'Igor2' Palinkas
 */
 
@@ -3392,7 +3392,7 @@ static rnd_r_dir_t pline_isect_line_cb(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-rnd_bool pcb_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy)
+rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy)
 {
 	pline_isect_line_t ctx;
 	rnd_box_t lbx;
@@ -3415,7 +3415,7 @@ rnd_bool pcb_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 }
 
 /*
- * pcb_pline_isect_circle()
+ * rnd_pline_isect_circle()
  * (C) 2017 Tibor 'Igor2' Palinkas
 */
 
@@ -3453,7 +3453,7 @@ static rnd_r_dir_t pline_isect_circ_cb(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
+rnd_bool rnd_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	pline_isect_circ_t ctx;
 	rnd_box_t cbx;
@@ -3470,7 +3470,7 @@ rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
 
 
 /*
- * pcb_pline_embraces_circle()
+ * rnd_pline_embraces_circle()
  * If the circle does not intersect the polygon (the caller needs to check this)
  * return whether the circle is fully within the polygon or not.
  * Shoots a ray to the right from center+radius, then one to the left from
@@ -3516,7 +3516,7 @@ static rnd_r_dir_t pline_embraces_circ_cb(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
+rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	rnd_box_t bx;
 	pline_embrace_t e;
@@ -3548,10 +3548,10 @@ rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 }
 
 /*
- * pcb_pline_isect_circle()
+ * rnd_pline_isect_circle()
  * (C) 2017 Tibor 'Igor2' Palinkas
 */
-rnd_bool pcb_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
+rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	rnd_box_t cbx, pbx;
 	cbx.X1 = cx - r; cbx.Y1 = cy - r;
@@ -3566,10 +3566,10 @@ rnd_bool pcb_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	if (pl->tree == NULL)
 		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
 
-	if (pcb_pline_isect_circ(pl, cx, cy, r))
+	if (rnd_pline_isect_circ(pl, cx, cy, r))
 		return rnd_true;
 
-	return pcb_pline_embraces_circ(pl, cx, cy, r);
+	return rnd_pline_embraces_circ(pl, cx, cy, r);
 }
 
 

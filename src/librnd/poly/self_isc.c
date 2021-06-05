@@ -48,7 +48,7 @@ typedef struct {
 	vtp0_t node;
 } vhub_t;
 
-static rnd_vnode_t *pcb_pline_split(rnd_vnode_t *v, rnd_vector_t at)
+static rnd_vnode_t *rnd_pline_split(rnd_vnode_t *v, rnd_vector_t at)
 {
 	rnd_vnode_t *v2 = rnd_poly_node_add_single(v, at);
 
@@ -66,7 +66,7 @@ static rnd_vnode_t *pcb_pline_split(rnd_vnode_t *v, rnd_vector_t at)
 	return v2;
 }
 
-static rnd_vnode_t *pcb_pline_end_at(rnd_vnode_t *v, rnd_vector_t at)
+static rnd_vnode_t *rnd_pline_end_at(rnd_vnode_t *v, rnd_vector_t at)
 {
 	if (rnd_vect_dist2(at, v->point) < RND_POLY_ENDP_EPSILON)
 		return v;
@@ -136,7 +136,7 @@ static void remove_from_hub(vhub_t *h, rnd_vnode_t *v)
 }
 
 /* returns 1 if a new intersection is mapped */
-static int pcb_pline_add_isectp(vtp0_t *hubs, rnd_vnode_t *v)
+static int rnd_pline_add_isectp(vtp0_t *hubs, rnd_vnode_t *v)
 {
 	vhub_t *h;
 
@@ -251,13 +251,13 @@ void rnd_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
 			rnd_vector_t i, tmp;
 			if (rnd_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0) {
-				iva = pcb_pline_end_at(va, i);
+				iva = rnd_pline_end_at(va, i);
 				if (iva == NULL)
-					iva = pcb_pline_split(va, i);
-				ivb = pcb_pline_end_at(vb, i);
+					iva = rnd_pline_split(va, i);
+				ivb = rnd_pline_end_at(vb, i);
 				if (ivb == NULL)
-					ivb = pcb_pline_split(vb, i);
-				if (pcb_pline_add_isectp(&hubs, iva) || pcb_pline_add_isectp(&hubs, ivb))
+					ivb = rnd_pline_split(vb, i);
+				if (rnd_pline_add_isectp(&hubs, iva) || rnd_pline_add_isectp(&hubs, ivb))
 					TRACE("Intersect at %mm;%mm\n", i[0], i[1]);
 			}
 		}
