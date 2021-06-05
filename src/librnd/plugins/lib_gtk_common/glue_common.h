@@ -11,7 +11,7 @@ void ghid_draw_area_update(pcb_gtk_port_t *out, GdkRectangle *rect);
 
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */
-#define PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation) \
+#define RND_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation) \
 do { \
 	rnd_coord_t nx1, ny1, nx2, ny2; \
 	nx1 = Px(0); nx2 = Px(allocation.width); \

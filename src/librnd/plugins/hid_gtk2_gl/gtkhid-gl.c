@@ -827,7 +827,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	ghidgui->port.view.x0 = (vw - ghidgui->port.view.width) / 2 + ctx->view.X1;
 	ghidgui->port.view.y0 = (vh - ghidgui->port.view.height) / 2 + ctx->view.Y1;
 
-	PCB_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
+	RND_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
 
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
