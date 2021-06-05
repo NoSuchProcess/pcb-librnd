@@ -1190,7 +1190,7 @@ static rnd_r_dir_t find_inside(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** src)
+void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** src)
 {
 	rnd_polyarea_t *curc;
 	rnd_pline_t *curh, *container;
@@ -1325,7 +1325,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 	}
 	rnd_r_destroy_tree(&tree);
 	free(all_pa_info);
-}																/* pcb_poly_insert_holes */
+}																/* rnd_poly_insert_holes */
 
 
 /****************************************************************/
@@ -2137,7 +2137,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 			rnd_poly_contour_del(&p);
 		}
 
-		pcb_poly_insert_holes(&e, *res, &holes);
+		rnd_poly_insert_holes(&e, *res, &holes);
 	}
 	/* delete holes if any left */
 	while ((p = holes) != NULL) {
@@ -2198,7 +2198,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 		M_rnd_polyarea_t_label(b, a, rnd_false);
 
 		M_rnd_polyarea_t_Collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
-		pcb_poly_insert_holes(&e, *aandb, &holes);
+		rnd_poly_insert_holes(&e, *aandb, &holes);
 		assert(rnd_poly_valid(*aandb));
 		/* delete holes if any left */
 		while ((p = holes) != NULL) {
@@ -2209,7 +2209,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 		clear_marks(a);
 		clear_marks(b);
 		M_rnd_polyarea_t_Collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
-		pcb_poly_insert_holes(&e, *aminusb, &holes);
+		rnd_poly_insert_holes(&e, *aminusb, &holes);
 		rnd_polyarea_free(&a);
 		rnd_polyarea_free(&b);
 		assert(rnd_poly_valid(*aminusb));
@@ -2429,7 +2429,7 @@ void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t * node)
 	}
 }
 
-RND_INLINE void pcb_poly_vertex_include_force_(rnd_vnode_t *after, rnd_vnode_t *node)
+RND_INLINE void rnd_poly_vertex_include_force_(rnd_vnode_t *after, rnd_vnode_t *node)
 {
 	assert(after != NULL);
 	assert(node != NULL);
@@ -2441,14 +2441,14 @@ RND_INLINE void pcb_poly_vertex_include_force_(rnd_vnode_t *after, rnd_vnode_t *
 
 void rnd_poly_vertex_include_force(rnd_vnode_t *after, rnd_vnode_t *node)
 {
-	pcb_poly_vertex_include_force_(after, node);
+	rnd_poly_vertex_include_force_(after, node);
 }
 
 void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node)
 {
 	double a, b;
 
-	pcb_poly_vertex_include_force_(after, node);
+	rnd_poly_vertex_include_force_(after, node);
 
 	/* remove points on same line */
 	if (node->prev->prev == node)
@@ -3053,7 +3053,7 @@ void rnd_polyarea_bbox(rnd_polyarea_t * p, rnd_box_t * b)
 }
 
 #ifndef NDEBUG
-static void pcb_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t *chk)
+static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t *chk)
 {
 	rnd_vnode_t *v, *n;
 	rnd_coord_t minx = RND_COORD_MAX, miny = RND_COORD_MAX, maxx = -RND_COORD_MAX, maxy = -RND_COORD_MAX;
@@ -3125,7 +3125,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 	if (p->contours->Flags.orient == RND_PLF_INV) {
 #ifndef NDEBUG
 		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed orient\n");
-		pcb_poly_valid_report(p->contours, p->contours->head, NULL);
+		rnd_poly_valid_report(p->contours, p->contours->head, NULL);
 #endif
 		return rnd_false;
 	}
@@ -3133,7 +3133,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 	if (rnd_polyarea_contour_check_(p->contours, &chk)) {
 #ifndef NDEBUG
 		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed contour check\n");
-		pcb_poly_valid_report(p->contours, p->contours->head, &chk);
+		rnd_poly_valid_report(p->contours, p->contours->head, &chk);
 #endif
 		return rnd_false;
 	}
@@ -3142,21 +3142,21 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 		if (c->Flags.orient == RND_PLF_DIR) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner: rnd_pline_t orient = %d\n", c->Flags.orient);
-			pcb_poly_valid_report(c, c->head, NULL);
+			rnd_poly_valid_report(c, c->head, NULL);
 #endif
 			return rnd_false;
 		}
 		if (rnd_polyarea_contour_check_(c, &chk)) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner: failed contour check\n");
-			pcb_poly_valid_report(c, c->head, &chk);
+			rnd_poly_valid_report(c, c->head, &chk);
 #endif
 			return rnd_false;
 		}
 		if (!rnd_poly_contour_in_contour(p->contours, c)) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner: overlap with outer\n");
-			pcb_poly_valid_report(c, c->head, NULL);
+			rnd_poly_valid_report(c, c->head, NULL);
 #endif
 			return rnd_false;
 		}

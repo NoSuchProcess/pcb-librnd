@@ -197,7 +197,7 @@ rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 	return rnd_poly_from_contour(contour);
 }
 
-static void pcb_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range, int add_last)
+static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range, int add_last)
 {
 	double oe1, oe2, e1, e2, t1;
 	int i, orange = range;
@@ -242,13 +242,13 @@ static void pcb_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y,
  */
 void rnd_poly_frac_circle(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range)
 {
-	pcb_poly_frac_circle_(c, X, Y, v, range, 0);
+	rnd_poly_frac_circle_(c, X, Y, v, range, 0);
 }
 
 /* same but adds the last vertex */
 void rnd_poly_frac_circle_end(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range)
 {
-	pcb_poly_frac_circle_(c, X, Y, v, range, 1);
+	rnd_poly_frac_circle_(c, X, Y, v, range, 1);
 }
 
 
