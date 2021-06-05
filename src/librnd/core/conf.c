@@ -50,7 +50,7 @@
 #include <librnd/core/safe_fs_dir.h>
 
 /* conf list node's name */
-const char *pcb_conf_list_name = "pcb-rnd-conf-v1";
+const char *rnd_conf_list_name = "pcb-rnd-conf-v1";
 static const char *flcat = "conf";
 
 static const char conf_cookie_al[] = "core/conf/anyload";
@@ -65,17 +65,17 @@ int rnd_conf_in_production = 0;
 
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
-lht_doc_t *pcb_conf_main_root[RND_CFR_max_alloc];
+lht_doc_t *rnd_conf_main_root[RND_CFR_max_alloc];
 long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc]; /* number of times the root has been replaced */
-int pcb_conf_main_root_lock[RND_CFR_max_alloc];
-int pcb_conf_lht_dirty[RND_CFR_max_alloc];
+int rnd_conf_main_root_lock[RND_CFR_max_alloc];
+int rnd_conf_lht_dirty[RND_CFR_max_alloc];
 
 /* Plugin config: only plugin configuration is accepted; never edited, only
    merged in. Merge takes two steps: first all files per role are merged into
-   a single pcb_conf_plug_root[R] (lihata level merge), then pcb_conf_plug_root[R]
+   a single rnd_conf_plug_root[R] (lihata level merge), then rnd_conf_plug_root[R]
    is merged in using the normal conf merge mechanism. Plug roots are
    merged before main roots so main root overwrite are stronger. */
-lht_doc_t *pcb_conf_plug_root[RND_CFR_max_alloc];
+lht_doc_t *rnd_conf_plug_root[RND_CFR_max_alloc];
 
 
 htsp_t *rnd_conf_fields = NULL;
@@ -97,14 +97,14 @@ static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 		return NULL;
 
 	/* if it's a list with a matching name, we found it */
-	if ((cwd->type == LHT_LIST) && (strcmp(cwd->name, pcb_conf_list_name) == 0))
+	if ((cwd->type == LHT_LIST) && (strcmp(cwd->name, rnd_conf_list_name) == 0))
 		return cwd;
 
 	/* else it may be the parent-hash of the list */
 	if (cwd->type != LHT_HASH)
 		return NULL;
 
-	return lht_dom_hash_get(cwd, pcb_conf_list_name);
+	return lht_dom_hash_get(cwd, rnd_conf_list_name);
 }
 
 int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
@@ -114,16 +114,16 @@ int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
 	if ((root->type != LHT_LIST) || (strcmp(root->name, "pcb-rnd-conf-v1") != 0))
 		return -1;
 
-	if (pcb_conf_main_root[role] != NULL) {
-		lht_dom_uninit(pcb_conf_main_root[role]);
-		pcb_conf_main_root[role] = NULL;
+	if (rnd_conf_main_root[role] != NULL) {
+		lht_dom_uninit(rnd_conf_main_root[role]);
+		rnd_conf_main_root[role] = NULL;
 	}
 
 	d = lht_dom_init();
 	d->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 	d->root->doc = d;
 	lht_tree_merge(d->root, root);
-	pcb_conf_main_root[role] = d;
+	rnd_conf_main_root[role] = d;
 	rnd_conf_main_root_replace_cnt[role]++;
 	return 0;
 }
@@ -167,11 +167,11 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 	lht_doc_t *d;
 	const char *ifn, *role_name = rnd_conf_role_name(role);
 
-	if (pcb_conf_main_root_lock[role])
+	if (rnd_conf_main_root_lock[role])
 		return -1;
-	if (pcb_conf_main_root[role] != NULL) {
-		lht_dom_uninit(pcb_conf_main_root[role]);
-		pcb_conf_main_root[role] = NULL;
+	if (rnd_conf_main_root[role] != NULL) {
+		lht_dom_uninit(rnd_conf_main_root[role]);
+		rnd_conf_main_root[role] = NULL;
 		if (role_name != NULL)
 			rnd_file_loaded_del_at(flcat, role_name);
 	}
@@ -205,14 +205,14 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		prjroot->doc = d;
 		confroot->doc = d;
 		d->root = prjroot;
-		pcb_conf_main_root[role] = d;
+		rnd_conf_main_root[role] = d;
 		if (role_name != NULL)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 		return 0;
 	}
 
 	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
-		pcb_conf_main_root[role] = d;
+		rnd_conf_main_root[role] = d;
 		if (role_name != NULL)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "conf");
 		return 0;
@@ -226,14 +226,14 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 
 		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
-			pcb_conf_main_root[role] = d;
+			rnd_conf_main_root[role] = d;
 			return 0;
 		}
 
 		/* project file with no config root */
 		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 		lht_dom_hash_put(d->root, confroot);
-		pcb_conf_main_root[role] = d;
+		rnd_conf_main_root[role] = d;
 		return 0;
 	}
 
@@ -249,12 +249,12 @@ static int conf_merge_plug(lht_doc_t *d, rnd_conf_role_t role, const char *path)
 {
 	lht_err_t err;
 
-	if (pcb_conf_plug_root[role] == NULL) {
-		pcb_conf_plug_root[role] = lht_dom_init();
-		pcb_conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
-		pcb_conf_plug_root[role]->root->doc = pcb_conf_plug_root[role];
+	if (rnd_conf_plug_root[role] == NULL) {
+		rnd_conf_plug_root[role] = lht_dom_init();
+		rnd_conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		rnd_conf_plug_root[role]->root->doc = rnd_conf_plug_root[role];
 	}
-	err = lht_tree_merge(pcb_conf_plug_root[role]->root, d->root);
+	err = lht_tree_merge(rnd_conf_plug_root[role]->root, d->root);
 	lht_dom_uninit(d);
 	if (err != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to lihata-merge plugin config %s: %s\n", path, lht_err_str(err));
@@ -271,9 +271,9 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 	DIR *d;
 	struct dirent *e;
 
-	if (pcb_conf_plug_root[role] != NULL) {
-		lht_dom_uninit(pcb_conf_plug_root[role]);
-		pcb_conf_plug_root[role] = NULL;
+	if (rnd_conf_plug_root[role] != NULL) {
+		lht_dom_uninit(rnd_conf_plug_root[role]);
+		rnd_conf_plug_root[role] = NULL;
 	}
 
 	if (!conf_files_inited) return 0;
@@ -318,9 +318,9 @@ static int conf_load_plug_interns(rnd_conf_role_t role)
 	int cnt = 0;
 	htsi_entry_t *e;
 
-	if (pcb_conf_plug_root[role] != NULL) {
-		lht_dom_uninit(pcb_conf_plug_root[role]);
-		pcb_conf_plug_root[role] = NULL;
+	if (rnd_conf_plug_root[role] != NULL) {
+		lht_dom_uninit(rnd_conf_plug_root[role]);
+		rnd_conf_plug_root[role] = NULL;
 	}
 
 	if (!conf_files_inited) return 0;
@@ -411,7 +411,7 @@ const char *rnd_conf_role_name(rnd_conf_role_t r)
 }
 
 
-void pcb_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, long *gprio)
+void rnd_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, long *gprio)
 {
 	long len = strlen(root->name), p = -1;
 	char tmp[128];
@@ -455,7 +455,7 @@ int rnd_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long 
 {
 	for(;;node = node->parent) {
 		if (node->parent == node->doc->root) {
-			pcb_conf_extract_poliprio(node, gpolicy, gprio);
+			rnd_conf_extract_poliprio(node, gpolicy, gprio);
 			return 0;
 		}
 		if (node->parent == NULL)
@@ -595,7 +595,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 	return 0;
 }
 
-int pcb_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio, rnd_conf_policy_t pol)
+int rnd_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio, rnd_conf_policy_t pol)
 {
 	if ((pol == RND_POL_DISABLE) || (dest->prop[0].prio > prio))
 		return 0;
@@ -638,7 +638,7 @@ static void conf_insert_arr(rnd_conf_native_t *dest, int offs)
 	abort(); /* unhandled type */
 }
 
-int pcb_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
+int rnd_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
 {
 	lht_node_t *s;
 	int res, idx, didx, maxpr;
@@ -696,7 +696,7 @@ int pcb_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int
 	return res;
 }
 
-int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
+int rnd_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
 {
 	lht_node_t *s, *prev;
 	int res = 0;
@@ -737,7 +737,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) || (s->user_data == NULL)) {
 						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = rnd_cast_f2d((rnd_fptr_t)pcb_conf_merge_patch_list);
+						s->user_data = rnd_cast_f2d((rnd_fptr_t)rnd_conf_merge_patch_list);
 					}
 				}
 				else {
@@ -776,7 +776,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 					dest->used |= 1;
 					if ((dest->type == RND_CFN_HLIST) && (s->user_data == NULL)) {
 						rnd_conf_hid_global_cb_ptr(dest, i, new_hlist_item_post);
-						s->user_data = rnd_cast_f2d((rnd_fptr_t)pcb_conf_merge_patch_list);
+						s->user_data = rnd_cast_f2d((rnd_fptr_t)rnd_conf_merge_patch_list);
 					}
 				}
 				else {
@@ -789,7 +789,7 @@ int pcb_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 	return res;
 }
 
-int pcb_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
+int rnd_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
 
 typedef struct conf_ignore_s {
 	const char *name;
@@ -858,7 +858,7 @@ static int conf_board_ignore(const char *path, lht_node_t *n)
 }
 
 
-int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy)
+int rnd_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy)
 {
 	rnd_conf_native_t *target = rnd_conf_get_field(path);
 	int res = 0;
@@ -873,21 +873,21 @@ int pcb_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t r
 			if (target == NULL)
 				conf_warn_unknown_paths(path, n);
 			else
-				pcb_conf_merge_patch_text(target, n, default_prio, default_policy);
+				rnd_conf_merge_patch_text(target, n, default_prio, default_policy);
 			break;
 		case LHT_HASH:
 			if (target == NULL) /* no leaf: another level of structs */
-				res |= pcb_conf_merge_patch_recurse(n, role, default_prio, default_policy, path);
+				res |= rnd_conf_merge_patch_recurse(n, role, default_prio, default_policy, path);
 			else /* leaf: pretend it's text so it gets parsed */
-				pcb_conf_merge_patch_text(target, n, default_prio, default_policy);
+				rnd_conf_merge_patch_text(target, n, default_prio, default_policy);
 			break;
 		case LHT_LIST:
 			if (target == NULL)
 				conf_warn_unknown_paths(path, n);
 			else if ((target->type == RND_CFN_LIST) || (target->type == RND_CFN_HLIST))
-				res |= pcb_conf_merge_patch_list(target, n, default_prio, default_policy);
+				res |= rnd_conf_merge_patch_list(target, n, default_prio, default_policy);
 			else if (target->array_size > 1)
-				res |= pcb_conf_merge_patch_array(target, n, default_prio, default_policy);
+				res |= rnd_conf_merge_patch_array(target, n, default_prio, default_policy);
 			else
 				rnd_hid_cfg_error(n, "Attempt to initialize a scalar with a list - this node should be a text node\n");
 			break;
@@ -904,7 +904,7 @@ TODO("TODO")
 
 
 /* merge main subtree of a patch */
-int pcb_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix)
+int rnd_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix)
 {
 	lht_dom_iterator_t it;
 	lht_node_t *n;
@@ -930,12 +930,12 @@ int pcb_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int def
 		memcpy(pathe, n->name, nl);
 		namee = pathe+nl;
 		*namee = '\0';
-		res |= pcb_conf_merge_patch_item(path, n, role, default_prio, default_policy);
+		res |= rnd_conf_merge_patch_item(path, n, role, default_prio, default_policy);
 	}
 	return res;
 }
 
-int pcb_conf_merge_patch(lht_node_t *root, rnd_conf_role_t role, long gprio)
+int rnd_conf_merge_patch(lht_node_t *root, rnd_conf_role_t role, long gprio)
 {
 	rnd_conf_policy_t gpolicy;
 	lht_node_t *n;
@@ -946,12 +946,12 @@ int pcb_conf_merge_patch(lht_node_t *root, rnd_conf_role_t role, long gprio)
 		return -1;
 	}
 
-	pcb_conf_extract_poliprio(root, &gpolicy, &gprio);
+	rnd_conf_extract_poliprio(root, &gpolicy, &gprio);
 
 	/* iterate over all hashes and insert them recursively */
 	for(n = lht_dom_first(&it, root); n != NULL; n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			pcb_conf_merge_patch_recurse(n, role, gprio, gpolicy, n->name);
+			rnd_conf_merge_patch_recurse(n, role, gprio, gpolicy, n->name);
 
 	return 0;
 }
@@ -986,7 +986,7 @@ static void add_subtree(rnd_conf_role_t role, lht_node_t *subtree_parent_root, l
 	m->prio = rnd_conf_default_prio[role];
 	m->policy = RND_POL_invalid;
 
-	pcb_conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
+	rnd_conf_extract_poliprio(subtree_parent_root, &m->policy, &m->prio);
 	m->subtree = subtree_root;
 }
 
@@ -1019,13 +1019,13 @@ int rnd_conf_merge_all(const char *path)
 
 	for(n = 0; n < RND_CFR_max_real; n++) {
 		lht_node_t *cr;
-		if (pcb_conf_main_root[n] != NULL) {
-			cr = conf_lht_get_confroot(pcb_conf_main_root[n]->root);
+		if (rnd_conf_main_root[n] != NULL) {
+			cr = conf_lht_get_confroot(rnd_conf_main_root[n]->root);
 			if (cr != NULL)
 				conf_merge_all_top(n, path, cr);
 		}
-		if (pcb_conf_plug_root[n] != NULL) {
-			cr = conf_lht_get_confroot(pcb_conf_plug_root[n]->root);
+		if (rnd_conf_plug_root[n] != NULL) {
+			cr = conf_lht_get_confroot(rnd_conf_plug_root[n]->root);
 			if (cr != NULL)
 				conf_merge_all_top(n, path, cr);
 		}
@@ -1034,9 +1034,9 @@ int rnd_conf_merge_all(const char *path)
 	qsort(merge_subtree.array, vmst_len(&merge_subtree), sizeof(merge_subtree_t), mst_prio_cmp);
 	for(n = 0; n < vmst_len(&merge_subtree); n++) {
 		if (path != NULL)
-			ret |= pcb_conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
+			ret |= rnd_conf_merge_patch_item(path, merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio, merge_subtree.array[n].policy);
 		else
-			ret |= pcb_conf_merge_patch(merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio);
+			ret |= rnd_conf_merge_patch(merge_subtree.array[n].subtree, merge_subtree.array[n].role, merge_subtree.array[n].prio);
 	}
 	return ret;
 }
@@ -1174,9 +1174,9 @@ lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create)
 	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
 	assert(target < RND_CFR_max_alloc);
-	if (pcb_conf_main_root[target] == NULL)
+	if (rnd_conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
+	return conf_lht_get_first_(rnd_conf_main_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
 }
 
 lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
@@ -1184,20 +1184,20 @@ lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy
 	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
 	assert(target < RND_CFR_max_alloc);
-	if (pcb_conf_main_root[target] == NULL)
+	if (rnd_conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create, pol);
+	return conf_lht_get_first_(rnd_conf_main_root[target]->root, pol, create, pol);
 }
 
 
-lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
+lht_node_t *rnd_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 {
 	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
 	assert(target < RND_CFR_max_alloc);
-	if (pcb_conf_plug_root[target] == NULL)
+	if (rnd_conf_plug_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
+	return conf_lht_get_first_(rnd_conf_plug_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
 }
 
 lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
@@ -1205,9 +1205,9 @@ lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t
 	assert(target != RND_CFR_invalid);
 	assert(target >= 0);
 	assert(target < RND_CFR_max_alloc);
-	if (pcb_conf_main_root[target] == NULL)
+	if (rnd_conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
+	return conf_lht_get_first_(rnd_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
 }
 
 static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
@@ -1224,8 +1224,8 @@ static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_pat
 		r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	}
 
-	if ((r == NULL) && (allow_plug) && (pcb_conf_plug_root[target] != NULL)) {
-		for(n = pcb_conf_plug_root[target]->root->data.list.first; n != NULL; n = n->next) {
+	if ((r == NULL) && (allow_plug) && (rnd_conf_plug_root[target] != NULL)) {
+		for(n = rnd_conf_plug_root[target]->root->data.list.first; n != NULL; n = n->next) {
 			r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 			if (r != NULL)
 				return r;
@@ -1239,10 +1239,10 @@ lht_node_t *rnd_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *pat
 {
 	lht_node_t *r;
 	char *pc, *end;
-	if (pcb_conf_main_root[target] == NULL) {
+	if (rnd_conf_main_root[target] == NULL) {
 		if (!create)
 			return NULL;
-		rnd_conf_reset(target, "<pcb_conf_lht_get_at>");
+		rnd_conf_reset(target, "<rnd_conf_lht_get_at>");
 	}
 	end = strchr(path, '[');
 	if (end == NULL) {
@@ -1286,7 +1286,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	/* create the user config (in-memory-lht) if it does not exist on disk;
 	   this is needed so if the user makes config changes from the GUI things
 	   get saved. */
-	if (pcb_conf_main_root[RND_CFR_USER] == NULL)
+	if (rnd_conf_main_root[RND_CFR_USER] == NULL)
 		rnd_conf_reset(RND_CFR_USER, rnd_app.conf_user_path);
 
 	rnd_conf_in_production = 1;
@@ -1314,7 +1314,7 @@ void rnd_conf_load_project(const char *project_fn, const char *pcb_fn)
 		if (rnd_conf_load_as(RND_CFR_PROJECT, pc, 0) != 0)
 			pc = NULL;
 	if (pc == NULL)
-		rnd_conf_reset(RND_CFR_PROJECT, "<pcb_conf_load_project>");
+		rnd_conf_reset(RND_CFR_PROJECT, "<rnd_conf_load_project>");
 	rnd_conf_update(NULL, -1);
 }
 
@@ -1347,7 +1347,7 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	return node;
 }
 
-int pcb_conf_grow_list_(rnd_conf_native_t *node, int new_size)
+int rnd_conf_grow_list_(rnd_conf_native_t *node, int new_size)
 {
 	void *v;
 	int old_size = node->array_size;
@@ -1367,7 +1367,7 @@ int pcb_conf_grow_list_(rnd_conf_native_t *node, int new_size)
 	return 0;
 }
 
-void pcb_conf_free_native(rnd_conf_native_t *node)
+void rnd_conf_free_native(rnd_conf_native_t *node)
 {
 	if ((node->type == RND_CFN_LIST) || (node->type == RND_CFN_HLIST)) {
 		while(rnd_conflist_first(node->val.list) != NULL) {
@@ -1401,7 +1401,7 @@ void rnd_conf_unreg_fields(const char *prefix)
 
 	rnd_conf_fields_foreach(e) {
 		if (strncmp(e->key, prefix, len) == 0) {
-			pcb_conf_free_native(e->value);
+			rnd_conf_free_native(e->value);
 			htsp_delentry(rnd_conf_fields, e);
 		}
 	}
@@ -1410,7 +1410,7 @@ void rnd_conf_unreg_fields(const char *prefix)
 void rnd_conf_unreg_field(rnd_conf_native_t *field)
 {
 	htsp_pop(rnd_conf_fields, field->hash_path);
-	pcb_conf_free_native(field);
+	rnd_conf_free_native(field);
 }
 
 
@@ -1462,7 +1462,7 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 	}
 
 
-	if (pcb_conf_main_root[target] == NULL) {
+	if (rnd_conf_main_root[target] == NULL) {
 		free(path);
 		return -1;
 	}
@@ -1502,13 +1502,13 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 		if (next != NULL)
 			*next = '\0';
 
-		nn = lht_tree_path_(pcb_conf_main_root[target], cwd, last, 1, 0, NULL);
+		nn = lht_tree_path_(rnd_conf_main_root[target], cwd, last, 1, 0, NULL);
 		if (nn == NULL) {
 			if (new_val == NULL) {
 				free(path);
 				return 0;
 			}
-			if (pcb_conf_main_root_lock[target]) {
+			if (rnd_conf_main_root_lock[target]) {
 				rnd_message(RND_MSG_WARNING, "WARNING: can't set config item %s because target in-memory lihata does not have the node and is tree-locked\n", path_);
 				free(path);
 				return -1;
@@ -1532,9 +1532,9 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 	else
 		ty = LHT_TEXT;
 
-	nn = lht_tree_path_(pcb_conf_main_root[target], cwd, basename, 1, 0, NULL);
+	nn = lht_tree_path_(rnd_conf_main_root[target], cwd, basename, 1, 0, NULL);
 	if (nn == NULL) {
-		if (pcb_conf_main_root_lock[target]) {
+		if (rnd_conf_main_root_lock[target]) {
 			free(path);
 			return -1;
 		}
@@ -1631,12 +1631,12 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 			free(cwd->data.text.value);
 
 		cwd->data.text.value = rnd_strdup(new_val);
-		cwd->file_name = pcb_conf_main_root[target]->active_file;
+		cwd->file_name = rnd_conf_main_root[target]->active_file;
 	}
 	else
 		lht_tree_del(cwd);
 
-	pcb_conf_lht_dirty[target]++;
+	rnd_conf_lht_dirty[target]++;
 
 	free(path);
 	return 0;
@@ -1667,7 +1667,7 @@ int rnd_conf_grow(const char *path, int new_size)
 	rnd_conf_native_t *nat = rnd_conf_get_field(path);
 	if (nat == NULL)
 		return -1;
-	return pcb_conf_grow_list_(nat, new_size);
+	return rnd_conf_grow_list_(nat, new_size);
 }
 
 int rnd_conf_set_native(rnd_conf_native_t *field, int arr_idx, const char *new_val)
@@ -1888,7 +1888,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 	if (lht_tree_replace(dst, new_src) != LHTE_SUCCESS)
 		goto err;
 
-	pcb_conf_lht_dirty[dst_role]++;
+	rnd_conf_lht_dirty[dst_role]++;
 
 	lht_tree_del(dst);
 	if (src_role == RND_CFR_binary)
@@ -1912,7 +1912,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 	char *efn;
 
 	/* do not save if there's no change */
-	if (pcb_conf_lht_dirty[role] == 0)
+	if (rnd_conf_lht_dirty[role] == 0)
 		return 0;
 
 	if (fn == NULL) {
@@ -1967,7 +1967,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 		if (f != NULL) {
 			lht_dom_export(r->doc->root, f, "");
 			fail = 0;
-			pcb_conf_lht_dirty[role] = 0;
+			rnd_conf_lht_dirty[role] = 0;
 			fclose(f);
 		}
 		else
@@ -2052,37 +2052,37 @@ const char *rnd_conf_concat_strlist(const rnd_conflist_t *lst, gds_t *buff, int 
 
 void rnd_conf_lock(rnd_conf_role_t target)
 {
-	pcb_conf_main_root_lock[target] = 1;
+	rnd_conf_main_root_lock[target] = 1;
 }
 
 void rnd_conf_unlock(rnd_conf_role_t target)
 {
-	pcb_conf_main_root_lock[target] = 0;
+	rnd_conf_main_root_lock[target] = 0;
 }
 
 int rnd_conf_islocked(rnd_conf_role_t target)
 {
-	return pcb_conf_main_root_lock[target];
+	return rnd_conf_main_root_lock[target];
 }
 
 int rnd_conf_isdirty(rnd_conf_role_t target)
 {
-	return pcb_conf_lht_dirty[target];
+	return rnd_conf_lht_dirty[target];
 }
 
 void rnd_conf_makedirty(rnd_conf_role_t target)
 {
-	pcb_conf_lht_dirty[target]++;
+	rnd_conf_lht_dirty[target]++;
 }
 rnd_conf_role_t rnd_conf_lookup_role(const lht_node_t *nd)
 {
 	rnd_conf_role_t r;
 	for(r = 0; r < RND_CFR_max_real; r++)
-		if (pcb_conf_main_root[r] == nd->doc)
+		if (rnd_conf_main_root[r] == nd->doc)
 			return r;
 
 	for(r = 0; r < RND_CFR_max_real; r++)
-		if (pcb_conf_plug_root[r] == nd->doc)
+		if (rnd_conf_plug_root[r] == nd->doc)
 			return r;
 
 	return RND_CFR_invalid;
@@ -2092,15 +2092,15 @@ void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn)
 {
 	lht_node_t *n;
 
-	if (pcb_conf_main_root[target] != NULL)
-		lht_dom_uninit(pcb_conf_main_root[target]);
+	if (rnd_conf_main_root[target] != NULL)
+		lht_dom_uninit(rnd_conf_main_root[target]);
 
-	pcb_conf_main_root[target] = lht_dom_init();
-	lht_dom_loc_newfile(pcb_conf_main_root[target], source_fn);
-	pcb_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, pcb_conf_list_name);
-	pcb_conf_main_root[target]->root->doc = pcb_conf_main_root[target];
+	rnd_conf_main_root[target] = lht_dom_init();
+	lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
+	rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name);
+	rnd_conf_main_root[target]->root->doc = rnd_conf_main_root[target];
 	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
-	lht_dom_list_insert(pcb_conf_main_root[target]->root, n);
+	lht_dom_list_insert(rnd_conf_main_root[target]->root, n);
 }
 
 /*****************/
@@ -2224,7 +2224,7 @@ static int conf_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_n
 		rnd_message(RND_MSG_ERROR, "menu anyload: failed to load menu patch from %s\n", doc->root->file_name);
 		return -1;
 	}
-	pcb_conf_lht_dirty[RND_CFR_USER]++;
+	rnd_conf_lht_dirty[RND_CFR_USER]++;
 	rnd_anyload_conf_needs_update = 1;
 	return 0;
 }
@@ -2239,8 +2239,8 @@ void rnd_conf_init(void)
 	rnd_conf_reset(RND_CFR_CLI, "<commandline>");
 	rnd_conf_reset(RND_CFR_DESIGN, "<null-design>");
 
-	rnd_conf_reset(RND_CFR_file, "<pcb_conf_init>");
-	rnd_conf_reset(RND_CFR_binary, "<pcb_conf_init>");
+	rnd_conf_reset(RND_CFR_file, "<rnd_conf_init>");
+	rnd_conf_reset(RND_CFR_binary, "<rnd_conf_init>");
 }
 
 void rnd_conf_init2(void)
@@ -2266,14 +2266,14 @@ void rnd_conf_uninit(void)
 	rnd_conf_hid_uninit();
 
 	for(n = 0; n < RND_CFR_max_alloc; n++) {
-		if (pcb_conf_main_root[n] != NULL)
-			lht_dom_uninit(pcb_conf_main_root[n]);
-		if (pcb_conf_plug_root[n] != NULL)
-			lht_dom_uninit(pcb_conf_plug_root[n]);
+		if (rnd_conf_main_root[n] != NULL)
+			lht_dom_uninit(rnd_conf_main_root[n]);
+		if (rnd_conf_plug_root[n] != NULL)
+			lht_dom_uninit(rnd_conf_plug_root[n]);
 	}
 
 	rnd_conf_fields_foreach(e) {
-		pcb_conf_free_native(e->value);
+		rnd_conf_free_native(e->value);
 		htsp_delentry(rnd_conf_fields, e);
 	}
 	htsp_free(rnd_conf_fields);
