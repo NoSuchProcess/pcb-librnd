@@ -1,3 +1,5 @@
+#define RND_APP_PREFIX(x)  rndtest_ ## x
+
 /* header integrity test: nothing should be included from src/ that is
    not part of librnd */
 #include "inc_all.h"

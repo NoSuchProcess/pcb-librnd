@@ -1,20 +1,4 @@
 /*** hidlib glue ***/
-TODO
-const char *rnd_hidlib_default_embedded_menu = "";
-const char *rnd_menu_file_paths[] = { "./", NULL };
-const char *rnd_menu_name_fmt = "menu.lht";
-
-const char *rnd_conf_userdir_path = "./";
-const char *rnd_conf_user_path = "./conf.lht";
-
-/* hack for running from ./ without internal version of the conf */
-const char *rnd_conf_sysdir_path = "./";
-const char *rnd_conf_sys_path = "./conf.lht";
-
-const char *rnd_app_package = "librnd_test";
-const char *rnd_app_version = "0.0.0";
-const char *rnd_app_url = "n/a";
-
 
 typedef struct design_s {
 	rnd_hidlib_t hidlib; /* shall be the first */

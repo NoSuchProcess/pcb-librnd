@@ -1,3 +1,5 @@
+#define RND_APP_PREFIX(x)  rndtest_ ## x
+
 #include <librnd/core/unit.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid.h>
