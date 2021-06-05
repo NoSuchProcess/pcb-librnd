@@ -187,7 +187,7 @@ void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t c
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
 	grid_local_x = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
 	grid_local_y = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
-	grid_local_radius = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
+	grid_local_radius = rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius;
 }
 
 static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
@@ -202,7 +202,7 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 
 	glColor3f(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
 
-	if (pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
+	if (rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable)
 		hidgl_draw_local_grid(hidlib, grid_local_x, grid_local_y, grid_local_radius, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
 	else
 		hidgl_draw_grid(hidlib, drawn_area, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);

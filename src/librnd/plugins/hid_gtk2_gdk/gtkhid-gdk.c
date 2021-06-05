@@ -153,10 +153,10 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	if (grd <= 0)
 		grd = 1;
 
-	if (Vz(grd) < pcb_conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px) {
-		if (!pcb_conf_hid_gtk.plugins.hid_gtk.global_grid.sparse)
+	if (Vz(grd) < rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.min_dist_px) {
+		if (!rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse)
 			return;
-		grd *= (pcb_conf_hid_gtk.plugins.hid_gtk.global_grid.min_dist_px / Vz(grd));
+		grd *= (rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.min_dist_px / Vz(grd));
 	}
 
 	if (x1 > x2) {
@@ -323,7 +323,7 @@ static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_c
 		grid_local_have_old = 0;
 	}
 
-	if (!pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.enable)
+	if (!rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable)
 		return;
 
 	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!rnd_conf.editor.draw_grid))
@@ -334,10 +334,10 @@ static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_c
 	cy = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
 
 	grid_local_have_old = 1;
-	ghid_gdk_draw_grid_local_(hidlib, cx, cy, pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius);
+	ghid_gdk_draw_grid_local_(hidlib, cx, cy, rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius);
 	grid_local_old_x = cx;
 	grid_local_old_y = cy;
-	grid_local_old_r = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
+	grid_local_old_r = rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius;
 }
 
 static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
@@ -366,7 +366,7 @@ static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
 		set_clip(priv, priv->grid_gc);
 	}
 
-	if (pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.enable) {
+	if (rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable) {
 		ghid_gdk_draw_grid_local(hidlib, grid_local_old_x, grid_local_old_y);
 		return;
 	}

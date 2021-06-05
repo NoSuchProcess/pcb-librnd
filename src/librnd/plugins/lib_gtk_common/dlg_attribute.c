@@ -807,7 +807,7 @@ void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 	rnd_event(gctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
-	if ((modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modal) || (!modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modeless))
+	if ((modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modal) || (!modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modeless))
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
@@ -837,7 +837,7 @@ void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 
 	ghid_initial_wstates(ctx);
 
-	if (pcb_conf_hid_gtk.plugins.hid_gtk.dialog.auto_present)
+	if (rnd_gtk_conf_hid.plugins.hid_gtk.dialog.auto_present)
 		gtk_window_present(GTK_WINDOW(ctx->dialog));
 
 	return ctx;
