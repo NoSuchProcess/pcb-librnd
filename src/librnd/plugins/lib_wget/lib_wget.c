@@ -33,7 +33,7 @@
 #include <librnd/core/safe_fs.h>
 #include "lib_wget.h"
 
-const char *wget_cmd = "wget -U 'pcb-rnd-fp_wget'";
+const char *wget_cmd = "wget -U 'librnd-wget'";
 
 static char *rnd_wget_command(const char *url, const char *ofn, int update, const rnd_wget_opts_t *opts)
 {
