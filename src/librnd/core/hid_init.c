@@ -339,7 +339,7 @@ static char *get_homedir(void)
 	return homedir;
 }
 
-void pcbhl_conf_postproc(void)
+void rnd_pcbhl_conf_postproc(void)
 {
 	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
@@ -352,7 +352,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
-	pcbhl_conf_postproc();
+	rnd_pcbhl_conf_postproc();
 	rnd_hidlib_conf_init();
 	rnd_hidlib_event_init();
 	pcb_hid_dlg_init();
@@ -603,7 +603,7 @@ void rnd_fix_locale_and_env_()
 #endif
 }
 
-static int pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)
+static int rnd_pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)
 {
 	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
@@ -656,7 +656,7 @@ int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 		}
 
 		for(cs = ga->action_args; cs[2] != NULL; cs += RND_ACTION_ARGS_WIDTH) {
-			if (pcbhl_main_arg_match(cmd, cs[0], cs[1])) {
+			if (rnd_pcbhl_main_arg_match(cmd, cs[0], cs[1])) {
 				if (ga->main_action == NULL) {
 					ga->main_action = cs[2];
 					ga->main_action_hint = cs[4];
@@ -666,7 +666,7 @@ int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 				return 0;
 			}
 		}
-		if (pcbhl_main_arg_match(cmd, "c", "-conf")) {
+		if (rnd_pcbhl_main_arg_match(cmd, "c", "-conf")) {
 			const char *why;
 			if (strncmp(arg, "plugins/", 8)  == 0) {
 				/* plugins are not yet loaded or initialized so their configs are
@@ -684,7 +684,7 @@ int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 			}
 			return 1;
 		}
-		if (pcbhl_main_arg_match(cmd, "C", "-conffile")) {
+		if (rnd_pcbhl_main_arg_match(cmd, "C", "-conffile")) {
 			vts0_append(&hidlib_conffile, rnd_strdup(arg));
 			return 1;
 		}

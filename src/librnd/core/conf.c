@@ -59,7 +59,7 @@ static const char conf_cookie_al[] = "core/conf/anyload";
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
-extern void pcbhl_conf_postproc(void);
+extern void rnd_pcbhl_conf_postproc(void);
 
 int rnd_conf_in_production = 0;
 
@@ -1118,7 +1118,7 @@ void rnd_conf_update(const char *path, int arr_idx)
 	rnd_conf_merge_all(path);
 	if (rnd_app.conf_core_postproc != NULL)
 		rnd_app.conf_core_postproc();
-	pcbhl_conf_postproc();
+	rnd_pcbhl_conf_postproc();
 
 	if (path == NULL) {
 		htsp_entry_t *e;
