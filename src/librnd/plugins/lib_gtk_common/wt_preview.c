@@ -168,7 +168,7 @@ static void ghid_preview_constructed(GObject *object)
    allocated data, and then chain up to the parent's finalize handler. */
 static void ghid_preview_finalize(GObject *object)
 {
-	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
+	pcb_gtk_preview_t *preview = RND_GTK_PREVIEW(object);
 
 	/* Passing NULL for subcircuit data will clear the preview */
 	preview_set_data(preview, NULL);
@@ -178,7 +178,7 @@ static void ghid_preview_finalize(GObject *object)
 
 static void ghid_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(object);
+	pcb_gtk_preview_t *preview = RND_GTK_PREVIEW(object);
 	GdkWindow *window = gtkc_widget_get_window(GTK_WIDGET(preview));
 
 	switch (property_id) {
@@ -233,7 +233,7 @@ do { \
 /* Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 {
-	pcb_gtk_preview_t *preview = PCB_GTK_PREVIEW(widget);
+	pcb_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
 	gboolean res;
 	int save_fx, save_fy;
 
@@ -553,7 +553,7 @@ GType pcb_gtk_preview_get_type()
 static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
 {
 	pcb_gtk_t *ctx = data;
-	pcb_gtk_preview_t *prv = PCB_GTK_PREVIEW(widget);
+	pcb_gtk_preview_t *prv = RND_GTK_PREVIEW(widget);
 
 	pcb_gtk_preview_del(ctx, prv);
 	return 0;
@@ -564,7 +564,7 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t ini
 																			pcb_gtk_preview_expose_t expose, rnd_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data)
 {
 	pcb_gtk_preview_t *prv = (pcb_gtk_preview_t *)g_object_new(
-		PCB_GTK_TYPE_PREVIEW,
+		RND_GTK_TYPE_PREVIEW,
 		"ctx", ctx, "gport", ctx->impl.gport, "init-widget", init_widget,
 		"expose", expose, "dialog_draw", dialog_draw,
 		"config", config, "draw_data", draw_data,

@@ -723,7 +723,7 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 		switch(ctx->attrs[i].type) {
 			case RND_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case RND_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case RND_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
+			case RND_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, RND_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
 	}

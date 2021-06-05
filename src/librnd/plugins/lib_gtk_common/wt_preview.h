@@ -42,11 +42,11 @@
 #include "pcb_gtk.h"
 #include "compat.h"
 
-#define PCB_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())
-#define PCB_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_t))
-#define PCB_GTK_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
-#define PCB_GTK_IS_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PCB_GTK_TYPE_PREVIEW))
-#define PCB_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  PCB_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
+#define RND_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())
+#define RND_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_t))
+#define RND_GTK_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
+#define RND_GTK_IS_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RND_GTK_TYPE_PREVIEW))
+#define RND_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
 
 typedef struct pcb_gtk_preview_class_s pcb_gtk_preview_class_t;
 typedef struct pcb_gtk_preview_s pcb_gtk_preview_t;
