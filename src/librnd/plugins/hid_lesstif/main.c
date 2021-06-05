@@ -465,7 +465,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 	case XmCR_ACTIVATE:
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
-		pcb_clihist_append(s, NULL, NULL, NULL);
+		rnd_clihist_append(s, NULL, NULL, NULL);
 		rnd_parse_command(ltf_hidlib, s, rnd_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
@@ -545,14 +545,14 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 			XLookupString((XKeyEvent *) e, buf, sizeof(buf), &sym, NULL);
 			switch (sym) {
 				case XK_Up:
-					hist = pcb_clihist_prev();
+					hist = rnd_clihist_prev();
 					if (hist != NULL)
 						XmTextSetString(w, XmStrCast(hist));
 					else
 						XmTextSetString(w, XmStrCast(""));
 					break;
 				case XK_Down:
-					hist = pcb_clihist_next();
+					hist = rnd_clihist_next();
 					if (hist != NULL)
 						XmTextSetString(w, XmStrCast(hist));
 					else
@@ -2971,8 +2971,8 @@ static void ltf_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 
 static void ltf_open_command(rnd_hid_t *hid)
 {
-	pcb_clihist_init();
-	pcb_clihist_reset();
+	rnd_clihist_init();
+	rnd_clihist_reset();
 
 	if (rnd_conf.editor.fullscreen)
 		XtManageChild(ltf_fullscreen_bottom);

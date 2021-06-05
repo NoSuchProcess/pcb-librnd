@@ -106,8 +106,8 @@ static rnd_conf_hid_id_t conf_id;
 void pplg_uninit_lib_hid_common(void)
 {
 	rnd_conf_unreg_intern(dialogs_conf_internal);
-	pcb_clihist_save();
-	pcb_clihist_uninit();
+	rnd_clihist_save();
+	rnd_clihist_uninit();
 	rnd_event_unbind_allcookie(grid_cookie);
 	rnd_event_unbind_allcookie(lead_cookie);
 	rnd_event_unbind_allcookie(wplc_cookie);

@@ -84,7 +84,7 @@ static hist_t *hist_lookup(const char *cmd, int *idx)
 /* Trim list length to configured value; NOTE: shall not be called
    from conf change event because there is no way it could notify
    GUIs */
-void pcb_clihist_trim(void *ctx, pcb_clihist_remove_cb_t *remove)
+void rnd_clihist_trim(void *ctx, rnd_clihist_remove_cb_t *remove)
 {
 	while(gdl_length(&history) > CFG.slots) {
 		hist_t *h = gdl_first(&history);
@@ -97,7 +97,7 @@ void pcb_clihist_trim(void *ctx, pcb_clihist_remove_cb_t *remove)
 	}
 }
 
-void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *append, pcb_clihist_remove_cb_t *remove)
+void rnd_clihist_append(const char *cmd, void *ctx, rnd_clihist_append_cb_t *append, rnd_clihist_remove_cb_t *remove)
 {
 	int idx;
 	hist_t *h;
@@ -124,11 +124,11 @@ void pcb_clihist_append(const char *cmd, void *ctx, pcb_clihist_append_cb_t *app
 	if (append != NULL)
 		append(ctx, h->cmd);
 
-	pcb_clihist_trim(ctx, remove);
-	pcb_clihist_reset();
+	rnd_clihist_trim(ctx, remove);
+	rnd_clihist_reset();
 }
 
-void pcb_clihist_sync(void *ctx, pcb_clihist_append_cb_t *append)
+void rnd_clihist_sync(void *ctx, rnd_clihist_append_cb_t *append)
 {
 	hist_t *h;
 	for(h = gdl_first(&history); h != NULL; h = gdl_next(&history, h))
@@ -148,7 +148,7 @@ static const char *hist_back_cmd(int cnt)
 	return h->cmd;
 }
 
-const char *pcb_clihist_prev(void)
+const char *rnd_clihist_prev(void)
 {
 	if (cursor < 0)
 		cursor = 0;
@@ -159,7 +159,7 @@ const char *pcb_clihist_prev(void)
 	return hist_back_cmd(cursor);
 }
 
-const char *pcb_clihist_next(void)
+const char *rnd_clihist_next(void)
 {
 	cursor--;
 	if (cursor < -1)
@@ -167,13 +167,13 @@ const char *pcb_clihist_next(void)
 	return hist_back_cmd(cursor);
 }
 
-void pcb_clihist_reset(void)
+void rnd_clihist_reset(void)
 {
 	cursor = -1;
 }
 
 
-void pcb_clihist_load(void)
+void rnd_clihist_load(void)
 {
 	FILE *f;
 	char *real_fn, *s, line[4096];
@@ -196,11 +196,11 @@ void pcb_clihist_load(void)
 		hist_append(s);
 	}
 	fclose(f);
-	pcb_clihist_trim(NULL, NULL);
+	rnd_clihist_trim(NULL, NULL);
 	loaded = 1;
 }
 
-void pcb_clihist_save(void)
+void rnd_clihist_save(void)
 {
 	FILE *f;
 	hist_t *h;
@@ -223,15 +223,15 @@ void pcb_clihist_save(void)
 	fclose(f);
 }
 
-void pcb_clihist_init()
+void rnd_clihist_init()
 {
 	if (loaded)
 		return;
 
-	pcb_clihist_load();
+	rnd_clihist_load();
 }
 
-void pcb_clihist_uninit(void)
+void rnd_clihist_uninit(void)
 {
 	hist_t *h;
 	for(h = gdl_first(&history); h != NULL; h = gdl_first(&history)) {

@@ -67,7 +67,7 @@ static void ghid_chist_remove(void *ctx_, int idx)
 
 static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
 {
-	pcb_clihist_append(cmd, ctx, ghid_chist_append, ghid_chist_remove);
+	rnd_clihist_append(cmd, ctx, ghid_chist_append, ghid_chist_remove);
 }
 
 
@@ -140,8 +140,8 @@ void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_sta
 	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);
 
 	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
-	pcb_clihist_init();
-	pcb_clihist_sync(ctx, ghid_chist_append);
+	rnd_clihist_init();
+	rnd_clihist_sync(ctx, ghid_chist_append);
 
 	g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 	g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
