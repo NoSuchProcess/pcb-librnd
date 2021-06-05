@@ -710,7 +710,7 @@ static void ghid_gdk_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	dx2 = Vx((double) x2);
 	dy2 = Vy((double) y2);
 
-	if (!pcb_line_clip(0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, &dx1, &dy1, &dx2, &dy2, GCWC(gc)))
+	if (!rnd_line_clip(0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, &dx1, &dy1, &dx2, &dy2, GCWC(gc)))
 		return;
 
 	USE_GC(gc);

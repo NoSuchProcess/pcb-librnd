@@ -2434,7 +2434,7 @@ static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 #endif
 
 #if 1
-	if (!pcb_line_clip(0, 0, view_width, view_height, &dx1, &dy1, &dx2, &dy2, vw))
+	if (!rnd_line_clip(0, 0, view_width, view_height, &dx1, &dy1, &dx2, &dy2, vw))
 		return;
 #endif
 
