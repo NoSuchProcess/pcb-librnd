@@ -210,7 +210,7 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
-static void pcb_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
+static void rnd_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
 {
 	hidgl_draw_texture_rect(	ox,oy,ox+bw,oy+bh, gpm->cache.lng );
 }
@@ -239,7 +239,7 @@ static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 		gpm->cache.lng = texture_handle;
 	}
 
-	pcb_gl_draw_texture(hidlib, gpm, ox, oy, bw, bh);
+	rnd_gl_draw_texture(hidlib, gpm, ox, oy, bw, bh);
 }
 
 static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
@@ -551,7 +551,7 @@ static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 	ghid_gl_invalidate_all(hid);
 }
 
-static void pcb_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
+static void rnd_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
 	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
 		return;
@@ -587,7 +587,7 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	glColor3f(cross_color.red / 65535., cross_color.green / 65535., cross_color.blue / 65535.);
 
 	glBegin(GL_LINES);
-	pcb_gl_draw_crosshair(hidlib, x, y, z, minx, miny, maxx, maxy);
+	rnd_gl_draw_crosshair(hidlib, x, y, z, minx, miny, maxx, maxy);
 	glEnd();
 
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -684,7 +684,7 @@ static void ghid_gl_screen_update(void)
 /* Settles background color + inital GL configuration, to allow further drawing in GL area.
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
-static void pcb_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
+static void rnd_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_init();
 
@@ -730,7 +730,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	ctx.view.X2 = MAX(Px(0), Px(allocation.width + 1));
 	ctx.view.Y2 = MAX(Py(0), Py(allocation.height + 1));
 
-	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
+	rnd_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
 
 	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
 	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);

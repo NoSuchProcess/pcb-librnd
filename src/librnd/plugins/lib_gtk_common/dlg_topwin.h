@@ -15,7 +15,7 @@
 void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie);
 void ghid_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw);
 void ghid_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw);
-void ghid_create_pcb_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window);
+void ghid_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void ghid_fullscreen_apply(rnd_gtk_topwin_t *tw);
 void rnd_gtk_tw_layer_vis_update(rnd_gtk_topwin_t *tw);
 

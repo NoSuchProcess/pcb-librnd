@@ -409,7 +409,7 @@ void ghid_topwin_hide_status(void *ctx, int show)
 
 /* Create the top_window contents.  The config settings should be loaded
    before this is called. */
-static void ghid_build_pcb_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
+static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
@@ -577,11 +577,11 @@ void rnd_gtk_tw_interface_set_sensitive(rnd_gtk_topwin_t *tw, gboolean sensitive
 	gtk_widget_set_sensitive(tw->menu_hbox, sensitive);
 }
 
-void ghid_create_pcb_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window)
+void ghid_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
 	ghidgui->impl.load_bg_image();
 
-	ghid_build_pcb_top_window(ctx, tw);
+	ghid_build_top_window(ctx, tw);
 	ghid_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
 	ghid_update_toggle_flags(ghidgui->hidlib, tw, NULL);
 }
