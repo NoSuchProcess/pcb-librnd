@@ -58,7 +58,7 @@ static void uninit_batch(void)
 	}
 }
 
-static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void ev_design_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -376,7 +376,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.open_command = batch_open_command;
 	batch_hid.open_popup = batch_open_popup;
 
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_design_changed, NULL, batch_cookie);
 	rnd_event_bind(RND_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
 
 	rnd_hid_register_hid(&batch_hid);
