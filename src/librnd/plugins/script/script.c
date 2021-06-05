@@ -81,10 +81,15 @@ static int script_save_preunload(script_t *s, const char *data)
 	FILE *f;
 	gds_t fn;
 
+	if (rnd_app.dot_dir == NULL) {
+		rnd_message(RND_MSG_ERROR, "script_save_preunload: can not save script persistency: the application did not configure rnd_app.dot_dir\n");
+		return -1;
+	}
+
 	gds_init(&fn);
 	gds_append_str(&fn, rnd_conf.rc.path.home);
 	gds_append(&fn, RND_DIR_SEPARATOR_C);
-	gds_append_str(&fn, rnd_conf_dot_dir);
+	gds_append_str(&fn, rnd_app.dot_dir);
 	rnd_mkdir(NULL, fn.array, 0755);
 
 	gds_append(&fn, RND_DIR_SEPARATOR_C);
@@ -170,7 +175,12 @@ static int script_persistency(fgw_arg_t *res, const char *cmd)
 		goto err;
 	}
 
-	fn = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
+	if (rnd_app.dot_dir == NULL) {
+		rnd_message(RND_MSG_ERROR, "ScriptPersistency: can not load script persistency: the application did not configure rnd_app.dot_dir\n");
+		goto err;
+	}
+
+	fn = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_app.dot_dir, RND_DIR_SEPARATOR_S, SCRIPT_PERS, RND_DIR_SEPARATOR_S, script_persistency_id, NULL);
 
 	if (strcmp(cmd, "remove") == 0) {
 		RND_ACT_IRES(rnd_remove(NULL, fn));

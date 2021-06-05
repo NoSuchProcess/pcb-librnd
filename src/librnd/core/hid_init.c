@@ -64,9 +64,6 @@
 #include <librnd/core/hid_menu.h>
 #include "../../../config.h"
 
-char *rnd_conf_dot_dir = ".librnd";
-char *rnd_conf_lib_dir = "/usr/lib/librnd";
-
 int rnd_coord_t_size = sizeof(rnd_coord_t);
 
 
@@ -116,20 +113,22 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
-	rnd_plugin_add_dir(tmp);
-	free(tmp);
-	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
-	rnd_plugin_add_dir(tmp);
-	free(tmp);
+	if (rnd_app.lib_dir != NULL) {
+		tmp = rnd_concat(rnd_app.lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+		rnd_plugin_add_dir(tmp);
+		free(tmp);
+		tmp = rnd_concat(rnd_app.lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+		rnd_plugin_add_dir(tmp);
+		free(tmp);
+	}
 
 	/* rnd_conf.rc.path.home is set by the conf_core immediately on startup */
-	if (rnd_conf.rc.path.home != NULL) {
-		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	if ((rnd_conf.rc.path.home != NULL) && (rnd_app.dot_dir != NULL)) {
+		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_app.dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 		rnd_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_app.dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 		rnd_plugin_add_dir(tmp);
 		free(tmp);
 	}

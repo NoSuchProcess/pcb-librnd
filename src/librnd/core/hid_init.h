@@ -98,9 +98,6 @@ extern rnd_plugin_dir_t *rnd_plugin_dir_first, *rnd_plugin_dir_last;
    else it is the full file name */
 const char *rnd_hid_export_fn(const char *filename);
 
-/* Config directories the caller needs to load before the conf system is initialized */
-extern char *rnd_conf_dot_dir, *rnd_conf_lib_dir;
-
 
 /*** main(), initialize ***/
 

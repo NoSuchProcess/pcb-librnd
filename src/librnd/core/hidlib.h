@@ -84,6 +84,10 @@ typedef struct rnd_app_s {
 	const char *menu_name_fmt;         /* optional: printf format string for the menu file name; may contain one %s that will be substituted with rc.menu_file. */
 	const char *default_embedded_menu; /* optional: the whole default menu file embedded in the executable; NULL if not present */
 
+	/* app specific installation paths */
+	const char *lib_dir; /* plugins are searched in lib_dir/plugins under here; should be e.g. /usr/lib/pcb-rnd */
+	const char *dot_dir; /* plugins are searched in ~/dot_dir/plugins under here; should be e.g. .pcb-rnd; script persistency also uses this */
+
 	/* path to the user's config directory and main config file (RND_CFR_USER) */
 	const char *conf_userdir_path;
 	const char *conf_user_path;
