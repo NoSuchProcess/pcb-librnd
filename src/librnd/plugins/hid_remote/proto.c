@@ -113,7 +113,7 @@ int proto_send_set_layer_group(rnd_layergrp_id_t group, const char *purpose, int
 	return 0;
 }
 
-int pcb_remote_new_layer(const char *name, rnd_layer_id_t lid, unsigned int gid)
+int rnd_remote_new_layer(const char *name, rnd_layer_id_t lid, unsigned int gid)
 {
 	send_begin(&pctx, "newly");
 	send_open(&pctx, str_is_bin(name), 1);

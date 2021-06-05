@@ -36,7 +36,7 @@ static const rnd_export_opt_t *remote_get_export_options(rnd_hid_t *hid, int *n_
 
 /* ----------------------------------------------------------------------------- */
 
-static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 }
 
@@ -391,7 +391,7 @@ int pplg_init_hid_remote(void)
 
 	rnd_hid_register_hid(&remote_hid);
 
-	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_board_changed, NULL, remote_cookie);
 
 	return 0;
 }
