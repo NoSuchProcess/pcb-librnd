@@ -33,6 +33,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/hidlib.h>
 
 #include <libuirc/libuirc.h>
 
@@ -215,7 +216,9 @@ static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 
 static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	irc_msg("librnd version: " RND_VERSION " (" RND_REVISION ")");
+	char *tmp = rnd_strdup_printf("Version: application: %s %s (%s); librnd: " RND_VERSION " (" RND_REVISION ")", RND_EMPTY(rnd_app.package), RND_EMPTY(rnd_app.version), RND_EMPTY(rnd_app.revision));
+	irc_msg(tmp);
+	free(tmp);
 }
 
 static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
