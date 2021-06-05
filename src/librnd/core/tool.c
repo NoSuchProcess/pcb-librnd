@@ -36,7 +36,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 
-#define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
+#define RND_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 
 rnd_bool rnd_tool_is_saved = rnd_false;
 
@@ -45,7 +45,7 @@ vtp0_t rnd_tools;
 rnd_toolid_t rnd_tool_prev_id;
 rnd_toolid_t rnd_tool_next_id;
 static int save_position = 0;
-static int save_stack[PCB_MAX_MODESTACK_DEPTH];
+static int save_stack[RND_MAX_MODESTACK_DEPTH];
 
 static void init_current_tool(void);
 static void uninit_current_tool(void);
@@ -176,7 +176,7 @@ int rnd_tool_select_highest(rnd_hidlib_t *hidlib)
 int rnd_tool_save(rnd_hidlib_t *hidlib)
 {
 	save_stack[save_position] = rnd_conf.editor.mode;
-	if (save_position < PCB_MAX_MODESTACK_DEPTH - 1)
+	if (save_position < RND_MAX_MODESTACK_DEPTH - 1)
 		save_position++;
 	else
 		return -1;
