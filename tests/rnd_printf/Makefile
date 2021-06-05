@@ -11,7 +11,7 @@ CFLAGS_OP = -O3
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 LDLIBS = -lm
 
-LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-3rd.a glue.o
+LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-3rd.a
 
 include $(LIBRND)/core/librnd.mak
 LDFLAGS = $(LDFLAGS_LIBRND)
@@ -32,9 +32,6 @@ prcli.o: prcli.c
 
 prclimq.o: prclimq.c
 	$(CC) -c $(CFLAGS) prclimq.c -o prclimq.o
-
-glue.o: glue.c
-	$(CC) -c $(CFLAGS) glue.c -o glue.o
 
 tester: tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE)
 	$(CC)  -o tester tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE) $(LDFLAGS) $(LDLIBS)
