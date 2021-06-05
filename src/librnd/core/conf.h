@@ -430,9 +430,6 @@ void rnd_conf_unreg_file(const char *path, const char *intern);
 
 void rnd_conf_files_uninit(void);
 
-extern void (*rnd_conf_core_postproc)(void); /* if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
-
-
 int rnd_conf_merge_all(const char *path);
 
 /*** mass resolve (useful to avoid conf_core dep) ***/

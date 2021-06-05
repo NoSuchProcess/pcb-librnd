@@ -59,7 +59,6 @@ static const char conf_cookie_al[] = "core/conf/anyload";
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
-void (*rnd_conf_core_postproc)(void) = NULL;
 extern void pcbhl_conf_postproc(void);
 
 int rnd_conf_in_production = 0;
@@ -1117,8 +1116,8 @@ void rnd_conf_update(const char *path, int arr_idx)
 
 	/* merge all memory-lht data to memory-bin */
 	rnd_conf_merge_all(path);
-	if (rnd_conf_core_postproc != NULL)
-		rnd_conf_core_postproc();
+	if (rnd_app.conf_core_postproc != NULL)
+		rnd_app.conf_core_postproc();
 	pcbhl_conf_postproc();
 
 	if (path == NULL) {

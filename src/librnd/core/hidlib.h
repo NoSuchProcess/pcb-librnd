@@ -100,6 +100,10 @@ typedef struct rnd_app_s {
 	/* Recommended: embedded/internal config data (lihata document) */
 	const char *conf_internal;
 
+	/* Optional: if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
+	void (*conf_core_postproc)(void);
+
+
 	/*** callbacks ***/
 	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
 	void (*adjust_attached_objects)(rnd_hidlib_t *hl); 
