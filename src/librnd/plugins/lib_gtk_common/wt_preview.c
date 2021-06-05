@@ -578,7 +578,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.width = RND_MM_TO_COORD(110);
 	prv->view.height = RND_MM_TO_COORD(110);
 	prv->view.local_flip = 1;
-	prv->view.use_max_pcb = 0;
+	prv->view.use_max_hidlib = 0;
 	prv->view.max_width = RND_MAX_COORD;
 	prv->view.max_height = RND_MAX_COORD;
 	prv->view.coord_per_px = RND_MM_TO_COORD(0.25);

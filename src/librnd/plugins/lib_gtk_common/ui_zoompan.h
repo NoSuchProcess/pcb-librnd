@@ -57,7 +57,7 @@ typedef struct {
 	rnd_coord_t height;
 
 	unsigned inhibit_pan_common:1; /* when 1, do not call rnd_gtk_pan_common() */
-	unsigned use_max_pcb:1;  /* when 1, use PCB->Max*; when 0, use the following two: */
+	unsigned use_max_hidlib:1;     /* when 1, use hidlib->size_*; when 0, use the following two: */
 	unsigned local_flip:1;   /* ignore hidlib's flip and use the local one */
 	unsigned flip_x:1, flip_y:1; /* local version of flips when ->local_flip is enabled */
 	rnd_coord_t max_width;

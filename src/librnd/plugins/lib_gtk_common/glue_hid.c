@@ -228,7 +228,7 @@ int gtkhid_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 		return 1; /* recoverable error - try another HID */
 	}
 
-	gctx->port.view.use_max_pcb = 1;
+	gctx->port.view.use_max_hidlib = 1;
 	gctx->port.view.coord_per_px = 300.0;
 	rnd_pixel_slop = 300;
 
