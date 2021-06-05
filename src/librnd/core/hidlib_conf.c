@@ -34,7 +34,7 @@
 
 #include <librnd/core/hidlib_conf.h>
 
-#define PCB_MAX_GRID         RND_MIL_TO_COORD(1000)
+#define RND_MAX_GRID         RND_MIL_TO_COORD(1000)
 
 rnd_conf_t rnd_conf;
 
@@ -52,7 +52,7 @@ int rnd_hidlib_conf_init()
 /* sets cursor grid with respect to grid offset values */
 void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
 {
-	if (Grid >= 1 && Grid <= PCB_MAX_GRID) {
+	if (Grid >= 1 && Grid <= RND_MAX_GRID) {
 		if (align) {
 			hidlib->grid_ox = ox % Grid;
 			hidlib->grid_oy = oy % Grid;
