@@ -423,9 +423,9 @@ static fgw_error_t rnd_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return rnd_parse_command_res(RND_ACT_HIDLIB, res, act, 1);
 }
 
-static const char rnd_acth_pcb_math0[] = "No-argument math functions";
-static const char rnd_acts_pcb_math0[] = "pcb_MATHFUNC()";
-static fgw_error_t rnd_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_rnd_math0[] = "No-argument math functions";
+static const char rnd_acts_rnd_math0[] = "rnd_MATHFUNC()";
+static fgw_error_t rnd_act_rnd_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 
@@ -438,14 +438,14 @@ static fgw_error_t rnd_act_pcb_math0(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return FGW_ERR_ARG_CONV;
 }
 
-static const char rnd_acth_pcb_math1[] = "Single-argument math functions";
-static const char rnd_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
-static fgw_error_t rnd_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_rnd_math1[] = "Single-argument math functions";
+static const char rnd_acts_rnd_math1[] = "rnd_MATHFUNC(val)";
+static fgw_error_t rnd_act_rnd_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 	double a;
 	
-	RND_ACT_CONVARG(1, FGW_DOUBLE, pcb_math1, a = argv[1].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_DOUBLE, rnd_math1, a = argv[1].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a':
@@ -468,15 +468,15 @@ static fgw_error_t rnd_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return FGW_ERR_ARG_CONV;
 }
 
-static const char rnd_acth_pcb_math2[] = "Two-argument math functions";
-static const char rnd_acts_pcb_math2[] = "pcb_MATHFUNC(a,b)";
-static fgw_error_t rnd_act_pcb_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char rnd_acth_rnd_math2[] = "Two-argument math functions";
+static const char rnd_acts_rnd_math2[] = "rnd_MATHFUNC(a,b)";
+static fgw_error_t rnd_act_rnd_math2(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname = argv[0].val.func->name;
 	double a, b;
 	
-	RND_ACT_CONVARG(1, FGW_DOUBLE, pcb_math2, a = argv[1].val.nat_double);
-	RND_ACT_CONVARG(2, FGW_DOUBLE, pcb_math2, b = argv[2].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_DOUBLE, rnd_math2, a = argv[1].val.nat_double);
+	RND_ACT_CONVARG(2, FGW_DOUBLE, rnd_math2, b = argv[2].val.nat_double);
 	res->type = FGW_DOUBLE;
 	switch(actname[4]) {
 		case 'a': res->val.nat_double = atan2(a, b); return 0;
@@ -522,16 +522,30 @@ static rnd_action_t script_action_list[] = {
 	{"ActionString", rnd_act_ActionString, rnd_acth_ActionString, rnd_acts_ActionString},
 
 	/* math */
-	{"pcb_rand",    rnd_act_pcb_math0, NULL, NULL},
+	{"rnd_rand",    rnd_act_rnd_math0, NULL, NULL},
 
-	{"pcb_sin",     rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_cos",     rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_asin",    rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_acos",    rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_atan",    rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_tan",     rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_sqrt",    rnd_act_pcb_math1, NULL, NULL},
-	{"pcb_srand",   rnd_act_pcb_math1, NULL, NULL},
+	{"rnd_sin",     rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_cos",     rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_asin",    rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_acos",    rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_atan",    rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_tan",     rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_sqrt",    rnd_act_rnd_math1, NULL, NULL},
+	{"rnd_srand",   rnd_act_rnd_math1, NULL, NULL},
 
-	{"pcb_atan2",   rnd_act_pcb_math2, NULL, NULL}
+	{"rnd_atan2",   rnd_act_rnd_math2, NULL, NULL},
+
+	/* math (compatibility with pre-3.0.0) */
+	{"pcb_rand",    rnd_act_rnd_math0, NULL, NULL},
+
+	{"pcb_sin",     rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_cos",     rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_asin",    rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_acos",    rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_atan",    rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_tan",     rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_sqrt",    rnd_act_rnd_math1, NULL, NULL},
+	{"pcb_srand",   rnd_act_rnd_math1, NULL, NULL},
+
+	{"pcb_atan2",   rnd_act_rnd_math2, NULL, NULL}
 };

@@ -61,7 +61,7 @@ int fgws_c_load(fgw_obj_t *obj, const char *filename, const char *opts)
 
 	init = (init_t)rnd_cast_d2f(pup_dlsym(library, "rnd_cscript_init"));
 	if (init == NULL)
-		init = (init_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
+		init = (init_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_init")); /* for compatibility with pre-3.0.0; do not use! */
 	if (init == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't find rnd_cscript_init() in %s - not a pcb-rnd c \"script\".\n", filename);
 		free(library);
@@ -87,7 +87,7 @@ int fgws_c_unload(fgw_obj_t *obj)
 
 	uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "rnd_cscript_uninit"));
 	if (uninit == NULL)
-		uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit"));
+		uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit")); /* for compatibility with pre-3.0.0; do not use! */
 	if (uninit != NULL)
 		uninit(obj);
 
@@ -99,7 +99,7 @@ int fgws_c_unload(fgw_obj_t *obj)
 	return 0;
 }
 
-static fgw_eng_t rnd_cscript_fgw_eng_compat = {
+static fgw_eng_t rnd_cscript_fgw_eng_compat = { /* for compatibility with pre-3.0.0 */
 	"pcb_rnd_c",
 	fgws_c_call_script,
 	NULL,
