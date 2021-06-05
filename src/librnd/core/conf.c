@@ -616,25 +616,25 @@ int rnd_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio
 
 static void conf_insert_arr(rnd_conf_native_t *dest, int offs)
 {
-#define CASE_PCB_MOVE(typ, fld) \
+#define CASE_RND_MOVE(typ, fld) \
 	case typ: memmove(dest->val.fld+offs, dest->val.fld, dest->used * sizeof(dest->val.fld[0])); return
 
 	memmove(dest->prop+offs, dest->prop, dest->used * sizeof(dest->prop[0]));
 	if (dest->used > 0) {
 		switch(dest->type) {
-			CASE_PCB_MOVE(RND_CFN_STRING, string);
-			CASE_PCB_MOVE(RND_CFN_BOOLEAN, boolean);
-			CASE_PCB_MOVE(RND_CFN_INTEGER, integer);
-			CASE_PCB_MOVE(RND_CFN_REAL, real);
-			CASE_PCB_MOVE(RND_CFN_COORD, coord);
-			CASE_PCB_MOVE(RND_CFN_UNIT, unit);
-			CASE_PCB_MOVE(RND_CFN_COLOR, color);
-			CASE_PCB_MOVE(RND_CFN_LIST, list);
-			CASE_PCB_MOVE(RND_CFN_HLIST, list);
+			CASE_RND_MOVE(RND_CFN_STRING, string);
+			CASE_RND_MOVE(RND_CFN_BOOLEAN, boolean);
+			CASE_RND_MOVE(RND_CFN_INTEGER, integer);
+			CASE_RND_MOVE(RND_CFN_REAL, real);
+			CASE_RND_MOVE(RND_CFN_COORD, coord);
+			CASE_RND_MOVE(RND_CFN_UNIT, unit);
+			CASE_RND_MOVE(RND_CFN_COLOR, color);
+			CASE_RND_MOVE(RND_CFN_LIST, list);
+			CASE_RND_MOVE(RND_CFN_HLIST, list);
 			case RND_CFN_max: break;
 		}
 	}
-#undef CASE_MOVE
+#undef CASE_RND_MOVE
 	abort(); /* unhandled type */
 }
 
