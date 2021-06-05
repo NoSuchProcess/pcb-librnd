@@ -61,7 +61,7 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 
 	/* We need to fix up the PCB coordinates corresponding to the last
 	 * event so convert it back to event coordinates temporarily. */
-	rnd_gtk_coords_pcb2event(v, v->pcb_x, v->pcb_y, &event_x, &event_y);
+	rnd_gtk_coords_pcb2event(v, v->design_x, v->design_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
@@ -82,23 +82,23 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
-	rnd_gtk_coords_event2pcb(v, event_x, event_y, &v->pcb_x, &v->pcb_y);
+	rnd_gtk_coords_event2pcb(v, event_x, event_y, &v->design_x, &v->design_y);
 	if (!v->inhibit_pan_common)
 		rnd_gtk_pan_common();
 }
 
-rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, int *event_x, int *event_y)
+rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y)
 {
-	*event_x = DRAW_X(v, pcb_x);
-	*event_y = DRAW_Y(v, pcb_y);
+	*event_x = DRAW_X(v, design_x);
+	*event_y = DRAW_Y(v, design_y);
 
 	return rnd_true;
 }
 
-rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y)
+rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y)
 {
-	*pcb_x = rnd_round(EVENT_TO_DESIGN_X(v, event_x));
-	*pcb_y = rnd_round(EVENT_TO_DESIGN_Y(v, event_y));
+	*design_x = rnd_round(EVENT_TO_DESIGN_X(v, event_x));
+	*design_y = rnd_round(EVENT_TO_DESIGN_Y(v, event_y));
 
 	return rnd_true;
 }
@@ -173,18 +173,18 @@ void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
 
 	uiz_pan_common(v);
 	if (setch) {
-		v->pcb_x = (x1+x2)/2;
-		v->pcb_y = (y1+y2)/2;
-		rnd_hidcore_crosshair_move_to(v->ctx->hidlib, v->pcb_x, v->pcb_y, 0);
+		v->design_x = (x1+x2)/2;
+		v->design_y = (y1+y2)/2;
+		rnd_hidcore_crosshair_move_to(v->ctx->hidlib, v->design_x, v->design_y, 0);
 	}
 
 	rnd_gtk_tw_ranges_scale(ghidgui);
 }
 
-void rnd_gtk_pan_view_abs(rnd_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y)
+void rnd_gtk_pan_view_abs(rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, double widget_x, double widget_y)
 {
-	v->x0 = rnd_round((double)SIDE_X(v, pcb_x) - (double)widget_x * v->coord_per_px);
-	v->y0 = rnd_round((double)SIDE_Y(v, pcb_y) - (double)widget_y * v->coord_per_px);
+	v->x0 = rnd_round((double)SIDE_X(v, design_x) - (double)widget_x * v->coord_per_px);
+	v->y0 = rnd_round((double)SIDE_Y(v, design_y) - (double)widget_y * v->coord_per_px);
 
 	uiz_pan_common(v);
 }
@@ -207,8 +207,8 @@ int rnd_gtk_get_coords(rnd_gtk_t *ctx, rnd_gtk_view_t *vw, const char *msg, rnd_
 			return 1;
 	}
 	if (vw->has_entered) {
-		*x = vw->pcb_x;
-		*y = vw->pcb_y;
+		*x = vw->design_x;
+		*y = vw->design_y;
 	}
 	return res;
 }

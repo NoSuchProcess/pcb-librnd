@@ -67,7 +67,7 @@ typedef struct {
 
 	rnd_bool has_entered;
 	rnd_bool panning;
-	rnd_coord_t pcb_x, pcb_y;              /* design space coordinates of the mouse pointer */
+	rnd_coord_t design_x, design_y;        /* design space coordinates of the mouse pointer */
 	rnd_coord_t crosshair_x, crosshair_y;  /* design_space coordinates of the crosshair     */
 
 	struct rnd_gtk_s *ctx;
@@ -79,7 +79,7 @@ typedef struct {
     coord_per_px or the clamped value if it was too small or too large. */
 double rnd_gtk_clamp_zoom(const rnd_gtk_view_t *vw, double coord_per_px);
 
-void rnd_gtk_pan_view_abs(rnd_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, double widget_x, double widget_y);
+void rnd_gtk_pan_view_abs(rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, double widget_x, double widget_y);
 void rnd_gtk_pan_view_rel(rnd_gtk_view_t *v, rnd_coord_t dx, rnd_coord_t dy);
 void rnd_gtk_zoom_view_abs(rnd_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double new_zoom);
 void rnd_gtk_zoom_view_rel(rnd_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double factor);
@@ -89,8 +89,8 @@ void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
    to rnd_gtk_zoom_*() */
 void rnd_gtk_zoom_post(rnd_gtk_view_t *v);
 
-rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t pcb_x, rnd_coord_t pcb_y, int *event_x, int *event_y);
-rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y);
+rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y);
+rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y);
 
 int rnd_gtk_get_coords(rnd_gtk_t *ctx, rnd_gtk_view_t *vw, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 

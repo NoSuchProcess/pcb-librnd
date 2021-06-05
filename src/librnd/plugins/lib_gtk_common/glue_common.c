@@ -346,9 +346,9 @@ void rnd_gtk_note_event_location(GdkEventButton *ev)
 		event_y = ev->y;
 	}
 
-	rnd_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.pcb_x, &ghidgui->port.view.pcb_y);
+	rnd_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.design_x, &ghidgui->port.view.design_y);
 
-	rnd_hidcore_crosshair_move_to(ghidgui->port.view.ctx->hidlib, ghidgui->port.view.pcb_x, ghidgui->port.view.pcb_y, 1);
+	rnd_hidcore_crosshair_move_to(ghidgui->port.view.ctx->hidlib, ghidgui->port.view.design_x, ghidgui->port.view.design_y, 1);
 }
 
 /*** init ***/
