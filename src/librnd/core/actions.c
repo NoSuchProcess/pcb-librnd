@@ -121,7 +121,7 @@ void rnd_register_action(const rnd_action_t *a, const char *cookie)
 	rnd_register_actions(a, 1, cookie);
 }
 
-static void pcb_remove_action(fgw_func_t *f)
+static void rnd_remove_action(fgw_func_t *f)
 {
 	hid_cookie_action_t *ca = f->reg_data;
 	fgw_func_unreg(rnd_fgw_obj, f->name);
@@ -145,7 +145,7 @@ void rnd_remove_actions(const rnd_action_t *a, int n)
 			rnd_message(RND_MSG_WARNING, "Failed to remove action \"%s\" (is it registered?)\n", a[i].name);
 			continue;
 		}
-		pcb_remove_action(f);
+		rnd_remove_action(f);
 	}
 }
 
@@ -158,7 +158,7 @@ void rnd_remove_actions_by_cookie(const char *cookie)
 		fgw_func_t *f = e->value;
 		hid_cookie_action_t *ca = f->reg_data;
 		if ((ca != NULL) && (ca->cookie == cookie))
-			pcb_remove_action(f);
+			rnd_remove_action(f);
 	}
 }
 
@@ -937,7 +937,7 @@ static int coords_arg_free(fgw_ctx_t *ctx, fgw_arg_t *arg)
 	return 0;
 }
 
-static void pcb_action_err(fgw_obj_t *obj, const char *msg)
+static void rnd_action_err(fgw_obj_t *obj, const char *msg)
 {
 	rnd_message(RND_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
 }
@@ -978,18 +978,18 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 void rnd_actions_init(void)
 {
 	fgw_init(&rnd_fgw, "pcb-rnd");
-	rnd_fgw.async_error = pcb_action_err;
+	rnd_fgw.async_error = rnd_action_err;
 	rnd_fgw_obj = fgw_obj_reg(&rnd_fgw, "core");
 	if (fgw_reg_custom_type(&rnd_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
-		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
+		fprintf(stderr, "rnd_actions_init: failed to register FGW_KEYWORD\n");
 		abort();
 	}
 	if (fgw_reg_custom_type(&rnd_fgw, FGW_COORD, "coord", coord_arg_conv, NULL) != FGW_COORD) {
-		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORD\n");
+		fprintf(stderr, "rnd_actions_init: failed to register FGW_COORD\n");
 		abort();
 	}
 	if (fgw_reg_custom_type(&rnd_fgw, FGW_COORDS, "coords", coords_arg_conv, coords_arg_free) != FGW_COORDS) {
-		fprintf(stderr, "pcb_actions_init: failed to register FGW_COORDS\n");
+		fprintf(stderr, "rnd_actions_init: failed to register FGW_COORDS\n");
 		abort();
 	}
 }
@@ -1006,7 +1006,7 @@ void rnd_actions_uninit(void)
 		hid_cookie_action_t *ca = f->reg_data;
 		if (ca->cookie != NULL)
 			fprintf(stderr, "ERROR: hid_actions_uninit: action '%s' with cookie '%s' left registered, check your plugins!\n", e->key, ca->cookie);
-		pcb_remove_action(f);
+		rnd_remove_action(f);
 	}
 
 	fgw_obj_unreg(&rnd_fgw, rnd_fgw_obj);
