@@ -625,8 +625,8 @@ static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy
 #undef SIDE_Y_
 #define SIDE_X_(flip, hidlib, x) x
 #define SIDE_Y_(flip, hidlib, y) y
-	*cx = EVENT_TO_PCB_X(&preview->view, *xp) + preview->xoffs;
-	*cy = EVENT_TO_PCB_Y(&preview->view, *yp) + preview->yoffs;
+	*cx = EVENT_TO_DESIGN_X(&preview->view, *xp) + preview->xoffs;
+	*cy = EVENT_TO_DESIGN_Y(&preview->view, *yp) + preview->yoffs;
 #undef SIDE_X_
 #undef SIDE_Y_
 }

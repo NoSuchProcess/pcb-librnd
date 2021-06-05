@@ -97,8 +97,8 @@ rnd_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, rnd_coord_t pcb_x, rn
 
 rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y)
 {
-	*pcb_x = rnd_round(EVENT_TO_PCB_X(v, event_x));
-	*pcb_y = rnd_round(EVENT_TO_PCB_Y(v, event_y));
+	*pcb_x = rnd_round(EVENT_TO_DESIGN_X(v, event_x));
+	*pcb_y = rnd_round(EVENT_TO_DESIGN_Y(v, event_y));
 
 	return rnd_true;
 }
