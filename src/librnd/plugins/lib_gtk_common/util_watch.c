@@ -43,22 +43,22 @@ typedef struct rnd_gtk_watch_s {
 /* We need a wrapper around the hid file watch to pass the correct flags */
 static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer data)
 {
-	unsigned int pcb_condition = 0;
+	unsigned int rnd_condition = 0;
 	rnd_hidval_t x;
 	rnd_gtk_watch_t *watch = (rnd_gtk_watch_t *)data;
 	rnd_bool res;
 
 	if (condition & G_IO_IN)
-		pcb_condition |= RND_WATCH_READABLE;
+		rnd_condition |= RND_WATCH_READABLE;
 	if (condition & G_IO_OUT)
-		pcb_condition |= RND_WATCH_WRITABLE;
+		rnd_condition |= RND_WATCH_WRITABLE;
 	if (condition & G_IO_ERR)
-		pcb_condition |= RND_WATCH_ERROR;
+		rnd_condition |= RND_WATCH_ERROR;
 	if (condition & G_IO_HUP)
-		pcb_condition |= RND_WATCH_HANGUP;
+		rnd_condition |= RND_WATCH_HANGUP;
 
 	x.ptr = (void *)watch;
-	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
+	res = watch->func(x, watch->fd, rnd_condition, watch->user_data);
 
 	rnd_gtk_mode_cursor_main();
 

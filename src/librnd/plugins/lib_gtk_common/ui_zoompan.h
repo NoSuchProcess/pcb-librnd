@@ -67,8 +67,8 @@ typedef struct {
 
 	rnd_bool has_entered;
 	rnd_bool panning;
-	rnd_coord_t pcb_x, pcb_y;              /* PCB coordinates of the mouse pointer */
-	rnd_coord_t crosshair_x, crosshair_y;  /* PCB coordinates of the crosshair     */
+	rnd_coord_t pcb_x, pcb_y;              /* design space coordinates of the mouse pointer */
+	rnd_coord_t crosshair_x, crosshair_y;  /* design_space coordinates of the crosshair     */
 
 	struct rnd_gtk_s *ctx;
 } rnd_gtk_view_t;
