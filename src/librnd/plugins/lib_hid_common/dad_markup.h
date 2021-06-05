@@ -27,15 +27,15 @@
 #include <ctype.h>
 
 typedef enum {
-	PCB_MKS_RED       = 1,
-	PCB_MKS_GREEN     = 2,
-	PCB_MKS_BLUE      = 4,
-	PCB_MKS_BOLD      = 8,
-	PCB_MKS_ITALIC    = 16
-} pcb_markup_state_t;
+	RND_MKS_RED       = 1,
+	RND_MKS_GREEN     = 2,
+	RND_MKS_BLUE      = 4,
+	RND_MKS_BOLD      = 8,
+	RND_MKS_ITALIC    = 16
+} rnd_markup_state_t;
 
 
-RND_INLINE const char *pcb_markup_next(pcb_markup_state_t *st, const char **at_, long *len)
+RND_INLINE const char *rnd_markup_next(rnd_markup_state_t *st, const char **at_, long *len)
 {
 	const char *start, *at = *at_;
 
@@ -46,18 +46,18 @@ RND_INLINE const char *pcb_markup_next(pcb_markup_state_t *st, const char **at_,
 	start = at;
 	if (*at == '<') {
 		int neg = 0;
-		pcb_markup_state_t bit = 0;
+		rnd_markup_state_t bit = 0;
 		at++;
 		if (*at == '/') {
 			neg = 1;
 			at++;
 		}
 		switch(*at) {
-			case 'R': bit = PCB_MKS_RED; break;
-			case 'G': bit = PCB_MKS_GREEN; break;
-			case 'B': bit = PCB_MKS_BLUE; break;
-			case 'b': bit = PCB_MKS_BOLD; break;
-			case 'i': bit = PCB_MKS_ITALIC; break;
+			case 'R': bit = RND_MKS_RED; break;
+			case 'G': bit = RND_MKS_GREEN; break;
+			case 'B': bit = RND_MKS_BLUE; break;
+			case 'b': bit = RND_MKS_BOLD; break;
+			case 'i': bit = RND_MKS_ITALIC; break;
 		}
 		at++;
 		if ((bit != 0) && (*at == '>')) {

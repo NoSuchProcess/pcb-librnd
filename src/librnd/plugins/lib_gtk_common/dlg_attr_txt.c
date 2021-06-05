@@ -136,7 +136,7 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_tex
 	GtkTextBuffer *b = gtk_text_view_get_buffer(GTK_TEXT_VIEW(wtxt));
 
 	if (how & RND_HID_TEXT_MARKUP) {
-		pcb_markup_state_t st = 0;
+		rnd_markup_state_t st = 0;
 		const char *seg;
 		long seglen;
 
@@ -148,7 +148,7 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_tex
 			gtk_text_buffer_create_tag(b, "blue", "foreground", "#0000aa", NULL);
 			tctx->markup_inited = 1;
 		}
-		while((seg = pcb_markup_next(&st, &str, &seglen)) != NULL) {
+		while((seg = rnd_markup_next(&st, &str, &seglen)) != NULL) {
 			GtkTextIter it1, it2;
 			GtkTextMark *m;
 			const char *tag;
@@ -159,11 +159,11 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_tex
 			o1 = gtk_text_iter_get_offset(&it1);
 			txt_set_text_(b, how, seg, seglen);
 			if (st != 0) {
-				if (st & PCB_MKS_RED) tag = "red";
-				if (st & PCB_MKS_GREEN) tag = "green";
-				if (st & PCB_MKS_BLUE) tag = "blue";
-				if (st & PCB_MKS_BOLD) tag = "bold";
-				if (st & PCB_MKS_ITALIC) tag = "italic";
+				if (st & RND_MKS_RED) tag = "red";
+				if (st & RND_MKS_GREEN) tag = "green";
+				if (st & RND_MKS_BLUE) tag = "blue";
+				if (st & RND_MKS_BOLD) tag = "bold";
+				if (st & RND_MKS_ITALIC) tag = "italic";
 				m = gtk_text_buffer_get_insert(b);
 				gtk_text_buffer_get_iter_at_mark(b, &it2, m);
 				gtk_text_buffer_get_iter_at_mark(b, &it1, m);

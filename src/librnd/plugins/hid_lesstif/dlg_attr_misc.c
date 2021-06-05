@@ -383,12 +383,12 @@ static void ltf_text_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
 
 	if (how & RND_HID_TEXT_MARKUP) {
 		char *orig, *tmp = rnd_strdup(txt);
-		pcb_markup_state_t st = 0;
+		rnd_markup_state_t st = 0;
 		char *seg;
 		long seglen;
 
 		orig = tmp;
-		while((seg = (char *)pcb_markup_next(&st, (const char **)&tmp, &seglen)) != NULL) {
+		while((seg = (char *)rnd_markup_next(&st, (const char **)&tmp, &seglen)) != NULL) {
 			char save = seg[seglen];
 			seg[seglen] = '\0';
 			ltf_text_set_text_(wtxt, how, seg);
