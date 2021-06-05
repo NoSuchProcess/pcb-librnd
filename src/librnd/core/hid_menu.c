@@ -1393,7 +1393,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 		if (!m->has_file) continue;
 		if (m->loaded_for_conf && !m->cfg_found) {
 			mfn = m->cfg.doc->root->file_name;
-/*			pcb_trace("cfg unload %s\n", mfn); */
+/*			rnd_trace("cfg unload %s\n", mfn); */
 			rnd_hid_menu_unload_patch(rnd_gui, m);
 		}
 	}
@@ -1414,7 +1414,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 		}
 
 		if (!found) {
-/*			pcb_trace("cfg load %s\n", *cfn);*/
+/*			rnd_trace("cfg load %s\n", *cfn);*/
 			rnd_menu_patch_t *m = rnd_hid_menu_load(rnd_gui, NULL, "cfg", 250, *cfn, 1, NULL, "Loaded from config node rc/menu_patches");
 			if (m != NULL)
 				m->loaded_for_conf = 1;

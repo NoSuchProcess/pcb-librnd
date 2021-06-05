@@ -957,7 +957,7 @@ char *rnd_strdup_vprintf(const char *fmt, va_list args)
 }
 
 
-/* Wrapper for pcb_safe_append_vprintf that appends to a string using vararg API */
+/* Wrapper for rnd_safe_append_vprintf that appends to a string using vararg API */
 int rnd_append_printf(gds_t *str, const char *fmt, ...)
 {
 	int retval;

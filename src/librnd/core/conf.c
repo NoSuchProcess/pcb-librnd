@@ -468,7 +468,7 @@ const char *rnd_conf_get_user_conf_name()
 	return rnd_app.conf_user_path;
 }
 
-const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
+const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *design_fn, const char **try)
 {
 	static char res[RND_PATH_MAX+1];
 	static const char *project_name = "project.lht";
@@ -481,10 +481,10 @@ const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *p
 		goto check;
 	}
 
-	if (pcb_fn != NULL) {
+	if (design_fn != NULL) {
 		char *end;
 		/* replace pcb name with project_name and test */
-		strncpy(res, pcb_fn, sizeof(res)-1);
+		strncpy(res, design_fn, sizeof(res)-1);
 		res[sizeof(res)-1] = '\0';
 		end = strrchr(res, RND_DIR_SEPARATOR_C);
 		if (end != NULL) {
@@ -1267,7 +1267,7 @@ lht_node_t *rnd_conf_lht_get_at(rnd_conf_role_t target, const char *path, int cr
 }
 
 
-void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
+void rnd_conf_load_all(const char *project_fn, const char *design_fn)
 {
 	const char *pc, *try;
 
@@ -1278,7 +1278,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	/* load config files */
 	rnd_conf_load_as(RND_CFR_SYSTEM, rnd_app.conf_sys_path, 0);
 	rnd_conf_load_as(RND_CFR_USER, rnd_app.conf_user_path, 0);
-	pc = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);
+	pc = rnd_conf_get_project_conf_name(project_fn, design_fn, &try);
 	if (pc != NULL)
 		rnd_conf_load_as(RND_CFR_PROJECT, pc, 0);
 	rnd_conf_merge_all(NULL);
@@ -1292,7 +1292,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	rnd_conf_in_production = 1;
 }
 
-void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn)
+void rnd_conf_load_extra(const char *project_fn, const char *design_fn)
 {
 	int cnt;
 	cnt = conf_load_plug_files(RND_CFR_SYSTEM, rnd_app.conf_sysdir_path);
@@ -1303,13 +1303,13 @@ void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn)
 }
 
 
-void rnd_conf_load_project(const char *project_fn, const char *pcb_fn)
+void rnd_conf_load_project(const char *project_fn, const char *design_fn)
 {
 	const char *pc, *try;
 
-	assert((project_fn != NULL) || (pcb_fn != NULL));
+	assert((project_fn != NULL) || (design_fn != NULL));
 
-	pc = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);
+	pc = rnd_conf_get_project_conf_name(project_fn, design_fn, &try);
 	if (pc != NULL)
 		if (rnd_conf_load_as(RND_CFR_PROJECT, pc, 0) != 0)
 			pc = NULL;
@@ -1904,7 +1904,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 }
 
 
-int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *pcb_fn, rnd_conf_role_t role, const char *fn)
+int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn)
 {
 	int fail = 1;
 	lht_node_t *r = rnd_conf_lht_get_first(role, 0);
@@ -1921,7 +1921,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 				fn = rnd_app.conf_user_path;
 				break;
 			case RND_CFR_PROJECT:
-				fn = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);
+				fn = rnd_conf_get_project_conf_name(project_fn, design_fn, &try);
 				if (fn == NULL) {
 					rnd_message(RND_MSG_ERROR, "Error: can not save config to project file: %s does not exist - please create an empty file there first\n", try);
 					return -1;
