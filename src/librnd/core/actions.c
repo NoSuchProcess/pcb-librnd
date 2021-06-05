@@ -377,7 +377,7 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	if (rnd_gui == NULL) {
-		fprintf(stderr, "pcb_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
+		fprintf(stderr, "rnd_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
 		*x = 0;
 		*y = 0;
 		return -1;

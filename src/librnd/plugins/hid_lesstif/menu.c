@@ -105,7 +105,7 @@ void lesstif_update_widget_flags(rnd_hid_t *hid, const char *cookie)
 		if (wflags[i].w == NULL)
 			continue;
 
-		v = pcb_hid_get_flag(ltf_hidlib, wflags[i].flagname);
+		v = rnd_hid_get_flag(ltf_hidlib, wflags[i].flagname);
 		if (v < 0) {
 			XtSetArg(args[0], wflags[i].xres, 0);
 			XtSetArg(args[1], XtNsensitive, 0);
@@ -384,7 +384,7 @@ static void add_res2menu_main(Widget menu, lht_node_t *node, XtCallbackProc call
 
 	node->user_data = md;
 
-	if (pcb_hid_cfg_has_submenus(node)) {
+	if (rnd_hid_cfg_has_submenus(node)) {
 		lht_node_t *i;
 		i = rnd_hid_cfg_menu_field(node, RND_MF_SUBMENU, NULL);
 		for(i = i->data.list.first; i != NULL; i = i->next)
@@ -469,7 +469,7 @@ TODO(": remove this call")
 	set_ins_after(menu, ins_after);
 
 	md = menu_data_alloc();
-	if (pcb_hid_cfg_has_submenus(node)) {
+	if (rnd_hid_cfg_has_submenus(node)) {
 		int nn = stdarg_n;
 		lht_node_t *i;
 		const char *field_name;
@@ -483,7 +483,7 @@ TODO(": remove this call")
 		md->btn = XmCreateCascadeButton(menu, XmStrCast("menubutton"), stdarg_args, stdarg_n);
 		XtManageChild(md->btn);
 
-		/* assume submenu is a list, pcb_hid_cfg_has_submenus() already checked that */
+		/* assume submenu is a list, rnd_hid_cfg_has_submenus() already checked that */
 		for(i = submenu_node->data.list.first; i != NULL; i = i->next)
 			add_node_to_menu(md->sub, NULL, i, callback, level+1);
 	}
@@ -680,7 +680,7 @@ int lesstif_create_menu_widget_path(void *ctx, const char *path, const char *nam
 
 int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
-	return pcb_hid_cfg_remove_menu_node(rnd_gui->menu, node, del_menu, NULL);
+	return rnd_hid_cfg_remove_menu_node(rnd_gui->menu, node, del_menu, NULL);
 }
 
 rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid)

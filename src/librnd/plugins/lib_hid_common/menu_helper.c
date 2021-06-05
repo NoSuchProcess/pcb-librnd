@@ -39,7 +39,7 @@
 
 #include "menu_helper.h"
 
-int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
+int rnd_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 {
 	const char *cp;
 
@@ -113,7 +113,7 @@ int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 			}
 		}
 		else {
-			fprintf(stderr, "ERROR: pcb_hid_get_flag(%s) - not a path or an action\n", name);
+			fprintf(stderr, "ERROR: rnd_hid_get_flag(%s) - not a path or an action\n", name);
 		}
 	}
 	return -1;
@@ -133,7 +133,7 @@ const char *rnd_hid_cfg_menu_field_str(const lht_node_t *submenu, rnd_hid_cfg_me
 	return n->data.text.value;
 }
 
-int pcb_hid_cfg_has_submenus(const lht_node_t *submenu)
+int rnd_hid_cfg_has_submenus(const lht_node_t *submenu)
 {
 	const char *fldname;
 	lht_node_t *n = rnd_hid_cfg_menu_field(submenu, RND_MF_SUBMENU, &fldname);
@@ -151,7 +151,7 @@ lht_node_t *rnd_hid_cfg_menu_field_path(const lht_node_t *parent, const char *pa
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
 
-int pcb_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+int rnd_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if ((root == NULL) || (hr == NULL))
 		return -1;

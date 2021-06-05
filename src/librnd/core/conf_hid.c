@@ -36,7 +36,7 @@ const rnd_conf_hid_callbacks_t *rnd_conf_hid_set_cb(rnd_conf_native_t *cfg, rnd_
 static int conf_hid_id_next = 0;
 static htpp_t *conf_hid_ids = NULL;
 
-static void conf_pcb_hid_init(void)
+static void conf_rnd_hid_init(void)
 {
 	if (conf_hid_ids == NULL)
 		conf_hid_ids = htpp_alloc(ptrhash, ptrkeyeq);
@@ -65,7 +65,7 @@ rnd_conf_hid_id_t rnd_conf_hid_reg(const char *cookie, const rnd_conf_hid_callba
 	if (cookie == NULL)
 		return -1;
 
-	conf_pcb_hid_init();
+	conf_rnd_hid_init();
 	if (htpp_getentry(conf_hid_ids, (void *)cookie) != NULL)
 		return -1; /* already registered */
 

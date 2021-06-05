@@ -33,11 +33,11 @@
    an action (if name has a parenthesis). When an action is run, it has 0
    or 1 argument only and the return value of the action is returned.
    On error, returns -1. */
-int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name);
+int rnd_hid_get_flag(rnd_hidlib_t *hidlib, const char *name);
 
 /* Return non-zero if submenu has further submenus; generate rnd_message(RND_MSG_ERROR, ) if
    there is a submenu field with the wrong lihata type */
-int pcb_hid_cfg_has_submenus(const lht_node_t *submenu);
+int rnd_hid_cfg_has_submenus(const lht_node_t *submenu);
 
 /* Return a lihata node using a relative lihata path from parent - this is
    just a wrapper around lht_tree_path_ */
@@ -49,6 +49,6 @@ const char *rnd_hid_cfg_menu_field_str(const lht_node_t *submenu, rnd_hid_cfg_me
 
 /* Remove a path recursively; call gui_remove() on leaf paths until the subtree
    is consumed (should return 0 on success) */
-int pcb_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
+int rnd_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx);
 
 #endif

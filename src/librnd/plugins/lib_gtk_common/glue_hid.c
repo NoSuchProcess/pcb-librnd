@@ -300,7 +300,7 @@ static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	return pcb_hid_cfg_remove_menu_node(hid->menu, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
+	return rnd_hid_cfg_remove_menu_node(hid->menu, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
 static int ghid_create_menu_by_node(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)

@@ -435,7 +435,7 @@ int rnd_hid_cfg_keys_add_by_desc(rnd_hid_cfg_keys_t *km, const lht_node_t *keyde
 	return rnd_hid_cfg_keys_add_by_desc_(km, keydescn, action_node, NULL, 0);
 }
 
-int pcb_hid_cfg_keys_del_by_strdesc(rnd_hid_cfg_keys_t *km, const char *keydesc)
+int rnd_hid_cfg_keys_del_by_strdesc(rnd_hid_cfg_keys_t *km, const char *keydesc)
 {
 	rnd_hid_cfg_mod_t mods[RND_HIDCFG_MAX_KEYSEQ_LEN];
 	unsigned short int key_raws[RND_HIDCFG_MAX_KEYSEQ_LEN];
@@ -475,7 +475,7 @@ int pcb_hid_cfg_keys_del_by_strdesc(rnd_hid_cfg_keys_t *km, const char *keydesc)
 int rnd_hid_cfg_keys_del_by_desc(rnd_hid_cfg_keys_t *km, const lht_node_t *keydescn)
 {
 	switch(keydescn->type) {
-		case LHT_TEXT: return pcb_hid_cfg_keys_del_by_strdesc(km, keydescn->data.text.value);
+		case LHT_TEXT: return rnd_hid_cfg_keys_del_by_strdesc(km, keydescn->data.text.value);
 		case LHT_LIST:
 		{
 			int ret = 0;
@@ -483,7 +483,7 @@ int rnd_hid_cfg_keys_del_by_desc(rnd_hid_cfg_keys_t *km, const lht_node_t *keyde
 			for(n = keydescn->data.list.first; n != NULL; n = n->next) {
 				if (n->type != LHT_TEXT)
 					break;
-				ret |= pcb_hid_cfg_keys_del_by_strdesc(km, n->data.text.value);
+				ret |= rnd_hid_cfg_keys_del_by_strdesc(km, n->data.text.value);
 			}
 			return ret;
 		}

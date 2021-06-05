@@ -140,7 +140,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 	menu_label = g_strdup(tmp_val);
 
-	if (pcb_hid_cfg_has_submenus(sub_res)) {
+	if (rnd_hid_cfg_has_submenus(sub_res)) {
 		/* SUBMENU */
 		GtkWidget *submenu = gtk_menu_new();
 		GtkWidget *item = gtk_menu_item_new_with_mnemonic(menu_label);
@@ -155,7 +155,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		/* add tearoff to menu */
 		gtk_menu_shell_append(GTK_MENU_SHELL(submenu), tearoff);
 
-		/* recurse on the newly-added submenu; pcb_hid_cfg_has_submenus() makes sure
+		/* recurse on the newly-added submenu; rnd_hid_cfg_has_submenus() makes sure
 		   the node format is correct; iterate over the list of submenus and create
 		   them recursively. */
 		n = rnd_hid_cfg_menu_field(sub_res, RND_MF_SUBMENU, NULL);
@@ -445,7 +445,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
-		int v = pcb_hid_get_flag(hidlib, tflag);
+		int v = rnd_hid_get_flag(hidlib, tflag);
 		if (v < 0) {
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
 			gtk_action_set_sensitive(act, 0);
@@ -454,7 +454,7 @@ void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tfl
 			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), !!v);
 	}
 	if (aflag != NULL) {
-		int v = pcb_hid_get_flag(hidlib, aflag);
+		int v = rnd_hid_get_flag(hidlib, aflag);
 		gtk_action_set_sensitive(act, !!v);
 	}
 }

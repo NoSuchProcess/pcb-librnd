@@ -276,7 +276,7 @@ rnd_hid_t *rnd_hid_find_printer()
 	return 0;
 }
 
-void pcb_hid_print_exporter_list(FILE *f, const char *prefix, const char *suffix)
+void rnd_hid_print_exporter_list(FILE *f, const char *prefix, const char *suffix)
 {
 	int i;
 	for (i = 0; i < rnd_hid_num_hids; i++)
@@ -294,7 +294,7 @@ rnd_hid_t *rnd_hid_find_exporter(const char *which)
 	}
 
 	if (strcmp(which, "-list-") == 0) {
-		pcb_hid_print_exporter_list(stdout, "", "\n");
+		rnd_hid_print_exporter_list(stdout, "", "\n");
 		return 0;
 	}
 
@@ -305,7 +305,7 @@ rnd_hid_t *rnd_hid_find_exporter(const char *which)
 	fprintf(stderr, "Invalid exporter %s, available ones:", which);
 
 	list:;
-	pcb_hid_print_exporter_list(stderr, " ", "");
+	rnd_hid_print_exporter_list(stderr, " ", "");
 	fprintf(stderr, "\n");
 
 	return 0;
@@ -366,7 +366,7 @@ static vts0_t hidlib_conffile;
 
 extern void pcb_hidlib_error_init2(void);
 extern void rnd_hid_dlg_init2(void);
-extern void pcb_hid_nogui_init2(void);
+extern void rnd_hid_nogui_init2(void);
 extern void rnd_conf_act_init2(void);
 extern void rnd_tool_act_init2(void);
 extern void rnd_gui_act_init2(void);
@@ -411,7 +411,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	/* core actions */
 	pcb_hidlib_error_init2();
 	rnd_hid_dlg_init2();
-	pcb_hid_nogui_init2();
+	rnd_hid_nogui_init2();
 	rnd_conf_act_init2();
 	rnd_tool_act_init2();
 	rnd_gui_act_init2();
