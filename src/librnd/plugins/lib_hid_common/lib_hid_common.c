@@ -59,10 +59,10 @@ static const char *grid_cookie = "lib_hid_common/grid";
 static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
 
-extern void pcb_dad_spin_update_global_coords(void);
+extern void rnd_dad_spin_update_global_coords(void);
 static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pcb_dad_spin_update_global_coords();
+	rnd_dad_spin_update_global_coords();
 }
 
 const char rnd_acts_Command[] = "Command()";

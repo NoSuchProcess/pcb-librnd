@@ -615,7 +615,7 @@ void rnd_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help)
 		rnd_gui->attr_dlg_set_help(*spin->hid_ctx, spin->wstr, help);
 }
 
-void pcb_dad_spin_update_global_coords(void)
+void rnd_dad_spin_update_global_coords(void)
 {
 	rnd_hid_dad_spin_t *spin;
 
