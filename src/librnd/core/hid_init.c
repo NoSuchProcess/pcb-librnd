@@ -550,7 +550,7 @@ static int truncdir(char *dir)
 	*dir = '\0';
 	return 0;
 }
-extern int pcb_mkdir_(const char *path, int mode);
+extern int rnd_mkdir_(const char *path, int mode);
 char *rnd_w32_root;
 char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
 #endif
@@ -596,7 +596,7 @@ void rnd_fix_locale_and_env_()
 		rnd_w32_sharedir = rnd_concat(exedir, "/share/pcb-rnd", NULL);
 
 		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
-		pcb_mkdir_(rnd_w32_cachedir, 0755);
+		rnd_mkdir_(rnd_w32_cachedir, 0755);
 
 /*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
 	}

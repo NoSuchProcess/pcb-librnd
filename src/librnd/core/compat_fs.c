@@ -74,7 +74,7 @@ char *rnd_get_wd(char *path)
 #else
 #	error no mkdir() available
 #endif
-int pcb_mkdir_(const char *path, int mode)
+int rnd_mkdir_(const char *path, int mode)
 {
 #if RND_MKDIR_NUM_ARGS == 1
 	return MKDIR(path);
@@ -302,7 +302,7 @@ int rnd_tempfile_unlink(char *name)
 	return 0;
 }
 
-int pcb_is_dir_(const char *path)
+int rnd_is_dir_(const char *path)
 {
 	struct stat st;
 	if (stat(path, &st) != 0)
@@ -310,7 +310,7 @@ int pcb_is_dir_(const char *path)
 	return S_ISDIR(st.st_mode);
 }
 
-long pcb_file_size_(const char *path)
+long rnd_file_size_(const char *path)
 {
 	struct stat st;
 	if (stat(path, &st) != 0)
@@ -320,7 +320,7 @@ long pcb_file_size_(const char *path)
 	return st.st_size;
 }
 
-double pcb_file_mtime_(const char *path)
+double rnd_file_mtime_(const char *path)
 {
 	struct stat st;
 	if (stat(path, &st) != 0)

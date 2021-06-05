@@ -48,7 +48,7 @@
 
 
 /* Evaluates op(arg1,arg2); returns 0 if the operation is permitted */
-static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
+static int rnd_safe_fs_check(const char *op, const char *arg1, const char *arg2)
 {
 	return 0;
 }
@@ -56,7 +56,7 @@ static int pcb_safe_fs_check(const char *op, const char *arg1, const char *arg2)
 /* Evaluate op(arg1,arg2) and print error and return err_ret if not permitted */
 #define CHECK(func, op, arg1, arg2, err_inst) \
 do { \
-	if (pcb_safe_fs_check(op, arg1, arg2) != 0) { \
+	if (rnd_safe_fs_check(op, arg1, arg2) != 0) { \
 		rnd_message(RND_MSG_ERROR, "File system operation %s(): access denied on %s(%s,%s)\n", func, op, arg1, arg2); \
 		err_inst; \
 	} \
@@ -274,7 +274,7 @@ int rnd_closedir(DIR *dir)
 }
 
 
-static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
+static FILE *rnd_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *fn, const char *mode, char **full_path, int recursive)
 {
 	char tmp[RND_PATH_MAX];
 	DIR *d;
@@ -310,7 +310,7 @@ static FILE *pcb_fopen_at_(rnd_hidlib_t *hidlib, const char *from, const char *f
 			continue;
 
 		/* dir: recurse */
-		res = pcb_fopen_at_(hidlib, tmp, fn, mode, full_path, recursive);
+		res = rnd_fopen_at_(hidlib, tmp, fn, mode, full_path, recursive);
 		if (res != NULL) {
 			closedir(d);
 			return res;
@@ -325,7 +325,7 @@ FILE *rnd_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const 
 	if (full_path != NULL)
 		*full_path = NULL;
 
-	return pcb_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
+	return rnd_fopen_at_(hidlib, dir, fn, mode, full_path, recursive);
 }
 
 FILE *rnd_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive)
@@ -380,36 +380,36 @@ FILE *rnd_fopen_first(rnd_hidlib_t *hidlib, const rnd_conflist_t *paths, const c
 	return NULL;
 }
 
-extern int pcb_mkdir_(const char *path, int mode);
+extern int rnd_mkdir_(const char *path, int mode);
 int rnd_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode)
 {
 	CHECK("mkdir", "access", path, NULL, return -1);
 	CHECK("mkdir", "mkdir", path, NULL, return -1);
 
-	return pcb_mkdir_(path, mode);
+	return rnd_mkdir_(path, mode);
 }
 
 
-extern long pcb_file_size_(const char *path);
+extern long rnd_file_size_(const char *path);
 long rnd_file_size(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_size", "access", path, NULL, return -1);
 	CHECK("file_size", "stat", path, NULL, return -1);
-	return pcb_file_size_(path);
+	return rnd_file_size_(path);
 }
 
-extern int pcb_is_dir_(const char *path);
+extern int rnd_is_dir_(const char *path);
 int rnd_is_dir(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("is_dir", "access", path, NULL, return -1);
 	CHECK("is_dir", "stat", path, NULL, return -1);
-	return pcb_is_dir_(path);
+	return rnd_is_dir_(path);
 }
 
-extern double pcb_file_mtime_(const char *path);
+extern double rnd_file_mtime_(const char *path);
 double rnd_file_mtime(rnd_hidlib_t *hidlib, const char *path)
 {
 	CHECK("file_mtime", "access", path, NULL, return -1);
 	CHECK("file_mtime", "stat", path, NULL, return -1);
-	return pcb_file_mtime_(path);
+	return rnd_file_mtime_(path);
 }
