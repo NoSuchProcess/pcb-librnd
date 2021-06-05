@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  librnd - ringdove EDA lib
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,9 +47,7 @@
 extern const pup_buildin_t pup_buildins[];
 
 
-static const char *default_embedded_menu = "";
 static const char *menu_file_paths[] = { "./", "~/.foobar/", NULL };
-static const char *menu_name_fmt = "foobar-menu.lht";
 
 #define FOOBAR_VERSION "1.0.0"
 #define FOOBARSHAREDIR "/usr/share/foobar"
@@ -159,9 +157,9 @@ int main(int argc, char *argv[])
 	rnd_app.version = FOOBAR_VERSION;
 	rnd_app.url = "http://repo.hu/projects/foobar";
 
-	rnd_app.default_embedded_menu = default_embedded_menu = "";
+	rnd_app.default_embedded_menu = "";
 	rnd_app.menu_file_paths = menu_file_paths;
-	rnd_app.menu_name_fmt = menu_name_fmt;
+	rnd_app.menu_name_fmt = "foobar-menu.lht";
 
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
 	rnd_app.conf_user_path = CONF_USER_DIR "/foobar-conf.lht";
