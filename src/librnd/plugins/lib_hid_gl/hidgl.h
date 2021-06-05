@@ -39,7 +39,6 @@ void hidgl_draw_texture_rect(	rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rn
 void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale);
 void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y);
 void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
-void hidgl_fill_pcb_polygon(rnd_polyarea_t *poly, const rnd_box_t *clip_box, double scale, int fullpoly);
 void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 void hidgl_init(void);
 void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
