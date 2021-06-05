@@ -165,7 +165,7 @@ static void irc_disconnect(const char *reason)
 
 static void irc_connect(int open_dlg)
 {
-	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "pcb-rnd irc action") == 0) {
+	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "librnd irc action") == 0) {
 		if (open_dlg)
 			pcb_dlg_irc();
 		irc_printf(0, ("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
@@ -261,7 +261,7 @@ static int pcb_dlg_irc(void)
 		RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_sendver_cb);
-				RND_DAD_HELP(irc_ctx.dlg, "Send your pcb-rnd version as if you typed it in");
+				RND_DAD_HELP(irc_ctx.dlg, "Send software version as if you typed it in");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_savelog_cb);
 				RND_DAD_HELP(irc_ctx.dlg, "Save the chat log to a plain text file");
@@ -297,7 +297,7 @@ static int pcb_dlg_irc(void)
 
 	RND_DAD_DEFSIZE(irc_ctx.dlg, 400, 500);
 
-	RND_DAD_NEW("irc", irc_ctx.dlg, "pcb-rnd online-help: IRC", &irc_ctx, rnd_false, irc_close_cb);
+	RND_DAD_NEW("irc", irc_ctx.dlg, "Ringdove online-help: IRC", &irc_ctx, rnd_false, irc_close_cb);
 
 	{
 		rnd_hid_attribute_t *atxt = &irc_ctx.dlg[irc_ctx.wtxt];
@@ -357,7 +357,7 @@ static int pcb_dlg_login_irc_login(void)
 		r ^= rand();
 		r ^= time(NULL);
 		free(nick);
-		nick = rnd_strdup_printf("pcb-rnd-%d", r % 100000);
+		nick = rnd_strdup_printf("%s-%d", rnd_app.package, r % 100000);
 	}
 
 	RND_DAD_BEGIN_VBOX(irc_ctx.dlg_login);
@@ -385,7 +385,7 @@ static int pcb_dlg_login_irc_login(void)
 
 		RND_DAD_END(irc_ctx.dlg_login);
 
-		RND_DAD_LABEL(irc_ctx.dlg_login, "The 'Connect!' button will connect you to a public\nIRC server where pcb-rnd users and developers will\nhelp you in a chat.");
+		RND_DAD_LABEL(irc_ctx.dlg_login, "The 'Connect!' button will connect you to a public\nIRC server where Ringdove users and developers will\nhelp you in a chat.");
 
 		RND_DAD_BUTTON_CLOSES(irc_ctx.dlg_login, clbtn);
 	RND_DAD_END(irc_ctx.dlg_login);
@@ -393,7 +393,7 @@ static int pcb_dlg_login_irc_login(void)
 	/* set up the context */
 	irc_ctx.state = IRC_LOGIN;
 
-	RND_DAD_NEW("irc_login", irc_ctx.dlg_login, "pcb-rnd online-help: IRC", &irc_ctx, rnd_false, irc_login_close_cb);
+	RND_DAD_NEW("irc_login", irc_ctx.dlg_login, "Ringdove online-help: IRC", &irc_ctx, rnd_false, irc_login_close_cb);
 	return 0;
 }
 
