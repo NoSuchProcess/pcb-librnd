@@ -33,9 +33,9 @@
 #include <librnd/poly/offset.h>
 
 #if 0
-#define pcbo_trace rnd_trace
+#define rndo_trace rnd_trace
 #else
-static void pcbo_trace(char *fmt, ...) {}
+static void rndo_trace(char *fmt, ...) {}
 #endif
 
 void rnd_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -209,7 +209,7 @@ rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs)
 			res = pl;
 		}
 	}
-	pcbo_trace("best area: %f out of %d\n", best, selfi.used);
+	rndo_trace("best area: %f out of %d\n", best, selfi.used);
 	for(n = 0; n < selfi.used; n++) {
 		rnd_pline_t *pl = selfi.array[n];
 		if (res != pl)
@@ -277,16 +277,16 @@ RND_INLINE int pull_back(rnd_vnode_t *v, const rnd_vnode_t *vp, double tune, dou
 
 	c = (ldy * vx - ldx * vy);
 	if ((c < 0.0001) && (c > -0.0001)) {
-		pcbo_trace("   par1: vp=%.12mm;%.12mm v=%.12mm;%.12mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-		pcbo_trace("   par2: vx=%f;%f ld=%f;%f\n", vx, vy, ldx, ldy);
+		rndo_trace("   par1: vp=%.12mm;%.12mm v=%.12mm;%.12mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
+		rndo_trace("   par2: vx=%f;%f ld=%f;%f\n", vx, vy, ldx, ldy);
 		return -1; /* perpendicular; no pullbakc could help */
 	}
 
 	c = tune * ((-pry * ldx + prx * ldy) / c);
 
-	pcbo_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-	pcbo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (rnd_coord_t)tune);
-	pcbo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (rnd_coord_t)c, c, (rnd_coord_t)(v->point[0] + c * vx), (rnd_coord_t)(v->point[1] + c * vy));
+	rndo_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
+	rndo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (rnd_coord_t)tune);
+	rndo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (rnd_coord_t)c, c, (rnd_coord_t)(v->point[0] + c * vx), (rnd_coord_t)(v->point[1] + c * vy));
 
 	if (c < 0) {
 		v->point[0] = vp->point[0];
@@ -351,7 +351,7 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 				dotp = ax * dx + ay * dy;
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
-				pcbo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (rnd_coord_t)prjx, (rnd_coord_t)prjy, inside);
+				rndo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (rnd_coord_t)prjx, (rnd_coord_t)prjy, inside);
 
 				/* this is how much the point needs to be moved away from the line */
 				if (inside)
@@ -361,8 +361,8 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 				if (tune < 5)
 					continue;
 
-				pcbo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (rnd_coord_t)tune, (rnd_coord_t)prjx, (rnd_coord_t)prjy);
-				pcbo_trace(" tune=%.012mm dist=%.012mm\n", (rnd_coord_t)tune, (rnd_coord_t)sqrt(dist));
+				rndo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (rnd_coord_t)tune, (rnd_coord_t)prjx, (rnd_coord_t)prjy);
+				rndo_trace(" tune=%.012mm dist=%.012mm\n", (rnd_coord_t)tune, (rnd_coord_t)sqrt(dist));
 
 
 				/* corner case: if next segment is parallel to what we are compesing to
