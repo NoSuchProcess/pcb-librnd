@@ -67,6 +67,9 @@
 char *rnd_conf_dot_dir = ".librnd";
 char *rnd_conf_lib_dir = "/usr/lib/librnd";
 
+int rnd_coord_t_size = sizeof(rnd_coord_t);
+
+
 static const char *flt_any[] = {"*", "*.*", NULL};
 
 const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
@@ -553,7 +556,7 @@ char *rnd_w32_root;
 char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
 #endif
 
-void rnd_fix_locale_and_env()
+void rnd_fix_locale_and_env_()
 {
 	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
 	const char **lc;

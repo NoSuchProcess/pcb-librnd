@@ -31,6 +31,7 @@
 #ifndef RND_HID_INIT_H
 #define RND_HID_INIT_H
 
+#include <stdio.h>
 #include <puplug/puplug.h>
 #include <genvector/vtp0.h>
 #include <librnd/core/hid.h>
@@ -128,7 +129,10 @@ typedef struct {
 
 /* call this before anything, to switch locale to "C" permanently;
    also sets up the environment on win32. */
-void rnd_fix_locale_and_env();
+#define rnd_fix_locale_and_env() do { rnd_init_macro_checks(); rnd_fix_locale_and_env_(); } while(0)
+
+/* This is called by the macro, do not call this directly */
+void rnd_fix_locale_and_env_();
 
 void rnd_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
@@ -170,5 +174,15 @@ extern char *rnd_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 th
 extern char *rnd_w32_sharedir; /* on FHS this would be $PREFIX/share */
 extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
 #endif
+
+/* Runtime checks that need to be compiled into the host application. Do not
+   use this directly. Invoked by rnd_fix_locale_and_env(). */
+#define rnd_init_macro_checks() \
+	if (sizeof(rnd_coord_t) != rnd_coord_t_size) { \
+		fprintf(stderr, "rnd_init_macro_checks: rnd_coord_t size mismatch between librnd and the host app; please recompile the host app\n"); \
+		exit(1); \
+	}
+
+extern int rnd_coord_t_size;
 
 #endif
