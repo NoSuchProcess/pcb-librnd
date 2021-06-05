@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
 	int n;
 	rnd_main_args_t ga;
 
+	rnd_app.default_embedded_menu = "";
+
 	rnd_fix_locale_and_env();
 
 	rnd_main_args_init(&ga, argc, action_args);
