@@ -187,7 +187,7 @@ void pcb_gtk_pan_common(void)
 
 static void command_post_entry(void)
 {
-#if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
+#if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	pcb_gtk_interface_input_signals_connect();
 #endif
 	pcb_gtk_interface_set_sensitive(TRUE);
@@ -198,7 +198,7 @@ static void command_post_entry(void)
 static void command_pre_entry(void)
 {
 	ghid_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
-#if PCB_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
+#if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	pcb_gtk_interface_input_signals_disconnect();
 #endif
 	pcb_gtk_interface_set_sensitive(FALSE);
