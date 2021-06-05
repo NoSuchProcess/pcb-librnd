@@ -39,7 +39,7 @@ TODO("convert this into an enum")
 
 
 #if 0
-#	define TRACE pcb_trace
+#	define TRACE rnd_trace
 #else
 	void TRACE(const char *fmt, ...) {}
 #endif

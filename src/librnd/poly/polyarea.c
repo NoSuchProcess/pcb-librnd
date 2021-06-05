@@ -3574,10 +3574,10 @@ rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 
 
 /*
- * pcb_is_point_in_convex_quad()
+ * rnd_is_point_in_convex_quad()
  * (C) 2017 Tibor 'Igor2' Palinkas
 */
-rnd_bool_t pcb_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
+rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
 {
 	return point_in_triangle(q[0], q[1], q[2], p) || point_in_triangle(q[0], q[3], q[2], p);
 }
