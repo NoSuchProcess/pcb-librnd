@@ -63,7 +63,7 @@ static void log_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_complet
 
 static void log_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
-	rnd_fprintf(out_, "pcb_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
+	rnd_fprintf(out_, "log_notify_mark_change(%s)\n", changes_complete ? "true" : "false");
 	delegatee_->notify_mark_change(hid, changes_complete);
 }
 
