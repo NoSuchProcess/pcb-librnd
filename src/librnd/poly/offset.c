@@ -33,19 +33,19 @@
 #include <librnd/poly/offset.h>
 
 #if 0
-#define pcbo_trace pcb_trace
+#define pcbo_trace rnd_trace
 #else
 static void pcbo_trace(char *fmt, ...) {}
 #endif
 
-void pcb_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
 	*nx = -dy / len;
 	*ny = dx / len;
 }
 
-void pcb_polo_normd(double *nx, double *ny, double x1, double y1, double x2, double y2)
+void rnd_polo_normd(double *nx, double *ny, double x1, double y1, double x2, double y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
 	*nx = -dy / len;
@@ -119,7 +119,7 @@ void rnd_polo_norms(rnd_polo_t *pcsh, long num_pts)
 
 	for(n = 0; n < num_pts; n++) {
 		long nn = warp(n+1, num_pts);
-		pcb_polo_normd(&pcsh[n].nx, &pcsh[n].ny, pcsh[n].x, pcsh[n].y, pcsh[nn].x, pcsh[nn].y);
+		rnd_polo_normd(&pcsh[n].nx, &pcsh[n].ny, pcsh[n].x, pcsh[n].y, pcsh[nn].x, pcsh[nn].y);
 	}
 }
 
@@ -156,7 +156,7 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 	for(n = 0, v = src->head; n < num_pts; n++, v = v->next) {
 		pcsh[n].x = v->point[0];
 		pcsh[n].y = v->point[1];
-		pcb_polo_norm(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
+		rnd_polo_norm(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 	}
 
 	/* offset the cache */
