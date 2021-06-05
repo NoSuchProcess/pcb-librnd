@@ -56,7 +56,7 @@ static void lead_cb(rnd_hidval_t user_data)
 		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
+static void rnd_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
 {
 	rnd_hidval_t user_data;
 
@@ -75,20 +75,20 @@ static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_c
 		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (argc < 4)
 		return;
 	if ((argv[1].type != RND_EVARG_COORD) || (argv[2].type != RND_EVARG_COORD) || (argv[3].type != RND_EVARG_INT))
 		return;
 
-	pcb_lead_user_to_location(hidlib, argv[1].d.c, argv[2].d.c, argv[3].d.i);
+	rnd_lead_user_to_location(hidlib, argv[1].d.c, argv[2].d.c, argv[3].d.i);
 }
 
 
 
 #define ARL LEAD_ARROW_LEN/3
-void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (lead) {
 		rnd_hid_gc_t *gc = argv[1].d.p;

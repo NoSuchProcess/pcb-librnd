@@ -139,8 +139,8 @@ int pplg_init_lib_hid_common(void)
 	rnd_dialog_place_init();
 
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
-	rnd_event_bind(RND_EVENT_GUI_LEAD_USER, pcb_lead_user_ev, NULL, lead_cookie);
-	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, pcb_lead_user_draw_ev, NULL, lead_cookie);
+	rnd_event_bind(RND_EVENT_GUI_LEAD_USER, rnd_lead_user_ev, NULL, lead_cookie);
+	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, rnd_lead_user_draw_ev, NULL, lead_cookie);
 	rnd_event_bind(RND_EVENT_DAD_NEW_DIALOG, rnd_dialog_place, NULL, wplc_cookie);
 	rnd_event_bind(RND_EVENT_DAD_NEW_GEO, rnd_dialog_resize, NULL, wplc_cookie);
 
