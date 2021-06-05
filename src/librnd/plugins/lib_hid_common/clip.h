@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef PCB_CLIP_H
-#define PCB_CLIP_H
+#ifndef RND_CLIP_H
+#define RND_CLIP_H
 
 
 #include <librnd/core/global_typedefs.h>

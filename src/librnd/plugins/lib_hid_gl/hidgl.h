@@ -25,8 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HID_COMMON_HIDGL_H
-#define PCB_HID_COMMON_HIDGL_H
+#ifndef RND_HID_COMMON_HIDGL_H
+#define RND_HID_COMMON_HIDGL_H
 
 /*extern float global_depth;*/
 void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid);

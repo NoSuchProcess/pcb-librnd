@@ -1,5 +1,5 @@
-#ifndef PCB_GTK_DLG_COMMAND_H
-#define PCB_GTK_DLG_COMMAND_H
+#ifndef RND_GTK_DLG_COMMAND_H
+#define RND_GTK_DLG_COMMAND_H
 
 #include <gtk/gtk.h>
 #include <glib.h>

@@ -1,5 +1,5 @@
-#ifndef PCB_LTF_PREVIEW_H
-#define PCB_LTF_PREVIEW_H
+#ifndef RND_LTF_PREVIEW_H
+#define RND_LTF_PREVIEW_H
 #include <genlist/gendlist.h>
 
 typedef struct pcb_ltf_preview_s {

@@ -1,5 +1,5 @@
-#ifndef PCB_GTK_IN_KEYBOARD_H
-#define PCB_GTK_IN_KEYBOARD_H
+#ifndef RND_GTK_IN_KEYBOARD_H
+#define RND_GTK_IN_KEYBOARD_H
 
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>

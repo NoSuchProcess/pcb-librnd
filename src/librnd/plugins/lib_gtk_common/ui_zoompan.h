@@ -27,8 +27,8 @@
  */
 
 
-#ifndef PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
-#define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
+#ifndef RND_LIB_GTK_COMMON_UI_ZOOMPAN_H
+#define RND_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
 #include <librnd/core/rnd_bool.h>
 

@@ -1,5 +1,5 @@
-#ifndef PCB_GTK_TOPWIN_H
-#define PCB_GTK_TOPWIN_H
+#ifndef RND_GTK_TOPWIN_H
+#define RND_GTK_TOPWIN_H
 
 /* OPTIONAL top window implementation */
 

@@ -26,8 +26,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_GTK_TRUNC_TEXT_H
-#define PCB_GTK_TRUNC_TEXT_H
+#ifndef RND_GTK_TRUNC_TEXT_H
+#define RND_GTK_TRUNC_TEXT_H
 
 #include <gtk/gtk.h>
 typedef struct _GtkTrunctext GtkTrunctext;

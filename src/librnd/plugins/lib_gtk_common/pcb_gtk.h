@@ -25,8 +25,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_GTK_H
-#define PCB_GTK_H
+#ifndef RND_GTK_H
+#define RND_GTK_H
 
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>

@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef PCB_HID_COMMON_MENU_HELPER_H
-#define PCB_HID_COMMON_MENU_HELPER_H
+#ifndef RND_HID_COMMON_MENU_HELPER_H
+#define RND_HID_COMMON_MENU_HELPER_H
 
 /* Looks up an integer (usually boolean) value by conf path or by running
    an action (if name has a parenthesis). When an action is run, it has 0

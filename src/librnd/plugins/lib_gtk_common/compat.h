@@ -24,8 +24,8 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#ifndef PCB_GTK_COMPAT_H
-#define PCB_GTK_COMPAT_H
+#ifndef RND_GTK_COMPAT_H
+#define RND_GTK_COMPAT_H
 
 /*** GTK2 ***/
 

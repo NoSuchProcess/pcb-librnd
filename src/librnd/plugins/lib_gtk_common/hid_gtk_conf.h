@@ -1,5 +1,5 @@
-#ifndef PCB_HID_GTK_CONF_H
-#define PCB_HID_GTK_CONF_H
+#ifndef RND_HID_GTK_CONF_H
+#define RND_HID_GTK_CONF_H
 
 #include <librnd/core/conf.h>
 

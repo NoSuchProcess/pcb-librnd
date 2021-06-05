@@ -32,8 +32,8 @@
    then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd
 */
 
-#ifndef PCB_GTK_WT_REVIEW_H
-#define PCB_GTK_WT_REVIEW_H
+#ifndef RND_GTK_WT_REVIEW_H
+#define RND_GTK_WT_REVIEW_H
 
 #include <gtk/gtk.h>
 #include <genlist/gendlist.h>

@@ -1,5 +1,5 @@
-#ifndef PCB_HID_LOGGER_H
-#define PCB_HID_LOGGER_H
+#ifndef RND_HID_LOGGER_H
+#define RND_HID_LOGGER_H
 
 #include <librnd/core/hid.h>
 
