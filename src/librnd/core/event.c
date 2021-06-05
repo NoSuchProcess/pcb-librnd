@@ -263,7 +263,7 @@ void rnd_events_init(void)
 	}
 }
 
-void pcb_events_uninit_(event_t **events, long last)
+void rnd_events_uninit_(event_t **events, long last)
 {
 	int ev;
 	for(ev = 0; ev < last; ev++) {
@@ -279,9 +279,9 @@ void pcb_events_uninit_(event_t **events, long last)
 
 void rnd_events_uninit(void)
 {
-	pcb_events_uninit_(rnd_events_lib, RND_EVENT_last);
+	rnd_events_uninit_(rnd_events_lib, RND_EVENT_last);
 	if (rnd_event_app_last > 0)
-		pcb_events_uninit_(rnd_events_app, rnd_event_app_last - RND_EVENT_app);
+		rnd_events_uninit_(rnd_events_app, rnd_event_app_last - RND_EVENT_app);
 	free(rnd_events_app);
 }
 

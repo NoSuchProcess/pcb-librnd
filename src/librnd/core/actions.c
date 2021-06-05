@@ -633,7 +633,7 @@ int rnd_cli_leave(void)
 	return -1;
 }
 
-static int pcb_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
+static int rnd_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
 {
 	const rnd_action_t *a;
 	fgw_func_t *f;
@@ -657,7 +657,7 @@ int rnd_cli_tab(rnd_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
-	if (pcb_cli_common(hl, args) != 0)
+	if (rnd_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;
@@ -673,7 +673,7 @@ int rnd_cli_edit(rnd_hidlib_t *hl)
 {
 	fgw_arg_t res, args[2];
 
-	if (pcb_cli_common(hl, args) != 0)
+	if (rnd_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;
@@ -689,7 +689,7 @@ int rnd_cli_mouse(rnd_hidlib_t *hl, rnd_bool notify)
 {
 	fgw_arg_t res, args[3];
 
-	if (pcb_cli_common(hl, args) != 0)
+	if (rnd_cli_common(hl, args) != 0)
 		return -1;
 
 	args[1].type = FGW_STR;

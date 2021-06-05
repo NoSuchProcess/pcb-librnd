@@ -287,7 +287,7 @@ int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 	return -1;
 }
 
-static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags, size_t extra_room)
+static char *rnd_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags, size_t extra_room)
 {
 	gds_t s;
 
@@ -305,7 +305,7 @@ static char *pcb_strdup_subst_(const char *template, int (*cb)(void *ctx, gds_t 
 
 char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags)
 {
-	return pcb_strdup_subst_(template, cb, ctx, flags, 0);
+	return rnd_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
 void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
@@ -317,7 +317,7 @@ void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int nu
 	if (quiet)
 		flags |= RND_SUBST_QUIET;
 	for (; numpaths > 0; numpaths--, in++, out++)
-		*out = pcb_strdup_subst_(*in, rnd_build_fn_cb, hidlib, flags, extra_room);
+		*out = rnd_strdup_subst_(*in, rnd_build_fn_cb, hidlib, flags, extra_room);
 }
 
 void rnd_path_resolve(rnd_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)

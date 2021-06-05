@@ -48,7 +48,7 @@ rnd_file_loaded_t *rnd_file_loaded_category(const char *name, int alloc)
 	return cat;
 }
 
-int pcb_file_loaded_file_free(rnd_file_loaded_t *file)
+int rnd_file_loaded_file_free(rnd_file_loaded_t *file)
 {
 	free(file->data.file.path);
 	free(file->data.file.desc);
@@ -64,7 +64,7 @@ int rnd_file_loaded_clear(rnd_file_loaded_t *cat)
 	assert(cat->type == RND_FLT_CATEGORY);
 
 	for (e = htsp_first(&cat->data.category.children); e; e = htsp_next(&cat->data.category.children, e)) {
-		pcb_file_loaded_file_free(e->value);
+		rnd_file_loaded_file_free(e->value);
 		htsp_delentry(&cat->data.category.children, e);
 	}
 	return 0;
@@ -120,7 +120,7 @@ int rnd_file_loaded_del(rnd_file_loaded_t *cat, const char *name)
 	if (file != NULL) {
 		if (file->type != RND_FLT_FILE)
 			return -1;
-		pcb_file_loaded_file_free(file);
+		rnd_file_loaded_file_free(file);
 	}
 	return 0;
 }

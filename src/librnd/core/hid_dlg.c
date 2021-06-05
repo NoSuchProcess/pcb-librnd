@@ -151,7 +151,7 @@ static void progress_refresh_cb(rnd_hidval_t user_data)
 	rnd_hid_progress(0, 0, refresh);
 }
 
-static int pcb_gui_progress(long so_far, long total, const char *message)
+static int rnd_gui_progress(long so_far, long total, const char *message)
 {
 	double now;
 	static rnd_hidval_t timer;
@@ -249,7 +249,7 @@ int rnd_hid_progress(long so_far, long total, const char *message)
 	if (rnd_gui == NULL)
 		return 0;
 	if ((rnd_gui->gui) && (RND_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
-		return pcb_gui_progress(so_far, total, message);
+		return rnd_gui_progress(so_far, total, message);
 
 	return rnd_nogui_progress(so_far, total, message);
 }
