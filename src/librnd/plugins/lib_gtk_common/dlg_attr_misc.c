@@ -54,7 +54,7 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *att
 	gtk_widget_set_tooltip_text(prg, attr->help_text);
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), prg, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(prg), PCB_OBJ_PROP, ctx);
+	g_object_set_data(G_OBJECT(prg), RND_OBJ_PROP, ctx);
 	return prg;
 }
 
@@ -149,7 +149,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
 	evb = wrap_bind_click(pic, click_cb, attr);
-	g_object_set_data(G_OBJECT(evb), PCB_OBJ_PROP, click_ctx);
+	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP, click_ctx);
 
 	gtk_box_pack_start(GTK_BOX(bparent), evb, expfill, expfill, 0);
 	gtk_widget_set_tooltip_text(pic, attr->help_text);

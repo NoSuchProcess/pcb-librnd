@@ -47,7 +47,7 @@
 #include "hid_gtk_conf.h"
 
 
-#define PCB_OBJ_PROP "pcb-rnd_context"
+#define RND_OBJ_PROP "librnd_context"
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
@@ -90,7 +90,7 @@ typedef struct {
 
 static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), RND_OBJ_PROP);
 	rnd_hid_attribute_t *dst = user_data;
 
 	dst->changed = 1;
@@ -103,7 +103,7 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 
 static void entry_changed_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), RND_OBJ_PROP);
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -116,13 +116,13 @@ static void entry_changed_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 
 static void entry_activate_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), RND_OBJ_PROP);
 	enter_cb(ctx, dst);
 }
 
 static void enum_changed_cb(GtkComboBox *combo_box, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(combo_box), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(combo_box), RND_OBJ_PROP);
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -134,7 +134,7 @@ static void enum_changed_cb(GtkComboBox *combo_box, rnd_hid_attribute_t *dst)
 
 static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(nb), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(nb), RND_OBJ_PROP);
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -150,7 +150,7 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 
 static void button_changed_cb(GtkButton *button, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), RND_OBJ_PROP);
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -161,7 +161,7 @@ static void button_changed_cb(GtkButton *button, rnd_hid_attribute_t *dst)
 
 static void label_click_cb(GtkButton *evbox, GdkEvent *event, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), RND_OBJ_PROP);
 
 	switch(event->button.button) {
 		case 1:
@@ -178,7 +178,7 @@ static void label_click_cb(GtkButton *evbox, GdkEvent *event, rnd_hid_attribute_
 
 static void color_changed_cb(GtkColorButton *button, rnd_hid_attribute_t *dst)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), RND_OBJ_PROP);
 	pcb_gtk_color_t clr;
 	const char *str;
 
@@ -376,7 +376,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 					gtk_box_pack_start(GTK_BOX(parent), widget, expfill, expfill, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
-					g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
+					g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
 				}
 				break;
@@ -425,8 +425,8 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = widget;
 				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
 
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
-				g_object_set_data(G_OBJECT(ctx->wltop[j]), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP, ctx);
 
 				gtk_box_pack_start(GTK_BOX(parent), ctx->wltop[j], FALSE, FALSE, 0);
 				if (!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED))
@@ -449,7 +449,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 				entry = gtk_entry_new();
 				gtk_box_pack_start(GTK_BOX(hbox), entry, expfill, expfill, 0);
-				g_object_set_data(G_OBJECT(entry), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(entry), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
 				if (ctx->attrs[j].val.str != NULL)
@@ -467,7 +467,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				/* put this in a check button */
 				widget = chk_btn_new(parent, ctx->attrs[j].val.lng, set_flag_cb, &(ctx->attrs[j]), NULL);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
-				g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = widget;
 				break;
 
@@ -478,7 +478,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
 				gtk_box_pack_start(GTK_BOX(hbox), combo, expfill, expfill, 0);
-				g_object_set_data(G_OBJECT(combo), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(combo), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = combo;
 
 				/*
@@ -521,13 +521,13 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 			case RND_HATT_PICBUTTON:
 				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE), expfill);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
-				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
 			case RND_HATT_COLOR:
 				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent, j);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "color_set", G_CALLBACK(color_changed_cb), &(ctx->attrs[j]));
-				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
 			case RND_HATT_PROGRESS:
@@ -550,7 +550,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
-				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
 			default:

@@ -180,7 +180,7 @@ static rnd_hid_row_t *ghid_tree_table_get_selected(rnd_hid_attribute_t *attrib, 
 
 static void ghid_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
 {
-	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), PCB_OBJ_PROP);
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), RND_OBJ_PROP);
 	rnd_hid_row_t *r = ghid_tree_table_get_selected(attr, ctx);
 	rnd_hid_tree_t *tree = attr->wdata;
 
@@ -504,7 +504,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	gtk_widget_set_tooltip_text(view, attr->help_text);
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
+	g_object_set_data(G_OBJECT(view), RND_OBJ_PROP, ctx);
 	return view;
 }
 
