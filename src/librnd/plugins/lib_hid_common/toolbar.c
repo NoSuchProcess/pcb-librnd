@@ -209,7 +209,7 @@ void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 
 
 
-static const char *toolbar_cookie = "lib_hid_pcbui/toolbar";
+static const char *toolbar_cookie = "lib_hid_common/toolbar";
 
 static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
 {
