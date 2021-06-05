@@ -46,12 +46,12 @@ conf_stroke_t conf_stroke;
 #define SIDE_X(hl, x)  ((rnd_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
 #define SIDE_Y(hl, y)  ((rnd_conf.editor.view.flip_y ? hl->size_y - (y) : (y)))
 
-static const char *pcb_stroke_cookie = "stroke plugin";
+static const char *rnd_stroke_cookie = "stroke plugin";
 
 static rnd_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
-static rnd_bool pcb_mid_stroke = rnd_false;
+static rnd_bool rnd_mid_stroke = rnd_false;
 
-static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
+static int rnd_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 {
 	rnd_conf_listitem_t *item;
 	int idx;
@@ -65,24 +65,24 @@ static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 	return 0;
 }
 
-static void pcb_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	char msg[255];
 	int *handled = argv[1].d.p;
 
-	if (!pcb_mid_stroke)
+	if (!rnd_mid_stroke)
 		return;
 
-	pcb_mid_stroke = rnd_false;
+	rnd_mid_stroke = rnd_false;
 	if (stroke_trans(msg))
-		*handled = pcb_stroke_exec(hidlib, msg);
+		*handled = rnd_stroke_exec(hidlib, msg);
 }
 
-static void pcb_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 
-	if (!pcb_mid_stroke)
+	if (!rnd_mid_stroke)
 		return;
 
 	stroke_last_x = ev_x;
@@ -93,10 +93,10 @@ static void pcb_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 	return;
 }
 
-static void pcb_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
-	pcb_mid_stroke = rnd_true;
+	rnd_mid_stroke = rnd_true;
 	stroke_first_x = SIDE_X(hidlib, ev_x);
 	stroke_first_y = SIDE_Y(hidlib, ev_y);
 }
@@ -115,7 +115,7 @@ static fgw_error_t rnd_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
 			RND_ACT_FAIL(stroke);
-		pcb_stroke_exec(RND_ACT_HIDLIB, arg);
+		rnd_stroke_exec(RND_ACT_HIDLIB, arg);
 	}
 	else if (rnd_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
@@ -155,8 +155,8 @@ int pplg_uninit_stroke(void)
 {
 	rnd_conf_unreg_intern(stroke_conf_internal);
 	rnd_conf_unreg_fields("plugins/stroke/");
-	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
-	rnd_event_unbind_allcookie(pcb_stroke_cookie);
+	rnd_remove_actions_by_cookie(rnd_stroke_cookie);
+	rnd_event_unbind_allcookie(rnd_stroke_cookie);
 	return 0;
 }
 
@@ -170,11 +170,11 @@ int pplg_init_stroke(void)
 	rnd_conf_reg_field(conf_stroke, field,isarray,type_name,cpath,cname,desc,flags);
 #include "stroke_conf_fields.h"
 
-	RND_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
+	RND_REGISTER_ACTIONS(stroke_action_list, rnd_stroke_cookie)
 
-	rnd_event_bind(RND_EVENT_STROKE_START, pcb_stroke_start, NULL, pcb_stroke_cookie);
-	rnd_event_bind(RND_EVENT_STROKE_RECORD, pcb_stroke_record, NULL, pcb_stroke_cookie);
-	rnd_event_bind(RND_EVENT_STROKE_FINISH, pcb_stroke_finish, NULL, pcb_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_START, rnd_stroke_start, NULL, rnd_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_RECORD, rnd_stroke_record, NULL, rnd_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_FINISH, rnd_stroke_finish, NULL, rnd_stroke_cookie);
 
 	return 0;
 }
