@@ -49,9 +49,9 @@ typedef struct {
 	const char *flagname;
 	int oldval;
 	char *xres;
-} Widgetpcb_flag_t;
+} rnd_ltf_wiget_flag_t;
 
-static Widgetpcb_flag_t *wflags = 0;
+static rnd_ltf_wiget_flag_t *wflags = 0;
 static int n_wflags = 0;
 static int max_wflags = 0;
 
@@ -67,7 +67,7 @@ static int note_widget_flag(Widget w, char *type, const char *name)
 	/* no free slot, alloc a new one */
 	if (n_wflags >= max_wflags) {
 		max_wflags += 20;
-		wflags = (Widgetpcb_flag_t *) realloc(wflags, max_wflags * sizeof(Widgetpcb_flag_t));
+		wflags = (rnd_ltf_wiget_flag_t *) realloc(wflags, max_wflags * sizeof(rnd_ltf_wiget_flag_t));
 	}
 	idx = n_wflags++;
 

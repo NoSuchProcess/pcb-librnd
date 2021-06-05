@@ -1644,7 +1644,7 @@ typedef union {
 } val_union;
 
 static Boolean
-pcb_cvt_string_to_double(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
+rnd_cvt_string_to_double(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
 	static double rv;
 	rv = strtod((char *) from->addr, 0);
@@ -1657,7 +1657,7 @@ pcb_cvt_string_to_double(Display * d, XrmValue * args, Cardinal * num_args, XrmV
 }
 
 static Boolean
-pcb_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
+rnd_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmValue * from, XrmValue * to, XtPointer * data)
 {
 	static rnd_coord_t rv;
 	rv = rnd_get_value((char *) from->addr, NULL, NULL, NULL);
@@ -1713,8 +1713,8 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	val_union *new_values;
 	int render_event, render_error;
 
-	XtSetTypeConverter(XtRString, XtRDouble, pcb_cvt_string_to_double, NULL, 0, XtCacheAll, NULL);
-	XtSetTypeConverter(XtRString, XtRPCBCoord, pcb_cvt_string_to_coord, NULL, 0, XtCacheAll, NULL);
+	XtSetTypeConverter(XtRString, XtRDouble, rnd_cvt_string_to_double, NULL, 0, XtCacheAll, NULL);
+	XtSetTypeConverter(XtRString, XtRPCBCoord, rnd_cvt_string_to_coord, NULL, 0, XtCacheAll, NULL);
 
 	lesstif_reg_attrs();
 
@@ -2737,7 +2737,7 @@ void lesstif_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 /* We need a wrapper around the hid file watch because to pass the correct flags */
 static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 {
-	unsigned int pcb_condition = 0;
+	unsigned int rnd_condition = 0;
 	struct pollfd fds;
 	short condition;
 	rnd_hidval_t x;
@@ -2750,16 +2750,16 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 
 	/* Should we only include those we were asked to watch? */
 	if (condition & POLLIN)
-		pcb_condition |= RND_WATCH_READABLE;
+		rnd_condition |= RND_WATCH_READABLE;
 	if (condition & POLLOUT)
-		pcb_condition |= RND_WATCH_WRITABLE;
+		rnd_condition |= RND_WATCH_WRITABLE;
 	if (condition & POLLERR)
-		pcb_condition |= RND_WATCH_ERROR;
+		rnd_condition |= RND_WATCH_ERROR;
 	if (condition & POLLHUP)
-		pcb_condition |= RND_WATCH_HANGUP;
+		rnd_condition |= RND_WATCH_HANGUP;
 
 	x.ptr = (void *) watch;
-	if (!watch->func(x, watch->fd, pcb_condition, watch->user_data))
+	if (!watch->func(x, watch->fd, rnd_condition, watch->user_data))
 		lesstif_unwatch_file(rnd_gui, x);
 	return;
 }
@@ -2872,7 +2872,7 @@ static int ltf_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *da
 {
 	static long cnt = 0;
 	long item_id, data_id;
-	XmString lab = XmStringCreateLocalized("pcb_rnd");
+	XmString lab = XmStringCreateLocalized(rnd_app.package);
 	
 	
 	if (XmClipboardStartCopy(display, window, lab, CurrentTime, 0, NULL, &item_id) != XmClipboardSuccess) {
