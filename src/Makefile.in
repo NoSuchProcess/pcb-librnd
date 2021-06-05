@@ -546,8 +546,6 @@ append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
 
 # extra core headers to install
 append /local/pcb/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
-# compatibility layer: remove this when librnd goes separate:
-append /local/pcb/HDRS_HIDLIB { $(LIBRND)/pcb_compat.h $(LIBRND)/core/pcb-printf.h }
 
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}

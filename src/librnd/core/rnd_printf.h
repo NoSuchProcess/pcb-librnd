@@ -68,7 +68,7 @@
  *
  * Exotic formats, DO NOT USE:
  *   %mr    output a measure in a unit readable by io_pcb parse_l.l
- *          (outputs in centimil without units - compatibility with mainline)
+ *          (outputs in centimil without units - compatibility with pcb mainline)
  *   %mk    output a measure in decimil (kicad legacy format)
  *   %mA    output an angle in decidegrees (degrees x 10) for kicad legacy
  *
