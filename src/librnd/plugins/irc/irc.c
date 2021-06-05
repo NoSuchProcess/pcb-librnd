@@ -37,7 +37,7 @@
 
 #include <libuirc/libuirc.h>
 
-static int pcb_dlg_irc(void);
+static int rnd_dlg_irc(void);
 
 typedef enum {
 	IRC_OFF,
@@ -167,7 +167,7 @@ static void irc_connect(int open_dlg)
 {
 	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "librnd irc action") == 0) {
 		if (open_dlg)
-			pcb_dlg_irc();
+			rnd_dlg_irc();
 		irc_printf(0, ("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
 	}
 	else
@@ -240,7 +240,7 @@ static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	}
 }
 
-static int pcb_dlg_irc(void)
+static int rnd_dlg_irc(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Quit and close", 0}, {NULL, 0}};
 
@@ -339,7 +339,7 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	RND_DAD_FREE(ctx->dlg_login);
 }
 
-static int pcb_dlg_login_irc_login(void)
+static int rnd_dlg_login_irc_login(void)
 {
 	char *nick, *s;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Connect!", IRC_LOGIN}, {"Cancel", 0}, {NULL, 0}};
@@ -402,7 +402,7 @@ const char rnd_acts_irc[] = "irc()";
 const char rnd_acth_irc[] = "non-modal, single-instance, single-server, single-channel irc window for online support";
 fgw_error_t rnd_act_irc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	RND_ACT_IRES(pcb_dlg_login_irc_login());
+	RND_ACT_IRES(rnd_dlg_login_irc_login());
 	return 0;
 }
 
