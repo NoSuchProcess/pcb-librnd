@@ -53,7 +53,7 @@ static unsigned long hex_raw(unsigned long byte)
 	return (byte & 0xff) << 8;
 }
 
-Pixmap pcb_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
+Pixmap rnd_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
 {
 	int i, j, width, height, n_colors, depth = 0;
 	const char **p, *hdr;
@@ -210,9 +210,9 @@ Pixmap pcb_ltf_parse_xpm(Display *display, const char **xpm, Pixel bgcolor)
 }
 
 
-Widget pcb_ltf_xpm_label(Display *display, Widget parent, String name, const char **xpm)
+Widget rnd_ltf_xpm_label(Display *display, Widget parent, String name, const char **xpm)
 {
-	Widget Label1 = pcb_ltf_xpm_button(display, parent, name, xpm);
+	Widget Label1 = rnd_ltf_xpm_button(display, parent, name, xpm);
 	Arg args[8];
 	int n = 0;
 
@@ -230,7 +230,7 @@ Widget pcb_ltf_xpm_label(Display *display, Widget parent, String name, const cha
 	return Label1;
 }
 
-Widget pcb_ltf_xpm_button(Display *display, Widget parent, String name, const char **xpm)
+Widget rnd_ltf_xpm_button(Display *display, Widget parent, String name, const char **xpm)
 {
 	Widget Label1;
 	Pixel background;
@@ -241,7 +241,7 @@ Widget pcb_ltf_xpm_button(Display *display, Widget parent, String name, const ch
 	Label1 = XmCreatePushButton(parent, name, (Arg *)NULL, (Cardinal) 0);
 	XtVaGetValues(Label1, XmNbackground, &background, NULL);
 
-	px_disarm = pcb_ltf_parse_xpm(display, xpm, background);
+	px_disarm = rnd_ltf_parse_xpm(display, xpm, background);
 
 	XtSetArg(args[n], XmNlabelType, XmPIXMAP); n++;
 	XtSetArg(args[n], XmNarmPixmap, px_disarm); n++;

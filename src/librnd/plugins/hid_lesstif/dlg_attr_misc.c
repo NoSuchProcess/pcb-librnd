@@ -76,7 +76,7 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
    expose function called */
 static void ltf_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	pcb_ltf_preview_t *pd = e->draw_data;
+	rnd_ltf_preview_t *pd = e->draw_data;
 	rnd_hid_attribute_t *attr = pd->attr;
 	rnd_hid_preview_t *prv = attr->wdata;
 	prv->user_expose_cb(attr, prv, gc, e);
@@ -85,32 +85,32 @@ static void ltf_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 {
 	Widget pw = ctx->wl[idx];
-	pcb_ltf_preview_t *pd;
+	rnd_ltf_preview_t *pd;
 
 	stdarg_n = 0;
 	stdarg(XmNuserData, &pd);
 	XtGetValues(pw, stdarg_args, stdarg_n);
 
-	pcb_ltf_preview_redraw(pd);
+	rnd_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const rnd_box_t *view)
 {
 	rnd_hid_preview_t *prv = attr->wdata;
-	pcb_ltf_preview_t *pd = prv->hid_wdata;
+	rnd_ltf_preview_t *pd = prv->hid_wdata;
 
 	pd->x1 = view->X1;
 	pd->y1 = view->Y1;
 	pd->x2 = view->X2;
 	pd->y2 = view->Y2;
 
-	pcb_ltf_preview_zoom_update(pd);
-	pcb_ltf_preview_redraw(pd);
+	rnd_ltf_preview_zoom_update(pd);
+	rnd_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Boolean *ctd)
 {
-	pcb_ltf_preview_t *pd = pd_;
+	rnd_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
 	rnd_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
@@ -122,15 +122,15 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 		return;
 
 	XQueryPointer(display, e->xmotion.window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
-	pcb_ltf_preview_getxy(pd, pos_x, pos_y, &x, &y);
+	rnd_ltf_preview_getxy(pd, pos_x, pos_y, &x, &y);
 
 	if (prv->user_mouse_cb(attr, prv, RND_HID_MOUSE_MOTION, x, y))
-		pcb_ltf_preview_redraw(pd);
+		rnd_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_input_mouse(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
-	pcb_ltf_preview_t *pd = pd_;
+	rnd_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
 	rnd_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
@@ -150,17 +150,17 @@ static void ltf_preview_input_mouse(Widget w, XtPointer pd_, XmDrawingAreaCallba
 	if (kind < 0)
 		return;
 
-	pcb_ltf_preview_getxy(pd, cbs->event->xbutton.x, cbs->event->xbutton.y, &x, &y);
+	rnd_ltf_preview_getxy(pd, cbs->event->xbutton.x, cbs->event->xbutton.y, &x, &y);
 
 	if (prv->user_mouse_cb(attr, prv, kind, x, y))
-		pcb_ltf_preview_redraw(pd);
+		rnd_ltf_preview_redraw(pd);
 }
 
 extern int lesstif_key_translate(XKeyEvent *e, int *out_mods, KeySym *out_sym);
 
 static void ltf_preview_input_key(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
-	pcb_ltf_preview_t *pd = pd_;
+	rnd_ltf_preview_t *pd = pd_;
 	rnd_hid_attribute_t *attr = pd->attr;
 	rnd_hid_preview_t *prv = attr->wdata;
 	int mods, release;
@@ -174,12 +174,12 @@ static void ltf_preview_input_key(Widget w, XtPointer pd_, XmDrawingAreaCallback
 	if (pd->flip_local && !release) {
 		if (sym == XK_Tab) {
 			pd->flip_y = !pd->flip_y;
-			pcb_ltf_preview_redraw(pd);
+			rnd_ltf_preview_redraw(pd);
 		}
 	}
 
 	if ((prv->user_key_cb != NULL) && (prv->user_key_cb(attr, prv, release, mods, sym, sym)))
-		pcb_ltf_preview_redraw(pd);
+		rnd_ltf_preview_redraw(pd);
 }
 
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
@@ -193,17 +193,17 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 
 static void ltf_preview_destroy(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
-	pcb_ltf_preview_t *pd = pd_;
-	pcb_ltf_preview_del(pd);
+	rnd_ltf_preview_t *pd = pd_;
+	rnd_ltf_preview_del(pd);
 }
 
 static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget pw;
-	pcb_ltf_preview_t *pd;
+	rnd_ltf_preview_t *pd;
 	rnd_hid_preview_t *prv = attr->wdata;
 
-	pd = calloc(1, sizeof(pcb_ltf_preview_t));
+	pd = calloc(1, sizeof(rnd_ltf_preview_t));
 	prv->hid_wdata = pd;
 
 	pd->attr = attr;
@@ -243,29 +243,29 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 	pd->pw = pw;
 	pd->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
 
-	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
-	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
+	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)rnd_ltf_preview_callback, (XtPointer)pd);
+	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)rnd_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNinputCallback, (XtCallbackProc)ltf_preview_input_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNdestroyCallback, (XtCallbackProc)ltf_preview_destroy, (XtPointer)pd);
 	XtAddEventHandler(pw, PointerMotionMask | PointerMotionHintMask | EnterWindowMask | LeaveWindowMask, 0, ltf_preview_motion_callback, (XtPointer)pd);
 
 
 	XtManageChild(pw);
-	pcb_ltf_preview_add(pd);
+	rnd_ltf_preview_add(pd);
 	return pw;
 }
 
 
 static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
-	Widget pic = pcb_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->wdata);
+	Widget pic = rnd_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
 	return pic;
 }
 
 static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
-	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->wdata);
+	Widget pic = rnd_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
 	return pic;
 }
@@ -274,7 +274,7 @@ static void ltf_colorbtn_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_color_t
 {
 	Widget btn = ctx->wl[idx];
 	ctx->attrs[idx].val.clr = *clr;
-	pcb_ltf_color_button_recolor(display, btn, clr);
+	rnd_ltf_color_button_recolor(display, btn, clr);
 }
 
 #define CPACT "gui_FallbackColorPick"
@@ -313,7 +313,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 	}
 
 	fgw_arg_free(&rnd_fgw, &res);
-	pcb_ltf_color_button_recolor(display, w, &nclr);
+	rnd_ltf_color_button_recolor(display, w, &nclr);
 	ctx->attrs[widx].val.clr = nclr;
 	valchg(w, dlg_widget_, w);
 }
@@ -321,7 +321,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 
 static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr, int readonly)
 {
-	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->val.clr);
+	Widget pic = rnd_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->val.clr);
 	if (!readonly)
 		XtAddCallback(pic, XmNactivateCallback, ltf_colorbtn_valchg, NULL);
 	XtManageChild(pic);

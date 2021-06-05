@@ -22,7 +22,7 @@
 #include "ltf_stdarg.h"
 #include <librnd/core/misc_util.h>
 
-int pcb_ltf_ok;
+int rnd_ltf_ok;
 extern rnd_hidlib_t *ltf_hidlib;
 
 
@@ -32,7 +32,7 @@ extern rnd_hidlib_t *ltf_hidlib;
 static int wplc_hack = 0;
 static int wplc_hackx = 0, wplc_hacky = 0;
 
-void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy)
+void rnd_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy)
 {
 	int plc[4] = {-1, -1, -1, -1};
 
@@ -117,7 +117,7 @@ static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id
 }
 
 
-void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
+void rnd_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *dummy)
 {
 	char *id = data;
 	Display *dsp;
@@ -135,29 +135,29 @@ void pcb_ltf_wplc_config_cb(Widget shell, XtPointer data, XEvent *xevent, char *
 
 /* ------------------------------------------------------------ */
 
-int pcb_ltf_wait_for_dialog_noclose(Widget w)
+int rnd_ltf_wait_for_dialog_noclose(Widget w)
 {
-	pcb_ltf_ok = -1;
+	rnd_ltf_ok = -1;
 	XtManageChild(w);
 	for(;;) {
 		XEvent e;
 
-		if (pcb_ltf_ok != -1)
+		if (rnd_ltf_ok != -1)
 			break;
 		if (!XtIsManaged(w))
 			break;
 		XtAppNextEvent(app_context, &e);
 		XtDispatchEvent(&e);
 	}
-	return pcb_ltf_ok;
+	return rnd_ltf_ok;
 }
 
-int pcb_ltf_wait_for_dialog(Widget w)
+int rnd_ltf_wait_for_dialog(Widget w)
 {
-	pcb_ltf_wait_for_dialog_noclose(w);
-	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(w)))
+	rnd_ltf_wait_for_dialog_noclose(w);
+	if ((rnd_ltf_ok != DAD_CLOSED) && (XtIsManaged(w)))
 		XtUnmanageChild(w);
-	return pcb_ltf_ok;
+	return rnd_ltf_ok;
 }
 
 /* ------------------------------------------------------------ */
@@ -623,7 +623,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 	lesstif_attr_dlg_t *ctx = v;
 
 	if (ctx->set_ok)
-		pcb_ltf_ok = DAD_CLOSED;
+		rnd_ltf_ok = DAD_CLOSED;
 
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
@@ -636,7 +636,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 		XtDestroyWidget(w);
 
 		if (ctx->set_ok)
-			pcb_ltf_ok = DAD_CLOSED;
+			rnd_ltf_ok = DAD_CLOSED;
 
 		if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 			ctx->close_cb_called = 1;
@@ -735,7 +735,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 		XtManageChild(ctx->dialog);
 
 	XtRealizeWidget(ctx->dialog);
-	pcb_ltf_winplace(XtDisplay(topform), XtWindow(XtParent(topform)), id, defx, defy);
+	rnd_ltf_winplace(XtDisplay(topform), XtWindow(XtParent(topform)), id, defx, defy);
 
 	ltf_initial_wstates(ctx);
 
@@ -765,7 +765,7 @@ int lesstif_attr_dlg_run(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	ctx->set_ok = 1;
-	return pcb_ltf_wait_for_dialog(ctx->dialog);
+	return rnd_ltf_wait_for_dialog(ctx->dialog);
 }
 
 void lesstif_attr_dlg_raise(void *hid_ctx)
@@ -932,7 +932,7 @@ static rnd_action_t ltf_dialog_action_list[] = {
 	{"AdjustSizes", rnd_act_AdjustSizes, rnd_acth_AdjustSizes, rnd_acts_AdjustSizes}
 };
 
-void pcb_ltf_dialogs_init2(void)
+void rnd_ltf_dialogs_init2(void)
 {
 	RND_REGISTER_ACTIONS(ltf_dialog_action_list, lesstif_cookie);
 }

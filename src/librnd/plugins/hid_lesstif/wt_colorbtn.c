@@ -143,7 +143,7 @@ static Pixmap set_color_bar(Display *display, Pixmap px, const rnd_color_t *colo
 	return px;
 }
 
-Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const rnd_color_t *color)
+Widget rnd_ltf_color_button(Display *display, Widget parent, String name, const rnd_color_t *color)
 {
 	Widget btn;
 	Pixel background;
@@ -168,7 +168,7 @@ Widget pcb_ltf_color_button(Display *display, Widget parent, String name, const 
 	return btn;
 }
 
-int pcb_ltf_color_button_recolor(Display *display, Widget btn, const rnd_color_t *color)
+int rnd_ltf_color_button_recolor(Display *display, Widget btn, const rnd_color_t *color)
 {
 	Arg args[3];
 	int n = 0;

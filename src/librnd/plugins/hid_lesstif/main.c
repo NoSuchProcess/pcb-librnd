@@ -649,9 +649,9 @@ typedef struct {
 #endif
 	GC mask_gc, img_gc;
 	unsigned inited:1;
-} pcb_ltf_pixmap_t;
+} rnd_ltf_pixmap_t;
 
-static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
+static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
 	int w, h, sx3, done = 0;
 
@@ -800,10 +800,10 @@ static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, rn
 	}
 }
 
-static void pcb_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
+static void rnd_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
 {
 	if (pixmap->hid_data == NULL) {
-		pcb_ltf_pixmap_t *lpm = calloc(sizeof(pcb_ltf_pixmap_t), 1);
+		rnd_ltf_pixmap_t *lpm = calloc(sizeof(rnd_ltf_pixmap_t), 1);
 		lpm->pxm = pixmap;
 		pixmap->hid_data = lpm;
 	}
@@ -811,13 +811,13 @@ static void pcb_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, 
 		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
-		pcb_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - rsx/2, cy - rsy/2, rsx, rsy);
+		rnd_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - rsx/2, cy - rsy/2, rsx, rsy);
 	}
 }
 
-static void pcb_ltf_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
+static void rnd_ltf_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
 {
-	pcb_ltf_pixmap_t *lpm = pixmap->hid_data;
+	rnd_ltf_pixmap_t *lpm = pixmap->hid_data;
 
 	if (lpm == NULL)
 		return;
@@ -837,14 +837,14 @@ static void pcb_ltf_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
 static rnd_pixmap_t ltf_bg_img;
 static void DrawBackgroundImage()
 {
-	static pcb_ltf_pixmap_t lpm;
+	static rnd_ltf_pixmap_t lpm;
 
 	if (!window || (ltf_bg_img.p == NULL))
 		return;
 
 	if (lpm.pxm == NULL)
 		lpm.pxm = &ltf_bg_img;
-	pcb_ltf_draw_pixmap_(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
+	rnd_ltf_draw_pixmap_(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
 }
 
 static void LoadBackgroundImage(const char *fn)
@@ -1594,8 +1594,8 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		LoadBackgroundImage(ltf_values[HA_bg_image].str);
 
 	XtRealizeWidget(appwidget);
-	pcb_ltf_winplace(display, XtWindow(appwidget), "top", 640, 480);
-	XtAddEventHandler(appwidget, StructureNotifyMask, False, pcb_ltf_wplc_config_cb, "top");
+	rnd_ltf_winplace(display, XtWindow(appwidget), "top", 640, 480);
+	XtAddEventHandler(appwidget, StructureNotifyMask, False, rnd_ltf_wplc_config_cb, "top");
 
 	while (!window) {
 		XEvent e;
@@ -2119,7 +2119,7 @@ static Boolean idle_proc(XtPointer dummy)
 				rnd_app.draw_marks(ltf_hidlib, 1);
 		}
 
-		pcb_ltf_preview_invalidate(NULL);
+		rnd_ltf_preview_invalidate(NULL);
 	}
 
 TODO(": remove this, update-on should handle all cases")
@@ -3062,7 +3062,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.unwatch_file = lesstif_unwatch_file;
 	lesstif_hid.benchmark = ltf_benchmark;
 
-	lesstif_hid.fileselect = pcb_ltf_fileselect;
+	lesstif_hid.fileselect = rnd_ltf_fileselect;
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
 	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;
 	lesstif_hid.attr_dlg_raise = lesstif_attr_dlg_raise;
@@ -3103,8 +3103,8 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.dock_leave = ltf_dock_leave;
 	lesstif_hid.busy = ltf_busy;
 
-	lesstif_hid.draw_pixmap = pcb_ltf_draw_pixmap;
-	lesstif_hid.uninit_pixmap = pcb_ltf_uninit_pixmap;
+	lesstif_hid.draw_pixmap = rnd_ltf_draw_pixmap;
+	lesstif_hid.uninit_pixmap = rnd_ltf_uninit_pixmap;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 
@@ -3130,15 +3130,15 @@ static void lesstif_reg_attrs(void)
 	lesstif_attrs_regd = 1;
 }
 
-extern void pcb_ltf_library_init2(void);
-extern void pcb_ltf_dialogs_init2(void);
-extern void pcb_ltf_netlist_init2(void);
+extern void rnd_ltf_library_init2(void);
+extern void rnd_ltf_dialogs_init2(void);
+extern void rnd_ltf_netlist_init2(void);
 
 
 static void lesstif_begin(void)
 {
 	lesstif_reg_attrs();
-	pcb_ltf_dialogs_init2();
+	rnd_ltf_dialogs_init2();
 	lesstif_active = 1;
 }
 

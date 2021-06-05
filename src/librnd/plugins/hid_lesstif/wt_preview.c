@@ -38,7 +38,7 @@ static int widget_depth(Widget w) {
 	return depth;
 }
 
-void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
+void rnd_ltf_preview_zoom_update(rnd_ltf_preview_t *pd)
 {
 	double z;
 	Dimension w, h;
@@ -69,7 +69,7 @@ void pcb_ltf_preview_zoom_update(pcb_ltf_preview_t *pd)
 	}
 }
 
-void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, rnd_coord_t *dst_x, rnd_coord_t *dst_y)
+void rnd_ltf_preview_getxy(rnd_ltf_preview_t *pd, int px, int py, rnd_coord_t *dst_x, rnd_coord_t *dst_y)
 {
 	rnd_coord_t x, y;
 
@@ -95,7 +95,7 @@ void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, rnd_coord_t *d
 		rnd_conf_force_set_bool(rnd_conf.editor.view.flip_y, 0); \
 	}
 
-void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
+void rnd_ltf_preview_redraw(rnd_ltf_preview_t *pd)
 {
 	int save_vx, save_vy, save_vw, save_vh;
 	int save_fx, save_fy;
@@ -169,18 +169,18 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	pd->expose_lock = 0;
 }
 
-void pcb_ltf_preview_callback(Widget da, pcb_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
+void rnd_ltf_preview_callback(Widget da, rnd_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
 {
 	int reason = cbs != NULL ? cbs->reason : 0;
 
 	if ((reason == XmCR_RESIZE) || (pd->resized == 0))
-		pcb_ltf_preview_zoom_update(pd);
-	pcb_ltf_preview_redraw(pd);
+		rnd_ltf_preview_zoom_update(pd);
+	rnd_ltf_preview_redraw(pd);
 }
 
-void pcb_ltf_preview_invalidate(const rnd_box_t *screen)
+void rnd_ltf_preview_invalidate(const rnd_box_t *screen)
 {
-	pcb_ltf_preview_t *prv;
+	rnd_ltf_preview_t *prv;
 
 	for(prv = gdl_first(&ltf_previews); prv != NULL; prv = prv->link.next) {
 		if (!prv->redraw_with_board) continue;
@@ -191,19 +191,19 @@ void pcb_ltf_preview_invalidate(const rnd_box_t *screen)
 			pb.X2 = prv->x2;
 			pb.Y2 = prv->y2;
 			if (rnd_box_intersect(screen, &pb))
-				pcb_ltf_preview_redraw(prv);
+				rnd_ltf_preview_redraw(prv);
 		}
 		else
-			pcb_ltf_preview_redraw(prv);
+			rnd_ltf_preview_redraw(prv);
 	}
 }
 
-void pcb_ltf_preview_add(pcb_ltf_preview_t *prv)
+void rnd_ltf_preview_add(rnd_ltf_preview_t *prv)
 {
 	gdl_insert(&ltf_previews, prv, link);
 }
 
-void pcb_ltf_preview_del(pcb_ltf_preview_t *prv)
+void rnd_ltf_preview_del(rnd_ltf_preview_t *prv)
 {
 	gdl_remove(&ltf_previews, prv, link);
 }

@@ -40,14 +40,14 @@ typedef struct {
 	Widget dialog;
 	int active;
 	void *hid_ctx; /* DAD subdialog context */
-} pcb_ltf_fsd_t;
+} rnd_ltf_fsd_t;
 
 static void fsb_ok_value(Widget w, void *v, void *cbs)
 {
-	pcb_ltf_ok = (int)(size_t)v;
+	rnd_ltf_ok = (int)(size_t)v;
 }
 
-static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
+static char *rnd_ltf_get_path(rnd_ltf_fsd_t *pctx)
 {
 	char *res, *name;
 	XmString xmname;
@@ -62,12 +62,12 @@ static char *pcb_ltf_get_path(pcb_ltf_fsd_t *pctx)
 	return res;
 }
 
-static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
+static void rnd_ltf_set_fn(rnd_ltf_fsd_t *pctx, int append, const char *fn)
 {
 	XmString xms_path;
 
 	if ((*fn != RND_DIR_SEPARATOR_C) && (append)) {
-		char *end, *path, *dir = pcb_ltf_get_path(pctx);
+		char *end, *path, *dir = rnd_ltf_get_path(pctx);
 
 		end = strrchr(dir, RND_DIR_SEPARATOR_C);
 		if (end == NULL) {
@@ -101,9 +101,9 @@ static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
 	XmStringFree(xms_path);
 }
 
-static int pcb_ltf_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int rnd_ltf_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
-	pcb_ltf_fsd_t *pctx = sub->parent_ctx;
+	rnd_ltf_fsd_t *pctx = sub->parent_ctx;
 
 	if (strcmp(cmd, "close") == 0) {
 		if (pctx->active) {
@@ -115,22 +115,22 @@ static int pcb_ltf_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 
 	if (strcmp(cmd, "get_path") == 0) {
 		res->type = RND_EVARG_STR;
-		res->d.s = pcb_ltf_get_path(pctx);
+		res->d.s = rnd_ltf_get_path(pctx);
 		return 0;
 	}
 
 	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == RND_EVARG_STR)) {
-		pcb_ltf_set_fn(pctx, 1, argv[0].d.s);
+		rnd_ltf_set_fn(pctx, 1, argv[0].d.s);
 		return 0;
 	}
 
 	return -1;
 }
 
-char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+char *rnd_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	XmString xms_ext = NULL, xms_load = NULL;
-	pcb_ltf_fsd_t pctx;
+	rnd_ltf_fsd_t pctx;
 	char *res;
 
 	stdarg_n = 0;
@@ -147,7 +147,7 @@ char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		subbox = XmCreateRowColumn(pctx.dialog, "extra", stdarg_args, stdarg_n);
 
 		sub->parent_ctx = &pctx;
-		sub->parent_poke = pcb_ltf_fsd_poke;
+		sub->parent_poke = rnd_ltf_fsd_poke;
 
 		pctx.hid_ctx = lesstif_attr_sub_new(subbox, sub->dlg, sub->dlg_len, sub);
 		sub->dlg_hid_ctx = pctx.hid_ctx;
@@ -175,10 +175,10 @@ char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	}
 
 	if (default_file != 0)
-		pcb_ltf_set_fn(&pctx, 1, default_file);
+		rnd_ltf_set_fn(&pctx, 1, default_file);
 
-	if (pcb_ltf_wait_for_dialog_noclose(pctx.dialog)) {
-		res = pcb_ltf_get_path(&pctx);
+	if (rnd_ltf_wait_for_dialog_noclose(pctx.dialog)) {
+		res = rnd_ltf_get_path(&pctx);
 		if ((sub != NULL) && (sub->on_close != NULL))
 			sub->on_close(sub, rnd_true);
 	}
@@ -188,7 +188,7 @@ char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			sub->on_close(sub, rnd_false);
 	}
 
-	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(pctx.dialog)))
+	if ((rnd_ltf_ok != DAD_CLOSED) && (XtIsManaged(pctx.dialog)))
 		XtUnmanageChild(pctx.dialog);
 
 	if (xms_load != NULL) XmStringFree(xms_load);
