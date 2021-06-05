@@ -50,7 +50,7 @@ typedef struct {
 
 static toolbar_ctx_t toolbar;
 
-static void toolbar_pcb2dlg()
+static void toolbar_design2dlg()
 {
 	rnd_toolid_t tid;
 
@@ -176,7 +176,7 @@ static void toolbar_create(void)
 	toolbar_docked_create(cfg);
 	if (rnd_hid_dock_enter(&toolbar.sub, RND_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
 		toolbar.sub_inited = 1;
-		toolbar_pcb2dlg();
+		toolbar_design2dlg();
 	}
 }
 
@@ -204,7 +204,7 @@ void rnd_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_eve
 
 void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
-	toolbar_pcb2dlg();
+	toolbar_design2dlg();
 }
 
 
