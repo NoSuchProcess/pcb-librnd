@@ -39,7 +39,7 @@
 #define TOOLTIP_UPDATE_DELAY 200
 
 static int tooltip_update_timeout_id = 0;
-gboolean pcb_gtk_dwg_tooltip_check_object(rnd_hidlib_t *hl, GtkWidget *drawing_area, rnd_coord_t crosshairx, rnd_coord_t crosshairy)
+gboolean rnd_gtk_dwg_tooltip_check_object(rnd_hidlib_t *hl, GtkWidget *drawing_area, rnd_coord_t crosshairx, rnd_coord_t crosshairy)
 {
 	const char *description;
 	fgw_arg_t res, argv[3];
@@ -66,24 +66,24 @@ gboolean pcb_gtk_dwg_tooltip_check_object(rnd_hidlib_t *hl, GtkWidget *drawing_a
 	return FALSE;
 }
 
-void pcb_gtk_dwg_tooltip_cancel_update(void)
+void rnd_gtk_dwg_tooltip_cancel_update(void)
 {
 	if (tooltip_update_timeout_id)
 		g_source_remove(tooltip_update_timeout_id);
 	tooltip_update_timeout_id = 0;
 }
 
-/* FIXME: If the pcb_gtk_port_t is ever destroyed, we must call
- * pcb_gtk_dwg_tooltip_cancel_update()
+/* FIXME: If the rnd_gtk_port_t is ever destroyed, we must call
+ * rnd_gtk_dwg_tooltip_cancel_update()
  * fire after the data it utilises has been free'd.
  */
-void pcb_gtk_dwg_tooltip_queue(GtkWidget *drawing_area, GSourceFunc cb, void *ctx)
+void rnd_gtk_dwg_tooltip_queue(GtkWidget *drawing_area, GSourceFunc cb, void *ctx)
 {
 	/* Zap the old tool-tip text and force it to be removed from the screen */
 	gtk_widget_set_tooltip_text(drawing_area, NULL);
 	gtk_widget_trigger_tooltip_query(drawing_area);
 
-	pcb_gtk_dwg_tooltip_cancel_update();
+	rnd_gtk_dwg_tooltip_cancel_update();
 
 	tooltip_update_timeout_id = g_timeout_add(TOOLTIP_UPDATE_DELAY, cb, ctx);
 }

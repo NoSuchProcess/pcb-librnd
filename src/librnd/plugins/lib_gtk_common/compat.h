@@ -39,7 +39,7 @@ do { \
 #define gtkc_dialog_get_content_area(d)  ((d)->vbox)
 #define gtkc_combo_box_entry_new_text()  gtk_combo_box_entry_new_text()
 
-typedef GdkColor pcb_gtk_color_t;
+typedef GdkColor rnd_gtk_color_t;
 
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
@@ -63,17 +63,17 @@ static inline GtkWidget *gtkc_vpaned_new()
 
 /* color button */
 
-static inline GtkWidget *gtkc_color_button_new_with_color(pcb_gtk_color_t *color)
+static inline GtkWidget *gtkc_color_button_new_with_color(rnd_gtk_color_t *color)
 {
 	return gtk_color_button_new_with_color(color);
 }
 
-static inline void gtkc_color_button_set_color(GtkWidget *button, pcb_gtk_color_t *color)
+static inline void gtkc_color_button_set_color(GtkWidget *button, rnd_gtk_color_t *color)
 {
 	gtk_color_button_set_color(GTK_COLOR_BUTTON(button), color);
 }
 
-static inline void gtkc_color_button_get_color(GtkWidget *button, pcb_gtk_color_t *color)
+static inline void gtkc_color_button_get_color(GtkWidget *button, rnd_gtk_color_t *color)
 {
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), color);
 }
@@ -114,7 +114,7 @@ static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 }
 
 #define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
-typedef GdkEventExpose pcb_gtk_expose_t;
+typedef GdkEventExpose rnd_gtk_expose_t;
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {
@@ -134,7 +134,7 @@ static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_cla
 {
 }
 
-static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
+static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 {
 	GtkStateType st = GTK_WIDGET_STATE(widget);
 	/* race condition... */
@@ -151,12 +151,12 @@ static inline void pcb_gtk_set_selected(GtkWidget *widget, int set)
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
-static inline void pcb_gtk_widget_hide_all(GtkWidget *widget)
+static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 {
 	if(GTK_IS_CONTAINER(widget)) {
 		GList *children = gtk_container_get_children(GTK_CONTAINER(widget));
 		while ((children = g_list_next(children)) != NULL)
-			pcb_gtk_widget_hide_all(GTK_WIDGET(children->data));
+			rnd_gtk_widget_hide_all(GTK_WIDGET(children->data));
 	}
 	gtk_widget_hide(widget);
 }

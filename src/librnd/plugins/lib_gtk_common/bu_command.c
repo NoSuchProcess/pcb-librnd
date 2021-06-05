@@ -55,17 +55,17 @@
 
 static void ghid_chist_append(void *ctx_, const char *cmd)
 {
-	pcb_gtk_command_t *ctx = (pcb_gtk_command_t *)ctx_;
+	rnd_gtk_command_t *ctx = (rnd_gtk_command_t *)ctx_;
 	gtkc_combo_box_text_append_text(ctx->command_combo_box, cmd);
 }
 
 static void ghid_chist_remove(void *ctx_, int idx)
 {
-	pcb_gtk_command_t *ctx = (pcb_gtk_command_t *)ctx_;
+	rnd_gtk_command_t *ctx = (rnd_gtk_command_t *)ctx_;
 	gtkc_combo_box_text_remove(ctx->command_combo_box, idx);
 }
 
-static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
+static void command_history_add(rnd_gtk_command_t *ctx, gchar *cmd)
 {
 	rnd_clihist_append(cmd, ctx, ghid_chist_append, ghid_chist_remove);
 }
@@ -79,7 +79,7 @@ static void command_history_add(pcb_gtk_command_t *ctx, gchar *cmd)
    ghid_command_entry_get() */
 static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 {
-	pcb_gtk_command_t *ctx = data;
+	rnd_gtk_command_t *ctx = data;
 	gchar *command;
 	const gchar *cmd = gtk_entry_get_text(GTK_ENTRY(ctx->command_entry));
 
@@ -98,7 +98,7 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 	ctx->command_entered = command; /* Caller will free it */
 }
 
-static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
+static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk_command_t *ctx)
 {
 	gint ksym = kev->keyval;
 
@@ -116,7 +116,7 @@ static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk
 	return FALSE;
 }
 
-static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_gtk_command_t *ctx)
+static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk_command_t *ctx)
 {
 	if (ctx->command_entry_status_line_active)
 		rnd_cli_edit(ghidgui->hidlib);
@@ -127,7 +127,7 @@ static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, pcb_g
    lives in the bottom_hbox either shown or hidden.
    Since it's never destroyed, the combo history strings never need
    rebuilding. */
-void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx)
+void ghid_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx)
 {
 	ctx->status_ctx = status_ctx;
 	ctx->hide_status = hide_status;
@@ -147,7 +147,7 @@ void ghid_command_combo_box_entry_create(pcb_gtk_command_t *ctx, void (*hide_sta
 	g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 }
 
-void ghid_cmd_close(pcb_gtk_command_t *ctx)
+void ghid_cmd_close(rnd_gtk_command_t *ctx)
 {
 	if (!ctx->command_entry_status_line_active)
 		return;
@@ -165,7 +165,7 @@ void ghid_cmd_close(pcb_gtk_command_t *ctx)
 }
 
 
-void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
+void ghid_command_update_prompt(rnd_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
 		gtk_label_set_text(GTK_LABEL(ctx->prompt_label), rnd_cli_prompt(":"));
@@ -174,7 +174,7 @@ void ghid_command_update_prompt(pcb_gtk_command_t *ctx)
 
 /* This is the command entry function called from Action Command().
    The command_combo_box is packed into the status line label hbox. */
-char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const char *command)
+char *ghid_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, const char *command)
 {
 	gint escape_sig_id, escape_sig2_id;
 
@@ -229,7 +229,7 @@ char *ghid_command_entry_get(pcb_gtk_command_t *ctx, const char *prompt, const c
 }
 
 
-void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, rnd_bool raise)
+void ghid_handle_user_command(rnd_hidlib_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise)
 {
 	char *command;
 
@@ -241,7 +241,7 @@ void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, rnd_bool
 	}
 }
 
-const char *pcb_gtk_cmd_command_entry(pcb_gtk_command_t *ctx, const char *ovr, int *cursor)
+const char *rnd_gtk_cmd_command_entry(rnd_gtk_command_t *ctx, const char *ovr, int *cursor)
 {
 	if (!ctx->command_entry_status_line_active) {
 		if (cursor != NULL)

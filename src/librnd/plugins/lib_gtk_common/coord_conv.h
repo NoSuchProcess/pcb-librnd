@@ -75,7 +75,7 @@ static inline rnd_coord_t Pz(int z)
 }
 
 /* Return non-zero if box would be rendered into a single dot */
-static inline int pcb_gtk_1dot(rnd_coord_t penwidth, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static inline int rnd_gtk_1dot(rnd_coord_t penwidth, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double minw = ghidgui->port.view.coord_per_px;
 	double dx = RND_ABS(x1-x2) + penwidth, dy = RND_ABS(y1-y2) + penwidth;
@@ -83,7 +83,7 @@ static inline int pcb_gtk_1dot(rnd_coord_t penwidth, rnd_coord_t x1, rnd_coord_t
 }
 
 /* Return non-zero if dot coords are within canvas extents */
-static inline int pcb_gtk_dot_in_canvas(rnd_coord_t penwidth, double dx1, double dy1)
+static inline int rnd_gtk_dot_in_canvas(rnd_coord_t penwidth, double dx1, double dy1)
 {
 	penwidth/=2;
 	return ((dx1+penwidth >= 0) && (dx1-penwidth <= ghidgui->port.view.canvas_width) && (dy1+penwidth >= 0) && (dy1-penwidth <= ghidgui->port.view.canvas_height));

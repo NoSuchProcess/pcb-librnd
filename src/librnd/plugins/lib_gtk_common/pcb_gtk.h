@@ -31,34 +31,34 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>
 
-typedef struct pcb_gtk_port_s  pcb_gtk_port_t;
-typedef struct pcb_gtk_s pcb_gtk_t;
-typedef struct pcb_gtk_mouse_s pcb_gtk_mouse_t;
-typedef struct pcb_gtk_topwin_s pcb_gtk_topwin_t;
-typedef struct pcb_gtk_impl_s pcb_gtk_impl_t;
-typedef struct pcb_gtk_pixmap_s pcb_gtk_pixmap_t;
+typedef struct rnd_gtk_port_s  rnd_gtk_port_t;
+typedef struct rnd_gtk_s rnd_gtk_t;
+typedef struct rnd_gtk_mouse_s rnd_gtk_mouse_t;
+typedef struct rnd_gtk_topwin_s rnd_gtk_topwin_t;
+typedef struct rnd_gtk_impl_s rnd_gtk_impl_t;
+typedef struct rnd_gtk_pixmap_s rnd_gtk_pixmap_t;
 
 
-extern pcb_gtk_t _ghidgui, *ghidgui;
+extern rnd_gtk_t _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
 #include "compat.h"
 
-/* The HID using pcb_gtk_common needs to fill in this struct and pass it
-   on to most of the calls. This is the only legal way pcb_gtk_common can
+/* The HID using rnd_gtk_common needs to fill in this struct and pass it
+   on to most of the calls. This is the only legal way rnd_gtk_common can
    back reference to the HID. This lets multiple HIDs use gtk_common code
    without linker errors. */
-struct pcb_gtk_impl_s {
+struct rnd_gtk_impl_s {
 	void *gport;      /* Opaque pointer back to the HID's internal struct - used when common calls a HID function */
 
 	/* rendering */
 	void (*drawing_realize)(GtkWidget *w, void *gport);
-	gboolean (*drawing_area_expose)(GtkWidget *w, pcb_gtk_expose_t *p, void *gport);
+	gboolean (*drawing_area_expose)(GtkWidget *w, rnd_gtk_expose_t *p, void *gport);
 	void (*drawing_area_configure_hook)(void *);
 
-	GtkWidget *(*new_drawing_widget)(pcb_gtk_impl_t *impl);
+	GtkWidget *(*new_drawing_widget)(rnd_gtk_impl_t *impl);
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
-	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
+	gboolean (*preview_expose)(GtkWidget *widget, rnd_gtk_expose_t *p, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
@@ -67,12 +67,12 @@ struct pcb_gtk_impl_s {
 	void (*screen_update)(void);
 	void (*shutdown_renderer)(void *port);
 
-	rnd_bool (*map_color)(const rnd_color_t *inclr, pcb_gtk_color_t *color);
-	const gchar *(*get_color_name)(pcb_gtk_color_t *color);
+	rnd_bool (*map_color)(const rnd_color_t *inclr, rnd_gtk_color_t *color);
+	const gchar *(*get_color_name)(rnd_gtk_color_t *color);
 
 	void (*set_special_colors)(rnd_conf_native_t *cfg);
-	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
-	void (*uninit_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm);
+	void (*draw_pixmap)(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
+	void (*uninit_pixmap)(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm);
 };
 
 #include <librnd/plugins/lib_gtk_common/ui_zoompan.h>
@@ -96,7 +96,7 @@ typedef struct {
 #define GVT_FREE(vect, ptr)           free(ptr)
 #include <genvector/genvector_undef.h>
 
-struct pcb_gtk_mouse_s {
+struct rnd_gtk_mouse_s {
 	GdkCursor *X_cursor;          /* used X cursor */
 	GdkCursorType X_cursor_shape; /* and its shape */
 	vtmc_t cursor;
@@ -106,10 +106,10 @@ struct pcb_gtk_mouse_s {
 #include "bu_menu.h"
 #include "bu_command.h"
 
-struct pcb_gtk_topwin_s {
+struct rnd_gtk_topwin_s {
 	/* util/builder states */
-	pcb_gtk_menu_ctx_t menu;
-	pcb_gtk_command_t cmd;
+	rnd_gtk_menu_ctx_t menu;
+	rnd_gtk_command_t cmd;
 
 	/* own widgets */
 	GtkWidget *drawing_area;
@@ -133,14 +133,14 @@ struct pcb_gtk_topwin_s {
 	gdl_list_t dock[RND_HID_DOCK_max];
 };
 
-/* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not required for the structs! */
+/* needed for a type in rnd_gtk_t - DO NOT ADD .h files that are not required for the structs! */
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.h>
 
 #include <librnd/core/event.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/rnd_bool.h>
 
-struct pcb_gtk_pixmap_s {
+struct rnd_gtk_pixmap_s {
 	rnd_pixmap_t *pxm;        /* core-side pixmap (raw input image) */
 	GdkPixbuf *image;         /* input image converted to gdk */
 
@@ -153,7 +153,7 @@ struct pcb_gtk_pixmap_s {
 };
 
 /* The output viewport */
-struct pcb_gtk_port_s {
+struct rnd_gtk_port_s {
 	GtkWidget *top_window,        /* toplevel widget */
 	          *drawing_area;      /* and its drawing area */
 
@@ -161,31 +161,31 @@ struct pcb_gtk_port_s {
 
 	struct render_priv_s *render_priv;
 
-	pcb_gtk_mouse_t *mouse;
+	rnd_gtk_mouse_t *mouse;
 
-	pcb_gtk_view_t view;
+	rnd_gtk_view_t view;
 };
 
-struct pcb_gtk_s {
-	pcb_gtk_impl_t impl;
-	pcb_gtk_port_t port;
+struct rnd_gtk_s {
+	rnd_gtk_impl_t impl;
+	rnd_gtk_port_t port;
 
 	rnd_hidlib_t *hidlib;
 
 	GtkWidget *wtop_window;
 	GtkActionGroup *main_actions;
 
-	pcb_gtk_topwin_t topwin;
+	rnd_gtk_topwin_t topwin;
 	rnd_conf_hid_id_t conf_id;
 
-	pcb_gtk_pixmap_t bg_pixmap;
+	rnd_gtk_pixmap_t bg_pixmap;
 
 	int hid_active; /* 1 if the currently running hid (rnd_gui) is up */
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
 
-	pcb_gtk_mouse_t mouse;
+	rnd_gtk_mouse_t mouse;
 
 	gdl_list_t previews; /* all widget lists */
 };

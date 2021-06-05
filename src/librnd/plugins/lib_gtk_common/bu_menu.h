@@ -17,20 +17,20 @@
 typedef struct _GHidMainMenu GHidMainMenu;
 typedef struct _GHidMainMenuClass GHidMainMenuClass;
 
-typedef struct pcb_gtk_menu_ctx_s {
+typedef struct rnd_gtk_menu_ctx_s {
 	GtkWidget *menu_bar;
 	rnd_conf_hid_id_t ghid_menuconf_id;
 	void (*confchg_checkbox)(rnd_conf_native_t *cfg, int arr_idx);
 	rnd_hidlib_t *hidlib;
-} pcb_gtk_menu_ctx_t;
+} rnd_gtk_menu_ctx_t;
 
 GType ghid_main_menu_get_type(void);
 GtkWidget *ghid_main_menu_new(GCallback action_cb);
-void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base);
+void ghid_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base);
 GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu *menu);
 void ghid_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GHidMainMenu *menu, void (*cb)(rnd_hidlib_t *hidlib, GtkAction *, const char *toggle_flag, const char *active_flag));
 
-void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base);
+void ghid_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base);
 
 int ghid_remove_menu_widget(void *ctx, lht_node_t *nd);
 int ghid_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
@@ -38,8 +38,8 @@ int ghid_create_menu_widget_path(void *ctx_, const char *path, const char *name,
 
 void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag);
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
+GtkWidget *ghid_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
 
-GtkWidget *pcb_gtk_menu_widget(lht_node_t *node);
+GtkWidget *rnd_gtk_menu_widget(lht_node_t *node);
 
 #endif

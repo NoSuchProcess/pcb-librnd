@@ -36,7 +36,7 @@ static menu_handle_t *handle_alloc(GtkWidget *widget, GtkWidget *destroy, GtkAct
 	return m;
 }
 
-GtkWidget *pcb_gtk_menu_widget(lht_node_t *node)
+GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 {
 	menu_handle_t *m;
 
@@ -58,7 +58,7 @@ struct _GHidMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
 
-static GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_label, int check)
+static GtkWidget *rnd_gtk_menu_item_new(const char *label, const char *accel_label, int check)
 {
 	GtkWidget *w;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 0);
@@ -81,7 +81,7 @@ static GtkWidget *pcb_gtk_menu_item_new(const char *label, const char *accel_lab
 
 /* LHT HANDLER */
 
-void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
+void ghid_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
 
 static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after)
 {
@@ -115,7 +115,7 @@ static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after
 	gtk_menu_shell_insert(shell, item, pos);
 }
 
-static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *sub_res)
+static GtkAction *ghid_add_menu(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *sub_res)
 {
 	const char *tmp_val;
 	GtkAction *action = NULL;
@@ -206,7 +206,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		}
 		else {
 			/* NORMAL ITEM */
-			GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel, FALSE);
+			GtkWidget *item = rnd_gtk_menu_item_new(menu_label, accel, FALSE);
 			ins_menu(item, shell, ins_after);
 			sub_res->user_data = handle_alloc(item, item, NULL);
 			g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(menu->action_cb), (gpointer) n_action);
@@ -225,7 +225,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 	/* By now this runs only for toggle items. */
 	if (action) {
-		GtkWidget *item = pcb_gtk_menu_item_new(menu_label, accel, TRUE);
+		GtkWidget *item = rnd_gtk_menu_item_new(menu_label, accel, TRUE);
 
 		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer)n_action);
 		g_object_set_data(G_OBJECT(action), "resource", (gpointer)sub_res);
@@ -243,7 +243,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 /* Translate a resource tree into a menu structure; shell is the base menu
    shell (a menu bar or popup menu) */
-void ghid_main_menu_real_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
+void ghid_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
 {
 	switch (base->type) {
 	case LHT_HASH:                /* leaf submenu */
@@ -333,7 +333,7 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	return GTK_WIDGET(mm);
 }
 
-void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base)
+void ghid_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base)
 {
 	lht_node_t *n;
 	if (base->type != LHT_LIST) {
@@ -345,7 +345,7 @@ void ghid_main_menu_add_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const 
 	}
 }
 
-void ghid_main_menu_add_popup_node(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base)
+void ghid_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
@@ -408,7 +408,7 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
 int ghid_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
-	pcb_gtk_menu_ctx_t *ctx = ctx_;
+	rnd_gtk_menu_ctx_t *ctx = ctx_;
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
@@ -480,7 +480,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
+GtkWidget *ghid_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

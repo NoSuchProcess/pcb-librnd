@@ -29,7 +29,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 extern rnd_hid_cfg_keys_t ghid_keymap;
 
-extern GdkModifierType pcb_gtk_glob_mask;
+extern GdkModifierType rnd_gtk_glob_mask;
 
 /* return the keyval corresponding to desc key name. len is not used. */
 unsigned short int ghid_translate_key(const char *desc, int len);

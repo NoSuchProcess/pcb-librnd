@@ -51,7 +51,7 @@
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
-	pcb_gtk_t *gctx;
+	rnd_gtk_t *gctx;
 	rnd_hid_attribute_t *attrs;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
@@ -179,7 +179,7 @@ static void label_click_cb(GtkButton *evbox, GdkEvent *event, rnd_hid_attribute_
 static void color_changed_cb(GtkColorButton *button, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), RND_OBJ_PROP);
-	pcb_gtk_color_t clr;
+	rnd_gtk_color_t clr;
 	const char *str;
 
 	dst->changed = 1;
@@ -500,9 +500,9 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 			case RND_HATT_PREVIEW:
 				{
-					pcb_gtk_preview_t *p;
+					rnd_gtk_preview_t *p;
 					ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
-					p = (pcb_gtk_preview_t *)ctx->wl[j];
+					p = (rnd_gtk_preview_t *)ctx->wl[j];
 					p->flip_local = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_LFLIP);
 					p->flip_global = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_GFLIP);
 					p->view.local_flip = (p->flip_local && !p->flip_global);
@@ -702,7 +702,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
-	return pcb_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
+	return rnd_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
 }
 
 /* destroy the GUI widgets but do not free any hid_ctx struct */
@@ -723,7 +723,7 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 		switch(ctx->attrs[i].type) {
 			case RND_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case RND_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case RND_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, RND_GTK_PREVIEW(ctx->wl[i]));
+			case RND_HATT_PREVIEW: rnd_gtk_preview_del(ctx->gctx, RND_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
 	}
@@ -780,7 +780,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -843,7 +843,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 	return ctx;
 }
 
-void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+void *ghid_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
 	attr_dlg_t *ctx;
 
@@ -956,7 +956,7 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 
 	switch(ctx->attrs[idx].type) {
 		case RND_HATT_LABEL:
-			pcb_gtk_set_selected(ctx->wltop[idx], (enabled == 2));
+			rnd_gtk_set_selected(ctx->wltop[idx], (enabled == 2));
 			break;
 		case RND_HATT_PICBUTTON:
 		case RND_HATT_BUTTON:
@@ -1011,7 +1011,7 @@ void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
 	gtk_widget_set_tooltip_text(ctx->wl[idx], val);
 }
 
-void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
+void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -1027,7 +1027,7 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 	}
 }
 
-int pcb_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
+int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;
 

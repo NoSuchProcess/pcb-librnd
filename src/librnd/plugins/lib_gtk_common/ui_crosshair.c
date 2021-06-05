@@ -35,7 +35,7 @@
 #include "hid_gtk_conf.h"
 #include "ui_zoompan.h"
 
-void pcb_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_x, int offset_y, pcb_gtk_view_t *view)
+void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_x, int offset_y, rnd_gtk_view_t *view)
 {
 	GdkDisplay *display;
 	GdkScreen *screen;
@@ -71,8 +71,8 @@ void pcb_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		widget_x = pointer_x - offset_x;
 		widget_y = pointer_y - offset_y;
 
-		pcb_gtk_coords_event2pcb(view, widget_x, widget_y, &pcb_x, &pcb_y);
-		pcb_gtk_pan_view_abs(view, pcb_x, pcb_y, widget_x, widget_y);
+		rnd_gtk_coords_event2pcb(view, widget_x, widget_y, &pcb_x, &pcb_y);
+		rnd_gtk_pan_view_abs(view, pcb_x, pcb_y, widget_x, widget_y);
 
 		/* Just in case we couldn't pan the board the whole way,
 		 * we warp the pointer to where the crosshair DID land.
@@ -82,7 +82,7 @@ void pcb_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 	case HID_SC_WARP_POINTER:
 		screen = gdk_display_get_default_screen(display);
 
-		pcb_gtk_coords_pcb2event(view, x, y, &widget_x, &widget_y);
+		rnd_gtk_coords_pcb2event(view, x, y, &widget_x, &widget_y);
 
 		pointer_x = offset_x + widget_x;
 		pointer_y = offset_y + widget_y;

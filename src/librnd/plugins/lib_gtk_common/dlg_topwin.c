@@ -62,7 +62,7 @@
 #include "glue_common.h"
 
 /*** docking code (dynamic parts) ***/
-static int pcb_gtk_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int rnd_gtk_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	return -1;
 }
@@ -70,7 +70,7 @@ static int pcb_gtk_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_
 typedef struct {
 	void *hid_ctx;
 	GtkWidget *hvbox;
-	pcb_gtk_topwin_t *tw;
+	rnd_gtk_topwin_t *tw;
 	rnd_hid_dock_t where;
 } docked_t;
 
@@ -79,14 +79,14 @@ GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 static GdkColor *pcb_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
 static htsp_t pck_dock_pos[RND_HID_DOCK_max];
 
-static void pcb_gtk_tw_dock_init(void)
+static void rnd_gtk_tw_dock_init(void)
 {
 	int n;
 	for(n = 0; n < RND_HID_DOCK_max; n++)
 		htsp_init(&pck_dock_pos[n], strhash, strkeyeq);
 }
 
-void pcb_gtk_tw_dock_uninit(void)
+void rnd_gtk_tw_dock_uninit(void)
 {
 	int n;
 	for(n = 0; n < RND_HID_DOCK_max; n++) {
@@ -98,7 +98,7 @@ void pcb_gtk_tw_dock_uninit(void)
 }
 
 
-int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
+int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	GtkWidget *frame;
@@ -138,7 +138,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 
 	gtk_widget_show_all(frame); /* can not show after creating the sub: some widgets may start out as hidden! */
 
-	sub->parent_poke = pcb_gtk_dock_poke;
+	sub->parent_poke = rnd_gtk_dock_poke;
 	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
@@ -146,7 +146,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	gdl_append(&tw->dock[where], sub, link);
 
 	if (pcb_dock_color[where] != NULL)
-		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
+		rnd_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
 
 	/* workaround: the left dock is in a pane that should be adjusted to the default x size of newcomers if narrower */
 	if ((where == RND_HID_DOCK_LEFT) && (sub->dlg_defx > 0)) {
@@ -158,7 +158,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	return 0;
 }
 
-void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
+void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 {
 	docked_t *docked = sub->parent_ctx;
 	GtkWidget *frame = gtk_widget_get_parent(docked->hvbox);
@@ -171,7 +171,7 @@ void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 
 /*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
-void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const char *cookie)
+void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)
 {
 	if (rnd_menu_sys.inhibit)
 		return;
@@ -179,40 +179,40 @@ void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, pcb_gtk_topwin_t *tw, const 
 	ghid_main_menu_update_toggle_state(hidlib, GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
-static void h_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
+static void h_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 {
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	pcb_gtk_port_ranges_changed();
+	rnd_gtk_port_ranges_changed();
 }
 
-static void v_adjustment_changed_cb(GtkAdjustment *adj, pcb_gtk_topwin_t *tw)
+static void v_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 {
 	if (tw->adjustment_changed_holdoff)
 		return;
 
-	pcb_gtk_port_ranges_changed();
+	rnd_gtk_port_ranges_changed();
 }
 
 /* Save size of top window changes so PCB can restart at its size at exit. */
 static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *tw_)
 {
-	return pcb_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
+	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
 
 gboolean ghid_idle_cb(void *topwin)
 {
-/*	pcb_gtk_topwin_t *tw = topwin; - just in case anything needs to be done from idle */
+/*	rnd_gtk_topwin_t *tw = topwin; - just in case anything needs to be done from idle */
 	return FALSE;
 }
 
-gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb_gtk_topwin_t *tw)
+gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
 {
 	gint ksym = kev->keyval;
 
 	if (ghid_is_modifier_key_sym(ksym))
-		pcb_gtk_note_event_location(NULL);
+		rnd_gtk_note_event_location(NULL);
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(ghidgui->hidlib);
@@ -224,12 +224,12 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, pcb
 	return FALSE;
 }
 
-void ghid_install_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
+void ghid_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
 }
 
-void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
+void ghid_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
 }
@@ -237,7 +237,7 @@ void ghid_remove_accel_groups(GtkWindow *window, pcb_gtk_topwin_t *tw)
 /*** Top window ***/
 static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 {
-	pcb_gtk_t *gctx = data;
+	rnd_gtk_t *gctx = data;
 
 	rnd_action(gctx->hidlib, "Quit");
 
@@ -246,20 +246,20 @@ static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
 	return TRUE;
 }
 
-static void destroy_chart_cb(GtkWidget *widget, pcb_gtk_t *ctx)
+static void destroy_chart_cb(GtkWidget *widget, rnd_gtk_t *ctx)
 {
 	ctx->impl.shutdown_renderer(ctx->impl.gport);
 	gtk_main_quit();
 }
 
-static void get_widget_styles(pcb_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
+static void get_widget_styles(rnd_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
 {
 	/* Grab the various styles we need */
 	gtk_widget_ensure_style(tw->menu.menu_bar);
 	*menu_bar_style = gtk_widget_get_style(tw->menu.menu_bar);
 }
 
-static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
+static void do_fix_topbar_theming(rnd_gtk_topwin_t *tw)
 {
 	GtkStyle *menu_bar_style;
 
@@ -273,7 +273,7 @@ static void do_fix_topbar_theming(pcb_gtk_topwin_t *tw)
    copying aspects from the menu bar style set by the user's GTK theme.
    Setup signal handlers to update our efforts if the user changes their
    theme whilst we are running. */
-static void fix_topbar_theming(pcb_gtk_topwin_t *tw)
+static void fix_topbar_theming(rnd_gtk_topwin_t *tw)
 {
 	do_fix_topbar_theming(tw);
 
@@ -363,14 +363,14 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation, gpointer user_data)
 {
 	gint min;
-	pcb_gtk_topwin_t *tw = user_data;
+	rnd_gtk_topwin_t *tw = user_data;
 
 	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->v_range), &min, NULL);
 	gtkc_widget_get_preferred_height(GTK_WIDGET(gtk_widget_get_parent(tw->h_range)), &min, NULL);
 	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->bottom_hbox), &min, NULL);
 }
 
-static gboolean drawing_area_enter_cb(GtkWidget *w, pcb_gtk_expose_t *p, void *user_data)
+static gboolean drawing_area_enter_cb(GtkWidget *w, rnd_gtk_expose_t *p, void *user_data)
 {
 	rnd_gui->invalidate_all(rnd_gui);
 	return FALSE;
@@ -399,7 +399,7 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 
 void ghid_topwin_hide_status(void *ctx, int show)
 {
-	pcb_gtk_topwin_t *tw = ctx;
+	rnd_gtk_topwin_t *tw = ctx;
 
 	if (show)
 		gtk_widget_show(tw->dockbox[RND_HID_DOCK_BOTTOM]);
@@ -409,7 +409,7 @@ void ghid_topwin_hide_status(void *ctx, int show)
 
 /* Create the top_window contents.  The config settings should be loaded
    before this is called. */
-static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
+static void ghid_build_pcb_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
@@ -418,7 +418,7 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	GdkPixbuf *resize_grip_pixbuf;
 	GtkWidget *resize_grip_image;
 
-	pcb_gtk_tw_dock_init();
+	rnd_gtk_tw_dock_init();
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(ghidgui->wtop_window), vbox_main);
@@ -571,13 +571,13 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 /* We'll set the interface insensitive when a g_main_loop is running so the
    Gtk menus and buttons don't respond and interfere with the special entry
    the user needs to be doing. */
-void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive)
+void rnd_gtk_tw_interface_set_sensitive(rnd_gtk_topwin_t *tw, gboolean sensitive)
 {
 	gtk_widget_set_sensitive(tw->left_toolbar, sensitive);
 	gtk_widget_set_sensitive(tw->menu_hbox, sensitive);
 }
 
-void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in_top_window)
+void ghid_create_pcb_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
 	ghidgui->impl.load_bg_image();
 
@@ -586,7 +586,7 @@ void ghid_create_pcb_widgets(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw, GtkWidget *in
 	ghid_update_toggle_flags(ghidgui->hidlib, tw, NULL);
 }
 
-void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
+void ghid_fullscreen_apply(rnd_gtk_topwin_t *tw)
 {
 	if (rnd_conf.editor.fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);
@@ -601,7 +601,7 @@ void ghid_fullscreen_apply(pcb_gtk_topwin_t *tw)
 	}
 }
 
-void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title)
+void rnd_gtk_tw_set_title(rnd_gtk_topwin_t *tw, const char *title)
 {
 	gtk_window_set_title(GTK_WINDOW(ghidgui->wtop_window), title);
 }

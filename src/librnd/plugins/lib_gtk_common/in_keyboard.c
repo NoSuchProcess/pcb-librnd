@@ -39,7 +39,7 @@
 #include "glue_common.h"
 
 rnd_hid_cfg_keys_t ghid_keymap;
-GdkModifierType pcb_gtk_glob_mask;
+GdkModifierType rnd_gtk_glob_mask;
 
 gboolean ghid_is_modifier_key_sym(gint ksym)
 {
@@ -99,7 +99,7 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 	state = (GdkModifierType)(kev->state);
 	kv = kev->keyval;
 
-	pcb_gtk_glob_mask = state;
+	rnd_gtk_glob_mask = state;
 
 	if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
 	if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
@@ -128,7 +128,7 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
-	pcb_gtk_t *gctx = data;
+	rnd_gtk_t *gctx = data;
 	int slen, mods;
 	unsigned short int key_raw, kv;
 
@@ -136,7 +136,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		return FALSE;
 
 	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) == 0) {
-		pcb_gtk_note_event_location(NULL);
+		rnd_gtk_note_event_location(NULL);
 
 		slen = rnd_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
 		if (slen > 0) {

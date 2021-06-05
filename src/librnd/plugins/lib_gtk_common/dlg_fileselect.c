@@ -82,11 +82,11 @@ typedef struct {
 	GtkWidget *dialog;
 	int active;
 	void *hid_ctx; /* DAD subdialog context */
-} pcb_gtk_fsd_t;
+} rnd_gtk_fsd_t;
 
-static int pcb_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int rnd_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
-	pcb_gtk_fsd_t *pctx = sub->parent_ctx;
+	rnd_gtk_fsd_t *pctx = sub->parent_ctx;
 
 	if (strcmp(cmd, "close") == 0) {
 		if (pctx->active) {
@@ -116,14 +116,14 @@ static int pcb_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 	return -1;
 }
 
-char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+char *rnd_gtk_fileselect(rnd_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	GtkWidget *top_window = gctx->wtop_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;
 	char *result;
 	file_history_t *hi;
 	int n, free_flt = 0;
-	pcb_gtk_fsd_t pctx;
+	rnd_gtk_fsd_t pctx;
 	rnd_hid_fsd_filter_t flt_local[3];
 
 	if (!inited) {
@@ -191,7 +191,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 		subbox = gtkc_hbox_new(FALSE, 0);
 
 		sub->parent_ctx = &pctx;
-		sub->parent_poke = pcb_gtk_fsd_poke;
+		sub->parent_poke = rnd_gtk_fsd_poke;
 
 		pctx.hid_ctx = ghid_attr_sub_new(gctx, subbox, sub->dlg, sub->dlg_len, sub);
 		sub->dlg_hid_ctx = pctx.hid_ctx;

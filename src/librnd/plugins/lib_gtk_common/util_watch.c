@@ -31,21 +31,21 @@
 #include "in_mouse.h"
 #include "glue_common.h"
 
-typedef struct pcb_gtk_watch_s {
+typedef struct rnd_gtk_watch_s {
 	rnd_bool (*func)(rnd_hidval_t, int, unsigned int, rnd_hidval_t);
 	rnd_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
 	gint id;
-	pcb_gtk_t *gctx;
-} pcb_gtk_watch_t;
+	rnd_gtk_t *gctx;
+} rnd_gtk_watch_t;
 
 /* We need a wrapper around the hid file watch to pass the correct flags */
 static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer data)
 {
 	unsigned int pcb_condition = 0;
 	rnd_hidval_t x;
-	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data;
+	rnd_gtk_watch_t *watch = (rnd_gtk_watch_t *)data;
 	rnd_bool res;
 
 	if (condition & G_IO_IN)
@@ -60,16 +60,16 @@ static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer 
 	x.ptr = (void *)watch;
 	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
 
-	pcb_gtk_mode_cursor_main();
+	rnd_gtk_mode_cursor_main();
 
 	return res;
 }
 
-rnd_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
+rnd_hidval_t rnd_gtk_watch_file(rnd_gtk_t *gctx, int fd, unsigned int condition,
 	rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),
 	rnd_hidval_t user_data)
 {
-	pcb_gtk_watch_t *watch = g_new0(pcb_gtk_watch_t, 1);
+	rnd_gtk_watch_t *watch = g_new0(rnd_gtk_watch_t, 1);
 	rnd_hidval_t ret;
 	unsigned int glib_condition = 0;
 
@@ -93,9 +93,9 @@ rnd_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 	return ret;
 }
 
-void pcb_gtk_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
+void rnd_gtk_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
-	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data.ptr;
+	rnd_gtk_watch_t *watch = (rnd_gtk_watch_t *)data.ptr;
 
 	g_io_channel_shutdown(watch->channel, TRUE, NULL);
 	g_io_channel_unref(watch->channel);

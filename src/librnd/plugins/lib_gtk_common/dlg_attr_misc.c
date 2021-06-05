@@ -85,7 +85,7 @@ void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_b
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *prv = ctx->wl[idx];
-	pcb_gtk_preview_zoomto(RND_GTK_PREVIEW(prv), view);
+	rnd_gtk_preview_zoomto(RND_GTK_PREVIEW(prv), view);
 	gtk_widget_queue_draw(prv);
 }
 
@@ -98,11 +98,11 @@ static int ghid_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *
 }
 
 
-void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
+void ghid_preview_config(rnd_gtk_preview_t *gp, GtkWidget *widget)
 {
 	rnd_hid_preview_t *prv = gp->expose_data.draw_data;
 	if (prv->initial_view_valid) {
-		pcb_gtk_preview_zoomto(RND_GTK_PREVIEW(widget), &prv->initial_view);
+		rnd_gtk_preview_zoomto(RND_GTK_PREVIEW(widget), &prv->initial_view);
 		gtk_widget_queue_draw(widget);
 		prv->initial_view_valid = 0;
 	}
@@ -111,17 +111,17 @@ void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
 static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *prv;
-	pcb_gtk_preview_t *p;
+	rnd_gtk_preview_t *p;
 	rnd_hid_preview_t *hp = attr->wdata;
 
 	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 	
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
-	prv = pcb_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->wdata);
+	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->wdata);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
-	p = (pcb_gtk_preview_t *) prv;
+	p = (rnd_gtk_preview_t *) prv;
 	p->mouse_cb = ghid_preview_mouse;
 	p->key_cb = ghid_preview_key;
 
@@ -183,7 +183,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *button;
-	pcb_gtk_color_t gclr;
+	rnd_gtk_color_t gclr;
 
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 
@@ -202,7 +202,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, 
 
 static int ghid_color_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
-	pcb_gtk_color_t gclr;
+	rnd_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];
 
 	memset(&gclr, 0, sizeof(gclr));

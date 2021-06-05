@@ -42,30 +42,30 @@
 #include "pcb_gtk.h"
 #include "compat.h"
 
-#define RND_GTK_TYPE_PREVIEW           (pcb_gtk_preview_get_type())
-#define RND_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_t))
-#define RND_GTK_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
+#define RND_GTK_TYPE_PREVIEW           (rnd_gtk_preview_get_type())
+#define RND_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), RND_GTK_TYPE_PREVIEW, rnd_gtk_preview_t))
+#define RND_GTK_PREVIEW_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST ((klass),  RND_GTK_TYPE_PREVIEW, rnd_gtk_preview_class_t))
 #define RND_GTK_IS_PREVIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RND_GTK_TYPE_PREVIEW))
-#define RND_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  RND_GTK_TYPE_PREVIEW, pcb_gtk_preview_class_t))
+#define RND_GTK_PREVIEW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  RND_GTK_TYPE_PREVIEW, rnd_gtk_preview_class_t))
 
-typedef struct pcb_gtk_preview_class_s pcb_gtk_preview_class_t;
-typedef struct pcb_gtk_preview_s pcb_gtk_preview_t;
+typedef struct rnd_gtk_preview_class_s rnd_gtk_preview_class_t;
+typedef struct rnd_gtk_preview_s rnd_gtk_preview_t;
 
-struct pcb_gtk_preview_class_s {
+struct rnd_gtk_preview_class_s {
 	GtkDrawingAreaClass parent_class;
 };
 
-typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
-typedef void (*pcb_gtk_preview_config_t)(pcb_gtk_preview_t *gp, GtkWidget *widget);
-typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget *widget, pcb_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx);
-typedef rnd_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
-typedef rnd_bool(*pcb_gtk_preview_key_ev_t)(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
+typedef void (*rnd_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
+typedef void (*rnd_gtk_preview_config_t)(rnd_gtk_preview_t *gp, GtkWidget *widget);
+typedef gboolean(*rnd_gtk_preview_expose_t)(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx);
+typedef rnd_bool(*rnd_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+typedef rnd_bool(*rnd_gtk_preview_key_ev_t)(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
 
-struct pcb_gtk_preview_s {
+struct rnd_gtk_preview_s {
 	GtkDrawingArea parent_instance;
 
 	rnd_hid_expose_ctx_t expose_data;
-	pcb_gtk_view_t view;
+	rnd_gtk_view_t view;
 
 	rnd_coord_t x_min, y_min, x_max, y_max;   /* for the obj preview: bounding box */
 	gint w_pixels, h_pixels;                  /* natural size of object preview */
@@ -74,11 +74,11 @@ struct pcb_gtk_preview_s {
 	rnd_coord_t xoffs, yoffs; /* difference between desired x0;y0 and the actual window's top left coords */
 
 	void *gport;
-	pcb_gtk_init_drawing_widget_t init_drawing_widget;
-	pcb_gtk_preview_config_t config_cb;
-	pcb_gtk_preview_expose_t expose;
-	pcb_gtk_preview_mouse_ev_t mouse_cb;
-	pcb_gtk_preview_key_ev_t key_cb;
+	rnd_gtk_init_drawing_widget_t init_drawing_widget;
+	rnd_gtk_preview_config_t config_cb;
+	rnd_gtk_preview_expose_t expose;
+	rnd_gtk_preview_mouse_ev_t mouse_cb;
+	rnd_gtk_preview_key_ev_t key_cb;
 	rnd_hid_expose_t overlay_draw_cb;
 	rnd_coord_t grabx, graby;
 	time_t grabt;
@@ -86,7 +86,7 @@ struct pcb_gtk_preview_s {
 
 	void *obj; /* object being displayed in the preview */
 
-	pcb_gtk_t *ctx;
+	rnd_gtk_t *ctx;
 	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
 	unsigned redraw_with_board:1;
 	unsigned redrawing:1;
@@ -95,24 +95,24 @@ struct pcb_gtk_preview_s {
 	unsigned flip_local:1;   /* local flip enabled on tab; if both local and global flips are off, the preview is permanently on no-flip mode */
 };
 
-GType pcb_gtk_preview_get_type(void);
+GType rnd_gtk_preview_get_type(void);
 
 /* Queries the natural size of a preview widget */
-void pcb_gtk_preview_get_natsize(pcb_gtk_preview_t *preview, int *width, int *height);
+void rnd_gtk_preview_get_natsize(rnd_gtk_preview_t *preview, int *width, int *height);
 
-GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t init_widget,
-	pcb_gtk_preview_expose_t expose, rnd_hid_expose_t dialog_draw, pcb_gtk_preview_config_t config, void *draw_data);
+GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget,
+	rnd_gtk_preview_expose_t expose, rnd_hid_expose_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data);
 
-void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_box_t *data_view);
+void rnd_gtk_preview_zoomto(rnd_gtk_preview_t *preview, const rnd_box_t *data_view);
 
 /* invalidate (redraw) all preview widgets whose current view overlaps with
    the screen box; if screen is NULL, redraw all */
-void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen);
+void rnd_gtk_preview_invalidate(rnd_gtk_t *ctx, const rnd_box_t *screen);
 
 /* called when the global view got flipped - updates all previews with global flip follow */
-void pcb_gtk_previews_flip(pcb_gtk_t *ctx);
+void rnd_gtk_previews_flip(rnd_gtk_t *ctx);
 
 
-void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv);
+void rnd_gtk_preview_del(rnd_gtk_t *ctx, rnd_gtk_preview_t *prv);
 
 #endif /* RND_GTK_WT_REVIEW_H */

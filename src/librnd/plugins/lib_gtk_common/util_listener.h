@@ -1,2 +1,2 @@
 #include "pcb_gtk.h"
-void pcb_gtk_create_listener(pcb_gtk_t *gctx);
+void rnd_gtk_create_listener(rnd_gtk_t *gctx);

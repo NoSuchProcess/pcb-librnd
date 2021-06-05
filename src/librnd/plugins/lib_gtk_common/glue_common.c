@@ -41,7 +41,7 @@
 #include "wt_preview.h"
 #include <librnd/core/safe_fs.h>
 
-pcb_gtk_t _ghidgui, *ghidgui = &_ghidgui;
+rnd_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 
 /*** win32 workarounds ***/
 
@@ -99,7 +99,7 @@ static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
 
 static void ghid_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pcb_gtk_previews_flip(ghidgui);
+	rnd_gtk_previews_flip(ghidgui);
 }
 
 static void ghid_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
@@ -150,20 +150,20 @@ static void ghid_conf_regs(const char *cookie)
 
 /* Do scrollbar scaling based on current port drawing area size and
    overall PCB board size. */
-void pcb_gtk_tw_ranges_scale(pcb_gtk_t *gctx)
+void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 {
-	pcb_gtk_topwin_t *tw = &gctx->topwin;
-	pcb_gtk_view_t *view = &gctx->port.view;
+	rnd_gtk_topwin_t *tw = &gctx->topwin;
+	rnd_gtk_view_t *view = &gctx->port.view;
 
 	/* Update the scrollbars with PCB units. So Scale the current drawing area
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
-	pcb_gtk_zoom_post(view);
+	rnd_gtk_zoom_post(view);
 
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, gctx->hidlib->size_x);
-	pcb_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, gctx->hidlib->size_y);
+	rnd_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, gctx->hidlib->size_x);
+	rnd_gtk_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, gctx->hidlib->size_y);
 }
 
-void pcb_gtk_port_ranges_changed(void)
+void rnd_gtk_port_ranges_changed(void)
 {
 	GtkAdjustment *h_adj, *v_adj;
 
@@ -175,22 +175,22 @@ void pcb_gtk_port_ranges_changed(void)
 	rnd_gui->invalidate_all(rnd_gui);
 }
 
-void pcb_gtk_pan_common(void)
+void rnd_gtk_pan_common(void)
 {
 	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), ghidgui->port.view.x0);
 	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), ghidgui->port.view.y0);
 	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
 
-	pcb_gtk_port_ranges_changed();
+	rnd_gtk_port_ranges_changed();
 }
 
 static void command_post_entry(void)
 {
 #if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
-	pcb_gtk_interface_input_signals_connect();
+	rnd_gtk_interface_input_signals_connect();
 #endif
-	pcb_gtk_interface_set_sensitive(TRUE);
+	rnd_gtk_interface_set_sensitive(TRUE);
 	ghid_install_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 }
@@ -199,19 +199,19 @@ static void command_pre_entry(void)
 {
 	ghid_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 #if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
-	pcb_gtk_interface_input_signals_disconnect();
+	rnd_gtk_interface_input_signals_disconnect();
 #endif
-	pcb_gtk_interface_set_sensitive(FALSE);
+	rnd_gtk_interface_set_sensitive(FALSE);
 }
 
 /*** input ***/
 
-void pcb_gtk_interface_set_sensitive(gboolean sensitive)
+void rnd_gtk_interface_set_sensitive(gboolean sensitive)
 {
-	pcb_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
+	rnd_gtk_tw_interface_set_sensitive(&ghidgui->topwin, sensitive);
 }
 
-void pcb_gtk_mode_cursor_main(void)
+void rnd_gtk_mode_cursor_main(void)
 {
 	ghid_mode_cursor(ghidgui);
 }
@@ -241,7 +241,7 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
    location or if command entry is needed in the status line.
    During these times normal button/key presses are intercepted, either
    by new signal handlers or the command_combo_box entry. */
-void pcb_gtk_interface_input_signals_connect(void)
+void rnd_gtk_interface_input_signals_connect(void)
 {
 	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_press_event", G_CALLBACK(ghid_port_button_press_cb), ghidgui);
 	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_release_event", G_CALLBACK(ghid_port_button_release_cb), ghidgui);
@@ -249,7 +249,7 @@ void pcb_gtk_interface_input_signals_connect(void)
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
 
-void pcb_gtk_interface_input_signals_disconnect(void)
+void rnd_gtk_interface_input_signals_disconnect(void)
 {
 	kbd_input_signals_disconnect(0, ghidgui->port.drawing_area);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
@@ -266,7 +266,7 @@ void pcb_gtk_interface_input_signals_disconnect(void)
 /*** misc ***/
 
 /* import a core pixmap into a gdk pixmap */
-void ghid_init_pixmap_low(pcb_gtk_pixmap_t *gpm)
+void ghid_init_pixmap_low(rnd_gtk_pixmap_t *gpm)
 {
 	int rowstd, nch, x, y;
 	unsigned char *dst, *dst_row, *src = gpm->pxm->p;
@@ -294,7 +294,7 @@ void ghid_init_pixmap_low(pcb_gtk_pixmap_t *gpm)
 	}
 }
 
-void ghid_uninit_pixmap_low(pcb_gtk_pixmap_t *gpm)
+void ghid_uninit_pixmap_low(rnd_gtk_pixmap_t *gpm)
 {
 	g_object_unref(gpm->image);
 }
@@ -315,26 +315,26 @@ static void ghid_load_bg_image(void)
 	}
 }
 
-void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
+void ghid_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
 {
 	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
 }
 
-void pcb_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
+void rnd_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	rnd_box_t screen;
 	screen.X1 = left; screen.X2 = right;
 	screen.Y1 = top; screen.Y2 = bottom;
-	pcb_gtk_preview_invalidate(ghidgui, &screen);
+	rnd_gtk_preview_invalidate(ghidgui, &screen);
 }
 
-void pcb_gtk_previews_invalidate_all(void)
+void rnd_gtk_previews_invalidate_all(void)
 {
-	pcb_gtk_preview_invalidate(ghidgui, NULL);
+	rnd_gtk_preview_invalidate(ghidgui, NULL);
 }
 
 
-void pcb_gtk_note_event_location(GdkEventButton *ev)
+void rnd_gtk_note_event_location(GdkEventButton *ev)
 {
 	gint event_x, event_y;
 
@@ -346,7 +346,7 @@ void pcb_gtk_note_event_location(GdkEventButton *ev)
 		event_y = ev->y;
 	}
 
-	pcb_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.pcb_x, &ghidgui->port.view.pcb_y);
+	rnd_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.pcb_x, &ghidgui->port.view.pcb_y);
 
 	rnd_hidcore_crosshair_move_to(ghidgui->port.view.ctx->hidlib, ghidgui->port.view.pcb_x, ghidgui->port.view.pcb_y, 1);
 }

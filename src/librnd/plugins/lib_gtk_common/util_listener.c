@@ -41,7 +41,7 @@
 
 static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)
 {
-	pcb_gtk_t *gctx = data;
+	rnd_gtk_t *gctx = data;
 	GIOStatus status;
 	gchar *str;
 	gsize len;
@@ -90,7 +90,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 	return TRUE;
 }
 
-void pcb_gtk_create_listener(pcb_gtk_t *gctx)
+void rnd_gtk_create_listener(rnd_gtk_t *gctx)
 {
 	GIOChannel *channel;
 	int fd = rnd_fileno(stdin);
