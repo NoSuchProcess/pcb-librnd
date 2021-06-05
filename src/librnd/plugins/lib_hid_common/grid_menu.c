@@ -94,7 +94,7 @@ void rnd_grid_install_menu(void)
 
 static int grid_lock = 0;
 
-void pcb_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (grid_lock) return;
 	grid_lock++;
@@ -102,7 +102,7 @@ void pcb_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 	grid_lock--;
 }
 
-void pcb_grid_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_grid_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (grid_lock) return;
 	grid_lock++;

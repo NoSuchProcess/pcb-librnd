@@ -138,7 +138,7 @@ int pplg_init_lib_hid_common(void)
 
 	rnd_dialog_place_init();
 
-	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_grid_update_ev, NULL, grid_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, rnd_grid_update_ev, NULL, grid_cookie);
 	rnd_event_bind(RND_EVENT_GUI_LEAD_USER, rnd_lead_user_ev, NULL, lead_cookie);
 	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, rnd_lead_user_draw_ev, NULL, lead_cookie);
 	rnd_event_bind(RND_EVENT_DAD_NEW_DIALOG, rnd_dialog_place, NULL, wplc_cookie);
@@ -147,7 +147,7 @@ int pplg_init_lib_hid_common(void)
 	conf_id = rnd_conf_hid_reg(grid_cookie, NULL);
 
 	memset(&ccb, 0, sizeof(ccb));
-	ccb.val_change_post = pcb_grid_update_conf;
+	ccb.val_change_post = rnd_grid_update_conf;
 	nat = rnd_conf_get_field("editor/grids");
 	if (nat != NULL)
 		rnd_conf_hid_set_cb(nat, conf_id, &ccb);
