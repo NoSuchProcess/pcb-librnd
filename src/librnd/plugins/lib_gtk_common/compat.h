@@ -113,7 +113,7 @@ static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 	return w;
 }
 
-#define PCB_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
+#define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
 typedef GdkEventExpose pcb_gtk_expose_t;
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
@@ -178,4 +178,4 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 4);
 }
 
-#endif  /* PCB_GTK_COMPAT_H */
+#endif  /* RND_GTK_COMPAT_H */

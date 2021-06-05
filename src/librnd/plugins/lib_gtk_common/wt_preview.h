@@ -115,4 +115,4 @@ void pcb_gtk_previews_flip(pcb_gtk_t *ctx);
 
 void pcb_gtk_preview_del(pcb_gtk_t *ctx, pcb_gtk_preview_t *prv);
 
-#endif /* PCB_GTK_WT_REVIEW_H */
+#endif /* RND_GTK_WT_REVIEW_H */

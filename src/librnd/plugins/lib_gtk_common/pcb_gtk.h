@@ -190,4 +190,4 @@ struct pcb_gtk_s {
 	gdl_list_t previews; /* all widget lists */
 };
 
-#endif /* PCB_GTK_H */
+#endif /* RND_GTK_H */
