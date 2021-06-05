@@ -61,7 +61,7 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 
 	/* We need to fix up the PCB coordinates corresponding to the last
 	 * event so convert it back to event coordinates temporarily. */
-	rnd_gtk_coords_pcb2event(v, v->design_x, v->design_y, &event_x, &event_y);
+	rnd_gtk_coords_design2event(v, v->design_x, v->design_y, &event_x, &event_y);
 
 	/* Don't pan so far the board is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
@@ -82,12 +82,12 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	 * we could call ghid_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
-	rnd_gtk_coords_event2pcb(v, event_x, event_y, &v->design_x, &v->design_y);
+	rnd_gtk_coords_event2design(v, event_x, event_y, &v->design_x, &v->design_y);
 	if (!v->inhibit_pan_common)
 		rnd_gtk_pan_common();
 }
 
-rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y)
+rnd_bool rnd_gtk_coords_design2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y)
 {
 	*event_x = DRAW_X(v, design_x);
 	*event_y = DRAW_Y(v, design_y);
@@ -95,7 +95,7 @@ rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t design_x,
 	return rnd_true;
 }
 
-rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y)
+rnd_bool rnd_gtk_coords_event2design(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y)
 {
 	*design_x = rnd_round(EVENT_TO_DESIGN_X(v, event_x));
 	*design_y = rnd_round(EVENT_TO_DESIGN_Y(v, event_y));

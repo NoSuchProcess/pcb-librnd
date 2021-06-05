@@ -89,8 +89,8 @@ void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
    to rnd_gtk_zoom_*() */
 void rnd_gtk_zoom_post(rnd_gtk_view_t *v);
 
-rnd_bool rnd_gtk_coords_pcb2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y);
-rnd_bool rnd_gtk_coords_event2pcb(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y);
+rnd_bool rnd_gtk_coords_design2event(const rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, int *event_x, int *event_y);
+rnd_bool rnd_gtk_coords_event2design(const rnd_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * design_x, rnd_coord_t * design_y);
 
 int rnd_gtk_get_coords(rnd_gtk_t *ctx, rnd_gtk_view_t *vw, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
