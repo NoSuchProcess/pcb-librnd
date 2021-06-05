@@ -43,8 +43,8 @@ do { \
 	clr->fa = (float)clr->a / 255.0; \
 } while(0)
 
-static const char *pcb_color_to_hex = "0123456789abcdef";
-#define COLOR_TO_HEX(val) pcb_color_to_hex[(val) & 0x0F]
+static const char *rnd_color_to_hex = "0123456789abcdef";
+#define COLOR_TO_HEX(val) rnd_color_to_hex[(val) & 0x0F]
 
 #define COLOR_TO_STR_COMP(dst, val) \
 do { \
@@ -148,38 +148,38 @@ rnd_color_t *rnd_clrdup(const rnd_color_t *src)
 	return dst;
 }
 
-static rnd_color_t pcb_color_black_;
-static rnd_color_t pcb_color_white_;
-static rnd_color_t pcb_color_cyan_;
-static rnd_color_t pcb_color_red_;
-static rnd_color_t pcb_color_blue_;
-static rnd_color_t pcb_color_drill_;
-static rnd_color_t pcb_color_magenta_;
-static rnd_color_t pcb_color_golden_;
-static rnd_color_t pcb_color_grey33_;
+static rnd_color_t rnd_color_black_;
+static rnd_color_t rnd_color_white_;
+static rnd_color_t rnd_color_cyan_;
+static rnd_color_t rnd_color_red_;
+static rnd_color_t rnd_color_blue_;
+static rnd_color_t rnd_color_drill_;
+static rnd_color_t rnd_color_magenta_;
+static rnd_color_t rnd_color_golden_;
+static rnd_color_t rnd_color_grey33_;
 
-const rnd_color_t *rnd_color_black = &pcb_color_black_;
-const rnd_color_t *rnd_color_white = &pcb_color_white_;
-const rnd_color_t *rnd_color_cyan = &pcb_color_cyan_;
-const rnd_color_t *rnd_color_red = &pcb_color_red_;
-const rnd_color_t *rnd_color_blue = &pcb_color_blue_;
-const rnd_color_t *rnd_color_drill = &pcb_color_drill_;
-const rnd_color_t *rnd_color_grey33 = &pcb_color_grey33_;
-const rnd_color_t *rnd_color_magenta = &pcb_color_magenta_;
-const rnd_color_t *rnd_color_golden = &pcb_color_golden_;
+const rnd_color_t *rnd_color_black = &rnd_color_black_;
+const rnd_color_t *rnd_color_white = &rnd_color_white_;
+const rnd_color_t *rnd_color_cyan = &rnd_color_cyan_;
+const rnd_color_t *rnd_color_red = &rnd_color_red_;
+const rnd_color_t *rnd_color_blue = &rnd_color_blue_;
+const rnd_color_t *rnd_color_drill = &rnd_color_drill_;
+const rnd_color_t *rnd_color_grey33 = &rnd_color_grey33_;
+const rnd_color_t *rnd_color_magenta = &rnd_color_magenta_;
+const rnd_color_t *rnd_color_golden = &rnd_color_golden_;
 
 void rnd_color_init(void)
 {
-	rnd_color_load_str(&pcb_color_black_, "#000000");
-	rnd_color_load_str(&pcb_color_white_, "#ffffff");
-	rnd_color_load_str(&pcb_color_cyan_, "#00ffff");
-	rnd_color_load_str(&pcb_color_red_, "#ff0000");
-	rnd_color_load_str(&pcb_color_blue_, "#0000ff");
-	rnd_color_load_str(&pcb_color_grey33_, "#333333");
-	rnd_color_load_str(&pcb_color_magenta_, "#ff00ff");
-	rnd_color_load_str(&pcb_color_golden_, "#dddd22");
-	rnd_color_load_str(&pcb_color_drill_, "#ff00ff");
-	strcpy(pcb_color_drill_.str, "drill");
+	rnd_color_load_str(&rnd_color_black_, "#000000");
+	rnd_color_load_str(&rnd_color_white_, "#ffffff");
+	rnd_color_load_str(&rnd_color_cyan_, "#00ffff");
+	rnd_color_load_str(&rnd_color_red_, "#ff0000");
+	rnd_color_load_str(&rnd_color_blue_, "#0000ff");
+	rnd_color_load_str(&rnd_color_grey33_, "#333333");
+	rnd_color_load_str(&rnd_color_magenta_, "#ff00ff");
+	rnd_color_load_str(&rnd_color_golden_, "#dddd22");
+	rnd_color_load_str(&rnd_color_drill_, "#ff00ff");
+	strcpy(rnd_color_drill_.str, "drill");
 }
 
 
