@@ -364,7 +364,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 
 static vts0_t hidlib_conffile;
 
-extern void pcb_hidlib_error_init2(void);
+extern void rnd_hidlib_error_init2(void);
 extern void rnd_hid_dlg_init2(void);
 extern void rnd_hid_nogui_init2(void);
 extern void rnd_conf_act_init2(void);
@@ -409,7 +409,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_pup.error_stack_enable = 1;
 
 	/* core actions */
-	pcb_hidlib_error_init2();
+	rnd_hidlib_error_init2();
 	rnd_hid_dlg_init2();
 	rnd_hid_nogui_init2();
 	rnd_conf_act_init2();

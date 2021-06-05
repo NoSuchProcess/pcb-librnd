@@ -282,7 +282,7 @@ static rnd_action_t log_action_list[] = {
 	{"Message", rnd_act_Message, rnd_acth_Message, rnd_acts_Message}
 };
 
-void pcb_hidlib_error_init2(void)
+void rnd_hidlib_error_init2(void)
 {
 	RND_REGISTER_ACTIONS(log_action_list, NULL);
 }
