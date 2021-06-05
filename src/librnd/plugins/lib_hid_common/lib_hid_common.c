@@ -116,7 +116,7 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_remove_actions_by_cookie(hid_common_cookie);
 	rnd_act_dad_uninit();
 	rnd_conf_unreg_fields("plugins/lib_hid_common/");
-	pcb_dlg_log_uninit();
+	rnd_dlg_log_uninit();
 }
 
 int pplg_init_lib_hid_common(void)
@@ -130,7 +130,7 @@ int pplg_init_lib_hid_common(void)
 /*#include "lib_hid_common_conf_fields.h"*/
 #include "dialogs_conf_fields.h"
 
-	pcb_dlg_log_init();
+	rnd_dlg_log_init();
 	RND_REGISTER_ACTIONS(hid_common_action_list, hid_common_cookie)
 	rnd_act_dad_init();
 

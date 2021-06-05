@@ -245,12 +245,12 @@ static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 }
 
 
-void pcb_dlg_log_uninit(void)
+void rnd_dlg_log_uninit(void)
 {
 	rnd_event_unbind_allcookie(log_cookie);
 }
 
-void pcb_dlg_log_init(void)
+void rnd_dlg_log_init(void)
 {
 	rnd_event_bind(RND_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
 	rnd_event_bind(RND_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
