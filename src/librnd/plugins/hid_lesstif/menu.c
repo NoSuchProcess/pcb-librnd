@@ -190,7 +190,7 @@ int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coo
 		block_xy = 0;
 	}
 	if (have_xy)
-		lesstif_coords_to_pcb(action_x, action_y, px, py);
+		rnd_ltf_coords_to_design(action_x, action_y, px, py);
 
 	return res;
 }
@@ -579,7 +579,6 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *ins_after, lht_node_t *
 	}
 }
 
-extern char *lesstif_pcbmenu_path;
 extern rnd_hid_t lesstif_hid;
 
 Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)

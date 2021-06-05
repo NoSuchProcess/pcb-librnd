@@ -29,18 +29,10 @@ extern Widget lesstif_menu(Widget, const char *, Arg *, int);
 extern int lesstif_key_event(XKeyEvent *);
 extern int lesstif_button_event(Widget w, XEvent * e);
 
-/* Returns TRUE if the point mapped to the PCB region, FALSE (=0) if
-   we're off-board.  Note that *pcbxy is always written to, even if
-   out of range.  */
-extern int lesstif_winxy_to_pcbxy(int winx, int winy, int *pcbx, int *pcby);
-
-/* Returns TRUE if the point is in the window, FALSE (=0) otherwise. */
-extern int lesstif_pcbxy_to_winxy(int pcbx, int pcby, int *winx, int *winy);
-
 extern void lesstif_need_idle_proc(void);
 extern void lesstif_show_crosshair(int);
 extern void lesstif_invalidate_all(rnd_hid_t *hid);
-extern void lesstif_coords_to_pcb(int, int, rnd_coord_t *, rnd_coord_t *);
+extern void rnd_ltf_coords_to_design(int, int, rnd_coord_t *, rnd_coord_t *);
 extern int lesstif_get_xy(const char *msg);
 extern void lesstif_update_widget_flags(rnd_hid_t *hid, const char *cookie);
 extern int lesstif_call_action(const char *, int, char **);

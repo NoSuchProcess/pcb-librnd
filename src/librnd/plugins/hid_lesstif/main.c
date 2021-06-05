@@ -70,7 +70,7 @@ static int ltf_ccache_inited;
 #define XtRDouble "Double"
 #endif
 
-/* How big the viewport can be relative to the pcb size.  */
+/* How big the viewport can be relative to the design size.  */
 #define MAX_ZOOM_SCALE	10
 #define UUNIT	rnd_conf.editor.grid_unit->allow
 
@@ -87,7 +87,7 @@ typedef struct rnd_hid_gc_s {
 
 rnd_hid_t lesstif_hid;
 
-#define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", func), abort()
+#define CRASH(func) fprintf(stderr, "HID error: app called unimplemented GUI function %s\n", func), abort()
 
 XtAppContext app_context;
 Widget appwidget, ltf_fullscreen_left, ltf_fullscreen_top, ltf_fullscreen_bottom;
@@ -322,7 +322,7 @@ static void zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t
 static void zoom_by(double factor, rnd_coord_t x, rnd_coord_t y);
 static void Pan(int mode, rnd_coord_t x, rnd_coord_t y);
 
-/* Px converts view->pcb, Vx converts pcb->view */
+/* Px converts view->design, Vx converts pcb->view */
 
 static inline int Vx(rnd_coord_t x)
 {
@@ -364,7 +364,7 @@ static inline rnd_coord_t Py(int y)
 	return y * view_zoom + view_top_y;
 }
 
-void lesstif_coords_to_pcb(int vx, int vy, rnd_coord_t * px, rnd_coord_t * py)
+void rnd_ltf_coords_to_design(int vx, int vy, rnd_coord_t * px, rnd_coord_t * py)
 {
 	*px = Px(vx);
 	*py = Py(vy);
@@ -2813,7 +2813,7 @@ static int lesstif_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
 	rnd_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
-	fprintf(stderr, "\nInvocation: pcb-rnd --gui lesstif [options]\n");
+	fprintf(stderr, "\nInvocation: %s --gui lesstif [options]\n", rnd_app.package);
 	return 0;
 }
 
