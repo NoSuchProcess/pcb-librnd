@@ -328,8 +328,8 @@ const char *rnd_hid_export_fn(const char *filename)
 		return filename;
 }
 
-extern void pcb_hid_dlg_uninit(void);
-extern void pcb_hid_dlg_init(void);
+extern void rnd_hid_dlg_uninit(void);
+extern void rnd_hid_dlg_init(void);
 
 static char *get_homedir(void)
 {
@@ -355,7 +355,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_pcbhl_conf_postproc();
 	rnd_hidlib_conf_init();
 	rnd_hidlib_event_init();
-	pcb_hid_dlg_init();
+	rnd_hid_dlg_init();
 	rnd_hid_init();
 	rnd_grid_init();
 	rnd_color_init();
@@ -365,7 +365,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 static vts0_t hidlib_conffile;
 
 extern void pcb_hidlib_error_init2(void);
-extern void pcb_hid_dlg_init2(void);
+extern void rnd_hid_dlg_init2(void);
 extern void pcb_hid_nogui_init2(void);
 extern void rnd_conf_act_init2(void);
 extern void rnd_tool_act_init2(void);
@@ -410,7 +410,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 	/* core actions */
 	pcb_hidlib_error_init2();
-	pcb_hid_dlg_init2();
+	rnd_hid_dlg_init2();
 	pcb_hid_nogui_init2();
 	rnd_conf_act_init2();
 	rnd_tool_act_init2();
@@ -469,7 +469,7 @@ void rnd_hidlib_uninit(void)
 	rnd_grid_uninit();
 	rnd_menu_uninit();
 	rnd_hidlib_event_uninit();
-	pcb_hid_dlg_uninit();
+	rnd_hid_dlg_uninit();
 
 	if (rnd_conf_isdirty(RND_CFR_USER))
 		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);

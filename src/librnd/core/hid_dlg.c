@@ -279,17 +279,17 @@ static void hid_dlg_log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int a
 	hid_dlg_gui_inited = 1;
 }
 
-void pcb_hid_dlg_uninit(void)
+void rnd_hid_dlg_uninit(void)
 {
 	rnd_event_unbind_allcookie(event_dlg_cookie);
 }
 
-void pcb_hid_dlg_init(void)
+void rnd_hid_dlg_init(void)
 {
 	rnd_event_bind(RND_EVENT_GUI_INIT, hid_dlg_log_gui_init_ev, NULL, event_dlg_cookie);
 }
 
-void pcb_hid_dlg_init2(void)
+void rnd_hid_dlg_init2(void)
 {
 	RND_REGISTER_ACTIONS(hid_dlg_action_list, NULL);
 }
