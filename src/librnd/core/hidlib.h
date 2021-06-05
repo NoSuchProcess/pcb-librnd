@@ -76,6 +76,7 @@ typedef struct rnd_app_s {
 	/* application information (to be displayed on the UI) */
 	const char *package;
 	const char *version;
+	const char *revision; /* VCS revision info, e.g. svn rev number */
 	const char *url;
 
 
