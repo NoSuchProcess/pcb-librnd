@@ -319,14 +319,14 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 
 		switch(ctx->attrs[i].type) {
 		case RND_HATT_BEGIN_HBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
+			w = rnd_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wltop[i] = ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
 		case RND_HATT_BEGIN_VBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
+			w = rnd_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wltop[i] =ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
@@ -342,7 +342,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			numcol = ctx->attrs[i].rnd_hatt_table_cols;
 			len = rnd_hid_attrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
+			w = rnd_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 
 			ctx->wl[i] = w;
 
@@ -382,7 +382,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 TODO("The wrapper box would allow the table to shrink but then the dialog is always resized to minimum in widget update (library window)\n");
 /*
 			stdarg(PxmNfillBoxMinSize, 20);
-			ctx->wltop[i] = pcb_motif_box(parent, "tree top", 'v', 0, 0, 0);
+			ctx->wltop[i] = rnd_motif_box(parent, "tree top", 'v', 0, 0, 0);
 			ctx->wl[i] = ltf_tree_create(ctx, ctx->wltop[i], &ctx->attrs[i]);
 */
 			ctx->wl[i] = ltf_tree_create(ctx, parent, &ctx->attrs[i]);
@@ -703,7 +703,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 
 	if (!RND_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', rnd_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
+		main_tbl = rnd_motif_box(topform, XmStrCast("layout"), 't', rnd_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
 		attribute_dialog_add(ctx, main_tbl, 0);
 	}
@@ -713,7 +713,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 'v', 0, 0, 0);
+		main_tbl = rnd_motif_box(topform, XmStrCast("layout"), 'v', 0, 0, 0);
 		XtManageChild(main_tbl);
 		attribute_dialog_add(ctx, main_tbl, 0);
 	}

@@ -30,7 +30,7 @@
 #include "Pages.h"
 
 
-static Widget pcb_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
+static Widget rnd_motif_box(Widget parent, char *name, char type, int num_table_rows, int want_frame, int want_scroll)
 {
 	Widget cnt;
 
@@ -96,7 +96,7 @@ static int ltf_pane_create(lesstif_attr_dlg_t *ctx, int j, Widget parent, int is
 	ctx->wl[j] = pane = XmCreatePanedWindow(parent, "pane", stdarg_args, stdarg_n);
 	XtManageChild(pane);
 #else
-	ctx->wl[j] = pane = pcb_motif_box(parent, "", ishor ? 'h' : 'v', 0, 0, 0);
+	ctx->wl[j] = pane = rnd_motif_box(parent, "", ishor ? 'h' : 'v', 0, 0, 0);
 	XtManageChild(pane);
 #endif
 
@@ -179,12 +179,12 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_att
 
 		/* create the boxing for the labels */
 		if (ctx->attrs[i].rnd_hatt_flags & RND_HATF_LEFT_TAB) {
-			wtop = pcb_motif_box(parent, "tabbed_top", 'h', 0, 0, 0);
-			wtab = pcb_motif_box(wtop, "tabbed_tabs", 'v', 0, 0, 0);
+			wtop = rnd_motif_box(parent, "tabbed_top", 'h', 0, 0, 0);
+			wtab = rnd_motif_box(wtop, "tabbed_tabs", 'v', 0, 0, 0);
 		}
 		else {
-			wtop = pcb_motif_box(parent, "tabbed_top", 'v', 0, 0, 0);
-			wtab = pcb_motif_box(wtop, "tabbed_tabs", 'h', 0, 0, 0);
+			wtop = rnd_motif_box(parent, "tabbed_top", 'v', 0, 0, 0);
+			wtab = rnd_motif_box(wtop, "tabbed_tabs", 'h', 0, 0, 0);
 		}
 
 		/* create the label buttons */
