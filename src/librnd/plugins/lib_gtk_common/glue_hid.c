@@ -3,7 +3,7 @@
 
 #include <locale.h>
 
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 #include <librnd/core/actions.h>
 #include "glue_hid.h"
 #include <librnd/core/hid_nogui.h>

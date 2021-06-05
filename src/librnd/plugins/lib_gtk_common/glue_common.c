@@ -33,7 +33,7 @@
 #include "glue_common.h"
 
 #include <librnd/core/conf.h>
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 #include <librnd/core/hidlib.h>
 #include "dlg_topwin.h"
 #include "hid_gtk_conf.h"

@@ -76,7 +76,7 @@ typedef struct {
 
 GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
-static GdkColor *pcb_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
+static GdkColor *rnd_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
 static htsp_t pck_dock_pos[RND_HID_DOCK_max];
 
 static void rnd_gtk_tw_dock_init(void)
@@ -145,8 +145,8 @@ int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 
 	gdl_append(&tw->dock[where], sub, link);
 
-	if (pcb_dock_color[where] != NULL)
-		rnd_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
+	if (rnd_dock_color[where] != NULL)
+		rnd_gtk_dad_fixcolor(sub->dlg_hid_ctx, rnd_dock_color[where]);
 
 	/* workaround: the left dock is in a pane that should be adjusted to the default x size of newcomers if narrower */
 	if ((where == RND_HID_DOCK_LEFT) && (sub->dlg_defx > 0)) {
@@ -483,8 +483,8 @@ static void ghid_build_pcb_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(hboxi), evb, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hboxi, FALSE, FALSE, 0);
 
-	if (pcb_dock_color[RND_HID_DOCK_TOP_INFOBAR] != NULL)
-		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, pcb_dock_color[RND_HID_DOCK_TOP_INFOBAR]);
+	if (rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR] != NULL)
+		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR]);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);

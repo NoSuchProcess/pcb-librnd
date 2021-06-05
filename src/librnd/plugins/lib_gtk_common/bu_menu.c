@@ -13,7 +13,7 @@
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_cfg_action.h>
 
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 #include "bu_menu.h"
 #include "in_keyboard.h"
 

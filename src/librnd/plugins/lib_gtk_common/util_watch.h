@@ -1,5 +1,5 @@
 #include <librnd/core/hid.h>
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 
 rnd_hidval_t rnd_gtk_watch_file(rnd_gtk_t *gctx, int fd, unsigned int condition,
 	rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),

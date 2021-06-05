@@ -2,7 +2,7 @@
 #define RND_GTK_IN_MOUSE_H
 
 #include <librnd/core/hid_cfg_input.h>
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkevents.h>

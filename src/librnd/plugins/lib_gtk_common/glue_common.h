@@ -1,5 +1,5 @@
 #include <librnd/core/hid.h>
-#include "pcb_gtk.h"
+#include "rnd_gtk.h"
 
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.h>
 
