@@ -1757,7 +1757,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			const rnd_export_opt_t *a = ha->opts + i;
-			rnd_hid_attr_val_t *val = &ltf_values[i];
+			rnd_hid_attr_val_t *val = &ha->hid->argument_array[i];
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -1869,43 +1869,6 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 		use_xrender = 0;
 #endif /* RND_HAVE_XINERAMA */
 #endif /* RND_HAVE_XRENDER */
-
-	rcount = 0;
-	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
-		for (i = 0; i < ha->n; i++) {
-			const rnd_export_opt_t *a = ha->opts + i;
-			val_union *v = new_values + rcount;
-			rnd_hid_attr_val_t *backup = NULL;
-			if (ha->hid != NULL)
-				backup = ha->hid->argument_array;
-
-			assert(backup != NULL);
-
-			switch (a->type) {
-			case RND_HATT_INTEGER:
-				backup[i].lng = v->i;
-				rcount++;
-				break;
-			case RND_HATT_COORD:
-				backup[i].crd = v->c;
-				rcount++;
-				break;
-			case RND_HATT_BOOL:
-				backup[i].lng = v->i;
-				rcount++;
-				break;
-			case RND_HATT_REAL:
-				backup[i].dbl = v->f;
-				rcount++;
-				break;
-			case RND_HATT_STRING:
-				backup[i].str = v->s;
-				rcount++;
-				break;
-			default:
-				break;
-			}
-		}
 
 	rnd_hid_parse_command_line(argc, argv);
 
