@@ -70,9 +70,16 @@ do { \
 		repeat = strclone(msg); \
 } while(0)
 
+#define need_value(msg) \
+	if (value == NULL) { \
+		fprintf(stderr, "syntax error; %s\n", msg); \
+		exit(1); \
+	}
+
 static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_auto_set_t *disable_libs)
 {
 	if (strcmp(key, "prefix") == 0) {
+		need_value("use --prefix=dir");
 		report("Setting prefix to '%s'\n", value);
 		put("/local/prefix", strclone(value));
 		return 1;
@@ -91,6 +98,7 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 	if ((strcmp(key, "all") == 0) || (strcmp(key, "force-all") == 0)) {
+		need_value("use --all=buildin|plugin|disable\n");
 		if ((strcmp(value, sbuildin) == 0) || (strcmp(value, splugin) == 0) || (strcmp(value, sdisable) == 0)) {
 			all_plugin_select(value, (key[0] == 'f'));
 			return 1;
@@ -99,14 +107,17 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		exit(1);
 	}
 	if (strcmp(key, "man1dir") == 0) {
+		need_value("use --man1dir=dir");
 		put("/local/man1dir", value);
 		return 1;
 	}
 	if (strcmp(key, "libarchdir") == 0) {
+		need_value("use --libarchdir=dir");
 		put("/local/libarchdir", value);
 		return 1;
 	}
 	if (strcmp(key, "confdir") == 0) {
+		need_value("use --confdir=dir");
 		put("/local/confdir", value);
 		return 1;
 	}
@@ -137,7 +148,9 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 	if (strcmp(key, "coord") == 0) {
-		int v = atoi(value);
+		int v;
+		need_value("use --coord=32|64");
+		v = atoi(value);
 		if ((v != 32) && (v != 64)) {
 			report("ERROR: --coord needs to be 32 or 64.\n");
 			exit(1);
