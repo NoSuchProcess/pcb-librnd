@@ -21,6 +21,9 @@
 #include "../src_3rd/libfungw/scconfig_hooks.h"
 #include "../src_3rd/libporty_net/hooks_net.c"
 
+/* this turns off some code that is required for applications only */
+#define LIBRNDS_SCCONFIG 1
+
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
 #include "librnd/scconfig/hooks_gui.c"
@@ -313,7 +316,7 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) fprintf(f, "/local/pcb/%s/controls=%s\n", name, get("/local/pcb/" name "/controls"));
+#define plugin_def(name, desc, default_, all_, hidlib_) fprintf(f, "/local/pcb/%s/controls=%s\n/local/pcb/%s/external=true\n", name, get("/local/pcb/" name "/controls"), name);
 #define plugin_header(sect)
 #define plugin_dep(plg, on, hidlib)
 #include "plugins.h"
