@@ -43,7 +43,7 @@ extern unsigned long rnd_api_ver;
 #define RND_API_CHK_VER \
 do { \
 	if (!RND_API_VER_MATCH) {\
-		fprintf(stderr, "librnd API version incompatibility: " __FILE__ "=%x core=%x\n(not loading this plugin)\n", (unsigned long)RND_API_VER, rnd_api_ver); \
+		fprintf(stderr, "librnd API version incompatibility: " __FILE__ "=%lx core=%lx\n(not loading this plugin)\n", (unsigned long)RND_API_VER, rnd_api_ver); \
 		return 1; \
 	} \
 } while(0)
