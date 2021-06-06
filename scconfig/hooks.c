@@ -42,9 +42,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_args(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
@@ -295,9 +295,9 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_stat(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_stat(name, desc)
 #define plugin_header(sect) printf(sect);
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	{
@@ -306,17 +306,17 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) fprintf(f, "#state %s %s\n", name, get("/local/pcb/" name "/controls"));
+#define plugin_def(name, desc, default_, all_) fprintf(f, "#state %s %s\n", name, get("/local/pcb/" name "/controls"));
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) fprintf(f, "/local/pcb/%s/controls=%s\n/local/pcb/%s/external=true\n", name, get("/local/pcb/" name "/controls"), name);
+#define plugin_def(name, desc, default_, all_) fprintf(f, "/local/pcb/%s/controls=%s\n/local/pcb/%s/external=true\n", name, get("/local/pcb/" name "/controls"), name);
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 			fclose(f);
 		}
