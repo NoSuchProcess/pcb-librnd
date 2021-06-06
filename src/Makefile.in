@@ -465,7 +465,7 @@ $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h
 
 FORCE:
 
-DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak $(LIBRND)/plugin.state @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(CLEANFILES)
@@ -482,6 +482,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
+	$(SCCBOX) $(HOW) "$(LIBRND)/plugin.state" "$(HL_SHAREDIR)/plugin.state"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
 	$(SCCBOX) $(HOW) "$(SPHASH)" "$(HL_LIBDIR)/librnd/sphash"
