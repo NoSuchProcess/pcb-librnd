@@ -637,6 +637,7 @@ uninstall:
 
 map_plugins:
 	cd librnd/plugins && INCLUDE_PREFIX=../src/librnd/plugins/ PUPLUG=../../../src_3rd/puplug/util/puplug ./map_plugins.sh "."
+	mv librnd/scconfig/plugins.h ../scconfig
 
 @]
 
