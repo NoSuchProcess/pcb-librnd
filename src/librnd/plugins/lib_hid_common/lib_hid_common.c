@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017, 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017, 2018, 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@
 #include "act_dad.h"
 #include "toolbar.h"
 #include "zoompan.h"
+#include "xpm.h"
 #include "conf_internal.c"
 
 conf_dialogs_t dialogs_conf;
@@ -76,6 +77,8 @@ fgw_error_t rnd_act_Command(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+extern fgw_error_t rnd_act_dlg_xpm_by_name(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
 static const char rnd_acth_gui[] = "Intenal: GUI frontend action. Do not use directly.";
 
 rnd_action_t hid_common_action_list[] = {
@@ -91,7 +94,8 @@ rnd_action_t hid_common_action_list[] = {
 	{"gui_MayOverwriteFile", rnd_act_gui_MayOverwriteFile, rnd_acth_gui, NULL},
 	{"rnd_toolbar_init", rnd_act_rnd_toolbar_init, rnd_acth_rnd_toolbar_init, NULL},
 	{"rnd_toolbar_uninit", rnd_act_rnd_toolbar_uninit, rnd_acth_rnd_toolbar_uninit, NULL},
-	{"rnd_zoom", rnd_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default}
+	{"rnd_zoom", rnd_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default},
+	{"rnd_dlg_xpm_by_name", rnd_act_dlg_xpm_by_name, rnd_acth_gui, NULL}
 };
 
 extern const char *rnd_acts_Zoom;
