@@ -9,7 +9,7 @@
 #include "xpm/warning.xpm"
 #include "xpm/online_help.xpm"
 
-const char **pcp_dlg_xpm_by_name(const char *name)
+const char **rnd_dlg_xpm_by_name(const char *name)
 {
 	if (strcmp(name, "question") == 0) return question_xpm;
 	if (strcmp(name, "warning") == 0) return warning_xpm;
@@ -25,7 +25,7 @@ fgw_error_t rnd_act_dlg_xpm_by_name(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(1, FGW_STR, dlg_xpm_by_name, name = argv[1].val.str);
 
 	res->type = FGW_PTR;
-	res->val.ptr_void = pcp_dlg_xpm_by_name(name);
+	res->val.ptr_void = rnd_dlg_xpm_by_name(name);
 
 	return 0;
 }

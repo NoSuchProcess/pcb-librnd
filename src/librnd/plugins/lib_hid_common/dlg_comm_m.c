@@ -104,7 +104,7 @@ fgw_error_t rnd_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
 		RND_DAD_BEGIN_HBOX(dlg);
-			xpm = pcp_dlg_xpm_by_name(icon);
+			xpm = rnd_dlg_xpm_by_name(icon);
 			if (xpm != NULL)
 				RND_DAD_PICTURE(dlg, xpm);
 			RND_DAD_LABEL(dlg, label);
@@ -245,7 +245,7 @@ fgw_error_t rnd_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_DAD_BEGIN_VBOX(dlg);
 		/* icon and label */
 		RND_DAD_BEGIN_HBOX(dlg);
-			xpm = pcp_dlg_xpm_by_name("warning");
+			xpm = rnd_dlg_xpm_by_name("warning");
 			if (xpm != NULL)
 				RND_DAD_PICTURE(dlg, xpm);
 
