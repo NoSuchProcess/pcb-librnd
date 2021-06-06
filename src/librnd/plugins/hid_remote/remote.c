@@ -1,4 +1,4 @@
-#include "config.h"
+#include <librnd/rnd_config.h>
 
 #include <stdio.h>
 #include <stdarg.h>
