@@ -37,10 +37,12 @@ static void rnd_help1(const char *progname)
 	printf(" --man1dir=path             change installation path of man1 files (under prefix)\n");
 	printf(" --libarchdir=relpath       relative path under prefix for arch-lib-dir (e.g. lib64)\n");
 	printf(" --confdir=path             change installed conf path (normally matches sharedir)\n");
+#ifdef LIBRNDS_SCCONFIG
 	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 	printf(" --disable-so               do not compile or install dynamic libs (.so files)\n");
 	printf(" --static-librnd            static link librnd (will fail with plugins!)\n");
+#endif
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -119,6 +121,11 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		help_default_args(stdout, "");
 		exit(0);
 	}
+	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
+		report("ERROR: --with-intl is no longer supported, please do not use it\n");
+		return 1;
+	}
+#ifdef LIBRNDS_SCCONFIG
 	if (strncmp(key, "workaround-", 11) == 0) {
 		const char *what = key+11;
 		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
@@ -127,10 +134,6 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 			report("ERROR: unknown workaround '%s'\n", what);
 			exit(1);
 		}
-		return 1;
-	}
-	if ((strcmp(key, "with-intl") == 0) || (strcmp(key, "enable-intl") == 0)) {
-		report("ERROR: --with-intl is no longer supported, please do not use it\n");
 		return 1;
 	}
 	if (strcmp(key, "coord") == 0) {
@@ -154,6 +157,7 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		pup_set_debug(strue);
 		return 1;
 	}
+#endif
 	if (arg_auto_set(key, value, rnd_disable_libs) > 0)
 		return 1;
 
