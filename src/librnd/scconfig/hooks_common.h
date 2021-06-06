@@ -13,9 +13,9 @@ const arg_auto_set_t rnd_disable_libs[] = { /* list of --disable-LIBs and the su
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_args(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 */
 	{NULL, NULL, NULL, NULL}
@@ -188,22 +188,11 @@ do { \
 	require = 1 - check if dependencies are met, disable plugins that have
 	              unmet deps
 */
-int plugin_dep1(int require, const char *plugin, const char *deps_on, int hidlib)
+int plugin_dep1(int require, const char *plugin, const char *deps_on)
 {
 	char buff[1024];
 	const char *st_plugin, *st_deps_on, *ext_deps_on;
 	int dep_chg = 0;
-
-	sprintf(buff, "/local/pcb/%s/hidlib", plugin);
-	if (!hidlib) { /* may be inherited */
-		hidlib = get(buff) != NULL;
-	}
-
-	if (hidlib) {
-		put(buff, strue);
-		sprintf(buff, "/local/pcb/%s/hidlib", deps_on);
-		put(buff, strue);
-	}
 
 	sprintf(buff, "/local/pcb/%s/controls", plugin);
 	st_plugin = get(buff);
@@ -255,31 +244,13 @@ static void all_plugin_select(const char *state, int force)
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) \
+#define plugin_def(name, desc, default_, all_) \
 	if ((all_) || force) { \
 		sprintf(buff, "/local/pcb/%s/controls", name); \
 		put(buff, state); \
 	}
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
-#include "plugins.h"
-}
-
-/* set up /hidlib nodes in the db to indicate which plugins are in the hidlib */
-static void plugin_db_hidlib(void)
-{
-	char buff[1024];
-
-#undef plugin_def
-#undef plugin_header
-#undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) \
-	if (hidlib_) { \
-		sprintf(buff, "/local/pcb/%s/hidlib", name); \
-		put(buff, strue); \
-	}
-#define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 }
 
@@ -287,7 +258,7 @@ static void plugin_db_hidlib(void)
 /* external plugins should force local plugins that depend on them; e.g.
    in pcb-rnd fp_wget plugin depends on librnd's lib_wget, so if lib_wget
    is a plugin, fp_wget can not be a builtin */
-int plugin_dep_ext(int require, const char *plugin, const char *deps_on, int hidlib)
+int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 {
 	char buff[1024];
 	const char *st_plugin, *st_deps_on;
@@ -360,18 +331,18 @@ int plugin_deps(int require)
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_)
+#define plugin_def(name, desc, default_, all_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib) dep_chg += plugin_dep_ext(require, plg, on, hidlib);
+#define plugin_dep(plg, on) dep_chg += plugin_dep_ext(require, plg, on);
 #include "plugins.h"
 #endif
 
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_)
+#define plugin_def(name, desc, default_, all_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib) dep_chg += plugin_dep1(require, plg, on, hidlib);
+#define plugin_dep(plg, on) dep_chg += plugin_dep1(require, plg, on);
 #include "plugins.h"
 	return dep_chg;
 }
@@ -396,9 +367,9 @@ void rnd_hook_postinit()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_default(name, default_)
+#define plugin_def(name, desc, default_, all_) plugin3_default(name, default_)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	put("/local/pcb/coord_bits", "32");
@@ -415,7 +386,7 @@ static int all_plugin_check_explicit(void)
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) \
+#define plugin_def(name, desc, default_, all_) \
 	sprintf(pwanted, "/local/pcb/%s/explicit", name); \
 	wanted = get(pwanted); \
 	if (wanted != NULL) { \
@@ -427,7 +398,7 @@ static int all_plugin_check_explicit(void)
 		} \
 	}
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 	return tainted;
 }

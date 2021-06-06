@@ -1,5 +1,6 @@
-/* if any of these are enabled, we need the dialog plugin; dialog can not be
-   a pup dep because it must be omitted from the hidlib */
+/* if any of these are enabled, we need the "dialog plugin"; "dialog" can not be
+   a pup dep because it is not in librnd but in the host app and can have a
+   different na,e */
 static const char *dialog_deps[] = {
 	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
 	"/local/pcb/hid_remote/controls",

@@ -110,8 +110,6 @@ int hook_detect_target()
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
 	want_stroke = plug_is_enabled("stroke");
 
-	plugin_db_hidlib();
-
 	rnd_hook_detect_cc();
 	if (rnd_hook_detect_sys() != 0)
 		return 1;
