@@ -174,7 +174,7 @@ do { \
 int plugin_dep1(int require, const char *plugin, const char *deps_on, int hidlib)
 {
 	char buff[1024];
-	const char *st_plugin, *st_deps_on;
+	const char *st_plugin, *st_deps_on, *ext_deps_on;
 	int dep_chg = 0;
 
 	sprintf(buff, "/local/pcb/%s/hidlib", plugin);
@@ -190,8 +190,12 @@ int plugin_dep1(int require, const char *plugin, const char *deps_on, int hidlib
 
 	sprintf(buff, "/local/pcb/%s/controls", plugin);
 	st_plugin = get(buff);
+	sprintf(buff, "/local/pcb/%s/external", deps_on);
+	ext_deps_on = get(buff);
 	sprintf(buff, "/local/pcb/%s/controls", deps_on);
 	st_deps_on = get(buff);
+
+	/* do not change buff here, code below depends on it being set on deps_on/controls */
 
 	if (require) {
 		if ((strcmp(st_plugin, sbuildin) == 0)) {
@@ -214,13 +218,15 @@ int plugin_dep1(int require, const char *plugin, const char *deps_on, int hidlib
 		}
 	}
 	else {
-		if (strcmp(st_plugin, sbuildin) == 0)
-			put(buff, sbuildin);
-		else if (strcmp(st_plugin, splugin) == 0) {
-			if ((st_deps_on == NULL) || (strcmp(st_deps_on, "disable") == 0))
-				put(buff, splugin);
+		if (!(istrue(ext_deps_on))) { /* only local plugin states can change */
+			if (strcmp(st_plugin, sbuildin) == 0)
+				put(buff, sbuildin);
+			else if (strcmp(st_plugin, splugin) == 0) {
+				if ((st_deps_on == NULL) || (strcmp(st_deps_on, "disable") == 0))
+					put(buff, splugin);
+			}
+			dep_chg++;
 		}
-		dep_chg++;
 	}
 	return dep_chg;
 }
@@ -260,9 +266,89 @@ static void plugin_db_hidlib(void)
 #include "plugins.h"
 }
 
+#ifndef LIBRNDS_SCCONFIG
+/* external plugins should force local plugins that depend on them; e.g.
+   in pcb-rnd fp_wget plugin depends on librnd's lib_wget, so if lib_wget
+   is a plugin, fp_wget can not be a builtin */
+int plugin_dep_ext(int require, const char *plugin, const char *deps_on, int hidlib)
+{
+	char buff[1024];
+	const char *st_plugin, *st_deps_on;
+	int dep_chg = 0, is_external, is_ext_forced, is_explicit;
+
+	if (require != 0)
+		return;
+
+	sprintf(buff, "/local/pcb/%s/external", deps_on);
+	is_external = istrue(get(buff));
+
+	sprintf(buff, "/local/pcb/%s/externally_forced", deps_on);
+	is_ext_forced = istrue(get(buff));
+	if (!is_external && !is_ext_forced)
+		return;
+
+	sprintf(buff, "/local/pcb/%s/controls", plugin);
+	st_plugin = get(buff);
+	sprintf(buff, "/local/pcb/%s/controls", deps_on);
+	st_deps_on = get(buff);
+
+	if ((strcmp(st_deps_on, "disable") == 0) && (strcmp(st_plugin, "disable") != 0)) {
+		sprintf(buff, "/local/pcb/%s/explicit", plugin);
+		is_explicit = get(buff);
+
+		if (is_explicit) {
+			if (is_external)
+				sprintf(buff, "WARNING: disabling %s because external %s is disabled (check your librnd configuration)...\n", plugin, deps_on);
+			else
+				sprintf(buff, "WARNING: disabling %s because %s is disabled by external plugin constraints...\n", plugin, deps_on);
+			report_repeat(buff);
+		}
+		sprintf(buff, "disable-%s", plugin);
+		hook_custom_arg(buff, NULL);
+		dep_chg++;
+	}
+
+	if ((strcmp(st_deps_on, "plugin") == 0) && (strcmp(st_plugin, "buildin") == 0)) {
+		sprintf(buff, "/local/pcb/%s/explicit", plugin);
+		is_explicit = get(buff);
+
+		if (is_explicit) {
+			if (is_external)
+				sprintf(buff, "WARNING: %s is made plugin (from buildin) because external %s is a plugin (check your librnd configuration)...\n", plugin, deps_on);
+			else
+				sprintf(buff, "WARNING: %s is made plugin (from buildin) because %s is a plugin (because of external plugin constraints)...\n", plugin, deps_on);
+			report_repeat(buff);
+		}
+		sprintf(buff, "plugin-%s", plugin);
+		hook_custom_arg(buff, NULL);
+		dep_chg++;
+	}
+
+	/* if we had to change a plugin because of an external, mark it, so that
+	   this choice won't be overridden */
+	if (dep_chg) {
+		sprintf(buff, "/local/pcb/%s/externally_forced", plugin);
+		put(buff, strue);
+	}
+
+	return dep_chg;
+}
+#endif
+
 int plugin_deps(int require)
 {
 	int dep_chg = 0;
+
+#ifndef LIBRNDS_SCCONFIG
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_, hidlib_)
+#define plugin_header(sect)
+#define plugin_dep(plg, on, hidlib) dep_chg += plugin_dep_ext(require, plg, on, hidlib);
+#include "plugins.h"
+#endif
+
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
