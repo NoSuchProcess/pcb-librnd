@@ -120,6 +120,7 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_remove_actions_by_cookie(hid_common_cookie);
 	rnd_act_dad_uninit();
 	rnd_conf_unreg_fields("plugins/lib_hid_common/");
+	rnd_conf_unreg_fields("plugins/dialogs/");
 	rnd_dlg_log_uninit();
 }
 
