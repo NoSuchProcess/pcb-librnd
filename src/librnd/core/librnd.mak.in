@@ -19,6 +19,16 @@ gsub /local/pcb/CFLAGS_HIDLIB_STATIC_ {[.][.]/src_3rd/} {$(LIBRND_ROOT)/src_3rd/
 # Lesstif requires that -lXm is before -lXt or else there is a runtime BadWindow error
 order /local/pcb/LDFLAGS_HIDLIB_STATIC_ {-lXm} {before} {-lXt}
 
+# non-standard installation prefix requires extra -I and -L
+switch /local/prefix
+	case {^/usr$} end
+	case {^/usr/local$} end
+	default
+		put /local/pcb/librnd_mak_extra_inc [@-I@/local/prefix@/include@]
+		put /local/pcb/librnd_mak_extra_ldf [@-L@/local/prefix@/lib@]
+	end
+end
+
 print [@
 
 #
@@ -33,8 +43,8 @@ LIBRND_PREFIX=@/local/prefix@
 LIBRND_INCDIR=$(LIBRND_PREFIX)/include
 LIBRND_LIBDIR=$(LIBRND_PREFIX)/lib
 
-CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd
-LDFLAGS_LIBRND=@?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
+CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd @?/local/pcb/librnd_mak_extra_inc@
+LDFLAGS_LIBRND=@?/local/pcb/librnd_mak_extra_ldf@ @?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
 PUPLUG=$(LIBRND_LIBDIR)/librnd/puplug
 
 # These are extracts of the fungw-specific parts; only needed if the the above
