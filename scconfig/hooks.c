@@ -34,10 +34,6 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png rnd_exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png rnd_exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png rnd_exporter"},
-	{"enable-bison",      "/local/pcb/want_bison",        arg_true,      "$enable generating language files using bison/flex"},
-	{"disable-bison",     "/local/pcb/want_bison",        arg_false,     "$disable generating language files using bison/flex"},
-	{"enable-byaccic",    "/local/pcb/want_byaccic",      arg_true,      "$enable generating language files using byaccic/ureglex"},
-	{"disable-byaccic",   "/local/pcb/want_byaccic",      arg_false,     "$disable generating language files byaccic/ureglex"},
 
 #undef plugin_def
 #undef plugin_header
@@ -81,9 +77,6 @@ int hook_postinit()
 	db_mkdir("/local/pcb");
 
 	rnd_hook_postinit();
-
-	put("/local/pcb/want_bison", sfalse);
-	put("/local/pcb/want_byaccic", sfalse);
 
 	return 0;
 }
@@ -155,34 +148,6 @@ int hook_detect_target()
 		put("libs/gui/gd/gdImagePng/presents", sfalse);
 		put("libs/gui/gd/gdImageGif/presents", sfalse);
 		put("libs/gui/gd/gdImageJpeg/presents", sfalse);
-	}
-
-	/* yacc/lex - are we able to regenerate languages? */
-	if (istrue(get("/local/pcb/want_bison"))) {
-		require("parsgen/flex/*", 0, 0);
-		require("parsgen/bison/*", 0, 0);
-		if (!istrue(get("parsgen/flex/presents")) || !istrue(get("parsgen/bison/presents")))
-			put("/local/pcb/want_parsgen", sfalse);
-		else
-			put("/local/pcb/want_parsgen", strue);
-	}
-	else {
-		report("Bison/flex are disabled, among with parser generation.\n");
-		put("/local/pcb/want_parsgen", sfalse);
-	}
-
-	/* byaccic - are we able to regenerate languages? */
-	if (istrue(get("/local/pcb/want_byaccic"))) {
-		require("parsgen/byaccic/*", 0, 0);
-		require("parsgen/ureglex/*", 0, 0);
-		if (!istrue(get("parsgen/byaccic/presents")) || !istrue(get("parsgen/ureglex/presents")))
-			put("/local/pcb/want_parsgen_byaccic", sfalse);
-		else
-			put("/local/pcb/want_parsgen_byaccic", strue);
-	}
-	else {
-		report("byaccic/ureglex are disabled, among with parser generation.\n");
-		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
 
 	if (libporty_net_detect_target() != 0) {
@@ -287,7 +252,6 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n");
 
-	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 	print_sum_setting_or("/local/pcb/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
 	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
