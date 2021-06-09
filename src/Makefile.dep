@@ -1854,8 +1854,9 @@
  ../src/librnd/plugins/stroke/conf_internal.c \
  ../src/librnd/plugins/stroke/stroke_conf.h \
  ../src/librnd/plugins/stroke/stroke_conf_fields.h
-librnd/plugins/script/live_script.o: ../src/librnd/plugins/script/live_script.c \
- ../src/librnd/rnd_config.h ../src/librnd/config.h ../src_3rd/genvector/vtp0.h \
+../src/librnd/plugins/script/live_script.o: \
+ ../src/librnd/plugins/script/live_script.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h ../src_3rd/puplug/util.h \
@@ -1877,11 +1878,14 @@ librnd/plugins/script/live_script.o: ../src/librnd/plugins/script/live_script.c 
  ../src_3rd/genlist/gendlist.h ../src/librnd/core/safe_fs_dir.h \
  ../src/librnd/core/compat_inc.h ../src/librnd/core/compat_fs.h ../src/librnd/core/event.h \
  ../src/librnd/core/hidlib.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/script/script.h ../src/librnd/plugins/script/live_script.h \
- ../src/librnd/plugins/script/menu_internal.c ../src/librnd/plugins/script/glue_undo.c
-librnd/plugins/script/script.o: ../src/librnd/plugins/script/script.c \
- ../src/librnd/rnd_config.h ../src/librnd/config.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h ../src_3rd/puplug/puplug.h \
+ ../src/librnd/plugins/script/script.h \
+ ../src/librnd/plugins/script/live_script.h \
+ ../src/librnd/plugins/script/menu_internal.c \
+ ../src/librnd/plugins/script/glue_undo.c
+../src/librnd/plugins/script/script.o: \
+ ../src/librnd/plugins/script/script.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/hash.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
@@ -1901,11 +1905,13 @@ librnd/plugins/script/script.o: ../src/librnd/plugins/script/script.c \
  ../src/librnd/core/compat_fs.h ../src/librnd/core/safe_fs.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h ../src/librnd/core/event.h \
  ../src/librnd/core/hidlib.h ../src/librnd/core/globalconst.h ../src/librnd/core/hid_init.h \
- ../src/librnd/plugins/script/script.h ../src/librnd/plugins/script/guess_lang.c \
- ../src_3rd/genht/htss.h ../src_3rd/genht/ht_utils.h \
- ../src_3rd/puplug/util.h ../src/librnd/plugins/script/c_script.c \
- ../src/librnd/core/fptr_cast.h ../src/librnd/core/hidlib_conf.h ../src/librnd/core/color.h \
- ../src/librnd/plugins/script/timer.c ../src/librnd/plugins/script/perma.c ../config.h \
+ ../src/librnd/plugins/script/script.h \
+ ../src/librnd/plugins/script/guess_lang.c ../src_3rd/genht/htss.h \
+ ../src_3rd/genht/ht_utils.h ../src_3rd/puplug/util.h \
+ ../src/librnd/plugins/script/c_script.c ../src/librnd/core/fptr_cast.h \
+ ../src/librnd/core/hidlib_conf.h ../src/librnd/core/color.h \
+ ../src/librnd/plugins/script/timer.c \
+ ../src/librnd/plugins/script/perma.c ../config.h \
  ../src/librnd/plugins/script/script_act.c ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/hid_dad_tree.h \

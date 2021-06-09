@@ -253,9 +253,7 @@ ROOT=..
 
 # plugin source
 LIBRND_PLUGDIR=$(ROOT)/src/librnd/plugins
-
-# shortnand, must not have ../
-PLUGDIR=librnd/plugins
+PLUGDIR=$(LIBRND_PLUGDIR)
 
 # plugin source install - so that pcb-rnd runs from source properly
 PLUGIDIR=plugins
