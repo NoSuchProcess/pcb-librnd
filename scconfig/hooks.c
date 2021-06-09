@@ -50,6 +50,10 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 static void help1(void)
 {
 	rnd_help1("librnd");
+	printf(" --coord=32|64              set coordinate integer type's width in bits\n");
+	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
+	printf(" --disable-so               do not compile or install dynamic libs (.so files)\n");
+	printf(" --static-librnd            static link librnd (will fail with plugins!)\n");
 }
 
 int want_coord_bits;
