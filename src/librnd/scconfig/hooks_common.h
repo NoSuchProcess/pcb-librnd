@@ -247,7 +247,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 	int dep_chg = 0, is_external, is_ext_forced, is_explicit;
 
 	if (require != 0)
-		return;
+		return 0;
 
 	sprintf(buff, "/local/pcb/%s/external", deps_on);
 	is_external = istrue(get(buff));
@@ -255,7 +255,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 	sprintf(buff, "/local/pcb/%s/externally_forced", deps_on);
 	is_ext_forced = istrue(get(buff));
 	if (!is_external && !is_ext_forced)
-		return;
+		return 0;
 
 	sprintf(buff, "/local/pcb/%s/controls", plugin);
 	st_plugin = get(buff);
