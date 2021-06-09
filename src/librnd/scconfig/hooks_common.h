@@ -4,8 +4,6 @@ const arg_auto_set_t disable_libs[];
 int hook_custom_arg(const char *key, const char *value);
 
 /*** implementation ***/
-int want_coord_bits;
-
 static void all_plugin_select(const char *state, int force);
 
 static void rnd_help1(const char *progname)
@@ -120,42 +118,6 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		report("ERROR: --with-intl is no longer supported, please do not use it\n");
 		return 1;
 	}
-#ifdef LIBRNDS_SCCONFIG
-	if (strncmp(key, "workaround-", 11) == 0) {
-		const char *what = key+11;
-		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
-		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
-		else {
-			report("ERROR: unknown workaround '%s'\n", what);
-			exit(1);
-		}
-		return 1;
-	}
-	if (strcmp(key, "coord") == 0) {
-		int v;
-		need_value("use --coord=32|64");
-		v = atoi(value);
-		if ((v != 32) && (v != 64)) {
-			report("ERROR: --coord needs to be 32 or 64.\n");
-			exit(1);
-		}
-		put("/local/pcb/coord_bits", value);
-		want_coord_bits = v;
-		return 1;
-	}
-	if (strcmp(key, "disable-so") == 0) {
-		put("/local/pcb/disable_so", strue);
-		put("/local/pcb/want_static_librnd", strue);
-		pup_set_debug(strue);
-		return 1;
-	}
-	if (strcmp(key, "static-librnd") == 0) {
-		put("/local/pcb/want_static_librnd", strue);
-		pup_set_debug(strue);
-		return 1;
-	}
-#endif
-
 	return 0;
 }
 
@@ -353,9 +315,6 @@ void rnd_hook_postinit()
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"
-
-	put("/local/pcb/coord_bits", "32");
-	want_coord_bits = 32;
 }
 
 

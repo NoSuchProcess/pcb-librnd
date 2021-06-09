@@ -53,10 +53,46 @@ static void help1(void)
 	rnd_help1("librnd");
 }
 
+int want_coord_bits;
+
 /* Runs when a custom command line argument is found
  returns true if no further argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
 {
+	if (strcmp(key, "coord") == 0) {
+		int v;
+		need_value("use --coord=32|64");
+		v = atoi(value);
+		if ((v != 32) && (v != 64)) {
+			report("ERROR: --coord needs to be 32 or 64.\n");
+			exit(1);
+		}
+		put("/local/pcb/coord_bits", value);
+		want_coord_bits = v;
+		return 1;
+	}
+	if (strncmp(key, "workaround-", 11) == 0) {
+		const char *what = key+11;
+		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
+		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
+		else {
+			report("ERROR: unknown workaround '%s'\n", what);
+			exit(1);
+		}
+		return 1;
+	}
+	if (strcmp(key, "disable-so") == 0) {
+		put("/local/pcb/disable_so", strue);
+		put("/local/pcb/want_static_librnd", strue);
+		pup_set_debug(strue);
+		return 1;
+	}
+	if (strcmp(key, "static-librnd") == 0) {
+		put("/local/pcb/want_static_librnd", strue);
+		pup_set_debug(strue);
+		return 1;
+	}
+
 	rnd_hook_custom_arg(key, value, disable_libs); /* call arg_auto_print_options() instead */
 
 	if (arg_auto_set(key, value, disable_libs) == 0) {
@@ -79,6 +115,9 @@ int hook_postinit()
 	db_mkdir("/local/pcb");
 
 	rnd_hook_postinit();
+
+	put("/local/pcb/coord_bits", "32");
+	want_coord_bits = 32;
 
 	return 0;
 }
@@ -180,6 +219,49 @@ static void rnd_hook_detect_hid()
 			hook_custom_arg("disable-hid_gtk2_gl", NULL);
 		}
 	}
+}
+
+	/* figure coordinate bits */
+static void rnd_hook_detect_coord_bits(void)
+{
+	int int_bits       = safe_atoi(get("sys/types/size/signed_int")) * 8;
+	int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
+	int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
+	int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
+	const char *chosen, *postfix;
+	char tmp[64];
+	int need_stdint = 0;
+
+	if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           }
+	else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      }
+	else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       need_stdint = 1; }
+	else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; }
+	else {
+		report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_coord_bits);
+		exit(1);
+	}
+
+	sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
+	put("/local/pcb/coord_type", chosen);
+	put("/local/pcb/coord_max", tmp);
+
+	chosen = NULL;
+	if (istrue(get("/local/pcb/debug"))) { /* debug: c89 */
+		if (int64_bits >= 64) {
+			/* to suppress warnings on systems that support c99 but are forced to compile in c89 mode */
+			chosen = "int64_t";
+			need_stdint = 1;
+		}
+	}
+
+	if (chosen == NULL) { /* non-debug, thus non-c89 */
+		if (long_long_bits >= 64) chosen = "long long int";
+		else if (long_bits >= 64) chosen = "long int";
+		else chosen = "double";
+	}
+	put("/local/pcb/long64", chosen);
+	if (need_stdint)
+		put("/local/pcb/include_stdint", "#include <stdint.h>");
 }
 
 
