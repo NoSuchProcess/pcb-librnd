@@ -6,21 +6,6 @@ int hook_custom_arg(const char *key, const char *value);
 /*** implementation ***/
 int want_coord_bits;
 
-const arg_auto_set_t rnd_disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
-	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
-	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
-/*
-#undef plugin_def
-#undef plugin_header
-#undef plugin_dep
-#define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
-#define plugin_header(sect)
-#define plugin_dep(plg, on)
-#include "plugins.h"
-*/
-	{NULL, NULL, NULL, NULL}
-};
-
 static void all_plugin_select(const char *state, int force);
 
 static void rnd_help1(const char *progname)
@@ -124,7 +109,6 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 	if (strcmp(key, "help") == 0) {
 		help1();
 		printf("\nplugin control:\n");
-		arg_auto_print_options(stdout, " ", "                         ", rnd_disable_libs);
 		if (disable_libs != NULL)
 			arg_auto_print_options(stdout, " ", "                         ", disable_libs);
 		help2();
@@ -171,8 +155,6 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 #endif
-	if (arg_auto_set(key, value, rnd_disable_libs) > 0)
-		return 1;
 
 	return 0;
 }

@@ -34,6 +34,8 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 	{"disable-gd-gif",    "libs/gui/gd/gdImageGif",       arg_lib_nodes, "$no gif support in the png rnd_exporter"},
 	{"disable-gd-png",    "libs/gui/gd/gdImagePng",       arg_lib_nodes, "$no png support in the png rnd_exporter"},
 	{"disable-gd-jpg",    "libs/gui/gd/gdImageJpeg",      arg_lib_nodes, "$no jpeg support in the png rnd_exporter"},
+	{"disable-xrender",   "libs/gui/xrender",             arg_lib_nodes, "$do not use xrender for lesstif"},
+	{"disable-xinerama",  "libs/gui/xinerama",            arg_lib_nodes, "$do not use xinerama for lesstif"},
 
 #undef plugin_def
 #undef plugin_header
