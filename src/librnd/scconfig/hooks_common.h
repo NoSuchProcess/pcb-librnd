@@ -220,7 +220,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 
 	if ((strcmp(st_deps_on, "disable") == 0) && (strcmp(st_plugin, "disable") != 0)) {
 		sprintf(buff, "/local/pcb/%s/explicit", plugin);
-		is_explicit = get(buff);
+		is_explicit = (get(buff) != NULL);
 
 		if (is_explicit) {
 			if (is_external)
@@ -236,7 +236,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 
 	if ((strcmp(st_deps_on, "plugin") == 0) && (strcmp(st_plugin, "buildin") == 0)) {
 		sprintf(buff, "/local/pcb/%s/explicit", plugin);
-		is_explicit = get(buff);
+		is_explicit = (get(buff) != NULL);
 
 		if (is_explicit) {
 			if (is_external)
