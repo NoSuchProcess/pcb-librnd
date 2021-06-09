@@ -19,7 +19,9 @@ The above procedure has been tested on IRIX 5.3 on IP22.
 Expected compilation times [minute:second]:
 
 librnd   ./configure       compile, -O0     compile -O3   system
------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+3.0.0    3:27              4:20             15:23         IRIX 5.3 on IP22 (no motif)
+
 
 
 3. per UNIX system notes
