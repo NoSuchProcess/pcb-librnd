@@ -26,7 +26,6 @@
 
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
-#include "librnd/scconfig/hooks_gui.c"
 #include "librnd/scconfig/rnd_hook_detect.h"
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
@@ -264,6 +263,38 @@ static void rnd_hook_detect_coord_bits(void)
 		put("/local/pcb/include_stdint", "#include <stdint.h>");
 }
 
+
+/* if any of these are enabled, we need the "dialog plugin"; "dialog" can not be
+   a pup dep because it is not in librnd but in the host app and can have a
+   different na,e */
+static const char *dialog_deps[] = {
+	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
+	"/local/pcb/hid_remote/controls",
+	"/local/pcb/lib_gtk_common/controls",
+	"/local/pcb/hid_lesstif/controls",
+	NULL
+};
+
+
+void rnd_calc_dialog_deps(void)
+{
+	const char **p;
+	int buildin = 0, plugin = 0;
+
+	for(p = dialog_deps; *p != NULL; p++) {
+		const char *st = get(*p);
+		if (st == NULL) continue;
+		if (strcmp(st, "buildin") == 0) {
+			buildin = 1;
+			break;
+		}
+		if (strcmp(st, "plugin") == 0)
+			plugin = 1;
+	}
+
+	put("/target/librnd/dialogs/buildin", buildin ? strue : sfalse);
+	put("/target/librnd/dialogs/plugin",  plugin  ? strue : sfalse);
+}
 
 /* Runs when things should be detected for the target system */
 int hook_detect_target()

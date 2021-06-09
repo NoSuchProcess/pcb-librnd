@@ -86,7 +86,7 @@ menucfg.o: menucfg.c
 
 LIBRND_CFLAGS=-I../src 
 LIBRNDSCC=../src/librnd/scconfig
-RNDHOOKS=$(LIBRNDSCC)/plugin_3state.h $(LIBRNDSCC)/hooks_common.h $(LIBRNDSCC)/hooks_gui.c $(LIBRNDSCC)/rnd_hook_detect.h
+RNDHOOKS=$(LIBRNDSCC)/plugin_3state.h $(LIBRNDSCC)/hooks_common.h $(LIBRNDSCC)/rnd_hook_detect.h
 hooks.o: hooks.c $(RNDHOOKS)  plugins.h Rev.h ../src_3rd/puplug/scconfig_hooks.h ../src_3rd/libfungw/scconfig_hooks.h ../src_3rd/libporty_net/hooks_net.c
 
 src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h
