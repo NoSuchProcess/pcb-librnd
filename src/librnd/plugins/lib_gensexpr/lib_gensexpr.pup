@@ -2,6 +2,6 @@ $class lib
 $short #s-expression library
 $long S-expression parser lib
 $state works
-$package lib-io
+$package (core)
 $hidlib 1
 default buildin
