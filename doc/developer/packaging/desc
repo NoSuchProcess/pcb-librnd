@@ -1,0 +1,29 @@
+@librnd3
+	Ringdove 2D CAD library (shared objects): config, HID, polygon, menu,
+	plugin infrastructure for two dimensional CAD applications.
+
+@librnd3-dev
+	Ringdoce 2D cad library, headers.
+
+
+@librnd3-hid-gtk2-gdk
+	GUI: gtk2, software render
+
+	Software rendering on gtk2, using the gdk API.
+
+@librnd3-hid-gtk2-gl
+	GUI: gtk2, opengl
+
+	Hardware accelerated (opengl) rendering on gtk2.
+
+@librnd3-hid-lesstif
+	GUI: motif/lesstif, software render
+
+	Lightweight GUI and software rendering using the motif (lesstif) toolkit.
+
+@librnd3-lib-gui
+	Support library for building the GUI.
+
+	Provides librnd specific dialog boxes (e.g. fontsel) and top
+	window GUI elements.
+

@@ -1,0 +1,17 @@
+librnd is a modular framework library for 2D CAD applications. It
+provides the following built-in features:
+  - hierarchic configuration files
+  - flexible menu and hotkey system
+  - HID API for CLI/GUI frontend
+  - multi-layer rendering support
+  - interactive drawing tool infrastructure
+  - action infrastructure
+  - polygon clipping
+  - turing complete user scripting
+
+Supported via plugins:
+  - CLI/batch frontend
+  - gtk2 frontend with gdk software rendering
+  - gtk2 frontend with gl hardware accelerated rendering
+  - lesstif/motif frontend
+

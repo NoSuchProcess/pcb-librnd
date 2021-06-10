@@ -1,0 +1,16 @@
+How to get a release candidate tarball in /tmp:
+
+  ver=3.0.0
+  cd /tmp
+  svn export svn://repo.hu/librnd/trunk librnd-$ver
+  tar -cf librnd-$ver.tar librnd-$ver
+
+TODO: librnd-dev: new file sharedir/plugin.state
+
+Packaging changes between 3.0.0 and void
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+B. changes that probably DO need action
+
