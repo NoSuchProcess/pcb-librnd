@@ -3,6 +3,11 @@ gsub /local/objs { } {\n}
 
 foreach /local/h in /local/objs
 	sub /local/h {^[$](LIBRND)/} {}
-	print [@#include <librnd/@/local/h@>
+	switch /local/h
+		case {core/funchash_core_list.h} end;
+		default
+			print [@#include <librnd/@/local/h@>
 @]
+		end
+	end
 end

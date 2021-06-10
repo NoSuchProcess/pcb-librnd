@@ -4,7 +4,7 @@ LIBRND_ROOT=include/$(HL_LIBDIR)/..
 include $(TRUNK)/Makefile.conf
 include $(TRUNK)/src/librnd/core/librnd.mak
 
-CFLAGS = $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
+CFLAGS =  -I$(LIBRND_ROOT)/include -I$(LIBRND_ROOT)/include/librnd/src_3rd $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
 LDFLAGS = $(LDFLAGS_LIBRND)
 LIBRND = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
 
@@ -26,7 +26,7 @@ librnd_includes: librnd_includes.o $(LIBRND)
 librd_includes.o: librnd_includes.c includes
 
 $(LIBRND) includes: ../../src/Makefile
-	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install_librnd HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
+	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 clean:
 	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o inc_all.h
