@@ -3,7 +3,7 @@
 # list of all packges
 librnd_pkgs="librnd3-dev librnd3-doc librnd3-hid-gtk2-gl librnd3-cloud librnd3-lib-gui librnd3-hid-gtk2-gdk librnd3-lib-gtk librnd3-hid-lesstif librnd3 librnd3-lib-gl"
 
-# plugin->packge mapping
+# plugin=package mapping
 librnd_plugins="
 hid_gtk2_gl=librnd3-hid-gtk2-gl
 hid_batch=librnd3

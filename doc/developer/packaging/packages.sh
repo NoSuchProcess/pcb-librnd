@@ -260,7 +260,7 @@ print in_librnd, $1 > "L1"
 		sub("^ ", "", s)
 		print "librnd_pkgs=" q s q > "librnd_packages.sh"
 
-		print "\n# plugin=packge mapping" > "librnd_packages.sh"
+		print "\n# plugin=package mapping" > "librnd_packages.sh"
 		print "librnd_plugins=" q > "librnd_packages.sh"
 		for(p in PLUGIN) {
 			short = p
