@@ -5,7 +5,7 @@
 # script specified in $1 on it
 awk_on_formats()
 {
-(for n in $ROOT/src_plugins/*/*.pup
+(for n in $proot/*/*.pup
 do
 	echo "@@@ $n"
 	cat $n
