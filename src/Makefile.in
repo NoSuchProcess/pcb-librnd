@@ -557,6 +557,7 @@ append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
+append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/ }
 
 if ?libs/script/fungw/presents
 then
@@ -596,7 +597,13 @@ foreach /local/h in /local/pcb/HDRS_3RDLIB
 			sub /local/hd {^} {src_3rd/}
 			end
 	end
-	print [@	$(SCCBOX) $(HOW) "@/local/h@" "$(HL_INCDIR)/@/local/hd@"@] {\n}
+
+	switch /local/hd
+		case {genlist/} end
+		default
+			print [@	$(SCCBOX) $(HOW) "@/local/h@" "$(HL_INCDIR)/@/local/hd@"@] {\n}
+			end
+	end
 end
 
 if /local/pcb/disable_so
