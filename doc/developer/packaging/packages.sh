@@ -60,7 +60,6 @@ cat extra.digest
 			if ($0 ~ "^@") {
 				pkg=$0
 		sub("^librnd[0-9]?-", pkg)
-print "pkg=" pkg > "/dev/stderr"
 				sub("^@", "", pkg)
 				getline SHORT[pkg] < "desc"
 				continue
