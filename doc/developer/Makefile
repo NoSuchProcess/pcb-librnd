@@ -6,7 +6,7 @@ all:
 install_all:
 	$(SCCBOX) mkdir -p $(DEVDIR)/hid_remote
 	$(SCCBOX) $(HOW) hid_remote/*.html hid_remote/*.svg $(DEVDIR)/hid_remote/
-	$(SCCBOX) $(HOW) packaging/librnd_packages.sh $(DATADIR)/librnd_packages.sh
+	$(SCCBOX) $(HOW) packaging/librnd_packages.sh $(DATADIR)/
 
 install:
 	$(MAKE) install_all HOW="install -f -d"
