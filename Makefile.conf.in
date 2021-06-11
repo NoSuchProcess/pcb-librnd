@@ -36,4 +36,8 @@ HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
 HL_SHAREDIR=$(Install_root)@/local/prefix@/share/librnd3
 HL_INCDIR=$(Install_root)@/local/prefix@/include/librnd
 
+# used for tests
+LIBRND_RDYNAMIC=@cc/rdynamic@
+
+
 @]
