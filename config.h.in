@@ -27,7 +27,7 @@ switch sys/class
 		print [@
 #define RND_PREFIX "@/local/prefix@"
 #define LIBRNDSHAREDIR RND_PREFIX "/share/librnd3"
-#define LIBRNDLIBDIR RND_PREFIX "/@/local/libarchdir@/librnd"
+#define LIBRNDLIBDIR RND_PREFIX "/@/local/libarchdir@/librnd3"
 #define RND_BINDIR RND_PREFIX "/bin"
 @]
 		end;
