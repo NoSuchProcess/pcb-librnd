@@ -19,7 +19,9 @@ static void rnd_help1(const char *progname)
 	printf(" --symbols                  include symbols (add -g, but no -O0 or extra asserts)\n");
 	printf(" --man1dir=path             change installation path of man1 files (under prefix)\n");
 	printf(" --libarchdir=relpath       relative path under prefix for arch-lib-dir (e.g. lib64)\n");
+#ifndef LIBRNDS_SCCONFIG
 	printf(" --confdir=path             change installed conf path (normally matches sharedir)\n");
+#endif
 	printf(" --all=plugin               enable all working plugins for dynamic load\n");
 	printf(" --all=buildin              enable all working plugins for static link\n");
 	printf(" --all=disable              disable all plugins (compile core only)\n");
@@ -93,11 +95,13 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		put("/local/libarchdir", value);
 		return 1;
 	}
+#ifndef LIBRNDS_SCCONFIG
 	if (strcmp(key, "confdir") == 0) {
 		need_value("use --confdir=dir");
 		put("/local/confdir", value);
 		return 1;
 	}
+#endif
 	if (strcmp(key, "help") == 0) {
 		help1();
 		printf("\nplugin control:\n");
@@ -295,7 +299,9 @@ void rnd_hook_postinit()
 	put("/local/prefix", "/usr/local");
 	put("/local/man1dir", "/share/man/man1");
 	put("/local/libarchdir", "lib");
+#ifndef LIBRNDS_SCCONFIG
 	put("/local/confdir", "");
+#endif
 	put("/local/pcb/debug", sfalse);
 	put("/local/pcb/profile", sfalse);
 	put("/local/pcb/symbols", sfalse);

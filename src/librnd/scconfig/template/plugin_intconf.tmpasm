@@ -24,14 +24,17 @@ append /local/pcb/RULES [@
 @]
 
 
-switch /local/pcb/mod/enabled
-	case {1}
-		append /local/pcb/rules/install_ [@
-	$(SCCBOX) $(HOW) "@/local/pcb/MCFG@" "$(CONFDIR)/@/local/pcb/mod/CONFFILE@"@]
+if ?/local/librnd/no_confdir
+then
+else
+	switch /local/pcb/mod/enabled
+		case {1}
+			append /local/pcb/rules/install_ [@
+		$(SCCBOX) $(HOW) "@/local/pcb/MCFG@" "$(CONFDIR)/@/local/pcb/mod/CONFFILE@"@]
+		end
+		default end;
 	end
-	default end;
 end
-
 end
 default
 end
