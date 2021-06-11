@@ -8,6 +8,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/hidlib_conf.h>
 #include <librnd/poly/polyarea.h>
 
 #include "glue.c"
@@ -30,14 +31,25 @@ int main(int argc, char *argv[])
 
 	rnd_fix_locale_and_env();
 
+	rnd_plugin_add_dir("include/usr/lib/librnd3/plugins");
+	rnd_conf_force_set_bool(rnd_conf.rc.dup_log_to_stderr, 1);
+
 	rnd_main_args_init(&ga, argc, action_args);
+
 
 	rnd_hidlib_init1(conf_core_init);
 	for(n = 1; n < argc; n++)
 		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
+
 	rnd_hidlib_init2(pup_buildins, local_buildins);
+	rnd_hidlib_init3_auto();
 
 	rnd_conf_set(RND_CFR_CLI, "editor/view/flip_y", 0, "1", RND_POL_OVERWRITE);
+
+	if ((ga.do_what == RND_DO_SOMETHING) && (ga.hid_name == NULL)) {
+		ga.do_what = RND_DO_GUI;
+		ga.hid_name = "batch";
+	}
 
 	if (rnd_main_args_setup1(&ga) != 0) {
 		fprintf(stderr, "setup1 fail\n");
