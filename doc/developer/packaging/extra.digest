@@ -3,10 +3,10 @@
 @appendfiles librnd3-dev $PREFIX/share/librnd3/librnd.mak
 @appendfiles librnd3-dev $PREFIX/share/librnd3/plugin.state
 @appendfiles librnd3-dev $PREFIX/share/librnd3/librnd_packages.sh
-@appendfiles librnd3-dev $PREFIX/lib/librnd/scconfig
+@appendfiles librnd3-dev $PREFIX/lib/librnd3/scconfig
 @appendfiles librnd3-dev $PREFIX/lib/*.so
-@appendfiles librnd3-dev $PREFIX/lib/librnd/puplug $PREFIX/lib/librnd/sphash
-@appendfiles librnd3-dev $PREFIX/lib/librnd/plugins/map_plugins.sh
-@appendfiles librnd3-dev $PREFIX/lib/librnd/scconfig
+@appendfiles librnd3-dev $PREFIX/lib/librnd3/puplug $PREFIX/lib/librnd3/sphash
+@appendfiles librnd3-dev $PREFIX/lib/librnd3/plugins/map_plugins.sh
+@appendfiles librnd3-dev $PREFIX/lib/librnd3/scconfig
 @appenddeps librnd3-dev librnd3
 
