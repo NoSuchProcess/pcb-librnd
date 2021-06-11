@@ -349,13 +349,18 @@ static int all_plugin_check_explicit(void)
 int rnd_hook_postarg(const char *librnd_prefix)
 {
 	int limit = 128;
-	char *pfn = str_concat("", librnd_prefix, "/share/librnd3/plugin.state", NULL);
 
-	if (import(pfn) < 1) {
-		fprintf(stderr, "Failed to import librnd plugin state file from '%s'\n", pfn);
-		exit(1);
+#ifndef LIBRNDS_SCCONFIG
+	{
+		char *pfn = str_concat("", librnd_prefix, "/share/librnd3/plugin.state", NULL);
+
+		if (import(pfn) < 1) {
+			fprintf(stderr, "Failed to import librnd plugin state file from '%s'\n", pfn);
+			exit(1);
+		}
+		free(pfn);
 	}
-	free(pfn);
+#endif
 
 	/* repeat as long as there are changes - this makes it "recursive" on
 	   resolving deps */
