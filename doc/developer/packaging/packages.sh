@@ -145,6 +145,8 @@ print in_librnd, $1 > "L1"
 	($1 ~ "[.]pup$") && ($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
 
 	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
+# no confdir in librnd
+next
 		fn=$4
 		sub("[{][ \t]*", "", fn)
 		sub("[ \t]*[}]", "", fn)

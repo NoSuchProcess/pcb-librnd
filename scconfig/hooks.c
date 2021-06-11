@@ -122,6 +122,8 @@ int hook_postinit()
 	put("/local/pcb/coord_bits", "32");
 	want_coord_bits = 32;
 
+	put("/local/librnd/no_confdir", strue);
+
 	return 0;
 }
 

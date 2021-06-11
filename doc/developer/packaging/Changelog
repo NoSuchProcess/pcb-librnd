@@ -6,6 +6,7 @@ How to get a release candidate tarball in /tmp:
   tar -cf librnd-$ver.tar librnd-$ver
 
 TODO: librnd-dev: new file sharedir/plugin.state
+TODO: there is no --confdir for ./configure
 
 Packaging changes between 3.0.0 and void
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

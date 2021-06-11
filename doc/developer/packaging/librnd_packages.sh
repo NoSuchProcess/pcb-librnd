@@ -14,7 +14,6 @@ irc=librnd3-lib-gui
 script=librnd3
 hid_gtk2_gdk=librnd3-hid-gtk2-gdk
 lib_gensexpr=librnd3
-stroke=<NOT PACKAGED IN LIBRND>
 lib_wget=librnd3-cloud
 lib_hid_gl=librnd3-lib-gl
 lib_gtk_common=librnd3-lib-gtk
