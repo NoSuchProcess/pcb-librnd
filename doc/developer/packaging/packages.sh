@@ -231,10 +231,8 @@ next
 		}
 		print "</table>"
 		print "<p>File prefixes:<ul>"
-		print "	<li> $P: librnd plugin install dir (e.g. /usr/lib/librnd/)"
-		print "	<li> $C: librnd conf dir (e.g. /etc/librnd/)"
-		print "	<li> $LP: librnd plugin install dir (e.g. /usr/lib/librnd/)"
-		print "	<li> $LC: librnd conf dir (e.g. /etc/librnd/)"
+		print "	<li> $P: plugin install dir (e.g. /usr/lib/librnd/)"
+		print "	<li> $C: conf dir (e.g. /etc/librnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 
