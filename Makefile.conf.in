@@ -16,7 +16,7 @@ Install_root=$(install_root)$(DESTDIR)
 DOCDIR=$(Install_root)@/local/prefix@/share/doc/librnd3
 LIBDIR=$(Install_root)@/local/prefix@/lib/pcb-rnd
 BINDIR=$(Install_root)@/local/prefix@/bin
-DATADIR=$(Install_root)@/local/prefix@/share/librnd
+DATADIR=$(Install_root)@/local/prefix@/share/librnd3
 MAN1DIR=$(Install_root)@/local/prefix@@/local/man1dir@
 RM=@/host/fstools/rm@
 CP=@/host/fstools/cp@
@@ -33,7 +33,7 @@ PCB_RND_C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
-HL_SHAREDIR=$(Install_root)@/local/prefix@/share/librnd
+HL_SHAREDIR=$(Install_root)@/local/prefix@/share/librnd3
 HL_INCDIR=$(Install_root)@/local/prefix@/include/librnd
 
 

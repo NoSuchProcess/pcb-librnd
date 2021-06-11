@@ -1,7 +1,7 @@
 @files librnd3-dev $PREFIX/include/librnd/*
 @files librnd3 $PREFIX/lib/*.so.*
-@appendfiles librnd3-dev $PREFIX/share/librnd/librnd.mak
-@appendfiles librnd3-dev $PREFIX/share/librnd/librnd_packages.sh 
+@appendfiles librnd3-dev $PREFIX/share/librnd3/librnd.mak
+@appendfiles librnd3-dev $PREFIX/share/librnd3/librnd_packages.sh
 @appendfiles librnd3-dev $PREFIX/lib/librnd/scconfig
 @appendfiles librnd3-dev $PREFIX/lib/*.so
 @appendfiles librnd3-dev $PREFIX/lib/librnd/puplug $PREFIX/lib/librnd/sphash
