@@ -179,6 +179,7 @@ int main(int argc, char *argv[])
 	for(n = 1; n < argc; n++)
 		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
 	rnd_hidlib_init2(pup_buildins, foobar_buildins);
+	rnd_hidlib_init3_auto();
 
 	foobar_main_init();
 
