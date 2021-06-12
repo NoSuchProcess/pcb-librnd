@@ -472,6 +472,7 @@ int hook_generate()
 #include "plugins.h"
 
 	{
+		const char *tmp;
 		FILE *f = fopen(PLUGIN_STAT_FN, "w");
 		if (f != NULL) {
 #undef plugin_def
@@ -492,7 +493,8 @@ int hook_generate()
 
 			fprintf(f, "\n# misc settings\n");
 /*			fprintf(f, "/local/librnd/fungw/cflags=%s", get("libs/script/fungw/cflags"));*/
-			fprintf(f, "/local/librnd/fungw/ldflags=%s\n", get("libs/script/fungw/ldflags"));
+			tmp = get("libs/script/fungw/ldflags");
+			fprintf(f, "/local/librnd/fungw/ldflags=%s\n", (tmp == NULL ? "" : tmp));
 			fclose(f);
 		}
 		else {
