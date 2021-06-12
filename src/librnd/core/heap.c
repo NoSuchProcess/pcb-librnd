@@ -54,9 +54,6 @@ struct rnd_heap_s {
 
 static rnd_heap_cost_t MIN_COST = 0;
 
-/* ---------------------------------------------------------------------------
- * functions.
- */
 /* helper functions for assertions */
 #ifndef NDEBUG
 #ifdef SLOW_ASSERTIONS
@@ -215,14 +212,12 @@ void *rnd_heap_replace(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data)
 	return heap->element[0].data;
 }
 
-/* -- interrogation -- */
 int rnd_heap_is_empty(rnd_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
 	return heap->size == 0;
 }
 
-/* -- size -- */
 int rnd_heap_size(rnd_heap_t * heap)
 {
 	assert(__heap_is_good(heap));
