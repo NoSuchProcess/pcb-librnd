@@ -26,9 +26,6 @@
  *
  */
 
-/* misc functions used by several modules
- */
-
 #include <librnd/rnd_config.h>
 #include <stdlib.h>
 #include <stdio.h>
