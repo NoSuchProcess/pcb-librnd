@@ -350,13 +350,13 @@ librnd-poly.a: $(OBJS_POLYLIB)
 	$(RANLIB) librnd-poly.a
 
 librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
-	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) @/local/pcb/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) $(LDFLAGS) @/local/pcb/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
-	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) $(LDFLAGS) -lm
 
 
 # these are required in case librnd is used from source checkout in dynamic
