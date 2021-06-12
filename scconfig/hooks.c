@@ -489,6 +489,10 @@ int hook_generate()
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"
+
+			fprintf(f, "\n# misc settings\n");
+/*			fprintf(f, "/local/librnd/fungw/cflags=%s", get("libs/script/fungw/cflags"));*/
+			fprintf(f, "/local/librnd/fungw/ldflags=%s\n", get("libs/script/fungw/ldflags"));
 			fclose(f);
 		}
 		else {
