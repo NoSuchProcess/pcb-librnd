@@ -1,7 +1,8 @@
 /*
  *                            COPYRIGHT
  *
- *  pcb-rnd, interactive printed circuit board design
+ *  librnd, modular 2D CAD framework
+ *  (file imported from: pcb-rnd, interactive printed circuit board design)
  *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,8 +20,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *  Contact:
- *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+ *    Project page: http://repo.hu/projects/librnd
+ *    lead developer: http://repo.hu/projects/librnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
@@ -47,7 +48,7 @@ int rnd_anyload_reg(const char *root_regex, const rnd_anyload_t *al);
 void rnd_anyload_unreg_by_cookie(const char *cookie);
 
 /* Load a file or pack: path may be a lihata file (either anything we can load
-   or a pcb-rnd-anyload-v*) or a directory that has an anyload.lht in it.
+   or a $APP-anyload-v*) or a directory that has an anyload.lht in it.
    Return 0 on success. */
 int rnd_anyload(rnd_hidlib_t *hidlib, const char *path);
 
