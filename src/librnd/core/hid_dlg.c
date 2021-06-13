@@ -86,7 +86,6 @@ char *rnd_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_
 
 static const char rnd_acts_MessageBox[] = "MessageBox(icon, title, label, button_txt, button_retval, ...)";
 static const char rnd_acth_MessageBox[] = "Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.";
-/* DOC: messagebox.html */
 static fgw_error_t rnd_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return call_dialog("messagebox", res, argc, argv);
