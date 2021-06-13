@@ -1,5 +1,6 @@
 librnd documentation: work in progress.
 
 Most notable subdirectories:
+	action/             action details doc (per action)
 	conf/               documentation of the configuration system
 	developer/          documentation for developers
