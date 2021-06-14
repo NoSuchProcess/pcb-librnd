@@ -791,67 +791,41 @@ int rnd_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 
 int rnd_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
 
-typedef struct conf_ignore_s {
-	const char *name;
-	int len;
-	int warned;
-} conf_ignore_t;
-
-static conf_ignore_t conf_ignores[] = {
-	/* it is normal to have configuration for plugins and utils not loaded - ignore these */
-	{"plugins/", 8, 1},
-	{"utils/", 6, 1},
-
-	/* old config paths - warn once and move on */
-	{"editor/show_mask", 16, 0},
-	{"editor/show_paste", 17, 0},
-	{"editor/increments", 17, 0},
-	{"design/max_width", 16, 0},
-	{"design/max_height", 17, 0},
-	{"design/groups", 13, 1},
-	{"design/default_layer_name", 25, 1},
-
-	{NULL, 0, 0}
-};
-
-/* for security reasons ignore these nodes when coming from a board or project file */
-static conf_ignore_t conf_board_ignores[] = {
-	{"rc/action_string", 16, 0},
-	{"rc/library_shell", 16, 0},
-	{"rc/file_command", 15, 0},
-	{"rc/font_command", 15, 0},
-	{"rc/save_command", 15, 0},
-	{"rc/rat_command", 14, 0},
-	{NULL, 0, 0}
-};
-
 static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 {
-	conf_ignore_t *i;
+	rnd_conf_ignore_t *i;
 
-	for(i = conf_ignores; i->name != NULL; i++) {
-		if (strncmp(path, i->name, i->len) == 0) {
-			if (i->warned)
-				return; /* do not warn again */
-			i->warned = 1;
-			break;
+	if ((strncmp(path, "plugins/", 8) == 0) || (strncmp(path, "utils/", 6) == 0))
+		return; /* it is normal to have configuration for plugins and utils not loaded - ignore these */
+
+	if (rnd_app.conf_ignores != NULL) {
+		for(i = rnd_app.conf_ignores; i->name != NULL; i++) {
+			if (strncmp(path, i->name, i->len) == 0) {
+				if (i->warned)
+					return; /* do not warn again */
+				i->warned = 1;
+				break;
+			}
 		}
 	}
+
 	rnd_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
 }
 
 /* returns 1 if the config node should be ignored */
 static int conf_board_ignore(const char *path, lht_node_t *n)
 {
-	conf_ignore_t *i;
+	rnd_conf_ignore_t *i;
 
-	for(i = conf_board_ignores; i->name != NULL; i++) {
-		if (strncmp(path, i->name, i->len) == 0) {
-			if (!i->warned) {
-				i->warned = 1;
-				rnd_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
+	if (rnd_app.conf_board_ignores != NULL) {
+		for(i = rnd_app.conf_board_ignores; i->name != NULL; i++) {
+			if (strncmp(path, i->name, i->len) == 0) {
+				if (!i->warned) {
+					i->warned = 1;
+					rnd_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
+				}
+				return 1;
 			}
-			return 1;
 		}
 	}
 	return 0;

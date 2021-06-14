@@ -148,7 +148,18 @@ typedef struct rnd_app_s {
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
-	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+
+	/* Optional: a NULL terminated array of config paths that shall not be
+	   loaded from desing or project files. This is for security reasons:
+	   any node that may execute code or scripts should be listed here */
+	rnd_conf_ignore_t *conf_board_ignores;
+
+	/* Optional: a NULL terminated array of config paths that should not
+	   generate an error message when found in a file; should list old nodes
+	   that got removed from the conf system but old files could still have them */
+	rnd_conf_ignore_t *conf_ignores;
+
+	void *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_app_t;
 

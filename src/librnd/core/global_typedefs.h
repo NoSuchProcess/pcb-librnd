@@ -78,6 +78,8 @@ typedef struct rnd_export_opt_s rnd_export_opt_t;
 typedef long int rnd_layer_id_t;
 typedef long int rnd_layergrp_id_t;
 
+typedef struct rnd_conf_ignore_s rnd_conf_ignore_t;
+
 #include <librnd/core/rnd_bool.h>
 
 #endif
