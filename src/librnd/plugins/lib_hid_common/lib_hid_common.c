@@ -41,6 +41,7 @@
 #include "dialogs_conf.h"
 #include "dlg_comm_m.h"
 #include "dlg_log.h"
+#include "dlg_plugins.h"
 #include "act_dad.h"
 #include "toolbar.h"
 #include "zoompan.h"
@@ -88,6 +89,7 @@ rnd_action_t hid_common_action_list[] = {
 	{"Scroll", rnd_act_Scroll, rnd_acth_Scroll, rnd_acts_Scroll},
 	{"LogDialog", rnd_act_LogDialog, rnd_acth_LogDialog, rnd_acts_LogDialog},
 	{"Command", rnd_act_Command, rnd_acth_Command, rnd_acts_Command},
+	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"gui_PromptFor", rnd_act_gui_PromptFor, rnd_acth_gui, NULL},
 	{"gui_MessageBox", rnd_act_gui_MessageBox, rnd_acth_gui, NULL},
 	{"gui_FallbackColorPick", rnd_act_gui_FallbackColorPick, rnd_acth_gui, NULL},

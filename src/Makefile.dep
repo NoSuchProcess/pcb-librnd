@@ -1607,6 +1607,27 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/core/color.h ../src/librnd/core/hid_cfg.h \
  ../src/librnd/core/hid_menu.h ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/event.h \
  ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_hid_common/dlg_log.h
+../src/librnd/plugins/lib_hid_common/dlg_plugins.o: \
+ ../src/librnd/plugins/lib_hid_common/dlg_plugins.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src/librnd/config.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ ../src/librnd/core/hid_dad.h ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/hid_cfg.h \
+ ../src/librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/hid_dad_tree.h \
+ ../src_3rd/genht/hash.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_plugins.h
 ../src/librnd/plugins/lib_hid_common/grid_menu.o: \
  ../src/librnd/plugins/lib_hid_common/grid_menu.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/conf.h ../src/librnd/config.h \
@@ -1662,6 +1683,7 @@
  ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
  ../src/librnd/plugins/lib_hid_common/dlg_comm_m.h \
  ../src/librnd/plugins/lib_hid_common/dlg_log.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_plugins.h \
  ../src/librnd/plugins/lib_hid_common/act_dad.h \
  ../src/librnd/plugins/lib_hid_common/toolbar.h \
  ../src/librnd/plugins/lib_hid_common/zoompan.h \
@@ -1921,6 +1943,11 @@
 ../src_3rd/gensexpr/gsxl.o: ../src_3rd/gensexpr/gsxl.c \
  ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
  ../src_3rd/gensexpr/gsx_parse.h ../src_3rd/gensexpr/gensexpr_impl.c
+../src_3rd/libfungwbind/fawk/fungw_fawk.o: \
+ ../src_3rd/libfungwbind/fawk/fungw_fawk.c ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
+ ../src_3rd/libfungw/fungw_conv.h \
+ ../src_3rd/libfungwbind/fawk/libfawk_sc/libfawk_sc_all.c
 ../src_3rd/libporty_net/libportytcp4.o: \
  ../src_3rd/libporty_net/libportytcp4.c \
  ../src_3rd/libporty_net/libportytcp4.h \
@@ -1936,6 +1963,25 @@
  ../src_3rd/libporty_net/pnet_config.h \
  ../src_3rd/libporty_net/phost_types.h ../src/librnd/core/compat_misc.h \
  ../src/librnd/config.h
+../src_3rd/genht/hash.o: ../src_3rd/genht/hash.c
+../src_3rd/genht/htip.o: ../src_3rd/genht/htip.c ../src_3rd/genht/htip.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
+../src_3rd/genht/htpi.o: ../src_3rd/genht/htpi.c ../src_3rd/genht/htpi.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
+../src_3rd/genht/htpp.o: ../src_3rd/genht/htpp.c ../src_3rd/genht/htpp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
+../src_3rd/genht/htsi.o: ../src_3rd/genht/htsi.c ../src_3rd/genht/htsi.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
+../src_3rd/genht/htsp.o: ../src_3rd/genht/htsp.c ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
+../src_3rd/genht/htss.o: ../src_3rd/genht/htss.c ../src_3rd/genht/htss.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
+ ../src_3rd/genht/ht_inlines.h
 ../src_3rd/genlist/genadlist.o: ../src_3rd/genlist/genadlist.c \
  ../src_3rd/genlist/genadlist.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/genlistalloc.h
@@ -1973,6 +2019,25 @@
  ../src_3rd/genvector/vts0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
+../src_3rd/libfungw/fungw.o: ../src_3rd/libfungw/fungw.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h ../src_3rd/genht/hash.h
+../src_3rd/libfungw/fungw_call.o: ../src_3rd/libfungw/fungw_call.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungw/fungw_conv.o: ../src_3rd/libfungw/fungw_conv.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
+ ../src_3rd/libfungw/fungw_conv.h
+../src_3rd/libfungw/fungw_debug.o: ../src_3rd/libfungw/fungw_debug.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungw/fungw_ptr.o: ../src_3rd/libfungw/fungw_ptr.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+../src_3rd/libfungwbind/c/fungw_c.o: ../src_3rd/libfungwbind/c/fungw_c.c \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
 ../src_3rd/liblhtpers/lhtpers.o: ../src_3rd/liblhtpers/lhtpers.c \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  ../src_3rd/liblhtpers/lhtpers.h ../src_3rd/liblihata/dom.h \
