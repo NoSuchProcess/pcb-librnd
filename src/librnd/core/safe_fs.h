@@ -80,6 +80,9 @@ FILE *rnd_fopen_fn(rnd_hidlib_t *hidlib, const char *path, const char *mode, cha
 FILE *rnd_fopen_at(rnd_hidlib_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
 
 
+/* Return 1 if path is a file that can be opened for read */
+int rnd_file_readable(rnd_hidlib_t *hidlib, const char *path);
+
 #include <librnd/core/conf.h>
 
 /* Open a file with standard path search and substitutions performed on

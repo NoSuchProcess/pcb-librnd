@@ -86,7 +86,7 @@ int rnd_mkdir_(const char *path, int mode)
 }
 #undef MKDIR
 
-int rnd_file_readable(const char *path)
+int rnd_file_readable_(const char *path)
 {
 	FILE *f;
 	f = rnd_fopen(NULL, path, "r");

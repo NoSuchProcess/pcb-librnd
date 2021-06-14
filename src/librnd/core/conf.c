@@ -294,7 +294,7 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 
 		strcpy(fn, e->d_name);
 
-		if (rnd_file_readable(path)) {
+		if (rnd_file_readable_(path)) {
 			lht_doc_t *d = conf_load_plug_file(path, 0);
 			if (d != NULL) {
 				int res = conf_merge_plug(d, role, path);
