@@ -1,1 +1,2 @@
-
+- 4.0.0:
+	- rnd_app_t spares: conf_ignore lists (two void *)
