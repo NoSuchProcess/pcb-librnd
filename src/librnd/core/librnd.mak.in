@@ -45,7 +45,7 @@ LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@
 
 CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd @?/local/pcb/librnd_mak_extra_inc@
 LDFLAGS_LIBRND=@?/local/pcb/librnd_mak_extra_ldf@ @?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
-PUPLUG=$(LIBRND_LIBDIR)/librnd/puplug
+PUPLUG=$(LIBRND_LIBDIR)/librnd3/puplug
 
 # These are extracts of the fungw-specific parts; only needed if the the above
 # are NOT used (partial linking)
