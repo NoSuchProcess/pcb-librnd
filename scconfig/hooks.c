@@ -130,7 +130,7 @@ int hook_postinit()
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
-	return rnd_hook_postarg(NULL);
+	return rnd_hook_postarg(NULL, "librnd");
 }
 
 

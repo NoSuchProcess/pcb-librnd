@@ -346,7 +346,7 @@ static int all_plugin_check_explicit(void)
 
 
 /* Runs after all arguments are read and parsed */
-int rnd_hook_postarg(const char *librnd_prefix)
+int rnd_hook_postarg(const char *librnd_prefix, const char *app_name)
 {
 	int limit = 128;
 
@@ -359,6 +359,22 @@ int rnd_hook_postarg(const char *librnd_prefix)
 			exit(1);
 		}
 		free(pfn);
+	}
+	
+	{ /* set up confdir */
+		const char *cdir = get("/local/confdir");
+		if ((cdir == NULL) || (*cdir == '\0')) { /* empty/uninitialized confdir: fill it in */
+			const char *p, *p2 = "", *tmp, *prefix = get("/local/prefix");
+			if (strcmp(prefix, "/usr") != 0) { /* /usr/local source install or custom - keep it there */
+				p = prefix;
+				p2 = "/etc";
+			}
+			else /* special case: when installed from package, use /etc */
+				p = "/etc";
+			tmp = str_concat("", p, p2, "/", app_name, NULL);
+			put("/local/confdir", tmp);
+			free(tmp);
+		}
 	}
 #endif
 
