@@ -485,6 +485,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd3/puplug"
 	$(SCCBOX) $(HOW) "$(SPHASH)" "$(HL_LIBDIR)/librnd3/sphash"
 	$(SCCBOX) $(HOW) "librnd/scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd3/scconfig/gen_conf.sh"
+	$(SCCBOX) $(HOW) "../scconfig/cquote"                              "$(HL_LIBDIR)/librnd3/scconfig/cquote"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/cdep.tmpasm"            "$(HL_LIBDIR)/librnd3/scconfig/template/cdep.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/comp_var.tmpasm"        "$(HL_LIBDIR)/librnd3/scconfig/template/comp_var.tmpasm"
 	$(SCCBOX) $(HOW) "librnd/scconfig/template/compile.tmpasm"         "$(HL_LIBDIR)/librnd3/scconfig/template/compile.tmpasm"
