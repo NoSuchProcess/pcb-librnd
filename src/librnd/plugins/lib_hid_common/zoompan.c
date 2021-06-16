@@ -43,6 +43,7 @@ fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *vp, *ovp;
 	double v;
 	rnd_coord_t x = 0, y = 0;
+	rnd_bool succ;
 
 	RND_GUI_NOGUI();
 
@@ -95,6 +96,10 @@ fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_gui->zoom(rnd_gui, x, y, v, 1);
 		break;
 	case '=':
+		/* this one requires units */
+		v = rnd_get_value(vp, NULL, NULL, &succ);
+		if (!succ)
+			return FGW_ERR_ARG_CONV;
 		rnd_gui->zoom(rnd_gui, x, y, v, 0);
 		break;
 	}
