@@ -330,6 +330,38 @@ static fgw_error_t rnd_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_SetGridOffs[] = "SetGridOffs(x_offs, y_offs)";
+static const char rnd_acth_SetGridOffs[] = "Change grid offset (alignment) to x_offs and y_offs. Offsets should be specified with units.";
+/* DOC: setgridoffs.html */
+static fgw_error_t rnd_act_SetGridOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *xs, *ys;
+	rnd_bool xa, ya, xv, yv;
+	rnd_coord_t x, y;
+
+	RND_ACT_CONVARG(1, FGW_STR, SetGridOffs, xs = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SetGridOffs, ys = argv[2].val.str);
+
+	RND_ACT_IRES(0);
+
+	x = rnd_get_value(xs, NULL, &xa, &xv);
+	y = rnd_get_value(ys, NULL, &ya, &yv);
+
+	if (!xv || !yv) {
+		rnd_message(RND_MSG_ERROR, "SetGrid: Invalid%s%s offset value\n", (xv ? "" : " x"), (yv ? "" : " x"));
+		return 1;
+	}
+
+	if (!xa) x += RND_ACT_HIDLIB->grid_ox;
+	if (!ya) y += RND_ACT_HIDLIB->grid_oy;
+
+
+	rnd_grid_inval();
+	rnd_hidlib_set_grid(RND_ACT_HIDLIB, RND_ACT_HIDLIB->grid, rnd_true, x, y);
+
+	return 0;
+}
+
 
 static const char rnd_acts_setunits[] = "SetUnits(mm|mil)";
 static const char rnd_acth_setunits[] = "Set the default measurement units.";
@@ -355,6 +387,7 @@ static rnd_action_t rnd_conf_action_list[] = {
 	{"ChkGridSize", rnd_act_ChkGridSize, rnd_acth_ChkGridSize, rnd_acts_ChkGridSize},
 	{"ChkGridUnits", rnd_act_ChkGridUnits, rnd_acth_ChkGridUnits, rnd_acts_ChkGridUnits},
 	{"SetGrid", rnd_act_SetGrid, rnd_acth_SetGrid, rnd_acts_SetGrid},
+	{"SetGridOffs", rnd_act_SetGridOffs, rnd_acth_SetGridOffs, rnd_acts_SetGridOffs},
 	{"SetUnits", rnd_act_SetUnits, rnd_acth_setunits, rnd_acts_setunits}
 };
 

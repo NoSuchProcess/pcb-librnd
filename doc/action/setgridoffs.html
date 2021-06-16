@@ -1,0 +1,12 @@
+Changes the grid offset to relative or absolute x_offs and y_offs.
+For non-zero values always use units, e.g. SetGrifOffs(0.5mm, 0.1mm).
+<p>
+The final grid offset alues will be scaled down so they are always between
+0 and the current grid size. For example with a 25 mil grid, a value of
+7mil will be taken as 7mil offset, but a value of 27 mil will be taken
+as a 2mil offset.
+<p>
+If an offset starts with + or -, it is taken as relative, which means it
+is added to the current offset value.
+
+
