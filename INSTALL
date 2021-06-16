@@ -49,3 +49,10 @@ no subsequent make install is needed after a recompilation if no new
 files appeared (useful for developers):
 
   make linstall
+
+4. ldconfig
+
+Especially if you are installing to a prefix that differs from /usr, you
+may need to tell your dynamic loader about the new .so files after the
+installation. How this is done is system specific. On GNU/Linux running
+ldconfig as root should work.
