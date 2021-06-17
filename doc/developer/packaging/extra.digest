@@ -8,5 +8,5 @@
 @appendfiles librnd3-dev $PREFIX/lib/librnd3/puplug $PREFIX/lib/librnd3/sphash
 @appendfiles librnd3-dev $PREFIX/lib/librnd3/plugins/map_plugins.sh
 @appendfiles librnd3-dev $PREFIX/lib/librnd3/scconfig
-@appenddeps librnd3-dev librnd3
+
 
