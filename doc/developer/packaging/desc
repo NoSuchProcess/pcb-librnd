@@ -1,6 +1,9 @@
 @librnd3
-	Ringdove 2D CAD library (shared objects): config, HID, polygon, menu,
-	plugin infrastructure for two dimensional CAD applications.
+	Ringdove 2D CAD library framework
+
+	The Ringdove library (shared objects) contains the basic
+	infrastructure for 2D interactive+batch CAD applications: config,
+	HID, polygon, menu, plugin system.
 
 @librnd3-dev
 	Ringdove 2D cad library, files for development.
