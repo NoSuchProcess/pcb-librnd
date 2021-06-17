@@ -7,6 +7,21 @@ proot=$ROOT/src/librnd/plugins
 
 . $ROOT/util/devhelpers/awk_on_formats.sh
 
+# generate version
+awk '
+/#define[ \t]*version[ \t]*/ {
+	ver=$3
+	gsub("\"", "", ver)
+	print ver > "auto/ver.full"
+	split(ver, A, "-")
+	split(A[1], V, "[.]")
+	print V[1] > "auto/ver.major"
+	print V[2] > "auto/ver.minor"
+	print V[3] > "auto/ver.patch"
+	print A[2] > "auto/ver.suffix"
+}'  < $ROOT/scconfig/hooks.c
+
+
 awk_on_formats  '
 { print $0 }
 
