@@ -1,2 +1,3 @@
+- BUG: zoom-to-extent, out-of-aspect: should center the view [report: cuvoodoo] (report to pcb-rnd ml)
 - 4.0.0:
 	- rnd_app_t spares: conf_ignore lists (two void *)
