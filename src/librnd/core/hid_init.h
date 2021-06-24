@@ -182,4 +182,6 @@ extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf lo
 
 extern int rnd_coord_t_size;
 
+void rnd_pcbhl_conf_postproc(void);
+
 #endif
