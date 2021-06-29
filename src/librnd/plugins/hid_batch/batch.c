@@ -40,7 +40,7 @@ static const rnd_export_opt_t *batch_get_export_options(rnd_hid_t *hid, int *n_r
 static int batch_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbatch GUI command line arguments: none\n\n");
-	fprintf(stderr, "\nInvocation: pcb-rnd --gui batch [options]\n");
+	fprintf(stderr, "\nInvocation: %s --gui batch [options]\n", rnd_app.package);
 	return 0;
 }
 
