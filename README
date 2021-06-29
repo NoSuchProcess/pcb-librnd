@@ -24,7 +24,7 @@ librnd source distribution is organized into:
   src/            a core library: basic infrastructure that's always compiled
   src_plugins/    a collection of optional plugins
   src_3rd/        third-party minilibs (dependencies, not integral parts)
-  tests/          automated tests to check whether pcb-rnd works properly
+  tests/          automated tests to check whether librnd works properly
   util/           utility programs to help developers
 
 
