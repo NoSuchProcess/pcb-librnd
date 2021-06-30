@@ -1,2 +1,241 @@
-librnd 3.0.0 (rxxxxx)
+librnd 3.0.0 (r32906)
 ~~~~~~~~~~~~~~~~~~~~~
+	[action]
+		-Add: API CHANGE: introduce RND_APP_PREFIX() for RND_ACT_FAIL() and other ACT macros to know the host application namespace prefix
+		-Cleanup: rename from pcb_act* prefix to rnd_act* prefix for clarity and namespace
+
+	[anyload]
+		-Add: spare fields
+
+	[conf]
+		-Fix: don't crash if native node is queried before the hash is initialized
+		-Fix: don't crash if app didn't specify user conf dir
+		-Fix: conf ignores should be coming from the app using rnd_app.*, not hardwired in librnd
+		-Cleanup: rename pcb_conf_merge_all to rnd_conf_merge_all to keep namespace clean
+		-Cleanup: API CHANGE: rename RND_CFR_DEFAULTPCB to RND_CFR_DEFAULTDSG because librnd is not about PCBs only but abotu any design a CAD-like app does
+		-Cleanup: fix up the symbol name of rnd_conf_pcb_hid_uninit() in internal public API (remove the _pcb from the middle, probably an earlier renaming error)
+		-Add: comment to explain a status bit left-over from pcb-rnd
+		-Add: spare fields in callback struct
+
+	[core]
+		-Fix: don't crash on action uninitialization if the action system was not initialized
+		-Fix: API CHANGE: typo in public symbol prefix (rnd_pcphl_*)
+		-Fix: use %lx for printing unsigned long on version mismatch error msg
+		-Del: pcb_compat.h: it was relevant in the 2.x.x series for backward compatibility, but 3.0.0 has other breaking API changes as well
+		-Del: pre-3.0.0 compatibility layers
+		-Change: lib versioning scheme for detaching from pcb-rnd
+		-Cleanup: API CHANGE: rename pcb_conf_internal to rnd_conf_internal to clean the namespace
+		-Cleanup: rename pcb_long64_t to have rnd_ prefix
+		-Cleanup: remove unused PCB_PACKAGE, rename PCB_VERSION and PCB_REVISION to RND_* for namespace purity (internal public API)
+		-Cleanup: remove references to pcb from public API comments
+		-Cleanup: prefix pcbhl_ with rnd_ for keeping the namespace clean
+		-Cleanup: rename pcb_color_* to rnd_color_* in internal API for clarity
+		-Cleanup: namespace: pcb_hid_dlg prefix changed to rnd
+		-Cleanup: namespace: pcb_dad public internals to rnd_dad prefix
+		-Cleanup: rename pcb_conf_* to rnd_conf_* for namespace cleanup
+		-Cleanup: pcb_ -> rnd_ prefixes in actions, safe_fs, pixmap, internal hid APIs
+		-Cleanup: pcb_ -> rnd_ prefixes in hidlib error init, macro of tools, macro of grid, macro of conf
+		-Cleanup: PCB_ -> RND_ prefixes in PCB_OBJ_PROP
+		-Cleanup: PCB_ -> RND_ prefixes in internal feature macro
+		-Cleanup: rename pcb in internal APIs and comments
+		-Cleanup: remove some pcb-rnd refs from anyload
+		-Add: spare fields in pixmap structs, color cache and hidlib API
+		-Add: rnd_coord_t spare to all struct with spare fields (rnd_coord_t size depends on configuration)
+		-Add: SetGridOffs() action
+		-Add: publish the prototype of rnd_pcbhl_conf_postproc() for pcb-rnd to be able to set the home dir
+		-Add: install all funchash headers - pcb-rnd needs them
+
+	[DAD]
+		-Fix: don't use lable for DAD_COORD in gui actions
+		-Cleanup: API CHANGE: make RND_DAD_CFG_NOLABEL the default and remove the feature macro
+		-Add: spare fields in spin struct
+
+	[doc]
+		-Fix: doc link points to developer/, there's no user doc for the lib
+		-Fix: refine the documentation on how menu file name is really used
+		-Fix: broken link to minisvn (web svn cgi)
+		-Fix: license title is not pcb-rnd but librnd
+		-Del: key/menu related rules from Makefile (librnd doesn't come with a menu file)
+		-Cleanup: remove $LP and $LC from packager's doc (we install only librnd, that's $P and $C)
+		-Update: unix installation from pcb-rnd
+		-Update: change README from pcb-rnd to librnd
+		-Update: AUTHORS and INSTALL from pcb-rnd to librnd
+		-Update: README with the dir layout
+		-Update: html headers and main web page from pcb-rnd to librnd
+		-Update: there's only one recommended init sequence now which is generic enough for all cases
+		-Import: action doc from pcb-rnd for those actions that got moved from pcb-rnd to librnd
+		-Add: document how spare fields are used to achieve better binary compatibility
+		-Add: 'news' page
+		-Add: test compilation result on IRIX
+		-Add: packager's doc
+		-Add: explain better why there's no windows binaries for the lib
+		-Add: action/ in the dir listing
+		-Add: logo, @ png for mail addresses
+		-Add: change -rnd on the index page to Ringdove link collection
+		-Add: mention ldconfig in INSTALL
+
+	[gtk]
+		-Fix: --help doesn't hardwire pcb-rnd
+		-Cleanup: rename PCB_GTK_KEY() to RND_GTK_KEY() in the internal public API
+		-Cleanup: rename PCB_WORKAROUND_* to RND_WORKAROUND_* (in internal public API) to clean the namespace
+		-Cleanup: PCB_ -> RND_ prefixes in internals
+		-Cleanup: PCB_ -> RND_ prefixes in preview widget
+		-Cleanup: rename event coord converter macro so it doesn't have PCB in its name anymore
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs (pcb_gtk)
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs (pcb_conf_hid_gtk)
+		-Cleanup: rename pcb_ -> rnd_ (file name pcb_gtk.h to rnd_gtk.h)
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+		-Cleanup: rename pcb -> rnd in internal APIs
+		-Cleanup: rename pcb -> rnd in internal APIs
+
+	[hid_batch]
+		-Fix: --help doesn't hardwire pcb-rnd
+		-Cleanup: remove pcb terminology
+
+	[hid_lesstif]
+		-Fix: wrong FSF address in a non-unified address block in the license banner
+		-Fix: invalid memory write on filling in lesstif command line arguments to other plugins in the wrong array
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs for motif box
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs (pcb_x and pcb_y)
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+
+	[hid_remote]
+		-Fix: use rnd_config so that app prefix is defined for actions
+		-Cleanup: rename pcb_ -> rnd_ in internal APIs
+
+	[hidlib]
+		-Fix: accept NULL for rnd_app.conf_internal, take it as if it was an empty string
+		-Cleanup: code style/indentation after rnd_app refactoring
+		-Cleanup: remove old/obsolete struct fields (now that we have a breaking API change for 3.0.0 anyway)
+		-Change: API CHANGE: move package ver/name/url into rnd_app
+		-Change: API CHANGE: move conf paths into rnd_app
+		-Change: API CHANGE: move crosshair move/suspend/restore into rnd_app
+		-Change: API CHANGE: move crosshair attached/marks draw into rnd_app
+		-Change: API CHANGE: move expose callbacks into rnd_app
+		-Change: API CHANGE: move conf_internal into rnd_app
+		-Move: rnd_conf_lib_dir and rnd_conf_dot_dir into rnd_app as these need to be filled in by the app
+		-Move: conf postproc hook to rnd_app
+		-Add: move menu related back references to rnd_app
+		-Add: explain where the API wrapper is called from
+		-Add: rnd_fix_locale_and_env() is rewritten as a macro so it can perform some checks that depend on app compilation
+		-Add: rnd_fix_locale_and_env() throws an error on coord bit configuration mismatch between librnd and the app
+		-Add: app revision field in rnd_app for better version report
+		-Add: spare fields in hid_attrib and main arg struct
+
+	[irc]
+		-Cleanup: namespace pollution: use rnd_ instead of pcb_ for internal action names
+		-Cleanup: remove unnecessary pcb-rnd references, generalize for ringdove
+		-Cleanup: pcb_ -> rnd_ prefixes
+		-Add: when reporting version on irc, include both host application and librnd versions
+
+	[lib_gensexpr]
+		-Change: buildin by default (apps will need it)
+		-Change: move package into core (would be alone in the lib_io package)
+
+	[lib_hid_common]
+		-Fix: wrong plugin name in cookie string
+		-Fix: remove plugins/dialogs from the conf system on uninit
+		-Fix: missing header for the plugins dialog
+		-Fix: zoom with =0.1mm broke because it did not convert with unit
+		-Cleanup: API CHANGE: rename pcb_* to rnd_* in public API
+		-Cleanup: API CHANGE: rename PCB_GUI_NOGUI to RND_GUI_NOGUI
+		-Cleanup: rename pcb -> rnd in internal APIs
+		-Cleanup: const correcness
+		-Import: online-help xpm from pcb-rnd
+		-Import: manage plugins dialog from pcb-rnd (the plugin infra is common to all ringdove apps)
+		-Add: xpm name resolution action so that non-gui app plugins don't need to depend on lib_hid_common for optional GUI
+
+	[lib_hid_gl]
+		-Cleanup: remove prototype for non-existent function
+
+	[lib_wget]
+		-Cleanup: API CHANGE: rename pcb_* symbols to rnd_* (to clean the namespace)
+		-Change: buildin by default (apps will need it)
+		-Change: user agent should be more generic: librnd-wget
+		-Add: spare fields
+
+	[menu]
+		-Cleanup: remove pcb_ and PCB_ prefix from the internal public API in favor of rnd_ and RND_
+
+	[poly]
+		-Cleanup: rename pcb_ prefix to rnd_ in pline support, polyarea internals and poly offs
+		-Cleanup: rename pcb_ prefix to rnd_ for pcb_poly_ in internal APIs
+		-Cleanup: rename prefix pcbo_ to rndo_
+
+	[safe_fs]
+		-Fix: API CHANGE: rnd_file_readable() needs to get a rnd_hidlib_t * first arg so it can do the access checks later
+
+	[scconfig]
+		-Fix: need to install typed double linked genlist's .c file as well, as it's a template included by the app
+		-Fix: use genlist's own make install instead of manually listing a few files
+		-Fix: make sure all parts of genlist ends up in the .so, some apps will use them
+		-Fix: do not let librnd-specific argument parsing leak out to apps (e.g. coord type)
+		-Fix: do not crash when value is missing for --key=value custom args
+		-Fix: 'make map_plugins' moves the resulting plugins.h into librnd scconfig dig - this one is not installed
+		-Fix: do not hardwire PREFIX/lib in librnd.mak, use libarchdir
+		-Fix: all plugins are considered hidlib plugins - if they are builtin, link them in librnd-hid.so
+		-Fix: LIBRND_LIBDIR from config.h shall use libarchdir instead of hardwired /lib
+		-Fix: put plugin srcs on the dep list even if they are configured with --plugin and not --buildin
+		-Fix: LIBRND_PLUGIN dir set with full path from trunk to fix up deps
+		-Fix: missing return value for dep resolver
+		-Fix: install genht's ht.c, it's part of the public API
+		-Fix: proper pointer comparison for NULL
+		-Fix: install/uninstall rule: don't do anything manually for genlist, it's installed using its own Makefile
+		-Fix: install doc to $(SHAREDIR)/doc/librnd3 so different versions of the lib can be installed in parallel
+		-Fix: the postarg hook needs special casing for when running from librnd's configure, since there's no librnd install yet
+		-Fix: move -l's at the end of the command line for building the .so files - some C compilers are sensitive to this
+		-Fix: save NULL as empty string when saving fungw ldflags in plugin state
+		-Cleanup: split to-be-removed header installation from core header extra installation
+		-Cleanup: require template users to define $(LIBRND_LIBDIR) so templates can cross-call
+		-Cleanup: remove app-specific installation paths from config.h
+		-Cleanup: prefix BINDIR with RND_
+		-Cleanup: move GUI hid related detectioins from public scconfig helper API into internal - ringdove apps won't need to deal with this anymore
+		-Cleanup: move the coord bits logics back from public API to private - apps should use whatever librnd was configured with
+		-Cleanup: remove hooks_gui.c from the public scconfig API: only librnd shoudl deal with gui details
+		-Cleanup: move librnd-only help from public scconfig API to local implementation
+		-Cleanup: remove unused LIBDIR_INSTALLED from Makefile.conf template
+		-Del: obsolete fallback def of RND_DAD_CFG_NOLABEL that already got removed
+		-Del: hidlib property of plugins: every plugin in librnd is hidlib, and no other plugin elsewhere is, no need to track this anymore; switch over central plugin list to no-hidlib syntax
+		-Del: remove bison/yacc/byaccic detection, librnd doesn't have any grammar
+		-Move: librnd-specific detections back from the public API to internal - apps shouldn't try to compile librnd anymore
+		-Change: lib plugins that are of interest for apps are default built-in
+		-Change: API CHANGE: librnd.mak doesn't depend on LIBRND_ROOT anymore (embedded checkout of librnd not supported now) but uses LIBRND_PREFIX which it also sets
+		-Change: do not instal anything in /etc - host app will load from its own directory
+		-Change: SHAREDIR should be $PREFIX/share/librnd3 to avoid collision with different versions
+		-Change: libdir is $PREFIX/lib/librnd3 to allow multiple major versions
+		-Add: install rnd_hook_detect.h, apps' hook.c depend on it
+		-Add: install genregex template header, required by pcb-rnd
+		-Add: install lib-like plugin header files so application plugins can depend on them
+		-Add: save and install $(SHAREDIR)/plugin.state, which lists the 3state of each plugin in both scconfig importable way and shell script processable comments
+		-Add: when running for an app, calculate plugin external dependencies
+		-Add: mark librnd plugins external in the plugin state dump
+		-Add: generate librnd.mak to have extra -I and -L for the case librnd is installed at some non-standard path
+		-Add: API CHANGE: rnd_hook_postarg() needs to get librnd prefix so it can load plugin states
+		-Add: export -rdynamic for tests
+		-Add: save fungw ldflags in plugin state - the host app needs it in case of system installed fungw
+		-Add: calculate default confdir when not specified (API CHANGE: postarg function needs to get the application name)
+		-Add: install cquote in libdir/scconfig/ - apps need this to compile internal version of menu and config files
+		-Add: install sccbox (for applications without scconfig)
+
+	[script]
+		-Cleanup: pcb_ -> rnd_ prefixes
+
+	[stroke]
+		-Cleanup: rename pcb_ prefix to rnd_ in internals
+
+	[tests]
+		-Fix: librnd link test gets dummy empty internal menu so it can initialize and return 0
+		-Fix: librnd test: more robust uninstall
+		-Cleanup: simplify live test code app initialization
+		-Update: rnd_printf test doesn't need any glue layer with librnd 3.0.0 API
+		-Add: librnd test: tweak plugin path so the test runs with all-plugin builds and by default use the batch hid
+
+	[tool]
+		-Add: spare fields
+
+	[util]
+		-Fix: pup list util for the packager's doc: use the right package dir
+		-Import: awk_on_formats for packager's doc
