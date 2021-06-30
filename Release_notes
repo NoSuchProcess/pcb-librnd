@@ -1,13 +1,11 @@
-librnd 2.4.0
+librnd 3.0.0
 ~~~~~~~~~~~~
 
-Mainly a bugfix release with an API change for a broken (non-portable)
-data conversioin fix:
+This is the first release of librnd that is not synchronized with pcb-rnd.
+As part of becoming a true stand-alone library, 3.0.0 features
+a large scale API change/upgrade that makes it incompatible with earlier
+versions.
 
-1. API CHANGE: remove ->value field from export options; export options
-   should be const and current values should be maintained in
-   hid->argument_array; this fixs a bug caused by unknown sizeof(enum) vs.
-   sizeof(void *)
-
-2. Many smallish, random bugfixes, mostly on the gtk side
-
+Other than the major version change and all the build system and API
+upgrades required for the final split from pcb-rnd, this release
+doesn't contain any major new feature.
