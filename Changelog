@@ -1,4 +1,4 @@
-librnd 3.0.0 (r32906)
+librnd 3.0.0 (r32916)
 ~~~~~~~~~~~~~~~~~~~~~
 	[action]
 		-Add: API CHANGE: introduce RND_APP_PREFIX() for RND_ACT_FAIL() and other ACT macros to know the host application namespace prefix
