@@ -1,4 +1,6 @@
 - BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 - BUG: zoom-to-extent, out-of-aspect: should center the view [report: cuvoodoo] (report to pcb-rnd ml)
+- 3.1.0
+	- gensexpr (under lib_gesexpr) got a new config bit; enable that pcb-rnd plugins/io_dsn (look for the TODO there)
 - 4.0.0:
 	- rnd_app_t spares: conf_ignore lists (two void *)
