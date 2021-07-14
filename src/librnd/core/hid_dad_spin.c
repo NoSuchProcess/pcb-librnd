@@ -116,10 +116,10 @@ static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, i
 	else
 		unit = rnd_conf.editor.grid_unit;
 	if (buf != NULL) {
-		rnd_snprintf(buf, buflen, "%$m*", unit->suffix, c);
+		rnd_snprintf(buf, buflen, "%.06$m*", unit->suffix, c);
 		return buf;
 	}
-	return rnd_strdup_printf("%$m*", unit->suffix, c);
+	return rnd_strdup_printf("%.06$m*", unit->suffix, c);
 }
 
 typedef struct {
