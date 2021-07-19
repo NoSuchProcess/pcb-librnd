@@ -21,6 +21,7 @@ For users:
  - optional: gtkglext if you need opengl rendering
  - optional: motif or lesstif if you are using the lesstif frontend
  - optional: gdlib if you want to export/import to/from png, jpg or gif
+ - optional: both genht and fungw (system installed) for extended user scripting
 
 NOTE: if you did not install any GUI lib dependency, librnd will be
 compiled with command line interface only.
