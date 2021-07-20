@@ -4,4 +4,4 @@ $long Sits between a HID (or exporter) and the core and logs all core->plugin ca
 $state WIP
 $hidlib 1
 default disable
-
+autoload 1
