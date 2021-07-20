@@ -39,6 +39,8 @@
 
 #include <genvector/vts0.h>
 
+#include <puplug/os_dep_fs.h>
+
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/event.h>
@@ -204,6 +206,94 @@ void rnd_hid_remove_hid(rnd_hid_t *hid)
 	}
 }
 
+static void rnd_hid_load_gui_plugin(const char *plugname);
+
+/* Load all hid_* plugins from all puplug search paths */
+static void rnd_hid_load_all_gui_plugins(void)
+{
+	char **dir;
+	gds_t tmp = {0};
+
+	if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+		fprintf(stderr, " no HID preference; auto-loading all HID plugins available...\n");
+
+	for(dir = rnd_pup_paths; *dir != NULL; dir++) {
+		void *d = pup_open_dir(*dir);
+		const char *fn;
+
+		if (d == NULL) continue;
+
+		while((fn = pup_read_dir(d)) != NULL) {
+			if (strncmp(fn, "hid_", 4) == 0) {
+				char *s;
+				tmp.used = 0;
+				gds_append_str(&tmp, fn);
+				if (tmp.used < 4)
+					continue;
+
+				/* accept *.pup only and truncate .pup from the end */
+				s = tmp.array + tmp.used - 4;
+				if (strcmp(s, ".pup") != 0)
+					continue;
+				*s = '\0';
+
+				if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+					fprintf(stderr, "-- all-hid-load: '%s' ('%s' from %s)\n", tmp.array, fn, *dir);
+				rnd_hid_load_gui_plugin(tmp.array);
+			}
+		}
+
+		pup_close_dir(d);
+	}
+	gds_uninit(&tmp);
+}
+
+/* low level (pup) load a plugin if it is not already loaded; if plugname is
+   NULL, try to load all plugins */
+static void rnd_hid_load_gui_plugin(const char *plugname)
+{
+	int st;
+
+	if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+		fprintf(stderr, "GUI: want '%s'\n", plugname);
+	if (plugname == NULL) {
+		/* load all available GUI plugins; with a workaround: lesstif needs to be
+		   loaded first because it is sensitive to link order of -lXm and -lXt;
+		   if gtk or other X related GUI is loaded before, lesstif yields error */
+		rnd_hid_load_gui_plugin("hid_lesstif");
+		rnd_hid_load_all_gui_plugins();
+	}
+	else {
+		char tmp[256];
+
+		/* prefix plugin name with hid_ */
+		if ((plugname[0] != 'h') || strncmp(plugname, "hid_", 4) != 0) {
+			int l = strlen(plugname);
+			if (l > sizeof(tmp) - 8) {
+				fprintf(stderr, "rnd_hid_load_gui_plugin: plugin name too long: '%s'\n", plugname);
+				return;
+			}
+			strcpy(tmp, "hid_");
+			memcpy(tmp+4, plugname, l+1);
+			plugname = tmp;
+		}
+
+		/* do not load if already loaded */
+		if (pup_lookup(&rnd_pup, plugname) != NULL) {
+			if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+				fprintf(stderr, " already loaded %s\n", plugname);
+			return;
+		}
+
+		/* load the plugin */
+		if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+			fprintf(stderr, " loading %s\n", plugname);
+		if (pup_load(&rnd_pup, (const char **)rnd_pup_paths, plugname, 0, &st) == NULL) {
+			if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+				fprintf(stderr, "  failed.\n");
+		}
+	}
+}
 
 rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 {
@@ -222,6 +312,8 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 
 		return NULL;
 	}
+
+	rnd_hid_load_gui_plugin(preference);
 
 	/* normal search */
 	if (preference != NULL) {

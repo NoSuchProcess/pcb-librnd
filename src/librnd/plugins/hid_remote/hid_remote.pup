@@ -4,4 +4,4 @@ $long Remote access HID: implement a protocol and use it to relay between a core
 $state WIP
 $hidlib 1
 default disable-all
-autoload 1
+

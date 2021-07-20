@@ -5,4 +5,4 @@ $state works
 $package (core)
 $hidlib 1
 default buildin
-autoload 1
+
