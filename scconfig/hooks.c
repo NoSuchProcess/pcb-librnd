@@ -11,7 +11,7 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "3.0.0"
+#define version "3.0.1-dev"
 
 #define LIBRND_ROOT         "../src/librnd"
 #define LIBRND_PLUGIN_ROOT  "../src/librnd/plugins"
