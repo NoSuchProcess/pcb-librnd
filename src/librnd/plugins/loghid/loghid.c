@@ -42,8 +42,8 @@
 
 static const char *loghid_cookie = "loghid plugin";
 
-static rnd_hid_t loghid_gui;
-static rnd_hid_t loghid_exp;
+rnd_hid_t loghid_gui;
+rnd_hid_t loghid_exp;
 
 static const rnd_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",

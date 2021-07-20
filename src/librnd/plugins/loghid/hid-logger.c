@@ -14,6 +14,8 @@
  */
 static rnd_hid_t *delegatee_ = NULL;
 static FILE *out_ = NULL;
+extern rnd_hid_t loghid_gui;
+extern rnd_hid_t loghid_exp;
 
 static const rnd_export_opt_t *log_get_export_options(rnd_hid_t *hid, int *ret)
 {
@@ -208,7 +210,7 @@ void create_log_hid(FILE *log_out, rnd_hid_t *loghid, rnd_hid_t *delegatee)
 	out_ = log_out;
 	delegatee_ = delegatee;
 
-	if (delegatee == NULL) {
+	if ((delegatee == NULL) || (delegatee == &loghid_gui)) {
 		rnd_message(RND_MSG_ERROR, "loghid: Invalid target HID.\n");
 		exit(1);
 	}
