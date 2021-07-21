@@ -208,7 +208,8 @@ struct rnd_hid_s {
 	   and EPS exporters.  */
 	unsigned exporter:1;
 
-	/* Export plugin should not be listed in the export dialog */
+	/* Export plugin should not be listed in the export dialog; GUI plugin
+	   should not be auto-selected */
 	unsigned hide_from_gui:1;
 
 	/* If set, draw the mask layer inverted. Normally the mask is a filled

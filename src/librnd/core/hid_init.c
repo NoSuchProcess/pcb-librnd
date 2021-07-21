@@ -327,7 +327,7 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 	}
 
 	for (i = 0; i < rnd_hid_num_hids; i++) {
-		if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter) {
+		if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter && !rnd_hid_list[i]->hide_from_gui) {
 			gui = rnd_hid_list[i];
 			goto found;
 		}
