@@ -117,6 +117,7 @@ static void ghid_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 		first = 0;
 		rnd_hid_announce_gui_init(gctx->hidlib);
 		rnd_gtk_zoom_view_win(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
+		rnd_gtk_pan_view_abs(&gctx->port.view, gctx->hidlib->size_x/2, gctx->hidlib->size_y/2, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
 	}
 }
 
