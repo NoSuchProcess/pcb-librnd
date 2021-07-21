@@ -49,6 +49,7 @@ fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (argc < 2) {
 		rnd_gui->zoom_win(rnd_gui, 0, 0, hidlib->size_x, hidlib->size_y, 1);
+		rnd_gui->pan(rnd_gui, hidlib->size_x/2, hidlib->size_y/2, 0);
 		return 0;
 	}
 
