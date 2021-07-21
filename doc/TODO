@@ -1,4 +1,4 @@
-- BUG: zoom-to-extent, out-of-aspect: should center the view (it's top/left aligned at the moment) [report: cuvoodoo] (report to pcb-rnd ml)
++ BUG: zoom-to-extent, out-of-aspect: should center the view (it's top/left aligned at the moment) [report: cuvoodoo]
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	- gensexpr (under lib_gesexpr) got a new config bit; enable that pcb-rnd plugins/io_dsn (look for the TODO there)
