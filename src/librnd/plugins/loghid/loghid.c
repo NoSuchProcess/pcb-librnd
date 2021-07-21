@@ -128,6 +128,7 @@ int pplg_init_loghid(void)
 	loghid_gui.name = "loghid-gui";
 	loghid_gui.description = "log GUI HID calls";
 	loghid_gui.gui = 1;
+	loghid_gui.hide_from_gui = 1;
 	loghid_gui.override_render = 1;
 
 	loghid_gui.usage = loghid_usage;
