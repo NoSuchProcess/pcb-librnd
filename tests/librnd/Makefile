@@ -30,5 +30,5 @@ $(LIBRND) includes: ../../src/Makefile
 
 clean:
 	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o inc_all.h
-	TDIR=`pwd` && cd ../../src && $(MAKE) uninstall HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
+	-TDIR=`pwd` && cd ../../src && $(MAKE) uninstall HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
 	-rm -rf include/usr
