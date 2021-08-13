@@ -5,3 +5,8 @@
 	- pcb-rnd: enable io_altium if librnd 3.1.0 is available (sphash -i is required)
 - 4.0.0:
 	- rnd_app_t spares: conf_ignore lists (two void *)
+
+
+unsorted:
+	- lesstif: vertical text, truncated text support
+
