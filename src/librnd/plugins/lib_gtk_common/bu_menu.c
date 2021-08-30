@@ -12,6 +12,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_cfg_action.h>
+#include <librnd/core/tool.h>
 
 #include "rnd_gtk.h"
 #include "bu_menu.h"
