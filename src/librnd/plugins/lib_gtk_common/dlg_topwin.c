@@ -50,6 +50,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/tool.h>
 
 #include "compat.h"
 #include "bu_menu.h"
