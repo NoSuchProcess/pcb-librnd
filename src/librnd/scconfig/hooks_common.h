@@ -364,7 +364,8 @@ int rnd_hook_postarg(const char *librnd_prefix, const char *app_name)
 	{ /* set up confdir */
 		const char *cdir = get("/local/confdir");
 		if ((cdir == NULL) || (*cdir == '\0')) { /* empty/uninitialized confdir: fill it in */
-			const char *p, *p2 = "", *tmp, *prefix = get("/local/prefix");
+			char *tmp;
+			const char *p, *p2 = "", *prefix = get("/local/prefix");
 			if (strcmp(prefix, "/usr") != 0) { /* /usr/local source install or custom - keep it there */
 				p = prefix;
 				p2 = "/etc";
