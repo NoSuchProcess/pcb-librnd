@@ -220,7 +220,7 @@ rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs)
 }
 
 
-TODO("this should be coming from gengeo2d");
+TODO("this should be coming from gengeo2d")
 /* Return the square of distance between point x0;y0 and line x1;y1 - x2;y2 */
 static double dist_line_to_pt(double x0, double y0, double x1, double y1, double x2, double y2, double *odx, double *ody)
 {
