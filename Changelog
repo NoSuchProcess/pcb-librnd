@@ -1,4 +1,4 @@
-librnd 3.0.1 (r32949)
+librnd 3.0.1 (r32954)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
 		-Fix: running 'make' in any plugin changes to the right source directory to rebuild that plugin
