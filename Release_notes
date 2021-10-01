@@ -1,11 +1,8 @@
-librnd 3.0.0
+librnd 3.0.1
 ~~~~~~~~~~~~
 
-This is the first release of librnd that is not synchronized with pcb-rnd.
-As part of becoming a true stand-alone library, 3.0.0 features
-a large scale API change/upgrade that makes it incompatible with earlier
-versions.
+3.0.1 is a minor bugfix release with a few build and plugin loading corner
+case fixes. A visible change is that auto-zoom (a variant of zoom extent)
+also centers the view.
 
-Other than the major version change and all the build system and API
-upgrades required for the final split from pcb-rnd, this release
-doesn't contain any major new feature.
+

@@ -1,3 +1,46 @@
+librnd 3.0.1 (r32949)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: running 'make' in any plugin changes to the right source directory to rebuild that plugin
+
+	[core]
+		-Fix: change interal GUI HID load mechanism: do not autoload HID plugins, but try to selectively load only the ones that are requested by the user or preferences; when there is absolutely no preference, load them all, but make sure to load lesstif first because it is broken and order of -lXm and -lXt matters even in dynamic linking
+
+	[dad]
+		-Fix: coord spin: print values to at most 6 decimal digits to reduce rounding errors
+
+	[doc]
+		-Add: link edakrill from the -rnd box
+		-Add: mention genht and fungw in INSTALL for extended user scripting
+
+	[gtk_common]
+		-Fix: implicit declaration of tool function in dlg_topwin
+
+	[hid]
+		-Fix: don't ever fall back to automatically pick a GUI hid if it's marked hidden
+
+	[lib_gtk_common]
+		-Fix: implicit declaration of tool calls in bu_menu
+		-Add: center view after the initial zoom-to-extent
+
+	[lib_hid_common]
+		-Fix: Zoom() without arguments is "auto zoom" which should zoom to extent _and_ center (pan)
+
+	[loghid]
+		-Fix: do not let loghid hook itself (would lead to infinite loop)
+		-Fix: sanity check on all loghid calls to avoid infinite loop (loghid calling loghid)
+		-Fix: mark loghid's GUI sniffer hidden so it's never picked up as default/fallback HID
+
+	[poly]
+		-Fix: excess semicolon ruined strict C89 validity
+
+	[scconfig]
+		-Cleanup: const correctness: don't make char * const if it's malloc'd and free'd
+
+	[tests]
+		-Fix: don't mind if some files are already removed in make clean's make uinstall of the local librnd installation
+
+
 librnd 3.0.0 (r32916)
 ~~~~~~~~~~~~~~~~~~~~~
 	[action]
