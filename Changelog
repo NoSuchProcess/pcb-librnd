@@ -4,7 +4,7 @@ librnd 3.0.1 (r32949)
 		-Fix: running 'make' in any plugin changes to the right source directory to rebuild that plugin
 
 	[core]
-		-Fix: change interal GUI HID load mechanism: do not autoload HID plugins, but try to selectively load only the ones that are requested by the user or preferences; when there is absolutely no preference, load them all, but make sure to load lesstif first because it is broken and order of -lXm and -lXt matters even in dynamic linking
+		-Fix: change internal GUI HID load mechanism: do not autoload HID plugins, but try to selectively load only the ones that are requested by the user or preferences; when there is absolutely no preference, load them all, but make sure to load lesstif first because it is broken and order of -lXm and -lXt matters even in dynamic linking
 
 	[dad]
 		-Fix: coord spin: print values to at most 6 decimal digits to reduce rounding errors
@@ -38,7 +38,7 @@ librnd 3.0.1 (r32949)
 		-Cleanup: const correctness: don't make char * const if it's malloc'd and free'd
 
 	[tests]
-		-Fix: don't mind if some files are already removed in make clean's make uinstall of the local librnd installation
+		-Fix: don't mind if some files are already removed in make clean's make uninstall of the local librnd installation
 
 
 librnd 3.0.0 (r32916)
