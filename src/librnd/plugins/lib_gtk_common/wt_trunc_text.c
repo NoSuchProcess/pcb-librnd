@@ -27,7 +27,7 @@
  */
 
 /* This widget was for the gtk3 port - gtk2 does not use it at the moment
-   so it is not compiled. A gtk4 or gtkN port may need it. */
+   so it is not compiled. */
 
 #include "wt_trunc_text.h"
 
