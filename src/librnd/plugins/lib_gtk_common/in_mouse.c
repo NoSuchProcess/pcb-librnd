@@ -356,6 +356,15 @@ static GdkPixbuf *rnd_gtk_cursor_from_xbm_data(const unsigned char *data, const 
 			dest_data[x * 4 + 3] = mask_b;
 		}
 
+		for (; x < 24; x++) /* clear (mask) unused right strip (if width < 24) */
+			dest_data[x * 4 + 3] = 0;
+
+		dest_data += dest_stride;
+	}
+
+	for(; y < 24; y++) { /* clear (mask) unused bottom strip (if height < 24) */
+		for(x = 0; x < 24; x++)
+			dest_data[x * 4 + 3] = 0;
 		dest_data += dest_stride;
 	}
 
