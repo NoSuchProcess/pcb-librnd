@@ -161,9 +161,7 @@ static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 	gtk_widget_hide(widget);
 }
 
-/* gtk_table() is depreaceted in gtk3 for gtk_grid, but there's no grid between
-   3.0 and 3.2 so we should stay with table as long as it is not actually
-   removed */
+/* gtk_table() is not in gtk4 */
 
 /* create a table with known size (all rows and cols created empty) */
 static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
