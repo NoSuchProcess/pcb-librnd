@@ -28,7 +28,6 @@
 
 #include "config.h"
 #include "util_watch.h"
-#include "in_mouse.h"
 #include "glue_common.h"
 
 typedef struct rnd_gtk_watch_s {
