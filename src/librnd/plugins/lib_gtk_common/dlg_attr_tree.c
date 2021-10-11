@@ -331,7 +331,7 @@ static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev,
 	GtkTreeIter iter;
 	GtkTreePath *path;
 
-	if (ev->button.type == GDK_2BUTTON_PRESS) {
+	/*if (ev->button.type == GDK_2BUTTON_PRESS)*/ {
 		model = gtk_tree_view_get_model(tv);
 		gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
 		if (path != NULL) {
@@ -492,7 +492,9 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	g_object_unref(model); /* destroy model automatically with view */
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
+TODO("not in gtk4; safe to skip this (users should use themes)");
 	g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
+
 	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_tree_table_cursor), attr);
 	g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(ghid_tree_table_button_press_cb), attr);
 	g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(ghid_tree_table_button_release_cb), attr);
