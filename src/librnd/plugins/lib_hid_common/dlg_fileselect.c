@@ -63,10 +63,14 @@ typedef struct {
 #include <genvector/genvector_impl.c>
 #include <genvector/genvector_undef.h>
 
+typedef enum fsd_sort_e     { SORT_FN, SORT_SIZE, SORT_MTIME } fsd_sort_t;
+const char *sort_names[] =  { "name",  "size",    "mod. time", NULL } ;
+
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active;
 	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wfilelist;
+	int wsort, wsort_rev, wsort_dirgrp;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
 	vtde_t des;
@@ -108,7 +112,6 @@ int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime)
 static void fsd_clear(fsd_ctx_t *ctx)
 {
 	long n;
-	TODO("clear the tree");
 	for(n = 0; n < ctx->des.used; n++)
 		free(ctx->des.array[n].name);
 	ctx->des.used = 0;
@@ -153,29 +156,56 @@ static void fsd_list(fsd_ctx_t *ctx)
 	rnd_closedir(dir);
 }
 
-#define rev_order(order) (order)
+
+/* This is not really reentrant but we are single threaded and in a modal dialog */
+static fsd_sort_t cmp_sort;
+static int cmp_sort_rev, cmp_sort_dirgrp;
+#define rev_order(order) (cmp_sort_rev ? -(order) : (order))
 
 static int fsd_sort_cmp(const void *a_, const void *b_)
 {
 	const fsd_dirent_t *a = a_, *b = b_;
 	int order;
 
-	if (a->is_dir && !b->is_dir) return rev_order(-1);
-	if (!a->is_dir && b->is_dir) return rev_order(+1);
+	if (cmp_sort_dirgrp) {
+		if (a->is_dir && !b->is_dir) return rev_order(-1);
+		if (!a->is_dir && b->is_dir) return rev_order(+1);
+	}
 
-	order = strcmp(a->name, b->name);
+	/* entries within the same group */
+	switch(cmp_sort) {
+		case SORT_SIZE:
+			if (a->size == b->size) goto by_name;
+			order = (a->size > b->size) ? +1 : -1;
+			break;
+		case SORT_MTIME:
+			if (a->mtime == b->mtime) goto by_name;
+			order = (a->mtime > b->mtime) ? +1 : -1;
+			break;
+		case SORT_FN:
+			by_name:;
+			order = strcmp(a->name, b->name);
+			break;
+	}
+	
 
 	return rev_order(order);
 }
 
 static void fsd_sort(fsd_ctx_t *ctx)
 {
+	cmp_sort = ctx->dlg[ctx->wsort].val.lng;
+	cmp_sort_rev = ctx->dlg[ctx->wsort_rev].val.lng;
+	cmp_sort_dirgrp = ctx->dlg[ctx->wsort_dirgrp].val.lng;
 	qsort(ctx->des.array, ctx->des.used, sizeof(fsd_dirent_t), fsd_sort_cmp);
 }
 
 static void fsd_load(fsd_ctx_t *ctx)
 {
 	long n;
+
+	TODO("clear the tree");
+
 	for(n = 0; n < ctx->des.used; n++)
 		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);
 }
@@ -261,12 +291,23 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 	fsd_load(ctx);
 }
 
+static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	fsd_sort(ctx);
+	fsd_load(ctx);
+}
+
+
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	fsd_ctx_t *ctx = &fsd_ctx;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"ok", 0}, {NULL, 0}};
 	const char *shc_hdr[] = { "Shortcuts", NULL };
 	const char *filelist_hdr[] = { "Name", "Size", "Modified", NULL };
+	const char *help_sort = "Sort entries by this column";
+	const char *help_rev = "Sort in reverse (descending) order";
+	const char *help_dir_grp = "Group and sort directories separately from files";
 	int n;
 
 	if (ctx->active) {
@@ -313,9 +354,33 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
-			RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
-				ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
+
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
+					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_LABEL(ctx->dlg, "Sort:");
+						RND_DAD_HELP(ctx->dlg, help_sort);
+					RND_DAD_ENUM(ctx->dlg, sort_names);
+						RND_DAD_HELP(ctx->dlg, help_sort);
+						ctx->wsort = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+					RND_DAD_LABEL(ctx->dlg, "rev.:");
+						RND_DAD_HELP(ctx->dlg, help_rev);
+					RND_DAD_BOOL(ctx->dlg);
+						RND_DAD_HELP(ctx->dlg, help_rev);
+						ctx->wsort_rev = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+					RND_DAD_LABEL(ctx->dlg, "dir. grp.:");
+						RND_DAD_HELP(ctx->dlg, help_dir_grp);
+					RND_DAD_BOOL(ctx->dlg);
+						RND_DAD_HELP(ctx->dlg, help_dir_grp);
+						ctx->wsort_dirgrp = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 
 		/* custom widgets and standard buttons */
