@@ -382,7 +382,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
-					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "Sort:");
