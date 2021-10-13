@@ -37,6 +37,7 @@
 #include <genht/hash.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs_dir.h>
@@ -202,12 +203,35 @@ static void fsd_sort(fsd_ctx_t *ctx)
 
 static void fsd_load(fsd_ctx_t *ctx)
 {
+	rnd_hid_attribute_t *attr= &ctx->dlg[ctx->wfilelist];
+	rnd_hid_tree_t *tree = attr->wdata;
+	char *cell[4];
 	long n;
 
-	TODO("clear the tree");
+	rnd_dad_tree_clear(tree);
 
-	for(n = 0; n < ctx->des.used; n++)
-		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);
+	for(n = 0; n < ctx->des.used; n++) {
+		rnd_hid_row_t *row;
+		char ssize[64], smtime[64];
+		struct tm *tm;
+		time_t t;
+
+/*		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);*/
+
+		if (ctx->des.array[n].is_dir)
+			strcpy(ssize, "<dir>");
+		else
+			sprintf(ssize, "%ld", ctx->des.array[n].size);
+
+		t = ctx->des.array[n].mtime;
+		tm = localtime(&t);
+		strftime(smtime, sizeof(smtime), "%Y-%m-%d", tm);
+
+		cell[0] = rnd_strdup(ctx->des.array[n].name);
+		cell[1] = rnd_strdup(ssize);
+		cell[2] = rnd_strdup(smtime);
+		row = rnd_dad_tree_append(attr, NULL, cell);
+	}
 }
 
 /* Change to directory, relative to ctx->cwd. If rel is NULL, just cd to
