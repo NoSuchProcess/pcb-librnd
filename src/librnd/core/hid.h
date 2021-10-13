@@ -120,7 +120,7 @@ typedef enum rnd_hid_fsd_flags_e {
 
 	/* The call is supposed to return a file template (for gerber
 	   output for example) instead of an actual file.  Only used when
-	   writing.
+	   writing. OBSOLETE, do not use.
 	 */
 	RND_HID_FSD_IS_TEMPLATE = 4
 } rnd_hid_fsd_flags_t;
