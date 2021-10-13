@@ -11,6 +11,11 @@
 	- rnd_app_t spares: conf_ignore lists (two void *)
 	- remove RND_HID_FSD_IS_TEMPLATE
 	- remove rnd_hid_t->fileselect (code should use rnd_hid_fileselect() instead)
+	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
+	- remove rnd_hid_t->set_draw_faded and figure how to substitute
+	- make HID_SC_ an enum
+	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor
+	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
 
 unsorted:
 	- lesstif: vertical text, truncated text support
