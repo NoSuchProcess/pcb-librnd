@@ -33,13 +33,35 @@
 
 #define FSD_MAX_DIRNAME_LEN 16
 
+#include <limits.h>
 #include <genht/hash.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/safe_fs_dir.h>
 
 #include "dlg_fileselect.h"
+
+typedef struct {
+	char *name;
+	unsigned is_dir:1;
+	size_t size;
+	double mtime;
+} fsd_dirent_t;
+
+#define GVT(x) vtde_ ## x
+#define GVT_ELEM_TYPE fsd_dirent_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 4096
+#define GVT_START_SIZE 128
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
@@ -47,6 +69,8 @@ typedef struct{
 	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wfilelist;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
+	vtde_t des;
+	rnd_hidlib_t *hidlib;
 } fsd_ctx_t;
 
 static fsd_ctx_t fsd_ctx;
@@ -61,6 +85,103 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 #endif
 }
 
+
+TODO("move this to compat_fs  and add in safe_fs")
+int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime)
+{
+	struct stat st;
+	if (stat(path, &st) != 0)
+		return -1;
+
+	*is_dir = S_ISDIR(st.st_mode);
+
+	if (st.st_size > LONG_MAX)
+		*size = LONG_MAX;
+	else
+		*size = st.st_size;
+
+	*mtime = st.st_mtime;
+
+	return 0;
+}
+
+static void fsd_clear(fsd_ctx_t *ctx)
+{
+	long n;
+	TODO("clear the tree");
+	for(n = 0; n < ctx->des.used; n++)
+		free(ctx->des.array[n].name);
+	ctx->des.used = 0;
+}
+
+
+/* Fill in the file listing */
+static void fsd_list(fsd_ctx_t *ctx)
+{
+	DIR *dir;
+	struct dirent *de;
+	gds_t fullp = {0};
+	long fullp_len;
+
+	dir = rnd_opendir(ctx->hidlib, ctx->cwd);
+	if (dir == NULL)
+		return;
+
+	gds_append_str(&fullp, ctx->cwd);
+	gds_append(&fullp, '/');
+	fullp_len = fullp.used;
+	for(de = rnd_readdir(dir); de != NULL; de = rnd_readdir(dir)) {
+		fsd_dirent_t *new_de;
+		int is_dir;
+		long size;
+		double mtime;
+
+		if ((de->d_name[0] == '.') && (de->d_name[1] == '\0'))
+			continue;
+
+		fullp.used = fullp_len;
+		gds_append_str(&fullp, de->d_name);
+		if (rnd_file_stat_(fullp.array, &is_dir, &size, &mtime) != 0)
+			continue;
+
+		new_de = vtde_alloc_append(&ctx->des, 1);
+		new_de->name = rnd_strdup(de->d_name);
+		new_de->is_dir = is_dir;
+		new_de->size   = size;
+		new_de->mtime  = mtime;
+	}
+	rnd_closedir(dir);
+}
+
+#define rev_order(order) (order)
+
+static int fsd_sort_cmp(const void *a_, const void *b_)
+{
+	const fsd_dirent_t *a = a_, *b = b_;
+	int order;
+
+	if (a->is_dir && !b->is_dir) return rev_order(-1);
+	if (!a->is_dir && b->is_dir) return rev_order(+1);
+
+	order = strcmp(a->name, b->name);
+
+	return rev_order(order);
+}
+
+static void fsd_sort(fsd_ctx_t *ctx)
+{
+	qsort(ctx->des.array, ctx->des.used, sizeof(fsd_dirent_t), fsd_sort_cmp);
+}
+
+static void fsd_load(fsd_ctx_t *ctx)
+{
+	long n;
+	for(n = 0; n < ctx->des.used; n++)
+		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);
+}
+
+/* Change to directory, relative to ctx->cwd. If rel is NULL, just cd to
+   ctx->cwd. */
 static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 {
 	vtp0_t path = {0};
@@ -134,6 +255,10 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdirlong, 1);
 	}
 
+	fsd_clear(ctx);
+	fsd_list(ctx);
+	fsd_sort(ctx);
+	fsd_load(ctx);
 }
 
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
