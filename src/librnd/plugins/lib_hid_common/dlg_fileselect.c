@@ -28,17 +28,25 @@
 
 #include "config.h"
 
+/* must be even */
+#define FSD_MAX_DIRS 16
+
+#define FSD_MAX_DIRNAME_LEN 16
+
 #include <genht/hash.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/globalconst.h>
+#include <librnd/core/compat_fs.h>
 
 #include "dlg_fileselect.h"
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active;
-	int wpath, wdir[16], wdirlong, wshand, wfilelist;
-	rnd_hid_t *hid;
+	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wfilelist;
+	char cwd_buf[RND_PATH_MAX];
+	char *cwd;
 } fsd_ctx_t;
 
 static fsd_ctx_t fsd_ctx;
@@ -51,6 +59,81 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	fsd_ctx_t *fsd = caller_data;
 	fsd->active = 0;
 #endif
+}
+
+static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
+{
+	vtp0_t path = {0};
+	char *s, *next, tmp[RND_PATH_MAX];
+	int n, m;
+	rnd_hid_attr_val_t hv;
+
+	if (rel != NULL) {
+		TODO("cd .. or to a dir");
+	}
+
+	s = tmp;
+	strcpy(tmp, ctx->cwd);
+
+/* Append root */
+#ifdef __WIN32__
+	if (s[1] == ':') {
+		vtp0_append(&path, s);
+		s[2] = '\0';
+		s += 3;
+	}
+#else
+	vtp0_append(&path, "/");
+#endif
+
+	for(; s != NULL; s = next) {
+#		ifdef __WIN32__
+			while((*s == '/') || (*s == '\\'))) s++;
+			next = strpbrk(s, "/\\");
+#		else
+			while(*s == '/') s++;
+			next = strchr(s, '/');
+#		endif
+		if (next != NULL) {
+			*next = '\0';
+			next++;
+			if (*next == '\0')
+				next = NULL;
+		}
+		if (next - s > FSD_MAX_DIRNAME_LEN)
+			strcpy(s + FSD_MAX_DIRNAME_LEN - 3, "...");
+		vtp0_append(&path, s);
+	}
+
+
+	if (path.used > FSD_MAX_DIRS) {
+		/* path too long - split the path in 2 parts and enable "..." in the middle */
+		for(n = 0; n < FSD_MAX_DIRS/2; n++) {
+			hv.str = (char *)path.array[n];
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
+		}
+		m = n;
+		for(n = path.used - FSD_MAX_DIRS/2; n < path.used; n++,m++) {
+			hv.str = (char *)path.array[n];
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[m], &hv);
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[m], 0);
+		}
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdirlong, 0);
+	}
+	else {
+		/* path short enough for hiding "..." and displaying all */
+		for(n = 0; n < path.used; n++) {
+			hv.str = (char *)path.array[n];
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
+		}
+		for(; n < FSD_MAX_DIRS; n++) {
+			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 1);
+		}
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdirlong, 1);
+	}
+
 }
 
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
@@ -68,7 +151,6 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 	memset(ctx, 0, sizeof(fsd_ctx_t));
 	ctx->active = 1;
-	ctx->hid = hid;
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -82,17 +164,20 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 		/* directory helper */
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL);
-				for(n = 0; n < 8; n++) {
-					RND_DAD_BUTTON(ctx->dlg, "dir1");
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_TIGHT);
+				for(n = 0; n < FSD_MAX_DIRS/2; n++) {
+					RND_DAD_BUTTON(ctx->dlg, "");
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
 						ctx->wdir[n] = RND_DAD_CURRENT(ctx->dlg);
 				}
 				RND_DAD_LABEL(ctx->dlg, "...");
 					ctx->wdirlong = RND_DAD_CURRENT(ctx->dlg);
-				for(n = 0; n < 8; n++) {
-					RND_DAD_BUTTON(ctx->dlg, "dir2");
-						ctx->wdir[n+8] = RND_DAD_CURRENT(ctx->dlg);
+				for(n = 0; n < FSD_MAX_DIRS/2; n++) {
+					RND_DAD_BUTTON(ctx->dlg, "");
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
+						ctx->wdir[n + FSD_MAX_DIRS/2] = RND_DAD_CURRENT(ctx->dlg);
 				}
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
@@ -126,6 +211,10 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 	RND_DAD_DEFSIZE(ctx->dlg, 200, 300);
 	RND_DAD_NEW("file_selection_dialog", ctx->dlg, title, ctx, rnd_true, fsd_close_cb);
+
+	ctx->cwd = rnd_get_wd(ctx->cwd_buf);
+	fsd_cd(ctx, NULL);
+
 	RND_DAD_RUN(ctx->dlg);
 
 	ctx->active = 0;
