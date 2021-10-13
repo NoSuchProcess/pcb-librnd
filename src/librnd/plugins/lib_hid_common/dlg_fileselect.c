@@ -37,8 +37,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 }
 
 
-extern const char rnd_acts_FsdTest[];
-extern const char rnd_acth_FsdTest[];
+const char rnd_acts_FsdTest[] = "FsdTest()";
+const char rnd_acth_FsdTest[] = "Central, DAD based File Selection Dialog demo";
 fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return -1;
