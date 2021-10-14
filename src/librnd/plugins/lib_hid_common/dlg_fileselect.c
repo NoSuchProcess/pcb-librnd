@@ -76,6 +76,8 @@ typedef struct{
 	char *cwd;
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
+	void *last_row;
+	char *res_path;
 } fsd_ctx_t;
 
 static fsd_ctx_t fsd_ctx;
@@ -88,6 +90,7 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	fsd_ctx_t *fsd = caller_data;
 	fsd->active = 0;
 #endif
+	printf("close cb\n");
 }
 
 
@@ -244,7 +247,33 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 	rnd_hid_attr_val_t hv;
 
 	if (rel != NULL) {
-		TODO("cd .. or to a dir");
+		if ((rel[0] == '.') && (rel[1] == '.') && (rel[2] == '\0')) {
+			char *sep;
+TODO("on windows also check for \\");
+			sep = strrchr(ctx->cwd, '/');
+			if (sep != NULL) {
+				if (sep > ctx->cwd)
+					*sep = '\0';
+				else
+					sep[1] = '\0'; /* going back to root */
+			}
+			else
+				return; /* already at root */
+		}
+		else {
+			char *new_cwd = rnd_concat(ctx->cwd, "/", rel, NULL);
+			DIR *dir = rnd_opendir(ctx->hidlib, ctx->cwd);
+			if (dir != NULL) {
+				free(ctx->cwd);
+				ctx->cwd = new_cwd;
+printf("new cwd is %s\n", ctx->cwd);
+			}
+			else {
+				rnd_message(RND_MSG_ERROR, "Can't read directory '%s'\n", new_cwd);
+				free(new_cwd);
+				return;
+			}
+		}
 	}
 
 	s = tmp;
@@ -322,6 +351,38 @@ static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	fsd_load(ctx);
 }
 
+TODO("closing from within a tree table causes a gtk/glib segf");
+static void timed_close_cb(rnd_hidval_t user_data)
+{
+	static rnd_dad_retovr_t retovr;
+	rnd_hid_dad_close(user_data.ptr, &retovr, 0);
+}
+
+
+TODO("This should be done by the tree table widget; should also work for enter")
+static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+
+	if ((row == ctx->last_row) && (row != NULL)) {
+		if (row->cell[1][0] != '<') {
+			rnd_hidval_t rv;
+			rv.ptr = hid_ctx;
+			ctx->res_path = rnd_concat(ctx->cwd, "/", row->cell[0], NULL);
+			rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+		}
+		else {
+			fsd_cd(ctx, row->cell[0]);
+			ctx->last_row = NULL;
+			return; /* so that last_row remains NULL */
+		}
+	}
+
+	ctx->last_row = row;
+}
+
 
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
@@ -332,6 +393,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char *help_sort = "Sort entries by this column";
 	const char *help_rev = "Sort in reverse (descending) order";
 	const char *help_dir_grp = "Group and sort directories separately from files";
+	char *res_path;
 	int n;
 
 	if (ctx->active) {
@@ -384,6 +446,9 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
+/*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_enter_cb);*/
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_enter_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &ctx);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "Sort:");
 						RND_DAD_HELP(ctx->dlg, help_sort);
@@ -426,13 +491,18 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	RND_DAD_DEFSIZE(ctx->dlg, 200, 300);
 	RND_DAD_NEW("file_selection_dialog", ctx->dlg, title, ctx, rnd_true, fsd_close_cb);
 
-	ctx->cwd = rnd_get_wd(ctx->cwd_buf);
+	ctx->cwd = rnd_strdup(rnd_get_wd(ctx->cwd_buf));
 	fsd_cd(ctx, NULL);
 
 	RND_DAD_RUN(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);
+
 
 	ctx->active = 0;
-	return NULL;
+	res_path = ctx->res_path;
+	ctx->res_path = NULL;
+
+	return res_path;
 }
 
 
