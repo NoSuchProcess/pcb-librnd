@@ -33,6 +33,8 @@
 
 #define FSD_MAX_DIRNAME_LEN 16
 
+#define FSD_RECENT_MAX_LINES 4
+
 #include <limits.h>
 #include <genht/hash.h>
 #include <genvector/vti0.h>
@@ -492,6 +494,12 @@ static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int do_mkdir)
 	return 0;
 }
 
+static void fsd_shand_load_strip(char *line)
+{
+	char *end = line + strlen(line) - 1;
+	while((end >= line) && ((*end == '\n') || (*end == '\r'))) { *end = '\0'; end--; }
+}
+
 static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *rparent, gds_t *path, const char *suffix)
 {
 	int saved = path->used;
@@ -503,8 +511,7 @@ static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 	if (f != NULL) {
 		char line[RND_PATH_MAX+8], *cell[1];
 		while(fgets(line, sizeof(line), f) != NULL) {
-			char *end = line + strlen(line) - 1;
-			while((end >= line) && ((*end == '\n') || (*end == '\r'))) { *end = '\0'; end--; }
+			fsd_shand_load_strip(line);
 			if (*line == '\0')
 				continue;
 			cell[0] = rnd_strdup(line);
@@ -562,7 +569,8 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const char *entry)
 {
 	gds_t path = {0};
-	FILE *f;
+	FILE *fi, *fo;
+	char *target;
 	int res = 0;
 
 	if (fsd_shand_path_setup(ctx, &path, 1) != 0) {
@@ -571,15 +579,59 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const ch
 	}
 
 	gds_append_str(&path, suffix);
-	f = rnd_fopen(ctx->hidlib, path.array, "a");
-	if (f != NULL) {
-		fprintf(f, "%s\n", entry);
-		fclose(f);
-		res = 1;
-	}
-	else
+	target = rnd_strdup(path.array);
+	fi = rnd_fopen(ctx->hidlib, target, "r");
+	gds_append_str(&path, ".tmp");
+	fo = rnd_fopen(ctx->hidlib, path.array, "w");
+	if (fo == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path.array);
+		if (fi != NULL)
+			fclose(fi);
+		goto out;
+	}
 
+	if (fi != NULL) {
+		char line[RND_PATH_MAX+8];
+		int lines = 0;
+
+		/* count lines to see if we need to remove one */
+		while(fgets(line, sizeof(line), fi) != NULL) {
+			fsd_shand_load_strip(line);
+			if (*line == '\0')
+				continue;
+			if (strcmp(line, entry) == 0)
+				lines--;
+			lines++;
+		}
+		rewind(fi);
+		if (lines >= FSD_RECENT_MAX_LINES) { /* read one non-empty line */
+			while(fgets(line, sizeof(line), fi) != NULL) {
+				fsd_shand_load_strip(line);
+				if (*line != '\0')
+					break;
+			}
+		}
+
+		/* copy existing lines */
+		while(fgets(line, sizeof(line), fi) != NULL) {
+			fsd_shand_load_strip(line);
+			if ((*line != '\0') && (strcmp(line, entry) != 0))
+				fprintf(fo, "%s\n", line);
+		}
+	}
+
+	/* append new line */
+	fprintf(fo, "%s\n", entry);
+	res = 1;
+
+	/* safe overwrite with mv */
+	fclose(fo);
+	if (fi != NULL)
+		fclose(fi);
+	rnd_rename(ctx->hidlib, path.array, target);
+
+	out:;
+	free(target);
 	gds_uninit(&path);
 	return res;
 }
