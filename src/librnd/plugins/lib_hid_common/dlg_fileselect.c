@@ -553,6 +553,8 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
 	fsd_shand_load_file(ctx, attr, rparent, &path, ".recent.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+
+	gds_uninit(&path);
 }
 
 static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
