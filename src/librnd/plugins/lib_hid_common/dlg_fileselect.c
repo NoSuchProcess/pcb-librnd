@@ -269,7 +269,6 @@ TODO("on windows also check for \\");
 			if (dir != NULL) {
 				free(ctx->cwd);
 				ctx->cwd = new_cwd;
-printf("new cwd is %s\n", ctx->cwd);
 			}
 			else {
 				rnd_message(RND_MSG_ERROR, "Can't read directory '%s'\n", new_cwd);
