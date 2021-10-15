@@ -35,6 +35,7 @@
 
 #include <limits.h>
 #include <genht/hash.h>
+#include <genvector/vti0.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
@@ -74,6 +75,7 @@ typedef struct{
 	int wsort, wsort_rev, wsort_dirgrp;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
+	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
 	void *last_row;
@@ -242,8 +244,9 @@ static void fsd_load(fsd_ctx_t *ctx)
 static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 {
 	vtp0_t path = {0};
+	vti0_t offs = {0};
 	char *s, *next, tmp[RND_PATH_MAX];
-	int n, m;
+	int n, m, end;
 	rnd_hid_attr_val_t hv;
 
 	if (rel != NULL) {
@@ -285,9 +288,11 @@ printf("new cwd is %s\n", ctx->cwd);
 		vtp0_append(&path, s);
 		s[2] = '\0';
 		s += 3;
+		vti0_append(&offs, 3);
 	}
 #else
 	vtp0_append(&path, "/");
+	vti0_append(&offs, 1);
 #endif
 
 	for(; s != NULL; s = next) {
@@ -300,13 +305,18 @@ printf("new cwd is %s\n", ctx->cwd);
 #		endif
 		if (next != NULL) {
 			*next = '\0';
+			end = next - tmp;
 			next++;
 			if (*next == '\0')
 				next = NULL;
 		}
+		else
+			end = (s - tmp) + strlen(s);
+
 		if (next - s > FSD_MAX_DIRNAME_LEN)
 			strcpy(s + FSD_MAX_DIRNAME_LEN - 3, "...");
 		vtp0_append(&path, s);
+		vti0_append(&offs, end);
 	}
 
 
@@ -316,12 +326,14 @@ printf("new cwd is %s\n", ctx->cwd);
 			hv.str = (char *)path.array[n];
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
 			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
+			ctx->cwd_offs[n] = offs.array[n];
 		}
 		m = n;
 		for(n = path.used - FSD_MAX_DIRS/2; n < path.used; n++,m++) {
 			hv.str = (char *)path.array[n];
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[m], &hv);
 			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[m], 0);
+			ctx->cwd_offs[m] = offs.array[n];
 		}
 		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdirlong, 0);
 	}
@@ -331,6 +343,7 @@ printf("new cwd is %s\n", ctx->cwd);
 			hv.str = (char *)path.array[n];
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
 			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
+			ctx->cwd_offs[n] = offs.array[n];
 		}
 		for(; n < FSD_MAX_DIRS; n++) {
 			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 1);
@@ -342,6 +355,23 @@ printf("new cwd is %s\n", ctx->cwd);
 	fsd_list(ctx);
 	fsd_sort(ctx);
 	fsd_load(ctx);
+}
+
+static void cd_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	int idx, w = attr - ctx->dlg;
+
+	for(idx = 0; idx < FSD_MAX_DIRS; idx++)
+		if (w == ctx->wdir[idx])
+			break;
+
+	if (idx == FSD_MAX_DIRS)
+		return; /* button not found - function called from where? */
+
+	/* truncate cwd and cd there */
+	ctx->cwd[ctx->cwd_offs[idx]] = '\0';
+	fsd_cd(ctx, NULL);
 }
 
 static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -423,6 +453,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					RND_DAD_BUTTON(ctx->dlg, "");
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
 						ctx->wdir[n] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, cd_button_cb);
 				}
 				RND_DAD_LABEL(ctx->dlg, "...");
 					ctx->wdirlong = RND_DAD_CURRENT(ctx->dlg);
@@ -430,6 +461,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					RND_DAD_BUTTON(ctx->dlg, "");
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_TIGHT);
 						ctx->wdir[n + FSD_MAX_DIRS/2] = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, cd_button_cb);
 				}
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
