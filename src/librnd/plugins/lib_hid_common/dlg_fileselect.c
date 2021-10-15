@@ -566,7 +566,7 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 }
 
 /* Appends entry to an fsd persistence file and returns 1 if the file changed. */
-static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const char *entry)
+static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const char *entry, int limit)
 {
 	gds_t path = {0};
 	FILE *fi, *fo;
@@ -603,8 +603,9 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const ch
 				lines--;
 			lines++;
 		}
+
 		rewind(fi);
-		if (lines >= FSD_RECENT_MAX_LINES) { /* read one non-empty line */
+		if ((limit > 0) && (lines >= limit)) { /* read one non-empty line */
 			while(fgets(line, sizeof(line), fi) != NULL) {
 				fsd_shand_load_strip(line);
 				if (*line != '\0')
@@ -639,7 +640,7 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const ch
 static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	fsd_ctx_t *ctx = caller_data;
-	if (fsd_shand_append_to_file(ctx, ".fav.lst", ctx->cwd))
+	if (fsd_shand_append_to_file(ctx, ".fav.lst", ctx->cwd, 0))
 		fsd_shand_load(ctx);
 }
 
@@ -789,7 +790,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->res_path = NULL;
 
 	if (res_path != NULL)
-		fsd_shand_append_to_file(ctx, ".recent.lst", res_path);
+		fsd_shand_append_to_file(ctx, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
 
 
 	return res_path;
