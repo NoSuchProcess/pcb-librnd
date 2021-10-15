@@ -383,10 +383,55 @@ static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	fsd_load(ctx);
 }
 
+/* Handle new text entered in the path field */
 static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-/*	fsd_ctx_t *ctx = caller_data;*/
-	printf("Edit: '%s'\n", attr->val.str);
+	fsd_ctx_t *ctx = caller_data;
+	static rnd_dad_retovr_t retovr;
+	const char *fn = attr->val.str;
+	rnd_hid_attr_val_t hv;
+
+	if (!rnd_is_path_abs(fn)) {
+		ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
+		if (rnd_is_dir(ctx->hidlib, ctx->res_path)) { /* relative dir */
+			long len = strlen(ctx->res_path);
+			if (len < RND_PATH_MAX) {
+				free(ctx->res_path);
+				ctx->res_path = NULL;
+				fsd_cd(ctx, fn); /* do a relative cd so .. works */
+				goto clear;
+			}
+			goto err_too_long;
+		}
+
+		/* relative file already built in ctx->res_path */
+		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+	}
+	else { /* absolute path */
+		long len = strlen(fn);
+		if (len >= RND_PATH_MAX)
+			goto err_too_long;
+
+		if (rnd_is_dir(ctx->hidlib, fn)) {
+			/* absolute dir */
+			memcpy(ctx->cwd, fn, len+1);
+			fsd_cd(ctx, NULL);
+			goto clear;
+		}
+
+		/* absolute file */
+		ctx->res_path = rnd_strdup(fn);
+		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+	}
+	return;
+
+	err_too_long:;
+	rnd_message(RND_MSG_ERROR, "Path too long.\n");
+	return;
+
+	clear:;
+	hv.str = "";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
 }
 
 TODO("closing from within a tree table causes a gtk/glib segf");
