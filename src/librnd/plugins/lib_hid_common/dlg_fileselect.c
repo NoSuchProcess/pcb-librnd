@@ -558,28 +558,37 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	gds_uninit(&path);
 }
 
-static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+/* Appends entry to an fsd persistence file and returns 1 if the file changed. */
+static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const char *entry)
 {
-	fsd_ctx_t *ctx = caller_data;
 	gds_t path = {0};
 	FILE *f;
+	int res = 0;
 
 	if (fsd_shand_path_setup(ctx, &path, 1) != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to open/create fsd/ in application $HOME dotdir\n");
 		return;
 	}
 
-	gds_append_str(&path, ".fav.lst");
+	gds_append_str(&path, suffix);
 	f = rnd_fopen(ctx->hidlib, path.array, "a");
 	if (f != NULL) {
-		fprintf(f, "%s\n", ctx->cwd);
+		fprintf(f, "%s\n", entry);
 		fclose(f);
-		fsd_shand_load(ctx);
+		res = 1;
 	}
 	else
 		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path.array);
 
 	gds_uninit(&path);
+	return res;
+}
+
+static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	if (fsd_shand_append_to_file(ctx, ".fav.lst", ctx->cwd))
+		fsd_shand_load(ctx);
 }
 
 static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -726,6 +735,10 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->active = 0;
 	res_path = ctx->res_path;
 	ctx->res_path = NULL;
+
+	if (res_path != NULL)
+		fsd_shand_append_to_file(ctx, ".recent.lst", res_path);
+
 
 	return res_path;
 }
