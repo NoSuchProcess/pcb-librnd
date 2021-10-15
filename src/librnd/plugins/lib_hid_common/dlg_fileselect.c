@@ -383,6 +383,12 @@ static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	fsd_load(ctx);
 }
 
+static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+/*	fsd_ctx_t *ctx = caller_data;*/
+	printf("Edit: '%s'\n", attr->val.str);
+}
+
 TODO("closing from within a tree table causes a gtk/glib segf");
 static void timed_close_cb(rnd_hidval_t user_data)
 {
@@ -444,6 +450,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_STRING(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				ctx->wpath = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_ENTER_CB(ctx->dlg, edit_enter_cb);
 		RND_DAD_END(ctx->dlg);
 
 		/* directory helper */
