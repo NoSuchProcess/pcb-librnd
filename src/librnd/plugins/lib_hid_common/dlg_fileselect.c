@@ -41,7 +41,10 @@
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hidlib_conf.h>
 
 #include "dlg_fileselect.h"
 
@@ -78,6 +81,7 @@ typedef struct{
 	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
+	const char *history_tag;
 	void *last_row;
 	char *res_path;
 } fsd_ctx_t;
@@ -96,6 +100,7 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 }
 
 
+/*** file listing ***/
 TODO("move this to compat_fs  and add in safe_fs")
 int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime)
 {
@@ -466,7 +471,90 @@ static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	ctx->last_row = row;
 }
 
+/*** shorthand ***/
+static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int do_mkdir)
+{
+	if (rnd_conf.rc.path.home == NULL)
+		return -1;
 
+	gds_append_str(path, rnd_conf.rc.path.home);
+	gds_append(path, '/');
+
+	gds_append_str(path, rnd_app.dot_dir);
+	gds_append_str(path, "/fsd");
+	if (do_mkdir && !rnd_is_dir(ctx->hidlib, path->array))
+		rnd_mkdir(ctx->hidlib, path->array, 0750);
+	gds_append(path, '/');
+	gds_append_str(path, ctx->history_tag);
+
+	return 0;
+}
+
+static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *rparent, gds_t *path, const char *suffix)
+{
+	int saved = path->used;
+	FILE *f;
+
+	gds_append_str(path, suffix);
+printf("OPEN: '%s'\n", path->array);
+	f = rnd_fopen(ctx->hidlib, path->array, "r");
+	if (f != NULL) {
+		char line[RND_PATH_MAX+8], *cell[1];
+		while(fgets(line, sizeof(line), f) != NULL) {
+			char *end = line + strlen(line) - 1;
+			while((end >= line) && ((*end == '\n') || (*end == '\r'))) { *end = '\0'; end--; }
+			if (*line == '\0')
+				continue;
+			cell[0] = rnd_strdup(line);
+			rnd_dad_tree_append_under(attr, rparent, cell);
+		}
+		fclose(f);
+	}
+
+	path->used = saved;
+}
+
+static void fsd_shand_load(fsd_ctx_t *ctx)
+{
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshand];
+	rnd_hid_tree_t *tree = attr->wdata;
+	char *cell[1];
+	long n;
+	rnd_hid_row_t *rparent;
+	gds_t path = {0};
+
+	rnd_dad_tree_clear(tree);
+
+	/* filesystem */
+	cell[0] = rnd_strdup("filesystem");
+	rparent = rnd_dad_tree_append(attr, NULL, cell);
+
+	cell[0] = rnd_strdup("/"); rnd_dad_tree_append_under(attr, rparent, cell);
+	if (rnd_conf.rc.path.home != NULL) {
+		cell[0] = rnd_strdup(rnd_conf.rc.path.home); rnd_dad_tree_append_under(attr, rparent, cell);
+	}
+	cell[0] = rnd_strdup("/tmp"); rnd_dad_tree_append_under(attr, rparent, cell);
+
+	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+
+
+	if (fsd_shand_path_setup(ctx, &path, 0) != 0)
+		return;
+
+
+	cell[0] = rnd_strdup("favorites");
+	rparent = rnd_dad_tree_append(attr, NULL, cell);
+	fsd_shand_load_file(ctx, attr, rparent, &path, ".fav.lst");
+	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+
+	cell[0] = rnd_strdup("recent");
+	rparent = rnd_dad_tree_append(attr, NULL, cell);
+	fsd_shand_load_file(ctx, attr, rparent, &path, ".recent.lst");
+	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+}
+
+
+/*** dialog box ***/
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	fsd_ctx_t *ctx = &fsd_ctx;
@@ -486,6 +574,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 	memset(ctx, 0, sizeof(fsd_ctx_t));
 	ctx->active = 1;
+	ctx->history_tag = history_tag;
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -523,13 +612,13 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		/* lists */
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
+			RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr); /* shorthands */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
 				ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
 
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
+				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr); /* file list */
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
 /*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_enter_cb);*/
@@ -574,11 +663,12 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_DEFSIZE(ctx->dlg, 200, 300);
+	RND_DAD_DEFSIZE(ctx->dlg, 500, 400);
 	RND_DAD_NEW("file_selection_dialog", ctx->dlg, title, ctx, rnd_true, fsd_close_cb);
 
 	ctx->cwd = rnd_strdup(rnd_get_wd(ctx->cwd_buf));
 	fsd_cd(ctx, NULL);
+	fsd_shand_load(ctx);
 
 	RND_DAD_RUN(ctx->dlg);
 	RND_DAD_FREE(ctx->dlg);
@@ -601,7 +691,7 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hid_fsd_flags_t flags = RND_HID_FSD_MAY_NOT_EXIST;
 	rnd_hid_dad_subdialog_t *sub = NULL;
 
-	fn = rnd_dlg_fileselect(rnd_gui, "FsdTest", "DAD File Selection Dialog demo", "fsd.txt", ".txt", flt, "fsd_hist", flags, sub);
+	fn = rnd_dlg_fileselect(rnd_gui, "FsdTest", "DAD File Selection Dialog demo", "fsd.txt", ".txt", flt, "fsdtest", flags, sub);
 
 
 	if (fn != NULL)
