@@ -293,7 +293,10 @@ printf("new cwd is %s\n", ctx->cwd);
 #else
 	vtp0_append(&path, "/");
 	vti0_append(&offs, 1);
+	if (*s == '/') s++;
 #endif
+
+	if (*s == '\0') s = NULL;
 
 	for(; s != NULL; s = next) {
 #		ifdef __WIN32__
