@@ -47,6 +47,7 @@
 #include <librnd/core/hidlib_conf.h>
 
 #include "dlg_fileselect.h"
+#include "xpm.h"
 
 typedef struct {
 	char *name;
@@ -74,7 +75,7 @@ const char *sort_names[] =  { "name",  "size",    "mod. time", NULL } ;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active;
-	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wfilelist;
+	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wshdel, wfilelist;
 	int wsort, wsort_rev, wsort_dirgrp;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
@@ -496,7 +497,7 @@ static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 	FILE *f;
 
 	gds_append_str(path, suffix);
-printf("OPEN: '%s'\n", path->array);
+
 	f = rnd_fopen(ctx->hidlib, path->array, "r");
 	if (f != NULL) {
 		char line[RND_PATH_MAX+8], *cell[1];
@@ -513,6 +514,7 @@ printf("OPEN: '%s'\n", path->array);
 
 	path->used = saved;
 }
+
 
 static void fsd_shand_load(fsd_ctx_t *ctx)
 {
@@ -551,6 +553,35 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
 	fsd_shand_load_file(ctx, attr, rparent, &path, ".recent.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+}
+
+static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	gds_t path = {0};
+	FILE *f;
+
+	if (fsd_shand_path_setup(ctx, &path, 1) != 0) {
+		rnd_message(RND_MSG_ERROR, "Failed to open/create fsd/ in application $HOME dotdir\n");
+		return;
+	}
+
+	gds_append_str(&path, ".fav.lst");
+	f = rnd_fopen(ctx->hidlib, path.array, "a");
+	if (f != NULL) {
+		fprintf(f, "%s\n", ctx->cwd);
+		fclose(f);
+		fsd_shand_load(ctx);
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", path.array);
+
+	gds_uninit(&path);
+}
+
+static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+
 }
 
 
@@ -612,13 +643,26 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		/* lists */
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr); /* shorthands */
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
-				ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
 
-			RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_BEGIN_VBOX(ctx->dlg); /* shorthands */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr); /* file list */
+				RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
+					ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
+						RND_DAD_HELP(ctx->dlg, "add current directory to favorites");
+						RND_DAD_CHANGE_CB(ctx->dlg, fsd_shc_add_cb);
+					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("minus"));
+						RND_DAD_HELP(ctx->dlg, "remove favorite or recent");
+						RND_DAD_CHANGE_CB(ctx->dlg, fsd_shc_del_cb);
+						ctx->wshdel = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
+
+			RND_DAD_BEGIN_VBOX(ctx->dlg); /* file list */
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
 /*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_enter_cb);*/
