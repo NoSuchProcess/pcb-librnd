@@ -449,9 +449,10 @@ static void timed_close_cb(rnd_hidval_t user_data)
 
 
 TODO("This should be done by the tree table widget; should also work for enter")
-static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
 {
 	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wfilelist];
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 
@@ -591,7 +592,7 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	fsd_ctx_t *ctx = &fsd_ctx;
-	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"ok", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {NULL, 0}};
 	const char *shc_hdr[] = { "Shortcuts", NULL };
 	const char *filelist_hdr[] = { "Name", "Size", "Modified", NULL };
 	const char *help_sort = "Sort entries by this column";
@@ -705,6 +706,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 			/* close button */
 			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+			RND_DAD_BUTTON(ctx->dlg, "ok");
+				RND_DAD_CHANGE_CB(ctx->dlg, fsd_enter_cb);
 		RND_DAD_END(ctx->dlg);
 
 	RND_DAD_END(ctx->dlg);
