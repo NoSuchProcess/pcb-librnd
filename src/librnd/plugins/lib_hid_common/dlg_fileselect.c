@@ -85,7 +85,7 @@ typedef struct{
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
 	const char *history_tag;
-	void *last_row;
+	void *last_row, *shcut_last_row;
 	char *res_path;
 } fsd_ctx_t;
 
@@ -450,7 +450,7 @@ static void timed_close_cb(rnd_hidval_t user_data)
 }
 
 
-TODO("This should be done by the tree table widget; should also work for enter")
+TODO("Double click check should be done by the tree table widget; should also work for enter")
 static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
 {
 	fsd_ctx_t *ctx = caller_data;
@@ -666,6 +666,34 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 }
 
+TODO("Double click check should be done by the tree table widget; should also work for enter")
+static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
+{
+	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+
+	/* deal with double clicks */
+	if ((row == ctx->shcut_last_row) && (row != NULL)) {
+		rnd_hid_row_t *rparent = rnd_dad_tree_parent_row(tree, row);
+		if (rparent != NULL) {
+			if (rnd_is_dir(ctx->hidlib, row->cell[0])) {
+				free(ctx->cwd);
+				ctx->cwd = rnd_strdup(row->cell[0]);
+				fsd_cd(ctx, NULL);
+			}
+			else {
+				rnd_hidval_t rv;
+				rv.ptr = hid_ctx;
+				ctx->res_path = rnd_strdup(row->cell[0]);
+				rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+			}
+		}
+	}
+	ctx->shcut_last_row = row;
+}
+
 
 /*** dialog box ***/
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
@@ -731,6 +759,9 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
 					ctx->wshcut = RND_DAD_CURRENT(ctx->dlg);
+/*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_shcut_enter_cb);*/
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_shcut_enter_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &ctx);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
 						RND_DAD_HELP(ctx->dlg, "add current directory to global favorites\n(Select local favorites tree node to\nadd it to the local favorites)");
