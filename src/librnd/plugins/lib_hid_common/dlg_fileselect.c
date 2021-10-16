@@ -670,15 +670,29 @@ static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 	return res;
 }
 
+static const char *fsd_shc_sparent(fsd_ctx_t *ctx)
+{
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr), *rparent;
+
+	if (row == NULL)
+		return NULL;
+
+	rparent = rnd_dad_tree_parent_row(tree, row);
+	return (rparent == NULL) ? row->cell[0] : rparent->cell[0];
+}
+
 static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	fsd_ctx_t *ctx = caller_data;
-	int app_succ, global = 1;
+	int app_succ;
+	const char *sparent = fsd_shc_sparent(ctx);
 
-	if (global)
-		app_succ = fsd_shcut_append_to_file(ctx, 0, "Fav.lst", ctx->cwd, 0);
-	else
+	if ((sparent != NULL) && (strcmp(sparent, "favorites (local)") == 0))
 		app_succ = fsd_shcut_append_to_file(ctx, 1, ".fav.lst", ctx->cwd, 0);
+	else
+		app_succ = fsd_shcut_append_to_file(ctx, 0, "Fav.lst", ctx->cwd, 0);
 
 	if (app_succ)
 		fsd_shcut_load(ctx);
@@ -686,7 +700,6 @@ static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-
 }
 
 TODO("Double click check should be done by the tree table widget; should also work for enter")
