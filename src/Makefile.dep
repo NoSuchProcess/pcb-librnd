@@ -1589,14 +1589,30 @@
  ../src_3rd/genlist/gendlist.h
 ../src/librnd/plugins/lib_hid_common/dlg_fileselect.o: \
  ../src/librnd/plugins/lib_hid_common/dlg_fileselect.c ../config.h \
- ../src/librnd/config.h ../src/librnd/plugins/lib_hid_common/dlg_fileselect.h \
- ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/hid.h \
+ ../src/librnd/config.h ../src_3rd/genht/hash.h ../src_3rd/genvector/vti0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/hid_dad.h ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src/librnd/core/error.h ../src/librnd/core/global_typedefs.h \
- ../src/librnd/core/rnd_bool.h ../src/librnd/core/box.h ../src/librnd/core/math_helper.h \
- ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h ../src/librnd/core/actions.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h
+ ../src_3rd/genht/ht.h ../src/librnd/core/box.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h ../src/librnd/core/color.h \
+ ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/hid_dad_tree.h \
+ ../src/librnd/core/globalconst.h ../src/librnd/core/compat_fs.h ../src/librnd/core/safe_fs.h \
+ ../src/librnd/core/conf.h ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/safe_fs_dir.h \
+ ../src/librnd/core/compat_inc.h ../src/librnd/core/hidlib.h ../src/librnd/core/hidlib_conf.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_fileselect.h \
+ ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ ../src/librnd/plugins/lib_hid_common/xpm.h \
+ ../src_3rd/genvector/genvector_impl.c \
+ ../src/librnd/plugins/lib_hid_common/dlg_fileselect_io.c
 ../src/librnd/plugins/lib_hid_common/dlg_log.o: \
  ../src/librnd/plugins/lib_hid_common/dlg_log.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
@@ -1768,7 +1784,9 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  ../src/librnd/plugins/lib_hid_common/xpm/question.xpm \
  ../src/librnd/plugins/lib_hid_common/xpm/warning.xpm \
- ../src/librnd/plugins/lib_hid_common/xpm/online_help.xpm
+ ../src/librnd/plugins/lib_hid_common/xpm/online_help.xpm \
+ ../src/librnd/plugins/lib_hid_common/xpm/plus.xpm \
+ ../src/librnd/plugins/lib_hid_common/xpm/minus.xpm
 ../src/librnd/plugins/lib_hid_common/zoompan.o: \
  ../src/librnd/plugins/lib_hid_common/zoompan.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
