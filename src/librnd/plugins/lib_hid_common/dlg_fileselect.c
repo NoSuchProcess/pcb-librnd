@@ -730,6 +730,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 						RND_DAD_HELP(ctx->dlg, help_dir_grp);
 						ctx->wsort_dirgrp = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+						RND_DAD_DEFAULT_NUM(ctx->dlg, dialogs_conf.plugins.lib_hid_common.fsd.dir_grp);
 				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
