@@ -236,6 +236,22 @@ static void fsd_load(fsd_ctx_t *ctx)
 	}
 }
 
+/* Load the value and help and aux arrays of a dir button from the path array */
+#define load_dir_btn(path_idx, btn_idx) \
+	do { \
+		char *dn = (char *)path.array[path_idx]; \
+		int len = strlen(dn); \
+		if ((len > FSD_MAX_DIRNAME_LEN) && (len > 4)) { \
+			rnd_gui->attr_dlg_set_help(ctx->dlg_hid_ctx, ctx->wdir[btn_idx], dn); \
+			strcpy(dn + FSD_MAX_DIRNAME_LEN - 3, "..."); \
+		} \
+		hv.str = dn; \
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[btn_idx], &hv); \
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[btn_idx], 0); \
+		ctx->cwd_offs[btn_idx] = offs.array[path_idx]; \
+	} while(0)
+
+
 /* Change to directory, relative to ctx->cwd. If rel is NULL, just cd to
    ctx->cwd. */
 static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
@@ -310,8 +326,6 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 		else
 			end = (s - tmp) + strlen(s);
 
-		if (next - s > FSD_MAX_DIRNAME_LEN)
-			strcpy(s + FSD_MAX_DIRNAME_LEN - 3, "...");
 		vtp0_append(&path, s);
 		vti0_append(&offs, end);
 	}
@@ -319,29 +333,17 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 
 	if (path.used > FSD_MAX_DIRS) {
 		/* path too long - split the path in 2 parts and enable "..." in the middle */
-		for(n = 0; n < FSD_MAX_DIRS/2; n++) {
-			hv.str = (char *)path.array[n];
-			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
-			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
-			ctx->cwd_offs[n] = offs.array[n];
-		}
+		for(n = 0; n < FSD_MAX_DIRS/2; n++)
+			load_dir_btn(n, n);
 		m = n;
-		for(n = path.used - FSD_MAX_DIRS/2; n < path.used; n++,m++) {
-			hv.str = (char *)path.array[n];
-			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[m], &hv);
-			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[m], 0);
-			ctx->cwd_offs[m] = offs.array[n];
-		}
+		for(n = path.used - FSD_MAX_DIRS/2; n < path.used; n++,m++)
+			load_dir_btn(n, m);
 		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdirlong, 0);
 	}
 	else {
 		/* path short enough for hiding "..." and displaying all */
-		for(n = 0; n < path.used; n++) {
-			hv.str = (char *)path.array[n];
-			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdir[n], &hv);
-			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 0);
-			ctx->cwd_offs[n] = offs.array[n];
-		}
+		for(n = 0; n < path.used; n++)
+			load_dir_btn(n, n);
 		for(; n < FSD_MAX_DIRS; n++) {
 			rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wdir[n], 1);
 		}
@@ -353,6 +355,8 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 	fsd_sort(ctx);
 	fsd_load(ctx);
 }
+
+#undef load_dir_btn
 
 static void cd_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
