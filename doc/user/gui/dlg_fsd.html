@@ -22,14 +22,14 @@ is the directory the dialog box is listing at the moment and does not affect
 the CWD of the application. The user has multiple options to change the CWD
 of the dialog box.
 <p>
-The <b>top part<b> features the <b>file name text input</b>. If a directory name is
+The <b>top part</b> features the <b>file name text input</b>. If a directory name is
 entered here (either absolute or relative to current CWD), the dialog box
 switches CWD to that directory. If a file name (either absolute or relative to
 the current CWD) is entered and enter is pressed (or the ok button is clicked),
 it is taken as the resulting file name and is returned and the dialog box is
 closed.
 <p>
-Still in the <b>top part<b> A horizontally aligned set of <b>directory
+Still in the <b>top part</b> A horizontally aligned set of <b>directory
 buttons</b> follows. This displays the CWD. Each button represents a
 directory in the absolute path to CWD. If the CWD is changed in any way
 these buttons are updated. If CWD path is too deep, the central few
@@ -39,7 +39,7 @@ than configured (in plugins/lib_hid_common/fsd/dirname_maxlen), it's
 truncated. When a directory button is clicked, the CWD is changed to that
 directory.
 <p>
-The <b>middle left part<b> is a 2 level tree of shortcuts. First level entries
+The <b>middle left part</b> is a 2 level tree of shortcuts. First level entries
 are:
 <p>
 <ul>
@@ -72,7 +72,7 @@ Favorites/recents are saved in plain text files upon any user input that
 changes them. The files are kept in fsd/ under the application's dotdir,
 e.g. ~/.pcb-rnd/fsd/ for pcb-rnd.
 <p>
-The <b>middle right part<b> is a flat list of files and directories found in
+The <b>middle right part</b> is a flat list of files and directories found in
 CWD. Size is in bytes, last modification date is in ISO 8601 (year-month-day).
 <p>
 Double clicking (or selecting and pressing enter) on a directory on this list
@@ -82,11 +82,11 @@ file as result of the fsd. While navigating this list (single click or
 keyboard), the file name text input is updated with the file name the cursor
 is on.
 <p>
-The <b>bottom left part<b> optionally hosts a subdialog that is specific
+The <b>bottom left part</b> optionally hosts a subdialog that is specific
 for the operation the fsd is invoked for. It typically lists file format
 and I/O options.
 <p>
-The <b>bottom right part<b> consists of the "cancel" and "ok" buttons. If
+The <b>bottom right part</b> consists of the "cancel" and "ok" buttons. If
 the "cancel" button is clicked, the dialog closes and returns "no file selected".
 If the "ok" button is clicked the full path of the file entered in the
 file name text input is returned as the result (and the dialog box is closed).
