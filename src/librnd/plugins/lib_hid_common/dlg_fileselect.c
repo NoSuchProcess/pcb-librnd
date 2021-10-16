@@ -222,6 +222,7 @@ static void fsd_load(fsd_ctx_t *ctx)
 	long n;
 
 	rnd_dad_tree_clear(tree);
+	ctx->last_row = NULL;
 
 	for(n = 0; n < ctx->des.used; n++) {
 		rnd_hid_row_t *row;
@@ -559,6 +560,7 @@ static void fsd_shcut_load(fsd_ctx_t *ctx)
 	gds_t path = {0}, gpath = {0};
 
 	rnd_dad_tree_clear(tree);
+	ctx->shcut_last_row = NULL;
 
 	/* filesystem */
 	cell[0] = rnd_strdup("filesystem");
