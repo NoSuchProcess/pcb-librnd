@@ -328,6 +328,25 @@ double rnd_file_mtime_(const char *path)
 	return st.st_mtime;
 }
 
+int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime)
+{
+	struct stat st;
+	if (stat(path, &st) != 0)
+		return -1;
+
+	*is_dir = S_ISDIR(st.st_mode);
+
+	if (st.st_size > LONG_MAX)
+		*size = LONG_MAX;
+	else
+		*size = st.st_size;
+
+	*mtime = st.st_mtime;
+
+	return 0;
+}
+
+
 int rnd_is_path_abs(const char *fn)
 {
 #ifdef __WIN32__

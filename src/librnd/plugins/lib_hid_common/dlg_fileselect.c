@@ -105,24 +105,9 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 #include "dlg_fileselect_io.c"
 
 /*** file listing ***/
-TODO("move this to compat_fs  and add in safe_fs")
-int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime)
-{
-	struct stat st;
-	if (stat(path, &st) != 0)
-		return -1;
+TODO("Rather do this through safe_fs once its published");
+extern int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime);
 
-	*is_dir = S_ISDIR(st.st_mode);
-
-	if (st.st_size > LONG_MAX)
-		*size = LONG_MAX;
-	else
-		*size = st.st_size;
-
-	*mtime = st.st_mtime;
-
-	return 0;
-}
 
 static void fsd_clear(fsd_ctx_t *ctx)
 {
