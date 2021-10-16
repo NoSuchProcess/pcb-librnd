@@ -1,8 +1,6 @@
 - 3.0.2
 	- fsd:
 		- config for sort preferences
-		- config for FSD_RECENT_MAX_LINES
-		- config for FSD_MAX_DIRNAME_LEN
 	- new, DAD based selector
 	- BUG: lesstif: popup on pcb-rnd padstack fails: rnd_hid_get_coords() doesn't remember last coord (called from dlg_padstacks.c pcb_act_PadstackEdit() F_Object branch)
 - 3.1.0
