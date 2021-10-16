@@ -77,7 +77,7 @@ const char *sort_names[] =  { "name",  "size",    "mod. time", NULL } ;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active;
-	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshand, wshdel, wfilelist;
+	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshcut, wshdel, wfilelist;
 	int wsort, wsort_rev, wsort_dirgrp;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
@@ -475,8 +475,8 @@ static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	ctx->last_row = row;
 }
 
-/*** shorthand ***/
-static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do_mkdir)
+/*** shortcut ***/
+static int fsd_shcut_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do_mkdir)
 {
 	if (rnd_conf.rc.path.home == NULL)
 		return -1;
@@ -496,13 +496,13 @@ static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do
 	return 0;
 }
 
-static void fsd_shand_load_strip(char *line)
+static void fsd_shcut_load_strip(char *line)
 {
 	char *end = line + strlen(line) - 1;
 	while((end >= line) && ((*end == '\n') || (*end == '\r'))) { *end = '\0'; end--; }
 }
 
-static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *rparent, gds_t *path, const char *suffix)
+static void fsd_shcut_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *rparent, gds_t *path, const char *suffix)
 {
 	int saved = path->used;
 	FILE *f;
@@ -513,7 +513,7 @@ static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 	if (f != NULL) {
 		char line[RND_PATH_MAX+8], *cell[1];
 		while(fgets(line, sizeof(line), f) != NULL) {
-			fsd_shand_load_strip(line);
+			fsd_shcut_load_strip(line);
 			if (*line == '\0')
 				continue;
 			cell[0] = rnd_strdup(line);
@@ -526,9 +526,9 @@ static void fsd_shand_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 }
 
 
-static void fsd_shand_load(fsd_ctx_t *ctx)
+static void fsd_shcut_load(fsd_ctx_t *ctx)
 {
-	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshand];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[1];
 	long n;
@@ -550,25 +550,25 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 
-	if (fsd_shand_path_setup(ctx, &path, 1, 0) != 0)
+	if (fsd_shcut_path_setup(ctx, &path, 1, 0) != 0)
 		return;
-	if (fsd_shand_path_setup(ctx, &gpath, 0, 0) != 0)
+	if (fsd_shcut_path_setup(ctx, &gpath, 0, 0) != 0)
 		return;
 
 
 	cell[0] = rnd_strdup("favorites (global)");
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
-	fsd_shand_load_file(ctx, attr, rparent, &gpath, "Fav.lst");
+	fsd_shcut_load_file(ctx, attr, rparent, &gpath, "Fav.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 	cell[0] = rnd_strdup("favorites (local)");
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
-	fsd_shand_load_file(ctx, attr, rparent, &path, ".fav.lst");
+	fsd_shcut_load_file(ctx, attr, rparent, &path, ".fav.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 	cell[0] = rnd_strdup("recent");
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
-	fsd_shand_load_file(ctx, attr, rparent, &path, ".recent.lst");
+	fsd_shcut_load_file(ctx, attr, rparent, &path, ".recent.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 	gds_uninit(&path);
@@ -576,14 +576,14 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 }
 
 /* Appends entry to an fsd persistence file and returns 1 if the file changed. */
-static int fsd_shand_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry, int limit)
+static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry, int limit)
 {
 	gds_t path = {0};
 	FILE *fi, *fo;
 	char *target;
 	int res = 0;
 
-	if (fsd_shand_path_setup(ctx, &path, per_dlg, 1) != 0) {
+	if (fsd_shcut_path_setup(ctx, &path, per_dlg, 1) != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to open/create fsd/ in application $HOME dotdir\n");
 		return;
 	}
@@ -606,7 +606,7 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 
 		/* count lines to see if we need to remove one */
 		while(fgets(line, sizeof(line), fi) != NULL) {
-			fsd_shand_load_strip(line);
+			fsd_shcut_load_strip(line);
 			if (*line == '\0')
 				continue;
 			if (strcmp(line, entry) == 0)
@@ -617,7 +617,7 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 		rewind(fi);
 		if ((limit > 0) && (lines >= limit)) { /* read one non-empty line */
 			while(fgets(line, sizeof(line), fi) != NULL) {
-				fsd_shand_load_strip(line);
+				fsd_shcut_load_strip(line);
 				if (*line != '\0')
 					break;
 			}
@@ -625,7 +625,7 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 
 		/* copy existing lines */
 		while(fgets(line, sizeof(line), fi) != NULL) {
-			fsd_shand_load_strip(line);
+			fsd_shcut_load_strip(line);
 			if ((*line != '\0') && (strcmp(line, entry) != 0))
 				fprintf(fo, "%s\n", line);
 		}
@@ -653,12 +653,12 @@ static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	int app_succ, global = 1;
 
 	if (global)
-		app_succ = fsd_shand_append_to_file(ctx, 0, "Fav.lst", ctx->cwd, 0);
+		app_succ = fsd_shcut_append_to_file(ctx, 0, "Fav.lst", ctx->cwd, 0);
 	else
-		app_succ = fsd_shand_append_to_file(ctx, 1, ".fav.lst", ctx->cwd, 0);
+		app_succ = fsd_shcut_append_to_file(ctx, 1, ".fav.lst", ctx->cwd, 0);
 
 	if (app_succ)
-		fsd_shand_load(ctx);
+		fsd_shcut_load(ctx);
 }
 
 static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -726,11 +726,11 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
-			RND_DAD_BEGIN_VBOX(ctx->dlg); /* shorthands */
+			RND_DAD_BEGIN_VBOX(ctx->dlg); /* shortcuts */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
-					ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
+					ctx->wshcut = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
 						RND_DAD_HELP(ctx->dlg, "add current directory to global favorites\n(Select local favorites tree node to\nadd it to the local favorites)");
@@ -796,7 +796,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 	ctx->cwd = rnd_strdup(rnd_get_wd(ctx->cwd_buf));
 	fsd_cd(ctx, NULL);
-	fsd_shand_load(ctx);
+	fsd_shcut_load(ctx);
 
 	RND_DAD_RUN(ctx->dlg);
 	RND_DAD_FREE(ctx->dlg);
@@ -807,7 +807,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->res_path = NULL;
 
 	if (res_path != NULL)
-		fsd_shand_append_to_file(ctx, 1, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
+		fsd_shcut_append_to_file(ctx, 1, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
 
 
 	return res_path;
