@@ -598,8 +598,7 @@ static void fsd_shcut_load(fsd_ctx_t *ctx)
 	gds_uninit(&gpath);
 }
 
-/* Appends entry to an fsd persistence file and returns 1 if the file changed. */
-static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry, int limit)
+static int fsd_shcut_change_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *add_entry, const char *del_entry, int limit)
 {
 	gds_t path = {0};
 	FILE *fi, *fo;
@@ -632,7 +631,7 @@ static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 			fsd_shcut_load_strip(line);
 			if (*line == '\0')
 				continue;
-			if (strcmp(line, entry) == 0)
+			if ((add_entry != NULL) && (strcmp(line, add_entry) == 0))
 				lines--;
 			lines++;
 		}
@@ -646,17 +645,21 @@ static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 			}
 		}
 
-		/* copy existing lines */
+		/* copy existing lines (except empty lines and add/del entries) */
 		while(fgets(line, sizeof(line), fi) != NULL) {
 			fsd_shcut_load_strip(line);
-			if ((*line != '\0') && (strcmp(line, entry) != 0))
-				fprintf(fo, "%s\n", line);
+			if (*line == '\0') continue;
+			if ((add_entry != NULL) && (strcmp(line, add_entry) == 0)) continue;
+			if ((del_entry != NULL) && (strcmp(line, del_entry) == 0)) { res = 1; continue; }
+			fprintf(fo, "%s\n", line); 
 		}
 	}
 
 	/* append new line */
-	fprintf(fo, "%s\n", entry);
-	res = 1;
+	if (add_entry != NULL) {
+		fprintf(fo, "%s\n", add_entry);
+		res = 1;
+	}
 
 	/* safe overwrite with mv */
 	fclose(fo);
@@ -669,6 +672,18 @@ static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 	gds_uninit(&path);
 	return res;
 }
+
+/* Appends entry to an fsd persistence file and returns 1 if the file changed. */
+static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry, int limit)
+{
+	return fsd_shcut_change_file(ctx, per_dlg, suffix, entry, NULL, limit);
+}
+
+static int fsd_shcut_del_from_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry)
+{
+	return fsd_shcut_change_file(ctx, per_dlg, suffix, NULL, entry, 0);
+}
+
 
 static const char *fsd_shc_sparent(fsd_ctx_t *ctx)
 {
@@ -698,8 +713,34 @@ static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 		fsd_shcut_load(ctx);
 }
 
-static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORE)
 {
+	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
+	rnd_hid_tree_t *tree = attr->wdata;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr), *rparent;
+	const char *sparent;
+	int del_succ = 0;
+
+	if (row == NULL)
+		return;
+
+	sparent = fsd_shc_sparent(ctx);
+	if (sparent == NULL)
+		return;
+
+	if (strcmp(sparent, "favorites (local)") == 0)
+		del_succ = fsd_shcut_del_from_file(ctx, 1, ".fav.lst", row->cell[0]);
+	else if (strcmp(sparent, "favorites (global)") == 0)
+		del_succ = fsd_shcut_del_from_file(ctx, 0, "Fav.lst", row->cell[0]);
+	else if (strcmp(sparent, "recent") == 0)
+		del_succ = fsd_shcut_del_from_file(ctx, 1, ".recent.lst", row->cell[0]);
+	else
+		rnd_message(RND_MSG_ERROR, "Can not delete from subtree %s\n", sparent);
+
+	if (del_succ)
+		fsd_shcut_load(ctx);
+
 }
 
 TODO("Double click check should be done by the tree table widget; should also work for enter")
