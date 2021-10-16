@@ -216,7 +216,7 @@ static void fsd_sort(fsd_ctx_t *ctx)
 
 static void fsd_load(fsd_ctx_t *ctx)
 {
-	rnd_hid_attribute_t *attr= &ctx->dlg[ctx->wfilelist];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wfilelist];
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
 	long n;
