@@ -489,10 +489,9 @@ static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do
 	if (do_mkdir && !rnd_is_dir(ctx->hidlib, path->array))
 		rnd_mkdir(ctx->hidlib, path->array, 0750);
 
-	if (per_dlg) {
-		gds_append(path, '/');
+	gds_append(path, '/');
+	if (per_dlg)
 		gds_append_str(path, ctx->history_tag);
-	}
 
 	return 0;
 }
