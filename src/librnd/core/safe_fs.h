@@ -63,6 +63,11 @@ long rnd_file_size(rnd_hidlib_t *hidlib, const char *path);
 /* Return -1 on error or the last modification time (in sec from epoch) */
 double rnd_file_mtime(rnd_hidlib_t *hidlib, const char *path);
 
+/* This is going to be available only in 3.1.0:
+   Query is_dir, size and mtime with a single syscall; Return 0 on success.
+int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
+*/
+
 /* Return non-zero if path is a directory */
 int rnd_is_dir(rnd_hidlib_t *hidlib, const char *path);
 

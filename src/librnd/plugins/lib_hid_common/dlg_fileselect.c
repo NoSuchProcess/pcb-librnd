@@ -105,9 +105,8 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 #include "dlg_fileselect_io.c"
 
 /*** file listing ***/
-TODO("Rather do this through safe_fs once its published");
-extern int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime);
-
+TODO("Remove this at 3.1.0");
+extern int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
 
 static void fsd_clear(fsd_ctx_t *ctx)
 {
@@ -144,7 +143,7 @@ static void fsd_list(fsd_ctx_t *ctx)
 
 		fullp.used = fullp_len;
 		gds_append_str(&fullp, de->d_name);
-		if (rnd_file_stat_(fullp.array, &is_dir, &size, &mtime) != 0)
+		if (rnd_file_stat(ctx->hidlib, fullp.array, &is_dir, &size, &mtime) != 0)
 			continue;
 
 		new_de = vtde_alloc_append(&ctx->des, 1);

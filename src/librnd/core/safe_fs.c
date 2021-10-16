@@ -421,3 +421,13 @@ double rnd_file_mtime(rnd_hidlib_t *hidlib, const char *path)
 	CHECK("file_mtime", "stat", path, NULL, return -1);
 	return rnd_file_mtime_(path);
 }
+
+extern int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime);
+int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime)
+{
+	CHECK("file_stat", "access", path, NULL, return -1);
+	CHECK("file_stat", "stat", path, NULL, return -1);
+	return rnd_file_stat_(path, is_dir, size, mtime);
+}
+
+
