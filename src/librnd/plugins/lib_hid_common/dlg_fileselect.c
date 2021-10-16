@@ -476,7 +476,7 @@ static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 }
 
 /*** shorthand ***/
-static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int do_mkdir)
+static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do_mkdir)
 {
 	if (rnd_conf.rc.path.home == NULL)
 		return -1;
@@ -488,8 +488,11 @@ static int fsd_shand_path_setup(fsd_ctx_t *ctx, gds_t *path, int do_mkdir)
 	gds_append_str(path, "/fsd");
 	if (do_mkdir && !rnd_is_dir(ctx->hidlib, path->array))
 		rnd_mkdir(ctx->hidlib, path->array, 0750);
-	gds_append(path, '/');
-	gds_append_str(path, ctx->history_tag);
+
+	if (per_dlg) {
+		gds_append(path, '/');
+		gds_append_str(path, ctx->history_tag);
+	}
 
 	return 0;
 }
@@ -531,7 +534,7 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	char *cell[1];
 	long n;
 	rnd_hid_row_t *rparent;
-	gds_t path = {0};
+	gds_t path = {0}, gpath = {0};
 
 	rnd_dad_tree_clear(tree);
 
@@ -548,11 +551,18 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 
-	if (fsd_shand_path_setup(ctx, &path, 0) != 0)
+	if (fsd_shand_path_setup(ctx, &path, 1, 0) != 0)
+		return;
+	if (fsd_shand_path_setup(ctx, &gpath, 0, 0) != 0)
 		return;
 
 
-	cell[0] = rnd_strdup("favorites");
+	cell[0] = rnd_strdup("favorites (global)");
+	rparent = rnd_dad_tree_append(attr, NULL, cell);
+	fsd_shand_load_file(ctx, attr, rparent, &gpath, "Fav.lst");
+	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
+
+	cell[0] = rnd_strdup("favorites (local)");
 	rparent = rnd_dad_tree_append(attr, NULL, cell);
 	fsd_shand_load_file(ctx, attr, rparent, &path, ".fav.lst");
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
@@ -563,17 +573,18 @@ static void fsd_shand_load(fsd_ctx_t *ctx)
 	rnd_dad_tree_expcoll_(tree, rparent, 1, 0);
 
 	gds_uninit(&path);
+	gds_uninit(&gpath);
 }
 
 /* Appends entry to an fsd persistence file and returns 1 if the file changed. */
-static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const char *entry, int limit)
+static int fsd_shand_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry, int limit)
 {
 	gds_t path = {0};
 	FILE *fi, *fo;
 	char *target;
 	int res = 0;
 
-	if (fsd_shand_path_setup(ctx, &path, 1) != 0) {
+	if (fsd_shand_path_setup(ctx, &path, per_dlg, 1) != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to open/create fsd/ in application $HOME dotdir\n");
 		return;
 	}
@@ -640,7 +651,14 @@ static int fsd_shand_append_to_file(fsd_ctx_t *ctx, const char *suffix, const ch
 static void fsd_shc_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	fsd_ctx_t *ctx = caller_data;
-	if (fsd_shand_append_to_file(ctx, ".fav.lst", ctx->cwd, 0))
+	int app_succ, global = 1;
+
+	if (global)
+		app_succ = fsd_shand_append_to_file(ctx, 0, "Fav.lst", ctx->cwd, 0);
+	else
+		app_succ = fsd_shand_append_to_file(ctx, 1, ".fav.lst", ctx->cwd, 0);
+
+	if (app_succ)
 		fsd_shand_load(ctx);
 }
 
@@ -716,7 +734,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					ctx->wshand = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
-						RND_DAD_HELP(ctx->dlg, "add current directory to favorites");
+						RND_DAD_HELP(ctx->dlg, "add current directory to global favorites\n(Select local favorites tree node to\nadd it to the local favorites)");
 						RND_DAD_CHANGE_CB(ctx->dlg, fsd_shc_add_cb);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("minus"));
 						RND_DAD_HELP(ctx->dlg, "remove favorite or recent");
@@ -790,7 +808,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->res_path = NULL;
 
 	if (res_path != NULL)
-		fsd_shand_append_to_file(ctx, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
+		fsd_shand_append_to_file(ctx, 1, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
 
 
 	return res_path;
