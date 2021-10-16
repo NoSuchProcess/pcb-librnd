@@ -31,7 +31,7 @@
 /* must be even */
 #define FSD_MAX_DIRS 16
 
-#define FSD_MAX_DIRNAME_LEN 16
+#define FSD_MAX_DIRNAME_LEN dialogs_conf.plugins.lib_hid_common.fsd.dirname_maxlen
 
 #define FSD_RECENT_MAX_LINES 4
 
@@ -48,8 +48,11 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 
+#include "dialogs_conf.h"
 #include "dlg_fileselect.h"
 #include "xpm.h"
+#include "lib_hid_common.h"
+
 
 typedef struct {
 	char *name;
