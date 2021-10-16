@@ -39,6 +39,7 @@ typedef struct {
 			} cli_history;
 			const struct {
 				RND_CFT_INTEGER dirname_maxlen;  /* shorten directory names longer than this in path buttons */
+				RND_CFT_INTEGER recent_maxlines; /* how many entries to remember as recently used in the shortcuts/recent/ subtree */
 			} fsd;
 		} lib_hid_common;
 

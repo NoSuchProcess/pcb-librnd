@@ -32,8 +32,7 @@
 #define FSD_MAX_DIRS 16
 
 #define FSD_MAX_DIRNAME_LEN dialogs_conf.plugins.lib_hid_common.fsd.dirname_maxlen
-
-#define FSD_RECENT_MAX_LINES 4
+#define FSD_RECENT_MAX_LINES dialogs_conf.plugins.lib_hid_common.fsd.recent_maxlines
 
 #include <limits.h>
 #include <genht/hash.h>
