@@ -116,10 +116,14 @@ static int fsd_shcut_change_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix
 
 		rewind(fi);
 		if ((limit > 0) && (lines >= limit)) { /* read one non-empty line */
+			int nremove = lines - limit + 1;
 			while(fgets(line, sizeof(line), fi) != NULL) {
 				fsd_shcut_load_strip(line);
-				if (*line != '\0')
-					break;
+				if (*line != '\0') {
+					nremove--;
+					if (nremove <= 0)
+						break;
+				}
 			}
 		}
 
