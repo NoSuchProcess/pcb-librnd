@@ -245,9 +245,7 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 
 	if (rel != NULL) {
 		if ((rel[0] == '.') && (rel[1] == '.') && (rel[2] == '\0')) {
-			char *sep;
-TODO("on windows also check for \\");
-			sep = strrchr(ctx->cwd, '/');
+			char *sep = fsd_io_rsep(ctx->cwd);
 			if (sep != NULL) {
 				if (sep > ctx->cwd)
 					*sep = '\0';

@@ -163,3 +163,17 @@ static int fsd_shcut_del_from_file(fsd_ctx_t *ctx, int per_dlg, const char *suff
 }
 
 
+char *fsd_io_rsep(char *path)
+{
+#ifdef __WIN32__
+	char *s = path + strlen(path) - 1;
+	while(s >= path) {
+		if ((*s == '/') || (*s == '\\'))
+			return s;
+		s--;
+	}
+	return NULL;
+#else
+	return strrchr(path, '/');
+#endif
+}
