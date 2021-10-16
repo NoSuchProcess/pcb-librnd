@@ -450,8 +450,8 @@ static void timed_close_cb(rnd_hidval_t user_data)
 }
 
 
-TODO("Double click check should be done by the tree table widget; should also work for enter")
-static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
+TODO("We shouldn't need a timer for close (fix this in DAD)")
+static void fsd_filelist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
 {
 	fsd_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wfilelist];
@@ -471,8 +471,28 @@ static void fsd_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 			return; /* so that last_row remains NULL */
 		}
 	}
+	else if (row != NULL) { /* first click on a new row */
+		if (row->cell[1][0] != '<') { /* file: load the edit line with the new file name */
+			rnd_hid_attr_val_t hv;
+			hv.str = (char *)row->cell[0];
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
+		}
+	}
 
 	ctx->last_row = row;
+}
+
+static void fsd_ok_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
+{
+	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
+	const char *fn = inp->val.str;
+
+	if ((fn != NULL) && (*fn != '\0')) {
+		static rnd_dad_retovr_t retovr;
+		ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
+		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+	}
 }
 
 /*** shortcut ***/
@@ -778,9 +798,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
-/*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_enter_cb);*/
-					RND_DAD_CHANGE_CB(ctx->dlg, fsd_enter_cb);
-					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &ctx);
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_filelist_cb);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "Sort:");
 						RND_DAD_HELP(ctx->dlg, help_sort);
@@ -817,7 +835,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			/* close button */
 			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 			RND_DAD_BUTTON(ctx->dlg, "ok");
-				RND_DAD_CHANGE_CB(ctx->dlg, fsd_enter_cb);
+				RND_DAD_CHANGE_CB(ctx->dlg, fsd_ok_cb);
 		RND_DAD_END(ctx->dlg);
 
 	RND_DAD_END(ctx->dlg);
