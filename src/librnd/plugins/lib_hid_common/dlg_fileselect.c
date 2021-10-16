@@ -399,6 +399,9 @@ static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	const char *fn = attr->val.str;
 	rnd_hid_attr_val_t hv;
 
+	if ((fn == NULL) || (*fn == '\0'))
+		return;
+
 	if (!rnd_is_path_abs(fn)) {
 		ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
 		if (rnd_is_dir(ctx->hidlib, ctx->res_path)) { /* relative dir */
