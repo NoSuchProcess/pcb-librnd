@@ -25,6 +25,7 @@
 	- make HID_SC_ an enum
 	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor
 	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
+	- there are no spare fields in rnd_hid_tree_t (calloced from macro so calloc is on app side!)
 
 unsorted:
 	- lesstif: vertical text, truncated text support
