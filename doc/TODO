@@ -3,7 +3,9 @@
 		- subdialog
 		- DAD: tree scroll bug when using the keyboard
 		- DAD: tree enter handling
-		- crashes on lesstif (tree table problem)
+		- lesstif tree table problems:
+			- click on filelist entry doesn't fill in the text
+			- double click on filelist dir entry doesn't cd
 	- BUG: lesstif: popup on pcb-rnd padstack fails: rnd_hid_get_coords() doesn't remember last coord (called from dlg_padstacks.c pcb_act_PadstackEdit() F_Object branch)
 - 3.1.0
 	- publish rnd_file_stat() in safe_fs.h
