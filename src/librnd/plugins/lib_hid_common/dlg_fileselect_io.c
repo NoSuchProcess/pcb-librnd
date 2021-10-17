@@ -62,7 +62,8 @@ static void fsd_shcut_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 
 	f = rnd_fopen(ctx->hidlib, path->array, "r");
 	if (f != NULL) {
-		char line[RND_PATH_MAX+8], *cell[1];
+		char line[RND_PATH_MAX+8], *cell[2];
+		cell[1] = NULL;
 		while(fgets(line, sizeof(line), f) != NULL) {
 			fsd_shcut_load_strip(line);
 			if (*line == '\0')

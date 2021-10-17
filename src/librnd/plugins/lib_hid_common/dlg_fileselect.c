@@ -231,6 +231,7 @@ static void fsd_load(fsd_ctx_t *ctx)
 		cell[0] = rnd_strdup(ctx->des.array[n].name);
 		cell[1] = rnd_strdup(ssize);
 		cell[2] = rnd_strdup(smtime);
+		cell[3] = NULL;
 		row = rnd_dad_tree_append(attr, NULL, cell);
 	}
 }
@@ -494,13 +495,15 @@ static void fsd_shcut_load(fsd_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
 	rnd_hid_tree_t *tree = attr->wdata;
-	char *cell[1];
+	char *cell[2];
 	long n;
 	rnd_hid_row_t *rparent;
 	gds_t path = {0}, gpath = {0};
 
 	rnd_dad_tree_clear(tree);
 	ctx->shcut_last_row = NULL;
+
+	cell[1] = NULL;
 
 	/* filesystem */
 	cell[0] = rnd_strdup("filesystem");
