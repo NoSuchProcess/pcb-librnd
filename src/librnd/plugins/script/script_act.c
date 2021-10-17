@@ -152,9 +152,10 @@ static void btn_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	script_dlg_s2d(ctx);
 }
 
-static void slist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void slist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row)
 {
-	script_dlg_s2d_act((script_dlg_t *)caller_data);
+	rnd_hid_tree_t *tree = attr->wdata;
+	script_dlg_s2d_act((script_dlg_t *)tree->user_ctx);
 }
 
 static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -223,7 +224,8 @@ static void script_dlg_open(void)
 			RND_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
 				RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				script_dlg.wslist = RND_DAD_CURRENT(script_dlg.dlg);
-				RND_DAD_CHANGE_CB(script_dlg.dlg, slist_cb);
+				RND_DAD_TREE_SET_CB(script_dlg.dlg, selected_cb, slist_cb);
+				RND_DAD_TREE_SET_CB(script_dlg.dlg, ctx, &script_dlg);
 			RND_DAD_BEGIN_HBOX(script_dlg.dlg);
 				RND_DAD_BUTTON(script_dlg.dlg, "Unload");
 					RND_DAD_HELP(script_dlg.dlg, "Unload the currently selected script");
