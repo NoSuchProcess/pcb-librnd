@@ -445,12 +445,12 @@ static void timed_close_cb(rnd_hidval_t user_data)
 
 
 TODO("We shouldn't need a timer for close (fix this in DAD)")
-static void fsd_filelist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
+static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row)
 {
-	fsd_ctx_t *ctx = caller_data;
-	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wfilelist];
 	rnd_hid_tree_t *tree = attr->wdata;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+	fsd_ctx_t *ctx = tree->user_ctx;
+
+printf("filelist cb: %s\n", row == NULL ? "<null>" : row->cell[0]);
 
 	if ((row == ctx->last_row) && (row != NULL)) {
 		if (row->cell[1][0] != '<') {
@@ -602,12 +602,10 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 }
 
 TODO("Double click check should be done by the tree table widget; should also work for enter")
-static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
+static void fsd_shcut_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row)
 {
-	fsd_ctx_t *ctx = caller_data;
-	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
 	rnd_hid_tree_t *tree = attr->wdata;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+	fsd_ctx_t *ctx = tree->user_ctx;
 
 	/* deal with double clicks */
 	if ((row == ctx->shcut_last_row) && (row != NULL)) {
@@ -694,8 +692,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
 					ctx->wshcut = RND_DAD_CURRENT(ctx->dlg);
-/*					RND_DAD_TREE_SET_CB(ctx->dlg, enter_cb, fsd_shcut_enter_cb);*/
-					RND_DAD_CHANGE_CB(ctx->dlg, fsd_shcut_enter_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, fsd_shcut_cb);
 					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &ctx);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
@@ -713,7 +710,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
-					RND_DAD_CHANGE_CB(ctx->dlg, fsd_filelist_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, fsd_filelist_cb);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "Sort:");
 						RND_DAD_HELP(ctx->dlg, help_sort);
