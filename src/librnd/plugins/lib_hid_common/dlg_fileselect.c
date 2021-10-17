@@ -693,7 +693,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
 					ctx->wshcut = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, fsd_shcut_cb);
-					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &ctx);
+					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
 						RND_DAD_HELP(ctx->dlg, "add current directory to global favorites\n(Select local favorites tree node to\nadd it to the local favorites)");
