@@ -276,8 +276,20 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 				return; /* already at root */
 		}
 		else {
-			char *new_cwd = rnd_concat(ctx->cwd, "/", rel, NULL);
-			DIR *dir = rnd_opendir(ctx->hidlib, ctx->cwd);
+			char *new_cwd, *end, *sep = "/";
+			DIR *dir;
+
+			/* append relative, with / inserted only if needed */
+			end = ctx->cwd + strlen(ctx->cwd) - 1;
+#ifdef __WIN32__
+			if ((*end == '/') || (*end == '\\')) sep = "";
+#else
+			if (*end == '/') sep = "";
+#endif
+			new_cwd = rnd_concat(ctx->cwd, sep, rel, NULL);
+
+			/* check if new path is a dir */
+			dir = rnd_opendir(ctx->hidlib, ctx->cwd);
 			if (dir != NULL) {
 				free(ctx->cwd);
 				ctx->cwd = new_cwd;
