@@ -191,7 +191,6 @@ static void ghid_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
 		attr->val.str = r->path;
 	else
 		attr->val.str = NULL;
-	change_cb(ctx, attr);
 	if (tree->user_selected_cb != NULL)
 		tree->user_selected_cb(attr, ctx, r);
 }
@@ -212,7 +211,7 @@ static gboolean tree_table_filter_visible_func(GtkTreeModel *model, GtkTreeIter 
 /* Activation (e.g. double-clicking) of a footprint row. As a convenience
 to the user, GTK provides Shift-Arrow Left, Right to expand or
 contract any node with children. */
-static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr)
+static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr, int call_changed)
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -224,6 +223,11 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 		gtk_tree_view_collapse_row(tree_view, path);
 	else
 		gtk_tree_view_expand_row(tree_view, path, FALSE);
+
+	if (call_changed) {
+		attr_dlg_t *ctx = g_object_get_data(G_OBJECT(tree_view), RND_OBJ_PROP);
+		change_cb(ctx, attr);
+	}
 }
 
 /* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
@@ -315,12 +319,21 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	if (enter_key || force_activate) {
 		path = gtk_tree_model_get_path(model, &iter);
 		if (path != NULL) {
-			tree_row_activated(tree_view, path, NULL, attr);
+			tree_row_activated(tree_view, path, NULL, attr, !!enter_key);
 		}
 		gtk_tree_path_free(path);
 	}
 
 	return TRUE;
+}
+
+/* React on double click on a row (as detected by gtk) */
+static gboolean ghid_tree_table_row_activated_cb(GtkTreeView *tv, GtkTreePath *tp, GtkTreeViewColumn *col, gpointer *user_data)
+{
+	rnd_hid_attribute_t *attr = (rnd_hid_attribute_t *)user_data;
+	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(tv), RND_OBJ_PROP);
+	change_cb(ctx, attr);
+	return FALSE;
 }
 
 /* Return the x coord of the first non-arrow pixel or -1 if there's no arrow */
@@ -353,7 +366,7 @@ static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev,
 				return FALSE; /* do not activate whenclicked on the arrow (interferes with gtk auto expand) */
 
 			gtk_tree_model_get_iter(model, &iter, path);
-			tree_row_activated(tv, path, NULL, attr);
+			tree_row_activated(tv, path, NULL, attr, 0);
 		}
 	}
 
@@ -377,7 +390,7 @@ static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *e
 		gtk_tree_model_get_iter(model, &iter, path);
 		/* Do not activate the row if LEFT-click on a "parent category" row. */
 		if (ev->button.button != 1 || !gtk_tree_model_iter_has_child(model, &iter))
-			tree_row_activated(tv, path, NULL, attr);
+			tree_row_activated(tv, path, NULL, attr, 0);
 	}
 
 	return FALSE;
@@ -520,6 +533,7 @@ TODO("not in gtk4; safe to skip this (users should use themes)");
 	g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(ghid_tree_table_button_press_cb), attr);
 	g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(ghid_tree_table_button_release_cb), attr);
 	g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(ghid_tree_table_key_press_cb), attr);
+	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(ghid_tree_table_row_activated_cb), attr);
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
