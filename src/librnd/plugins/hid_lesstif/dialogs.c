@@ -494,6 +494,19 @@ TODO("The wrapper box would allow the table to shrink but then the dialog is alw
 			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			break;
+		case RND_HATT_SUBDIALOG:
+			{
+				rnd_hid_dad_subdialog_t *sub = ctx->attrs[i].wdata;
+				Widget subbox = rnd_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, 0, 0);
+
+				sub->parent_ctx = ctx;
+				sub->dlg_hid_ctx = lesstif_attr_sub_new(subbox, sub->dlg, sub->dlg_len, sub);
+				XtManageChild(subbox);
+				ctx->wl[i] = subbox;
+			}
+			break;
+
+
 		default:
 			ctx->wl[i] = XmCreateLabel(parent, XmStrCast("UNIMPLEMENTED"), stdarg_args, stdarg_n);
 			break;
@@ -527,6 +540,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 		case RND_HATT_BEGIN_VBOX:
 		case RND_HATT_BEGIN_TABLE:
 		case RND_HATT_BEGIN_COMPOUND:
+		case RND_HATT_SUBDIALOG:
 			goto err;
 		case RND_HATT_END:
 			{
