@@ -87,7 +87,6 @@ typedef struct{
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
 	const char *history_tag;
-	void *last_row;
 	char *res_path;
 } fsd_ctx_t;
 
@@ -210,7 +209,6 @@ static void fsd_load(fsd_ctx_t *ctx)
 	long n;
 
 	rnd_dad_tree_clear(tree);
-	ctx->last_row = NULL;
 
 	for(n = 0; n < ctx->des.used; n++) {
 		rnd_hid_row_t *row;
@@ -457,7 +455,6 @@ static void timed_close_cb(rnd_hidval_t user_data)
 }
 
 
-TODO("We shouldn't need a timer for close (fix this in DAD)")
 static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -465,29 +462,35 @@ static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_ro
 
 printf("filelist cb: %s\n", row == NULL ? "<null>" : row->cell[0]);
 
-	if ((row == ctx->last_row) && (row != NULL)) {
-		if (row->cell[1][0] != '<') {
-			rnd_hidval_t rv;
-			rv.ptr = hid_ctx;
-			ctx->res_path = rnd_concat(ctx->cwd, "/", row->cell[0], NULL);
-			rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
-		}
-		else {
-			fsd_cd(ctx, row->cell[0]);
-			ctx->last_row = NULL;
-			return; /* so that last_row remains NULL */
-		}
-	}
-	else if (row != NULL) { /* first click on a new row */
+	if (row != NULL) { /* first click on a new row */
 		if (row->cell[1][0] != '<') { /* file: load the edit line with the new file name */
 			rnd_hid_attr_val_t hv;
 			hv.str = (char *)row->cell[0];
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
 		}
 	}
-
-	ctx->last_row = row;
 }
+
+TODO("We shouldn't need a timer for close (fix this in DAD)")
+static void fsd_filelist_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_hid_tree_t *tree = attr->wdata;
+	fsd_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+
+	if (row == NULL)
+		return;
+
+	if (row->cell[1][0] != '<') {
+		rnd_hidval_t rv;
+		rv.ptr = hid_ctx;
+		ctx->res_path = rnd_concat(ctx->cwd, "/", row->cell[0], NULL);
+		rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+	}
+	else
+		fsd_cd(ctx, row->cell[0]);
+}
+
 
 static void fsd_ok_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
 {
@@ -613,7 +616,7 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 }
 
-static void fsd_shcut_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
 	fsd_ctx_t *ctx = caller_data;
@@ -703,7 +706,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 				RND_DAD_TREE(ctx->dlg, 1, 0, shc_hdr);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TREE_COL | RND_HATF_SCROLL);
 					ctx->wshcut = RND_DAD_CURRENT(ctx->dlg);
-					RND_DAD_CHANGE_CB(ctx->dlg, fsd_shcut_cb);
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_shcut_enter_cb);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PICBUTTON(ctx->dlg, rnd_dlg_xpm_by_name("plus"));
 						RND_DAD_HELP(ctx->dlg, "add current directory to global favorites\n(Select local favorites tree node to\nadd it to the local favorites)");
@@ -722,6 +725,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, fsd_filelist_cb);
 					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_filelist_enter_cb);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "Sort:");
 						RND_DAD_HELP(ctx->dlg, help_sort);
