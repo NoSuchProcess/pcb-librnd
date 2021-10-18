@@ -562,7 +562,6 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					sub->dlg_hid_ctx = ghid_attr_sub_new(ctx->gctx, subbox, sub->dlg, sub->dlg_len, sub);
 					ctx->wl[j] = subbox;
 					gtk_box_pack_start(GTK_BOX(parent), ctx->wl[j], FALSE, FALSE, 0);
-					printf("Created subd\n");
 				}
 				break;
 
