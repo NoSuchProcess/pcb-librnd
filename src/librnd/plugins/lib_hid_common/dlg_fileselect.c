@@ -641,6 +641,13 @@ static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	}
 }
 
+TODO("Move this to hid_dad.h with 3.1.0");
+#define RND_DAD_SUBDIALOG(table, sub) \
+do { \
+	RND_DAD_ALLOC(table, RND_HATT_SUBDIALOG); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, sub); \
+} while(0)
+
 /*** dialog box ***/
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
@@ -759,8 +766,11 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 		/* custom widgets and standard buttons */
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
-
-			TODO("subdialog");
+			if (sub != NULL) {
+				RND_DAD_SUBDIALOG(ctx->dlg, sub);
+TODO("Implement poke\n");
+				sub->parent_poke = NULL;
+			}
 
 			/* spring */
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -768,9 +778,18 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_END(ctx->dlg);
 
 			/* close button */
-			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-			RND_DAD_BUTTON(ctx->dlg, "ok");
-				RND_DAD_CHANGE_CB(ctx->dlg, fsd_ok_cb);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				/* spring */
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+				RND_DAD_BUTTON(ctx->dlg, "ok");
+					RND_DAD_CHANGE_CB(ctx->dlg, fsd_ok_cb);
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 
 	RND_DAD_END(ctx->dlg);
@@ -805,7 +824,18 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *fn;
 	rnd_hid_fsd_filter_t *flt = NULL;
 	rnd_hid_fsd_flags_t flags = RND_HID_FSD_MAY_NOT_EXIST;
-	rnd_hid_dad_subdialog_t *sub = NULL;
+	rnd_hid_dad_subdialog_t *sub = NULL, sub_tmp;
+	int test_subd = 1;
+
+	if (test_subd) {
+		sub = &sub_tmp;
+		memset(sub, 0, sizeof(rnd_hid_dad_subdialog_t));
+		RND_DAD_BEGIN_VBOX(sub->dlg);
+			RND_DAD_BUTTON(sub->dlg, "poke-get");
+			RND_DAD_BUTTON(sub->dlg, "poke-set");
+		RND_DAD_END(sub->dlg);
+		RND_DAD_BUTTON(sub->dlg, "poke-close");
+	}
 
 	fn = rnd_dlg_fileselect(rnd_gui, "FsdTest", "DAD File Selection Dialog demo", "fsd.txt", ".txt", flt, "fsdtest", flags, sub);
 
