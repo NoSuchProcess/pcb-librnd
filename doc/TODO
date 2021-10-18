@@ -1,7 +1,6 @@
 - 3.0.2
 	- fsd:
 		- subdialog
-		- DAD: tree enter handling
 		- lesstif tree table problems:
 			- click on filelist entry doesn't fill in the text
 			- double click on filelist dir entry doesn't cd
