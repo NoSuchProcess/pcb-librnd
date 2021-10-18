@@ -359,7 +359,7 @@ static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *e
 			tree_row_activated(tv, path, NULL, attr);
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
