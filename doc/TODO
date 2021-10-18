@@ -1,8 +1,5 @@
 - 3.0.2
 	- fsd:
-		- subdialog
-			- lesstif implementation
-			- poke callback in fsd code
 		- gtk tree bug:
 			- open fsd, click into the file list, press pg down many times -> crash or dialog close (valgrind?)
 			- tree scroll bug when using the keyboard
