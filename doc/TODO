@@ -29,4 +29,5 @@
 
 unsorted:
 	- lesstif: vertical text, truncated text support
+	- beside window positions, also remember paned ratios [report: Wojciech]
 
