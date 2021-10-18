@@ -372,6 +372,8 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 			if (e == lt->cursor) { /* second click */
 				ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
 				REDRAW();
+				rnd_trace("tree dbl click {enter}\n");
+				valchg(lt->w, lt->w, lt->w);
 			}
 			else
 				ltf_tt_jumpto(lt, e, 0);
