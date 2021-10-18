@@ -553,6 +553,20 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
+			case RND_HATT_SUBDIALOG:
+				{
+					GtkWidget *subbox = gtkc_hbox_new(FALSE, 0);
+					rnd_hid_dad_subdialog_t *sub = ctx->attrs[j].wdata;
+
+					sub->parent_ctx = &ctx;
+					sub->dlg_hid_ctx = ghid_attr_sub_new(ctx->gctx, subbox, sub->dlg, sub->dlg_len, sub);
+					ctx->wl[j] = subbox;
+					gtk_box_pack_start(GTK_BOX(parent), ctx->wl[j], FALSE, FALSE, 0);
+					printf("Created subd\n");
+				}
+				break;
+
+
 			default:
 				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
 				break;
@@ -583,6 +597,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 		case RND_HATT_REAL:
 		case RND_HATT_INTEGER:
 		case RND_HATT_BEGIN_COMPOUND:
+		case RND_HATT_SUBDIALOG:
 			goto error;
 
 		case RND_HATT_END:
