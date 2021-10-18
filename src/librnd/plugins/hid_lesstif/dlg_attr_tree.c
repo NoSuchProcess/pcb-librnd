@@ -121,7 +121,6 @@ static void cursor_changed(ltf_tree_t *lt)
 	if (lt->cursor != NULL)
 		c_row = lt->cursor->user_data;
 
-	valchg(lt->w, lt->w, lt->w);
 	if (ht->user_selected_cb != NULL)
 		ht->user_selected_cb(lt->attr, lt->ctx, c_row);
 }
@@ -389,6 +388,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 						REDRAW();
 					}
 					rnd_trace("tree key {enter}\n");
+					valchg(lt->w, lt->w, lt->w);
 					break;
 				default: rnd_trace("tree key %s\n", text);
 			}
@@ -407,6 +407,8 @@ static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_at
 	ht->hid_wdata = lt;
 	lt->ctx = ctx;
 	lt->attr = attr;
+
+	XtVaSetValues(table, XmNuserData, ctx, NULL);
 
 	ht->hid_insert_cb = ltf_tree_insert_cb;
 	ht->hid_modify_cb = ltf_tree_modify_cb;
