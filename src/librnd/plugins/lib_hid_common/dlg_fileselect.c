@@ -80,7 +80,7 @@ typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active;
 	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshcut, wshdel, wfilelist;
-	int wsort, wsort_rev, wsort_dirgrp;
+	int wsort, wsort_rev, wsort_dirgrp, wsort_icase;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
 	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
@@ -160,7 +160,7 @@ static void fsd_list(fsd_ctx_t *ctx)
 
 /* This is not really reentrant but we are single threaded and in a modal dialog */
 static fsd_sort_t cmp_sort;
-static int cmp_sort_rev, cmp_sort_dirgrp;
+static int cmp_sort_rev, cmp_sort_dirgrp, cmp_sort_icase;
 #define rev_order(order) (cmp_sort_rev ? -(order) : (order))
 
 static int fsd_sort_cmp(const void *a_, const void *b_)
@@ -185,7 +185,7 @@ static int fsd_sort_cmp(const void *a_, const void *b_)
 			break;
 		case SORT_FN:
 			by_name:;
-			order = strcmp(a->name, b->name);
+			order = cmp_sort_icase ? rnd_strcasecmp(a->name, b->name) : strcmp(a->name, b->name);
 			break;
 	}
 	
@@ -198,6 +198,7 @@ static void fsd_sort(fsd_ctx_t *ctx)
 	cmp_sort = ctx->dlg[ctx->wsort].val.lng;
 	cmp_sort_rev = ctx->dlg[ctx->wsort_rev].val.lng;
 	cmp_sort_dirgrp = ctx->dlg[ctx->wsort_dirgrp].val.lng;
+	cmp_sort_icase = ctx->dlg[ctx->wsort_icase].val.lng;
 	qsort(ctx->des.array, ctx->des.used, sizeof(fsd_dirent_t), fsd_sort_cmp);
 }
 
@@ -638,6 +639,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char *help_sort = "Sort entries by this column";
 	const char *help_rev = "Sort in reverse (descending) order";
 	const char *help_dir_grp = "Group and sort directories separately from files";
+	const char *help_icase = "Case insensitive sort on names";
 	char *res_path;
 	int n;
 
@@ -732,6 +734,13 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 						ctx->wsort_dirgrp = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
 						RND_DAD_DEFAULT_NUM(ctx->dlg, dialogs_conf.plugins.lib_hid_common.fsd.dir_grp);
+					RND_DAD_LABEL(ctx->dlg, "icase:");
+						RND_DAD_HELP(ctx->dlg, help_icase);
+					RND_DAD_BOOL(ctx->dlg);
+						RND_DAD_HELP(ctx->dlg, help_icase);
+						ctx->wsort_icase = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+						RND_DAD_DEFAULT_NUM(ctx->dlg, dialogs_conf.plugins.lib_hid_common.fsd.icase);
 				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
