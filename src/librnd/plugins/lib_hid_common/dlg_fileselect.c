@@ -87,7 +87,7 @@ typedef struct{
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
 	const char *history_tag;
-	void *last_row, *shcut_last_row;
+	void *last_row;
 	char *res_path;
 } fsd_ctx_t;
 
@@ -514,7 +514,6 @@ static void fsd_shcut_load(fsd_ctx_t *ctx)
 	gds_t path = {0}, gpath = {0};
 
 	rnd_dad_tree_clear(tree);
-	ctx->shcut_last_row = NULL;
 
 	cell[1] = NULL;
 
