@@ -628,6 +628,7 @@ do { \
 do { \
 	switch(table[table ## _len - 1].type) { \
 		case RND_HATT_LABEL: \
+		case RND_HATT_SUBDIALOG: \
 			assert(0); \
 			break; \
 		case RND_HATT_INTEGER: \
@@ -744,6 +745,7 @@ do { \
 		case RND_HATT_PICTURE: \
 		case RND_HATT_PICBUTTON: \
 		case RND_HATT_COLOR: \
+		case RND_HATT_SUBDIALOG: \
 			break; \
 		case RND_HATT_TREE: \
 			rnd_dad_tree_free(&table[field]); \

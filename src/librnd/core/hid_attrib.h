@@ -66,7 +66,10 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
 	RND_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	RND_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (rnd_hid_compound_t *) stored in END's wdata */
-	RND_HATT_END                  /* close one level of RND_HATT_* */
+	RND_HATT_END,                 /* close one level of RND_HATT_* */
+
+	/* TODO: move this up with 4.0.0 (kept here for ABI compatibility) */
+	RND_HATT_SUBDIALOG            /* caller operated subdialog (docked dialog); available from librnd 3.1.0 */
 } rnd_hid_attr_type_t;
 
 #define RND_HATT_IS_COMPOSITE(type) \
