@@ -44,6 +44,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
+#include <librnd/core/event.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 
@@ -106,7 +107,7 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 #include "dlg_fileselect_io.c"
 
 /*** file listing ***/
-TODO("Remove this at 3.1.0");
+TODO("Remove this at 3.1.0")
 extern int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
 
 static void fsd_clear(fsd_ctx_t *ctx)
@@ -641,7 +642,40 @@ static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	}
 }
 
-TODO("Move this to hid_dad.h with 3.1.0");
+static int rnd_dlg_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+{
+	fsd_ctx_t *ctx = sub->parent_ctx;
+
+	if (strcmp(cmd, "close") == 0) {
+		if (ctx->active) {
+			static rnd_dad_retovr_t retovr;
+			rnd_hid_dad_close(ctx->dlg_hid_ctx, &retovr, -1);
+		}
+		return 0;
+	}
+
+	if (strcmp(cmd, "get_path") == 0) {
+		rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
+		const char *fn = inp->val.str;
+
+		if ((fn != NULL) && (*fn != '\0')) {
+			res->d.s = rnd_concat(ctx->cwd, "/", fn, NULL);
+			return 0;
+		}
+	}
+
+	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == RND_EVARG_STR)) {
+		rnd_hid_attr_val_t hv;
+		hv.str = argv[0].d.s;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
+		free(argv[0].d.s);
+		return 0;
+	}
+
+	return -1;
+}
+
+TODO("Move this to hid_dad.h with 3.1.0")
 #define RND_DAD_SUBDIALOG(table, sub) \
 do { \
 	RND_DAD_ALLOC(table, RND_HATT_SUBDIALOG); \
@@ -768,8 +802,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			if (sub != NULL) {
 				RND_DAD_SUBDIALOG(ctx->dlg, sub);
-TODO("Implement poke\n");
-				sub->parent_poke = NULL;
+					sub->parent_poke = rnd_dlg_fsd_poke;
+					sub->parent_ctx = ctx;
 			}
 
 			/* spring */
@@ -817,6 +851,39 @@ TODO("Implement poke\n");
 }
 
 
+static rnd_hid_dad_subdialog_t *sub = NULL, sub_tmp;
+static void fsdtest_poke_get_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_event_arg_t res = {0};
+
+	printf("poke_get: %d\n", sub->parent_poke(sub, "get_path", &res, 0, NULL));
+	printf(" '%s'\n", res.d.s);
+	free(res.d.s);
+}
+
+static void fsdtest_poke_set_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_event_arg_t res = {0}, argv[2];
+
+	if (sub->parent_poke(sub, "get_path", &res, 0, NULL) == 0) {
+		char *dot = strrchr(res.d.s, '.'), *slash = strrchr(res.d.s, '/');
+		if ((slash != NULL) && (dot != NULL) && (strlen(dot) > 1)) {
+			dot[1] = 'A';
+			argv[0].type = RND_EVARG_STR;
+			argv[0].d.s = rnd_strdup(slash+1);
+			sub->parent_poke(sub, "set_file_name", &res, 1, argv);
+		}
+		free(res.d.s);
+	}
+}
+
+static void fsdtest_poke_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_event_arg_t res = {0};
+	sub->parent_poke(sub, "close", &res, 0, NULL);
+}
+
+
 const char rnd_acts_FsdTest[] = "FsdTest()";
 const char rnd_acth_FsdTest[] = "Central, DAD based File Selection Dialog demo";
 fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -824,7 +891,6 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char *fn;
 	rnd_hid_fsd_filter_t *flt = NULL;
 	rnd_hid_fsd_flags_t flags = RND_HID_FSD_MAY_NOT_EXIST;
-	rnd_hid_dad_subdialog_t *sub = NULL, sub_tmp;
 	int test_subd = 1;
 
 	if (test_subd) {
@@ -832,9 +898,12 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		memset(sub, 0, sizeof(rnd_hid_dad_subdialog_t));
 		RND_DAD_BEGIN_VBOX(sub->dlg);
 			RND_DAD_BUTTON(sub->dlg, "poke-get");
+				RND_DAD_CHANGE_CB(sub->dlg, fsdtest_poke_get_cb);
 			RND_DAD_BUTTON(sub->dlg, "poke-set");
+				RND_DAD_CHANGE_CB(sub->dlg, fsdtest_poke_set_cb);
 		RND_DAD_END(sub->dlg);
 		RND_DAD_BUTTON(sub->dlg, "poke-close");
+			RND_DAD_CHANGE_CB(sub->dlg, fsdtest_poke_close_cb);
 	}
 
 	fn = rnd_dlg_fileselect(rnd_gui, "FsdTest", "DAD File Selection Dialog demo", "fsd.txt", ".txt", flt, "fsdtest", flags, sub);
