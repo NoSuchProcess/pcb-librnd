@@ -30,4 +30,4 @@
 unsorted:
 	- lesstif: vertical text, truncated text support
 	- beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
-
+	- DAD: on fsd dir change filelist scroll state is not reset [report: Wojciech]
