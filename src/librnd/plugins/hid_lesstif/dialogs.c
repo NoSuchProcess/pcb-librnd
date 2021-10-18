@@ -499,7 +499,6 @@ TODO("The wrapper box would allow the table to shrink but then the dialog is alw
 				rnd_hid_dad_subdialog_t *sub = ctx->attrs[i].wdata;
 				Widget subbox = rnd_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, 0, 0);
 
-				sub->parent_ctx = ctx;
 				sub->dlg_hid_ctx = lesstif_attr_sub_new(subbox, sub->dlg, sub->dlg_len, sub);
 				XtManageChild(subbox);
 				ctx->wl[i] = subbox;
