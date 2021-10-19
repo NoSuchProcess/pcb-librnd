@@ -212,7 +212,6 @@ static void fsd_load(fsd_ctx_t *ctx)
 	rnd_dad_tree_clear(tree);
 
 	for(n = 0; n < ctx->des.used; n++) {
-		rnd_hid_row_t *row;
 		char ssize[64], smtime[64];
 		struct tm *tm;
 		time_t t;
@@ -232,7 +231,7 @@ static void fsd_load(fsd_ctx_t *ctx)
 		cell[1] = rnd_strdup(ssize);
 		cell[2] = rnd_strdup(smtime);
 		cell[3] = NULL;
-		row = rnd_dad_tree_append(attr, NULL, cell);
+		rnd_dad_tree_append(attr, NULL, cell);
 	}
 }
 
@@ -475,7 +474,6 @@ printf("filelist cb: %s\n", row == NULL ? "<null>" : row->cell[0]);
 TODO("We shouldn't need a timer for close (fix this in DAD)")
 static void fsd_filelist_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_tree_t *tree = attr->wdata;
 	fsd_ctx_t *ctx = caller_data;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 
@@ -513,7 +511,6 @@ static void fsd_shcut_load(fsd_ctx_t *ctx)
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[2];
-	long n;
 	rnd_hid_row_t *rparent;
 	gds_t path = {0}, gpath = {0};
 
@@ -591,7 +588,6 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	fsd_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
-	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr), *rparent;
 	const char *sparent;
 	int del_succ = 0;
