@@ -1,8 +1,5 @@
 - 3.0.2
-	- fsd:
-		- gtk tree bug:
-			- open fsd, click into the file list, press pg down many times -> crash or dialog close (valgrind?)
-			- tree scroll bug when using the keyboard
+	- fsd gtk tree bug: tree scroll bug when using the keyboard
 	- BUG: lesstif: popup on pcb-rnd padstack fails: rnd_hid_get_coords() doesn't remember last coord (called from dlg_padstacks.c pcb_act_PadstackEdit() F_Object branch)
 - 3.1.0
 	- publish RND_DAD_SUBDIALOG (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
