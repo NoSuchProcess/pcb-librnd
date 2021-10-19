@@ -664,7 +664,7 @@ static int rnd_dlg_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 		rnd_hid_attr_val_t hv;
 		hv.str = argv[0].d.s;
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
-		free(argv[0].d.s);
+		free((char *)argv[0].d.s);
 		return 0;
 	}
 
@@ -854,7 +854,7 @@ static void fsdtest_poke_get_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 
 	printf("poke_get: %d\n", sub->parent_poke(sub, "get_path", &res, 0, NULL));
 	printf(" '%s'\n", res.d.s);
-	free(res.d.s);
+	free((char *)res.d.s);
 }
 
 static void fsdtest_poke_set_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -869,7 +869,7 @@ static void fsdtest_poke_set_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			argv[0].d.s = rnd_strdup(slash+1);
 			sub->parent_poke(sub, "set_file_name", &res, 1, argv);
 		}
-		free(res.d.s);
+		free((char *)res.d.s);
 	}
 }
 
