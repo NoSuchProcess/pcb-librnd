@@ -86,7 +86,7 @@ static int fsd_shcut_change_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix
 
 	if (fsd_shcut_path_setup(ctx, &path, per_dlg, 1) != 0) {
 		rnd_message(RND_MSG_ERROR, "Failed to open/create fsd/ in application $HOME dotdir\n");
-		return;
+		return 0;
 	}
 
 	gds_append_str(&path, suffix);
