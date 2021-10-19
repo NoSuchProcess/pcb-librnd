@@ -27,6 +27,43 @@
 /* Private utility functions for reading and writing fsd persistence files 
    and dealing with file system related low levels */
 
+/* Search and return the first path separator backward from the end of path;
+   NULL if there's no separator */
+char *rnd_strchr_pathsep(char *path)
+{
+#ifdef __WIN32__
+	char *s = path;
+	while(*s != '\0') {
+		if ((*s == '/') || (*s == '\\'))
+			return s;
+		s++;
+	}
+	return NULL;
+#else
+	return strchr(path, '/');
+#endif
+}
+
+/* mkdir -p on arg - writes (but restores) the string in arg */
+static void rnd_mkdir_p(rnd_hidlib_t *hidlib, char *arg)
+{
+	char *curr, *next, save;
+
+	for(curr = arg; curr != NULL; curr = next) {
+		next = rnd_strchr_pathsep(curr);
+		if (next != NULL) {
+			save = *next;
+			*next = '\0';
+		}
+		rnd_mkdir(hidlib, arg, 0755);
+		if (next != NULL) {
+			*next = save;
+			next++;
+		}
+	}
+}
+
+
 /* Set up path to point to the app specific fsd persistence dir. If per_dlg
    is true, also append history_tag to address the per dialog persistence
    file. If do_mkdir is true, create the fsd dir if it is missing. */
@@ -40,8 +77,11 @@ static int fsd_shcut_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do
 
 	gds_append_str(path, rnd_app.dot_dir);
 	gds_append_str(path, "/fsd");
-	if (do_mkdir && !rnd_is_dir(ctx->hidlib, path->array))
-		rnd_mkdir(ctx->hidlib, path->array, 0750);
+	if (do_mkdir) {
+		rnd_mkdir_p(ctx->hidlib, path->array);
+		if (!rnd_is_dir(ctx->hidlib, path->array))
+			rnd_mkdir(ctx->hidlib, path->array, 0750);
+	}
 
 	gds_append(path, '/');
 	if (per_dlg)
