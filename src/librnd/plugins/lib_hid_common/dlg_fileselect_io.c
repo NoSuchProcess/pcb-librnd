@@ -27,6 +27,9 @@
 /* Private utility functions for reading and writing fsd persistence files 
    and dealing with file system related low levels */
 
+/* Set up path to point to the app specific fsd persistence dir. If per_dlg
+   is true, also append history_tag to address the per dialog persistence
+   file. If do_mkdir is true, create the fsd dir if it is missing. */
 static int fsd_shcut_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do_mkdir)
 {
 	if (rnd_conf.rc.path.home == NULL)
@@ -53,6 +56,9 @@ static void fsd_shcut_load_strip(char *line)
 	while((end >= line) && ((*end == '\n') || (*end == '\r'))) { *end = '\0'; end--; }
 }
 
+/* Load a persstence file and create tree entries under rparent in attr. Suffix
+   is the file name suffix to work from, assuming path already holds the
+   app specific config dir fsd prefix. Path is restored at the end. */
 static void fsd_shcut_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *rparent, gds_t *path, const char *suffix)
 {
 	int saved = path->used;
@@ -77,6 +83,8 @@ static void fsd_shcut_load_file(fsd_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_h
 	path->used = saved;
 }
 
+/* Univeral persistence file change: remove and append entry. Returns 1 if
+   the file has changed. */
 static int fsd_shcut_change_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *add_entry, const char *del_entry, int limit)
 {
 	gds_t path = {0};
@@ -162,12 +170,14 @@ static int fsd_shcut_append_to_file(fsd_ctx_t *ctx, int per_dlg, const char *suf
 	return fsd_shcut_change_file(ctx, per_dlg, suffix, entry, NULL, limit);
 }
 
+/* Remove matching entry from an fsd persistence file and returns 1 if the file changed. */
 static int fsd_shcut_del_from_file(fsd_ctx_t *ctx, int per_dlg, const char *suffix, const char *entry)
 {
 	return fsd_shcut_change_file(ctx, per_dlg, suffix, NULL, entry, 0);
 }
 
-
+/* Search and return the first path separator backward from the end of path;
+   NULL if there's no separator */
 char *fsd_io_rsep(char *path)
 {
 #ifdef __WIN32__
