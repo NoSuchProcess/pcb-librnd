@@ -77,11 +77,8 @@ static int fsd_shcut_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do
 
 	gds_append_str(path, rnd_app.dot_dir);
 	gds_append_str(path, "/fsd");
-	if (do_mkdir) {
+	if (do_mkdir && (!rnd_is_dir(ctx->hidlib, path->array)))
 		rnd_mkdir_p(ctx->hidlib, path->array);
-		if (!rnd_is_dir(ctx->hidlib, path->array))
-			rnd_mkdir(ctx->hidlib, path->array, 0750);
-	}
 
 	gds_append(path, '/');
 	if (per_dlg)
