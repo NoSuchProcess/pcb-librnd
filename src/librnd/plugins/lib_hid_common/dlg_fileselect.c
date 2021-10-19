@@ -588,7 +588,7 @@ static void fsd_shc_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 {
 	fsd_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wshcut];
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr), *rparent;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 	const char *sparent;
 	int del_succ = 0;
 
