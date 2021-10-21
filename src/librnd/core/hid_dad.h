@@ -713,6 +713,7 @@ do { \
 		case RND_HATT_PREVIEW: \
 		case RND_HATT_PICTURE: \
 		case RND_HATT_PICBUTTON: \
+		case RND_HATT_SUBDIALOG: \
 			assert(0); \
 		case RND_HATT_BEGIN_COMPOUND: \
 		case RND_HATT_END: \
