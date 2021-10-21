@@ -93,13 +93,18 @@ plugins/lib_hid_common/fsd/icase.
 <p>
 The <b>bottom left part</b> optionally hosts a subdialog that is specific
 for the operation the fsd is invoked for. It typically lists file format
-and I/O options.
+and I/O options. (Shown as 'poke' buttons on the screenshot.)
 <p>
 The <b>bottom right part</b> consists of the "cancel" and "ok" buttons. If
 the "cancel" button is clicked, the dialog closes and returns "no file selected".
 If the "ok" button is clicked the full path of the file entered in the
 file name text input is returned as the result (and the dialog box is closed).
 If the text input is empty, the 'ok' button is a no-op.
+<p>
+Above the 'ok' button a file name ("file type") filter may appear. When it
+is present, it is a combo box that lists different filtering options. It
+affects which files are shown in the file list.
+
 
 
 
