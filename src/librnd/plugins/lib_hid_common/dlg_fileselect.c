@@ -718,6 +718,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char *help_icase = "Case insensitive sort on names";
 	char *res_path;
 	int n;
+	char **filter_names = NULL;
 
 	if (ctx->active) {
 		rnd_message(RND_MSG_ERROR, "Recursive call of rnd_dlg_fileselect\n");
@@ -728,6 +729,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->flags = flags;
 	ctx->active = 1;
 	ctx->history_tag = history_tag;
+
+	TODO("set up filter here");
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -842,11 +845,22 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_END(ctx->dlg);
 
-			RND_DAD_BEGIN_HBOX(ctx->dlg);
-				RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
-				RND_DAD_BUTTON(ctx->dlg, "ok");
-					RND_DAD_CHANGE_CB(ctx->dlg, fsd_ok_cb);
-			RND_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					if (filter_names != NULL) { /* format selection */
+						RND_DAD_BEGIN_HBOX(ctx->dlg);
+							/* spring */
+							RND_DAD_BEGIN_VBOX(ctx->dlg);
+								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+							RND_DAD_END(ctx->dlg);
+							RND_DAD_ENUM(ctx->dlg, filter_names);
+						RND_DAD_END(ctx->dlg);
+					}
+					RND_DAD_BEGIN_HBOX(ctx->dlg); /* buttons */
+						RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+						RND_DAD_BUTTON(ctx->dlg, "ok");
+							RND_DAD_CHANGE_CB(ctx->dlg, fsd_ok_cb);
+					RND_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 
