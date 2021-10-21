@@ -855,7 +855,38 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	RND_DAD_DEFSIZE(ctx->dlg, 500, 400);
 	RND_DAD_NEW("file_selection_dialog", ctx->dlg, title, ctx, rnd_true, fsd_close_cb);
 
-	ctx->cwd = rnd_strdup(rnd_get_wd(ctx->cwd_buf));
+	ctx->cwd = NULL;
+
+	/* If default file is specified (dir or file), navigate there */
+	if ((default_file != NULL) && (*default_file != '\0')) {
+		const char *rsep = fsd_io_rsep((char *)default_file);
+		if (rsep != NULL) { /* full path */
+			ctx->cwd = rnd_strdup(default_file);
+			if (!rnd_is_dir(ctx->hidlib, default_file)) {
+				char *sep = ctx->cwd + (rsep - default_file);
+				if (sep != NULL) {
+					*sep = '\0';
+					default_file = sep+1;
+				}
+			}
+			else
+				default_file = NULL; /* in case of dir: leave file name empty */
+		}
+		else { /* file name only */
+			/* do nothing, so default_file is kept and will be set */
+		}
+	}
+	
+	
+	if (ctx->cwd == NULL) /* fallback: no default_file, start from cwd */
+		ctx->cwd = rnd_strdup(rnd_get_wd(ctx->cwd_buf));
+
+	if ((default_file != NULL) && (*default_file != '\0')) {
+		rnd_hid_attr_val_t hv;
+		hv.str = default_file;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
+	}
+
 	fsd_cd(ctx, NULL);
 	fsd_shcut_load(ctx);
 
