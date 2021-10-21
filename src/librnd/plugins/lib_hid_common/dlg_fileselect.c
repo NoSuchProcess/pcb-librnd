@@ -944,9 +944,9 @@ const char rnd_acth_FsdTest[] = "Central, DAD based File Selection Dialog demo";
 fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *fn;
-	rnd_hid_fsd_filter_t *flt = NULL;
+	rnd_hid_fsd_filter_t flt_local[6], *flt = NULL;
 	rnd_hid_fsd_flags_t flags = 0;
-	int test_subd = 1;
+	int test_subd = 1, test_filter = 1;
 
 	if (test_subd) {
 		sub = &sub_tmp;
@@ -959,6 +959,20 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_DAD_END(sub->dlg);
 		RND_DAD_BUTTON(sub->dlg, "poke-close");
 			RND_DAD_CHANGE_CB(sub->dlg, fsdtest_poke_close_cb);
+	}
+
+	if (test_filter) {
+		memset(&flt_local, 0, sizeof(flt_local));
+		flt_local[0].name = "*.pcb";
+		flt_local[0].pat = malloc(sizeof(char *) * 3);
+		flt_local[0].pat[0] = "*.pcb";
+		flt_local[0].pat[1] = "*.PCB";
+		flt_local[0].pat[2] = NULL;
+		flt_local[1].name = "*.lht";
+		flt_local[1].pat = malloc(sizeof(char *) * 2);
+		flt_local[1].pat[0] = "*.lht";
+		flt_local[1].pat[1] = NULL;
+		flt = flt_local;
 	}
 
 	fn = rnd_dlg_fileselect(rnd_gui, "FsdTest", "DAD File Selection Dialog demo", "fsd.txt", ".txt", flt, "fsdtest", flags, sub);
