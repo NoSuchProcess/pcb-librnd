@@ -87,6 +87,7 @@ typedef struct{
 	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
+	rnd_hid_fsd_flags_t flags;
 	const char *history_tag;
 	char *res_path;
 } fsd_ctx_t;
@@ -105,6 +106,27 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 }
 
 #include "dlg_fileselect_io.c"
+
+/* Returns 1 if ctx->res_path is acceptable; if not acceptable, free's it
+   and sets it to NULL and if report is non-zero writes an error message in
+   the log */
+static int fsd_acceptable(fsd_ctx_t *ctx, int report)
+{
+	if (ctx->flags & RND_HID_FSD_READ) {
+		if (!rnd_file_readable(ctx->hidlib, ctx->res_path)) {
+			if (report) rnd_message(RND_MSG_ERROR, "File '%s' does not exist or is not a file or is not readable\n", ctx->res_path);
+			goto err;
+		}
+		return 1;
+	}
+
+	return 1;
+
+	err:;
+	free(ctx->res_path);
+	ctx->res_path = NULL;
+	return 0;
+}
 
 /*** file listing ***/
 TODO("Remove this at 3.1.0")
@@ -418,7 +440,8 @@ static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		}
 
 		/* relative file already built in ctx->res_path */
-		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+		if (fsd_acceptable(ctx, 1))
+			rnd_hid_dad_close(hid_ctx, &retovr, 0);
 	}
 	else { /* absolute path */
 		long len = strlen(fn);
@@ -434,7 +457,8 @@ static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 		/* absolute file */
 		ctx->res_path = rnd_strdup(fn);
-		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+		if (fsd_acceptable(ctx, 1))
+			rnd_hid_dad_close(hid_ctx, &retovr, 0);
 	}
 	return;
 
@@ -484,7 +508,8 @@ static void fsd_filelist_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attr
 		rnd_hidval_t rv;
 		rv.ptr = hid_ctx;
 		ctx->res_path = rnd_concat(ctx->cwd, "/", row->cell[0], NULL);
-		rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+		if (fsd_acceptable(ctx, 1))
+			rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
 	}
 	else
 		fsd_cd(ctx, row->cell[0]);
@@ -500,7 +525,8 @@ static void fsd_ok_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	if ((fn != NULL) && (*fn != '\0')) {
 		static rnd_dad_retovr_t retovr;
 		ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
-		rnd_hid_dad_close(hid_ctx, &retovr, 0);
+		if (fsd_acceptable(ctx, 1))
+			rnd_hid_dad_close(hid_ctx, &retovr, 0);
 	}
 }
 
@@ -632,7 +658,8 @@ static void fsd_shcut_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 				rnd_hidval_t rv;
 				rv.ptr = hid_ctx;
 				ctx->res_path = rnd_strdup(row->cell[0]);
-				rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+				if (fsd_acceptable(ctx, 1))
+					rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
 			}
 		}
 	}
@@ -698,6 +725,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	}
 
 	memset(ctx, 0, sizeof(fsd_ctx_t));
+	ctx->flags = flags;
 	ctx->active = 1;
 	ctx->history_tag = history_tag;
 
@@ -886,7 +914,7 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *fn;
 	rnd_hid_fsd_filter_t *flt = NULL;
-	rnd_hid_fsd_flags_t flags = RND_HID_FSD_MAY_NOT_EXIST;
+	rnd_hid_fsd_flags_t flags = 0;
 	int test_subd = 1;
 
 	if (test_subd) {
