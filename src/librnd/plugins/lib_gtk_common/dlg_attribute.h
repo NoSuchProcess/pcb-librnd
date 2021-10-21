@@ -11,6 +11,7 @@ void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hi
 
 int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
+int ghid_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
 int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);

@@ -785,6 +785,39 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, rnd_bool hide)
 	return 0;
 }
 
+extern fgw_ctx_t rnd_fgw;
+
+static int ghid_attr_dlg_widget_poke_string(void *hid_ctx, GtkWidget *w, int idx, int argc, fgw_arg_t argv[])
+{
+	if ((argv[0].type & FGW_STR) != FGW_STR) return -1;
+
+	switch(argv[0].val.str[0]) {
+		case 's': /* select */
+			if ((argc < 3) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0) || (fgw_arg_conv(&rnd_fgw, &argv[2], FGW_INT) != 0))
+				return -1;
+			gtk_editable_select_region(GTK_EDITABLE(w), argv[1].val.nat_int, argv[1].val.nat_int + argv[2].val.nat_int);
+			return 0;
+	}
+	return -1;
+}
+
+int ghid_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[])
+{
+	attr_dlg_t *ctx = (attr_dlg_t *)hid_ctx;
+	GtkWidget *w;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (argc < 1))
+		return -1;
+
+	w = ctx->wl[idx];
+	switch(ctx->attrs[idx].type) {
+		case RND_HATT_STRING: return ghid_attr_dlg_widget_poke_string(hid_ctx, w, idx, argc, argv);
+		default: return -1;
+	}
+	return -1;
+}
+
+
 static void ghid_initial_wstates(attr_dlg_t *ctx)
 {
 	int n;
