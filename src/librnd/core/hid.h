@@ -105,24 +105,10 @@ typedef enum rnd_hid_attr_ev_e {
 	RND_HID_ATTR_EV_CODECLOSE     /* closed by the code, including standard close buttons */
 } rnd_hid_attr_ev_t;
 
-typedef enum rnd_hid_fsd_flags_e {
-	/* Prompts the user for a filename or directory name.  For GUI
-	   HID's this would mean a file select dialog box.  The 'flags'
-	   argument is the bitwise OR of the following values.  */
-	RND_HID_FSD_READ = 1,
-
-	/* The function calling hid->fileselect will deal with the case
-	   where the selected file already exists.  If not given, then the
-	   GUI will prompt with an "overwrite?" prompt.  Only used when
-	   writing.
-	 */
-	RND_HID_FSD_MAY_NOT_EXIST = 2,
-
-	/* The call is supposed to return a file template (for gerber
-	   output for example) instead of an actual file.  Only used when
-	   writing. OBSOLETE, do not use.
-	 */
-	RND_HID_FSD_IS_TEMPLATE = 4
+typedef enum rnd_hid_fsd_flags_e { /* bitwise OR, used by file selection dialog (fsd) */
+	RND_HID_FSD_READ = 1,            /* when set let the user pick existing files only ("load"); if unset, both esiting and non-existing files are accepted */
+	RND_HID_FSD_MAY_NOT_EXIST = 2,   /* deprecated, has no effect */
+	RND_HID_FSD_IS_TEMPLATE = 4      /* deprecated, has no effect */
 } rnd_hid_fsd_flags_t;
 
 typedef struct {
