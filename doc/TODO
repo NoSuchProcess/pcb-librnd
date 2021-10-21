@@ -1,4 +1,5 @@
 - 3.0.2
+	- when default_file is specified, select the non-extension part
 	- fsd gtk tree bug: tree scroll bug when using the keyboard
 	- BUG: lesstif: popup on pcb-rnd padstack fails: rnd_hid_get_coords() doesn't remember last coord (called from dlg_padstacks.c pcb_act_PadstackEdit() F_Object branch)
 - 3.1.0
