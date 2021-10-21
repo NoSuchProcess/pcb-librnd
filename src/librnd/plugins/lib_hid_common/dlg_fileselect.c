@@ -37,6 +37,7 @@
 #include <limits.h>
 #include <genht/hash.h>
 #include <genvector/vti0.h>
+#include <genregex/regex_se.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
@@ -57,6 +58,7 @@
 typedef struct {
 	char *name;
 	unsigned is_dir:1;
+	unsigned vis:1;         /* if 0 entry is invisible due to filter */
 	size_t size;
 	double mtime;
 } fsd_dirent_t;
@@ -224,6 +226,53 @@ static void fsd_sort(fsd_ctx_t *ctx)
 	cmp_sort_dirgrp = ctx->dlg[ctx->wsort_dirgrp].val.lng;
 	cmp_sort_icase = ctx->dlg[ctx->wsort_icase].val.lng;
 	qsort(ctx->des.array, ctx->des.used, sizeof(fsd_dirent_t), fsd_sort_cmp);
+
+	if (ctx->flt != NULL) {
+		long n, pidx = ctx->dlg[ctx->wflt].val.lng;
+		const char **p, *cs;
+		gds_t tmp = {0};
+
+		for(n = 0; n < ctx->des.used; n++)
+			ctx->des.array[n].vis = ctx->des.array[n].is_dir;
+
+		for(p = ctx->flt[pidx].pat; *p != NULL; p++) {
+			re_se_t *rx;
+
+			/* build a regex in tmp and rx */
+			tmp.used = 0;
+			gds_append(&tmp, '^');
+			for(cs = *p; *cs != '\0'; cs++) {
+				switch(*cs) {
+					case '*':
+						gds_append(&tmp, '.');
+						gds_append(&tmp, '*');
+						break;
+					case '.':
+						gds_append(&tmp, '[');
+						gds_append(&tmp, *cs);
+						gds_append(&tmp, ']');
+						break;
+					default:
+						gds_append(&tmp, *cs);
+				}
+			}
+			gds_append(&tmp, '$');
+			rx = re_se_comp(tmp.array);
+
+			/* check if any invisible entry becomes visible */
+			/*printf("filter for: '%s' as '%s' (%p)\n", *p, tmp.array, rx);*/
+			for(n = 0; n < ctx->des.used; n++)
+				if (!ctx->des.array[n].vis && re_se_exec(rx, ctx->des.array[n].name))
+					ctx->des.array[n].vis = 1;
+			re_se_free(rx);
+		}
+		gds_uninit(&tmp);
+	}
+	else {
+		long n;
+		for(n = 0; n < ctx->des.used; n++)
+			ctx->des.array[n].vis = 1;
+	}
 }
 
 static void fsd_load(fsd_ctx_t *ctx)
@@ -241,6 +290,9 @@ static void fsd_load(fsd_ctx_t *ctx)
 		time_t t;
 
 /*		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);*/
+
+		if (!ctx->des.array[n].vis)
+			continue;
 
 		if (ctx->des.array[n].is_dir)
 			strcpy(ssize, "<dir>");
@@ -729,7 +781,6 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	}
 
 	memset(ctx, 0, sizeof(fsd_ctx_t));
-	ctx->flt = flt;
 	ctx->flags = flags;
 	ctx->active = 1;
 	ctx->history_tag = history_tag;
@@ -747,6 +798,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		filter_names[n] = NULL;
 	TODO("set up filter here");
 	}
+
+	ctx->flt = flt;
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -1006,6 +1059,10 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		flt_local[1].pat = malloc(sizeof(char *) * 2);
 		flt_local[1].pat[0] = "*.lht";
 		flt_local[1].pat[1] = NULL;
+		flt_local[2].name = "*.*";
+		flt_local[2].pat = malloc(sizeof(char *) * 2);
+		flt_local[2].pat[0] = "*.*";
+		flt_local[2].pat[1] = NULL;
 		flt = flt_local;
 	}
 
