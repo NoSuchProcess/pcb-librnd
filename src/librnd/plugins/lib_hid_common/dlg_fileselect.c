@@ -82,12 +82,14 @@ typedef struct{
 	int active;
 	int wpath, wdir[FSD_MAX_DIRS], wdirlong, wshcut, wshdel, wfilelist;
 	int wsort, wsort_rev, wsort_dirgrp, wsort_icase;
+	int wflt;
 	char cwd_buf[RND_PATH_MAX];
 	char *cwd;
 	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
 	vtde_t des;
 	rnd_hidlib_t *hidlib;
 	rnd_hid_fsd_flags_t flags;
+	const rnd_hid_fsd_filter_t *flt;
 	const char *history_tag;
 	char *res_path;
 } fsd_ctx_t;
@@ -718,7 +720,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char *help_icase = "Case insensitive sort on names";
 	char *res_path;
 	int n;
-	char **filter_names = NULL;
+	const char **filter_names = NULL;
+	const rnd_hid_fsd_filter_t *fl;
 
 	if (ctx->active) {
 		rnd_message(RND_MSG_ERROR, "Recursive call of rnd_dlg_fileselect\n");
@@ -726,11 +729,24 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	}
 
 	memset(ctx, 0, sizeof(fsd_ctx_t));
+	ctx->flt = flt;
 	ctx->flags = flags;
 	ctx->active = 1;
 	ctx->history_tag = history_tag;
 
+	if (flt != NULL) {
+		for(n = 0, fl = flt; fl->name != NULL; fl++, n++) ;
+		if (n > 0)
+			filter_names = malloc(sizeof(char *) * (n+1));
+		else
+			flt = NULL;
+	}
+	if (flt != NULL) {
+		for(n = 0, fl = flt; fl->name != NULL; fl++, n++)
+			filter_names[n] = fl->name;
+		filter_names[n] = NULL;
 	TODO("set up filter here");
+	}
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -853,6 +869,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 								RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 							RND_DAD_END(ctx->dlg);
 							RND_DAD_ENUM(ctx->dlg, filter_names);
+								RND_DAD_CHANGE_CB(ctx->dlg, resort_cb);
+								ctx->wflt = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_END(ctx->dlg);
 					}
 					RND_DAD_BEGIN_HBOX(ctx->dlg); /* buttons */
@@ -915,6 +933,8 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	if (res_path != NULL)
 		fsd_shcut_append_to_file(ctx, 1, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
 
+	if (filter_names != NULL)
+		free(filter_names);
 
 	return res_path;
 }
