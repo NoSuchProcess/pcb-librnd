@@ -771,9 +771,10 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char *help_dir_grp = "Group and sort directories separately from files";
 	const char *help_icase = "Case insensitive sort on names";
 	char *res_path;
-	int n;
+	int n, free_flt = 0;
 	const char **filter_names = NULL;
 	const rnd_hid_fsd_filter_t *fl;
+	rnd_hid_fsd_filter_t flt_local[3];
 
 	if (ctx->active) {
 		rnd_message(RND_MSG_ERROR, "Recursive call of rnd_dlg_fileselect\n");
@@ -785,6 +786,18 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	ctx->active = 1;
 	ctx->history_tag = history_tag;
 
+	/* set up the filter and the filter names for the combo box */
+	if ((default_ext != NULL) && (flt == NULL)) {
+		memset(&flt_local, 0, sizeof(flt_local));
+		flt_local[0].name = default_ext;
+		flt_local[0].pat = malloc(sizeof(char *) * 2);
+		flt_local[0].pat[0] = rnd_concat("*", default_ext, NULL);
+		flt_local[0].pat[1] = NULL;
+		flt_local[1] = rnd_hid_fsd_filter_any[0];
+		flt = flt_local;
+		free_flt = 1;
+	}
+
 	if (flt != NULL) {
 		for(n = 0, fl = flt; fl->name != NULL; fl++, n++) ;
 		if (n > 0)
@@ -792,6 +805,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		else
 			flt = NULL;
 	}
+
 	if (flt != NULL) {
 		for(n = 0, fl = flt; fl->name != NULL; fl++, n++)
 			filter_names[n] = fl->name;
@@ -979,12 +993,21 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	RND_DAD_FREE(ctx->dlg);
 
 
+	/* calculate output */
 	ctx->active = 0;
 	res_path = ctx->res_path;
 	ctx->res_path = NULL;
 
 	if (res_path != NULL)
 		fsd_shcut_append_to_file(ctx, 1, ".recent.lst", res_path, FSD_RECENT_MAX_LINES);
+
+
+	/* free temp storage */
+
+	if (free_flt) {
+		free((char *)flt_local[0].pat[0]);
+		free(flt_local[0].pat);
+	}
 
 	if (filter_names != NULL)
 		free(filter_names);
