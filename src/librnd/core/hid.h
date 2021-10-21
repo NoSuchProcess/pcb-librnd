@@ -368,7 +368,7 @@ struct rnd_hid_s {
 	/* Run the file selection dialog. Return a string the caller needs to free().
 	 * title may be used as a dialog box title.  Ignored if NULL.
 	 *
-	 * descr is a longer help string.  Ignored if NULL.
+	 * descr is a longer help string. Not used at the moment. Ignored if NULL.
 	 *
 	 * default_file is the default file name.  Ignored if NULL.
 	 *
