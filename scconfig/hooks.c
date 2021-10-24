@@ -196,12 +196,13 @@ static void rnd_hook_detect_hid()
 
 	if (plug_is_enabled("hid_lesstif")) {
 		require("libs/gui/lesstif2/presents", 0, 0);
-		if (istrue(get("libs/gui/lesstif2/presents"))) {
+		require("libs/gui/lesstif2/exthi/presents", 0, 0);
+		if (istrue(get("libs/gui/lesstif2/exthi/presents"))) {
 			require("libs/gui/xinerama/presents", 0, 0);
 			require("libs/gui/xrender/presents", 0, 0);
 		}
 		else {
-			report_repeat("WARNING: Since there's no lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
+			report_repeat("WARNING: Since there's no usable lesstif2 found, disabling the lesstif HID and xinerama and xrender...\n");
 			hook_custom_arg("disable-xinerama", NULL);
 			hook_custom_arg("disable-xrender", NULL);
 			hook_custom_arg("disable-hid_lesstif", NULL);
