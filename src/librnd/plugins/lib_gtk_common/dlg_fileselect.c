@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,10 @@
 #include "compat.h"
 #include <librnd/core/event.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/plugins/lib_hid_common/dialogs_conf.h>
+#include <librnd/plugins/lib_hid_common/lib_hid_common.h>
+#include <librnd/plugins/lib_hid_common/dlg_fileselect.h>
+
 
 #include "dlg_attribute.h"
 
@@ -116,7 +120,7 @@ static int rnd_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 	return -1;
 }
 
-char *rnd_gtk_fileselect(rnd_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+char *rnd_gtk_fileselect(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	GtkWidget *top_window = gctx->wtop_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;
@@ -126,6 +130,10 @@ char *rnd_gtk_fileselect(rnd_gtk_t *gctx, const char *title, const char *descr, 
 	rnd_gtk_fsd_t pctx;
 	rnd_hid_fsd_filter_t flt_local[3];
 
+	if (!dialogs_conf.plugins.lib_hid_common.fsd.use_old_native)
+		return rnd_dlg_fileselect(hid, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
+
+	/* old, native implementation */
 	if (!inited) {
 		htsp_init(&history, strhash, strkeyeq);
 		inited = 1;

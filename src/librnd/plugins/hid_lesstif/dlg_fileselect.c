@@ -36,6 +36,10 @@
 
 #include "dlg_fileselect.h"
 
+#include <librnd/plugins/lib_hid_common/dialogs_conf.h>
+#include <librnd/plugins/lib_hid_common/lib_hid_common.h>
+#include <librnd/plugins/lib_hid_common/dlg_fileselect.h>
+
 typedef struct {
 	Widget dialog;
 	int active;
@@ -132,6 +136,9 @@ char *rnd_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	XmString xms_ext = NULL, xms_load = NULL;
 	rnd_ltf_fsd_t pctx;
 	char *res;
+
+	if (!dialogs_conf.plugins.lib_hid_common.fsd.use_old_native)
+		return rnd_dlg_fileselect(hid, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 
 	stdarg_n = 0;
 	pctx.dialog = XmCreateFileSelectionDialog(mainwind, XmStrCast("file"), stdarg_args, stdarg_n);

@@ -42,6 +42,7 @@ typedef struct {
 				RND_CFT_INTEGER recent_maxlines; /* how many entries to remember as recently used in the shortcuts/recent/ subtree */
 				RND_CFT_BOOLEAN dir_grp;         /* group by directories by default when the dialog opens */
 				RND_CFT_BOOLEAN icase;           /* case insensitive name sort by default */
+				RND_CFT_BOOLEAN use_old_native;  /* Use the old, native file selection dialog. Note: this option will be removed soon */
 			} fsd;
 		} lib_hid_common;
 
