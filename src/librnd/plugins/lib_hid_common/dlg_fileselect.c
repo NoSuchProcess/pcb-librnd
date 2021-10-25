@@ -106,7 +106,6 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	fsd_ctx_t *fsd = caller_data;
 	fsd->active = 0;
 #endif
-	printf("close cb\n");
 }
 
 #include "dlg_fileselect_io.c"
