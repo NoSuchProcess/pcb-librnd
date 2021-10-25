@@ -1008,8 +1008,11 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	fsd_shcut_load(ctx);
 
 	RND_DAD_RUN(ctx->dlg);
-	RND_DAD_FREE(ctx->dlg);
 
+	if ((sub != NULL) && (sub->on_close != NULL))
+		sub->on_close(sub, (ctx->res_path != NULL));
+
+	RND_DAD_FREE(ctx->dlg);
 
 	/* calculate output */
 	ctx->active = 0;
