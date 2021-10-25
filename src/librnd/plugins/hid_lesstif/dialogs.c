@@ -528,6 +528,11 @@ TODO("The wrapper box would allow the table to shrink but then the dialog is alw
 }
 
 
+/* returns:
+    -1: error
+     0: everything prepared, value set in gui, caller should set attr value
+    +1: everything, including attr value set, caller should not change anything
+*/
 static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	int save, n, copied = 0;
@@ -614,7 +619,7 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 	if (!copied)
 		ctx->attrs[idx].val = *val;
 	ctx->inhibit_valchg = save;
-	return 0;
+	return copied;
 
 	err:;
 	ctx->inhibit_valchg = save;
@@ -872,14 +877,17 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
+	int ares;
 
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	if (attribute_dialog_set(ctx, idx, val) == 0) {
+	ares = attribute_dialog_set(ctx, idx, val);
+	if (ares == 0)
 		ctx->attrs[idx].val = *val;
+
+	if (ares >= 0)
 		return 0;
-	}
 
 	return -1;
 }
