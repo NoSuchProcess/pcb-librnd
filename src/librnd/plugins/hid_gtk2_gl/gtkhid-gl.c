@@ -326,7 +326,16 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 		}
 		cc = rnd_clrcache_get(&priv->ccache, gc->pcolor, 1);
 		if (!cc->color_set) {
-			if (gdk_color_parse(gc->pcolor->str, &cc->color))
+			const char *clr_str = gc->pcolor->str;
+			char clr_tmp[8];
+
+			if (gc->pcolor->str[7] != '\0') {
+				/* convert #rrggbbaa: truncate aa, gdk_color_parse doesn't like it */
+				memcpy(clr_tmp, gc->pcolor->str, 7);
+				clr_tmp[7] = '\0';
+				clr_str = clr_tmp;
+			}
+			if (gdk_color_parse(clr_str, &cc->color))
 				gdk_color_alloc(colormap, &cc->color);
 			else
 				gdk_color_white(colormap, &cc->color);
