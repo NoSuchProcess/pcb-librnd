@@ -10,6 +10,8 @@
 	- BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- pcb-rnd: enable io_altium if librnd 3.1.0 is available (sphash -i is required)
 	- add rnd_hid_fileselect() in hid.h
+	- generalize/move preferences
+	- generalize/move diag
 - 4.0.0:
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- rnd_app_t spares: conf_ignore lists (two void *)
