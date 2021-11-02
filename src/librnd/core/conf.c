@@ -2091,15 +2091,15 @@ static int needs_braces(const char *s)
 
 #define print_str_or_null(pfn, ctx, verbose, chk, out) \
 	do { \
-			if (chk == NULL) { \
+			if ((chk) == NULL) { \
 				if (verbose) \
 					ret += pfn(ctx, "<NULL>");\
 			} \
 			else {\
 				if (needs_braces(out)) \
-					ret += pfn(ctx, "{%s}", out); \
+					ret += pfn(ctx, "{%s}", (out)); \
 				else \
-					ret += pfn(ctx, "%s", out); \
+					ret += pfn(ctx, "%s", (out)); \
 			} \
 	} while(0)
 
@@ -2107,7 +2107,7 @@ int rnd_conf_print_native_field(rnd_conf_pfn pfn, void *ctx, int verbose, rnd_co
 {
 	int ret = 0;
 	switch(type) {
-		case RND_CFN_STRING:  print_str_or_null(pfn, ctx, verbose, val->string[idx], val->string[idx]); break;
+		case RND_CFN_STRING:  print_str_or_null(pfn, ctx, verbose, val->string == NULL ? NULL : val->string[idx], val->string == NULL ? NULL : val->string[idx]); break;
 		case RND_CFN_BOOLEAN: ret += pfn(ctx, "%d", val->boolean[idx]); break;
 		case RND_CFN_INTEGER: ret += pfn(ctx, "%ld", val->integer[idx]); break;
 		case RND_CFN_REAL:    ret += pfn(ctx, "%f", val->real[idx]); break;
