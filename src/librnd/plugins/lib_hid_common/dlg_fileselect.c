@@ -537,8 +537,6 @@ static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_ro
 	rnd_hid_tree_t *tree = attr->wdata;
 	fsd_ctx_t *ctx = tree->user_ctx;
 
-printf("filelist cb: %s\n", row == NULL ? "<null>" : row->cell[0]);
-
 	if (row != NULL) { /* first click on a new row */
 		if (row->cell[1][0] != '<') { /* file: load the edit line with the new file name */
 			rnd_hid_attr_val_t hv;
