@@ -476,7 +476,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 {
 	int c;
 	const char **colhdr;
-	GtkWidget *bparent, *view = gtk_tree_view_new();
+	GtkWidget *view = gtk_tree_view_new();
 	GtkTreeModel *model;
 	GtkTreeStore *tstore;
 	GType *types;
@@ -539,8 +539,7 @@ TODO("not in gtk4; safe to skip this (users should use themes)");
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
-	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
+	frame_scroll_(parent, attr->rnd_hatt_flags, &ctx->wltop[j], view);
 	g_object_set_data(G_OBJECT(view), RND_OBJ_PROP, ctx);
 	return view;
 }

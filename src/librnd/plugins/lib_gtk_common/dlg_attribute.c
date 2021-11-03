@@ -213,7 +213,11 @@ typedef struct {
 	attr_dlg_t *attrdlg;
 } resp_ctx_t;
 
-static GtkWidget *frame_scroll(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop)
+/* If flags has RND_HATF_SCROLL: if inner is not NULL, it is placed
+   directly in the scrolled window without adding an extra box. Useful
+   when scrolled content wants to interact with the scroll, e.g. tree table
+   wants to scroll where the selection is */
+static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop, GtkWidget *inner)
 {
 	GtkWidget *fr;
 	int expfill = (flags & RND_HATF_EXPFILL);
@@ -234,12 +238,24 @@ static GtkWidget *frame_scroll(GtkWidget *parent, rnd_hatt_compflags_t flags, Gt
 		fr = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(fr), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start(GTK_BOX(parent), fr, TRUE, TRUE, 0);
-		parent = gtkc_hbox_new(FALSE, 0);
-		gtkc_scrolled_window_add_with_viewport(fr, parent);
+		if (inner == NULL) {
+			parent = gtkc_hbox_new(FALSE, 0);
+			gtkc_scrolled_window_add_with_viewport(fr, parent);
+		}
+		else {
+			parent = inner;
+			gtk_container_add(GTK_CONTAINER(fr), inner);
+		}
+		
 		if ((wltop != NULL) && (!topped))
 			*wltop = fr;
 	}
 	return parent;
+}
+
+static GtkWidget *frame_scroll(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop)
+{
+	return frame_scroll_(parent, flags, wltop, NULL);
 }
 
 
