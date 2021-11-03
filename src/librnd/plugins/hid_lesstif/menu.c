@@ -639,7 +639,6 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 				n->user_data = md;
 				md->btn = pmw;
 				htsp_set(&ltf_popups, n->name, pmw);
-				ltf_popup_active = 1;
 			}
 		}
 		else
@@ -666,6 +665,7 @@ int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 
 	md = menu_node->user_data;
 	XtPopup(md->sub, XtGrabExclusive);
+	ltf_popup_active = 1;
 	return 0;
 }
 
