@@ -31,6 +31,7 @@ extern rnd_hidlib_t *ltf_hidlib;
 Widget lesstif_menubar;
 rnd_conf_hid_id_t lesstif_menuconf_id = -1;
 htsp_t ltf_popups; /* popup_name -> Widget */
+int ltf_popup_active = 0;
 
 #ifndef R_OK
 /* Common value for systems that don't define it.  */
@@ -197,7 +198,11 @@ int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coo
 
 static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * pbcs)
 {
-	have_xy = 0;
+	if (!ltf_popup_active) {
+		/* opening a popup should keep last location (where the popup is from),
+		   but opening a menu should reset it so get_coords() needs to ask */
+		have_xy = 0;
+	}
 	lesstif_show_crosshair(0);
 	if (pbcs->event && pbcs->event->type == KeyPress) {
 		Dimension wx, wy;
@@ -634,6 +639,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 				n->user_data = md;
 				md->btn = pmw;
 				htsp_set(&ltf_popups, n->name, pmw);
+				ltf_popup_active = 1;
 			}
 		}
 		else
