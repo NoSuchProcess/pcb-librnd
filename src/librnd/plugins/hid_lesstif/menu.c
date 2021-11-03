@@ -196,6 +196,14 @@ int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coo
 	return res;
 }
 
+typedef struct {
+	Widget sub;     /* the open menu pane that hosts all the submenus */
+	Widget btn;     /* the button in the menu line */
+	int wflag_idx;  /* index in the wflags[] array */
+} menu_data_t;
+
+static menu_data_t *ltf_popup_active_md;
+
 static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * pbcs)
 {
 	if (!ltf_popup_active) {
@@ -226,8 +234,16 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 		/*rnd_printf("have xy from %s: %$mD\n", XtName(aw), action_x, action_y); */
 	}
 
+	/* if active, that means we got here from a popup -> close it now that
+	   the user has selected an item */
+	if (ltf_popup_active)
+		XtPopdown(ltf_popup_active_md->sub);
+
 	lesstif_need_idle_proc();
 	rnd_hid_cfg_action(ltf_hidlib, node);
+
+
+	ltf_popup_active = 0;
 }
 
 static void note_accelerator(const lht_node_t *node)
@@ -331,11 +347,6 @@ TODO("TODO#3: pass on raw and translated keys")
 
 static void add_node_to_menu(Widget menu, lht_node_t *ins_after, lht_node_t *node, XtCallbackProc callback, int level);
 
-typedef struct {
-	Widget sub;     /* the open menu pane that hosts all the submenus */
-	Widget btn;     /* the button in the menu line */
-	int wflag_idx;  /* index in the wflags[] array */
-} menu_data_t;
 
 menu_data_t *menu_data_alloc(void)
 {
@@ -666,6 +677,7 @@ int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 	md = menu_node->user_data;
 	XtPopup(md->sub, XtGrabExclusive);
 	ltf_popup_active = 1;
+	ltf_popup_active_md = md;
 	return 0;
 }
 
