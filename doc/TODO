@@ -1,6 +1,4 @@
 - 3.0.2
-	- fsd gtk tree bug: tree scroll bug when using the keyboard
-	- BUG: lesstif: popup on pcb-rnd padstack fails: rnd_hid_get_coords() doesn't remember last coord (called from dlg_padstacks.c pcb_act_PadstackEdit() F_Object branch)
 - 3.1.0
 	- publish RND_DAD_SUBDIALOG (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
 	- publish RND_DAD_LABEL_SELECT_REGION (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
