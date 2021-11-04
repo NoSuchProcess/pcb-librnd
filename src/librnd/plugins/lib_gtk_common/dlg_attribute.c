@@ -247,9 +247,17 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 			gtk_container_add(GTK_CONTAINER(fr), inner);
 		}
 		
-		if ((wltop != NULL) && (!topped))
+		if ((wltop != NULL) && (!topped)) {
 			*wltop = fr;
+			topped = 1;
+		}
 	}
+
+	if ((inner != NULL) && !topped) {
+		/* when called from tree table without the scroll flag */
+		*wltop = inner;
+	}
+
 	return parent;
 }
 
