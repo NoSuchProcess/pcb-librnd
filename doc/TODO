@@ -1,5 +1,6 @@
 - 3.0.2
 - 3.1.0
+	- pcb-rnd: TODO#72: don't scroll the box when the tree is scrolled
 	- publish RND_DAD_SUBDIALOG (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
 	- publish RND_DAD_LABEL_SELECT_REGION (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
 	- publish rnd_file_stat() in safe_fs.h
