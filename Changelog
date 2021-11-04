@@ -1,3 +1,59 @@
+librnd 3.0.2 (r33217)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Fix: don't crash on NULL string in rnd_conf_print_native_field() (ConfDump() action)
+
+	[dad]
+		-Add: HATT for subdialog: allows a DAD dialog to place a subdialog in the widget tree (subdialog typically received from the caller)
+		-Add: assert on subdialog can not be set()
+		-Add: new, DAD based file selection dialog (default on all HIDs)
+
+	[doc]
+		-Add: user manual for the new fsd
+		-Add: define what exactly the CHANGE_CB does for a tree
+
+	[gtk]
+		-Cleanup: util_watch doesn't depend on in_mouse
+		-Fix: tree table: add the tree view widget directly in the scrolled window so they can interact; this way moving the cursor will automatically update scroll
+		-Fix: do not omit tree table when RND_HATF_SCROLL is not set (did not set wltop)
+		-Fix: uninitialized pixels in custom mouse cursor imported from xbm smaller than 24x24
+		-Fix: DAD tree click release should stop gtk from double-opening the given subtree
+		-Fix: more robust fix for subtree expand when the arrow is clicked: let gtk handle the arrow
+		-Fix: tree table enter_cb is called only on double click or enter on a row
+		-Add: implement the subdialog HATT
+		-Add: implement internal DAD API for widget poke: entry selection
+
+	[gtk4]
+		-Del: comment referring to gtk3
+		-Del: trunc_text custom widget for gtk3 - there's a different one for gtk4
+		-Add: mark rules-hint not to be used with gtk4
+
+	[hid]
+		-Fix: describe what really rnd_hid_fsd_flags_t fields do (most of them are deprecated and have no effect)
+		-Add: mark RND_HID_FSD_IS_TEMPLATE obsolete and schedule removal
+		-Add: fileselect descr argument is not really used at the moment
+		-Add: API for optional DAD widget poke
+
+	[hid_gtk2_gl]
+		-Fix: gdk_color_parse() doesn't handle alpha, remove it when it is present in the input color string
+
+	[lesstif]
+		-Fix: remember is popup is open and don't lose get_xy coords (crosshair coords) so that actions triggered from the right context popup won't ask for new coords
+		-Fix: close the popup menu when an item is selected and mark the popup inactive after the corresponding action finished
+		-Fix: tree table: call DAD CHANGE_CB on enter pressed
+		-Fix: tree table: double click on entry should call change cb
+		-Fix: memroy handling error on HATT_STRING set()
+		-Add: HATT_SUBDIALOG implementation
+
+	[lib_hid_common]
+		-Import: plus and minus xpm's from pcb-rnd (layer selector)
+
+	[scconfig]
+		-Fix: do not accept lesstif installation if it doesn't have XmEXTERNAL_HIGHLIGHT (required for picture buttons and toggle buttons)
+
+	[script]
+		-Fix: use the 'selected' callback instead of the 'changed' callback for DAD_TREE() because the API around 'changed' is not clear
+
 librnd 3.0.1 (r32954)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]

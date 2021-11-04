@@ -1,8 +1,6 @@
-librnd 3.0.1
+librnd 3.0.2
 ~~~~~~~~~~~~
 
-3.0.1 is a minor bugfix release with a few build and plugin loading corner
-case fixes. A visible change is that auto-zoom (a variant of zoom extent)
-also centers the view.
-
-
+3.0.2 is mainly a bugfix release focusing on GUI relate bugs in both gtk and
+lesstif HIDs. As a preparation for gtk4, the new, centralized, DAD based
+File Selection Dialog (fsd) is the default.
