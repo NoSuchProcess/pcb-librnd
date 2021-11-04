@@ -10,4 +10,4 @@ release check list
 5. commit trunk
 6. svn tag using URLs (use svn copy --pin-externals)
 7. update the events and doc/news.html
-
+8. change version in scconfig to -dev
