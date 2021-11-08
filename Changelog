@@ -38,11 +38,11 @@ librnd 3.0.2 (r33217)
 		-Fix: gdk_color_parse() doesn't handle alpha, remove it when it is present in the input color string
 
 	[lesstif]
-		-Fix: remember is popup is open and don't lose get_xy coords (crosshair coords) so that actions triggered from the right context popup won't ask for new coords
+		-Fix: remember if popup is open and don't lose get_xy coords (crosshair coords) so that actions triggered from the right context popup won't ask for new coords
 		-Fix: close the popup menu when an item is selected and mark the popup inactive after the corresponding action finished
 		-Fix: tree table: call DAD CHANGE_CB on enter pressed
 		-Fix: tree table: double click on entry should call change cb
-		-Fix: memroy handling error on HATT_STRING set()
+		-Fix: memory handling error on HATT_STRING set()
 		-Add: HATT_SUBDIALOG implementation
 
 	[lib_hid_common]

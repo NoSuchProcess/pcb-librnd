@@ -1,6 +1,6 @@
 librnd 3.0.2
 ~~~~~~~~~~~~
 
-3.0.2 is mainly a bugfix release focusing on GUI relate bugs in both gtk and
+3.0.2 is mainly a bugfix release focusing on GUI related bugs in both gtk and
 lesstif HIDs. As a preparation for gtk4, the new, centralized, DAD based
 File Selection Dialog (fsd) is the default.
