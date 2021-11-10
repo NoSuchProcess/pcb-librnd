@@ -41,7 +41,8 @@ print [@
 
 LIBRND_PREFIX=@/local/prefix@
 LIBRND_INCDIR=$(LIBRND_PREFIX)/include
-LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@
+LIBRND_LIBARCHDIR=@/local/libarchdir@
+LIBRND_LIBDIR=$(LIBRND_PREFIX)/$(LIBRND_LIBARCHDIR)
 
 CFLAGS_LIBRND=@?/local/pcb/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd @?/local/pcb/librnd_mak_extra_inc@
 LDFLAGS_LIBRND=@?/local/pcb/librnd_mak_extra_ldf@ @?/local/pcb/LDFLAGS_HIDLIB_STATIC_@
