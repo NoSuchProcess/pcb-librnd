@@ -1,14 +1,9 @@
-- 3.0.2
 - 3.1.0
 	- pcb-rnd: TODO#72: don't scroll the box when the tree is scrolled
-	- publish RND_DAD_SUBDIALOG (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
-	- publish RND_DAD_LABEL_SELECT_REGION (from lib_hid_common/dlg_fileselect.c to hid_dad.h)
-	- publish rnd_file_stat() in safe_fs.h
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	- gensexpr (under lib_gesexpr) got a new config bit; enable that pcb-rnd plugins/io_dsn (look for the TODO there)
 	- BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- pcb-rnd: enable io_altium if librnd 3.1.0 is available (sphash -i is required)
-	- add rnd_hid_fileselect() in hid.h
 	- move preferences
 		- pcb_board_set_changed_flag() is called from dlg_pref_confedit.c; change this into an event from librnd
 	- move diag/rnd_diag
@@ -16,7 +11,7 @@
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- rnd_app_t spares: conf_ignore lists (two void *)
 	- remove RND_HID_FSD_IS_TEMPLATE
-	- remove rnd_hid_t->fileselect (code should use rnd_hid_fileselect() instead)
+	- remove rnd_hid_t->fileselect (code should use rnd_hid_fileselect() instead, which should call lib_hid_common's fileselect through a global pointer hook, plug_ style)
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- remove RND_HID_FSD_MAY_NOT_EXIST and RND_HID_FSD_IS_TEMPLATE (replace them with 0 in code)
