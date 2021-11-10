@@ -43,14 +43,14 @@
 
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 
-static const char *pref_tabs[Rnd_PREF_MAX_TAB];
-static int pref_tab_cfgs[Rnd_PREF_MAX_TAB];
+static const char *pref_tabs[RND_PREF_MAX_TAB];
+static int pref_tab_cfgs[RND_PREF_MAX_TAB];
 
 static const char *bi_pref_tabs[]   = { "Window", "Key", "Menu", "Config tree", NULL };
 static const int bi_pref_tab_cfgs[] = {  1,        0,     0,          0      };
 
 
-void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
+void rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
 
 /* built-in tabs */
 #include "dlg_pref_win.c"
@@ -73,12 +73,12 @@ rnd_conf_hid_id_t pref_hid;
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
 static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
 
-pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
+pref_ctx_t *rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
 {
 	return &pref_ctx;
 }
 
-lht_node_t *Rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
+lht_node_t *rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
 {
 	lht_node_t *m;
 
@@ -110,7 +110,7 @@ lht_node_t *Rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
 	return m;
 }
 
-void Rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
+void rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
 {
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), ctx->role, NULL);
@@ -465,7 +465,7 @@ void rnd_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab
 
 	for(t = 0; t < pref_ctx.tabs; t++) {
 		pref_tabs[t] = pref_ctx.tab[t].hooks->tab_label;
-		pref_tab_cfgs[t] = !!(pref_ctx.tab[t].hooks->flags & Rnd_PREFTAB_NEEDS_ROLE);
+		pref_tab_cfgs[t] = !!(pref_ctx.tab[t].hooks->flags & RND_PREFTAB_NEEDS_ROLE);
 	}
 	for(i = 0; bi_pref_tabs[i] != NULL; i++,t++) {
 		pref_tabs[t] = bi_pref_tabs[i];
@@ -482,7 +482,7 @@ void rnd_dlg_pref_uninit(void)
 	rnd_conf_hid_unreg(pref_cookie);
 
 	for(t = 0; t < pref_ctx.tabs; t++) {
-		if (pref_ctx.tab[t].hooks->flags & Rnd_PREFTAB_AUTO_FREE_DATA) {
+		if (pref_ctx.tab[t].hooks->flags & RND_PREFTAB_AUTO_FREE_DATA) {
 			free(pref_ctx.tab[t].tabdata);
 			pref_ctx.tab[t].tabdata = NULL;
 		}

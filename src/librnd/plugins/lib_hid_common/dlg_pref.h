@@ -16,15 +16,15 @@ struct pref_conflist_s {
 	pref_confitem_t *cnext; /* linked list for conf callback - should be NULL initially */
 };
 
-typedef enum Rnd_pref_tab_flag_e { /* bitfield */
-	Rnd_PREFTAB_NEEDS_ROLE = 1,
-	Rnd_PREFTAB_AUTO_FREE_DATA = 2       /* free tab data when plugin is unloaded */
-} Rnd_pref_tab_flag_t;
+typedef enum rnd_pref_tab_flag_e { /* bitfield */
+	RND_PREFTAB_NEEDS_ROLE = 1,
+	RND_PREFTAB_AUTO_FREE_DATA = 2       /* free tab data when plugin is unloaded */
+} rnd_pref_tab_flag_t;
 
-typedef struct Rnd_pref_tab_hook_s Rnd_pref_tab_hook_t;
-struct Rnd_pref_tab_hook_s {
+typedef struct rnd_pref_tab_hook_s rnd_pref_tab_hook_t;
+struct rnd_pref_tab_hook_s {
 	const char *tab_label;
-	unsigned long flags;                /* bitfield of Rnd_pref_tab_flag_t */
+	unsigned long flags;                /* bitfield of rnd_pref_tab_flag_t */
 
 	void (*open_cb)(pref_ctx_t *ctx);   /* called right after the dialog box is created */
 	void (*close_cb)(pref_ctx_t *ctx);  /* called from the dialog box is close_cb event */
@@ -38,7 +38,7 @@ struct Rnd_pref_tab_hook_s {
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 };
 
-#define Rnd_PREF_MAX_TAB 32
+#define RND_PREF_MAX_TAB 32
 
 typedef struct {
 	int wtree, wintree, wdesc, wname, wmainp, wnattype, wfilter;
@@ -74,9 +74,9 @@ struct pref_ctx_s {
 	int active; /* already open - allow only one instance */
 
 	struct {
-		const Rnd_pref_tab_hook_t *hooks;
+		const rnd_pref_tab_hook_t *hooks;
 		void *tabdata;
-	} tab[Rnd_PREF_MAX_TAB];
+	} tab[RND_PREF_MAX_TAB];
 	int tabs;       /* number of app-specific tabs used */
 	int tabs_total; /* number of tabs used (app-specific and built-in combined) */
 
@@ -118,16 +118,16 @@ extern rnd_conf_hid_id_t pref_hid;
 
 /*** public API for the caller ***/
 
-lht_node_t *Rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
-void Rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
+lht_node_t *rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
+void rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
 
-void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab);
+void rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab);
 
 
 /* In event callbacks no context is available; return context baed on hidlib */
-pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib);
+pref_ctx_t *rnd_pref_get_ctx(rnd_hidlib_t *hidlib);
 
-#define PREF_INIT_FUNC Rnd_pref_init_func_dummy
+#define PREF_INIT_FUNC rnd_pref_init_func_dummy
 
 #define PREF_INIT(ctx, hooks_) \
 	do { \

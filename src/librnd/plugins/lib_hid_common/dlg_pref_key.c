@@ -85,7 +85,7 @@ static lht_node_t *pref_key_mod_pre(pref_ctx_t *ctx)
 
 	save = ctx->role;
 	ctx->role = RND_CFR_USER;
-	m = Rnd_pref_dlg2conf_pre(NULL, ctx);
+	m = rnd_pref_dlg2conf_pre(NULL, ctx);
 	if (m == NULL) {
 		ctx->role = save;
 		return NULL;
@@ -116,7 +116,7 @@ static void pref_key_mod_post(pref_ctx_t *ctx)
 	rnd_conf_update("editor/translate_key", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	Rnd_pref_dlg2conf_post(NULL, ctx);
+	rnd_pref_dlg2conf_post(NULL, ctx);
 
 	ctx->role = save;
 	ctx->key.lock--;
