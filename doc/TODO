@@ -26,6 +26,7 @@
 	- there are no spare fields in:
 		- rnd_hid_tree_t (calloced from macro so calloc is on app side!)
 		- rnd_hid_dad_subdialog_s
+	- remove unused flags from rnd_hid_fsd_flags_t
 
 unsorted:
 	- lesstif: vertical text, truncated text support
