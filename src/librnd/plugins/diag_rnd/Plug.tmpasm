@@ -1,0 +1,10 @@
+put /local/pcb/mod {diag_rnd}
+put /local/pcb/mod/OBJS [@
+	$(LIBRND_PLUGDIR)/diag_rnd/diag_rnd.o
+@]
+
+switch /local/pcb/diag_rnd/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
