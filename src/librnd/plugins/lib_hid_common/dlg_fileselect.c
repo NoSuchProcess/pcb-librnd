@@ -979,7 +979,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
 		sep = strrchr(default_file, '.');
 		len = (sep != NULL) ? sep - default_file : strlen(default_file);
-		RND_DAD_LABEL_SELECT_REGION(ctx->dlg_hid_ctx, ctx->wpath, 0, len);
+		RND_DAD_STRING_SELECT_REGION(ctx->dlg_hid_ctx, ctx->wpath, 0, len);
 	}
 
 	fsd_cd(ctx, NULL);

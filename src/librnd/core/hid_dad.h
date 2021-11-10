@@ -270,7 +270,7 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup_printf printf_args); \
 } while(0)
 
-#define RND_DAD_LABEL_SELECT_REGION(table, idx, first_char_offs, len) \
+#define RND_DAD_STRING_SELECT_REGION(table, idx, first_char_offs, len) \
 do { \
 	if (rnd_gui->attr_dlg_widget_poke != NULL) { \
 		fgw_arg_t __args__[3]; \
