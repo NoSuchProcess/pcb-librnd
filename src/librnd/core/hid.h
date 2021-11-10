@@ -366,31 +366,7 @@ struct rnd_hid_s {
 	void (*unwatch_file)(rnd_hid_t *hid, rnd_hidval_t watch);
 
 
-	/* Run the file selection dialog. Return a string the caller needs to free().
-	 * title may be used as a dialog box title.  Ignored if NULL.
-	 *
-	 * descr is a longer help string. Not used at the moment. Ignored if NULL.
-	 *
-	 * default_file is the default file name.  Ignored if NULL.
-	 *
-	 * default_ext is the default file extension, like ".pdf".
-	 * Ignored if NULL.
-	 *
-	 * flt is a {NULL} terminated array of file filters; HID support is optional.
-	 * Ignored if NULL. If NULL and default_ext is not NULL, the HID may make
-	 * up a minimalistic filter from the default_ext also allowing *.*.
-	 *
-	 * history_tag may be used by the GUI to keep track of file
-	 * history.  Examples would be "board", "vendor", "renumber",
-	 * etc.  If NULL, no specific history is kept.
-	 *
-	 * flags_ are the bitwise OR
-	 *
-	 * sub is an optional DAD sub-dialog, can be NULL; its parent_poke commands:
-	 *  close          close the dialog
-	 *  get_path       returns the current full path in res as an strdup'd string (caller needs to free it)
-	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
-	 */
+	/* Use rnd_hid_fileselect() instead */
 	char *(*fileselect)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
@@ -667,7 +643,31 @@ void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete
    is emitted. */
 void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib);
 
-/* see above in hid ->fileselect */
+	/* Run the file selection dialog. Return a string the caller needs to free().
+	 * title may be used as a dialog box title.  Ignored if NULL.
+	 *
+	 * descr is a longer help string. Not used at the moment. Ignored if NULL.
+	 *
+	 * default_file is the default file name.  Ignored if NULL.
+	 *
+	 * default_ext is the default file extension, like ".pdf".
+	 * Ignored if NULL.
+	 *
+	 * flt is a {NULL} terminated array of file filters; HID support is optional.
+	 * Ignored if NULL. If NULL and default_ext is not NULL, the HID may make
+	 * up a minimalistic filter from the default_ext also allowing *.*.
+	 *
+	 * history_tag may be used by the GUI to keep track of file
+	 * history.  Examples would be "board", "vendor", "renumber",
+	 * etc.  If NULL, no specific history is kept.
+	 *
+	 * flags_ are the bitwise OR
+	 *
+	 * sub is an optional DAD sub-dialog, can be NULL; its parent_poke commands:
+	 *  close          close the dialog
+	 *  get_path       returns the current full path in res as an strdup'd string (caller needs to free it)
+	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
+	 */
 char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 
