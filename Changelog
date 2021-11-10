@@ -1,4 +1,4 @@
-librnd 3.0.2 (r33217)
+librnd 3.0.2 (r33224)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-Fix: don't crash on NULL string in rnd_conf_print_native_field() (ConfDump() action)
