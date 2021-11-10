@@ -43,6 +43,7 @@
 #include "dlg_log.h"
 #include "dlg_fileselect.h"
 #include "dlg_plugins.h"
+#include "dlg_pref.h"
 #include "act_dad.h"
 #include "toolbar.h"
 #include "zoompan.h"
@@ -99,7 +100,9 @@ rnd_action_t hid_common_action_list[] = {
 	{"rnd_toolbar_init", rnd_act_rnd_toolbar_init, rnd_acth_rnd_toolbar_init, NULL},
 	{"rnd_toolbar_uninit", rnd_act_rnd_toolbar_uninit, rnd_acth_rnd_toolbar_uninit, NULL},
 	{"rnd_zoom", rnd_gui_act_zoom, rnd_acth_Zoom_default, rnd_acts_Zoom_default},
-	{"rnd_dlg_xpm_by_name", rnd_act_dlg_xpm_by_name, rnd_acth_gui, NULL}
+	{"rnd_dlg_xpm_by_name", rnd_act_dlg_xpm_by_name, rnd_acth_gui, NULL},
+	{"Preferences", rnd_act_Preferences, rnd_acth_Preferences, rnd_acts_Preferences},
+	{"dlg_confval_edit", rnd_act_dlg_confval_edit, rnd_acth_dlg_confval_edit, rnd_acts_dlg_confval_edit}
 };
 
 extern const char *rnd_acts_Zoom;
