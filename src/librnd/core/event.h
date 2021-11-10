@@ -61,7 +61,7 @@ typedef enum {
 	RND_EVENT_STROKE_RECORD,          /* parameters: rnd_coord_t x, rnd_coord_t y */
 	RND_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
-	RND_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_ (called from e.g. pcb_board_changed()) */
+	RND_EVENT_BOARD_CHANGED,          /* called after the board being edited got _replaced_) */
 	RND_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
 	RND_EVENT_BOARD_FN_CHANGED,       /* called after the file name of the board has changed */
 
@@ -73,6 +73,8 @@ typedef enum {
 	RND_EVENT_MENU_CHANGED,           /* called after a menu merging (which means actual menu system change) */
 	RND_EVENT_GUI_BATCH_TIMER,        /* */
 	RND_EVENT_MAINLOOP_CHANGE,        /* called after the mainloop variable has changed */
+
+	RND_EVENT_DESIGN_META_CHANGED_LIB,/* called by librnd as the earliest event when it changes the config of the board */
 
 	RND_EVENT_last                    /* not a real event */
 } rnd_event_id_t;
