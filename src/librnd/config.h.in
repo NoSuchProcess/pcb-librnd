@@ -198,6 +198,11 @@ print [@
    the user requires */
 #define RND_API_VER @/local/apiver@
 
+/* Format: "aabbcc" or "aabbcc-suffix" where aa, bb and cc are the same as in
+   RND_API_VER, optional suffix is an arbitrary string for non-stable-release
+   code. */
+#define RND_VER_STR "@/local/version@"
+
 @?/local/pcb/include_stdint@
 
 /* Coordinate type and properties, as detected by scconfig */
