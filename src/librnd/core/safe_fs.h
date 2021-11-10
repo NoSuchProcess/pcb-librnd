@@ -48,6 +48,10 @@ int rnd_rename(rnd_hidlib_t *hidlib, const char *old_path, const char *new_path)
 int rnd_mkdir(rnd_hidlib_t *hidlib, const char *path, int mode);
 int rnd_unlink(rnd_hidlib_t *hidlib, const char *path);
 
+/* Query multiple stat fields at once. Returns 0 on success. Output
+   fields must not be NULL. */
+int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
+
 
 /* Batched ask-overwrite in storage provided by the caller; the return value
    of the init() call needs to be passed to the uninit() so nested batching is

@@ -132,9 +132,6 @@ static int fsd_acceptable(fsd_ctx_t *ctx, int report)
 }
 
 /*** file listing ***/
-TODO("Remove this at 3.1.0")
-extern int rnd_file_stat(rnd_hidlib_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
-
 static void fsd_clear(fsd_ctx_t *ctx)
 {
 	long n;

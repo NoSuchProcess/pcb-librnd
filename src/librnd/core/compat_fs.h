@@ -21,3 +21,8 @@ int rnd_is_path_abs(const char *fn);
 
 /* Return 1 if path is a file that can be opened for read */
 int rnd_file_readable_(const char *path);
+
+/* Query multiple stat fields at once. Returns 0 on success. Output
+   fields must not be NULL. */
+int rnd_file_stat_(const char *path, int *is_dir, long *size, double *mtime);
+
