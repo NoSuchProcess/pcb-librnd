@@ -1,5 +1,4 @@
 - 3.1.0
-	- pcb-rnd: TODO#72: don't scroll the box when the tree is scrolled
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	- gensexpr (under lib_gesexpr) got a new config bit; enable that pcb-rnd plugins/io_dsn (look for the TODO there)
 	- BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
