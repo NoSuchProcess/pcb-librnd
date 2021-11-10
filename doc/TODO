@@ -1,8 +1,6 @@
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
-	- move preferences
-		- pcb_board_set_changed_flag() is called from dlg_pref_confedit.c; change this into an event from librnd
 - 4.0.0:
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
