@@ -1,8 +1,6 @@
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
-	- gensexpr (under lib_gesexpr) got a new config bit; enable that pcb-rnd plugins/io_dsn (look for the TODO there)
 	- BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
-	- pcb-rnd: enable io_altium if librnd 3.1.0 is available (sphash -i is required)
 	- move preferences
 		- pcb_board_set_changed_flag() is called from dlg_pref_confedit.c; change this into an event from librnd
 	- move diag/rnd_diag
