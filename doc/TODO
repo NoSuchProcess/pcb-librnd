@@ -6,6 +6,7 @@
 - 4.0.0:
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
+	- rename textual event names from pcbev_* in event.c
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- rnd_app_t spares: conf_ignore lists (two void *)
 	- remove RND_HID_FSD_IS_TEMPLATE
