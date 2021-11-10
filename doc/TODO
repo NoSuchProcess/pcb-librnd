@@ -3,7 +3,6 @@
 	- BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- move preferences
 		- pcb_board_set_changed_flag() is called from dlg_pref_confedit.c; change this into an event from librnd
-	- move diag/rnd_diag
 - 4.0.0:
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- rnd_app_t spares: conf_ignore lists (two void *)

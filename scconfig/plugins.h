@@ -13,6 +13,7 @@ plugin_def("lib_portynet",     "#IPv4 tcp",                       sbuildin, 1)
 plugin_def("lib_wget",         "wget(1) wrapper",                 sbuildin, 1)
 
 plugin_header("\nFeature plugins:\n")
+plugin_def("diag_rnd",         "diagnostic acts. for devs",       sbuildin, 1)
 plugin_def("irc",              "on-line support (IRC)",           sbuildin, 1)
 plugin_def("loghid",           "diagnostics: log HID calls",      sdisable, 1)
 plugin_def("script",           "fungw turing complete scripting", sbuildin, 1)
