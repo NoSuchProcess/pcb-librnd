@@ -270,6 +270,17 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup_printf printf_args); \
 } while(0)
 
+#define RND_DAD_LABEL_SELECT_REGION(table, idx, first_char_offs, len) \
+do { \
+	if (rnd_gui->attr_dlg_widget_poke != NULL) { \
+		fgw_arg_t __args__[3]; \
+		__args__[0].type = FGW_STR; __args__[0].val.cstr = "select"; \
+		__args__[1].type = FGW_INT; __args__[1].val.nat_int = first_char_offs; \
+		__args__[2].type = FGW_INT; __args__[2].val.nat_int = len; \
+		rnd_gui->attr_dlg_widget_poke(table, idx, 3, __args__); \
+	} \
+} while(0)
+
 #define RND_DAD_ENUM(table, choices) \
 do { \
 	RND_DAD_ALLOC(table, RND_HATT_ENUM); \
@@ -420,6 +431,14 @@ do { \
 	rnd_hid_tree_t *__tree__ = table[table ## _len-1].wdata; \
 	__tree__->user_ ## name = func_or_data; \
 } while(0)
+
+
+#define RND_DAD_SUBDIALOG(table, sub) \
+do { \
+	RND_DAD_ALLOC(table, RND_HATT_SUBDIALOG); \
+	RND_DAD_SET_ATTR_FIELD(table, wdata, sub); \
+} while(0)
+
 
 #define RND_DAD_DUP_ATTR(table, attr) \
 do { \
