@@ -14,6 +14,8 @@ typedef struct {
 			RND_CFT_INTEGER history_size;                    /* OBSOLETE: ignored; use plugins/lib_hid_common/cli_history/slots instead */
 			RND_CFT_INTEGER n_mode_button_columns;           /* OBSOLETE: always have horizontal mode buttons */
 
+			RND_CFT_REAL icon_scale;                         /* scale icon buttons and icons by this factor (normal size = 1) */
+
 			const struct {
 				RND_CFT_BOOLEAN enable;                       /* enable local grid to draw grid points only in a small radius around the crosshair - speeds up software rendering on large screens */
 				RND_CFT_INTEGER radius;                       /* radius, in number of grid points, around the local grid */
