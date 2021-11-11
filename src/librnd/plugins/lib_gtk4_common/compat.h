@@ -24,10 +24,10 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
-#ifndef RND_GTK2_COMPAT_H
-#define RND_GTK2_COMPAT_H
+#ifndef RND_GTK4_COMPAT_H
+#define RND_GTK4_COMPAT_H
 
-/*** lib_gtk_common compatibilty layer for GTK2 ***/
+/*** lib_gtk_common compatibilty layer for GTK4 ***/
 
 #include <gtk/gtk.h>
 
