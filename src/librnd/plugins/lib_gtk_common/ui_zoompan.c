@@ -79,7 +79,7 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	}
 
 	/* Fix up noted event coordinates to match where we clamped. Alternatively
-	 * we could call ghid_note_event_location (NULL); to get a new pointer
+	 * we could call rnd_gtk_note_event_location (NULL); to get a new pointer
 	 * location, but this costs us an xserver round-trip (on X11 platforms)
 	 */
 	rnd_gtk_coords_event2design(v, event_x, event_y, &v->design_x, &v->design_y);
