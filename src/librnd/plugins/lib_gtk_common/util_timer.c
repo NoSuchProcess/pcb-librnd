@@ -40,7 +40,7 @@ typedef struct rnd_gtk_timer_s {
 
 /* We need a wrapper around the hid timer because a gtk timer needs
    to return FALSE else the timer will be restarted. */
-static gboolean ghid_timer(rnd_gtk_timer_t *timer)
+static gboolean rnd_gtk_timer(rnd_gtk_timer_t *timer)
 {
 	(*timer->func)(timer->user_data);
 	rnd_gtk_mode_cursor_main();
@@ -55,12 +55,12 @@ rnd_hidval_t rnd_gtk_add_timer(struct rnd_gtk_s *gctx, void (*func)(rnd_hidval_t
 	timer->func = func;
 	timer->user_data = user_data;
 	timer->gctx = gctx;
-	timer->id = g_timeout_add(milliseconds, (GSourceFunc) ghid_timer, timer);
+	timer->id = g_timeout_add(milliseconds, (GSourceFunc) rnd_gtk_timer, timer);
 	ret.ptr = (void *)timer;
 	return ret;
 }
 
-void ghid_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
+void rnd_gtk_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
 {
 	void *ptr = timer.ptr;
 

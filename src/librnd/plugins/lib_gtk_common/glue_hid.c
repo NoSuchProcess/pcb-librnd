@@ -267,7 +267,7 @@ rnd_hidval_t ghid_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data)
 	return rnd_gtk_add_timer((rnd_gtk_t *)hid->hid_data, func, milliseconds, user_data);
 }
 
-static rnd_hidval_t ghid_watch_file(rnd_hid_t *hid, int fd, unsigned int condition,
+static rnd_hidval_t rnd_gtkg_watch_file(rnd_hid_t *hid, int fd, unsigned int condition,
 	rnd_bool (*func)(rnd_hidval_t, int, unsigned int, rnd_hidval_t), rnd_hidval_t user_data)
 {
 	return rnd_gtk_watch_file((rnd_gtk_t *)hid->hid_data, fd, condition, func, user_data);
@@ -655,8 +655,8 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->get_coords = ghid_get_coords;
 	dst->set_crosshair = ghid_set_crosshair;
 	dst->add_timer = ghid_add_timer;
-	dst->stop_timer = ghid_stop_timer;
-	dst->watch_file = ghid_watch_file;
+	dst->stop_timer = rnd_gtk_stop_timer;
+	dst->watch_file = rnd_gtkg_watch_file;
 	dst->unwatch_file = rnd_gtk_unwatch_file;
 
 	dst->fileselect = ghid_fileselect;

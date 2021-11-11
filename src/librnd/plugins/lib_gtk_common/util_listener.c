@@ -39,7 +39,7 @@
 
 #include "util_listener.h"
 
-static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)
+static gboolean rnd_gtk_listener_cb(GIOChannel * source, GIOCondition condition, gpointer data)
 {
 	rnd_gtk_t *gctx = data;
 	GIOStatus status;
@@ -85,7 +85,7 @@ static gboolean ghid_listener_cb(GIOChannel * source, GIOCondition condition, gp
 
 	}
 	else
-		fprintf(stderr, "Unknown condition in ghid_listener_cb\n");
+		fprintf(stderr, "Unknown condition in rnd_gtk_listener_cb\n");
 
 	return TRUE;
 }
@@ -96,6 +96,6 @@ void rnd_gtk_create_listener(rnd_gtk_t *gctx)
 	int fd = rnd_fileno(stdin);
 
 	channel = g_io_channel_unix_new(fd);
-	g_io_add_watch(channel, G_IO_IN, ghid_listener_cb, gctx);
+	g_io_add_watch(channel, G_IO_IN, rnd_gtk_listener_cb, gctx);
 }
 

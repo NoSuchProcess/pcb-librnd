@@ -40,7 +40,7 @@ typedef struct rnd_gtk_watch_s {
 } rnd_gtk_watch_t;
 
 /* We need a wrapper around the hid file watch to pass the correct flags */
-static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer data)
+static gboolean rnd_gtk_watch(GIOChannel *source, GIOCondition condition, gpointer data)
 {
 	unsigned int rnd_condition = 0;
 	rnd_hidval_t x;
@@ -85,7 +85,7 @@ rnd_hidval_t rnd_gtk_watch_file(rnd_gtk_t *gctx, int fd, unsigned int condition,
 	watch->user_data = user_data;
 	watch->fd = fd;
 	watch->channel = g_io_channel_unix_new(fd);
-	watch->id = g_io_add_watch(watch->channel, (GIOCondition) glib_condition, ghid_watch, watch);
+	watch->id = g_io_add_watch(watch->channel, (GIOCondition) glib_condition, rnd_gtk_watch, watch);
 	watch->gctx = gctx;
 
 	ret.ptr = (void *) watch;
