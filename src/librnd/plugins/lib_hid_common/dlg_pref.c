@@ -472,6 +472,7 @@ void rnd_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab
 		pref_tab_cfgs[t] = bi_pref_tab_cfgs[i];
 	}
 	pref_ctx.tabs_total = t;
+	pref_ctx.tabs_inited = 1;
 }
 
 void rnd_dlg_pref_uninit(void)
@@ -496,7 +497,12 @@ fgw_error_t rnd_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *tab = NULL, *tabarg = NULL;
 	RND_ACT_MAY_CONVARG(1, FGW_STR, Preferences, tab = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, Preferences, tabarg = argv[2].val.str);
+
+	if (!pref_ctx.tabs_inited)
+		rnd_dlg_pref_init(0, NULL);
+
 	rnd_dlg_pref(tab, tabarg);
+
 	RND_ACT_IRES(0);
 	return 0;
 }

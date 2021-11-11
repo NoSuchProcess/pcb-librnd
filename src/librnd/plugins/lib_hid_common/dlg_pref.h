@@ -79,7 +79,7 @@ struct pref_ctx_s {
 	} tab[RND_PREF_MAX_TAB];
 	int tabs;       /* number of app-specific tabs used */
 	int tabs_total; /* number of tabs used (app-specific and built-in combined) */
-
+	unsigned int tabs_inited:1; /* whether tabs (including app-specific tabs) are inited */
 
 	rnd_conf_role_t role; /* where changes are saved to */
 
