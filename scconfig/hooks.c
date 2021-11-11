@@ -143,10 +143,11 @@ int hook_detect_host()
 
 static void rnd_hook_detect_hid()
 {
-	int need_gtklibs = 0, want_gtk, want_gtk2, has_gtk2 = 0, want_gl, want_glib = 0;
+	int need_gtklibs = 0, want_gtk, want_gtk2, has_gtk2 = 0, want_gtk4, has_gtk4 = 0, want_gl, want_glib = 0;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
-	want_gtk    = want_gtk2; /* plus |gtkN */
+	want_gtk4   = plug_is_enabled("hid_gtk4_gl");
+	want_gtk    = want_gtk2 | want_gtk4;
 
 	if (want_gtk2) {
 		require("libs/gui/gtk2/presents", 0, 0);
@@ -167,11 +168,24 @@ static void rnd_hook_detect_hid()
 		}
 	}
 
-	want_gl = plug_is_enabled("hid_gtk2_gl");
+	if (want_gtk4) {
+		require("libs/gui/gtk4/presents", 0, 0);
+		require("libs/gui/epoxy/presents", 0, 0);
+		if (istrue(get("libs/gui/gtk4/presents")) && istrue(get("libs/gui/epoxy/presents"))) {
+			need_gtklibs = 1;
+			has_gtk4 = 1;
+		}
+		else {
+			report_repeat("WARNING: Since there's no libgtk4 and libepoxy found, disabling hid_gtk4_gl...\n");
+			hook_custom_arg("disable-hid_gtk4_gl", NULL);
+		}
+	}
+
+	want_gl = plug_is_enabled("hid_gtk2_gl") || plug_is_enabled("hid_gtk4_gl");
 	if (want_gl) {
 		require("libs/gui/glu/presents", 0, 0);
 		if (!istrue(get("libs/gui/glu/presents"))) {
-			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk2_gl plugin...\n");
+			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk*_gl plugin...\n");
 			goto disable_gl;
 		}
 		else
@@ -181,12 +195,17 @@ static void rnd_hook_detect_hid()
 		disable_gl:;
 		hook_custom_arg("disable-lib_hid_gl", NULL);
 		hook_custom_arg("disable-hid_gtk2_gl", NULL);
+		hook_custom_arg("disable-hid_gtk4_gl", NULL);
 	}
 
 	/* libs/gui/gtkx is the version-independent set of flags in the XOR model */
 	if (has_gtk2) {
 		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk2/cflags"));
 		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk2/ldflags"));
+	}
+	else if (has_gtk4) {
+		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk4/cflags"));
+		put("/target/libs/gui/gtkx/ldflags", get("/target/libs/gui/gtk4/ldflags"));
 	}
 
 	if (!need_gtklibs) {
@@ -223,6 +242,7 @@ static void rnd_hook_detect_hid()
 			report_repeat("WARNING: Since GLIB is not found, disabling the GTK HID...\n");
 			hook_custom_arg("disable-hid_gtk2_gdk", NULL);
 			hook_custom_arg("disable-hid_gtk2_gl", NULL);
+			hook_custom_arg("disable-hid_gtk4_gl", NULL);
 		}
 	}
 }
