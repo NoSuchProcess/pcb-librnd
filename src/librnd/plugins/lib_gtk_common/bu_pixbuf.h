@@ -1,6 +1,6 @@
 #include "hid_gtk_conf.h"
 
-RND_INLINE GdkPixbuf *rnd_hid_gtk_xpm2pixbuf(const char **xpm, int allow_scale)
+RND_INLINE GdkPixbuf *rnd_gtk_xpm2pixbuf(const char **xpm, int allow_scale)
 {
 	GdkPixbuf *pixbuf, *p1;
 	double w, h, icon_scale = rnd_gtk_conf_hid.plugins.hid_gtk.icon_scale;

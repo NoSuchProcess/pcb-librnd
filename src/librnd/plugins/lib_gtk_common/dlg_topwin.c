@@ -348,7 +348,7 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	char *css_descr;
 
 	button = gtk_button_new();
-	pixbuf = rnd_hid_gtk_xpm2pixbuf(xpm_data, 1);
+	pixbuf = rnd_gtk_xpm2pixbuf(xpm_data, 1);
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	g_object_unref(pixbuf);
 
@@ -544,7 +544,7 @@ static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	/* resize grip: rightmost widget in the status line hbox */
 	resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
 	resize_grip = gtk_event_box_new();
-	resize_grip_pixbuf = rnd_hid_gtk_xpm2pixbuf(resize_grip_xpm, 1);
+	resize_grip_pixbuf = rnd_gtk_xpm2pixbuf(resize_grip_xpm, 1);
 	resize_grip_image = gtk_image_new_from_pixbuf(resize_grip_pixbuf);
 	g_object_unref(resize_grip_pixbuf);
 	gtk_container_add(GTK_CONTAINER(resize_grip), resize_grip_image);
