@@ -277,7 +277,7 @@ int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, const char *c
 
 int rnd_anyload_conf_needs_update = 0;
 static int al_conf_inhibit;
-static void anyload_conf_update(vpod)
+static void anyload_conf_update(void)
 {
 	if (al_conf_inhibit || !rnd_anyload_conf_needs_update)
 		return;
