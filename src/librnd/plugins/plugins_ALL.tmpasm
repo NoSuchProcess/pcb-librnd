@@ -3,6 +3,7 @@ include {../src/librnd/plugins/diag_rnd/Plug.tmpasm}
 include {../src/librnd/plugins/hid_batch/Plug.tmpasm}
 include {../src/librnd/plugins/hid_gtk2_gdk/Plug.tmpasm}
 include {../src/librnd/plugins/hid_gtk2_gl/Plug.tmpasm}
+include {../src/librnd/plugins/hid_gtk4_gl/Plug.tmpasm}
 include {../src/librnd/plugins/hid_lesstif/Plug.tmpasm}
 include {../src/librnd/plugins/hid_remote/Plug.tmpasm}
 include {../src/librnd/plugins/irc/Plug.tmpasm}
