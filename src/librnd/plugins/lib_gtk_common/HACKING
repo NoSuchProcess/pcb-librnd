@@ -1,4 +1,10 @@
-compat.h: compatibility layer for various GTK versions
+This directory does not host a real plugin, only source files other
+lib_gtkN_common plugins can use. The idea is to have all-gtk-version-common
+code here while being able to put per-version-common code in the
+respective plugin.
+
+Naming convention in this directory:
+
 util_*: generic, non-UI related utilities
 ui_*: ui logic related, but gtk-free utilities
 wt_*: custom widgets, cell renderers for gtk - must work in both gtk2 and gtk3
@@ -6,5 +12,11 @@ dlg_*: dialog boxes, preferably one per file
 bu_*: builders, building a part of a bigger gui portion
 in_*: input handling (gtk-specific)
 glue_*: glue code that should be used by the HID implementations to interface the HID API or by the gtk code to interface the HID implementation
+
+
+Naming convention in lib_gtkN_common/:
+
+compat.h: compatibility layer for various GTK versions
+
 
 Any of these may depend on glib.
