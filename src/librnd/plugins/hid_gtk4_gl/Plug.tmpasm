@@ -6,8 +6,8 @@ put /local/pcb/mod/OBJS_C99 [@
 switch /local/pcb/hid_gtk4_gl/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   [@@/target/libs/gui/gtk4gl/cflags@ @libs/gui/glu/cflags@@]
-		put /local/pcb/mod/LDFLAGS  [@@/target/libs/gui/gtk4gl/ldflags@ @libs/gui/glu/ldflags@@]
+		put /local/pcb/mod/CFLAGS   [@@/target/libs/gui/gtk4/cflags@ @/target/libs/gui/epoxy/cflags@ @libs/gui/glu/cflags@@]
+		put /local/pcb/mod/LDFLAGS  [@@/target/libs/gui/gtk4/ldflags@ @/target/libs/gui/epoxy/ldflags@ @libs/gui/glu/ldflags@@]
 	end
 end
 
