@@ -19,24 +19,24 @@ typedef enum {
 } ModifierKeysState;
 
 /* return TRUE ksym is SHIFT or CTRL modifier key. */
-gboolean ghid_is_modifier_key_sym(gint ksym);
+gboolean rnd_gtk_is_modifier_key_sym(gint ksym);
 
 /* key modifier state of drawing_area if state is NULL, otherwise, corresponding state key modifier. */
-ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state);
+ModifierKeysState rnd_gtk_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state);
 
 /* Handle user key events of the output drawing area. */
-gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data);
+gboolean rnd_gtk_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data);
 
-extern rnd_hid_cfg_keys_t ghid_keymap;
+extern rnd_hid_cfg_keys_t rnd_gtk_keymap;
 
 extern GdkModifierType rnd_gtk_glob_mask;
 
 /* return the keyval corresponding to desc key name. len is not used. */
-unsigned short int ghid_translate_key(const char *desc, int len);
+unsigned short int rnd_gtk_translate_key(const char *desc, int len);
 
 /* Load out/put_len with the GDK name corresponding to key_char key value.
    Return 0 upon success. */
-int ghid_key_name(unsigned short int key_char, char *out, int out_len);
+int rnd_gtk_key_name(unsigned short int key_char, char *out, int out_len);
 
 /* low level key-event-to-hid translation; returns 0 on success */
 int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv);

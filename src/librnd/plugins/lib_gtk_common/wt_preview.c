@@ -384,7 +384,7 @@ static gboolean button_press(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 
 static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
 {
-	return button_press(w, ghid_mouse_button(ev->button));
+	return button_press(w, rnd_gtk_mouse_button(ev->button));
 }
 
 static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
@@ -418,7 +418,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
-	switch (ghid_mouse_button(ev->button)) {
+	switch (rnd_gtk_mouse_button(ev->button)) {
 	case RND_MB_MIDDLE:
 		preview->view.panning = 0;
 		break;

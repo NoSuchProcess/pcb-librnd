@@ -25,7 +25,7 @@
 #include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 #include <librnd/plugins/lib_hid_common/menu_helper.h>
 
-extern rnd_hid_cfg_keys_t ghid_keymap;
+extern rnd_hid_cfg_keys_t rnd_gtk_keymap;
 
 static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
@@ -143,11 +143,11 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	gctx->hid_active = 1;
 
-	rnd_hid_cfg_keys_init(&ghid_keymap);
-	ghid_keymap.translate_key = ghid_translate_key;
-	ghid_keymap.key_name = ghid_key_name;
-	ghid_keymap.auto_chr = 1;
-	ghid_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
+	rnd_hid_cfg_keys_init(&rnd_gtk_keymap);
+	rnd_gtk_keymap.translate_key = rnd_gtk_translate_key;
+	rnd_gtk_keymap.key_name = rnd_gtk_key_name;
+	rnd_gtk_keymap.auto_chr = 1;
+	rnd_gtk_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
 
 	rnd_gtk_create_topwin_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
@@ -155,7 +155,7 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(ghid_port_window_mouse_scroll_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_port_window_mouse_scroll_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gctx);
@@ -176,7 +176,7 @@ TODO(": move this to render init")
 	gtk_widget_grab_focus(gctx->port.drawing_area);
 
 	gtk_main();
-	rnd_hid_cfg_keys_uninit(&ghid_keymap);
+	rnd_hid_cfg_keys_uninit(&rnd_gtk_keymap);
 
 	gctx->hid_active = 0;
 	gctx->gui_is_up = 0;
@@ -295,7 +295,7 @@ static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 	if (gctx == NULL)
 		return;
 
-	ghid_point_cursor(gctx, grabbed);
+	rnd_gtk_point_cursor(gctx, grabbed);
 }
 
 static int rnd_gtk_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
@@ -515,12 +515,12 @@ static void ghid_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 
 static void ghid_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	ghid_port_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
+	rnd_gtk_port_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
 }
 
 static void ghid_set_mouse_cursor(rnd_hid_t *hid, int idx)
 {
-	ghid_port_set_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx);
+	rnd_gtk_port_set_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx);
 }
 
 static void ghid_set_top_title(rnd_hid_t *hid, const char *title)
@@ -535,9 +535,9 @@ static void ghid_busy(rnd_hid_t *hid, rnd_bool busy)
 	if ((gctx == NULL) || (!gctx->hid_active))
 		return;
 	if (busy)
-		ghid_watch_cursor(gctx);
+		rnd_gtk_watch_cursor(gctx);
 	else
-		ghid_restore_cursor(gctx);
+		rnd_gtk_restore_cursor(gctx);
 }
 
 static int ghid_shift_is_pressed(rnd_hid_t *hid)
@@ -707,7 +707,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->set_hidlib = ghid_set_hidlib;
 	dst->get_dad_hidlib = rnd_gtk_attr_get_dad_hidlib;
 
-	dst->key_state = &ghid_keymap;
+	dst->key_state = &rnd_gtk_keymap;
 
 	dst->usage = ghid_usage;
 

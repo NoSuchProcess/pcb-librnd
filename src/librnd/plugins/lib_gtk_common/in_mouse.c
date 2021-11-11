@@ -48,10 +48,10 @@
 #include "in_keyboard.h"
 #include "glue_common.h"
 
-rnd_hid_cfg_mouse_t ghid_mouse;
-int ghid_wheel_zoom = 0;
+rnd_hid_cfg_mouse_t rnd_gtk_mouse;
+int rnd_gtk_wheel_zoom = 0;
 
-rnd_hid_cfg_mod_t ghid_mouse_button(int ev_button)
+rnd_hid_cfg_mod_t rnd_gtk_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seems to be no symbolic names */
 	return (RND_MB_LEFT << (ev_button - 1));
@@ -67,28 +67,28 @@ static GdkCursor *cursor_override_X;
 #define ICON_X_HOT 8
 #define ICON_Y_HOT 8
 
-void ghid_watch_cursor(rnd_gtk_t *ctx)
+void rnd_gtk_watch_cursor(rnd_gtk_t *ctx)
 {
 	static GdkCursor *xc;
 
 	cursor_override = GDK_WATCH;
 	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
 	cursor_override_X = xc;
-	ghid_mode_cursor(ctx);
+	rnd_gtk_mode_cursor(ctx);
 }
 
-static void ghid_hand_cursor(rnd_gtk_t *ctx)
+static void rnd_gtk_hand_cursor(rnd_gtk_t *ctx)
 {
 	static GdkCursor *xc;
 
 	cursor_override = GDK_HAND2;
 	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
 	cursor_override_X = xc;
-	ghid_mode_cursor(ctx);
+	rnd_gtk_mode_cursor(ctx);
 }
 
 
-void ghid_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed)
+void rnd_gtk_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed)
 {
 	if (grabbed) {
 		static GdkCursor *xc;
@@ -98,7 +98,7 @@ void ghid_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed)
 	}
 	else
 		cursor_override = 0;
-	ghid_mode_cursor(ctx);
+	rnd_gtk_mode_cursor(ctx);
 }
 
 
@@ -122,7 +122,7 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 {
 	gint ksym = kev->keyval;
 
-	if (ghid_is_modifier_key_sym(ksym))
+	if (rnd_gtk_is_modifier_key_sym(ksym))
 		return TRUE;
 
 	/* accept a key only after a press _and_ release to avoid interfering with
@@ -176,7 +176,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	/* Do not enter the loop recursively (ask for coord only once); also don't
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
 	   GUI lockups when done outside of the drawing area */
-	if ((getting_loc) || (ghid_wheel_zoom))
+	if ((getting_loc) || (rnd_gtk_wheel_zoom))
 		return 1;
 
 	getting_loc = 1;
@@ -184,7 +184,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 
 	if (rnd_app.crosshair_suspend != NULL)
 		chst = rnd_app.crosshair_suspend(ctx->hidlib);
-	ghid_hand_cursor(ctx);
+	rnd_gtk_hand_cursor(ctx);
 
 	/*  Stop the top level GMainLoop from getting user input from keyboard
 	   and mouse so we can install our own handlers here.  Also set the
@@ -216,7 +216,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 
 	if (rnd_app.crosshair_restore != NULL)
 		rnd_app.crosshair_restore(ctx->hidlib, chst);
-	ghid_restore_cursor(ctx);
+	rnd_gtk_restore_cursor(ctx);
 
 	rnd_actionva(ctx->hidlib, "StatusSetText", NULL);
 	getting_loc = 0;
@@ -225,13 +225,13 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	return !lctx.got_location;
 }
 
-int ghid_get_user_xy(rnd_gtk_t *ctx, const char *msg)
+int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg)
 {
 	return run_get_location_loop(ctx, msg);
 }
 
 /* Mouse scroll wheel events */
-gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
+gint rnd_gtk_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
 {
 	rnd_gtk_t *ctx = data;
 	ModifierKeysState mk;
@@ -239,7 +239,7 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	int button;
 
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(widget, &state);
+	mk = rnd_gtk_modifier_keys_state(widget, &state);
 
 	/* X11 gtk hard codes buttons 4, 5, 6, 7 as below in
 	 * gtk+/gdk/x11/gdkevents-x11.c:1121, but quartz and windows have
@@ -253,14 +253,14 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 		default: return FALSE;
 	}
 
-	ghid_wheel_zoom = 1;
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
-	ghid_wheel_zoom = 0;
+	rnd_gtk_wheel_zoom = 1;
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_gtk_wheel_zoom = 0;
 
 	return TRUE;
 }
 
-gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
 {
 	ModifierKeysState mk;
 	GdkModifierType state;
@@ -273,13 +273,13 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	rnd_gtk_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(drawing_area, &state);
+	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
 
 	rnd_gtk_glob_mask = state;
 
 	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, rnd_gtk_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
 	rnd_gui->invalidate_all(rnd_gui);
 	if (!ctx->port.view.panning)
@@ -288,7 +288,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	return TRUE;
 }
 
-gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
 {
 	ModifierKeysState mk;
 	GdkModifierType state;
@@ -296,9 +296,9 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 
 	rnd_gtk_note_event_location(ev);
 	state = (GdkModifierType) (ev->state);
-	mk = ghid_modifier_keys_state(drawing_area, &state);
+	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
 
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, rnd_gtk_mouse_button(ev->button) | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(ctx->hidlib);
@@ -394,9 +394,9 @@ static const named_cursor_t named_cursors[] = {
 
 #define GHID_CURSOR_START (GDK_LAST_CURSOR+10)
 
-void ghid_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+void rnd_gtk_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	ghid_cursor_t *mc = vtmc_get(&ctx->mouse.cursor, idx, 1);
+	rnd_gtk_cursor_t *mc = vtmc_get(&ctx->mouse.cursor, idx, 1);
 	if (pixel == NULL) {
 		const named_cursor_t *c;
 
@@ -421,9 +421,9 @@ void ghid_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const
 	}
 }
 
-void ghid_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
+void rnd_gtk_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 {
-	ghid_cursor_t *mc = (idx >= 0) ? vtmc_get(&ctx->mouse.cursor, idx, 0) : NULL;
+	rnd_gtk_cursor_t *mc = (idx >= 0) ? vtmc_get(&ctx->mouse.cursor, idx, 0) : NULL;
 	GdkWindow *window;
 
 	ctx->mouse.last_cursor_idx = idx;
@@ -459,14 +459,14 @@ void ghid_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 	gdk_window_set_cursor(window, ctx->mouse.X_cursor);
 }
 
-void ghid_mode_cursor(rnd_gtk_t *ctx)
+void rnd_gtk_mode_cursor(rnd_gtk_t *ctx)
 {
-	ghid_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
+	rnd_gtk_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
 }
 
-void ghid_restore_cursor(rnd_gtk_t *ctx)
+void rnd_gtk_restore_cursor(rnd_gtk_t *ctx)
 {
 	cursor_override = 0;
-	ghid_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
+	rnd_gtk_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
 }
 

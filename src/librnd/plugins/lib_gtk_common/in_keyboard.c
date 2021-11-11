@@ -38,17 +38,17 @@
 #include <librnd/core/compat_misc.h>
 #include "glue_common.h"
 
-rnd_hid_cfg_keys_t ghid_keymap;
+rnd_hid_cfg_keys_t rnd_gtk_keymap;
 GdkModifierType rnd_gtk_glob_mask;
 
-gboolean ghid_is_modifier_key_sym(gint ksym)
+gboolean rnd_gtk_is_modifier_key_sym(gint ksym)
 {
 	if (ksym == RND_GTK_KEY(Shift_R) || ksym == RND_GTK_KEY(Shift_L) || ksym == RND_GTK_KEY(Control_R) || ksym == RND_GTK_KEY(Control_L))
 		return TRUE;
 	return FALSE;
 }
 
-ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state)
+ModifierKeysState rnd_gtk_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state)
 {
 	GdkModifierType mask;
 	ModifierKeysState mk;
@@ -126,21 +126,21 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 	return 0;
 }
 
-gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
+gboolean rnd_gtk_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
 	rnd_gtk_t *gctx = data;
 	int slen, mods;
 	unsigned short int key_raw, kv;
 
-	if (ghid_is_modifier_key_sym(kev->keyval))
+	if (rnd_gtk_is_modifier_key_sym(kev->keyval))
 		return FALSE;
 
 	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) == 0) {
 		rnd_gtk_note_event_location(NULL);
 
-		slen = rnd_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
+		slen = rnd_hid_cfg_keys_input(&rnd_gtk_keymap, mods, key_raw, kv);
 		if (slen > 0) {
-			rnd_hid_cfg_keys_action(gctx->hidlib, &ghid_keymap);
+			rnd_hid_cfg_keys_action(gctx->hidlib, &rnd_gtk_keymap);
 			return TRUE;
 		}
 	}
@@ -148,7 +148,7 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 	return FALSE;
 }
 
-unsigned short int ghid_translate_key(const char *desc, int len)
+unsigned short int rnd_gtk_translate_key(const char *desc, int len)
 {
 	guint key;
 
@@ -163,7 +163,7 @@ unsigned short int ghid_translate_key(const char *desc, int len)
 	return key;
 }
 
-int ghid_key_name(unsigned short int key_char, char *out, int out_len)
+int rnd_gtk_key_name(unsigned short int key_char, char *out, int out_len)
 {
 	char *name = gdk_keyval_name(key_char);
 	if (name == NULL)

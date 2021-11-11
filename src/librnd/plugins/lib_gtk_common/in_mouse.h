@@ -8,25 +8,25 @@
 #include <gdk/gdkevents.h>
 
 
-extern rnd_hid_cfg_mouse_t ghid_mouse;
-extern int ghid_wheel_zoom;
+extern rnd_hid_cfg_mouse_t rnd_gtk_mouse;
+extern int rnd_gtk_wheel_zoom;
 
-rnd_hid_cfg_mod_t ghid_mouse_button(int ev_button);
+rnd_hid_cfg_mod_t rnd_gtk_mouse_button(int ev_button);
 
-int ghid_get_user_xy(rnd_gtk_t *ctx, const char *msg);
+int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg);
 
-gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
+gint rnd_gtk_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
 
-gboolean ghid_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
-gboolean ghid_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
+gboolean rnd_gtk_port_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
+gboolean rnd_gtk_port_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
 
-void ghid_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
-void ghid_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx);
+void rnd_gtk_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
+void rnd_gtk_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx);
 
-void ghid_watch_cursor(rnd_gtk_t *ctx); /* Override the cursor appearance to signifies a wait state */
-void ghid_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed); /* Override the cursor appearance to signifies a point is found */
-void ghid_mode_cursor(rnd_gtk_t *ctx); /* Changes the normal cursor appearance according to last set mode, but respect override */
-void ghid_restore_cursor(rnd_gtk_t *ctx); /* Remove override and restore the mode cursor */
+void rnd_gtk_watch_cursor(rnd_gtk_t *ctx); /* Override the cursor appearance to signifies a wait state */
+void rnd_gtk_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed); /* Override the cursor appearance to signifies a point is found */
+void rnd_gtk_mode_cursor(rnd_gtk_t *ctx); /* Changes the normal cursor appearance according to last set mode, but respect override */
+void rnd_gtk_restore_cursor(rnd_gtk_t *ctx); /* Remove override and restore the mode cursor */
 
 
 #endif
