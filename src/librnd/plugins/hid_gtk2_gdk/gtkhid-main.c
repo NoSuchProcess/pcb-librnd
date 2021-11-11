@@ -18,7 +18,7 @@ int gtk2_gdk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	ghid_glue_common_init(ghid_cookie);
 	ghid_gdk_install(&ghidgui->impl, hid);
-	return gtkhid_parse_arguments(hid, argc, argv);
+	return rnd_gtk_parse_arguments(hid, argc, argv);
 }
 
 int pplg_check_ver_hid_gtk2_gdk(int ver_needed) { return 0; }
@@ -32,7 +32,7 @@ int pplg_init_hid_gtk2_gdk(void)
 {
 	RND_API_CHK_VER;
 
-	ghid_glue_hid_init(&gtk2_gdk_hid);
+	rnd_gtk_glue_hid_init(&gtk2_gdk_hid);
 
 	gtk2_gdk_hid.parse_arguments = gtk2_gdk_parse_arguments;
 

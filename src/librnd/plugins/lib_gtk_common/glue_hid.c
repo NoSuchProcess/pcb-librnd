@@ -212,7 +212,7 @@ static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 }
 
 /* Create top level window for routines that will need top_window before rnd_gtk_create_topwin_widgets() is called. */
-int gtkhid_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
+int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	GtkWidget *window;
@@ -633,7 +633,7 @@ static void ghid_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
 	}
 }
 
-void ghid_glue_hid_init(rnd_hid_t *dst)
+void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 {
 	memset(dst, 0, sizeof(rnd_hid_t));
 
@@ -647,7 +647,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->do_export = gtkhid_do_export;
 	dst->do_exit = ghid_do_exit;
 	dst->iterate = ghid_iterate;
-	dst->parse_arguments = gtkhid_parse_arguments;
+	dst->parse_arguments = rnd_gtk_parse_arguments;
 
 	dst->shift_is_pressed = ghid_shift_is_pressed;
 	dst->control_is_pressed = ghid_control_is_pressed;
