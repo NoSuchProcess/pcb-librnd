@@ -176,7 +176,7 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_tex
 		txt_set_text_(b, how, str, strlen(str));
 }
 
-static int ghid_text_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtk_text_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	txt_set_text(&ctx->attrs[idx], ctx, RND_HID_TEXT_REPLACE, val->str);
 	return 0;
@@ -220,7 +220,7 @@ static void txt_scroll_to_bottom(rnd_hid_attribute_t *attrib, void *hid_ctx)
 	gtk_text_buffer_delete_mark(buffer, mark);
 }
 
-static GtkWidget *ghid_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent)
+static GtkWidget *rnd_gtk_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent)
 {
 	GtkWidget *wtxt;
 	GtkTextBuffer *buffer;

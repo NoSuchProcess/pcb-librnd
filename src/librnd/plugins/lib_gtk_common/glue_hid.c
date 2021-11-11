@@ -278,9 +278,9 @@ static char *ghid_fileselect(rnd_hid_t *hid, const char *title, const char *desc
 	return rnd_gtk_fileselect(hid, (rnd_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
-static void *ghid_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	return ghid_attr_dlg_new((rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return rnd_gtk_attr_dlg_new((rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
 static void ghid_beep(rnd_hid_t *hid)
@@ -660,17 +660,17 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->unwatch_file = rnd_gtk_unwatch_file;
 
 	dst->fileselect = ghid_fileselect;
-	dst->attr_dlg_new = ghid_attr_dlg_new_;
-	dst->attr_dlg_run = ghid_attr_dlg_run;
-	dst->attr_dlg_raise = ghid_attr_dlg_raise;
-	dst->attr_dlg_close = ghid_attr_dlg_close;
-	dst->attr_dlg_free = ghid_attr_dlg_free;
-	dst->attr_dlg_property = ghid_attr_dlg_property;
-	dst->attr_dlg_widget_state = ghid_attr_dlg_widget_state;
-	dst->attr_dlg_widget_hide = ghid_attr_dlg_widget_hide;
-	dst->attr_dlg_widget_poke = ghid_attr_dlg_widget_poke;
-	dst->attr_dlg_set_value = ghid_attr_dlg_set_value;
-	dst->attr_dlg_set_help = ghid_attr_dlg_set_help;
+	dst->attr_dlg_new = rnd_gtk_attr_dlg_new_;
+	dst->attr_dlg_run = rnd_gtk_attr_dlg_run;
+	dst->attr_dlg_raise = rnd_gtk_attr_dlg_raise;
+	dst->attr_dlg_close = rnd_gtk_attr_dlg_close;
+	dst->attr_dlg_free = rnd_gtk_attr_dlg_free;
+	dst->attr_dlg_property = rnd_gtk_attr_dlg_property;
+	dst->attr_dlg_widget_state = rnd_gtk_attr_dlg_widget_state;
+	dst->attr_dlg_widget_hide = rnd_gtk_attr_dlg_widget_hide;
+	dst->attr_dlg_widget_poke = rnd_gtk_attr_dlg_widget_poke;
+	dst->attr_dlg_set_value = rnd_gtk_attr_dlg_set_value;
+	dst->attr_dlg_set_help = rnd_gtk_attr_dlg_set_help;
 
 	dst->supports_dad_text_markup = 1;
 
@@ -705,7 +705,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->busy = ghid_busy;
 
 	dst->set_hidlib = ghid_set_hidlib;
-	dst->get_dad_hidlib = ghid_attr_get_dad_hidlib;
+	dst->get_dad_hidlib = rnd_gtk_attr_get_dad_hidlib;
 
 	dst->key_state = &ghid_keymap;
 

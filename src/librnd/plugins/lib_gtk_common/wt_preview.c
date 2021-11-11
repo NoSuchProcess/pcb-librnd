@@ -154,29 +154,29 @@ enum {
 	PROP_CONFIG = 10
 };
 
-static GObjectClass *ghid_preview_parent_class = NULL;
+static GObjectClass *rnd_gtk_preview_parent_class = NULL;
 
 /* Initialises the preview object once it is constructed. Chains up in case
    the parent class wants to do anything too. object is the preview object. */
-static void ghid_preview_constructed(GObject *object)
+static void rnd_gtk_preview_constructed(GObject *object)
 {
-	if (G_OBJECT_CLASS(ghid_preview_parent_class)->constructed != NULL)
-		G_OBJECT_CLASS(ghid_preview_parent_class)->constructed(object);
+	if (G_OBJECT_CLASS(rnd_gtk_preview_parent_class)->constructed != NULL)
+		G_OBJECT_CLASS(rnd_gtk_preview_parent_class)->constructed(object);
 }
 
 /* Just before the rnd_gtk_preview_t GObject is finalized, free our
    allocated data, and then chain up to the parent's finalize handler. */
-static void ghid_preview_finalize(GObject *object)
+static void rnd_gtk_preview_finalize(GObject *object)
 {
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(object);
 
 	/* Passing NULL for subcircuit data will clear the preview */
 	preview_set_data(preview, NULL);
 
-	G_OBJECT_CLASS(ghid_preview_parent_class)->finalize(object);
+	G_OBJECT_CLASS(rnd_gtk_preview_parent_class)->finalize(object);
 }
 
-static void ghid_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+static void rnd_gtk_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(object);
 	GdkWindow *window = gtkc_widget_get_window(GTK_WIDGET(preview));
@@ -210,7 +210,7 @@ static void ghid_preview_set_property(GObject *object, guint property_id, const 
 	}
 }
 
-static void ghid_preview_get_property(GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+static void rnd_gtk_preview_get_property(GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
 	switch (property_id) {
 	default:
@@ -231,7 +231,7 @@ do { \
 } while(0)
 
 /* Converter: set up a pinout expose and use the generic preview expose call */
-static gboolean ghid_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev)
+static gboolean rnd_gtk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev)
 {
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
 	gboolean res;
@@ -254,19 +254,19 @@ static gboolean ghid_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev)
 }
 
 /* Override parent virtual class methods as needed and register GObject properties. */
-static void ghid_preview_class_init(rnd_gtk_preview_class_t *klass)
+static void rnd_gtk_preview_class_init(rnd_gtk_preview_class_t *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	GtkWidgetClass *gtk_widget_class = GTK_WIDGET_CLASS(klass);
 
-	gobject_class->finalize = ghid_preview_finalize;
-	gobject_class->set_property = ghid_preview_set_property;
-	gobject_class->get_property = ghid_preview_get_property;
-	gobject_class->constructed = ghid_preview_constructed;
+	gobject_class->finalize = rnd_gtk_preview_finalize;
+	gobject_class->set_property = rnd_gtk_preview_set_property;
+	gobject_class->get_property = rnd_gtk_preview_get_property;
+	gobject_class->constructed = rnd_gtk_preview_constructed;
 
-	RND_GTK_EXPOSE_EVENT_SET(gtk_widget_class, ghid_preview_expose);
+	RND_GTK_EXPOSE_EVENT_SET(gtk_widget_class, rnd_gtk_preview_expose);
 
-	ghid_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
+	rnd_gtk_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
 	g_object_class_install_property(gobject_class, PROP_GPORT, g_param_spec_pointer("gport", "", "", G_PARAM_WRITABLE));
 	g_object_class_install_property(gobject_class, PROP_COM, g_param_spec_pointer("ctx", "", "", G_PARAM_WRITABLE));
@@ -528,14 +528,14 @@ static gboolean preview_key_release_cb(GtkWidget *w, GdkEventKey *kev, gpointer 
 
 GType rnd_gtk_preview_get_type()
 {
-	static GType ghid_preview_type = 0;
+	static GType rnd_gtk_preview_type = 0;
 
-	if (!ghid_preview_type) {
-		static const GTypeInfo ghid_preview_info = {
+	if (!rnd_gtk_preview_type) {
+		static const GTypeInfo rnd_gtk_preview_info = {
 			sizeof(rnd_gtk_preview_class_t),
 			NULL, /* base_init */
 			NULL, /* base_finalize */
-			(GClassInitFunc) ghid_preview_class_init,
+			(GClassInitFunc) rnd_gtk_preview_class_init,
 			NULL, /* class_finalize */
 			NULL, /* class_data */
 			sizeof(rnd_gtk_preview_t),
@@ -543,11 +543,11 @@ GType rnd_gtk_preview_get_type()
 			NULL, /* instance_init */
 		};
 
-		ghid_preview_type =
-			g_type_register_static(GTK_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &ghid_preview_info, (GTypeFlags) 0);
+		rnd_gtk_preview_type =
+			g_type_register_static(GTK_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &rnd_gtk_preview_info, (GTypeFlags) 0);
 	}
 
-	return ghid_preview_type;
+	return rnd_gtk_preview_type;
 }
 
 static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
@@ -645,13 +645,13 @@ void rnd_gtk_preview_invalidate(rnd_gtk_t *ctx, const rnd_box_t *screen)
 			pb.Y2 = prv->view.y0 + prv->view.height;
 			if (rnd_box_intersect(screen, &pb)) {
 				prv->redrawing = 1;
-				ghid_preview_expose(GTK_WIDGET(prv), NULL);
+				rnd_gtk_preview_expose(GTK_WIDGET(prv), NULL);
 				prv->redrawing = 0;
 			}
 		}
 		else {
 			prv->redrawing = 1;
-			ghid_preview_expose(GTK_WIDGET(prv), NULL);
+			rnd_gtk_preview_expose(GTK_WIDGET(prv), NULL);
 			prv->redrawing = 0;
 		}
 	}

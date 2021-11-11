@@ -31,7 +31,7 @@
 
 #include <librnd/plugins/lib_hid_common/dad_markup.h>
 
-static int ghid_progress_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtk_progress_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *prg = ctx->wl[idx];
 	double pos = val->dbl;
@@ -45,7 +45,7 @@ static int ghid_progress_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 }
 
 
-static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *rnd_gtk_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *prg;
 
@@ -59,13 +59,13 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *att
 	return prg;
 }
 
-static void ghid_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void rnd_gtka_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	rnd_hid_preview_t *prv = e->draw_data;
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
-static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool rnd_gtka_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	rnd_hid_preview_t *prv = draw_data;
 	if (prv->user_mouse_cb != NULL)
@@ -73,7 +73,7 @@ static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_
 	return rnd_false;
 }
 
-static rnd_bool ghid_preview_key(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+static rnd_bool rnd_gtka_preview_key(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
 {
 	rnd_hid_preview_t *prv = draw_data;
 	if (prv->user_key_cb != NULL)
@@ -81,7 +81,7 @@ static rnd_bool ghid_preview_key(void *widget, void *draw_data, rnd_bool release
 	return rnd_false;
 }
 
-void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_box_t *view)
+void rnd_gtka_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_box_t *view)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -90,7 +90,7 @@ void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_b
 	gtk_widget_queue_draw(prv);
 }
 
-static int ghid_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtka_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *prv = ctx->wl[idx];
 
@@ -99,7 +99,7 @@ static int ghid_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *
 }
 
 
-void ghid_preview_config(rnd_gtk_preview_t *gp, GtkWidget *widget)
+void rnd_gtka_preview_config(rnd_gtk_preview_t *gp, GtkWidget *widget)
 {
 	rnd_hid_preview_t *prv = gp->expose_data.draw_data;
 	if (prv->initial_view_valid) {
@@ -109,22 +109,22 @@ void ghid_preview_config(rnd_gtk_preview_t *gp, GtkWidget *widget)
 	}
 }
 
-static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *rnd_gtk_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *prv;
 	rnd_gtk_preview_t *p;
 	rnd_hid_preview_t *hp = attr->wdata;
 
 	hp->hid_wdata = ctx;
-	hp->hid_zoomto_cb = ghid_preview_zoomto;
+	hp->hid_zoomto_cb = rnd_gtka_preview_zoomto;
 	
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
-	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->wdata);
+	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, rnd_gtka_preview_expose, rnd_gtka_preview_config, attr->wdata);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (rnd_gtk_preview_t *) prv;
-	p->mouse_cb = ghid_preview_mouse;
-	p->key_cb = ghid_preview_key;
+	p->mouse_cb = rnd_gtka_preview_mouse;
+	p->key_cb = rnd_gtka_preview_key;
 
 /*	p->overlay_draw_cb = pcb_stub_draw_csect_overlay;*/
 TODO("TODO make these configurable:")
@@ -140,7 +140,7 @@ TODO("TODO make these configurable:")
 	return prv;
 }
 
-static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
+static GtkWidget *rnd_gtk_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
 {
 	GtkWidget *bparent, *pic, *evb;
 	GdkPixbuf *pixbuf;
@@ -159,7 +159,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 }
 
 
-static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, int toggle, int expfill)
+static GtkWidget *rnd_gtk_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, int toggle, int expfill)
 {
 	GtkWidget *bparent, *button, *img;
 	GdkPixbuf *pixbuf;
@@ -181,7 +181,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 	return button;
 }
 
-static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *rnd_gtk_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *button;
 	rnd_gtk_color_t gclr;
@@ -201,7 +201,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, 
 }
 
 
-static int ghid_color_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtk_color_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	rnd_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];

@@ -201,7 +201,7 @@ char *rnd_gtk_fileselect(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *title, con
 		sub->parent_ctx = &pctx;
 		sub->parent_poke = rnd_gtk_fsd_poke;
 
-		pctx.hid_ctx = ghid_attr_sub_new(gctx, subbox, sub->dlg, sub->dlg_len, sub);
+		pctx.hid_ctx = rnd_gtk_attr_sub_new(gctx, subbox, sub->dlg, sub->dlg_len, sub);
 		sub->dlg_hid_ctx = pctx.hid_ctx;
 
 		gtk_file_chooser_set_extra_widget(GTK_FILE_CHOOSER(pctx.dialog), subbox);

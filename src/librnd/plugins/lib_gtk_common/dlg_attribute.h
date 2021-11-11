@@ -2,23 +2,23 @@
 #include <librnd/core/hid.h>
 #include "rnd_gtk.h"
 
-void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
-int ghid_attr_dlg_run(void *hid_ctx);
-void ghid_attr_dlg_raise(void *hid_ctx);
-void ghid_attr_dlg_close(void *hid_ctx);
-void ghid_attr_dlg_free(void *hid_ctx);
-void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
+void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+int rnd_gtk_attr_dlg_run(void *hid_ctx);
+void rnd_gtk_attr_dlg_raise(void *hid_ctx);
+void rnd_gtk_attr_dlg_close(void *hid_ctx);
+void rnd_gtk_attr_dlg_free(void *hid_ctx);
+void rnd_gtk_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
 
-int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
-int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
-int ghid_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
+int rnd_gtk_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
+int rnd_gtk_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
+int rnd_gtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
-int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
-void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
+int rnd_gtk_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
+void rnd_gtk_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 
 /* Create an interacgive DAD subdialog under parent_vbox */
-void *ghid_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data);
+void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data);
 
 /* Fix up background color of various widgets - useful if the host dialog's background color is not the default */
 void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
@@ -27,5 +27,5 @@ void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
    emitting an event */
 int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
 
-rnd_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx);
+rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx);
 

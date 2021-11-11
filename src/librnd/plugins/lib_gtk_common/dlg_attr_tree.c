@@ -27,7 +27,7 @@
 
 #include <gdk/gdkkeysyms.h>
 
-static GtkTreeIter *ghid_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, rnd_hid_row_t *r, int prepend, GtkTreeIter *sibling)
+static GtkTreeIter *rnd_gtk_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, rnd_hid_row_t *r, int prepend, GtkTreeIter *sibling)
 {
 	int c;
 	GtkTreeIter *curr = malloc(sizeof(GtkTreeIter));
@@ -68,19 +68,19 @@ static GtkTreeIter *ghid_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore 
 }
 
 /* insert a subtree of a tree-table widget in a gtk table store reursively */
-static void ghid_tree_table_import(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
+static void rnd_gtk_tree_table_import(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
 {
 	rnd_hid_row_t *r;
 
 	for(r = gdl_first(lst); r != NULL; r = gdl_next(lst, r)) {
-		GtkTreeIter *curr = ghid_tree_table_add(attr, tstore, par, r, 0, NULL);
-		ghid_tree_table_import(attr, tstore, &r->children, curr);
+		GtkTreeIter *curr = rnd_gtk_tree_table_add(attr, tstore, par, r, 0, NULL);
+		rnd_gtk_tree_table_import(attr, tstore, &r->children, curr);
 	}
 }
 
 /* Return the tree-store data model, which is the child of the filter model
    attached to the tree widget */
-GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, rnd_hid_attribute_t *attrib, int filter)
+GtkTreeModel *rnd_gtk_tree_table_get_model(attr_dlg_t *ctx, rnd_hid_attribute_t *attrib, int filter)
 {
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
@@ -93,11 +93,11 @@ GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 	return model;
 }
 
-static void ghid_tree_table_insert_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *new_row)
+static void rnd_gtk_tree_table_insert_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *new_row)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	rnd_hid_row_t *sibling, *par = rnd_dad_tree_parent_row(attrib->wdata, new_row);
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attrib, 0);
 	GtkTreeIter *sibiter, *pariter;
 	int prepnd;
 
@@ -111,22 +111,22 @@ static void ghid_tree_table_insert_cb(rnd_hid_attribute_t *attrib, void *hid_ctx
 
 	pariter = par == NULL ? NULL : par->hid_data;
 	sibiter = sibling == NULL ? NULL : sibling->hid_data;
-	ghid_tree_table_add(attrib, GTK_TREE_STORE(model), pariter, new_row, prepnd, sibiter);
+	rnd_gtk_tree_table_add(attrib, GTK_TREE_STORE(model), pariter, new_row, prepnd, sibiter);
 }
 
-static void ghid_tree_table_remove_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
+static void rnd_gtk_tree_table_remove_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attrib, 0);
 	gtk_tree_store_remove(GTK_TREE_STORE(model), (GtkTreeIter *)row->hid_data);
 	row->hid_data = NULL;
 }
 
-static void ghid_tree_table_modify_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row, int col)
+static void rnd_gtk_tree_table_modify_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row, int col)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeIter *iter = row->hid_data;
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attr, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attr, 0);
 	GValue v = {0};
 
 	g_value_init(&v, G_TYPE_STRING);
@@ -143,20 +143,20 @@ static void ghid_tree_table_modify_cb(rnd_hid_attribute_t *attr, void *hid_ctx, 
 	}
 }
 
-static void ghid_tree_table_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
+static void rnd_gtk_tree_table_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	free(row->hid_data);
 }
 
-static void ghid_tree_table_update_hide(rnd_hid_attribute_t *attrib, void *hid_ctx)
+static void rnd_gtk_tree_table_update_hide(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 1);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attrib, 1);
 	gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(model));
 }
 
 
-static rnd_hid_row_t *ghid_tree_table_get_selected(rnd_hid_attribute_t *attrib, void *hid_ctx)
+static rnd_hid_row_t *rnd_gtk_tree_table_get_selected(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -178,10 +178,10 @@ static rnd_hid_row_t *ghid_tree_table_get_selected(rnd_hid_attribute_t *attrib, 
 	return r;
 }
 
-static void ghid_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
+static void rnd_gtk_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), RND_OBJ_PROP);
-	rnd_hid_row_t *r = ghid_tree_table_get_selected(attr, ctx);
+	rnd_hid_row_t *r = rnd_gtk_tree_table_get_selected(attr, ctx);
 	rnd_hid_tree_t *tree = attr->wdata;
 
 	attr->changed = 1;
@@ -232,7 +232,7 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 
 /* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
    Enter -> row-activate. */
-static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, rnd_hid_attribute_t *attr)
+static gboolean rnd_gtk_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, rnd_hid_attribute_t *attr)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
@@ -328,7 +328,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 }
 
 /* React on double click on a row (as detected by gtk) */
-static gboolean ghid_tree_table_row_activated_cb(GtkTreeView *tv, GtkTreePath *tp, GtkTreeViewColumn *col, gpointer *user_data)
+static gboolean rnd_gtk_tree_table_row_activated_cb(GtkTreeView *tv, GtkTreePath *tp, GtkTreeViewColumn *col, gpointer *user_data)
 {
 	rnd_hid_attribute_t *attr = (rnd_hid_attribute_t *)user_data;
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(tv), RND_OBJ_PROP);
@@ -337,7 +337,7 @@ static gboolean ghid_tree_table_row_activated_cb(GtkTreeView *tv, GtkTreePath *t
 }
 
 /* Return the x coord of the first non-arrow pixel or -1 if there's no arrow */
-static int ghid_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
+static int rnd_gtk_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
 {
 	GdkRectangle rect;
 	GtkTreeViewColumn *col = gtk_tree_view_get_expander_column(tv);
@@ -350,7 +350,7 @@ static int ghid_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
 }
 
 /* Handle the double-click to be equivalent to "row-activated" signal */
-static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
+static gboolean rnd_gtk_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
 	GtkTreeView *tv = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model;
@@ -361,7 +361,7 @@ static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev,
 		model = gtk_tree_view_get_model(tv);
 		gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
 		if (path != NULL) {
-			int minx = ghid_tree_table_arrow_width(tv, path);
+			int minx = rnd_gtk_tree_table_arrow_width(tv, path);
 			if (ev->button.x < minx)
 				return FALSE; /* do not activate whenclicked on the arrow (interferes with gtk auto expand) */
 
@@ -373,7 +373,7 @@ static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev,
 	return FALSE;
 }
 
-static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
+static gboolean rnd_gtk_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
 	GtkTreeView *tv = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model;
@@ -383,7 +383,7 @@ static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *e
 	model = gtk_tree_view_get_model(tv);
 	gtk_tree_view_get_path_at_pos(tv, ev->button.x, ev->button.y, &path, NULL, NULL, NULL);
 	if (path != NULL) {
-		int minx = ghid_tree_table_arrow_width(tv, path);
+		int minx = rnd_gtk_tree_table_arrow_width(tv, path);
 		if (ev->button.x < minx)
 			return FALSE; /* do not activate whenclicked on the arrow (interferes with gtk auto expand) */
 
@@ -396,11 +396,11 @@ static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *e
 	return FALSE;
 }
 
-static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtk_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *tt = ctx->wl[idx];
 	rnd_hid_attribute_t *attr = &ctx->attrs[idx];
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attr, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attr, 0);
 	GtkTreePath *path;
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *r;
@@ -425,12 +425,12 @@ TODO("DAD: remove cursor - is it possible with gtk?")
 	return 0;
 }
 
-void ghid_tree_table_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
+void rnd_gtk_tree_table_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attrib, 0);
 	GtkTreePath *path;
 
 	if (row == NULL) {
@@ -448,12 +448,12 @@ void ghid_tree_table_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_h
 	gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), path, NULL, FALSE);
 }
 
-void ghid_tree_table_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row, int expanded)
+void rnd_gtk_tree_table_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row, int expanded)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
-	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
+	GtkTreeModel *model = rnd_gtk_tree_table_get_model(ctx, attrib, 0);
 	GtkTreePath *path;
 
 	if (row == NULL)
@@ -472,7 +472,7 @@ void ghid_tree_table_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 }
 
 
-static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	int c;
 	const char **colhdr;
@@ -484,14 +484,14 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	GtkTreeSelection *selection;
 	rnd_hid_tree_t *tree = attr->wdata;
 
-	tree->hid_insert_cb = ghid_tree_table_insert_cb;
-	tree->hid_remove_cb = ghid_tree_table_remove_cb;
-	tree->hid_modify_cb = ghid_tree_table_modify_cb;
-	tree->hid_jumpto_cb = ghid_tree_table_jumpto_cb;
-	tree->hid_expcoll_cb = ghid_tree_table_expcoll_cb;
-	tree->hid_free_cb = ghid_tree_table_free_cb;
-	tree->hid_get_selected_cb = ghid_tree_table_get_selected;
-	tree->hid_update_hide_cb = ghid_tree_table_update_hide;
+	tree->hid_insert_cb = rnd_gtk_tree_table_insert_cb;
+	tree->hid_remove_cb = rnd_gtk_tree_table_remove_cb;
+	tree->hid_modify_cb = rnd_gtk_tree_table_modify_cb;
+	tree->hid_jumpto_cb = rnd_gtk_tree_table_jumpto_cb;
+	tree->hid_expcoll_cb = rnd_gtk_tree_table_expcoll_cb;
+	tree->hid_free_cb = rnd_gtk_tree_table_free_cb;
+	tree->hid_get_selected_cb = rnd_gtk_tree_table_get_selected;
+	tree->hid_update_hide_cb = rnd_gtk_tree_table_update_hide;
 	tree->hid_wdata = ctx;
 
 	/* create columns */
@@ -517,7 +517,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	/* import existing data */
 	tstore = gtk_tree_store_newv(attr->rnd_hatt_table_cols+1, types);
 	free(types);
-	ghid_tree_table_import(attr, tstore, &tree->rows, NULL);
+	rnd_gtk_tree_table_import(attr, tstore, &tree->rows, NULL);
 
 	model = GTK_TREE_MODEL(tstore);
 	model = (GtkTreeModel *)g_object_new(GTK_TYPE_TREE_MODEL_FILTER, "child-model", model, "virtual-root", NULL, NULL);
@@ -529,11 +529,11 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 TODO("not in gtk4; safe to skip this (users should use themes)");
 	g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
 
-	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(ghid_tree_table_cursor), attr);
-	g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(ghid_tree_table_button_press_cb), attr);
-	g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(ghid_tree_table_button_release_cb), attr);
-	g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(ghid_tree_table_key_press_cb), attr);
-	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(ghid_tree_table_row_activated_cb), attr);
+	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
+	g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(rnd_gtk_tree_table_button_press_cb), attr);
+	g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(rnd_gtk_tree_table_button_release_cb), attr);
+	g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(rnd_gtk_tree_table_key_press_cb), attr);
+	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(rnd_gtk_tree_table_row_activated_cb), attr);
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
@@ -544,7 +544,7 @@ TODO("not in gtk4; safe to skip this (users should use themes)");
 	return view;
 }
 
-static void ghid_tree_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
+static void rnd_gtk_tree_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
 {
 	GtkWidget *tt = ctx->wl[j];
 	/* make sure the model filter functions are not called back in an async call

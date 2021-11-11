@@ -141,7 +141,7 @@ int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	gtk_widget_show_all(frame); /* can not show after creating the sub: some widgets may start out as hidden! */
 
 	sub->parent_poke = rnd_gtk_dock_poke;
-	sub->dlg_hid_ctx = docked->hid_ctx = ghid_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
+	sub->dlg_hid_ctx = docked->hid_ctx = rnd_gtk_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
 	docked->tw = tw;
 	sub->parent_ctx = docked;
 

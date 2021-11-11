@@ -286,7 +286,7 @@ typedef struct {
 			int next;
 		} pane;
 	} val;
-} ghid_attr_tb_t;
+} rnd_gtk_attr_tb_t;
 
 /* Wrap w so that clicks on it are triggering a callback */
 static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
@@ -298,14 +298,14 @@ static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
 	return event_box;
 }
 
-static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from);
+static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk_attr_tb_t *tb_st, int start_from);
 
 #include "dlg_attr_tree.c"
 #include "dlg_attr_misc.c"
 #include "dlg_attr_txt.c"
 #include "dlg_attr_box.c"
 
-static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_tb_t *tb_st, int start_from)
+static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk_attr_tb_t *tb_st, int start_from)
 {
 	int j, i, expfill;
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
@@ -338,7 +338,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_notebook_append_page(GTK_NOTEBOOK(real_parent), parent, widget);
 					break;
 				case TB_PANE:
-					parent = ghid_pane_append(ctx, tb_st, real_parent);
+					parent = rnd_gtk_pane_append(ctx, tb_st, real_parent);
 					break;
 			}
 		}
@@ -354,7 +354,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
-				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1);
+				j = rnd_gtk_attr_dlg_add(ctx, hbox, NULL, j+1);
 				break;
 
 			case RND_HATT_BEGIN_VBOX:
@@ -363,17 +363,17 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				expfill = (ctx->attrs[j].rnd_hatt_flags & RND_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
-				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1);
+				j = rnd_gtk_attr_dlg_add(ctx, vbox1, NULL, j+1);
 				break;
 
 			case RND_HATT_BEGIN_HPANE:
 			case RND_HATT_BEGIN_VPANE:
-				j = ghid_pane_create(ctx, j, parent, (ctx->attrs[j].type == RND_HATT_BEGIN_HPANE));
+				j = rnd_gtk_pane_create(ctx, j, parent, (ctx->attrs[j].type == RND_HATT_BEGIN_HPANE));
 				break;
 
 			case RND_HATT_BEGIN_TABLE:
 				{
-					ghid_attr_tb_t ts;
+					rnd_gtk_attr_tb_t ts;
 					bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 					ts.type = TB_TABLE;
 					ts.val.table.cols = ctx->attrs[j].rnd_hatt_table_cols;
@@ -383,13 +383,13 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
 					gtk_box_pack_start(GTK_BOX(bparent), tbl, expfill, expfill, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 					ctx->wl[j] = tbl;
-					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1);
+					j = rnd_gtk_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}
 				break;
 
 			case RND_HATT_BEGIN_TABBED:
 				{
-					ghid_attr_tb_t ts;
+					rnd_gtk_attr_tb_t ts;
 					ts.type = TB_TABBED;
 					ts.val.tabbed.tablab = ctx->attrs[j].wdata;
 					ctx->wl[j] = widget = gtk_notebook_new();
@@ -402,12 +402,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					gtk_box_pack_start(GTK_BOX(parent), widget, expfill, expfill, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
 					g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
-					j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
+					j = rnd_gtk_attr_dlg_add(ctx, widget, &ts, j+1);
 				}
 				break;
 
 			case RND_HATT_BEGIN_COMPOUND:
-				j = ghid_attr_dlg_add(ctx, parent, NULL, j+1);
+				j = rnd_gtk_attr_dlg_add(ctx, parent, NULL, j+1);
 				break;
 
 			case RND_HATT_LABEL:
@@ -520,13 +520,13 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case RND_HATT_TREE:
-				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent, j);
+				ctx->wl[j] = rnd_gtk_tree_table_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case RND_HATT_PREVIEW:
 				{
 					rnd_gtk_preview_t *p;
-					ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
+					ctx->wl[j] = rnd_gtk_preview_create(ctx, &ctx->attrs[j], parent, j);
 					p = (rnd_gtk_preview_t *)ctx->wl[j];
 					p->flip_local = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_LFLIP);
 					p->flip_global = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_GFLIP);
@@ -536,27 +536,27 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				break;
 
 			case RND_HATT_TEXT:
-				ctx->wl[j] = ghid_text_create(ctx, &ctx->attrs[j], parent);
+				ctx->wl[j] = rnd_gtk_text_create(ctx, &ctx->attrs[j], parent);
 				break;
 
 			case RND_HATT_PICTURE:
-				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent, j, G_CALLBACK(label_click_cb), ctx);
+				ctx->wl[j] = rnd_gtk_picture_create(ctx, &ctx->attrs[j], parent, j, G_CALLBACK(label_click_cb), ctx);
 				break;
 
 			case RND_HATT_PICBUTTON:
-				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE), expfill);
+				ctx->wl[j] = rnd_gtk_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE), expfill);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
 			case RND_HATT_COLOR:
-				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent, j);
+				ctx->wl[j] = rnd_gtk_color_create(ctx, &ctx->attrs[j], parent, j);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "color_set", G_CALLBACK(color_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), RND_OBJ_PROP, ctx);
 				break;
 
 			case RND_HATT_PROGRESS:
-				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent, j);
+				ctx->wl[j] = rnd_gtk_progress_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
 			case RND_HATT_UNIT:
@@ -583,7 +583,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 					GtkWidget *subbox = gtkc_hbox_new(FALSE, 0);
 					rnd_hid_dad_subdialog_t *sub = ctx->attrs[j].wdata;
 
-					sub->dlg_hid_ctx = ghid_attr_sub_new(ctx->gctx, subbox, sub->dlg, sub->dlg_len, sub);
+					sub->dlg_hid_ctx = rnd_gtk_attr_sub_new(ctx->gctx, subbox, sub->dlg, sub->dlg_len, sub);
 					ctx->wl[j] = subbox;
 					gtk_box_pack_start(GTK_BOX(parent), ctx->wl[j], FALSE, FALSE, 0);
 				}
@@ -591,7 +591,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 
 
 			default:
-				printf("ghid_attribute_dialog: unknown type of HID attribute\n");
+				printf("rnd_gtk_attribute_dialog: unknown type of HID attribute\n");
 				break;
 		}
 		if (ctx->wltop[j] == NULL)
@@ -602,7 +602,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	return j;
 }
 
-static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int *copied)
+static int rnd_gtk_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int *copied)
 {
 	int ret, save;
 	save = ctx->inhibit_valchg;
@@ -634,33 +634,33 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			break;
 
 		case RND_HATT_TREE:
-			ret = ghid_tree_table_set(ctx, idx, val);
+			ret = rnd_gtk_tree_table_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
 		case RND_HATT_PROGRESS:
-			ret = ghid_progress_set(ctx, idx, val);
+			ret = rnd_gtk_progress_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
 		case RND_HATT_PREVIEW:
-			ret = ghid_preview_set(ctx, idx, val);
+			ret = rnd_gtka_preview_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
 		case RND_HATT_TEXT:
-			ret = ghid_text_set(ctx, idx, val);
+			ret = rnd_gtk_text_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
 		case RND_HATT_COLOR:
-			ret = ghid_color_set(ctx, idx, val);
+			ret = rnd_gtk_color_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
 		case RND_HATT_BEGIN_HPANE:
 		case RND_HATT_BEGIN_VPANE:
-			ret = ghid_pane_set(ctx, idx, val);
+			ret = rnd_gtk_pane_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
@@ -737,18 +737,18 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 	return 1;
 }
 
-static gint ghid_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
+static gint rnd_gtk_attr_dlg_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
 	return rnd_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
 }
 
 /* destroy the GUI widgets but do not free any hid_ctx struct */
-static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
+static void rnd_gtk_attr_dlg_free_gui(attr_dlg_t *ctx)
 {
 	int i;
 
-	/* make sure there are no nested ghid_attr_dlg_free() calls */
+	/* make sure there are no nested rnd_gtk_attr_dlg_free() calls */
 	if (ctx->freeing_gui)
 		return;
 	ctx->freeing_gui = 1;
@@ -759,7 +759,7 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
-			case RND_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
+			case RND_HATT_TREE: rnd_gtk_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case RND_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
 			case RND_HATT_PREVIEW: rnd_gtk_preview_del(ctx->gctx, RND_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
@@ -776,14 +776,14 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 }
 
 
-static gint ghid_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
+static gint rnd_gtk_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
 {
-	ghid_attr_dlg_free_gui(data);
+	rnd_gtk_attr_dlg_free_gui(data);
 	return 0;
 }
 
 /* Hide (or show) a widget by idx - no check performed on idx range */
-static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, rnd_bool hide)
+static int rnd_gtk_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, rnd_bool hide)
 {
 	GtkWidget *w;
 
@@ -812,7 +812,7 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, rnd_bool hide)
 
 extern fgw_ctx_t rnd_fgw;
 
-static int ghid_attr_dlg_widget_poke_string(void *hid_ctx, GtkWidget *w, int idx, int argc, fgw_arg_t argv[])
+static int rnd_gtk_attr_dlg_widget_poke_string(void *hid_ctx, GtkWidget *w, int idx, int argc, fgw_arg_t argv[])
 {
 	if ((argv[0].type & FGW_STR) != FGW_STR) return -1;
 
@@ -826,7 +826,7 @@ static int ghid_attr_dlg_widget_poke_string(void *hid_ctx, GtkWidget *w, int idx
 	return -1;
 }
 
-int ghid_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[])
+int rnd_gtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[])
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)hid_ctx;
 	GtkWidget *w;
@@ -836,22 +836,22 @@ int ghid_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]
 
 	w = ctx->wl[idx];
 	switch(ctx->attrs[idx].type) {
-		case RND_HATT_STRING: return ghid_attr_dlg_widget_poke_string(hid_ctx, w, idx, argc, argv);
+		case RND_HATT_STRING: return rnd_gtk_attr_dlg_widget_poke_string(hid_ctx, w, idx, argc, argv);
 		default: return -1;
 	}
 	return -1;
 }
 
 
-static void ghid_initial_wstates(attr_dlg_t *ctx)
+static void rnd_gtk_initial_wstates(attr_dlg_t *ctx)
 {
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++)
 		if (ctx->attrs[n].rnd_hatt_flags & RND_HATF_HIDE)
-			ghid_attr_dlg_widget_hide_(ctx, n, 1);
+			rnd_gtk_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -894,19 +894,19 @@ void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 	else if ((defx > 0) && (defy > 0))
 		gtk_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
-	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(ghid_attr_dlg_configure_event_cb), ctx);
-	ctx->destroy_handler = g_signal_connect(ctx->dialog, "destroy", G_CALLBACK(ghid_attr_dlg_destroy_event_cb), ctx);
+	g_signal_connect(ctx->dialog, "configure_event", G_CALLBACK(rnd_gtk_attr_dlg_configure_event_cb), ctx);
+	ctx->destroy_handler = g_signal_connect(ctx->dialog, "destroy", G_CALLBACK(rnd_gtk_attr_dlg_destroy_event_cb), ctx);
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
 	content_area = gtkc_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
 	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
 
-	ghid_attr_dlg_add(ctx, main_vbox, NULL, 0);
+	rnd_gtk_attr_dlg_add(ctx, main_vbox, NULL, 0);
 
 	gtk_widget_show_all(ctx->dialog);
 
-	ghid_initial_wstates(ctx);
+	rnd_gtk_initial_wstates(ctx);
 
 	if (rnd_gtk_conf_hid.plugins.hid_gtk.dialog.auto_present)
 		gtk_window_present(GTK_WINDOW(ctx->dialog));
@@ -914,7 +914,7 @@ void *ghid_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *at
 	return ctx;
 }
 
-void *ghid_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
 	attr_dlg_t *ctx;
 
@@ -928,16 +928,16 @@ void *ghid_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribut
 	ctx->caller_data = caller_data;
 	ctx->modal = 0;
 
-	ghid_attr_dlg_add(ctx, parent_box, NULL, 0);
+	rnd_gtk_attr_dlg_add(ctx, parent_box, NULL, 0);
 
 	gtk_widget_show_all(parent_box);
 
-	ghid_initial_wstates(ctx);
+	rnd_gtk_initial_wstates(ctx);
 
 	return ctx;
 }
 
-int ghid_attr_dlg_run(void *hid_ctx)
+int rnd_gtk_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int modal = ctx->modal;
@@ -960,13 +960,13 @@ int ghid_attr_dlg_run(void *hid_ctx)
 	return -42; /* the close cb destroyed the window; real return value should be set by DAD ret override */
 }
 
-void ghid_attr_dlg_raise(void *hid_ctx)
+void rnd_gtk_attr_dlg_raise(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	gtk_window_present(GTK_WINDOW(ctx->dialog));
 }
 
-void ghid_attr_dlg_close(void *hid_ctx)
+void rnd_gtk_attr_dlg_close(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -977,7 +977,7 @@ void ghid_attr_dlg_close(void *hid_ctx)
 	}
 }
 
-void ghid_attr_dlg_free(void *hid_ctx)
+void rnd_gtk_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -998,7 +998,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	free(ctx);
 }
 
-void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
+void rnd_gtk_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -1006,7 +1006,7 @@ void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hi
 		ctx->property[prop] = *val;
 }
 
-int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
+int rnd_gtk_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
@@ -1041,17 +1041,17 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 }
 
 
-int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
+int rnd_gtk_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	return ghid_attr_dlg_widget_hide_(ctx, idx, hide);
+	return rnd_gtk_attr_dlg_widget_hide_(ctx, idx, hide);
 }
 
-int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
+int rnd_gtk_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int res, copied;
@@ -1059,7 +1059,7 @@ int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *va
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
-	res = ghid_attr_dlg_set(ctx, idx, val, &copied);
+	res = rnd_gtk_attr_dlg_set(ctx, idx, val, &copied);
 
 	if (res == 0) {
 		if (!copied)
@@ -1072,7 +1072,7 @@ int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *va
 	return -1;
 }
 
-void ghid_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
+void rnd_gtk_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -1113,7 +1113,7 @@ int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 	return 0;
 }
 
-rnd_hidlib_t *ghid_attr_get_dad_hidlib(void *hid_ctx)
+rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	return ctx->gctx->hidlib;

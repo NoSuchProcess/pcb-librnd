@@ -26,7 +26,7 @@
 
 /* Boxes and group widgets */
 
-static int ghid_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
+static int rnd_gtk_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *pane = ctx->wl[idx];
 	GtkAllocation a;
@@ -51,7 +51,7 @@ static int ghid_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val
 	return 0;
 }
 
-static GtkWidget *ghid_pane_append(attr_dlg_t *ctx, ghid_attr_tb_t *ts, GtkWidget *parent)
+static GtkWidget *rnd_gtk_pane_append(attr_dlg_t *ctx, rnd_gtk_attr_tb_t *ts, GtkWidget *parent)
 {
 	GtkWidget *page = gtkc_vbox_new(FALSE, 4);
 	switch(ts->val.pane.next) {
@@ -64,10 +64,10 @@ static GtkWidget *ghid_pane_append(attr_dlg_t *ctx, ghid_attr_tb_t *ts, GtkWidge
 	return page;
 }
 
-static int ghid_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor)
+static int rnd_gtk_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor)
 {
 	GtkWidget *bparent, *widget;
-	ghid_attr_tb_t ts;
+	rnd_gtk_attr_tb_t ts;
 
 	ts.type = TB_PANE;
 	ts.val.pane.next = 1;
@@ -76,6 +76,6 @@ static int ghid_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor
 	bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), widget, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
-	j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);
+	j = rnd_gtk_attr_dlg_add(ctx, widget, &ts, j+1);
 	return j;
 }
