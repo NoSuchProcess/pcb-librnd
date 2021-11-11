@@ -126,7 +126,7 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 	return 0;
 }
 
-gboolean rnd_gtk_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
+gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
 {
 	rnd_gtk_t *gctx = data;
 	int slen, mods;

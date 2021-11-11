@@ -155,7 +155,7 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_port_window_mouse_scroll_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_window_mouse_scroll_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(rnd_gtkg_drawing_area_configure_event_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
@@ -515,12 +515,12 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 
 static void rnd_gtkg_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
-	rnd_gtk_port_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
+	rnd_gtk_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
 }
 
 static void rnd_gtkg_set_mouse_cursor(rnd_hid_t *hid, int idx)
 {
-	rnd_gtk_port_set_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx);
+	rnd_gtk_set_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx);
 }
 
 static void rnd_gtkg_set_top_title(rnd_hid_t *hid, const char *title)

@@ -37,7 +37,7 @@
 |  Some caveats with menu shorcut keys:  Some keys are trapped out by Gtk
 |  and can't be used as shortcuts (eg. '|', TAB, etc).  For these cases
 |  we have our own shortcut table and capture the keys and send the events
-|  there in rnd_gtk_port_key_press_cb().
+|  there in rnd_gtk_key_press_cb().
 */
 #define _POSIX_SOURCE
 #include <librnd/rnd_config.h>
@@ -209,7 +209,7 @@ gboolean rnd_gtk_idle_cb(void *topwin)
 	return FALSE;
 }
 
-gboolean rnd_gtk_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
+gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
 {
 	gint ksym = kev->keyval;
 

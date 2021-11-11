@@ -231,7 +231,7 @@ int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg)
 }
 
 /* Mouse scroll wheel events */
-gint rnd_gtk_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
+gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
 {
 	rnd_gtk_t *ctx = data;
 	ModifierKeysState mk;
@@ -260,7 +260,7 @@ gint rnd_gtk_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, 
 	return TRUE;
 }
 
-gboolean rnd_gtk_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
 {
 	ModifierKeysState mk;
 	GdkModifierType state;
@@ -288,7 +288,7 @@ gboolean rnd_gtk_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *e
 	return TRUE;
 }
 
-gboolean rnd_gtk_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
 {
 	ModifierKeysState mk;
 	GdkModifierType state;
@@ -394,7 +394,7 @@ static const named_cursor_t named_cursors[] = {
 
 #define GHID_CURSOR_START (GDK_LAST_CURSOR+10)
 
-void rnd_gtk_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	rnd_gtk_cursor_t *mc = vtmc_get(&ctx->mouse.cursor, idx, 1);
 	if (pixel == NULL) {
@@ -421,7 +421,7 @@ void rnd_gtk_port_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, co
 	}
 }
 
-void rnd_gtk_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
+void rnd_gtk_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 {
 	rnd_gtk_cursor_t *mc = (idx >= 0) ? vtmc_get(&ctx->mouse.cursor, idx, 0) : NULL;
 	GdkWindow *window;
@@ -461,12 +461,12 @@ void rnd_gtk_port_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 
 void rnd_gtk_mode_cursor(rnd_gtk_t *ctx)
 {
-	rnd_gtk_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
+	rnd_gtk_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
 }
 
 void rnd_gtk_restore_cursor(rnd_gtk_t *ctx)
 {
 	cursor_override = 0;
-	rnd_gtk_port_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
+	rnd_gtk_set_mouse_cursor(ctx, ctx->mouse.last_cursor_idx);
 }
 
