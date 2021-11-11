@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2019 Tibor Palinkas
+ *  Copyright (C) 2017,2019,2021 Tibor Palinkas
  *  Copyright (C) 2017 Alain Vigne
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -41,70 +41,102 @@ do { \
 #define gtkc_dialog_get_content_area(d)  ((d)->vbox)
 #define gtkc_combo_box_entry_new_text()  gtk_combo_box_entry_new_text()
 
-typedef GdkColor rnd_gtk_color_t;
+typedef GdkRGBA rnd_gtk_color_t;
+
+/* INTERNAL: set fill/exp for a widget (not part of the API, do not call from elsewhere) */
+static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w)
+{
+	int h = 1, v = 1;
+
+	/* set fill/exp in parent box if parent is a box: figure parent orientation */
+	if (GTK_IS_BOX(parent)) {
+		GtkOrientation o = gtk_orientable_get_orientation(GTK_ORIENTABLE(parent));
+		if (o == GTK_ORIENTATION_HORIZONTAL) v = 0;
+		if (o == GTK_ORIENTATION_VERTICAL) h = 0;
+	}
+
+	if (h) {
+		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_hexpand(w, 1);
+	}
+
+	if (v) {
+		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_vexpand(w, 1);
+	}
+}
+
+static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
+{
+	gtk_box_append(GTK_BOX(box), child);
+	if (expfill)
+		gtkci_expfill(box, child);
+}
 
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
 {
-	return gtk_hbox_new(homogenous, spacing);
+	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, spacing);
+	if (homogenous) gtk_box_set_homogeneous(GTK_BOX(box), 1);
+	return box;
 }
 
 static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 {
-	return gtk_vbox_new(homogenous, spacing);
+	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, spacing);
+	if (homogenous) gtk_box_set_homogeneous(GTK_BOX(box), 1);
+	return box;
 }
 
 static inline GtkWidget *gtkc_hpaned_new()
 {
-	return gtk_hpaned_new();
+	return gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 }
 
 static inline GtkWidget *gtkc_vpaned_new()
 {
-	return gtk_vpaned_new();
+	return gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 }
 
 /* color button */
 
 static inline GtkWidget *gtkc_color_button_new_with_color(rnd_gtk_color_t *color)
 {
-	return gtk_color_button_new_with_color(color);
+	return gtk_color_button_new_with_rgba(color);
 }
 
 static inline void gtkc_color_button_set_color(GtkWidget *button, rnd_gtk_color_t *color)
 {
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(button), color);
+	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(button), color);
 }
 
 static inline void gtkc_color_button_get_color(GtkWidget *button, rnd_gtk_color_t *color)
 {
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), color);
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(button), color);
 }
-
-/* combo box text API, GTK2.4 compatible, GTK3 incompatible. */
 
 static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
-	return gtk_combo_box_new_text();
+	return gtk_combo_box_text_new();
 }
 
 static inline void gtkc_combo_box_text_append_text(GtkWidget *combo, const gchar *text)
 {
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), text);
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), text);
 }
 
 static inline void gtkc_combo_box_text_prepend_text(GtkWidget *combo, const gchar *text)
 {
-	gtk_combo_box_prepend_text(GTK_COMBO_BOX(combo), text);
+	gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(combo), text);
 }
 
 static inline void gtkc_combo_box_text_remove(GtkWidget *combo, gint position)
 {
-	gtk_combo_box_remove_text(GTK_COMBO_BOX(combo), position);
+	gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo), position);
 }
 
 static inline gchar *gtkc_combo_box_text_get_active_text(GtkWidget *combo)
 {
-	return gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+	return gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 }
 
 static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
@@ -115,19 +147,35 @@ static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 	return w;
 }
 
-#define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
-typedef GdkEventExpose rnd_gtk_expose_t;
+#define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, rnd_gtk_expose_t *))val
+typedef struct {
+	GtkGLArea *area;
+	GdkGLContext *context;
+} rnd_gtk_expose_t;
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), child);
+	TODO("verify that this works; pcb-rnd layer binding is a good candidate");
+	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), child);
 }
 
-static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
+TODO("should be void in gtk2 too")
+TODO("test this, e.g. shift pressed")
+static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
-	return gdk_window_get_pointer(gtkc_widget_get_window(w), x, y, mask);
+	double dx, dy;
+	GdkDisplay *dsp = gtk_widget_get_display(w);
+	GdkSeat *seat = gdk_display_get_default_seat(dsp);
+	GdkDevice *dev = gdk_seat_get_pointer(seat);
+	GtkNative *nat = gtk_widget_get_native(w);
+	GdkSurface *surf = gtk_native_get_surface(nat);
+
+	gdk_surface_get_device_position(surf, dev, &dx, &dy, mask);
+	*x = round(dx);
+	*y = round(dy);
 }
 
+TODO("can we remove these two?")
 static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
 {
 }
@@ -138,44 +186,45 @@ static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_cla
 
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 {
-	GtkStateType st = GTK_WIDGET_STATE(widget);
 	/* race condition... */
-	if (set)
-		gtk_widget_set_state(widget, st | GTK_STATE_SELECTED);
+	if (set) {
+		gtk_label_set_selectable(GTK_LABEL(widget), 1);
+		gtk_label_select_region(GTK_LABEL(widget), 0, 100000);
+	}
 	else
-		gtk_widget_set_state(widget, st & (~GTK_STATE_SELECTED));
+		gtk_label_set_selectable(GTK_LABEL(widget), 0);
 }
 
+TODO("remove this from gtk2 and gtk4")
 #define gtkc_widget_selectable(widget, name_space)
 
-
-/*** common for now ***/
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
 static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 {
-	if(GTK_IS_CONTAINER(widget)) {
-		GList *children = gtk_container_get_children(GTK_CONTAINER(widget));
-		while ((children = g_list_next(children)) != NULL)
-			rnd_gtk_widget_hide_all(GTK_WIDGET(children->data));
-	}
+	GtkWidget *ch;
+	for(ch = gtk_widget_get_first_child(widget); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
+		rnd_gtk_widget_hide_all(ch);
 	gtk_widget_hide(widget);
 }
-
-/* gtk_table() is not in gtk4 */
 
 /* create a table with known size (all rows and cols created empty) */
 static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
 {
-	return gtk_table_new(rows, cols, homog);
+	GtkWidget *tbl = gtk_grid_new();
+	gtk_grid_set_column_homogeneous(GTK_GRID(tbl), 1);
+
+	return tbl;
 }
 
 
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)
 {
-	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 4);
+	GtkWidget *bb = gtkc_hbox_new(0, 5); /* this box enables child to grow horizontally */
+	gtkc_box_pack_append(bb, child, 1, 0);
+	gtk_grid_attach(GTK_GRID(table), bb, row, col, 1, 1);
 }
 
 #endif  /* RND_GTK_COMPAT_H */
