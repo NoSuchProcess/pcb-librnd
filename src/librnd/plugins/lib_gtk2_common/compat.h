@@ -80,8 +80,6 @@ static inline void gtkc_color_button_get_color(GtkWidget *button, rnd_gtk_color_
 	gtk_color_button_get_color(GTK_COLOR_BUTTON(button), color);
 }
 
-/* combo box text API, GTK2.4 compatible, GTK3 incompatible. */
-
 static inline GtkWidget *gtkc_combo_box_text_new(void)
 {
 	return gtk_combo_box_new_text();
@@ -149,8 +147,6 @@ static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 #define gtkc_widget_selectable(widget, name_space)
 
 
-/*** common for now ***/
-
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
 static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
@@ -162,8 +158,6 @@ static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 	}
 	gtk_widget_hide(widget);
 }
-
-/* gtk_table() is not in gtk4 */
 
 /* create a table with known size (all rows and cols created empty) */
 static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
