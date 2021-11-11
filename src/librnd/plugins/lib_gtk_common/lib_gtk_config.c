@@ -36,7 +36,7 @@
 
 static const char *lib_gtk_config_cookie = "lib_gtk_config";
 
-rnd_conf_hid_id_t ghid_conf_id = -1;
+rnd_conf_hid_id_t rnd_gtk_conf_id = -1;
 conf_hid_gtk_t rnd_gtk_conf_hid;
 
 void rnd_gtk_conf_uninit(void)
@@ -97,7 +97,7 @@ void rnd_gtk_conf_init(void)
 	int dirty[RND_CFR_max_real] = {0};
 	rnd_conf_role_t r;
 
-	ghid_conf_id = rnd_conf_hid_reg(lib_gtk_config_cookie, NULL);
+	rnd_gtk_conf_id = rnd_conf_hid_reg(lib_gtk_config_cookie, NULL);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(rnd_gtk_conf_hid, field,isarray,type_name,cpath,cname,desc,flags);

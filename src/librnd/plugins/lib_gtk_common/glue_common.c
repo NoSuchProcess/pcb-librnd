@@ -79,30 +79,30 @@ static void ghid_win32_init(void) {} /* no-op on non-win32 */
 
 static const char *cookie_menu = "gtk hid menu";
 
-static void ghid_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
 		rnd_gtk_fullscreen_apply(&ghidgui->topwin);
 }
 
 
-void ghid_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_gtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((ghidgui->hid_active) && (ghidgui->hidlib != NULL))
 		rnd_gtk_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
 }
 
-static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
 {
 	rnd_gtk_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
-static void ghid_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)
 {
 	rnd_gtk_previews_flip(ghidgui);
 }
 
-static void ghid_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (!ghidgui->hid_active)
 		return;
@@ -123,26 +123,26 @@ static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, voi
 	}
 }
 
-static void ghid_conf_regs(const char *cookie)
+static void rnd_gtk_conf_regs(const char *cookie)
 {
 	static rnd_conf_hid_callbacks_t cbs_fullscreen, cbs_cli[2], cbs_color[3], cbs_flip[2];
 
 	ghidgui->conf_id = rnd_conf_hid_reg(cookie, NULL);
 
-	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", ghid_confchg_fullscreen);
+	init_conf_watch(&cbs_fullscreen, "editor/fullscreen", rnd_gtk_confchg_fullscreen);
 
-	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", ghid_confchg_cli);
-	init_conf_watch(&cbs_cli[1], "rc/cli_backend", ghid_confchg_cli);
+	init_conf_watch(&cbs_cli[0], "rc/cli_prompt", rnd_gtk_confchg_cli);
+	init_conf_watch(&cbs_cli[1], "rc/cli_backend", rnd_gtk_confchg_cli);
 
-	init_conf_watch(&cbs_color[0], "appearance/color/background", ghid_confchg_spec_color);
-	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", ghid_confchg_spec_color);
-	init_conf_watch(&cbs_color[2], "appearance/color/grid", ghid_confchg_spec_color);
+	init_conf_watch(&cbs_color[0], "appearance/color/background", rnd_gtk_confchg_spec_color);
+	init_conf_watch(&cbs_color[1], "appearance/color/off_limit", rnd_gtk_confchg_spec_color);
+	init_conf_watch(&cbs_color[2], "appearance/color/grid", rnd_gtk_confchg_spec_color);
 
-	init_conf_watch(&cbs_flip[0], "editor/view/flip_x", ghid_confchg_flip);
-	init_conf_watch(&cbs_flip[1], "editor/view/flip_y", ghid_confchg_flip);
+	init_conf_watch(&cbs_flip[0], "editor/view/flip_x", rnd_gtk_confchg_flip);
+	init_conf_watch(&cbs_flip[1], "editor/view/flip_y", rnd_gtk_confchg_flip);
 
 	ghidgui->topwin.menu.rnd_gtk_menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
-	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
+	ghidgui->topwin.menu.confchg_checkbox = rnd_gtk_confchg_checkbox;
 }
 
 
@@ -374,6 +374,6 @@ void ghid_glue_common_init(const char *cookie)
 	ghidgui->port.view.ctx = ghidgui;
 	ghidgui->port.mouse = &ghidgui->mouse;
 
-	ghid_conf_regs(cookie);
+	rnd_gtk_conf_regs(cookie);
 }
 
