@@ -4,10 +4,10 @@
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.h>
 
 
-void ghid_glue_common_init(const char *cookie);
-void ghid_glue_common_uninit(const char *cookie);
+void rnd_gtkg_glue_common_init(const char *cookie);
+void rnd_gtkg_glue_common_uninit(const char *cookie);
 
-void ghid_draw_area_update(rnd_gtk_port_t *out, GdkRectangle *rect);
+void rnd_gtkg_draw_area_update(rnd_gtk_port_t *out, GdkRectangle *rect);
 
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */
@@ -50,8 +50,8 @@ void rnd_gtk_mode_cursor_main(void);
 void rnd_gtk_pan_common(void);
 
 
-void ghid_init_pixmap_low(rnd_gtk_pixmap_t *gpm);
-void ghid_uninit_pixmap_low(rnd_gtk_pixmap_t *gpm);
+void rnd_gtkg_init_pixmap_low(rnd_gtk_pixmap_t *gpm);
+void rnd_gtkg_uninit_pixmap_low(rnd_gtk_pixmap_t *gpm);
 
 
 /* extend a 8 bit color component to 16 bits and guarantee round trip */

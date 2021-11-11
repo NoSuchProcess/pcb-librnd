@@ -16,7 +16,7 @@ extern void ghid_gdk_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid);
 
 int gtk2_gdk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	ghid_glue_common_init(ghid_cookie);
+	rnd_gtkg_glue_common_init(ghid_cookie);
 	ghid_gdk_install(&ghidgui->impl, hid);
 	return rnd_gtk_parse_arguments(hid, argc, argv);
 }
@@ -25,7 +25,7 @@ int pplg_check_ver_hid_gtk2_gdk(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_gtk2_gdk(void)
 {
-	ghid_glue_common_uninit(ghid_cookie);
+	rnd_gtkg_glue_common_uninit(ghid_cookie);
 }
 
 int pplg_init_hid_gtk2_gdk(void)

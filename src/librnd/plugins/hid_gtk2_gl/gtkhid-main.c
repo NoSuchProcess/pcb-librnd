@@ -19,7 +19,7 @@ extern void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid);
 
 int gtk2_gl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	ghid_glue_common_init(ghid_gl_cookie);
+	rnd_gtkg_glue_common_init(ghid_gl_cookie);
 	ghid_gl_install(&ghidgui->impl, hid);
 	return rnd_gtk_parse_arguments(hid, argc, argv);
 }

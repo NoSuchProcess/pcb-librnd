@@ -521,7 +521,7 @@ static int preview_lock = 0;
 void ghid_gl_invalidate_all(rnd_hid_t *hid)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
-		ghid_draw_area_update(&ghidgui->port, NULL);
+		rnd_gtkg_draw_area_update(&ghidgui->port, NULL);
 		if (!preview_lock) {
 			preview_lock++;
 			rnd_gtk_previews_invalidate_all();

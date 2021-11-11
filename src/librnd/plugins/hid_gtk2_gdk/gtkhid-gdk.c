@@ -1237,7 +1237,7 @@ static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_co
 	}
 	else if (ghidgui->port.drawing_area != NULL) {
 		/* Queue a GTK expose when changes are complete */
-		ghid_draw_area_update(&ghidgui->port, NULL);
+		rnd_gtkg_draw_area_update(&ghidgui->port, NULL);
 	}
 }
 
@@ -1271,7 +1271,7 @@ static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complet
 	}
 	else if (ghidgui->port.drawing_area != NULL) {
 		/* Queue a GTK expose when changes are complete */
-		ghid_draw_area_update(&ghidgui->port, NULL);
+		rnd_gtkg_draw_area_update(&ghidgui->port, NULL);
 	}
 }
 

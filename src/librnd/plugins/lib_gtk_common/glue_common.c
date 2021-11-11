@@ -50,7 +50,7 @@ rnd_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_fs.h>
 
-static void ghid_win32_init(void)
+static void rnd_gtkg_win32_init(void)
 {
 	char *cache, *cmd, *s;
 	/* set up gdk pixmap modules - without this XPMs won't be loaded */
@@ -71,7 +71,7 @@ static void ghid_win32_init(void)
 	free(cache);
 }
 #else
-static void ghid_win32_init(void) {} /* no-op on non-win32 */
+static void rnd_gtkg_win32_init(void) {} /* no-op on non-win32 */
 #endif
 
 
@@ -266,7 +266,7 @@ void rnd_gtk_interface_input_signals_disconnect(void)
 /*** misc ***/
 
 /* import a core pixmap into a gdk pixmap */
-void ghid_init_pixmap_low(rnd_gtk_pixmap_t *gpm)
+void rnd_gtkg_init_pixmap_low(rnd_gtk_pixmap_t *gpm)
 {
 	int rowstd, nch, x, y;
 	unsigned char *dst, *dst_row, *src = gpm->pxm->p;
@@ -294,12 +294,12 @@ void ghid_init_pixmap_low(rnd_gtk_pixmap_t *gpm)
 	}
 }
 
-void ghid_uninit_pixmap_low(rnd_gtk_pixmap_t *gpm)
+void rnd_gtkg_uninit_pixmap_low(rnd_gtk_pixmap_t *gpm)
 {
 	g_object_unref(gpm->image);
 }
 
-static void ghid_load_bg_image(void)
+static void rnd_gtkg_load_bg_image(void)
 {
 	static rnd_pixmap_t pxm;
 
@@ -311,11 +311,11 @@ static void ghid_load_bg_image(void)
 			return;
 		}
 		ghidgui->bg_pixmap.pxm = &pxm;
-		ghid_init_pixmap_low(&ghidgui->bg_pixmap);
+		rnd_gtkg_init_pixmap_low(&ghidgui->bg_pixmap);
 	}
 }
 
-void ghid_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
+void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
 {
 	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
 }
@@ -352,21 +352,21 @@ void rnd_gtk_note_event_location(GdkEventButton *ev)
 }
 
 /*** init ***/
-void ghid_glue_common_uninit(const char *cookie)
+void rnd_gtkg_glue_common_uninit(const char *cookie)
 {
 	rnd_event_unbind_allcookie(cookie);
 	rnd_conf_hid_unreg(cookie);
 	rnd_conf_hid_unreg(cookie_menu);
 }
 
-void ghid_glue_common_init(const char *cookie)
+void rnd_gtkg_glue_common_init(const char *cookie)
 {
-	ghid_win32_init();
+	rnd_gtkg_win32_init();
 
 	/* Set up the glue struct to lib_gtk_common */
 	ghidgui->impl.gport = &ghidgui->port;
 
-	ghidgui->impl.load_bg_image = ghid_load_bg_image;
+	ghidgui->impl.load_bg_image = rnd_gtkg_load_bg_image;
 
 	ghidgui->topwin.cmd.post_entry = command_post_entry;
 	ghidgui->topwin.cmd.pre_entry = command_pre_entry;

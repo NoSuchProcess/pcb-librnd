@@ -27,7 +27,7 @@
 
 extern rnd_hid_cfg_keys_t rnd_gtk_keymap;
 
-static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
+static gint rnd_gtkg_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
@@ -35,7 +35,7 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
 
-	/* See comment in ghid_port_window_leave_cb() */
+	/* See comment in rnd_gtkg_port_window_leave_cb() */
 
 	if (ev->mode != GDK_CROSSING_NORMAL && ev->mode != GDK_CROSSING_UNGRAB && ev->detail != GDK_NOTIFY_NONLINEAR)
 		return FALSE;
@@ -54,7 +54,7 @@ static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, v
 	return FALSE;
 }
 
-static gint ghid_port_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
+static gint rnd_gtkg_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
@@ -81,7 +81,7 @@ static gboolean check_object_tooltips(rnd_gtk_t *gctx)
 	return rnd_gtk_dwg_tooltip_check_object(gctx->hidlib, out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
-static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *ctx_)
+static gint rnd_gtkg_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
@@ -107,7 +107,7 @@ static gint ghid_port_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, vo
 	return FALSE;
 }
 
-static void ghid_gui_inited(rnd_gtk_t *gctx, int main, int conf)
+static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 {
 	static int im = 0, ic = 0, first = 1;
 	if (main) im = 1;
@@ -121,7 +121,7 @@ static void ghid_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 	}
 }
 
-static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_)
+static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
@@ -129,7 +129,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, Gdk
 	gctx->port.view.canvas_height = ev->height;
 
 	gctx->impl.drawing_area_configure_hook(out);
-	ghid_gui_inited(gctx, 0, 1);
+	rnd_gtkg_gui_inited(gctx, 0, 1);
 
 	rnd_gtk_tw_ranges_scale(gctx);
 	rnd_gui->invalidate_all(rnd_gui);
@@ -137,7 +137,7 @@ static gboolean ghid_port_drawing_area_configure_event_cb(GtkWidget *widget, Gdk
 }
 
 
-static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 
@@ -156,10 +156,10 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_port_window_mouse_scroll_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(ghid_port_window_motion_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(ghid_port_drawing_area_configure_event_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(ghid_port_window_enter_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(ghid_port_window_leave_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(rnd_gtkg_drawing_area_configure_event_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
+	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(rnd_gtkg_window_leave_cb), gctx);
 
 	rnd_gtk_interface_input_signals_connect();
 
@@ -168,7 +168,7 @@ TODO(": move this to render init")
 
 	gctx->gui_is_up = 1;
 
-	ghid_gui_inited(gctx, 1, 0);
+	rnd_gtkg_gui_inited(gctx, 1, 0);
 
 	/* Make sure drawing area has keyboard focus so that keys are handled
 	   while the mouse cursor is over the top window or children widgets,
@@ -184,7 +184,7 @@ TODO(": move this to render init")
 	hid->hid_data = NULL;
 }
 
-static void ghid_do_exit(rnd_hid_t *hid)
+static void rnd_gtkg_do_exit(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 
@@ -243,7 +243,7 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return 0;
 }
 
-static void ghid_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void rnd_gtkg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	int offset_x, offset_y;
@@ -256,13 +256,13 @@ static void ghid_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int
 	rnd_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gctx->port.view);
 }
 
-static int ghid_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+static int rnd_gtkg_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	return rnd_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
 }
 
-rnd_hidval_t ghid_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
+rnd_hidval_t rnd_gtkg_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
 	return rnd_gtk_add_timer((rnd_gtk_t *)hid->hid_data, func, milliseconds, user_data);
 }
@@ -273,7 +273,7 @@ static rnd_hidval_t rnd_gtkg_watch_file(rnd_hid_t *hid, int fd, unsigned int con
 	return rnd_gtk_watch_file((rnd_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }
 
-static char *ghid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+static char *rnd_gtkg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	return rnd_gtk_fileselect(hid, (rnd_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
@@ -283,7 +283,7 @@ static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attri
 	return rnd_gtk_attr_dlg_new((rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
-static void ghid_beep(rnd_hid_t *hid)
+static void rnd_gtkg_beep(rnd_hid_t *hid)
 {
 	gdk_beep();
 }
@@ -318,7 +318,7 @@ static void rnd_gtk_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
 		rnd_gtk_update_toggle_flags(gctx->hidlib, &gctx->topwin, cookie);
 }
 
-rnd_hid_cfg_t *ghid_get_menu_cfg(rnd_hid_t *hid)
+rnd_hid_cfg_t *rnd_gtkg_get_menu_cfg(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if (!gctx->hid_active)
@@ -326,7 +326,7 @@ rnd_hid_cfg_t *ghid_get_menu_cfg(rnd_hid_t *hid)
 	return hid->menu;
 }
 
-static int ghid_usage(rnd_hid_t *hid, const char *topic)
+static int rnd_gtkg_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
 	rnd_conf_usage("plugins/hid_gtk", rnd_hid_usage_option);
@@ -343,7 +343,7 @@ static const char *rnd_gtk_command_entry(rnd_hid_t *hid, const char *ovr, int *c
 	return rnd_gtk_cmd_command_entry(&gctx->topwin.cmd, ovr, cursor);
 }
 
-static int ghid_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
+static int rnd_gtkg_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
@@ -357,7 +357,7 @@ static int ghid_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *d
 
 
 
-int ghid_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
+int rnd_gtkg_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
@@ -372,7 +372,7 @@ int ghid_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t
 	return -1;
 }
 
-void ghid_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
+void rnd_gtkg_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
 {
 	switch(format) {
 		case RND_HID_CLIPFMT_TEXT:
@@ -381,13 +381,13 @@ void ghid_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t
 	}
 }
 
-static void ghid_iterate(rnd_hid_t *hid)
+static void rnd_gtkg_iterate(rnd_hid_t *hid)
 {
 	while(gtk_events_pending())
 		gtk_main_iteration_do(0);
 }
 
-static double ghid_benchmark(rnd_hid_t *hid)
+static double rnd_gtkg_benchmark(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	int i = 0;
@@ -411,25 +411,25 @@ static double ghid_benchmark(rnd_hid_t *hid)
 	return i/10.0;
 }
 
-static int ghid_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
+static int rnd_gtkg_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	return rnd_gtk_tw_dock_enter(&gctx->topwin, sub, where, id);
 }
 
-static void ghid_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
+static void rnd_gtkg_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	rnd_gtk_tw_dock_leave(&gctx->topwin, sub);
 }
 
-static void ghid_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
+static void rnd_gtkg_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	rnd_gtk_zoom_view_win(&gctx->port.view, x1, y1, x2, y2, set_crosshair);
 }
 
-static void ghid_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
+static void rnd_gtkg_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if (relative)
@@ -438,7 +438,7 @@ static void ghid_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y
 		rnd_gtk_zoom_view_abs(&gctx->port.view, center_x, center_y, factor);
 }
 
-static void ghid_pan(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
+static void rnd_gtkg_pan(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if (relative)
@@ -447,13 +447,13 @@ static void ghid_pan(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 		rnd_gtk_pan_view_abs(&gctx->port.view, x, y, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
 }
 
-static void ghid_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
+static void rnd_gtkg_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	gctx->port.view.panning = mode;
 }
 
-static void ghid_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
+static void rnd_gtkg_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	viewbox->X1 = gctx->port.view.x0;
@@ -462,13 +462,13 @@ static void ghid_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 	viewbox->Y2 = rnd_round((double)gctx->port.view.y0 + (double)gctx->port.view.canvas_height * gctx->port.view.coord_per_px);
 }
 
-static void ghid_open_command(rnd_hid_t *hid)
+static void rnd_gtkg_open_command(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	rnd_gtk_handle_user_command(gctx->hidlib, &gctx->topwin.cmd, TRUE);
 }
 
-static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
+static int rnd_gtkg_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	GtkWidget *menu = NULL;
@@ -491,7 +491,7 @@ static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static void ghid_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 
@@ -513,23 +513,23 @@ static void ghid_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	rnd_gtk_zoom_view_win(&gctx->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
 }
 
-static void ghid_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+static void rnd_gtkg_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	rnd_gtk_port_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
 }
 
-static void ghid_set_mouse_cursor(rnd_hid_t *hid, int idx)
+static void rnd_gtkg_set_mouse_cursor(rnd_hid_t *hid, int idx)
 {
 	rnd_gtk_port_set_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx);
 }
 
-static void ghid_set_top_title(rnd_hid_t *hid, const char *title)
+static void rnd_gtkg_set_top_title(rnd_hid_t *hid, const char *title)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	rnd_gtk_tw_set_title(&gctx->topwin, title);
 }
 
-static void ghid_busy(rnd_hid_t *hid, rnd_bool busy)
+static void rnd_gtkg_busy(rnd_hid_t *hid, rnd_bool busy)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if ((gctx == NULL) || (!gctx->hid_active))
@@ -540,7 +540,7 @@ static void ghid_busy(rnd_hid_t *hid, rnd_bool busy)
 		rnd_gtk_restore_cursor(gctx);
 }
 
-static int ghid_shift_is_pressed(rnd_hid_t *hid)
+static int rnd_gtkg_shift_is_pressed(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
@@ -559,7 +559,7 @@ static int ghid_shift_is_pressed(rnd_hid_t *hid)
 #endif
 }
 
-static int ghid_control_is_pressed(rnd_hid_t *hid)
+static int rnd_gtkg_control_is_pressed(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
@@ -578,7 +578,7 @@ static int ghid_control_is_pressed(rnd_hid_t *hid)
 #endif
 }
 
-static int ghid_mod1_is_pressed(rnd_hid_t *hid)
+static int rnd_gtkg_mod1_is_pressed(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	GdkModifierType mask;
@@ -595,27 +595,27 @@ static int ghid_mod1_is_pressed(rnd_hid_t *hid)
 #endif
 }
 
-static void ghid_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)
+static void rnd_gtkg_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 {
 	rnd_gtk_pixmap_t *gtk_px = calloc(sizeof(rnd_gtk_pixmap_t), 1);
 
 	gtk_px->pxm = pxm;
 	pxm->hid_data = gtk_px;
-	ghid_init_pixmap_low(gtk_px);
+	rnd_gtkg_init_pixmap_low(gtk_px);
 }
 
-static void ghid_uninit_pixmap_(rnd_hid_t *hid, rnd_pixmap_t *pxm)
+static void rnd_gtkg_uninit_pixmap_(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 {
-	ghid_uninit_pixmap_low((rnd_gtk_pixmap_t *)(pxm->hid_data));
+	rnd_gtkg_uninit_pixmap_low((rnd_gtk_pixmap_t *)(pxm->hid_data));
 	free(pxm->hid_data);
 }
 
-static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
+static void rnd_gtkg_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 
 	if (pixmap->hid_data == NULL)
-		ghid_init_pixmap(hid, pixmap);
+		rnd_gtkg_init_pixmap(hid, pixmap);
 	if (pixmap->hid_data != NULL) {
 		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
@@ -625,10 +625,10 @@ static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd
 	}
 }
 
-static void ghid_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
+static void rnd_gtkg_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
 {
 	if (pixmap->hid_data != NULL) {
-		ghid_uninit_pixmap_(hid, pixmap);
+		rnd_gtkg_uninit_pixmap_(hid, pixmap);
 		pixmap->hid_data = NULL;
 	}
 }
@@ -644,22 +644,22 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->heavy_term_layer_ind = 1;
 	dst->allow_dad_before_init = 1;
 
-	dst->do_export = gtkhid_do_export;
-	dst->do_exit = ghid_do_exit;
-	dst->iterate = ghid_iterate;
+	dst->do_export = rnd_gtkg_do_export;
+	dst->do_exit = rnd_gtkg_do_exit;
+	dst->iterate = rnd_gtkg_iterate;
 	dst->parse_arguments = rnd_gtk_parse_arguments;
 
-	dst->shift_is_pressed = ghid_shift_is_pressed;
-	dst->control_is_pressed = ghid_control_is_pressed;
-	dst->mod1_is_pressed = ghid_mod1_is_pressed;
-	dst->get_coords = ghid_get_coords;
-	dst->set_crosshair = ghid_set_crosshair;
-	dst->add_timer = ghid_add_timer;
+	dst->shift_is_pressed = rnd_gtkg_shift_is_pressed;
+	dst->control_is_pressed = rnd_gtkg_control_is_pressed;
+	dst->mod1_is_pressed = rnd_gtkg_mod1_is_pressed;
+	dst->get_coords = rnd_gtkg_get_coords;
+	dst->set_crosshair = rnd_gtkg_set_crosshair;
+	dst->add_timer = rnd_gtkg_add_timer;
 	dst->stop_timer = rnd_gtk_stop_timer;
 	dst->watch_file = rnd_gtkg_watch_file;
 	dst->unwatch_file = rnd_gtk_unwatch_file;
 
-	dst->fileselect = ghid_fileselect;
+	dst->fileselect = rnd_gtkg_fileselect;
 	dst->attr_dlg_new = rnd_gtk_attr_dlg_new_;
 	dst->attr_dlg_run = rnd_gtk_attr_dlg_run;
 	dst->attr_dlg_raise = rnd_gtk_attr_dlg_raise;
@@ -674,45 +674,45 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 
 	dst->supports_dad_text_markup = 1;
 
-	dst->dock_enter = ghid_dock_enter;
-	dst->dock_leave = ghid_dock_leave;
+	dst->dock_enter = rnd_gtkg_dock_enter;
+	dst->dock_leave = rnd_gtkg_dock_leave;
 
-	dst->beep = ghid_beep;
+	dst->beep = rnd_gtkg_beep;
 	dst->point_cursor = PointCursor;
-	dst->benchmark = ghid_benchmark;
+	dst->benchmark = rnd_gtkg_benchmark;
 
 	dst->command_entry = rnd_gtk_command_entry;
 
 	dst->create_menu_by_node = rnd_gtk_create_menu_by_node;
 	dst->remove_menu_node = rnd_gtk_remove_menu_node;
 	dst->update_menu_checkbox = rnd_gtk_update_menu_checkbox;
-	dst->get_menu_cfg = ghid_get_menu_cfg;
+	dst->get_menu_cfg = rnd_gtkg_get_menu_cfg;
 
-	dst->clip_set  = ghid_clip_set;
-	dst->clip_get  = ghid_clip_get;
-	dst->clip_free = ghid_clip_free;
+	dst->clip_set  = rnd_gtkg_clip_set;
+	dst->clip_get  = rnd_gtkg_clip_get;
+	dst->clip_free = rnd_gtkg_clip_free;
 
-	dst->zoom_win = ghid_zoom_win;
-	dst->zoom = ghid_zoom;
-	dst->pan = ghid_pan;
-	dst->pan_mode = ghid_pan_mode;
-	dst->view_get = ghid_view_get;
-	dst->open_command = ghid_open_command;
-	dst->open_popup = ghid_open_popup;
-	dst->reg_mouse_cursor = ghid_reg_mouse_cursor;
-	dst->set_mouse_cursor = ghid_set_mouse_cursor;
-	dst->set_top_title = ghid_set_top_title;
-	dst->busy = ghid_busy;
+	dst->zoom_win = rnd_gtkg_zoom_win;
+	dst->zoom = rnd_gtkg_zoom;
+	dst->pan = rnd_gtkg_pan;
+	dst->pan_mode = rnd_gtkg_pan_mode;
+	dst->view_get = rnd_gtkg_view_get;
+	dst->open_command = rnd_gtkg_open_command;
+	dst->open_popup = rnd_gtkg_open_popup;
+	dst->reg_mouse_cursor = rnd_gtkg_reg_mouse_cursor;
+	dst->set_mouse_cursor = rnd_gtkg_set_mouse_cursor;
+	dst->set_top_title = rnd_gtkg_set_top_title;
+	dst->busy = rnd_gtkg_busy;
 
-	dst->set_hidlib = ghid_set_hidlib;
+	dst->set_hidlib = rnd_gtkg_set_hidlib;
 	dst->get_dad_hidlib = rnd_gtk_attr_get_dad_hidlib;
 
 	dst->key_state = &rnd_gtk_keymap;
 
-	dst->usage = ghid_usage;
+	dst->usage = rnd_gtkg_usage;
 
-	dst->draw_pixmap = ghid_draw_pixmap;
-	dst->uninit_pixmap = ghid_uninit_pixmap;
+	dst->draw_pixmap = rnd_gtkg_draw_pixmap;
+	dst->uninit_pixmap = rnd_gtkg_uninit_pixmap;
 
 	dst->hid_data = ghidgui;
 }
