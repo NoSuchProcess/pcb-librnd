@@ -178,7 +178,7 @@ void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const 
 	if (rnd_menu_sys.inhibit)
 		return;
 
-	ghid_main_menu_update_toggle_state(hidlib, GHID_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
+	rnd_gtk_main_menu_update_toggle_state(hidlib, RND_GTK_MAIN_MENU(tw->menu.menu_bar), menu_toggle_update_cb);
 }
 
 static void h_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
@@ -228,12 +228,12 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd
 
 void ghid_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
-	gtk_window_add_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+	gtk_window_add_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
 }
 
 void ghid_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
-	gtk_window_remove_accel_group(window, ghid_main_menu_get_accel_group(GHID_MAIN_MENU(tw->menu.menu_bar)));
+	gtk_window_remove_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
 }
 
 /*** Top window ***/
@@ -441,7 +441,7 @@ static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->menu_hbox), tw->menubar_toolbar_vbox, FALSE, FALSE, 0);
 
 	/* Build main menu */
-	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->hidlib);
+	tw->menu.menu_bar = rnd_gtk_load_menus(&tw->menu, ghidgui->hidlib);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
 	tw->dockbox[RND_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);

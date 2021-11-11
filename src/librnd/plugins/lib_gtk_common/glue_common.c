@@ -141,7 +141,7 @@ static void ghid_conf_regs(const char *cookie)
 	init_conf_watch(&cbs_flip[0], "editor/view/flip_x", ghid_confchg_flip);
 	init_conf_watch(&cbs_flip[1], "editor/view/flip_y", ghid_confchg_flip);
 
-	ghidgui->topwin.menu.ghid_menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
+	ghidgui->topwin.menu.rnd_gtk_menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
 	ghidgui->topwin.menu.confchg_checkbox = ghid_confchg_checkbox;
 }
 

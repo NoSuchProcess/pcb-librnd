@@ -298,20 +298,20 @@ static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 	ghid_point_cursor(gctx, grabbed);
 }
 
-static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
+static int rnd_gtk_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	return rnd_hid_cfg_remove_menu_node(hid->menu, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
+	return rnd_hid_cfg_remove_menu_node(hid->menu, node, rnd_gtk_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
-static int ghid_create_menu_by_node(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+static int rnd_gtk_create_menu_by_node(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	return ghid_create_menu_widget(&gctx->topwin.menu, is_popup, name, is_main, parent, ins_after, menu_item);
+	return rnd_gtk_create_menu_widget(&gctx->topwin.menu, is_popup, name, is_main, parent, ins_after, menu_item);
 }
 
 
-static void ghid_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
+static void rnd_gtk_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if ((gctx->hid_active) && (gctx->hidlib != NULL))
@@ -683,9 +683,9 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 
 	dst->command_entry = rnd_gtk_command_entry;
 
-	dst->create_menu_by_node = ghid_create_menu_by_node;
-	dst->remove_menu_node = ghid_remove_menu_node;
-	dst->update_menu_checkbox = ghid_update_menu_checkbox;
+	dst->create_menu_by_node = rnd_gtk_create_menu_by_node;
+	dst->remove_menu_node = rnd_gtk_remove_menu_node;
+	dst->update_menu_checkbox = rnd_gtk_update_menu_checkbox;
 	dst->get_menu_cfg = ghid_get_menu_cfg;
 
 	dst->clip_set  = ghid_clip_set;

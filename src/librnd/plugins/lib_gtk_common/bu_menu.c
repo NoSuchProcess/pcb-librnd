@@ -48,14 +48,14 @@ GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 	return m->widget;
 }
 
-struct _GHidMainMenu {
+struct _RndGtkMainMenu {
 	GtkMenuBar parent;
 	GtkAccelGroup *accel_group;
 	GList *actions;
 	GCallback action_cb;
 };
 
-struct _GHidMainMenuClass {
+struct _RndGtkMainMenuClass {
 	GtkMenuBarClass parent_class;
 };
 
@@ -82,7 +82,7 @@ static GtkWidget *rnd_gtk_menu_item_new(const char *label, const char *accel_lab
 
 /* LHT HANDLER */
 
-void ghid_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
+void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
 
 static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after)
 {
@@ -116,7 +116,7 @@ static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after
 	gtk_menu_shell_insert(shell, item, pos);
 }
 
-static GtkAction *ghid_add_menu(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *sub_res)
+static GtkAction *rnd_gtk_add_menu(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *sub_res)
 {
 	const char *tmp_val;
 	GtkAction *action = NULL;
@@ -161,7 +161,7 @@ static GtkAction *ghid_add_menu(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 		   them recursively. */
 		n = rnd_hid_cfg_menu_field(sub_res, RND_MF_SUBMENU, NULL);
 		for (n = n->data.list.first; n != NULL; n = n->next)
-			ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(submenu), NULL, n);
+			rnd_gtk_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(submenu), NULL, n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -191,7 +191,7 @@ static GtkAction *ghid_add_menu(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 					cbs.val_change_post = ctx->confchg_checkbox;
 					cbs_inited = 1;
 				}
-				rnd_conf_hid_set_cb(nat, ctx->ghid_menuconf_id, &cbs);
+				rnd_conf_hid_set_cb(nat, ctx->rnd_gtk_menuconf_id, &cbs);
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))
@@ -244,13 +244,13 @@ static GtkAction *ghid_add_menu(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 
 /* Translate a resource tree into a menu structure; shell is the base menu
    shell (a menu bar or popup menu) */
-void ghid_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
+void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
 {
 	switch (base->type) {
 	case LHT_HASH:                /* leaf submenu */
 		{
 			GtkAction *action = NULL;
-			action = ghid_add_menu(ctx, menu, shell, ins_after, base);
+			action = rnd_gtk_add_menu(ctx, menu, shell, ins_after, base);
 			if (action) {
 				const char *val;
 
@@ -289,42 +289,42 @@ void ghid_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, G
 }
 
 /* CONSTRUCTOR */
-static void ghid_main_menu_init(GHidMainMenu *mm)
+static void rnd_gtk_main_menu_init(RndGtkMainMenu *mm)
 {
 	/* Hookup signal handlers */
 }
 
-static void ghid_main_menu_class_init(GHidMainMenuClass *klass)
+static void rnd_gtk_main_menu_class_init(RndGtkMainMenuClass *klass)
 {
 }
 
 /* PUBLIC FUNCTIONS */
-GType ghid_main_menu_get_type(void)
+GType rnd_gtk_main_menu_get_type(void)
 {
 	static GType mm_type = 0;
 
 	if (!mm_type) {
 		const GTypeInfo mm_info = {
-			sizeof(GHidMainMenuClass),
+			sizeof(RndGtkMainMenuClass),
 			NULL,                       /* base_init */
 			NULL,                       /* base_finalize */
-			(GClassInitFunc)ghid_main_menu_class_init,
+			(GClassInitFunc)rnd_gtk_main_menu_class_init,
 			NULL,                       /* class_finalize */
 			NULL,                       /* class_data */
-			sizeof(GHidMainMenu),
+			sizeof(RndGtkMainMenu),
 			0,                          /* n_preallocs */
-			(GInstanceInitFunc) ghid_main_menu_init,
+			(GInstanceInitFunc) rnd_gtk_main_menu_init,
 		};
 
-		mm_type = g_type_register_static(GTK_TYPE_MENU_BAR, "GHidMainMenu", &mm_info, 0);
+		mm_type = g_type_register_static(GTK_TYPE_MENU_BAR, "RndGtkMainMenu", &mm_info, 0);
 	}
 
 	return mm_type;
 }
 
-GtkWidget *ghid_main_menu_new(GCallback action_cb)
+GtkWidget *rnd_gtk_main_menu_new(GCallback action_cb)
 {
-	GHidMainMenu *mm = g_object_new(GHID_MAIN_MENU_TYPE, NULL);
+	RndGtkMainMenu *mm = g_object_new(RND_GTK_MAIN_MENU_TYPE, NULL);
 
 	mm->accel_group = gtk_accel_group_new();
 
@@ -334,7 +334,7 @@ GtkWidget *ghid_main_menu_new(GCallback action_cb)
 	return GTK_WIDGET(mm);
 }
 
-void ghid_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const lht_node_t *base)
+void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, const lht_node_t *base)
 {
 	lht_node_t *n;
 	if (base->type != LHT_LIST) {
@@ -342,11 +342,11 @@ void ghid_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, const 
 		abort();
 	}
 	for (n = base->data.list.first; n != NULL; n = n->next) {
-		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(menu), NULL, n);
+		rnd_gtk_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(menu), NULL, n);
 	}
 }
 
-void ghid_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, lht_node_t *base)
+void rnd_gtk_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
@@ -362,7 +362,7 @@ void ghid_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
 	base->user_data = handle_alloc(new_menu, new_menu, NULL);
 
 	for (i = submenu->data.list.first; i != NULL; i = i->next)
-		ghid_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), NULL, i);
+		rnd_gtk_main_menu_real_add_node(ctx, menu, GTK_MENU_SHELL(new_menu), NULL, i);
 
 	gtk_widget_show_all(new_menu);
 }
@@ -372,7 +372,7 @@ void ghid_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, 
    flag (maybe NULL), and its active flag (maybe NULL), to a
    callback function. It is the responsibility of the function
    to actually change the state of the action. */
-void ghid_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GHidMainMenu *menu, void (*cb)(rnd_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
+void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, RndGtkMainMenu *menu, void (*cb)(rnd_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
 {
 	GList *list;
 	for (list = menu->actions; list; list = list->next) {
@@ -386,7 +386,7 @@ void ghid_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GHidMainMenu *menu
 	}
 }
 
-GtkAccelGroup *ghid_main_menu_get_accel_group(GHidMainMenu *menu)
+GtkAccelGroup *rnd_gtk_main_menu_get_accel_group(RndGtkMainMenu *menu)
 {
 	if (menu == NULL) {
 		rnd_message(RND_MSG_ERROR, "ghid: can't initialize the menu - is your menu .lht valid?\n");
@@ -407,30 +407,30 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 }
 
 /* Menu widget create callback: create a main menu, popup or submenu as descending the path */
-int ghid_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	rnd_gtk_menu_ctx_t *ctx = ctx_;
 	menu_handle_t *ph = parent->user_data;
 	GtkWidget *w = (is_main) ? (is_popup ? new_popup(menu_item) : ctx->menu_bar) : ph->widget;
 
-	ghid_main_menu_real_add_node(ctx, GHID_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), ins_after, menu_item);
+	rnd_gtk_main_menu_real_add_node(ctx, RND_GTK_MAIN_MENU(ctx->menu_bar), GTK_MENU_SHELL(w), ins_after, menu_item);
 
 /* make sure new menu items appear on screen */
 	gtk_widget_show_all(w);
 	return 0;
 }
 
-int ghid_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+int rnd_gtk_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
-	return ghid_create_menu_widget(ctx_, (strncmp(path, "/popups", 7) == 0), name, is_main, parent, ins_after, menu_item);
+	return rnd_gtk_create_menu_widget(ctx_, (strncmp(path, "/popups", 7) == 0), name, is_main, parent, ins_after, menu_item);
 }
 
 
-int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
+int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t * nd)
 {
 	menu_handle_t *h = nd->user_data;
 	if (h != NULL) {
-		GHidMainMenu *menu = (GHidMainMenu *)ctx;
+		RndGtkMainMenu *menu = (RndGtkMainMenu *)ctx;
 		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(nd, RND_MF_ACCELERATOR, NULL);
 		menu->actions = g_list_remove(menu->actions, h->action);
 		if (n_keydesc != NULL)
@@ -442,7 +442,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 	return 0;
 }
 
-/* callback for ghid_main_menu_update_toggle_state() */
+/* callback for rnd_gtk_main_menu_update_toggle_state() */
 void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
@@ -464,7 +464,7 @@ void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tfl
    This is the main menu callback function.  The callback receives
    the original lihata action node pointer HID actions to be
    executed. */
-static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
+static void rnd_gtk_menu_cb(GtkAction *action, const lht_node_t *node)
 {
 	if (action == NULL || node == NULL)
 		return;
@@ -481,7 +481,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *ghid_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
+GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;
@@ -492,8 +492,8 @@ GtkWidget *ghid_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 
 	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/main_menu");
 	if (mr != NULL) {
-		menu_bar = ghid_main_menu_new(G_CALLBACK(ghid_menu_cb));
-		ghid_main_menu_add_node(menu, GHID_MAIN_MENU(menu_bar), mr);
+		menu_bar = rnd_gtk_main_menu_new(G_CALLBACK(rnd_gtk_menu_cb));
+		rnd_gtk_main_menu_add_node(menu, RND_GTK_MAIN_MENU(menu_bar), mr);
 		mr->doc->root->user_data = menu;
 	}
 
@@ -502,7 +502,7 @@ GtkWidget *ghid_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 		if (mr->type == LHT_LIST) {
 			lht_node_t *n;
 			for (n = mr->data.list.first; n != NULL; n = n->next)
-				ghid_main_menu_add_popup_node(menu, GHID_MAIN_MENU(menu_bar), n);
+				rnd_gtk_main_menu_add_popup_node(menu, RND_GTK_MAIN_MENU(menu_bar), n);
 		}
 		else
 			rnd_hid_cfg_error(mr, "/popups should be a list\n");
