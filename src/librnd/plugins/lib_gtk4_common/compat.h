@@ -175,11 +175,7 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 	*y = round(dy);
 }
 
-TODO("can we remove these two?")
-static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
-{
-}
-
+TODO("can we remove this?")
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
 {
 }

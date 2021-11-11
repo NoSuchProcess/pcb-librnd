@@ -126,10 +126,6 @@ static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y
 	return gdk_window_get_pointer(gtkc_widget_get_window(w), x, y, mask);
 }
 
-static inline void gtkc_widget_get_preferred_height(GtkWidget *w, gint *min_size, gint *natural_size)
-{
-}
-
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
 {
 }
