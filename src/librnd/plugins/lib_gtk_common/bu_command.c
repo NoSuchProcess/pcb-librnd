@@ -45,9 +45,6 @@
 #include "hid_gtk_conf.h"
 #include <librnd/plugins/lib_hid_common/cli_history.h>
 
-
-#include "compat.h"
-
 /* Put an allocated string on the history list and combo text list
    if it is not a duplicate.  The combo box is just a shadow of the
    real, common history, shared with other HIDs. The combo box strings

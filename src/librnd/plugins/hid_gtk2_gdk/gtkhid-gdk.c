@@ -10,8 +10,8 @@
 #include <librnd/core/pixmap.h>
 #include <librnd/core/globalconst.h>
 
+#include <librnd/plugins/lib_gtk2_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
-#include <librnd/plugins/lib_gtk_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
 #include <librnd/plugins/lib_gtk_common/coord_conv.h>
 

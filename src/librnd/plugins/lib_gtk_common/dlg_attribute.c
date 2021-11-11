@@ -43,7 +43,6 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
 
-#include "compat.h"
 #include "hid_gtk_conf.h"
 
 

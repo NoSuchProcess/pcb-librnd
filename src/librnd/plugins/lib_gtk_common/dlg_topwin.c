@@ -39,7 +39,10 @@
 |  we have our own shortcut table and capture the keys and send the events
 |  there in rnd_gtk_key_press_cb().
 */
+#ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
+#endif
+
 #include <librnd/rnd_config.h>
 #include "dlg_topwin.h"
 #include <genht/htsp.h>
@@ -52,7 +55,6 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/tool.h>
 
-#include "compat.h"
 #include "bu_menu.h"
 #include "bu_pixbuf.h"
 #include "dlg_attribute.h"

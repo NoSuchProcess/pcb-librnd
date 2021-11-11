@@ -26,7 +26,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
+#endif
+
 #include <librnd/rnd_config.h>
 
 #include <stdio.h>

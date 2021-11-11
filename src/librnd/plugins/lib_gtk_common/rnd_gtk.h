@@ -42,7 +42,6 @@ typedef struct rnd_gtk_pixmap_s rnd_gtk_pixmap_t;
 extern rnd_gtk_t _ghidgui, *ghidgui;
 
 #include <gtk/gtk.h>
-#include "compat.h"
 
 /* The HID using rnd_gtk_common needs to fill in this struct and pass it
    on to most of the calls. This is the only legal way rnd_gtk_common can

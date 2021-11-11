@@ -33,7 +33,6 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/compat_misc.h>
-#include "compat.h"
 #include <librnd/core/event.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>

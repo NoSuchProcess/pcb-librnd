@@ -37,7 +37,6 @@
 
 #include "in_mouse.h"
 #include "in_keyboard.h"
-#include "compat.h"
 #include "wt_preview.h"
 
 #include <librnd/core/compat_misc.h>

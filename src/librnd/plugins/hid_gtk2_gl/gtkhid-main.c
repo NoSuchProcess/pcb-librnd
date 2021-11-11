@@ -8,6 +8,7 @@
 
 #include <librnd/plugins/lib_hid_gl/draw_gl.h>
 
+#include <librnd/plugins/lib_gtk2_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
 #include <librnd/plugins/lib_gtk_common/glue_hid.h>
 

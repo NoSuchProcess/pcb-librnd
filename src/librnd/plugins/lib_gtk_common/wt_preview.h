@@ -40,7 +40,6 @@
 #include <librnd/core/hid.h>
 #include "ui_zoompan.h"
 #include "rnd_gtk.h"
-#include "compat.h"
 
 #define RND_GTK_TYPE_PREVIEW           (rnd_gtk_preview_get_type())
 #define RND_GTK_PREVIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), RND_GTK_TYPE_PREVIEW, rnd_gtk_preview_t))

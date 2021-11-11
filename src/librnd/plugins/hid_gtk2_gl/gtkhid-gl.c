@@ -12,6 +12,7 @@
 #include <librnd/plugins/lib_gtk_common/hid_gtk_conf.h>
 #include <librnd/plugins/lib_gtk_common/lib_gtk_config.h>
 
+#include <librnd/plugins/lib_gtk2_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <librnd/plugins/lib_gtk_common/coord_conv.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
