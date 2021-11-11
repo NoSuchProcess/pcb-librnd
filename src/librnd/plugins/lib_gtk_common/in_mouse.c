@@ -392,7 +392,7 @@ static const named_cursor_t named_cursors[] = {
 	{NULL, 0}
 };
 
-#define GHID_CURSOR_START (GDK_LAST_CURSOR+10)
+#define RND_GTK_CURSOR_START (GDK_LAST_CURSOR+10)
 
 void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
@@ -415,7 +415,7 @@ void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const u
 		mc->X_cursor = gdk_cursor_new(mc->shape);
 	}
 	else {
-		mc->shape = GHID_CURSOR_START + idx;
+		mc->shape = RND_GTK_CURSOR_START + idx;
 		mc->pb = rnd_gtk_cursor_from_xbm_data(pixel, mask, 16, 16);
 		mc->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->topwin.drawing_area), mc->pb, ICON_X_HOT, ICON_Y_HOT);
 	}
