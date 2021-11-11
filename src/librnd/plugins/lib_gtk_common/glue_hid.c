@@ -149,7 +149,7 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	ghid_keymap.auto_chr = 1;
 	ghid_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
 
-	ghid_create_topwin_widgets(gctx, &gctx->topwin, gctx->port.top_window);
+	rnd_gtk_create_topwin_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
 	gctx->port.drawing_area = gctx->topwin.drawing_area;
 
@@ -211,7 +211,7 @@ static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 	}
 }
 
-/* Create top level window for routines that will need top_window before ghid_create_topwin_widgets() is called. */
+/* Create top level window for routines that will need top_window before rnd_gtk_create_topwin_widgets() is called. */
 int gtkhid_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
@@ -315,7 +315,7 @@ static void rnd_gtk_update_menu_checkbox(rnd_hid_t *hid, const char *cookie)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	if ((gctx->hid_active) && (gctx->hidlib != NULL))
-		ghid_update_toggle_flags(gctx->hidlib, &gctx->topwin, cookie);
+		rnd_gtk_update_toggle_flags(gctx->hidlib, &gctx->topwin, cookie);
 }
 
 rnd_hid_cfg_t *ghid_get_menu_cfg(rnd_hid_t *hid)

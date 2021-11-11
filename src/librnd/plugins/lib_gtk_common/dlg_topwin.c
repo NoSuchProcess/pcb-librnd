@@ -37,7 +37,7 @@
 |  Some caveats with menu shorcut keys:  Some keys are trapped out by Gtk
 |  and can't be used as shortcuts (eg. '|', TAB, etc).  For these cases
 |  we have our own shortcut table and capture the keys and send the events
-|  there in ghid_port_key_press_cb().
+|  there in rnd_gtk_port_key_press_cb().
 */
 #define _POSIX_SOURCE
 #include <librnd/rnd_config.h>
@@ -173,7 +173,7 @@ void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 
 /*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
-void ghid_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)
+void rnd_gtk_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)
 {
 	if (rnd_menu_sys.inhibit)
 		return;
@@ -203,13 +203,13 @@ static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *
 	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
 
-gboolean ghid_idle_cb(void *topwin)
+gboolean rnd_gtk_idle_cb(void *topwin)
 {
 /*	rnd_gtk_topwin_t *tw = topwin; - just in case anything needs to be done from idle */
 	return FALSE;
 }
 
-gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
+gboolean rnd_gtk_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
 {
 	gint ksym = kev->keyval;
 
@@ -222,16 +222,16 @@ gboolean ghid_port_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd
 		rnd_tool_adjust_attached(ghidgui->hidlib);
 
 	rnd_gui->invalidate_all(rnd_gui);
-	g_idle_add(ghid_idle_cb, tw);
+	g_idle_add(rnd_gtk_idle_cb, tw);
 	return FALSE;
 }
 
-void ghid_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
+void rnd_gtk_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
 	gtk_window_add_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
 }
 
-void ghid_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
+void rnd_gtk_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 {
 	gtk_window_remove_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
 }
@@ -399,7 +399,7 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 	return TRUE;
 }
 
-void ghid_topwin_hide_status(void *ctx, int show)
+void rnd_gtk_topwin_hide_status(void *ctx, int show)
 {
 	rnd_gtk_topwin_t *tw = ctx;
 
@@ -411,7 +411,7 @@ void ghid_topwin_hide_status(void *ctx, int show)
 
 /* Create the top_window contents.  The config settings should be loaded
    before this is called. */
-static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
+static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
@@ -538,7 +538,7 @@ static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	tw->cmd.prompt_label = gtk_label_new("action:");
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.prompt_label, FALSE, FALSE, 0);
-	rnd_gtk_command_combo_box_entry_create(&tw->cmd, ghid_topwin_hide_status, tw);
+	rnd_gtk_command_combo_box_entry_create(&tw->cmd, rnd_gtk_topwin_hide_status, tw);
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
 	/* resize grip: rightmost widget in the status line hbox */
@@ -563,7 +563,7 @@ static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	gtk_widget_show_all(ghidgui->wtop_window);
 
-	ghid_fullscreen_apply(tw);
+	rnd_gtk_fullscreen_apply(tw);
 	tw->active = 1;
 
 	gtk_widget_hide(tw->cmd.command_combo_box);
@@ -579,16 +579,16 @@ void rnd_gtk_tw_interface_set_sensitive(rnd_gtk_topwin_t *tw, gboolean sensitive
 	gtk_widget_set_sensitive(tw->menu_hbox, sensitive);
 }
 
-void ghid_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window)
+void rnd_gtk_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window)
 {
 	ghidgui->impl.load_bg_image();
 
-	ghid_build_top_window(ctx, tw);
-	ghid_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
-	ghid_update_toggle_flags(ghidgui->hidlib, tw, NULL);
+	rnd_gtk_build_top_window(ctx, tw);
+	rnd_gtk_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
+	rnd_gtk_update_toggle_flags(ghidgui->hidlib, tw, NULL);
 }
 
-void ghid_fullscreen_apply(rnd_gtk_topwin_t *tw)
+void rnd_gtk_fullscreen_apply(rnd_gtk_topwin_t *tw)
 {
 	if (rnd_conf.editor.fullscreen) {
 		gtk_widget_hide(tw->left_toolbar);

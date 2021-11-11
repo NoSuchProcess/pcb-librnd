@@ -82,14 +82,14 @@ static const char *cookie_menu = "gtk hid menu";
 static void ghid_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (ghidgui->hid_active)
-		ghid_fullscreen_apply(&ghidgui->topwin);
+		rnd_gtk_fullscreen_apply(&ghidgui->topwin);
 }
 
 
 void ghid_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if ((ghidgui->hid_active) && (ghidgui->hidlib != NULL))
-		ghid_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
+		rnd_gtk_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
 }
 
 static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
@@ -191,13 +191,13 @@ static void command_post_entry(void)
 	rnd_gtk_interface_input_signals_connect();
 #endif
 	rnd_gtk_interface_set_sensitive(TRUE);
-	ghid_install_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
+	rnd_gtk_install_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 }
 
 static void command_pre_entry(void)
 {
-	ghid_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
+	rnd_gtk_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 #if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	rnd_gtk_interface_input_signals_disconnect();
 #endif
@@ -219,7 +219,7 @@ void rnd_gtk_mode_cursor_main(void)
 static void kbd_input_signals_connect(int idx, void *obj)
 {
 	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(ghid_port_key_press_cb), ghidgui);
-	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(ghid_port_key_release_cb), &ghidgui->topwin);
+	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(rnd_gtk_port_key_release_cb), &ghidgui->topwin);
 }
 
 static void kbd_input_signals_disconnect(int idx, void *obj)

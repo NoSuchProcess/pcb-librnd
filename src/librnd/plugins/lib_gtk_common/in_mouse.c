@@ -283,7 +283,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	rnd_gui->invalidate_all(rnd_gui);
 	if (!ctx->port.view.panning)
-		g_idle_add(ghid_idle_cb, &ctx->topwin);
+		g_idle_add(rnd_gtk_idle_cb, &ctx->topwin);
 
 	return TRUE;
 }
@@ -306,7 +306,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 		rnd_tool_adjust_attached(ctx->hidlib);
 
 	rnd_gui->invalidate_all(rnd_gui);
-	g_idle_add(ghid_idle_cb, &ctx->topwin);
+	g_idle_add(rnd_gtk_idle_cb, &ctx->topwin);
 
 	return TRUE;
 }
