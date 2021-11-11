@@ -363,17 +363,6 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	return button;
 }
 
-/* Just calls the scroll bars preferred size, when drawing area is resized */
-static void drawing_area_size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation, gpointer user_data)
-{
-	gint min;
-	rnd_gtk_topwin_t *tw = user_data;
-
-	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->v_range), &min, NULL);
-	gtkc_widget_get_preferred_height(GTK_WIDGET(gtk_widget_get_parent(tw->h_range)), &min, NULL);
-	gtkc_widget_get_preferred_height(GTK_WIDGET(tw->bottom_hbox), &min, NULL);
-}
-
 static gboolean drawing_area_enter_cb(GtkWidget *w, rnd_gtk_expose_t *p, void *user_data)
 {
 	rnd_gui->invalidate_all(rnd_gui);
@@ -556,7 +545,6 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->bottom_hbox), resize_grip_vbox, FALSE, FALSE, 0);
 
-	g_signal_connect(G_OBJECT(tw->drawing_area), "size-allocate", G_CALLBACK(drawing_area_size_allocate_cb), tw);
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
 
