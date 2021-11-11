@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor Palinkas
+ *  Copyright (C) 2017,2021 Tibor Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,16 +34,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <librnd/core/plugins.h>
-#include "lib_gtk_config.h"
+#include <librnd/plugins/lib_gtk_common/lib_gtk_config.h>
 
-int pplg_check_ver_lib_gtk_common(int ver_needed) { return 0; }
+int pplg_check_ver_lib_gtk2_common(int ver_needed) { return 0; }
 
-void pplg_uninit_lib_gtk_common(void)
+void pplg_uninit_lib_gtk2_common(void)
 {
 	rnd_gtk_conf_uninit();
 }
 
-int pplg_init_lib_gtk_common(void)
+int pplg_init_lib_gtk2_common(void)
 {
 	RND_API_CHK_VER;
 	rnd_gtk_conf_init();

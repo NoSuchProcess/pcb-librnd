@@ -1,8 +1,8 @@
-put /local/pcb/mod {lib_gtk_common}
+put /local/pcb/mod {lib_gtk2_common}
 put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
 
 put /local/pcb/mod/OBJS [@
-  $(LIBRND_PLUGDIR)/lib_gtk_common/lib_gtk_common.o
+  $(LIBRND_PLUGDIR)/lib_gtk2_common/lib_gtk2_common.o
   $(LIBRND_PLUGDIR)/lib_gtk_common/lib_gtk_config.o
 @]
 
@@ -26,7 +26,7 @@ put /local/pcb/mod/OBJS_C99 [@
 	$(LIBRND_PLUGDIR)/lib_gtk_common/glue_hid.o
 @]
 
-switch /local/pcb/lib_gtk_common/controls
+switch /local/pcb/lib_gtk2_common/controls
 	case {disable} end;
 	default
 		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtkx/cflags
@@ -34,7 +34,7 @@ switch /local/pcb/lib_gtk_common/controls
 	end
 end
 
-switch /local/pcb/lib_gtk_common/controls
+switch /local/pcb/lib_gtk2_common/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
 	case {disable}   include /local/pcb/tmpasm/disable; end;

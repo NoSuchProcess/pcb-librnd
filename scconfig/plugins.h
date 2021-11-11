@@ -6,7 +6,7 @@
 
 plugin_header("\nLibrary plugins:\n")
 plugin_def("lib_gensexpr",     "#s-expression library",           sbuildin, 1)
-plugin_def("lib_gtk_common",   "all-hid_gtk common code",         sdisable, 0)
+plugin_def("lib_gtk2_common",  "all-hid_gtk2 common code",        sdisable, 0)
 plugin_def("lib_hid_common",   "all-gui-hid common code",         sdisable, 0)
 plugin_def("lib_hid_gl",       "openGL rendering",                sdisable, 0)
 plugin_def("lib_portynet",     "#IPv4 tcp",                       sbuildin, 1)
@@ -28,11 +28,10 @@ plugin_def("hid_lesstif",      "the lesstif gui",                 sbuildin, 1)
 plugin_def("hid_remote",       "remote HID server",               sdisable, 0)
 
 
-plugin_dep("hid_gtk2_gdk", "lib_gtk_common")
-plugin_dep("hid_gtk2_gl", "lib_gtk_common")
+plugin_dep("hid_gtk2_gdk", "lib_gtk2_common")
+plugin_dep("hid_gtk2_gl", "lib_gtk2_common")
 plugin_dep("hid_gtk2_gl", "lib_hid_gl")
-plugin_dep("hid_gtk4_gl", "lib_gtk_common")
 plugin_dep("hid_gtk4_gl", "lib_hid_gl")
 plugin_dep("hid_lesstif", "lib_hid_common")
 plugin_dep("irc", "lib_portynet")
-plugin_dep("lib_gtk_common", "lib_hid_common")
+plugin_dep("lib_gtk2_common", "lib_hid_common")

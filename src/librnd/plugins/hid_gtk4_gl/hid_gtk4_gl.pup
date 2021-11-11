@@ -5,6 +5,6 @@ $state WIP
 $package hid-gtk4-gl
 $hidlib 1
 default disable-all
-dep lib_gtk_common
+#dep lib_gtk4_common
 dep lib_hid_gl
 
