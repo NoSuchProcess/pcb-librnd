@@ -27,6 +27,7 @@
 /* Smallish misc DAD widgets */
 
 #include "wt_preview.h"
+#include "bu_pixbuf.h"
 
 #include <librnd/plugins/lib_hid_common/dad_markup.h>
 
@@ -146,7 +147,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	int expfill = (attr->rnd_hatt_flags & RND_HATF_EXPFILL);
 
-	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
+	pixbuf = rnd_hid_gtk_xpm2pixbuf(attr->wdata, 1);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
 	evb = wrap_bind_click(pic, click_cb, attr);
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP, click_ctx);
@@ -165,7 +166,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 
-	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
+	pixbuf = rnd_hid_gtk_xpm2pixbuf(attr->wdata, 1);
 	img = gtk_image_new_from_pixbuf(pixbuf);
 
 	if (toggle)
