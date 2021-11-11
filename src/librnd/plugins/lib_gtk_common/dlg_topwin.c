@@ -538,7 +538,7 @@ static void ghid_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	tw->cmd.prompt_label = gtk_label_new("action:");
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.prompt_label, FALSE, FALSE, 0);
-	ghid_command_combo_box_entry_create(&tw->cmd, ghid_topwin_hide_status, tw);
+	rnd_gtk_command_combo_box_entry_create(&tw->cmd, ghid_topwin_hide_status, tw);
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
 	/* resize grip: rightmost widget in the status line hbox */

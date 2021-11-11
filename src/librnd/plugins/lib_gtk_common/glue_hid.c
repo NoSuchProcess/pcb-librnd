@@ -190,7 +190,7 @@ static void ghid_do_exit(rnd_hid_t *hid)
 
 	/* Need to force-close the command entry first because it has its own main
 	   loop that'd block the exit until the user closes the entry */
-	ghid_cmd_close(&gctx->topwin.cmd);
+	rnd_gtk_cmd_close(&gctx->topwin.cmd);
 
 	rnd_gtk_tw_dock_uninit();
 
@@ -337,7 +337,7 @@ static int ghid_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static const char *ghid_command_entry(rnd_hid_t *hid, const char *ovr, int *cursor)
+static const char *rnd_gtk_command_entry(rnd_hid_t *hid, const char *ovr, int *cursor)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	return rnd_gtk_cmd_command_entry(&gctx->topwin.cmd, ovr, cursor);
@@ -465,7 +465,7 @@ static void ghid_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 static void ghid_open_command(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	ghid_handle_user_command(gctx->hidlib, &gctx->topwin.cmd, TRUE);
+	rnd_gtk_handle_user_command(gctx->hidlib, &gctx->topwin.cmd, TRUE);
 }
 
 static int ghid_open_popup(rnd_hid_t *hid, const char *menupath)
@@ -681,7 +681,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->point_cursor = PointCursor;
 	dst->benchmark = ghid_benchmark;
 
-	dst->command_entry = ghid_command_entry;
+	dst->command_entry = rnd_gtk_command_entry;
 
 	dst->create_menu_by_node = ghid_create_menu_by_node;
 	dst->remove_menu_node = ghid_remove_menu_node;

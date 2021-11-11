@@ -94,7 +94,7 @@ void ghid_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
 
 static void ghid_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
 {
-	ghid_command_update_prompt(&ghidgui->topwin.cmd);
+	rnd_gtk_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
 static void ghid_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)

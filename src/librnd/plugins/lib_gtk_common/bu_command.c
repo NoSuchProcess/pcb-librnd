@@ -53,13 +53,13 @@
    real, common history, shared with other HIDs. The combo box strings
    take "const gchar *", which are allocated within the common history. */
 
-static void ghid_chist_append(void *ctx_, const char *cmd)
+static void rnd_gtk_chist_append(void *ctx_, const char *cmd)
 {
 	rnd_gtk_command_t *ctx = (rnd_gtk_command_t *)ctx_;
 	gtkc_combo_box_text_append_text(ctx->command_combo_box, cmd);
 }
 
-static void ghid_chist_remove(void *ctx_, int idx)
+static void rnd_gtk_chist_remove(void *ctx_, int idx)
 {
 	rnd_gtk_command_t *ctx = (rnd_gtk_command_t *)ctx_;
 	gtkc_combo_box_text_remove(ctx->command_combo_box, idx);
@@ -67,7 +67,7 @@ static void ghid_chist_remove(void *ctx_, int idx)
 
 static void command_history_add(rnd_gtk_command_t *ctx, gchar *cmd)
 {
-	rnd_clihist_append(cmd, ctx, ghid_chist_append, ghid_chist_remove);
+	rnd_clihist_append(cmd, ctx, rnd_gtk_chist_append, rnd_gtk_chist_remove);
 }
 
 
@@ -76,7 +76,7 @@ static void command_history_add(rnd_gtk_command_t *ctx, gchar *cmd)
    immediately execute the command and carry on.  If it's in the status
    line hbox, then we need stop the command entry g_main_loop from running
    and save the allocated string so it can be returned from
-   ghid_command_entry_get() */
+   rnd_gtk_command_entry_get() */
 static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 {
 	rnd_gtk_command_t *ctx = data;
@@ -93,8 +93,8 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 	if (*command)
 		command_history_add(ctx, command);
 
-	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be */
-		g_main_loop_quit(ctx->ghid_entry_loop);
+	if (ctx->rnd_gtk_entry_loop && g_main_loop_is_running(ctx->rnd_gtk_entry_loop)) /* should always be */
+		g_main_loop_quit(ctx->rnd_gtk_entry_loop);
 	ctx->command_entered = command; /* Caller will free it */
 }
 
@@ -109,7 +109,7 @@ static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk
 
 	/* escape key handling */
 	if (ksym == RND_GTK_KEY(Escape)) {
-		ghid_cmd_close(ctx);
+		rnd_gtk_cmd_close(ctx);
 		return TRUE;
 	}
 
@@ -127,7 +127,7 @@ static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, rnd_g
    lives in the bottom_hbox either shown or hidden.
    Since it's never destroyed, the combo history strings never need
    rebuilding. */
-void ghid_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx)
+void rnd_gtk_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_status)(void*,int), void *status_ctx)
 {
 	ctx->status_ctx = status_ctx;
 	ctx->hide_status = hide_status;
@@ -141,19 +141,19 @@ void ghid_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_sta
 
 	g_object_ref(G_OBJECT(ctx->command_combo_box)); /* so can move it */
 	rnd_clihist_init();
-	rnd_clihist_sync(ctx, ghid_chist_append);
+	rnd_clihist_sync(ctx, rnd_gtk_chist_append);
 
 	g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 	g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 }
 
-void ghid_cmd_close(rnd_gtk_command_t *ctx)
+void rnd_gtk_cmd_close(rnd_gtk_command_t *ctx)
 {
 	if (!ctx->command_entry_status_line_active)
 		return;
 
-	if (ctx->ghid_entry_loop && g_main_loop_is_running(ctx->ghid_entry_loop)) /* should always be (the entry is active) */
-		g_main_loop_quit(ctx->ghid_entry_loop);
+	if (ctx->rnd_gtk_entry_loop && g_main_loop_is_running(ctx->rnd_gtk_entry_loop)) /* should always be (the entry is active) */
+		g_main_loop_quit(ctx->rnd_gtk_entry_loop);
 
 	ctx->command_entered = NULL; /* We are aborting */
 
@@ -165,7 +165,7 @@ void ghid_cmd_close(rnd_gtk_command_t *ctx)
 }
 
 
-void ghid_command_update_prompt(rnd_gtk_command_t *ctx)
+void rnd_gtk_command_update_prompt(rnd_gtk_command_t *ctx)
 {
 	if (ctx->prompt_label != NULL)
 		gtk_label_set_text(GTK_LABEL(ctx->prompt_label), rnd_cli_prompt(":"));
@@ -174,7 +174,7 @@ void ghid_command_update_prompt(rnd_gtk_command_t *ctx)
 
 /* This is the command entry function called from Action Command().
    The command_combo_box is packed into the status line label hbox. */
-char *ghid_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, const char *command)
+char *rnd_gtk_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, const char *command)
 {
 	gint escape_sig_id, escape_sig2_id;
 
@@ -201,11 +201,11 @@ char *ghid_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, const c
 	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
 	escape_sig2_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
 
-	ctx->ghid_entry_loop = g_main_loop_new(NULL, FALSE);
-	g_main_loop_run(ctx->ghid_entry_loop);
+	ctx->rnd_gtk_entry_loop = g_main_loop_new(NULL, FALSE);
+	g_main_loop_run(ctx->rnd_gtk_entry_loop);
 
-	g_main_loop_unref(ctx->ghid_entry_loop);
-	ctx->ghid_entry_loop = NULL;
+	g_main_loop_unref(ctx->rnd_gtk_entry_loop);
+	ctx->rnd_gtk_entry_loop = NULL;
 
 	ctx->command_entry_status_line_active = FALSE;
 
@@ -229,11 +229,11 @@ char *ghid_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, const c
 }
 
 
-void ghid_handle_user_command(rnd_hidlib_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise)
+void rnd_gtk_handle_user_command(rnd_hidlib_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise)
 {
 	char *command;
 
-	command = ghid_command_entry_get(ctx, rnd_cli_prompt(":"), (gchar *)"");
+	command = rnd_gtk_command_entry_get(ctx, rnd_cli_prompt(":"), (gchar *)"");
 	if (command != NULL) {
 		/* copy new command line to save buffer */
 		rnd_parse_command(hl, command, rnd_false);
