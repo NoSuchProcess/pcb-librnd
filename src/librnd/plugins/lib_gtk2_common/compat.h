@@ -140,9 +140,6 @@ static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 		gtk_widget_set_state(widget, st & (~GTK_STATE_SELECTED));
 }
 
-#define gtkc_widget_selectable(widget, name_space)
-
-
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
 static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)

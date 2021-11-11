@@ -175,7 +175,7 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 	*y = round(dy);
 }
 
-TODO("can we remove this?")
+TODO("can we remove this? - check how the resize button looks like")
 static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
 {
 }
@@ -190,10 +190,6 @@ static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 	else
 		gtk_label_set_selectable(GTK_LABEL(widget), 0);
 }
-
-TODO("remove this from gtk2 and gtk4")
-#define gtkc_widget_selectable(widget, name_space)
-
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
