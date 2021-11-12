@@ -390,6 +390,24 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 	return TRUE;
 }
 
+void gtkc_create_resize_grip(GtkWidget *parent, const char *gfx_xpm[])
+{
+	GtkWidget *resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
+	GtkWidget *resize_grip = gtk_event_box_new();
+	GdkPixbuf *resize_grip_pixbuf = rnd_gtk_xpm2pixbuf(gfx_xpm, 1);
+	GtkWidget *resize_grip_image = gtk_image_new_from_pixbuf(resize_grip_pixbuf);
+
+	g_object_unref(resize_grip_pixbuf);
+	gtk_container_add(GTK_CONTAINER(resize_grip), resize_grip_image);
+	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press), NULL);
+	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
+	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(parent), resize_grip_vbox, FALSE, FALSE, 0);
+}
+
+
+
 void rnd_gtk_topwin_hide_status(void *ctx, int show)
 {
 	rnd_gtk_topwin_t *tw = ctx;
@@ -406,11 +424,6 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 {
 	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
-	GtkWidget *resize_grip_vbox;
-	GtkWidget *resize_grip;
-	GdkPixbuf *resize_grip_pixbuf;
-	GtkWidget *resize_grip_image;
-
 	rnd_gtk_tw_dock_init();
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
@@ -528,18 +541,9 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	rnd_gtk_command_combo_box_entry_create(&tw->cmd, rnd_gtk_topwin_hide_status, tw);
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
+
 	/* resize grip: rightmost widget in the status line hbox */
-	resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
-	resize_grip = gtk_event_box_new();
-	resize_grip_pixbuf = rnd_gtk_xpm2pixbuf(resize_grip_xpm, 1);
-	resize_grip_image = gtk_image_new_from_pixbuf(resize_grip_pixbuf);
-	g_object_unref(resize_grip_pixbuf);
-	gtk_container_add(GTK_CONTAINER(resize_grip), resize_grip_image);
-	gtk_widget_add_events(resize_grip, GDK_BUTTON_PRESS_MASK);
-	gtk_widget_set_tooltip_text(resize_grip, "Left-click to resize the main window\nMid-click to move the window");
-	g_signal_connect(resize_grip, "button_press_event", G_CALLBACK(resize_grip_button_press), NULL);
-	gtk_box_pack_end(GTK_BOX(resize_grip_vbox), resize_grip, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(tw->bottom_hbox), resize_grip_vbox, FALSE, FALSE, 0);
+	gtkc_create_resize_grip(tw->bottom_hbox, resize_grip_xpm);
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
