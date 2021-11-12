@@ -167,6 +167,15 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 /*** Event/signal compatibility ***/
 
+static inline void gtkc_dwg_setup_events(GtkWidget *dwg)
+{
+	gtk_widget_add_events(dwg,
+		GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
+		| GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK
+		| GDK_KEY_PRESS_MASK | GDK_SCROLL_MASK | GDK_FOCUS_CHANGE_MASK
+		| GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
+}
+
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
 
 /* rs is gtkc_event_xyz_t, filled in by the caller */

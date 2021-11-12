@@ -587,11 +587,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
-	gtk_widget_add_events(GTK_WIDGET(prv), GDK_EXPOSURE_MASK | GDK_SCROLL_MASK
-		| GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK | GDK_BUTTON_RELEASE_MASK
-		| GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK
-		| GDK_FOCUS_CHANGE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
-
+	gtkc_dwg_setup_events(GTK_WIDGET(prv));
 
 	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
