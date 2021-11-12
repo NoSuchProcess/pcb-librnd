@@ -291,17 +291,17 @@ static void update_expose_data(rnd_gtk_preview_t *prv)
 }
 
 
-static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, void *tmp)
+static gboolean preview_resize_event_cb(GtkWidget *w, long sx, long sy, long z, void *tmp)
 {
 	int need_rezoom;
 	rnd_gtk_preview_t *preview = (rnd_gtk_preview_t *) w;
-	preview->win_w = ev->width;
-	preview->win_h = ev->height;
+	preview->win_w = sx;
+	preview->win_h = sy;
 
 	need_rezoom = (preview->view.canvas_width == 0) || (preview->view.canvas_height == 0);
 
-	preview->view.canvas_width = ev->width;
-	preview->view.canvas_height = ev->height;
+	preview->view.canvas_width = sx;
+	preview->view.canvas_height = sy;
 
 	if (need_rezoom) {
 		rnd_box_t b;
@@ -386,17 +386,12 @@ static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpoint
 	return button_press(w, rnd_gtk_mouse_button(ev->button));
 }
 
-static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer data)
+static gboolean preview_scroll_cb(GtkWidget *w, long x, long y, long z, gpointer data)
 {
 	gtk_widget_grab_focus(w);
 
-	switch (ev->direction) {
-	case GDK_SCROLL_UP:
-		return button_press(w, RND_MB_SCROLL_UP);
-	case GDK_SCROLL_DOWN:
-		return button_press(w, RND_MB_SCROLL_DOWN);
-	default:;
-	}
+	if (y < 0) return button_press(w, RND_MB_SCROLL_UP);
+	if (y > 0) return button_press(w, RND_MB_SCROLL_DOWN);
 
 	return FALSE;
 }
@@ -443,7 +438,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 	return FALSE;
 }
 
-static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer data)
+static gboolean preview_motion_cb(GtkWidget *w, long x, long y, long z, gpointer data)
 {
 	rnd_gtk_preview_t *preview = (rnd_gtk_preview_t *) w;
 	int save_fx, save_fy;
@@ -591,10 +586,12 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "scroll_event", G_CALLBACK(preview_scroll_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "configure_event", G_CALLBACK(preview_configure_event_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "motion_notify_event", G_CALLBACK(preview_motion_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
+
+	gtkc_bind_mouse_scroll(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->rs, preview_scroll_cb, NULL));
+	gtkc_bind_mouse_motion(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->motion, preview_motion_cb, NULL));
+	gtkc_bind_resize_dwg(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->sc, preview_resize_event_cb, NULL));
+
 
 	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
