@@ -27,7 +27,7 @@
 
 extern rnd_hid_cfg_keys_t rnd_gtk_keymap;
 
-static gint rnd_gtkg_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
+static gint rnd_gtkg_window_enter_cb(GtkWidget *widget, long x, long y, long z, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
@@ -35,38 +35,22 @@ static gint rnd_gtkg_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, vo
 
 	/* printf("enter: mode: %d detail: %d\n", ev->mode, ev->detail); */
 
-	/* See comment in rnd_gtkg_port_window_leave_cb() */
-
-	if (ev->mode != GDK_CROSSING_NORMAL && ev->mode != GDK_CROSSING_UNGRAB && ev->detail != GDK_NOTIFY_NONLINEAR)
-		return FALSE;
-
 	out->view.has_entered = TRUE;
 	force_update = 1; /* force a redraw for the crosshair */
 	if (!gctx->topwin.cmd.command_entry_status_line_active)
 		gtk_widget_grab_focus(out->drawing_area); /* Make sure drawing area has keyboard focus when we are in it (don't steal keys from the command line, tho) */
 
-	/* Following expression is true if a you open a menu from the menu bar,
-	   move the mouse to the viewport and click on it. This closes the menu
-	   and moves the pointer to the viewport without the pointer going over
-	   the edge of the viewport */
-	if (force_update || (ev->mode == GDK_CROSSING_UNGRAB && ev->detail == GDK_NOTIFY_NONLINEAR))
+	if (force_update || x)
 		gctx->impl.screen_update();
 	return FALSE;
 }
 
-static gint rnd_gtkg_window_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
+static gint rnd_gtkg_window_leave_cb(GtkWidget *widget, long x, long y, long z, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
 
 	/* printf("leave mode: %d detail: %d\n", ev->mode, ev->detail); */
-
-	/* Window leave events can also be triggered because of focus grabs. Some
-	   X applications occasionally grab the focus and so trigger this function.
-	   At least GNOME's window manager is known to do this on every mouse click.
-	   See http://bugzilla.gnome.org/show_bug.cgi?id=102209 */
-	if (ev->mode != GDK_CROSSING_NORMAL)
-		return FALSE;
 
 	out->view.has_entered = FALSE;
 
@@ -156,10 +140,10 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(rnd_gtkg_window_leave_cb), gctx);
 
 	gtkc_bind_mouse_scroll(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_rs, rnd_gtk_window_mouse_scroll_cb, gctx));
+	gtkc_bind_mouse_enter(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_enter, rnd_gtkg_window_enter_cb, gctx));
+	gtkc_bind_mouse_leave(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_leave, rnd_gtkg_window_leave_cb, gctx));
 	gtkc_bind_resize_dwg(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_sc, rnd_gtkg_drawing_area_configure_event_cb, gctx));
 
 	rnd_gtk_interface_input_signals_connect();

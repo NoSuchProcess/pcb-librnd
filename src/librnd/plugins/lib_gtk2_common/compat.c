@@ -28,3 +28,34 @@ gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs_)
 	return rs->cb(widget, x, y, mk, rs->user_data);
 }
 
+gint gtkc_mouse_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	int need_update;
+
+	/* See comment in gtkc_mouse_leave_cb */
+	if (ev->mode != GDK_CROSSING_NORMAL && ev->mode != GDK_CROSSING_UNGRAB && ev->detail != GDK_NOTIFY_NONLINEAR)
+		return FALSE;
+
+	/* Following expression is true if you open a menu from the menu bar,
+	   move the mouse to the viewport and click on it. This closes the menu
+	   and moves the pointer to the viewport without the pointer going over
+	   the edge of the viewport */
+	need_update = ((ev->mode == GDK_CROSSING_UNGRAB) && (ev->detail == GDK_NOTIFY_NONLINEAR));
+	return rs->cb(widget, need_update, 0, 0, rs->user_data);
+}
+
+gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+
+	/* Window leave events can also be triggered because of focus grabs. Some
+	   X applications occasionally grab the focus and so trigger this function.
+	   At least GNOME's window manager is known to do this on every mouse click.
+	   See http://bugzilla.gnome.org/show_bug.cgi?id=102209 */
+	if (ev->mode != GDK_CROSSING_NORMAL)
+		return FALSE;
+
+	return rs->cb(widget, 0, 0, 0, rs->user_data);
+}
+

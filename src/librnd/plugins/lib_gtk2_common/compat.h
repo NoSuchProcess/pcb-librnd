@@ -179,6 +179,15 @@ gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs);
 #define gtkc_bind_mouse_scroll(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "scroll_event", G_CALLBACK(gtkc_mouse_scroll_cb), ev);
 
+gint gtkc_mouse_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
+gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
+
+/* ev is gtkc_event_xy_t, filled in by the caller */
+#define gtkc_bind_mouse_enter(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "enter_notify_event", G_CALLBACK(gtkc_mouse_enter_cb), ev);
+#define gtkc_bind_mouse_leave(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "leave_notify_event", G_CALLBACK(gtkc_mouse_leave_cb), ev);
+
 
 
 
