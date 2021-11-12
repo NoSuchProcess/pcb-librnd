@@ -7,6 +7,8 @@ put /local/pcb/mod/OBJS [@
 @]
 
 put /local/pcb/mod/OBJS_C99 [@
+  $(LIBRND_PLUGDIR)/lib_gtk2_common/compat.o
+
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_dwg_tooltip.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_menu.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_command.o

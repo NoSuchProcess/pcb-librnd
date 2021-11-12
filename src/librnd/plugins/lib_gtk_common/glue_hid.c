@@ -121,13 +121,13 @@ static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 	}
 }
 
-static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_)
+static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, int sx, int sy, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
-	gctx->port.view.canvas_width = ev->width;
-	gctx->port.view.canvas_height = ev->height;
 
+	gctx->port.view.canvas_width = sx;
+	gctx->port.view.canvas_height = sy;
 	gctx->impl.drawing_area_configure_hook(out);
 	rnd_gtkg_gui_inited(gctx, 0, 1);
 
@@ -157,9 +157,12 @@ TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_window_mouse_scroll_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "configure_event", G_CALLBACK(rnd_gtkg_drawing_area_configure_event_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(rnd_gtkg_window_leave_cb), gctx);
+
+	gctx->topwin.dwg_rs.cb = rnd_gtkg_drawing_area_configure_event_cb;
+	gctx->topwin.dwg_rs.user_data = gctx;
+	gtkc_bind_resize_dwg(gctx->port.drawing_area, &gctx->topwin.dwg_rs)
 
 	rnd_gtk_interface_input_signals_connect();
 

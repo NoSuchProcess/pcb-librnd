@@ -165,4 +165,13 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 4);
 }
 
+gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_);
+
+/* rs is gtkc_resize_dwg_t, filled in by the caller */
+#define gtkc_bind_resize_dwg(widget, rs) \
+	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_resize_dwg_cb), rs);
+
+
+
+
 #endif  /* RND_GTK_COMPAT_H */
