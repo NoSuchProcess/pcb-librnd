@@ -15,7 +15,7 @@ rnd_hid_cfg_mod_t rnd_gtk_mouse_button(int ev_button);
 
 int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg);
 
-gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
+gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long dx, long dy, void *out);
 
 gboolean rnd_gtk_button_press_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);
 gboolean rnd_gtk_button_release_cb(GtkWidget * drawing_area, GdkEventButton * ev, gpointer data);

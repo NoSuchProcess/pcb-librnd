@@ -231,27 +231,17 @@ int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg)
 }
 
 /* Mouse scroll wheel events */
-gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *data)
+gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long x, long y, void *data)
 {
 	rnd_gtk_t *ctx = data;
-	ModifierKeysState mk;
-	GdkModifierType state;
-	int button;
+	unsigned long button;
+	unsigned long mk = 0;
 
-	state = (GdkModifierType) (ev->state);
-	mk = rnd_gtk_modifier_keys_state(widget, &state);
-
-	/* X11 gtk hard codes buttons 4, 5, 6, 7 as below in
-	 * gtk+/gdk/x11/gdkevents-x11.c:1121, but quartz and windows have
-	 * special mouse scroll events, so this may conflict with a mouse
-	 * who has buttons 4 - 7 that aren't the scroll wheel? */
-	switch (ev->direction) {
-		case GDK_SCROLL_UP:    button = RND_MB_SCROLL_UP; break;
-		case GDK_SCROLL_DOWN:  button = RND_MB_SCROLL_DOWN; break;
-		case GDK_SCROLL_LEFT:  button = RND_MB_SCROLL_LEFT; break;
-		case GDK_SCROLL_RIGHT: button = RND_MB_SCROLL_RIGHT; break;
-		default: return FALSE;
-	}
+	if (y > 0) button = RND_MB_SCROLL_DOWN;
+	else if (y < 0) button = RND_MB_SCROLL_UP;
+	else if (x > 0) button = RND_MB_SCROLL_RIGHT;
+	else if (x < 0) button = RND_MB_SCROLL_LEFT;
+	else return FALSE;
 
 	rnd_gtk_wheel_zoom = 1;
 	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);

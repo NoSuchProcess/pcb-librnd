@@ -139,7 +139,7 @@ struct rnd_gtk_topwin_s {
 	gboolean adjustment_changed_holdoff;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
-	gtkc_event_xy_t dwg_rs;
+	gtkc_event_xy_t dwg_rs, dwg_sc;
 
 	/* docking */
 	GtkWidget *dockbox[RND_HID_DOCK_max];

@@ -155,12 +155,12 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "scroll_event", G_CALLBACK(rnd_gtk_window_mouse_scroll_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(rnd_gtkg_window_leave_cb), gctx);
 
-	gtkc_bind_resize_dwg(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_rs, rnd_gtkg_drawing_area_configure_event_cb, gctx))
+	gtkc_bind_mouse_scroll(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_rs, rnd_gtk_window_mouse_scroll_cb, gctx));
+	gtkc_bind_resize_dwg(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_sc, rnd_gtkg_drawing_area_configure_event_cb, gctx));
 
 	rnd_gtk_interface_input_signals_connect();
 
