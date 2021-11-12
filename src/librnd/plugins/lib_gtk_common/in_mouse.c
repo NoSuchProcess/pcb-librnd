@@ -196,8 +196,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	lctx.pressed_esc = FALSE;
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 
-	button_handler =
-		g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
+	button_handler = g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
 	key_handler1 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
 	key_handler2 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
