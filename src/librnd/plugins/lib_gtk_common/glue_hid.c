@@ -65,26 +65,24 @@ static gboolean check_object_tooltips(rnd_gtk_t *gctx)
 	return rnd_gtk_dwg_tooltip_check_object(gctx->hidlib, out->drawing_area, out->view.crosshair_x, out->view.crosshair_y);
 }
 
-static gint rnd_gtkg_window_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *ctx_)
+static gint rnd_gtkg_window_motion_cb(GtkWidget *widget, long x, long y, long z, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;
 	gdouble dx, dy;
 	static gint x_prev = -1, y_prev = -1;
 
-	gdk_event_request_motions(ev);
-
 	if (out->view.panning) {
-		dx = gctx->port.view.coord_per_px * (x_prev - ev->x);
-		dy = gctx->port.view.coord_per_px * (y_prev - ev->y);
+		dx = gctx->port.view.coord_per_px * (x_prev - x);
+		dy = gctx->port.view.coord_per_px * (y_prev - y);
 		if (x_prev > 0)
 			rnd_gtk_pan_view_rel(&gctx->port.view, dx, dy);
-		x_prev = ev->x;
-		y_prev = ev->y;
+		x_prev = x;
+		y_prev = y;
 		return FALSE;
 	}
 	x_prev = y_prev = -1;
-	rnd_gtk_note_event_location((GdkEventButton *)ev);
+	rnd_gtk_note_event_location(NULL); /* TODO: pass on x and y */
 
 	rnd_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, gctx);
 
@@ -139,11 +137,10 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 TODO(": move this to render init")
 	/* Mouse and key events will need to be intercepted when PCB needs a location from the user. */
-	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "motion_notify_event", G_CALLBACK(rnd_gtkg_window_motion_cb), gctx);
-
 	gtkc_bind_mouse_scroll(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_rs, rnd_gtk_window_mouse_scroll_cb, gctx));
 	gtkc_bind_mouse_enter(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_enter, rnd_gtkg_window_enter_cb, gctx));
 	gtkc_bind_mouse_leave(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_leave, rnd_gtkg_window_leave_cb, gctx));
+	gtkc_bind_mouse_motion(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_motion, rnd_gtkg_window_motion_cb, gctx));
 	gtkc_bind_resize_dwg(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_sc, rnd_gtkg_drawing_area_configure_event_cb, gctx));
 
 	rnd_gtk_interface_input_signals_connect();

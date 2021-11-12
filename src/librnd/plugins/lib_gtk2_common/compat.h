@@ -169,24 +169,31 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
 
-/* rs is gtkc_event_xy_t, filled in by the caller */
+/* rs is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_resize_dwg(widget, rs) \
 	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_resize_dwg_cb), rs);
 
 gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs);
 
-/* ev is gtkc_event_xy_t, filled in by the caller */
+/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_scroll(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "scroll_event", G_CALLBACK(gtkc_mouse_scroll_cb), ev);
 
 gint gtkc_mouse_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
 gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
 
-/* ev is gtkc_event_xy_t, filled in by the caller */
+/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_enter(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "enter_notify_event", G_CALLBACK(gtkc_mouse_enter_cb), ev);
 #define gtkc_bind_mouse_leave(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "leave_notify_event", G_CALLBACK(gtkc_mouse_leave_cb), ev);
+
+
+gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
+
+/* ev is gtkc_event_xyz_t, filled in by the caller */
+#define gtkc_bind_mouse_motion(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_leave_cb), ev);
 
 
 

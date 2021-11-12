@@ -59,3 +59,12 @@ gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs_)
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
+
+gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+
+	gdk_event_request_motions(ev);
+
+	return rs->cb(widget, ev->x, ev->y, 0, rs->user_data);
+}
