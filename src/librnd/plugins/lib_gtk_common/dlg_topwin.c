@@ -487,7 +487,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	g_signal_connect(G_OBJECT(tw->drawing_area), "realize", G_CALLBACK(ghidgui->impl.drawing_realize), ghidgui->impl.gport);
 	ghidgui->impl.init_drawing_widget(tw->drawing_area, ghidgui->impl.gport);
 
-	gtkc_dwg_setup_events(tw->drawing_area);
+	gtkc_setup_events(tw->drawing_area, 1, 1, 1, 1, 1, 1);
 
 	/* This is required to get the drawing_area key-press-event.  Also the
 	 * enter and button press callbacks grab focus to be sure we have it

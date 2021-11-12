@@ -167,13 +167,18 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 /*** Event/signal compatibility ***/
 
-static inline void gtkc_dwg_setup_events(GtkWidget *dwg)
+static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, int motion, int key, int expose, int enter)
 {
-	gtk_widget_add_events(dwg,
-		GDK_EXPOSURE_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
-		| GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK
-		| GDK_KEY_PRESS_MASK | GDK_SCROLL_MASK | GDK_FOCUS_CHANGE_MASK
-		| GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
+	gint events = GDK_FOCUS_CHANGE_MASK;
+
+	if (expose)  events |= GDK_EXPOSURE_MASK;
+	if (enter)   events |= GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK;
+	if (mbutton) events |= GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_PRESS_MASK;
+	if (mscroll) events |= GDK_SCROLL_MASK;
+	if (key)     events |= GDK_KEY_RELEASE_MASK | GDK_KEY_PRESS_MASK;
+	if (motion)  events |= GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK;
+
+	gtk_widget_add_events(dwg, events);
 }
 
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);

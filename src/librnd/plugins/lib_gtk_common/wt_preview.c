@@ -582,7 +582,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
 
-	gtkc_dwg_setup_events(GTK_WIDGET(prv));
+	gtkc_setup_events(GTK_WIDGET(prv), 1, 1, 1, 1, 1, 1);
 
 	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
 
