@@ -1,3 +1,7 @@
+#ifndef RND_GTK_PIXBUF_H
+#define RND_GTK_PIXBUF_H
+
+#include <math.h>
 #include "hid_gtk_conf.h"
 
 RND_INLINE GdkPixbuf *rnd_gtk_xpm2pixbuf(const char **xpm, int allow_scale)
@@ -22,3 +26,5 @@ RND_INLINE GdkPixbuf *rnd_gtk_xpm2pixbuf(const char **xpm, int allow_scale)
 	g_object_unref(p1);
 	return pixbuf;
 }
+
+#endif
