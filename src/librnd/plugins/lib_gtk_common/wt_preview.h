@@ -86,7 +86,7 @@ struct rnd_gtk_preview_s {
 	void *obj; /* object being displayed in the preview */
 
 	rnd_gtk_t *ctx;
-	gtkc_event_xyz_t rs, sc, motion;
+	gtkc_event_xyz_t rs, sc, motion, mpress, mrelease;
 	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
 	unsigned redraw_with_board:1;
 	unsigned redrawing:1;

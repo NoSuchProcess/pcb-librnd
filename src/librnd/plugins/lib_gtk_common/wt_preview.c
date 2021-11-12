@@ -381,9 +381,9 @@ static gboolean button_press(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 	return r;
 }
 
-static gboolean preview_button_press_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
+static gboolean preview_button_press_cb(GtkWidget *w, long x, long y, long btn, gpointer data)
 {
-	return button_press(w, rnd_gtk_mouse_button(ev->button));
+	return button_press(w, btn);
 }
 
 static gboolean preview_scroll_cb(GtkWidget *w, long x, long y, long z, gpointer data)
@@ -396,7 +396,7 @@ static gboolean preview_scroll_cb(GtkWidget *w, long x, long y, long z, gpointer
 	return FALSE;
 }
 
-static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpointer data)
+static gboolean preview_button_release_cb(GtkWidget *w, long x, long y, long btn, gpointer data)
 {
 	rnd_gtk_preview_t *preview = (rnd_gtk_preview_t *) w;
 	gint wx, wy;
@@ -412,7 +412,7 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
-	switch (rnd_gtk_mouse_button(ev->button)) {
+	switch(btn) {
 	case RND_MB_MIDDLE:
 		preview->view.panning = 0;
 		break;
@@ -584,13 +584,14 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	gtkc_dwg_setup_events(GTK_WIDGET(prv));
 
-	g_signal_connect(G_OBJECT(prv), "button_press_event", G_CALLBACK(preview_button_press_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "button_release_event", G_CALLBACK(preview_button_release_cb), NULL);
 	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
 
 	gtkc_bind_mouse_scroll(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->rs, preview_scroll_cb, NULL));
 	gtkc_bind_mouse_motion(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->motion, preview_motion_cb, NULL));
+	gtkc_bind_mouse_press(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->mpress, preview_button_press_cb, NULL));
+	gtkc_bind_mouse_release(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->mrelease, preview_button_release_cb, NULL));
 	gtkc_bind_resize_dwg(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->sc, preview_resize_event_cb, NULL));
+
 
 
 	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);

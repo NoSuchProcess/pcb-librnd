@@ -68,3 +68,16 @@ gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs_)
 
 	return rs->cb(widget, ev->x, ev->y, 0, rs->user_data);
 }
+
+gint gtkc_mouse_press_cb(GtkWidget *widget, GdkEventButton *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, ev->x, ev->y, rnd_gtk_mouse_button(ev->button), rs->user_data);
+}
+
+gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, ev->x, ev->y, rnd_gtk_mouse_button(ev->button), rs->user_data);
+}
+
