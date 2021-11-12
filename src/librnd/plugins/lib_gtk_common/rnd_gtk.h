@@ -28,6 +28,7 @@
 #ifndef RND_GTK_H
 #define RND_GTK_H
 
+#include <librnd/config.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/conf.h>
 
@@ -107,6 +108,12 @@ typedef struct { /* drawing area resize event binding; compat.h will implement t
 	void *user_data;
 } gtkc_event_xy_t;
 
+RND_INLINE gtkc_event_xy_t *rnd_gtkc_xy_ev(gtkc_event_xy_t *xyev, gboolean (*cb)(GtkWidget *widget, long x, long y, void *user_data), void *user_data)
+{
+	xyev->cb = cb;
+	xyev->user_data = user_data;
+	return xyev;
+}
 
 #include "bu_menu.h"
 #include "bu_command.h"

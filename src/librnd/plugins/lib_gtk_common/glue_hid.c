@@ -160,9 +160,7 @@ TODO(": move this to render init")
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "enter_notify_event", G_CALLBACK(rnd_gtkg_window_enter_cb), gctx);
 	g_signal_connect(G_OBJECT(gctx->port.drawing_area), "leave_notify_event", G_CALLBACK(rnd_gtkg_window_leave_cb), gctx);
 
-	gctx->topwin.dwg_rs.cb = rnd_gtkg_drawing_area_configure_event_cb;
-	gctx->topwin.dwg_rs.user_data = gctx;
-	gtkc_bind_resize_dwg(gctx->port.drawing_area, &gctx->topwin.dwg_rs)
+	gtkc_bind_resize_dwg(gctx->port.drawing_area, rnd_gtkc_xy_ev(&gctx->topwin.dwg_rs, rnd_gtkg_drawing_area_configure_event_cb, gctx))
 
 	rnd_gtk_interface_input_signals_connect();
 
