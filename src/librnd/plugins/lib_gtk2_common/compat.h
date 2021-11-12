@@ -167,7 +167,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *ctx_);
 
-/* rs is gtkc_resize_dwg_t, filled in by the caller */
+/* rs is gtkc_event_xy_t, filled in by the caller */
 #define gtkc_bind_resize_dwg(widget, rs) \
 	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_resize_dwg_cb), rs);
 

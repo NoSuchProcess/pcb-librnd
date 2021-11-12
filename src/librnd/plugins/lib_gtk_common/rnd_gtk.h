@@ -103,9 +103,9 @@ struct rnd_gtk_mouse_s {
 };
 
 typedef struct { /* drawing area resize event binding; compat.h will implement this */
-	gboolean (*cb)(GtkWidget *widget, int sx, int sy, void *user_data);
+	gboolean (*cb)(GtkWidget *widget, int x, int y, void *user_data);
 	void *user_data;
-} gtkc_resize_dwg_t;
+} gtkc_event_xy_t;
 
 
 #include "bu_menu.h"
@@ -132,7 +132,7 @@ struct rnd_gtk_topwin_s {
 	gboolean adjustment_changed_holdoff;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
-	gtkc_resize_dwg_t dwg_rs;
+	gtkc_event_xy_t dwg_rs;
 
 	/* docking */
 	GtkWidget *dockbox[RND_HID_DOCK_max];
