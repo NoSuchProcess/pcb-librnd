@@ -4,13 +4,13 @@
 
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs_)
 {
-	gtkc_event_xy_t *rs = rs_;
-	return rs->cb(widget, ev->width, ev->height, rs->user_data);
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, ev->width, ev->height, 0, rs->user_data);
 }
 
 gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs_)
 {
-	gtkc_event_xy_t *rs = rs_;
+	gtkc_event_xyz_t *rs = rs_;
 	long x, y;
 	ModifierKeysState mk;
 	GdkModifierType state;
@@ -25,6 +25,6 @@ gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs_)
 		case GDK_SCROLL_RIGHT: x = +1; break;
 	}
 
-	return rs->cb(widget, x, y, rs->user_data);
+	return rs->cb(widget, x, y, mk, rs->user_data);
 }
 

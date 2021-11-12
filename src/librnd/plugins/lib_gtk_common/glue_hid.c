@@ -121,7 +121,7 @@ static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 	}
 }
 
-static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, long sx, long sy, void *ctx_)
+static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, long sx, long sy, long z, void *ctx_)
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_port_t *out = &gctx->port;

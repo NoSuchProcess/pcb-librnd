@@ -231,11 +231,10 @@ int rnd_gtk_get_user_xy(rnd_gtk_t *ctx, const char *msg)
 }
 
 /* Mouse scroll wheel events */
-gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long x, long y, void *data)
+gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long x, long y, long modkey, void *data)
 {
 	rnd_gtk_t *ctx = data;
 	unsigned long button;
-	unsigned long mk = 0;
 
 	if (y > 0) button = RND_MB_SCROLL_DOWN;
 	else if (y < 0) button = RND_MB_SCROLL_UP;
@@ -244,7 +243,7 @@ gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long x, long y, void *dat
 	else return FALSE;
 
 	rnd_gtk_wheel_zoom = 1;
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, button | modkey, ctx->topwin.cmd.command_entry_status_line_active);
 	rnd_gtk_wheel_zoom = 0;
 
 	return TRUE;
