@@ -193,7 +193,7 @@ gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
 
 /* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_motion(widget, ev) \
-	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_leave_cb), ev);
+	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_motion_cb), ev);
 
 
 
