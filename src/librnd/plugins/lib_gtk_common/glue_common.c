@@ -334,17 +334,10 @@ void rnd_gtk_previews_invalidate_all(void)
 }
 
 
-void rnd_gtk_note_event_location(GdkEventButton *ev)
+void rnd_gtk_note_event_location(gint event_x, gint event_y, int valid)
 {
-	gint event_x, event_y;
-
-	if (!ev) {
+	if (!valid)
 		gdkc_window_get_pointer(ghidgui->port.drawing_area, &event_x, &event_y, NULL);
-	}
-	else {
-		event_x = ev->x;
-		event_y = ev->y;
-	}
 
 	rnd_gtk_coords_event2design(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.design_x, &ghidgui->port.view.design_y);
 

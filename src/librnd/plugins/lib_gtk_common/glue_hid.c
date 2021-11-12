@@ -82,7 +82,7 @@ static gint rnd_gtkg_window_motion_cb(GtkWidget *widget, long x, long y, long z,
 		return FALSE;
 	}
 	x_prev = y_prev = -1;
-	rnd_gtk_note_event_location(NULL); /* TODO: pass on x and y */
+	rnd_gtk_note_event_location(x, y, 1);
 
 	rnd_gtk_dwg_tooltip_queue(out->drawing_area, (GSourceFunc)check_object_tooltips, gctx);
 

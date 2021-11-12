@@ -216,7 +216,7 @@ gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_g
 	gint ksym = kev->keyval;
 
 	if (rnd_gtk_is_modifier_key_sym(ksym))
-		rnd_gtk_note_event_location(NULL);
+		rnd_gtk_note_event_location(0, 0, 0);
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(ghidgui->hidlib);

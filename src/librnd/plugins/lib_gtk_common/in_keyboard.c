@@ -136,7 +136,7 @@ gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointe
 		return FALSE;
 
 	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) == 0) {
-		rnd_gtk_note_event_location(NULL);
+		rnd_gtk_note_event_location(0, 0, 0);
 
 		slen = rnd_hid_cfg_keys_input(&rnd_gtk_keymap, mods, key_raw, kv);
 		if (slen > 0) {

@@ -155,7 +155,7 @@ static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev
 {
 	if (g_main_loop_is_running(lctx->loop))
 		g_main_loop_quit(lctx->loop);
-	rnd_gtk_note_event_location(ev);
+	rnd_gtk_note_event_location(ev->x, ev->y, 1);
 	return TRUE;
 }
 
@@ -260,7 +260,7 @@ gboolean rnd_gtk_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gp
 	if (ev->type != GDK_BUTTON_PRESS)
 		return TRUE;
 
-	rnd_gtk_note_event_location(ev);
+	rnd_gtk_note_event_location(ev->x, ev->y, 1);
 	state = (GdkModifierType) (ev->state);
 	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
 
@@ -283,7 +283,7 @@ gboolean rnd_gtk_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 	GdkModifierType state;
 	rnd_gtk_t *ctx = data;
 
-	rnd_gtk_note_event_location(ev);
+	rnd_gtk_note_event_location(ev->x, ev->y, 1);
 	state = (GdkModifierType) (ev->state);
 	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
 

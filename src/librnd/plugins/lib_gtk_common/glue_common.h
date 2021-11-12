@@ -40,7 +40,7 @@ void rnd_gtk_previews_invalidate_all(void);
 
 /*** Internal calls, hid implementations won't need these ***/
 void rnd_gtk_tw_ranges_scale(rnd_gtk_t *ctx);
-void rnd_gtk_note_event_location(GdkEventButton *ev);
+void rnd_gtk_note_event_location(gint event_x, gint event_y, int valid);
 
 void rnd_gtk_interface_input_signals_connect(void);
 void rnd_gtk_interface_input_signals_disconnect(void);
