@@ -26,9 +26,10 @@
  */
 
 /* This file was originally written by Bill Wilson for the PCB Gtk
- * port.  It was later heavily modified by Dan McMahill to provide
- * user customized menus.
-*/
+   port.  It was later heavily modified by Dan McMahill to provide
+   user customized menus then by the pcb-rnd development team to
+   modularize gtk support. */
+
 /* gui-top-window.c
 |  This handles creation of the top level window and all its widgets.
 |  events for the Output.drawing_area widget are handled in a separate
