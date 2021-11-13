@@ -167,6 +167,8 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 /*** Event/signal compatibility ***/
 
+/* Make sure the specified widget is capable of accepting event classes
+   that are enabled in the args */
 static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, int motion, int key, int expose, int enter)
 {
 	gint events = GDK_FOCUS_CHANGE_MASK;
@@ -181,44 +183,38 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 	gtk_widget_add_events(dwg, events);
 }
 
-gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
+/* In the following all rs is gtkc_event_xyz_t, filled in by the caller */
 
-/* rs is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_resize_dwg(widget, rs) \
 	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_resize_dwg_cb), rs);
 
-gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs);
-
-/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_scroll(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "scroll_event", G_CALLBACK(gtkc_mouse_scroll_cb), ev);
 
-gint gtkc_mouse_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
-gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
-
-/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_enter(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "enter_notify_event", G_CALLBACK(gtkc_mouse_enter_cb), ev);
+
 #define gtkc_bind_mouse_leave(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "leave_notify_event", G_CALLBACK(gtkc_mouse_leave_cb), ev);
 
-
-gint gtkc_mouse_press_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
-gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
-
-/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_press(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "button_press_event", G_CALLBACK(gtkc_mouse_press_cb), ev);
+
 #define gtkc_bind_mouse_release(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "button_release_event", G_CALLBACK(gtkc_mouse_release_cb), ev);
 
-
-gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
-
-/* ev is gtkc_event_xyz_t, filled in by the caller */
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_motion_cb), ev);
 
+
+/* signal handling internals - do not call directly */
+gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
+gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs);
+gint gtkc_mouse_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
+gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
+gint gtkc_mouse_press_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
+gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
+gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
 
 
 
