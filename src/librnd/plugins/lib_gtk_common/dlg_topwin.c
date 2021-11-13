@@ -337,7 +337,7 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	return button;
 }
 
-static gboolean drawing_area_enter_cb(GtkWidget *w, rnd_gtk_expose_t *p, void *user_data)
+static gboolean drawing_area_enter_cb(GtkWidget *w, long x, long y, long z, void *user_data)
 {
 	rnd_gui->invalidate_all(rnd_gui);
 	return FALSE;
@@ -480,7 +480,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	/* optional resize grip: rightmost widget in the status line hbox */
 	gtkc_create_resize_grip(tw->bottom_hbox);
 
-	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
+	gtkc_bind_mouse_enter(tw->drawing_area, rnd_gtkc_xy_ev(&ghidgui->wtop_enter, drawing_area_enter_cb, tw));
 	gtkc_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
 	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
 	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
