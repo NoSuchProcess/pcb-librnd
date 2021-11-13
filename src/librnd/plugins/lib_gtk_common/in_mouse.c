@@ -107,6 +107,7 @@ typedef struct {
 	rnd_gtk_t *gctx;
 	gboolean got_location, pressed_esc;
 	gint last_press;
+	gtkc_event_xyz_t mpress_rs;
 } loop_ctx_t;
 
 static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
@@ -151,11 +152,12 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 
 /*  User hit a mouse button in the Output drawing area, so quit the loop
     and the cursor values when the button was pressed will be used. */
-static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, loop_ctx_t *lctx)
+static gboolean loop_button_press_cb(GtkWidget *drawing_area, long x, long y, long btn, void *udata)
 {
+	loop_ctx_t *lctx = udata;
 	if (g_main_loop_is_running(lctx->loop))
 		g_main_loop_quit(lctx->loop);
-	rnd_gtk_note_event_location(ev->x, ev->y, 1);
+	rnd_gtk_note_event_location(x, y, 1);
 	return TRUE;
 }
 
@@ -196,7 +198,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	lctx.pressed_esc = FALSE;
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 
-	button_handler = g_signal_connect(G_OBJECT(ctx->topwin.drawing_area), "button_press_event", G_CALLBACK(loop_button_press_cb), &lctx);
+	button_handler = gtkc_bind_mouse_press(ctx->topwin.drawing_area, rnd_gtkc_xy_ev(&lctx.mpress_rs, loop_button_press_cb, &lctx))
 	key_handler1 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
 	key_handler2 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
 
