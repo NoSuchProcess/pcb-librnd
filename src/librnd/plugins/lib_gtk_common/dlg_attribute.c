@@ -61,7 +61,7 @@ typedef struct {
 	void (*close_cb)(void *caller_data, rnd_hid_attr_ev_t ev);
 	char *id;
 	gulong destroy_handler;
-	gtkc_event_xyz_t ev_resize;
+	gtkc_event_xyz_t ev_resize, ev_destroy;
 	unsigned inhibit_valchg:1;
 	unsigned freeing_gui:1;
 	unsigned being_destroyed:1;
@@ -766,7 +766,7 @@ static void rnd_gtk_attr_dlg_free_gui(attr_dlg_t *ctx)
 }
 
 
-static gint rnd_gtk_attr_dlg_destroy_event_cb(GtkWidget *widget, gpointer data)
+static gint rnd_gtk_attr_dlg_destroy_event_cb(GtkWidget *widget, long x, long y, long z, gpointer data)
 {
 	rnd_gtk_attr_dlg_free_gui(data);
 	return 0;
@@ -885,8 +885,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 		gtk_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
 	gtkc_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
-
-	ctx->destroy_handler = g_signal_connect(ctx->dialog, "destroy", G_CALLBACK(rnd_gtk_attr_dlg_destroy_event_cb), ctx);
+	ctx->destroy_handler = gtkc_bind_win_destroy(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_destroy, rnd_gtk_attr_dlg_destroy_event_cb, ctx));
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
 	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);

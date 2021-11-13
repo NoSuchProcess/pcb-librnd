@@ -216,6 +216,15 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_win_resize_cb), ev);
 
 
+#define gtkc_bind_win_destroy(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev);
+
+#define gtkc_bind_widget_destroy(widget, ev) gtkc_bind_win_destroy(widget, ev)
+
+#define gtkc_bind_win_delete(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "delete_event", G_CALLBACK(gtkc_win_delete_cb), ev);
+
+
 /* signal handling internals - do not call directly */
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
 gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs);
@@ -227,6 +236,8 @@ gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
 gint gtkc_key_press_cb(GtkWidget *widget, GdkEventKey *kev, void *rs);
 gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs);
 gint gtkc_win_resize_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
+gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs);
+gint gtkc_win_delete_cb(GtkWidget *widget, GdkEvent *ev, void *rs);
 
 
 #endif  /* RND_GTK_COMPAT_H */

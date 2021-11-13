@@ -237,7 +237,7 @@ void rnd_gtk_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
 }
 
 /*** Top window ***/
-static gint delete_chart_cb(GtkWidget *widget, GdkEvent *event, void *data)
+static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *data)
 {
 	rnd_gtk_t *gctx = data;
 
@@ -482,10 +482,8 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	gtkc_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
-
-
-	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "delete_event", G_CALLBACK(delete_chart_cb), ctx);
-	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);
+	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
+	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
 
 	gtk_widget_show_all(ghidgui->wtop_window);
 

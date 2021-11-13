@@ -542,7 +542,7 @@ GType rnd_gtk_preview_get_type()
 	return rnd_gtk_preview_type;
 }
 
-static gint preview_destroy_cb(GtkWidget *widget, gpointer data)
+static gint preview_destroy_cb(GtkWidget *widget, long x, long y, long z, gpointer data)
 {
 	rnd_gtk_t *ctx = data;
 	rnd_gtk_preview_t *prv = RND_GTK_PREVIEW(widget);
@@ -582,7 +582,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	gtkc_setup_events(GTK_WIDGET(prv), 1, 1, 1, 1, 1, 1);
 
-	g_signal_connect(G_OBJECT(prv), "destroy", G_CALLBACK(preview_destroy_cb), ctx);
+	gtkc_bind_widget_destroy(prv, rnd_gtkc_xy_ev(&prv->ev_destroy, preview_destroy_cb, ctx));
 
 	gtkc_bind_mouse_scroll(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->rs, preview_scroll_cb, NULL));
 	gtkc_bind_mouse_motion(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->motion, preview_motion_cb, NULL));

@@ -133,3 +133,15 @@ gint gtkc_win_resize_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs_)
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
+gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, 0, 0, 0, rs->user_data);
+}
+
+gint gtkc_win_delete_cb(GtkWidget *widget, GdkEvent *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, 0, 0, 0, rs->user_data);
+}
+
