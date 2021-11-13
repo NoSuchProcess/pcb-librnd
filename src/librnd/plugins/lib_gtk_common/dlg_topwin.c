@@ -399,7 +399,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	/* -- Left control bar */
 	/* This box will be made insensitive when the gui needs
-	 * a modal button GetLocation button press. */
+	   a modal button GetLocation button press. */
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
 	gtk_paned_pack1(GTK_PANED(tw->hpaned_middle), tw->left_toolbar, FALSE, FALSE);
 
@@ -414,9 +414,9 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	/* -- The PCB layout output drawing area */
 
 	/* info bar: hboxi->event_box->hbox2:
-	    hboxi is for the layout (horizontal fill)
-	    the event box is neeed for background color
-      vbox is tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
+	   hboxi is for the layout (horizontal fill)
+	   the event box is neeed for background color
+	   vbox is tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
 	hboxi = gtkc_hbox_new(TRUE, 0);
 	tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] = gtkc_vbox_new(TRUE, 0);
 	evb = gtk_event_box_new();
