@@ -248,26 +248,18 @@ gint rnd_gtk_window_mouse_scroll_cb(GtkWidget *widget, long x, long y, long modk
 	return TRUE;
 }
 
-gboolean rnd_gtk_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_button_press_cb(GtkWidget *drawing_area, long x, long y, long btn, gpointer data)
 {
 	ModifierKeysState mk;
-	GdkModifierType state;
 	GdkModifierType mask;
 	rnd_gtk_t *ctx = data;
 
-	/* Reject double and triple click events */
-	if (ev->type != GDK_BUTTON_PRESS)
-		return TRUE;
-
-	rnd_gtk_note_event_location(ev->x, ev->y, 1);
-	state = (GdkModifierType) (ev->state);
-	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
-
-	rnd_gtk_glob_mask = state;
+	rnd_gtk_note_event_location(x, y, 1);
+	mk = rnd_gtk_modifier_keys_state(drawing_area, NULL);
 
 	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, rnd_gtk_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, btn | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
 	rnd_gui->invalidate_all(rnd_gui);
 	if (!ctx->port.view.panning)
@@ -276,17 +268,15 @@ gboolean rnd_gtk_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, gp
 	return TRUE;
 }
 
-gboolean rnd_gtk_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev, gpointer data)
+gboolean rnd_gtk_button_release_cb(GtkWidget *drawing_area, long x, long y, long btn, gpointer data)
 {
 	ModifierKeysState mk;
-	GdkModifierType state;
 	rnd_gtk_t *ctx = data;
 
-	rnd_gtk_note_event_location(ev->x, ev->y, 1);
-	state = (GdkModifierType) (ev->state);
-	mk = rnd_gtk_modifier_keys_state(drawing_area, &state);
+	rnd_gtk_note_event_location(x, y, 1);
+	mk = rnd_gtk_modifier_keys_state(drawing_area, NULL);
 
-	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, rnd_gtk_mouse_button(ev->button) | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &rnd_gtk_mouse, btn | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(ctx->hidlib);

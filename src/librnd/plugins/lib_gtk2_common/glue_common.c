@@ -22,8 +22,8 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
 
 static void mouse_input_singals_connect(void *obj)
 {
-	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(obj), "button_press_event", G_CALLBACK(rnd_gtk_button_press_cb), ghidgui);
-	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(obj), "button_release_event", G_CALLBACK(rnd_gtk_button_release_cb), ghidgui);
+	ghidgui->button_press_handler = gtkc_bind_mouse_press(obj, rnd_gtkc_xy_ev(&ghidgui->mpress_rs, rnd_gtk_button_press_cb, ghidgui));
+	ghidgui->button_release_handler = gtkc_bind_mouse_release(obj, rnd_gtkc_xy_ev(&ghidgui->mrelease_rs, rnd_gtk_button_release_cb, ghidgui));
 }
 
 static void mouse_input_singals_disconnect(void *obj)
