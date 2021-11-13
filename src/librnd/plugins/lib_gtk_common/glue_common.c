@@ -219,8 +219,8 @@ void rnd_gtk_mode_cursor_main(void)
 /* low level keyboard and mouse signal connect/disconnect from top window drawing area */
 static void kbd_input_signals_connect(int idx, void *obj)
 {
-	ghidgui->key_press_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_press_event", G_CALLBACK(rnd_gtk_key_press_cb), ghidgui);
-	ghidgui->key_release_handler[idx] = g_signal_connect(G_OBJECT(obj), "key_release_event", G_CALLBACK(rnd_gtk_key_release_cb), &ghidgui->topwin);
+	ghidgui->key_press_handler[idx] = gtkc_bind_key_press(obj, rnd_gtkc_xy_ev(&ghidgui->kpress_rs, rnd_gtk_key_press_cb, ghidgui));
+	ghidgui->key_release_handler[idx] = gtkc_bind_key_release(obj, rnd_gtkc_xy_ev(&ghidgui->krelease_rs, rnd_gtk_key_release_cb, &ghidgui->topwin));
 }
 
 static void kbd_input_signals_disconnect(int idx, void *obj)

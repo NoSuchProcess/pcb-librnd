@@ -25,7 +25,7 @@ gboolean rnd_gtk_is_modifier_key_sym(gint ksym);
 ModifierKeysState rnd_gtk_modifier_keys_state(GtkWidget *drawing_area, GdkModifierType *state);
 
 /* Handle user key events of the output drawing area. */
-gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data);
+gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, gpointer data);
 
 extern rnd_hid_cfg_keys_t rnd_gtk_keymap;
 

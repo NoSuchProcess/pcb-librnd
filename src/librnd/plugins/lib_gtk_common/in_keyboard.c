@@ -126,23 +126,20 @@ int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short 
 	return 0;
 }
 
-gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data)
+gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, gpointer data)
 {
 	rnd_gtk_t *gctx = data;
-	int slen, mods;
-	unsigned short int key_raw, kv;
+	int slen;
 
-	if (rnd_gtk_is_modifier_key_sym(kev->keyval))
+	if (rnd_gtk_is_modifier_key_sym(kv))
 		return FALSE;
 
-	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) == 0) {
-		rnd_gtk_note_event_location(0, 0, 0);
+	rnd_gtk_note_event_location(0, 0, 0);
 
-		slen = rnd_hid_cfg_keys_input(&rnd_gtk_keymap, mods, key_raw, kv);
-		if (slen > 0) {
-			rnd_hid_cfg_keys_action(gctx->hidlib, &rnd_gtk_keymap);
-			return TRUE;
-		}
+	slen = rnd_hid_cfg_keys_input(&rnd_gtk_keymap, mods, key_raw, kv);
+	if (slen > 0) {
+		rnd_hid_cfg_keys_action(gctx->hidlib, &rnd_gtk_keymap);
+		return TRUE;
 	}
 
 	return FALSE;

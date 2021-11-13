@@ -101,3 +101,28 @@ gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs_)
 	return rs->cb(widget, ev->x, ev->y, btn, rs->user_data);
 }
 
+
+gint gtkc_key_press_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	int mods;
+	unsigned short int key_raw, kv;
+
+	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) != 0)
+		return FALSE;
+
+	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
+}
+
+gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	int mods;
+	unsigned short int key_raw, kv;
+
+	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) != 0)
+		return FALSE;
+
+	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
+}
+

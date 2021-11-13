@@ -208,9 +208,10 @@ gboolean rnd_gtk_idle_cb(void *topwin)
 	return FALSE;
 }
 
-gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, rnd_gtk_topwin_t *tw)
+gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, void *udata)
 {
-	gint ksym = kev->keyval;
+	rnd_gtk_topwin_t *tw = udata;
+	gint ksym = kv;
 
 	if (rnd_gtk_is_modifier_key_sym(ksym))
 		rnd_gtk_note_event_location(0, 0, 0);

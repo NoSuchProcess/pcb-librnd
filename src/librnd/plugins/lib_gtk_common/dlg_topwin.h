@@ -27,7 +27,7 @@ void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub);
 void rnd_gtk_tw_set_title(rnd_gtk_topwin_t *tw, const char *title);
 
 gboolean rnd_gtk_idle_cb(void *topwin);
-gboolean rnd_gtk_key_release_cb(GtkWidget * drawing_area, GdkEventKey * kev, rnd_gtk_topwin_t *tw);
+gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, void *topwin);
 
 void rnd_gtk_tw_dock_uninit(void);
 
