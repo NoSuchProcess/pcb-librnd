@@ -2,6 +2,30 @@
 #include <librnd/plugins/lib_gtk_common/bu_pixbuf.h>
 #include "compat.h"
 
+/* XPM */
+static const char *resize_grip_xpm[] = {
+"17 17 3 1",
+" 	c None",
+".	c #FFFFFF",
+"+	c #9E9A91",
+"                .",
+"               .+",
+"              .++",
+"             .++ ",
+"            .++  ",
+"           .++  .",
+"          .++  .+",
+"         .++  .++",
+"        .++  .++ ",
+"       .++  .++  ",
+"      .++  .++  .",
+"     .++  .++  .+",
+"    .++  .++  .++",
+"   .++  .++  .++ ",
+"  .++  .++  .++  ",
+" .++  .++  .++   ",
+".++  .++  .++    "};
+
 static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event, gpointer user_data)
 {
 	if (event->type != GDK_BUTTON_PRESS)
@@ -23,11 +47,11 @@ static gboolean resize_grip_button_press(GtkWidget *area, GdkEventButton *event,
 	return TRUE;
 }
 
-void gtkc_create_resize_grip(GtkWidget *parent, const char *gfx_xpm[])
+void gtkc_create_resize_grip(GtkWidget *parent)
 {
 	GtkWidget *resize_grip_vbox = gtkc_vbox_new(FALSE, 0);
 	GtkWidget *resize_grip = gtk_event_box_new();
-	GdkPixbuf *resize_grip_pixbuf = rnd_gtk_xpm2pixbuf(gfx_xpm, 1);
+	GdkPixbuf *resize_grip_pixbuf = rnd_gtk_xpm2pixbuf(resize_grip_xpm, 1);
 	GtkWidget *resize_grip_image = gtk_image_new_from_pixbuf(resize_grip_pixbuf);
 
 	g_object_unref(resize_grip_pixbuf);

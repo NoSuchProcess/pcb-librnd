@@ -312,30 +312,6 @@ static const char * FullScreen_xpm[] = {
 " .      ",
 "        "};
 
-/* XPM */
-static const char * resize_grip_xpm[] = {
-"17 17 3 1",
-" 	c None",
-".	c #FFFFFF",
-"+	c #9E9A91",
-"                .",
-"               .+",
-"              .++",
-"             .++ ",
-"            .++  ",
-"           .++  .",
-"          .++  .+",
-"         .++  .++",
-"        .++  .++ ",
-"       .++  .++  ",
-"      .++  .++  .",
-"     .++  .++  .+",
-"    .++  .++  .++",
-"   .++  .++  .++ ",
-"  .++  .++  .++  ",
-" .++  .++  .++   ",
-".++  .++  .++    "};
-
 /* Embed an XPM image in a button, and make it display as small as possible 
  *   Returns: a new image button. When freeing the object, the image needs to be freed 
  *            as well, using :
@@ -503,8 +479,8 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.command_combo_box, FALSE, FALSE, 0);
 
 
-	/* resize grip: rightmost widget in the status line hbox */
-	gtkc_create_resize_grip(tw->bottom_hbox, resize_grip_xpm);
+	/* optional resize grip: rightmost widget in the status line hbox */
+	gtkc_create_resize_grip(tw->bottom_hbox);
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
