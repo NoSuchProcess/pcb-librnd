@@ -287,16 +287,6 @@ typedef struct {
 	} val;
 } rnd_gtk_attr_tb_t;
 
-/* Wrap w so that clicks on it are triggering a callback */
-static GtkWidget *wrap_bind_click(GtkWidget *w, GCallback cb, void *cb_data)
-{
-	GtkWidget *event_box = gtk_event_box_new();
-	gtk_container_add(GTK_CONTAINER(event_box), w);
-	g_signal_connect(event_box, "button-press-event", G_CALLBACK(cb), cb_data);
-
-	return event_box;
-}
-
 static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk_attr_tb_t *tb_st, int start_from);
 
 #include "dlg_attr_tree.c"
