@@ -34,6 +34,7 @@
 
 
 #include <librnd/rnd_config.h>
+#include "rnd_gtk.h"
 #include "bu_command.h"
 #include <librnd/core/hidlib_conf.h>
 
@@ -41,7 +42,6 @@
 
 #include <librnd/core/actions.h>
 
-#include "rnd_gtk.h"
 #include "hid_gtk_conf.h"
 #include <librnd/plugins/lib_hid_common/cli_history.h>
 
@@ -95,17 +95,17 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 	ctx->command_entered = command; /* Caller will free it */
 }
 
-static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk_command_t *ctx)
+static rnd_bool command_key_press_cb(GtkWidget *widget, long mods, long key_raw, long kv, void *udata)
 {
-	gint ksym = kev->keyval;
+	rnd_gtk_command_t *ctx = udata;
 
-	if (ksym == RND_GTK_KEY(Tab)) {
+	if (kv == RND_GTK_KEY(Tab)) {
 		rnd_cli_tab(ghidgui->hidlib);
 		return TRUE;
 	}
 
 	/* escape key handling */
-	if (ksym == RND_GTK_KEY(Escape)) {
+	if (kv == RND_GTK_KEY(Escape)) {
 		rnd_gtk_cmd_close(ctx);
 		return TRUE;
 	}
@@ -113,8 +113,10 @@ static rnd_bool command_keypress_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk
 	return FALSE;
 }
 
-static rnd_bool command_keyrelease_cb(GtkWidget *widget, GdkEventKey *kev, rnd_gtk_command_t *ctx)
+static rnd_bool command_key_release_cb(GtkWidget *widget, long mods, long key_raw, long kv, void *udata)
 {
+	rnd_gtk_command_t *ctx = udata;
+
 	if (ctx->command_entry_status_line_active)
 		rnd_cli_edit(ghidgui->hidlib);
 	return TRUE;
@@ -140,8 +142,8 @@ void rnd_gtk_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_
 	rnd_clihist_init();
 	rnd_clihist_sync(ctx, rnd_gtk_chist_append);
 
-	g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
-	g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
+	gtkc_bind_key_press(ctx->command_entry,  rnd_gtkc_xy_ev(&ctx->kpress, command_key_press_cb, ctx));
+	gtkc_bind_key_release(ctx->command_entry, rnd_gtkc_xy_ev(&ctx->krelease, command_key_release_cb, ctx));
 }
 
 void rnd_gtk_cmd_close(rnd_gtk_command_t *ctx)
@@ -195,8 +197,8 @@ char *rnd_gtk_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, cons
 	ctx->pre_entry();
 
 	gtk_widget_grab_focus(GTK_WIDGET(ctx->command_entry));
-	escape_sig_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_press_event", G_CALLBACK(command_keypress_cb), ctx);
-	escape_sig2_id = g_signal_connect(G_OBJECT(ctx->command_entry), "key_release_event", G_CALLBACK(command_keyrelease_cb), ctx);
+	escape_sig_id = gtkc_bind_key_press(ctx->command_entry,  rnd_gtkc_xy_ev(&ctx->kpress, command_key_press_cb, ctx));
+	escape_sig2_id = gtkc_bind_key_release(ctx->command_entry, rnd_gtkc_xy_ev(&ctx->krelease, command_key_release_cb, ctx));
 
 	ctx->rnd_gtk_entry_loop = g_main_loop_new(NULL, FALSE);
 	g_main_loop_run(ctx->rnd_gtk_entry_loop);

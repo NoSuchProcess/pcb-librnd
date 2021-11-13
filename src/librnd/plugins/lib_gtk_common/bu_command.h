@@ -19,6 +19,7 @@ typedef struct rnd_gtk_command_s {
 	gchar *command_entered;
 	void (*hide_status)(void*,int); /* called with status_ctx when the status line needs to be hidden */
 	void *status_ctx;
+	gtkc_event_xyz_t kpress, krelease;
 } rnd_gtk_command_t;
 
 void rnd_gtk_handle_user_command(rnd_hidlib_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise);
