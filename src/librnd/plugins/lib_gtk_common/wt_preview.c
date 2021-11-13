@@ -474,17 +474,15 @@ static gboolean preview_motion_cb(GtkWidget *w, long x, long y, long z, gpointer
 
 #include <gdk/gdkkeysyms.h>
 
-static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data, rnd_bool release)
+static gboolean preview_key_any_cb(GtkWidget *w, long mods, long key_raw, long kv, gpointer data, rnd_bool release)
 {
 	rnd_gtk_preview_t *preview = (rnd_gtk_preview_t *)w;
-	int mods;
-	unsigned short int key_raw, key_tr;
 
-	if ((preview->key_cb == NULL) || (rnd_gtk_key_translate(kev, &mods, &key_raw, &key_tr) != 0))
+	if (preview->key_cb == NULL)
 		return FALSE;
 
 	if (preview->flip_local && release) {
-		if (kev->keyval == RND_GTK_KEY(Tab)) {
+		if (kv == RND_GTK_KEY(Tab)) {
 			rnd_box_t box;
 
 			box.X1 = preview->view.x0;
@@ -502,20 +500,20 @@ static gboolean preview_key_any_cb(GtkWidget *w, GdkEventKey *kev, gpointer data
 		}
 	}
 
-	if (preview->key_cb(w, preview->expose_data.draw_data, release, mods, key_raw, key_tr))
+	if (preview->key_cb(w, preview->expose_data.draw_data, release, mods, key_raw, kv))
 		gtk_widget_queue_draw(w);
 
 	return TRUE;
 }
 
-static gboolean preview_key_press_cb(GtkWidget *w, GdkEventKey *kev, gpointer data)
+static gboolean preview_key_press_cb(GtkWidget *w, long mods, long key_raw, long kv, gpointer data)
 {
-	return preview_key_any_cb(w, kev, data, 0);
+	return preview_key_any_cb(w, mods, key_raw, kv, data, 0);
 }
 
-static gboolean preview_key_release_cb(GtkWidget *w, GdkEventKey *kev, gpointer data)
+static gboolean preview_key_release_cb(GtkWidget *w, long mods, long key_raw, long kv, gpointer data)
 {
-	return preview_key_any_cb(w, kev, data, 1);
+	return preview_key_any_cb(w, mods, key_raw, kv, data, 1);
 }
 
 /* API */
@@ -591,11 +589,8 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	gtkc_bind_mouse_press(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->mpress, preview_button_press_cb, NULL));
 	gtkc_bind_mouse_release(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->mrelease, preview_button_release_cb, NULL));
 	gtkc_bind_resize_dwg(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->sc, preview_resize_event_cb, NULL));
-
-
-
-	g_signal_connect(G_OBJECT(prv), "key_press_event", G_CALLBACK(preview_key_press_cb), NULL);
-	g_signal_connect(G_OBJECT(prv), "key_release_event", G_CALLBACK(preview_key_release_cb), NULL);
+	gtkc_bind_key_press(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->kpress, preview_key_press_cb, NULL));
+	gtkc_bind_key_release(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->krelease, preview_key_release_cb, NULL));
 
 	/* keyboard handling needs focusable */
 	GTK_WIDGET_SET_FLAGS(prv, GTK_CAN_FOCUS);
