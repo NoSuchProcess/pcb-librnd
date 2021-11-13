@@ -28,18 +28,14 @@
 /* This file was originally written by Bill Wilson for the PCB Gtk
    port.  It was later heavily modified by Dan McMahill to provide
    user customized menus then by the pcb-rnd development team to
-   modularize gtk support. */
+   modularize gtk support.
 
-/* gui-top-window.c
-|  This handles creation of the top level window and all its widgets.
-|  events for the Output.drawing_area widget are handled in a separate
-|  file gui-output-events.c
-|
-|  Some caveats with menu shorcut keys:  Some keys are trapped out by Gtk
-|  and can't be used as shortcuts (eg. '|', TAB, etc).  For these cases
-|  we have our own shortcut table and capture the keys and send the events
-|  there in rnd_gtk_key_press_cb().
+   This handles creation of the top level window and all its widgets.
+
+   Hotkeys and menu keys are handled manually because gtk menu system had
+   problem with multi-stroke keys.
 */
+
 #ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
 #endif
