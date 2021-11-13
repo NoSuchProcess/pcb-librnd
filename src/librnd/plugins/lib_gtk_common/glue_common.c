@@ -234,6 +234,23 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
 	}
 }
 
+static void mouse_input_singals_connect(void *obj)
+{
+	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(obj), "button_press_event", G_CALLBACK(rnd_gtk_button_press_cb), ghidgui);
+	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(obj), "button_release_event", G_CALLBACK(rnd_gtk_button_release_cb), ghidgui);
+}
+
+static void mouse_input_singals_disconnect(void *obj)
+{
+	if (ghidgui->button_press_handler != 0)
+		g_signal_handler_disconnect(G_OBJECT(ghidgui->port.drawing_area), ghidgui->button_press_handler);
+
+	if (ghidgui->button_release_handler != 0)
+		g_signal_handler_disconnect(ghidgui->port.drawing_area, ghidgui->button_release_handler);
+
+	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
+}
+
 /* Connect and disconnect just the signals a g_main_loop() will need.
    Cursor and motion events still need to be handled by the top level
    loop, so don't connect/reconnect these.
@@ -243,8 +260,7 @@ static void kbd_input_signals_disconnect(int idx, void *obj)
    by new signal handlers or the command_combo_box entry. */
 void rnd_gtk_interface_input_signals_connect(void)
 {
-	ghidgui->button_press_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_press_event", G_CALLBACK(rnd_gtk_button_press_cb), ghidgui);
-	ghidgui->button_release_handler = g_signal_connect(G_OBJECT(ghidgui->port.drawing_area), "button_release_event", G_CALLBACK(rnd_gtk_button_release_cb), ghidgui);
+	mouse_input_singals_connect(ghidgui->port.drawing_area);
 	kbd_input_signals_connect(0, ghidgui->port.drawing_area);
 	kbd_input_signals_connect(3, ghidgui->topwin.left_toolbar);
 }
@@ -253,14 +269,7 @@ void rnd_gtk_interface_input_signals_disconnect(void)
 {
 	kbd_input_signals_disconnect(0, ghidgui->port.drawing_area);
 	kbd_input_signals_disconnect(3, ghidgui->topwin.left_toolbar);
-
-	if (ghidgui->button_press_handler != 0)
-		g_signal_handler_disconnect(G_OBJECT(ghidgui->port.drawing_area), ghidgui->button_press_handler);
-
-	if (ghidgui->button_release_handler != 0)
-		g_signal_handler_disconnect(ghidgui->port.drawing_area, ghidgui->button_release_handler);
-
-	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
+	mouse_input_singals_disconnect(ghidgui->port.drawing_area);
 }
 
 /*** misc ***/
