@@ -197,7 +197,7 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 }
 
 /* Save size of top window changes so PCB can restart at its size at exit. */
-static gint top_window_configure_event_cb(GtkWidget *widget, GdkEventConfigure *ev, void *tw_)
+static gint top_window_configure_event_cb(GtkWidget *widget, long x, long y, long z, void *tw_)
 {
 	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
@@ -481,7 +481,8 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_create_resize_grip(tw->bottom_hbox);
 
 	g_signal_connect(G_OBJECT(tw->drawing_area), "enter-notify-event", G_CALLBACK(drawing_area_enter_cb), tw);
-	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "configure_event", G_CALLBACK(top_window_configure_event_cb), tw);
+	gtkc_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
+
 
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "delete_event", G_CALLBACK(delete_chart_cb), ctx);
 	g_signal_connect(G_OBJECT(ghidgui->wtop_window), "destroy", G_CALLBACK(destroy_chart_cb), ctx);

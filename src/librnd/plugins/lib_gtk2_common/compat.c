@@ -126,3 +126,10 @@ gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
 	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
 }
 
+
+gint gtkc_win_resize_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	return rs->cb(widget, 0, 0, 0, rs->user_data);
+}
+

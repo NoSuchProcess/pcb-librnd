@@ -197,7 +197,7 @@ struct rnd_gtk_s {
 	int gui_is_up; /*1 if all parts of the gui is up and running */
 
 	gulong button_press_handler, button_release_handler, key_press_handler[5], key_release_handler[5];
-	gtkc_event_xyz_t mpress_rs, mrelease_rs, kpress_rs, krelease_rs;
+	gtkc_event_xyz_t mpress_rs, mrelease_rs, kpress_rs, krelease_rs, wtop_rs;
 
 	rnd_gtk_mouse_t mouse;
 
