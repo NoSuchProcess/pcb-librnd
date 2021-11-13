@@ -107,21 +107,21 @@ typedef struct {
 	rnd_gtk_t *gctx;
 	gboolean got_location, pressed_esc;
 	gint last_press;
-	gtkc_event_xyz_t mpress_rs;
+	gtkc_event_xyz_t mpress_rs, kpress_rs, krelease_rs;
 } loop_ctx_t;
 
-static gboolean loop_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
+static gboolean loop_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, loop_ctx_t *lctx)
 {
-	lctx->last_press = kev->keyval;
+	lctx->last_press = kv;
 	return TRUE;
 }
 
 
 /*  If user hits a key instead of the mouse button, we'll abort unless
     it's the enter key (which accepts the current crosshair location). */
-static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, loop_ctx_t *lctx)
+static gboolean loop_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, loop_ctx_t *lctx)
 {
-	gint ksym = kev->keyval;
+	gint ksym = kv;
 
 	if (rnd_gtk_is_modifier_key_sym(ksym))
 		return TRUE;
@@ -199,8 +199,8 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 
 	button_handler = gtkc_bind_mouse_press(ctx->topwin.drawing_area, rnd_gtkc_xy_ev(&lctx.mpress_rs, loop_button_press_cb, &lctx))
-	key_handler1 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_press_event", G_CALLBACK(loop_key_press_cb), &lctx);
-	key_handler2 = g_signal_connect(G_OBJECT(ctx->wtop_window), "key_release_event", G_CALLBACK(loop_key_release_cb), &lctx);
+	key_handler1 = gtkc_bind_key_press(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.kpress_rs, loop_key_press_cb, &lctx))
+	key_handler2 = gtkc_bind_key_release(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.krelease_rs, loop_key_release_cb, &lctx))
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
 	lctx.gctx = ctx;
