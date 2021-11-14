@@ -1,0 +1,50 @@
+/*
+ *                            COPYRIGHT
+ *
+ *  pcb-rnd, interactive printed circuit board design
+ *  Copyright (C) 2021 Tibor Palinkas
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://repo.hu/projects/pcb-rnd
+ *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ */
+
+/* internals of compat.h that are not included in the public API, gtk4 version */
+
+/* INTERNAL: set fill/exp for a widget (not part of the API, do not call from elsewhere) */
+static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w)
+{
+	int h = 1, v = 1;
+
+	/* set fill/exp in parent box if parent is a box: figure parent orientation */
+	if (GTK_IS_BOX(parent)) {
+		GtkOrientation o = gtk_orientable_get_orientation(GTK_ORIENTABLE(parent));
+		if (o == GTK_ORIENTATION_HORIZONTAL) v = 0;
+		if (o == GTK_ORIENTATION_VERTICAL) h = 0;
+	}
+
+	if (h) {
+		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_hexpand(w, 1);
+	}
+
+	if (v) {
+		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_vexpand(w, 1);
+	}
+}
