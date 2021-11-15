@@ -398,11 +398,6 @@ static void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const ch
 	}
 }
 
-/* Updates the toggle/active state of all items:
-   Loops through all actions, passing the action, its toggle
-   flag (maybe NULL), and its active flag (maybe NULL), to a
-   callback function. It is the responsibility of the function
-   to actually change the state of the action. */
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
 	GList *list;
@@ -430,7 +425,6 @@ static GtkWidget *new_popup(lht_node_t *menu_item)
 	return new_menu;
 }
 
-/* Menu widget create callback: create a main menu, popup or submenu as descending the path */
 int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	rnd_gtk_menu_ctx_t *ctx = ctx_;
