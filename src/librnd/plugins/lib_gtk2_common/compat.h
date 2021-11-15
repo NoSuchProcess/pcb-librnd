@@ -214,7 +214,8 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 #define gtkc_bind_key_release(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "key_release_event", G_CALLBACK(gtkc_key_release_cb), ev);
 
-#define gtkc_bind_win_resize(widget, ev) \
+#define gtk4c_bind_win_resize(widget, ev)
+#define gtk2c_bind_win_resize(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "configure_event", G_CALLBACK(gtkc_win_resize_cb), ev);
 
 

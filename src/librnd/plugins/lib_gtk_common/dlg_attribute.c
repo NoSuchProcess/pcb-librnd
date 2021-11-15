@@ -884,7 +884,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 	else if ((defx > 0) && (defy > 0))
 		gtk_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
-	gtkc_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
+	gtk2c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 	ctx->destroy_handler = gtkc_bind_win_destroy(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_destroy, rnd_gtk_attr_dlg_destroy_event_cb, ctx));
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
@@ -895,6 +895,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 	rnd_gtk_attr_dlg_add(ctx, main_vbox, NULL, 0);
 
 	gtk_widget_show_all(ctx->dialog);
+	gtk4c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 
 	rnd_gtk_initial_wstates(ctx);
 
