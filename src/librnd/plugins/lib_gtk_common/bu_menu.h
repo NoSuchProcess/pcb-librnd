@@ -24,8 +24,10 @@ void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menu
 int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd);
 
+/* Load and build all menus (main menu and popups) from the rnd_gui->menu */
 GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
 
+/* Return the gtk widget (if already created, else NULL) for a menu node */
 GtkWidget *rnd_gtk_menu_widget(lht_node_t *node);
 
 #endif
