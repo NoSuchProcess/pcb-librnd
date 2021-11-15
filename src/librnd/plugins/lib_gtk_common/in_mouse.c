@@ -110,8 +110,9 @@ typedef struct {
 	gtkc_event_xyz_t mpress_rs, kpress_rs, krelease_rs;
 } loop_ctx_t;
 
-static gboolean loop_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, loop_ctx_t *lctx)
+static gboolean loop_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, void *udata)
 {
+	loop_ctx_t *lctx = udata;
 	lctx->last_press = kv;
 	return TRUE;
 }
@@ -119,8 +120,9 @@ static gboolean loop_key_press_cb(GtkWidget *drawing_area, long mods, long key_r
 
 /*  If user hits a key instead of the mouse button, we'll abort unless
     it's the enter key (which accepts the current crosshair location). */
-static gboolean loop_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, loop_ctx_t *lctx)
+static gboolean loop_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw, long kv, void *udata)
 {
+	loop_ctx_t *lctx = udata;
 	gint ksym = kv;
 
 	if (rnd_gtk_is_modifier_key_sym(ksym))
