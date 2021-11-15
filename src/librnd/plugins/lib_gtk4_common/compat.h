@@ -35,6 +35,9 @@
 
 #include "compat_priv.h"
 
+#define rnd_gtkc_cursor_type_t const char *
+
+
 #define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))
 
 #define gtkc_widget_get_allocation(w, a) \

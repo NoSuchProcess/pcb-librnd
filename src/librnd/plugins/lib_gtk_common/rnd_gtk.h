@@ -78,7 +78,7 @@ struct rnd_gtk_impl_s {
 #include <librnd/plugins/lib_gtk_common/ui_zoompan.h>
 
 typedef struct {
-	GdkCursorType shape;
+	rnd_gtkc_cursor_type_t shape;
 	GdkCursor *X_cursor;
 	GdkPixbuf *pb;
 } rnd_gtk_cursor_t;
@@ -98,7 +98,7 @@ typedef struct {
 
 struct rnd_gtk_mouse_s {
 	GdkCursor *X_cursor;          /* used X cursor */
-	GdkCursorType X_cursor_shape; /* and its shape */
+	rnd_gtkc_cursor_type_t X_cursor_shape; /* and its shape */
 	vtmc_t cursor;
 	int last_cursor_idx; /* tool index of the tool last selected */
 };

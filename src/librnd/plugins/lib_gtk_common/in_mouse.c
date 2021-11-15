@@ -57,7 +57,7 @@ rnd_hid_cfg_mod_t rnd_gtk_mouse_button(int ev_button)
 	return (RND_MB_LEFT << (ev_button - 1));
 }
 
-static GdkCursorType cursor_override;
+static rnd_gtkc_cursor_type_t cursor_override;
 static GdkCursor *cursor_override_X;
 
 #define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
@@ -349,7 +349,7 @@ static GdkPixbuf *rnd_gtk_cursor_from_xbm_data(const unsigned char *data, const 
 
 typedef struct {
 	const char *name;
-	GdkCursorType shape;
+	rnd_gtkc_cursor_type_t shape;
 } named_cursor_t;
 
 static const named_cursor_t named_cursors[] = {
