@@ -50,7 +50,6 @@ GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 
 struct _RndGtkMainMenu {
 	GtkMenuBar parent;
-	GtkAccelGroup *accel_group;
 	GList *actions;
 	GCallback action_cb;
 };
@@ -326,8 +325,6 @@ static GtkWidget *rnd_gtk_main_menu_new(GCallback action_cb)
 {
 	RndGtkMainMenu *mm = g_object_new(RND_GTK_MAIN_MENU_TYPE, NULL);
 
-	mm->accel_group = gtk_accel_group_new();
-
 	mm->action_cb = action_cb;
 	mm->actions = NULL;
 
@@ -384,15 +381,6 @@ void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, RndGtkMainMenu 
 		cb(hidlib, GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
 	}
-}
-
-GtkAccelGroup *rnd_gtk_main_menu_get_accel_group(RndGtkMainMenu *menu)
-{
-	if (menu == NULL) {
-		rnd_message(RND_MSG_ERROR, "ghid: can't initialize the menu - is your menu .lht valid?\n");
-		exit(1);
-	}
-	return menu->accel_group;
 }
 
 /* Create a new popup window */

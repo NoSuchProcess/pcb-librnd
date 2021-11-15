@@ -226,16 +226,6 @@ gboolean rnd_gtk_key_release_cb(GtkWidget *drawing_area, long mods, long key_raw
 	return FALSE;
 }
 
-void rnd_gtk_install_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
-{
-	gtk_window_add_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
-}
-
-void rnd_gtk_remove_accel_groups(GtkWindow *window, rnd_gtk_topwin_t *tw)
-{
-	gtk_window_remove_accel_group(window, rnd_gtk_main_menu_get_accel_group(RND_GTK_MAIN_MENU(tw->menu.menu_bar)));
-}
-
 /*** Top window ***/
 static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *data)
 {
@@ -509,7 +499,6 @@ void rnd_gtk_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidg
 	ghidgui->impl.load_bg_image();
 
 	rnd_gtk_build_top_window(ctx, tw);
-	rnd_gtk_install_accel_groups(GTK_WINDOW(ghidgui->wtop_window), tw);
 	rnd_gtk_update_toggle_flags(ghidgui->hidlib, tw, NULL);
 }
 

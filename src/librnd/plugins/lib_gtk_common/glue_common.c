@@ -191,13 +191,11 @@ static void command_post_entry(void)
 	rnd_gtk_interface_input_signals_connect();
 #endif
 	rnd_gtk_interface_set_sensitive(TRUE);
-	rnd_gtk_install_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 	gtk_widget_grab_focus(ghidgui->port.drawing_area);
 }
 
 static void command_pre_entry(void)
 {
-	rnd_gtk_remove_accel_groups(GTK_WINDOW(ghidgui->port.top_window), &ghidgui->topwin);
 #if RND_GTK_DISABLE_MOUSE_DURING_CMD_ENTRY
 	rnd_gtk_interface_input_signals_disconnect();
 #endif

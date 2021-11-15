@@ -26,7 +26,6 @@ typedef struct rnd_gtk_menu_ctx_s {
 
 GType rnd_gtk_main_menu_get_type(void);
 
-GtkAccelGroup *rnd_gtk_main_menu_get_accel_group(RndGtkMainMenu *menu);
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, RndGtkMainMenu *menu, void (*cb)(rnd_hidlib_t *hidlib, GtkAction *, const char *toggle_flag, const char *active_flag));
 
 int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd);
