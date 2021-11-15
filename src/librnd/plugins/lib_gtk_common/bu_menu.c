@@ -420,12 +420,6 @@ int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int i
 	return 0;
 }
 
-static int rnd_gtk_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
-{
-	return rnd_gtk_create_menu_widget(ctx_, (strncmp(path, "/popups", 7) == 0), name, is_main, parent, ins_after, menu_item);
-}
-
-
 int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t * nd)
 {
 	menu_handle_t *h = nd->user_data;
