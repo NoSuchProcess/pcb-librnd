@@ -186,7 +186,6 @@ struct rnd_gtk_s {
 	rnd_hidlib_t *hidlib;
 
 	GtkWidget *wtop_window;
-	GtkActionGroup *main_actions;
 
 	rnd_gtk_topwin_t topwin;
 	rnd_conf_hid_id_t conf_id;
