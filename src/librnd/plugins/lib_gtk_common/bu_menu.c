@@ -30,7 +30,7 @@
 typedef struct _RndGtkMainMenu RndGtkMainMenu;
 typedef struct _RndGtkMainMenuClass RndGtkMainMenuClass;
 
-GType rnd_gtk_main_menu_get_type(void);
+static GType rnd_gtk_main_menu_get_type(void);
 
 
 /*** menu implementation ***/
@@ -97,7 +97,7 @@ static GtkWidget *rnd_gtk_menu_item_new(const char *label, const char *accel_lab
 
 /* LHT HANDLER */
 
-void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
+static void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base);
 
 static void ins_menu(GtkWidget *item, GtkMenuShell *shell, lht_node_t *ins_after)
 {
@@ -259,7 +259,7 @@ static GtkAction *rnd_gtk_add_menu(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu
 
 /* Translate a resource tree into a menu structure; shell is the base menu
    shell (a menu bar or popup menu) */
-void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
+static void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, GtkMenuShell *shell, lht_node_t *ins_after, lht_node_t *base)
 {
 	switch (base->type) {
 	case LHT_HASH:                /* leaf submenu */
@@ -313,8 +313,7 @@ static void rnd_gtk_main_menu_class_init(RndGtkMainMenuClass *klass)
 {
 }
 
-/* PUBLIC FUNCTIONS */
-GType rnd_gtk_main_menu_get_type(void)
+static GType rnd_gtk_main_menu_get_type(void)
 {
 	static GType mm_type = 0;
 
