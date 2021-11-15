@@ -115,7 +115,7 @@ RND_INLINE gtkc_event_xyz_t *rnd_gtkc_xy_ev(gtkc_event_xyz_t *xyev, gboolean (*c
 	return xyev;
 }
 
-#include "bu_menu.h"
+#include RND_GTK_BU_MENU_H_FN
 #include "bu_command.h"
 
 struct rnd_gtk_topwin_s {

@@ -29,6 +29,8 @@
 
 /*** lib_gtk_common compatibilty layer for GTK2 ***/
 
+#define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk2_common/bu_menu.h>
+
 #include <gtk/gtk.h>
 
 #include "compat_priv.h"

@@ -52,7 +52,6 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/tool.h>
 
-#include "bu_menu.h"
 #include "bu_pixbuf.h"
 #include "dlg_attribute.h"
 #include "util_listener.h"

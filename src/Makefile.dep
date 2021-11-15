@@ -694,7 +694,7 @@
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/event.h \
@@ -727,7 +727,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -763,7 +763,7 @@
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_dad_spin.h \
@@ -799,7 +799,7 @@
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -833,7 +833,7 @@
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1085,7 +1085,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1109,7 +1109,7 @@
  ../src/librnd/plugins/lib_gtk2_common/bu_menu.c \
  ../src/librnd/plugins/lib_gtk2_common/compat.h \
  ../src/librnd/plugins/lib_gtk2_common/compat_priv.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.c ../config.h ../src/librnd/config.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.c ../config.h ../src/librnd/config.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src/librnd/core/rnd_printf.h \
@@ -1127,7 +1127,7 @@
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1156,7 +1156,7 @@
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1187,7 +1187,7 @@
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1235,7 +1235,7 @@
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h
 ../src/librnd/plugins/lib_gtk2_common/dlg_topwin.o: \
@@ -1265,7 +1265,7 @@
  ../src/librnd/core/hid_dad_spin.h ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/event.h \
  ../src/librnd/core/hidlib.h ../src_3rd/genht/hash.h ../src/librnd/core/hidlib_conf.h \
@@ -1298,7 +1298,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1330,7 +1330,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1375,7 +1375,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1404,7 +1404,7 @@
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1478,7 +1478,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1506,7 +1506,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1535,7 +1535,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
@@ -1562,7 +1562,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1590,7 +1590,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1619,7 +1619,7 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1648,7 +1648,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1672,7 +1672,7 @@
  ../src/librnd/plugins/lib_gtk4_common/bu_menu.c \
  ../src/librnd/plugins/lib_gtk4_common/compat.h \
  ../src/librnd/plugins/lib_gtk4_common/compat_priv.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.c ../config.h ../src/librnd/config.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.c ../config.h ../src/librnd/config.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src/librnd/core/rnd_printf.h \
@@ -1690,7 +1690,7 @@
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1722,7 +1722,7 @@
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1770,7 +1770,7 @@
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h
 ../src/librnd/plugins/lib_gtk4_common/dlg_topwin.o: \
@@ -1796,7 +1796,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/bu_menu.h \
+ ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/core/conf_hid.h ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/event.h \
  ../src/librnd/core/hidlib.h ../src_3rd/genht/hash.h ../src/librnd/core/hidlib_conf.h \
@@ -1830,7 +1830,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1862,7 +1862,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1907,7 +1907,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -1936,7 +1936,7 @@
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -2010,7 +2010,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -2038,7 +2038,7 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -2067,7 +2067,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
@@ -2094,7 +2094,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -2122,7 +2122,7 @@
  ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
@@ -2151,7 +2151,7 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/hid_menu.h ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
- ../src/librnd/plugins/lib_gtk_common/bu_menu.h ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_gtk2_common/bu_menu.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
