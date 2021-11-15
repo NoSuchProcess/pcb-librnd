@@ -83,34 +83,18 @@ ModifierKeysState rnd_gtk_modifier_keys_state(GtkWidget *drawing_area, GdkModifi
 	return mk;
 }
 
-int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv)
+int rnd_gtk_key_translate(int in_keyval, int in_state, int in_key_raw, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv)
 {
-	GdkModifierType state;
 	int mods = 0;
-	unsigned short int key_raw = 0, kv;
-	guint *keyvals;
-	GdkKeymapKey *keys;
-	gint n_entries;
+	unsigned short int key_raw = in_key_raw, kv;
+	int state = in_state;
 
-
-	if (kev->keyval > 0xffff)
-		return -1;
-
-	state = (GdkModifierType)(kev->state);
-	kv = kev->keyval;
-
+	kv = in_keyval;
 	rnd_gtk_glob_mask = state;
 
 	if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
 	if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
 	if (state & GDK_SHIFT_MASK)   mods |= RND_M_Shift;
-
-	/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
-	if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
-		key_raw = keyvals[0];
-		g_free(keys);
-		g_free(keyvals);
-	}
 
 	if (kv == RND_GTK_KEY(ISO_Left_Tab)) kv = RND_GTK_KEY(Tab);
 	if (kv == RND_GTK_KEY(KP_Add)) key_raw = kv = '+';

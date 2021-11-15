@@ -39,6 +39,6 @@ unsigned short int rnd_gtk_translate_key(const char *desc, int len);
 int rnd_gtk_key_name(unsigned short int key_char, char *out, int out_len);
 
 /* low level key-event-to-hid translation; returns 0 on success */
-int rnd_gtk_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv);
+int rnd_gtk_key_translate(int in_keyval, int in_state, int in_key_raw, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv);
 
 #endif

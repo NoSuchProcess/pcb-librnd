@@ -2,6 +2,8 @@
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <librnd/plugins/lib_gtk_common/in_keyboard.h>
 
+
+
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
@@ -102,13 +104,33 @@ gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs_)
 }
 
 
+static inline int rnd_gtkc_key_translate(const GdkEventKey *kev, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv)
+{
+	guint *keyvals;
+	GdkKeymapKey *keys;
+	gint n_entries;
+	unsigned short int key_raw = 0;
+
+	if (kev->keyval > 0xffff)
+		return -1;
+
+	/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
+	if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
+		key_raw = keyvals[0];
+		g_free(keys);
+		g_free(keyvals);
+	}
+
+	return rnd_gtk_key_translate(kev->keyval, kev->state, key_raw,   out_mods, out_key_raw, out_kv);
+}
+
 gint gtkc_key_press_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	int mods;
 	unsigned short int key_raw, kv;
 
-	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) != 0)
+	if (rnd_gtkc_key_translate(kev, &mods, &key_raw, &kv) != 0)
 		return FALSE;
 
 	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
@@ -120,7 +142,7 @@ gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
 	int mods;
 	unsigned short int key_raw, kv;
 
-	if (rnd_gtk_key_translate(kev, &mods, &key_raw, &kv) != 0)
+	if (rnd_gtkc_key_translate(kev, &mods, &key_raw, &kv) != 0)
 		return FALSE;
 
 	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
