@@ -1,6 +1,8 @@
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
+- 3.1.1
+	- remove gtk2 grip handle widget (dlg_topwin_grip.c)
 - 4.0.0:
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
