@@ -69,7 +69,7 @@ static void rnd_mkdir_p(rnd_hidlib_t *hidlib, char *arg)
    file. If do_mkdir is true, create the fsd dir if it is missing. */
 static int fsd_shcut_path_setup(fsd_ctx_t *ctx, gds_t *path, int per_dlg, int do_mkdir)
 {
-	if (rnd_conf.rc.path.home == NULL)
+	if ((rnd_conf.rc.path.home == NULL) || (rnd_app.dot_dir == NULL))
 		return -1;
 
 	gds_append_str(path, rnd_conf.rc.path.home);
