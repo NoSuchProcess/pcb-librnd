@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-#include "comapt.h"
+#include "compat.h"
 
 #define EVCTRL_WIDGET  gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self))
 #define EVCTRL_STATE   gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(self))
