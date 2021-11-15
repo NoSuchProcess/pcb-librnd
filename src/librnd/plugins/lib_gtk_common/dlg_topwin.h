@@ -9,7 +9,6 @@
 #include <librnd/core/hid_dad.h>
 
 #include "rnd_gtk.h"
-#include "bu_menu.h"
 #include "bu_command.h"
 
 void rnd_gtk_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie);
