@@ -322,7 +322,7 @@ GType rnd_gtk_main_menu_get_type(void)
 	return mm_type;
 }
 
-GtkWidget *rnd_gtk_main_menu_new(GCallback action_cb)
+static GtkWidget *rnd_gtk_main_menu_new(GCallback action_cb)
 {
 	RndGtkMainMenu *mm = g_object_new(RND_GTK_MAIN_MENU_TYPE, NULL);
 
@@ -334,7 +334,7 @@ GtkWidget *rnd_gtk_main_menu_new(GCallback action_cb)
 	return GTK_WIDGET(mm);
 }
 
-void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, const lht_node_t *base)
+static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, const lht_node_t *base)
 {
 	lht_node_t *n;
 	if (base->type != LHT_LIST) {
@@ -346,7 +346,7 @@ void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, c
 	}
 }
 
-void rnd_gtk_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, lht_node_t *base)
+static void rnd_gtk_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainMenu *menu, lht_node_t *base)
 {
 	lht_node_t *submenu, *i;
 	GtkWidget *new_menu;
@@ -420,7 +420,7 @@ int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int i
 	return 0;
 }
 
-int rnd_gtk_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+static int rnd_gtk_create_menu_widget_path(void *ctx_, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
 	return rnd_gtk_create_menu_widget(ctx_, (strncmp(path, "/popups", 7) == 0), name, is_main, parent, ins_after, menu_item);
 }
