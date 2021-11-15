@@ -1,5 +1,5 @@
-#ifndef RND_GTK_MAIN_MENU_H__
-#define RND_GTK_MAIN_MENU_H__
+#ifndef RND_GTK_BU_MENU_H
+#define RND_GTK_BU_MENU_H
 
 #include <gtk/gtk.h>
 
