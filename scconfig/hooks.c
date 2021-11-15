@@ -165,6 +165,7 @@ static void rnd_hook_detect_hid()
 			report_repeat("WARNING: Since there's no libgtk2 found, disabling hid_gtk2*...\n");
 			hook_custom_arg("disable-hid_gtk2_gdk", NULL);
 			hook_custom_arg("disable-hid_gtk2_gl", NULL);
+			hook_custom_arg("disable-lib_gtk2_common", NULL);
 		}
 	}
 
