@@ -20,6 +20,22 @@
 
 #include <librnd/plugins/lib_hid_common/menu_helper.h>
 
+/*** custom widget ***/
+
+#define RND_GTK_MAIN_MENU_TYPE            (rnd_gtk_main_menu_get_type ())
+#define RND_GTK_MAIN_MENU(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), RND_GTK_MAIN_MENU_TYPE, RndGtkMainMenu))
+#define RND_GTK_MAIN_MENU_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), RND_GTK_MAIN_MENU_TYPE, RndGtkMainMenuClass))
+#define IS_RND_GTK_MAIN_MENU(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RND_GTK_MAIN_MENU_TYPE))
+#define IS_RND_GTK_MAIN_MENU_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RND_GTK_MAIN_MENU_TYPE))
+typedef struct _RndGtkMainMenu RndGtkMainMenu;
+typedef struct _RndGtkMainMenuClass RndGtkMainMenuClass;
+
+GType rnd_gtk_main_menu_get_type(void);
+
+
+/*** menu implementation ***/
+
+
 static int action_counter;
 
 typedef struct {
