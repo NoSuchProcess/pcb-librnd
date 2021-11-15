@@ -100,7 +100,6 @@ static inline GtkEventController *gtkc_evctrl_click(GtkWidget *w)
 	return ctrl;
 }
 #else
-static gboolean mouse_event_cb(GtkGestureClick *self, GdkEvent *ev, gpointer user_data);
 static inline GtkEventController *gtkc_evctrl_click(GtkWidget *w)
 {
 	GObject *obj = G_OBJECT(w);
