@@ -94,15 +94,4 @@ rnd_bool rnd_gtk_coords_event2design(const rnd_gtk_view_t *v, int event_x, int e
 
 int rnd_gtk_get_coords(rnd_gtk_t *ctx, rnd_gtk_view_t *vw, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
-/* Update adj limits to match the current zoom level */
-static inline void rnd_gtk_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view_size, rnd_coord_t board_size)
-{
-	adj->page_size = MIN(view_size, board_size);
-	adj->lower = -view_size;
-	adj->upper = board_size + adj->page_size;
-	adj->step_increment = adj->page_size / 100.0;
-	adj->page_increment = adj->page_size / 10.0;
-	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");
-}
-
 #endif
