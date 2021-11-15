@@ -2,16 +2,19 @@
 
 #include "compat.h"
 
+#include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
+/*#include <librnd/plugins/lib_gtk_common/in_keyboard.h>*/
+
 #define EVCTRL_WIDGET  gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self))
 #define EVCTRL_STATE   gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(self))
 
-gboolean gtkc_resize_dwg_cb(GtkWidget *widget, gint width, gint height, void *rs)
+gboolean gtkc_resize_dwg_cb(GtkWidget *widget, gint width, gint height, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, width, height, 0, rs->user_data);
 }
 
-gint gtkc_mouse_scroll_cb(GtkEventControllerScroll *self, gdouble dx, gdouble dy, gpointer user_data)
+gint gtkc_mouse_scroll_cb(GtkEventControllerScroll *self, gdouble dx, gdouble dy, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	GtkWidget *widget = EVCTRL_WIDGET;
@@ -20,19 +23,19 @@ gint gtkc_mouse_scroll_cb(GtkEventControllerScroll *self, gdouble dx, gdouble dy
 	return rs->cb(widget, round(dx), round(dy), mk, rs->user_data);
 }
 
-gint gtkc_mouse_enter_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
+gint gtkc_mouse_enter_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
-gint gtkc_mouse_leave_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
+gint gtkc_mouse_leave_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
-gint gtkc_mouse_motion_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
+gint gtkc_mouse_motion_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, round(x), round(y), 0, rs->user_data);
@@ -61,7 +64,7 @@ static inline int rnd_gtkc_key_translate(GtkEventControllerKey *self, guint keyv
 }
 
 
-gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer user_data)
+gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	int mods;
@@ -73,7 +76,7 @@ gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode,
 	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
 }
 
-gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer user_data)
+gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	int mods;
@@ -85,19 +88,19 @@ gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycod
 	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
 }
 
-gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs)
+gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
-gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs)
+gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
-gint gtkc_win_delete_cb(GtkWindow *window, void *rs)
+gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
@@ -106,21 +109,21 @@ gint gtkc_win_delete_cb(GtkWindow *window, void *rs)
 
 
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
-static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data)
+static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
 	printf("mouse press [%d] %d %f %f\n", btn, n_press, x, y);
 	return TRUE;
 }
 
-static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data)
+static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
 	printf("mouse release [%d] %d %f %f\n", btn, n_press, x, y);
 	return TRUE;
 }
 #else
-static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer user_data)
+static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	double x, y;
 	guint btn;
@@ -132,7 +135,7 @@ static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer use
 	return TRUE;
 }
 
-static gboolean mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer user_data)
+static gboolean mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	double x, y;
 	guint btn;
