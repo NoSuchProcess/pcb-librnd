@@ -177,7 +177,7 @@ void rnd_gtk_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, con
 	if (rnd_menu_sys.inhibit)
 		return;
 
-	rnd_gtk_main_menu_update_toggle_state(hidlib, tw->menu.menu_bar, menu_toggle_update_cb);
+	rnd_gtk_main_menu_update_toggle_state(hidlib, tw->menu.menu_bar);
 }
 
 static void h_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)

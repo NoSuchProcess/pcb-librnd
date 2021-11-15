@@ -380,12 +380,30 @@ static void rnd_gtk_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMain
 	gtk_widget_show_all(new_menu);
 }
 
+/* callback for rnd_gtk_main_menu_update_toggle_state() */
+static void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
+{
+	if (tflag != NULL) {
+		int v = rnd_hid_get_flag(hidlib, tflag);
+		if (v < 0) {
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
+			gtk_action_set_sensitive(act, 0);
+		}
+		else
+			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), !!v);
+	}
+	if (aflag != NULL) {
+		int v = rnd_hid_get_flag(hidlib, aflag);
+		gtk_action_set_sensitive(act, !!v);
+	}
+}
+
 /* Updates the toggle/active state of all items:
    Loops through all actions, passing the action, its toggle
    flag (maybe NULL), and its active flag (maybe NULL), to a
    callback function. It is the responsibility of the function
    to actually change the state of the action. */
-void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar, void (*cb)(rnd_hidlib_t *, GtkAction *, const char *toggle_flag, const char *active_flag))
+void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
 	GList *list;
 	RndGtkMainMenu *menu = RND_GTK_MAIN_MENU(menubar);
@@ -396,7 +414,7 @@ void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menu
 		const char *tf = g_object_get_data(G_OBJECT(list->data), "checked-flag");
 		const char *af = g_object_get_data(G_OBJECT(list->data), "active-flag");
 		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
-		cb(hidlib, GTK_ACTION(list->data), tf, af);
+		menu_toggle_update_cb(hidlib, GTK_ACTION(list->data), tf, af);
 		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
 	}
 }
@@ -442,23 +460,6 @@ int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t * nd)
 	return 0;
 }
 
-/* callback for rnd_gtk_main_menu_update_toggle_state() */
-void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
-{
-	if (tflag != NULL) {
-		int v = rnd_hid_get_flag(hidlib, tflag);
-		if (v < 0) {
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), 0);
-			gtk_action_set_sensitive(act, 0);
-		}
-		else
-			gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(act), !!v);
-	}
-	if (aflag != NULL) {
-		int v = rnd_hid_get_flag(hidlib, aflag);
-		gtk_action_set_sensitive(act, !!v);
-	}
-}
 
 /* Menu action callback function
    This is the main menu callback function.  The callback receives
