@@ -20,7 +20,7 @@ gint gtkc_mouse_scroll_cb(GtkEventControllerScroll *self, gdouble dx, gdouble dy
 	GtkWidget *widget = EVCTRL_WIDGET;
 	GdkModifierType state = EVCTRL_STATE;
 	ModifierKeysState mk = rnd_gtk_modifier_keys_state(widget, &state);
-	return rs->cb(widget, round(dx), round(dy), mk, rs->user_data);
+	return rs->cb(widget, rnd_round(dx), rnd_round(dy), mk, rs->user_data);
 }
 
 gint gtkc_mouse_enter_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
@@ -38,7 +38,7 @@ gint gtkc_mouse_leave_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, g
 gint gtkc_mouse_motion_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	return rs->cb(widget, round(x), round(y), 0, rs->user_data);
+	return rs->cb(widget, rnd_round(x), rnd_round(y), 0, rs->user_data);
 }
 
 static inline int rnd_gtkc_key_translate(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, int *out_mods, unsigned short int *out_key_raw, unsigned short int *out_kv)

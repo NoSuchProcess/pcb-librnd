@@ -32,6 +32,7 @@
 #define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk4_common/bu_menu.h>
 
 #include <gtk/gtk.h>
+#include <librnd/core/compat_misc.h>
 
 #include "compat_priv.h"
 
@@ -155,8 +156,8 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 	GdkSurface *surf = gtk_native_get_surface(nat);
 
 	gdk_surface_get_device_position(surf, dev, &dx, &dy, mask);
-	*x = round(dx);
-	*y = round(dy);
+	*x = rnd_round(dx);
+	*y = rnd_round(dy);
 }
 
 TODO("can we remove this? - check how the resize button looks like")
