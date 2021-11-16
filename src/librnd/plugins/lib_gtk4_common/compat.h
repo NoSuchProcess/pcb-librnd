@@ -208,6 +208,8 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 	g_object_unref(b);
 }
 
+#define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
+
 
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)
