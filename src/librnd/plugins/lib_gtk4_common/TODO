@@ -3,3 +3,5 @@ test:
 	- top window drawign: scroll wheel pan with shift and ctrl
 	- preview window drawign: scroll wheel zoom
 	- preview window drawign: scroll wheel pan with shift and ctrl
+	- gtkc_widget_modify_bg(): orange background in file reload warning banner?
+

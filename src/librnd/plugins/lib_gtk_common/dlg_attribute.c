@@ -1083,7 +1083,7 @@ void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 			case RND_HATT_BUTTON:
 			case RND_HATT_LABEL:
 			case RND_HATT_PICTURE:
-				gtk_widget_modify_bg(ctx->wltop[n], GTK_STATE_NORMAL, color);
+				gtkc_widget_modify_bg(ctx->wltop[n], GTK_STATE_NORMAL, color);
 			default:;
 		}
 	}
