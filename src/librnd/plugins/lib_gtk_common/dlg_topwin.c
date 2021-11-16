@@ -309,8 +309,6 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	GtkWidget *button;
 	GdkPixbuf *pixbuf;
 	GtkWidget *image;
-	const char *css_class = "minimum_size_button";
-	char *css_descr;
 
 	button = gtk_button_new();
 	pixbuf = rnd_gtk_xpm2pixbuf(xpm_data, 1);
@@ -318,10 +316,6 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	g_object_unref(pixbuf);
 
 	gtk_button_set_image(GTK_BUTTON(button), image);
-
-	css_descr = rnd_strdup_printf(".%s {min-width:0; min-height:0;}\n", css_class);
-	gtkc_widget_add_class_style(button, css_class, css_descr);
-	free(css_descr);
 
 	return button;
 }

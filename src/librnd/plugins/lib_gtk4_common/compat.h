@@ -160,11 +160,6 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 	*y = rnd_round(dy);
 }
 
-TODO("can we remove this? - check how the resize button looks like")
-static inline void gtkc_widget_add_class_style(GtkWidget *w, const char *css_class, char *css_descr)
-{
-}
-
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 {
 	/* race condition... */
