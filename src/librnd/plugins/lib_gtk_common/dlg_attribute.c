@@ -474,7 +474,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
 
 				if (ctx->attrs[j].hatt_flags & RND_HATF_HEIGHT_CHR)
-					gtk_entry_set_width_chars(GTK_ENTRY(entry), ctx->attrs[j].geo_width);
+					gtkc_entry_set_width_chars(GTK_ENTRY(entry), ctx->attrs[j].geo_width);
 
 				break;
 

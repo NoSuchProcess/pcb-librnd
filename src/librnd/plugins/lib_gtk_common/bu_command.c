@@ -133,7 +133,7 @@ void rnd_gtk_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_
 	ctx->command_combo_box = gtkc_combo_box_entry_new_text();
 	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
 
-	gtk_entry_set_width_chars(ctx->command_entry, 40);
+	gtkc_entry_set_width_chars(ctx->command_entry, 40);
 	gtk_entry_set_activates_default(ctx->command_entry, TRUE);
 
 	g_signal_connect(G_OBJECT(ctx->command_entry), "activate", G_CALLBACK(command_entry_activate_cb), ctx);

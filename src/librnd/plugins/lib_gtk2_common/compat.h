@@ -173,6 +173,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 #define gtkc_entry_get_text(entry)        gtk_entry_get_text(entry)
 #define gtkc_entry_set_text(entry, str)   gtk_entry_set_text(entry, str)
+#define gtkc_entry_set_width_chars(e, w)  gtk_entry_set_width_chars(e, w)
 
 /*** Event/signal compatibility ***/
 
