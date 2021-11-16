@@ -195,6 +195,19 @@ static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
 	return tbl;
 }
 
+static inline const char *gtkc_entry_get_text(GtkEntry *entry)
+{
+	GtkEntryBuffer *b = gtk_entry_get_buffer(entry);
+	return gtk_entry_buffer_get_text(b);
+}
+
+static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
+{
+	GtkEntryBuffer *b = gtk_entry_buffer_new(str, -1);
+	gtk_entry_set_buffer(GTK_ENTRY(entry), b);
+	g_object_unref(b);
+}
+
 
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)

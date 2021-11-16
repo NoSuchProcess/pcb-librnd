@@ -254,6 +254,6 @@ const char *rnd_gtk_cmd_command_entry(rnd_gtk_command_t *ctx, const char *ovr, i
 	}
 	if (cursor != NULL)
 		*cursor = gtk_editable_get_position(GTK_EDITABLE(ctx->command_entry));
-	return gtk_entry_get_text(ctx->command_entry);
+	return gtkc_entry_get_text(ctx->command_entry);
 }
 
