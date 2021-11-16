@@ -35,6 +35,7 @@
 
 #include "compat_priv.h"
 
+#define RND_GTK_KEY(keyname)   RND_GTK2_KEY(keyname)
 #define rnd_gtkc_cursor_type_t GdkCursorType
 
 #define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))

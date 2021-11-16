@@ -36,6 +36,7 @@
 
 #include "compat_priv.h"
 
+#define RND_GTK_KEY(keyname)   (GDK_KEY_ ## keyname)
 #define rnd_gtkc_cursor_type_t const char *
 
 
