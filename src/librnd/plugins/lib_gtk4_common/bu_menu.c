@@ -24,6 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <librnd/core/hidlib.h>
+
+#include "bu_menu.h"
 
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
