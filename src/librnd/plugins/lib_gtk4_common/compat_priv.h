@@ -84,8 +84,8 @@ static inline GtkEventController *gtkc_evctrl_motion(GtkWidget *w)
 }
 
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
-static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data);
-static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data);
+gboolean gtkc_mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data);
+gboolean gtkc_mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer user_data);
 static inline GtkEventController *gtkc_evctrl_click(GtkWidget *w)
 {
 	GObject *obj = G_OBJECT(w);
@@ -100,6 +100,8 @@ static inline GtkEventController *gtkc_evctrl_click(GtkWidget *w)
 	return ctrl;
 }
 #else
+gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_);
+gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_);
 static inline GtkEventController *gtkc_evctrl_click(GtkWidget *w)
 {
 	GObject *obj = G_OBJECT(w);

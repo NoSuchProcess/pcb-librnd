@@ -220,16 +220,16 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
 #	define gtkc_bind_mouse_press(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_motion(click)), "pressed", G_CALLBACK(gtkc_mouse_press_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(click)), "pressed", G_CALLBACK(gtkc_mouse_press_cb), ev);
 
 #	define gtkc_bind_mouse_release(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_motion(click)), "released", G_CALLBACK(gtkc_mouse_release_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(click)), "released", G_CALLBACK(gtkc_mouse_release_cb), ev);
 #else
 #	define gtkc_bind_mouse_press(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_motion(click)), "event", G_CALLBACK(gtkc_mouse_press_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(click)), "event", G_CALLBACK(gtkc_mouse_press_cb), ev);
 
 #	define gtkc_bind_mouse_release(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_motion(click)), "event", G_CALLBACK(gtkc_mouse_release_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(click)), "event", G_CALLBACK(gtkc_mouse_release_cb), ev);
 #endif
 
 #define gtkc_bind_mouse_motion(widget, ev) \

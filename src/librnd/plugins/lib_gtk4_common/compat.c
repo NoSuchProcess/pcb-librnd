@@ -115,7 +115,7 @@ gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
 
 
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
-static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
+gboolean gtkc_mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
@@ -125,7 +125,7 @@ static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, do
 	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
 }
 
-static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
+gboolean gtkc_mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
@@ -135,7 +135,7 @@ static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, 
 	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
 }
 #else
-static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
+gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
@@ -156,7 +156,7 @@ static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_
 	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
 }
 
-static gboolean mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
+gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
