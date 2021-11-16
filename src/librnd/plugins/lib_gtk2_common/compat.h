@@ -171,6 +171,9 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 4);
 }
 
+#define gtkc_entry_get_text(entry)        gtk_entry_get_text(entry)
+#define gtkc_entry_set_text(entry, str)   gtk_entry_set_text(entry, str)
+
 /*** Event/signal compatibility ***/
 
 /* Make sure the specified widget is capable of accepting event classes

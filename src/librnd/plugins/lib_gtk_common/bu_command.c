@@ -78,14 +78,14 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 {
 	rnd_gtk_command_t *ctx = data;
 	gchar *command;
-	const gchar *cmd = gtk_entry_get_text(GTK_ENTRY(ctx->command_entry));
+	const gchar *cmd = gtkc_entry_get_text(GTK_ENTRY(ctx->command_entry));
 
 	if (cmd != NULL) {
 		while ((*cmd == ' ') || (*cmd == '\t'))
 			cmd++;
 		command = g_strdup(cmd);
 	}
-	gtk_entry_set_text(ctx->command_entry, "");
+	gtkc_entry_set_text(ctx->command_entry, "");
 
 	if (*command)
 		command_history_add(ctx, command);
@@ -182,7 +182,7 @@ char *rnd_gtk_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, cons
 	   callbacks are invokded from the resize caused by showing the combo box. */
 	ctx->command_entry_status_line_active = TRUE;
 
-	gtk_entry_set_text(ctx->command_entry, command ? command : "");
+	gtkc_entry_set_text(ctx->command_entry, command ? command : "");
 	if (rnd_conf.editor.fullscreen)
 		gtk_widget_show(gtk_widget_get_parent(ctx->command_combo_box));
 
@@ -248,7 +248,7 @@ const char *rnd_gtk_cmd_command_entry(rnd_gtk_command_t *ctx, const char *ovr, i
 		return NULL;
 	}
 	if (ovr != NULL) {
-		gtk_entry_set_text(ctx->command_entry, ovr);
+		gtkc_entry_set_text(ctx->command_entry, ovr);
 		if (cursor != NULL)
 			gtk_editable_set_position(GTK_EDITABLE(ctx->command_entry), *cursor);
 	}

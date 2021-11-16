@@ -110,7 +110,7 @@ static void entry_changed_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 		return;
 
 	free((char *)dst->val.str);
-	dst->val.str = rnd_strdup(gtk_entry_get_text(entry));
+	dst->val.str = rnd_strdup(gtkc_entry_get_text(entry));
 	change_cb(ctx, dst);
 }
 
@@ -468,7 +468,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				ctx->wl[j] = entry;
 
 				if (ctx->attrs[j].val.str != NULL)
-					gtk_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].val.str);
+					gtkc_entry_set_text(GTK_ENTRY(entry), ctx->attrs[j].val.str);
 				gtk_widget_set_tooltip_text(entry, ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
@@ -667,13 +667,13 @@ static int rnd_gtk_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val
 
 		case RND_HATT_STRING:
 			{
-				const char *nv, *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
+				const char *nv, *s = gtkc_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
 				nv = val->str;
 				if (nv == NULL)
 					nv = "";
 				if (strcmp(s, nv) == 0)
 					goto nochg;
-				gtk_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str);
+				gtkc_entry_set_text(GTK_ENTRY(ctx->wl[idx]), val->str);
 				ctx->attrs[idx].val.str = rnd_strdup(val->str);
 				*copied = 1;
 			}
