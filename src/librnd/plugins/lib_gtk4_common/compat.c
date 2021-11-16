@@ -26,18 +26,21 @@ gint gtkc_mouse_scroll_cb(GtkEventControllerScroll *self, gdouble dx, gdouble dy
 gint gtkc_mouse_enter_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
 gint gtkc_mouse_leave_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
 gint gtkc_mouse_motion_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
 	return rs->cb(widget, rnd_round(x), rnd_round(y), 0, rs->user_data);
 }
 
@@ -67,6 +70,7 @@ static inline int rnd_gtkc_key_translate(GtkEventControllerKey *self, guint keyv
 gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
 	int mods;
 	unsigned short int key_raw, kv;
 
@@ -79,6 +83,7 @@ gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode,
 gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
 	int mods;
 	unsigned short int key_raw, kv;
 
@@ -91,6 +96,7 @@ gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycod
 gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = gtk_surface_get_widget(surf);
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
@@ -103,7 +109,7 @@ gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
 gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	return rs->cb(widget, 0, 0, 0, rs->user_data);
+	return rs->cb(GTK_WIDGET(window), 0, 0, 0, rs->user_data);
 }
 
 
