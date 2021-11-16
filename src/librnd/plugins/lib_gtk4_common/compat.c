@@ -3,7 +3,7 @@
 #include "compat.h"
 
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
-/*#include <librnd/plugins/lib_gtk_common/in_keyboard.h>*/
+#include <librnd/plugins/lib_gtk_common/in_keyboard.h>
 
 #define EVCTRL_WIDGET  gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self))
 #define EVCTRL_STATE   gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(self))
