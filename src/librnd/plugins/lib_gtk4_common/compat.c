@@ -96,8 +96,8 @@ gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycod
 gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	GtkWidget *widget = gtk_surface_get_widget(surf);
-	return rs->cb(widget, 0, 0, 0, rs->user_data);
+	GtkNative *nat = gtk_native_get_for_surface(surf);
+	return rs->cb(GTK_WIDGET(nat), 0, 0, 0, rs->user_data);
 }
 
 gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
