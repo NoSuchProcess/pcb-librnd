@@ -117,39 +117,63 @@ gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
 static gboolean mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
+	gtkc_event_xyz_t *rs = rs_;
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
-	printf("mouse press [%d] %d %f %f\n", btn, n_press, x, y);
-	return TRUE;
+	GdkModifierType state = EVCTRL_STATE;
+	ModifierKeysState mk = rnd_gtk_modifier_keys_state(widget, &state);
+
+	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
 }
 
 static gboolean mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
+	gtkc_event_xyz_t *rs = rs_;
 	guint btn = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self));
-	printf("mouse release [%d] %d %f %f\n", btn, n_press, x, y);
-	return TRUE;
+	GdkModifierType state = EVCTRL_STATE;
+	ModifierKeysState mk = rnd_gtk_modifier_keys_state(widget, &state);
+
+	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
 }
 #else
 static gboolean mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
+	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
 	guint btn;
+	GtkWidget *widget;
 	GdkEventType type = gdk_event_get_event_type(ev);
+	GdkModifierType state;
+	ModifierKeysState mk;
+
 	if (type != GDK_BUTTON_PRESS) return FALSE;
+
+	widget = EVCTRL_WIDGET;
+	state = gdk_event_get_modifier_state(ev) & GDK_MODIFIER_MASK;
+	mk = rnd_gtk_modifier_keys_state(widget, &state);
 
 	gdk_event_get_position(ev, &x, &y);
 	btn = gdk_button_event_get_button(ev);
-	return TRUE;
+	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
 }
 
 static gboolean mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
+	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
 	guint btn;
+	GtkWidget *widget;
 	GdkEventType type = gdk_event_get_event_type(ev);
+	GdkModifierType state;
+	ModifierKeysState mk;
+
 	if (type != GDK_BUTTON_RELEASE) return FALSE;
+
+	widget = EVCTRL_WIDGET;
+	state = gdk_event_get_modifier_state(ev) & GDK_MODIFIER_MASK;
+	mk = rnd_gtk_modifier_keys_state(widget, &state);
 
 	gdk_event_get_position(ev, &x, &y);
 	btn = gdk_button_event_get_button(ev);
-	return TRUE;
+	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
 }
 #endif
