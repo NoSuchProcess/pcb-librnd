@@ -69,7 +69,7 @@ static inline int rnd_gtkc_key_translate(GtkEventControllerKey *self, guint keyv
 
 gint gtkc_key_press_fwd_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
-	gtkc_event_xyz_t *rs = rs_;
+	gtkc_event_xyz_fwd_t *rs = rs_;
 	GtkWidget *widget = EVCTRL_WIDGET;
 	int mods;
 	unsigned short int key_raw, kv;
