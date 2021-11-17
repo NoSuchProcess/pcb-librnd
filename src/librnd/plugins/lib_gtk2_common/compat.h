@@ -38,6 +38,9 @@
 #define RND_GTK_KEY(keyname)   RND_GTK2_KEY(keyname)
 #define rnd_gtkc_cursor_type_t GdkCursorType
 
+#define gtkc_box_pack_append(parent_widget, child_widget, expfill, padding) \
+	gtk_box_pack_start(GTK_BOX(parent_widget), child_widget, expfill, expfill, padding)
+
 #define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))
 
 #define gtkc_widget_get_allocation(w, a) \

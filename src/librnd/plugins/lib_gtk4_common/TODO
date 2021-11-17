@@ -5,3 +5,5 @@ test:
 	- preview window drawign: scroll wheel pan with shift and ctrl
 	- gtkc_widget_modify_bg(): orange background in file reload warning banner?
 
+figure:
+	- gtkc_box_pack_append() padding is ignored
