@@ -21,7 +21,7 @@ void rnd_gtk_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data);
 
 /* Fix up background color of various widgets - useful if the host dialog's background color is not the default */
-void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color);
+void rnd_gtk_dad_fixcolor(void *hid_ctx, const rnd_gtk_color_t *color);
 
 /* Report new window coords to the central window placement code
    emitting an event */

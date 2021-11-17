@@ -74,9 +74,9 @@ typedef struct {
 	rnd_hid_dock_t where;
 } docked_t;
 
-GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
+rnd_gtk_color_t clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
-static GdkColor *rnd_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
+static rnd_gtk_color_t *rnd_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
 static htsp_t pck_dock_pos[RND_HID_DOCK_max];
 
 static void rnd_gtk_tw_dock_init(void)

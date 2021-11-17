@@ -1074,7 +1074,7 @@ void rnd_gtk_attr_dlg_set_help(void *hid_ctx, int idx, const char *val)
 	gtk_widget_set_tooltip_text(ctx->wl[idx], val);
 }
 
-void rnd_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
+void rnd_gtk_dad_fixcolor(void *hid_ctx, const rnd_gtk_color_t *color)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
