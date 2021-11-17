@@ -248,7 +248,6 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long 
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	rnd_bool key_handled, arrow_key, enter_key, force_activate = rnd_false;
-	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
 	arrow_key = ((keyval == RND_GTK_KEY(Up)) || (keyval == RND_GTK_KEY(KP_Up))
 		|| (keyval == RND_GTK_KEY(Down)) || (keyval == RND_GTK_KEY(KP_Down))
