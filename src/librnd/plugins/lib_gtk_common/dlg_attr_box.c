@@ -55,8 +55,8 @@ static GtkWidget *rnd_gtk_pane_append(attr_dlg_t *ctx, rnd_gtk_attr_tb_t *ts, Gt
 {
 	GtkWidget *page = gtkc_vbox_new(FALSE, 4);
 	switch(ts->val.pane.next) {
-		case 1: gtk_paned_pack1(GTK_PANED(parent), page, TRUE, FALSE); break;
-		case 2: gtk_paned_pack2(GTK_PANED(parent), page, TRUE, FALSE); break;
+		case 1: gtkc_paned_pack1(GTK_PANED(parent), page, TRUE); break;
+		case 2: gtkc_paned_pack2(GTK_PANED(parent), page, TRUE); break;
 		default:
 			rnd_message(RND_MSG_ERROR, "Wrong number of pages for a paned widget (%d): must be exactly 2\n", ts->val.pane.next);
 	}
