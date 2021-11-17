@@ -207,6 +207,7 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 
 #define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
 #define gtkc_widget_modify_bg(w, st, c)
+#define gtkc_frame_set_child(fr, ch)      gtk_frame_set_child(GTK_FRAME(fr), ch)
 
 
 /* Attach child in a single cell of the table */

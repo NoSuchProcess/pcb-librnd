@@ -227,7 +227,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 		gtkc_box_pack_append(parent, fr, expfill, 0);
 
 		parent = gtkc_hbox_new(FALSE, 0);
-		gtk_container_add(GTK_CONTAINER(fr), parent);
+		gtkc_frame_set_child(fr, parent);
 		if (wltop != NULL) {
 			*wltop = fr;
 			topped = 1; /* remember the outmost parent */

@@ -175,6 +175,8 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_entry_set_text(entry, str)   gtk_entry_set_text(entry, str)
 #define gtkc_entry_set_width_chars(e, w)  gtk_entry_set_width_chars(e, w)
 #define gtkc_widget_modify_bg(w, st, c)   gtk_widget_modify_bg(w, st, c)
+#define gtkc_frame_set_child(fr, ch)      gtk_container_add(GTK_CONTAINER(fr), ch)
+
 
 /*** Event/signal compatibility ***/
 
