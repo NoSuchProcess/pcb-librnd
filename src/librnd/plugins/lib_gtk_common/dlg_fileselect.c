@@ -93,7 +93,7 @@ static int rnd_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 
 	if (strcmp(cmd, "close") == 0) {
 		if (pctx->active) {
-			gtk_widget_destroy(pctx->dialog);
+			gtkc_window_destroy(pctx->dialog);
 			pctx->active = 0;
 		}
 		return 0;
@@ -239,7 +239,7 @@ char *rnd_gtk_fileselect(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *title, con
 	}
 	
 	if (pctx.active) {
-		gtk_widget_destroy(pctx.dialog);
+		gtkc_window_destroy(pctx.dialog);
 		pctx.active = 0;
 	}
 

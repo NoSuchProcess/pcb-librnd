@@ -222,6 +222,7 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 #define gtkc_scrolled_window_new()        gtk_scrolled_window_new()
 #define gtkc_scrolled_window_set_child(sw, ch) gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), GTK_WIDGET(ch))
 #define gtkc_button_set_child(btn, ch)    gtk_button_set_child(GTK_BUTTON(btn), ch)
+#define gtkc_window_destroy(win)          gtk_window_destroy(win)
 
 
 /* Attach child in a single cell of the table */

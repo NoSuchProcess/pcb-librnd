@@ -945,7 +945,7 @@ int rnd_gtk_attr_dlg_run(void *hid_ctx)
 	}
 
 	if (modal)
-		gtk_widget_destroy(dialog);
+		gtkc_window_destroy(dialog);
 
 	if (res == GTK_RESPONSE_OK)
 		return 0;
@@ -965,7 +965,7 @@ void rnd_gtk_attr_dlg_close(void *hid_ctx)
 	if (ctx->dialog != NULL) {
 		GtkWidget *dlg = ctx->dialog; /* the destroy callback may free ctx */
 		ctx->dialog = NULL;
-		gtk_widget_destroy(dlg);
+		gtkc_window_destroy(dlg);
 	}
 }
 
@@ -978,7 +978,7 @@ void rnd_gtk_attr_dlg_free(void *hid_ctx)
 	ctx->being_destroyed = 1;
 
 	if ((ctx->dialog != NULL) && (!ctx->freeing_gui)) {
-		gtk_widget_destroy(ctx->dialog);
+		gtkc_window_destroy(ctx->dialog);
 		while(!ctx->freeing_gui) /* wait for the destroy event to get delivered */
 			while(gtk_events_pending())
 				gtk_main_iteration_do(0);
