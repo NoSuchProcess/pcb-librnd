@@ -103,7 +103,7 @@ struct rnd_gtk_mouse_s {
 	int last_cursor_idx; /* tool index of the tool last selected */
 };
 
-typedef struct { /* drawing area resize event binding; compat.h will implement this */
+typedef struct gtkc_event_xyz_s { /* drawing area resize event binding; compat.h will implement this */
 	gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *user_data);
 	void *user_data;
 } gtkc_event_xyz_t;

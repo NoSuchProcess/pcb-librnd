@@ -140,17 +140,19 @@ TODO("TODO make these configurable:")
 	return prv;
 }
 
-static GtkWidget *rnd_gtk_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
+static GtkWidget *rnd_gtk_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, gboolean (*click_cb)(GtkWidget*,long,long,long,void*), void *click_ctx)
 {
 	GtkWidget *bparent, *pic, *evb;
 	GdkPixbuf *pixbuf;
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	int expfill = (attr->rnd_hatt_flags & RND_HATF_EXPFILL);
+	static struct gtkc_event_xyz_s ev_click; /* shared among all pictures, so udata is NULL */
 
 	pixbuf = rnd_gtk_xpm2pixbuf(attr->wdata, 1);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
-	evb = wrap_bind_click(pic, click_cb, attr);
+	evb = wrap_bind_click(pic, rnd_gtkc_xy_ev(&ev_click, click_cb, NULL));
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP, click_ctx);
+	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP_CLICK, attr);
 
 	gtk_box_pack_start(GTK_BOX(bparent), evb, expfill, expfill, 0);
 	gtk_widget_set_tooltip_text(pic, attr->help_text);

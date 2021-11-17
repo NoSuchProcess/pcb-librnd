@@ -265,5 +265,14 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_bind_win_delete(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "close-request", G_CALLBACK(gtkc_win_delete_cb), ev);
 
+struct gtkc_event_xyz_s;
+
+/* Wrap w so that clicks on it are triggering a callback */
+static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *ev)
+{
+	gtkc_bind_mouse_press(w, ev);
+	return w;
+}
+
 
 #endif  /* RND_GTK_COMPAT_H */

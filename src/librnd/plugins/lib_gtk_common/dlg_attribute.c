@@ -45,8 +45,8 @@
 
 #include "hid_gtk_conf.h"
 
-
 #define RND_OBJ_PROP "librnd_context"
+#define RND_OBJ_PROP_CLICK "librnd_click"
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
@@ -159,21 +159,20 @@ static void button_changed_cb(GtkButton *button, rnd_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void label_click_cb(GtkButton *evbox, GdkEvent *event, rnd_hid_attribute_t *dst)
+static gboolean label_click_cb(GtkWidget *evbox, long x, long y, long btn, void *udata_null)
 {
+	rnd_hid_attribute_t *dst = g_object_get_data(G_OBJECT(evbox), RND_OBJ_PROP_CLICK);
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), RND_OBJ_PROP);
 
-	switch(event->button.button) {
-		case 1:
-			dst->changed = 1;
-			if (ctx->inhibit_valchg)
-				return;
-			change_cb(ctx, dst);
-			break;
-		case 3:
-			right_cb(ctx, dst);
-			break;
+	if (btn & RND_MB_LEFT) {
+		dst->changed = 1;
+		if (ctx->inhibit_valchg)
+			return TRUE;
+		change_cb(ctx, dst);
 	}
+	else if (btn & RND_MB_RIGHT)
+		right_cb(ctx, dst);
+	return TRUE;
 }
 
 static void color_changed_cb(GtkColorButton *button, rnd_hid_attribute_t *dst)
@@ -404,6 +403,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				{
 				GtkRequisition req;
 				int theight;
+				static gtkc_event_xyz_t ev_click; /* shared among all labels, so udata is NULL */
 
 				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED) {
 					/* workaround: need to get the real height - create a temporary, non-truncated label */
@@ -438,10 +438,11 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				}
 
 				ctx->wl[j] = widget;
-				ctx->wltop[j] = wrap_bind_click(widget, G_CALLBACK(label_click_cb), &(ctx->attrs[j]));
+				ctx->wltop[j] = wrap_bind_click(widget, rnd_gtkc_xy_ev(&ev_click, label_click_cb, NULL));
 
 				g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP, ctx);
+				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_CLICK, &(ctx->attrs[j]));
 
 				gtk_box_pack_start(GTK_BOX(parent), ctx->wltop[j], FALSE, FALSE, 0);
 				if (!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED))
@@ -530,7 +531,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				break;
 
 			case RND_HATT_PICTURE:
-				ctx->wl[j] = rnd_gtk_picture_create(ctx, &ctx->attrs[j], parent, j, G_CALLBACK(label_click_cb), ctx);
+				ctx->wl[j] = rnd_gtk_picture_create(ctx, &ctx->attrs[j], parent, j, label_click_cb, ctx);
 				break;
 
 			case RND_HATT_PICBUTTON:

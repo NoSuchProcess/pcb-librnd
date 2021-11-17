@@ -233,4 +233,17 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 #define gtkc_bind_win_delete(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "delete_event", G_CALLBACK(gtkc_win_delete_cb), ev);
 
+struct gtkc_event_xyz_s;
+
+/* Wrap w so that clicks on it are triggering a callback */
+static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *ev)
+{
+	GtkWidget *event_box = gtk_event_box_new();
+	gtk_container_add(GTK_CONTAINER(event_box), w);
+
+	gtkc_bind_mouse_press(event_box, ev);
+
+	return event_box;
+}
+
 #endif  /* RND_GTK_COMPAT_H */
