@@ -175,7 +175,8 @@ static GtkWidget *rnd_gtk_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t 
 		button = gtk_toggle_button_new();
 	else
 		button = gtk_button_new();
-	gtk_container_add(GTK_CONTAINER(button), img);
+
+	gtkc_button_set_child(button, img);
 
 	gtkc_box_pack_append(bparent, button, expfill, 0);
 	gtk_widget_set_tooltip_text(button, attr->help_text);
