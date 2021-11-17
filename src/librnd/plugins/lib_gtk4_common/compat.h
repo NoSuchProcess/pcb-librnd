@@ -210,6 +210,7 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 #define gtkc_widget_modify_bg(w, st, c)
 #define gtkc_frame_set_child(fr, ch)      gtk_frame_set_child(GTK_FRAME(fr), ch)
 #define gtkc_scrolled_window_new()        gtk_scrolled_window_new()
+#define gtkc_scrolled_window_set_child(sw, ch) gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw), GTK_WIDGET(ch))
 
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)

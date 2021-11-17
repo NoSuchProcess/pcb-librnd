@@ -178,6 +178,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_widget_modify_bg(w, st, c)   gtk_widget_modify_bg(w, st, c)
 #define gtkc_frame_set_child(fr, ch)      gtk_container_add(GTK_CONTAINER(fr), ch)
 #define gtkc_scrolled_window_new()        gtk_scrolled_window_new(NULL, NULL)
+#define gtkc_scrolled_window_set_child(sw, ch) gtk_container_add(GTK_CONTAINER(sw), ch)
 
 /*** Event/signal compatibility ***/
 

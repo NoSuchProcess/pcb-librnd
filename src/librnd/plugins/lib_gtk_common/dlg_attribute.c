@@ -243,7 +243,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 		}
 		else {
 			parent = inner;
-			gtk_container_add(GTK_CONTAINER(fr), inner);
+			gtkc_scrolled_window_set_child(fr, inner);
 		}
 		
 		if ((wltop != NULL) && (!topped)) {

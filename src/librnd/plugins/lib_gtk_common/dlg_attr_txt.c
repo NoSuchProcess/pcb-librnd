@@ -233,7 +233,7 @@ static GtkWidget *rnd_gtk_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtkc_box_pack_append(parent, scrolled, TRUE, 0);
 		wtxt = gtk_text_view_new();
-		gtk_container_add(GTK_CONTAINER(scrolled), wtxt);
+		gtkc_scrolled_window_set_child(GTK_CONTAINER(scrolled), wtxt);
 	}
 	else {
 		wtxt = gtk_text_view_new();
