@@ -231,13 +231,13 @@ static GtkWidget *rnd_gtk_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 	if (attr->rnd_hatt_flags & RND_HATF_SCROLL) {
 		GtkWidget *scrolled = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_box_pack_start(GTK_BOX(parent), scrolled, TRUE, TRUE, 0);
+		gtkc_box_pack_append(parent, scrolled, TRUE, 0);
 		wtxt = gtk_text_view_new();
 		gtk_container_add(GTK_CONTAINER(scrolled), wtxt);
 	}
 	else {
 		wtxt = gtk_text_view_new();
-		gtk_box_pack_start(GTK_BOX(parent), wtxt, TRUE, TRUE, 0);
+		gtkc_box_pack_append(parent, wtxt, TRUE, 0);
 	}
 
 	gtk_widget_set_tooltip_text(wtxt, attr->help_text);

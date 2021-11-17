@@ -201,7 +201,7 @@ static GtkWidget *chk_btn_new(GtkWidget *box, gboolean active, void (*cb_func)(G
 	else
 		b = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), active);
-	gtk_box_pack_start(GTK_BOX(box), b, FALSE, FALSE, 0);
+	gtkc_box_pack_append(box, b, FALSE, 0);
 	g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
 	return b;
 }
@@ -224,7 +224,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 
 	if (flags & RND_HATF_FRAME) {
 		fr = gtk_frame_new(NULL);
-		gtk_box_pack_start(GTK_BOX(parent), fr, expfill, expfill, 0);
+		gtkc_box_pack_append(parent, fr, expfill, 0);
 
 		parent = gtkc_hbox_new(FALSE, 0);
 		gtk_container_add(GTK_CONTAINER(fr), parent);
@@ -236,7 +236,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 	if (flags & RND_HATF_SCROLL) {
 		fr = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(fr), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_box_pack_start(GTK_BOX(parent), fr, TRUE, TRUE, 0);
+		gtkc_box_pack_append(parent, fr, TRUE, 0);
 		if (inner == NULL) {
 			parent = gtkc_hbox_new(FALSE, 0);
 			gtkc_scrolled_window_add_with_viewport(fr, parent);
@@ -254,7 +254,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 
 	if ((inner != NULL) && !topped) {
 		/* when called from tree table without the scroll flag */
-		gtk_box_pack_start(GTK_BOX(parent), inner, expfill, expfill, 0);
+		gtkc_box_pack_append(parent, inner, expfill, 0);
 		*wltop = parent = inner;
 	}
 
@@ -341,7 +341,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 			case RND_HATT_BEGIN_HBOX:
 				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
-				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
+				gtkc_box_pack_append(bparent, hbox, expfill, 0);
 				ctx->wl[j] = hbox;
 				j = rnd_gtk_attr_dlg_add(ctx, hbox, NULL, j+1);
 				break;
@@ -350,7 +350,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].rnd_hatt_flags & RND_HATF_EXPFILL);
-				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
+				gtkc_box_pack_append(bparent, vbox1, expfill, 0);
 				ctx->wl[j] = vbox1;
 				j = rnd_gtk_attr_dlg_add(ctx, vbox1, NULL, j+1);
 				break;
@@ -370,7 +370,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 					ts.val.table.col = 0;
 					ts.val.table.row = 0;
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
-					gtk_box_pack_start(GTK_BOX(bparent), tbl, expfill, expfill, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
+					gtkc_box_pack_append(bparent, tbl, expfill, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 					ctx->wl[j] = tbl;
 					j = rnd_gtk_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}
@@ -388,7 +388,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 					else
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_TOP);
 
-					gtk_box_pack_start(GTK_BOX(parent), widget, expfill, expfill, 0);
+					gtkc_box_pack_append(parent, widget, expfill, 0);
 					g_signal_connect(G_OBJECT(widget), "switch-page", G_CALLBACK(notebook_changed_cb), &(ctx->attrs[j]));
 					g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 					j = rnd_gtk_attr_dlg_add(ctx, widget, &ts, j+1);
@@ -444,7 +444,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP, ctx);
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_CLICK, &(ctx->attrs[j]));
 
-				gtk_box_pack_start(GTK_BOX(parent), ctx->wltop[j], FALSE, FALSE, 0);
+				gtkc_box_pack_append(parent, ctx->wltop[j], FALSE, 0);
 				if (!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED))
 					gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
@@ -461,10 +461,10 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_STRING:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
+				gtkc_box_pack_append(parent, hbox, expfill, 0);
 
 				entry = gtk_entry_new();
-				gtk_box_pack_start(GTK_BOX(hbox), entry, expfill, expfill, 0);
+				gtkc_box_pack_append(hbox, entry, expfill, 0);
 				g_object_set_data(G_OBJECT(entry), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
@@ -489,11 +489,11 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_ENUM:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
+				gtkc_box_pack_append(parent, hbox, expfill, 0);
 
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
-				gtk_box_pack_start(GTK_BOX(hbox), combo, expfill, expfill, 0);
+				gtkc_box_pack_append(hbox, combo, expfill, 0);
 				g_object_set_data(G_OBJECT(combo), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = combo;
 
@@ -556,13 +556,13 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_BUTTON:
 				hbox = gtkc_hbox_new(FALSE, 4);
-				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
+				gtkc_box_pack_append(parent, hbox, expfill, 0);
 
 				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE)
 					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str);
 				else
 					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str);
-				gtk_box_pack_start(GTK_BOX(hbox), ctx->wl[j], expfill, expfill, 0);
+				gtkc_box_pack_append(hbox, ctx->wl[j], expfill, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
@@ -576,7 +576,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 					sub->dlg_hid_ctx = rnd_gtk_attr_sub_new(ctx->gctx, subbox, sub->dlg, sub->dlg_len, sub);
 					ctx->wl[j] = subbox;
-					gtk_box_pack_start(GTK_BOX(parent), ctx->wl[j], FALSE, FALSE, 0);
+					gtkc_box_pack_append(parent, ctx->wl[j], FALSE, 0);
 				}
 				break;
 

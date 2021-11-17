@@ -54,7 +54,7 @@ static GtkWidget *rnd_gtk_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *
 
 	gtk_widget_set_tooltip_text(prg, attr->help_text);
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
-	gtk_box_pack_start(GTK_BOX(bparent), prg, TRUE, TRUE, 0);
+	gtkc_box_pack_append(bparent, prg, TRUE, 0);
 	g_object_set_data(G_OBJECT(prg), RND_OBJ_PROP, ctx);
 	return prg;
 }
@@ -120,7 +120,7 @@ static GtkWidget *rnd_gtk_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, rnd_gtka_preview_expose, rnd_gtka_preview_config, attr->wdata);
-	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
+	gtkc_box_pack_append(bparent, prv, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (rnd_gtk_preview_t *) prv;
 	p->mouse_cb = rnd_gtka_preview_mouse;
@@ -154,7 +154,7 @@ static GtkWidget *rnd_gtk_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP, click_ctx);
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP_CLICK, attr);
 
-	gtk_box_pack_start(GTK_BOX(bparent), evb, expfill, expfill, 0);
+	gtkc_box_pack_append(bparent, evb, expfill, 0);
 	gtk_widget_set_tooltip_text(pic, attr->help_text);
 
 	return evb;
@@ -177,7 +177,7 @@ static GtkWidget *rnd_gtk_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t 
 		button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(button), img);
 
-	gtk_box_pack_start(GTK_BOX(bparent), button, expfill, expfill, 0);
+	gtkc_box_pack_append(bparent, button, expfill, 0);
 	gtk_widget_set_tooltip_text(button, attr->help_text);
 
 	return button;
@@ -196,7 +196,7 @@ static GtkWidget *rnd_gtk_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *att
 	button = gtkc_color_button_new_with_color(&gclr);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(button), NULL);
 
-	gtk_box_pack_start(GTK_BOX(bparent), button, TRUE, TRUE, 0);
+	gtkc_box_pack_append(bparent, button, TRUE, 0);
 	gtk_widget_set_tooltip_text(button, attr->help_text);
 
 	return button;
