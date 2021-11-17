@@ -261,11 +261,11 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long 
 	key_handled = (enter_key || arrow_key);
 
 	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
-	if (((mods & default_mod_mask) == GDK_CONTROL_MASK) && ((keyval == RND_GTK_KEY(c)) || (keyval == RND_GTK_KEY(C)))) {
+	if ((mods & RND_M_Ctrl) && ((keyval == RND_GTK_KEY(c)) || (keyval == RND_GTK_KEY(C)))) {
 		rnd_hid_tree_t *tree = attr->wdata;
 		rnd_hid_row_t *r;
 		const char *cliptext;
-
+printf("COPY!\n");
 		selection = gtk_tree_view_get_selection(tree_view);
 		g_return_val_if_fail(selection != NULL, TRUE);
 
