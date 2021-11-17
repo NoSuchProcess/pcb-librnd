@@ -190,3 +190,10 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_
 	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
 }
 #endif
+
+int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
+{
+	GdkClipboard *cbrd = gtk_widget_get_clipboard(widget);
+	gdk_clipboard_set_text(cbrd, text);
+}
+

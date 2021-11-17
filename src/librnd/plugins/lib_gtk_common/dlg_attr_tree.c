@@ -248,7 +248,6 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long 
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	rnd_bool key_handled, arrow_key, enter_key, force_activate = rnd_false;
-	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
 	arrow_key = ((keyval == RND_GTK_KEY(Up)) || (keyval == RND_GTK_KEY(KP_Up))
@@ -265,7 +264,7 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long 
 		rnd_hid_tree_t *tree = attr->wdata;
 		rnd_hid_row_t *r;
 		const char *cliptext;
-printf("COPY!\n");
+
 		selection = gtk_tree_view_get_selection(tree_view);
 		g_return_val_if_fail(selection != NULL, TRUE);
 
@@ -276,15 +275,13 @@ printf("COPY!\n");
 		if (r == NULL)
 			return TRUE;
 
-		clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-		g_return_val_if_fail(clipboard != NULL, TRUE);
-
 		if (tree->user_copy_to_clip_cb != NULL)
 			cliptext = tree->user_copy_to_clip_cb(attr, tree->hid_wdata, r);
 		else
 			cliptext = r->cell[0];
 
-		gtk_clipboard_set_text(clipboard, cliptext, -1);
+		if (gtkc_clipboard_set_text(wdg, cliptext) != 0)
+			return TRUE;
 
 		return FALSE;
 	}

@@ -265,4 +265,6 @@ static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *
 	return event_box;
 }
 
+int gtkc_clipboard_set_text(GtkWidget *widget, const char *text);
+
 #endif  /* RND_GTK_COMPAT_H */

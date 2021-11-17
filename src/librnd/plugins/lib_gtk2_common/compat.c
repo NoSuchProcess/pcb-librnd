@@ -179,3 +179,12 @@ gint gtkc_win_delete_cb(GtkWidget *widget, GdkEvent *ev, void *rs_)
 	return rs->cb(widget, 0, 0, 0, rs->user_data);
 }
 
+
+int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
+{
+	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	if (clipboard == NULL)
+		return -1;
+	gtk_clipboard_set_text(clipboard, text, -1);
+	return 0;
+}
