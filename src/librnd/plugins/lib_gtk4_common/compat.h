@@ -211,9 +211,9 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 #define GTKC_TREE_FORWARD_EVENT \
 	do { \
 		tree_priv_t *tp = g_object_get_data(G_OBJECT(tree_view), RND_OBJ_PROP_TREE_PRIV); \
-		g_signal_handler_block(self, tp->kpsig); \
-		gtk_event_controller_key_forward(fwd, tree); \
-		g_signal_handler_unblock(self, tp->kpsig); \
+		g_signal_handler_block(fwd, tp->kpsig); \
+		gtk_event_controller_key_forward(fwd, GTK_WIDGET(tree_view)); \
+		g_signal_handler_unblock(fwd, tp->kpsig); \
 	} while(0)
 
 #define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
