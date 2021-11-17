@@ -131,7 +131,7 @@ void rnd_gtk_command_combo_box_entry_create(rnd_gtk_command_t *ctx, void (*hide_
 	ctx->status_ctx = status_ctx;
 	ctx->hide_status = hide_status;
 	ctx->command_combo_box = gtkc_combo_box_entry_new_text();
-	ctx->command_entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(ctx->command_combo_box)));
+	ctx->command_entry = gtkc_combo_box_get_entry(ctx->command_combo_box);
 
 	gtkc_entry_set_width_chars(ctx->command_entry, 40);
 	gtk_entry_set_activates_default(ctx->command_entry, TRUE);
