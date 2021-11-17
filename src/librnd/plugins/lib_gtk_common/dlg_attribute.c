@@ -234,7 +234,7 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 		}
 	}
 	if (flags & RND_HATF_SCROLL) {
-		fr = gtk_scrolled_window_new(NULL, NULL);
+		fr = gtkc_scrolled_window_new();
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(fr), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtkc_box_pack_append(parent, fr, TRUE, 0);
 		if (inner == NULL) {
