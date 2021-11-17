@@ -275,35 +275,4 @@ static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *
 	return w;
 }
 
-
-/* INTERNAL: set fill/exp for a widget */
-static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w)
-{
-	int h = 1, v = 1;
-
-	/* set fill/exp in parent box if parent is a box: figure parent orientation */
-	if (GTK_IS_BOX(parent)) {
-		GtkOrientation o = gtk_orientable_get_orientation(GTK_ORIENTABLE(parent));
-		if (o == GTK_ORIENTATION_HORIZONTAL) v = 0;
-		if (o == GTK_ORIENTATION_VERTICAL) h = 0;
-	}
-
-	if (h) {
-		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
-		gtk_widget_set_hexpand(w, 1);
-	}
-
-	if (v) {
-		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
-		gtk_widget_set_vexpand(w, 1);
-	}
-}
-
-static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
-{
-	gtk_box_append(GTK_BOX(box), child);
-	if (expfill)
-		gtkci_expfill(box, child);
-}
-
 #endif  /* RND_GTK_COMPAT_H */
