@@ -340,7 +340,7 @@ void rnd_gtk_topwin_hide_status(void *ctx, int show)
    before this is called. */
 static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 {
-	GtkWidget *vbox_main, *hbox, *hboxi, *evb;
+	GtkWidget *vbox_main, *hbox, *hboxi, *evb, *spring;
 	GtkWidget *hbox_scroll, *fullscreen_btn;
 	rnd_gtk_tw_dock_init();
 
@@ -369,11 +369,15 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	tw->dockbox[RND_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->dockbox[RND_HID_DOCK_TOP_LEFT], FALSE, FALSE, 0);
 
+	/* pushes the top right position box to the right */
+	spring = gtkc_hbox_new(TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->top_hbox), spring, TRUE, TRUE, 0);
+
 	tw->position_hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
 	tw->dockbox[RND_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[RND_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[RND_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
 
 	tw->hpaned_middle = gtkc_hpaned_new();
 	gtk_box_pack_start(GTK_BOX(vbox_main), tw->hpaned_middle, TRUE, TRUE, 0);
