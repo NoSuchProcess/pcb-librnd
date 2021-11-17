@@ -349,6 +349,7 @@ static int rnd_gtk_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
 	return rect.x;
 }
 
+#ifdef RND_FOR_GTK2
 /* Handle the double-click to be equivalent to "row-activated" signal */
 static gboolean rnd_gtk_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
@@ -395,6 +396,7 @@ static gboolean rnd_gtk_tree_table_button_release_cb(GtkWidget *widget, GdkEvent
 
 	return FALSE;
 }
+#endif
 
 static int rnd_gtk_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
@@ -526,12 +528,14 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	g_object_unref(model); /* destroy model automatically with view */
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_NONE);
 
-TODO("not in gtk4; safe to skip this (users should use themes)");
+#ifdef RND_FOR_GTK2
+	/* these are workarounds for gtk2, other versions won't need these */
 	g_object_set(view, "rules-hint", TRUE, "headers-visible", (tree->hdr != NULL), NULL);
-
-	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
 	g_signal_connect(G_OBJECT(view), "button-press-event", G_CALLBACK(rnd_gtk_tree_table_button_press_cb), attr);
 	g_signal_connect(G_OBJECT(view), "button-release-event", G_CALLBACK(rnd_gtk_tree_table_button_release_cb), attr);
+#endif
+
+	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
 	g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(rnd_gtk_tree_table_key_press_cb), attr);
 	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(rnd_gtk_tree_table_row_activated_cb), attr);
 

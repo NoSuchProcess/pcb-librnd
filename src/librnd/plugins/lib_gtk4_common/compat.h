@@ -29,6 +29,8 @@
 
 /*** lib_gtk_common compatibilty layer for GTK4 ***/
 
+#define RND_FOR_GTK4 1
+
 #define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk4_common/bu_menu.h>
 
 #include <gtk/gtk.h>
