@@ -49,8 +49,8 @@ do { \
 } while(0) \
 
 #define gtkc_dialog_get_content_area(d)  ((d)->vbox)
-#define gtkc_combo_box_entry_new_text()  gtk_combo_box_entry_new_text()
-#define gtkc_combo_box_get_entry(combo)  gtk_entry_get_child(GTK_BIN(combo))
+#define gtkc_combo_box_entry_new_text()  gtk_combo_box_text_new_with_entry()
+#define gtkc_combo_box_get_entry(combo)  gtk_combo_box_get_child(GTK_COMBO_BOX(combo))
 
 typedef GdkRGBA rnd_gtk_color_t;
 
