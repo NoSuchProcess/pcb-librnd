@@ -108,7 +108,19 @@ typedef struct gtkc_event_xyz_s { /* drawing area resize event binding; compat.h
 	void *user_data;
 } gtkc_event_xyz_t;
 
+typedef struct gtkc_event_xyz_fwd_s { /* same as gtkc_event_xyz_t but capable fo forwarding */
+	gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *fwd, void *user_data);
+	void *user_data;
+} gtkc_event_xyz_fwd_t;
+
 RND_INLINE gtkc_event_xyz_t *rnd_gtkc_xy_ev(gtkc_event_xyz_t *xyev, gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *user_data), void *user_data)
+{
+	xyev->cb = cb;
+	xyev->user_data = user_data;
+	return xyev;
+}
+
+RND_INLINE gtkc_event_xyz_fwd_t *rnd_gtkc_xyz_fwd_ev(gtkc_event_xyz_fwd_t *xyev, gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *fwd, void *user_data), void *user_data)
 {
 	xyev->cb = cb;
 	xyev->user_data = user_data;

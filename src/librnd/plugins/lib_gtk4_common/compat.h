@@ -208,6 +208,14 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 	g_object_unref(b);
 }
 
+#define GTKC_TREE_FORWARD_EVENT \
+	do { \
+		tree_priv_t *tp = g_object_get_data(G_OBJECT(tree_view), RND_OBJ_PROP_TREE_PRIV); \
+		g_signal_handler_block(self, tp->kpsig); \
+		gtk_event_controller_key_forward(fwd, tree); \
+		g_signal_handler_unblock(self, tp->kpsig); \
+	} while(0)
+
 #define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
 #define gtkc_widget_modify_bg(w, st, c)
 #define gtkc_frame_set_child(fr, ch)      gtk_frame_set_child(GTK_FRAME(fr), ch)
@@ -252,6 +260,9 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "motion", G_CALLBACK(gtkc_mouse_motion_cb), ev);
+
+#define gtkc_bind_key_press_fwd(widget, ev) \
+	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_fwd_cb), ev);
 
 #define gtkc_bind_key_press(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_cb), ev);

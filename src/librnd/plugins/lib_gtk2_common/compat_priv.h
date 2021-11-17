@@ -33,6 +33,7 @@ gint gtkc_mouse_leave_cb(GtkWidget *widget, GdkEventCrossing *ev, void *rs);
 gint gtkc_mouse_press_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
 gint gtkc_mouse_release_cb(GtkWidget *widget, GdkEventButton *ev, void *rs);
 gint gtkc_mouse_motion_cb(GtkWidget *widget, GdkEventMotion *ev, void *rs);
+gint gtkc_key_press_fwd_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_);
 gint gtkc_key_press_cb(GtkWidget *widget, GdkEventKey *kev, void *rs);
 gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs);
 gint gtkc_win_resize_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);

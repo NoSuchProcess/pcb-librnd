@@ -27,6 +27,13 @@
 
 #include <gdk/gdkkeysyms.h>
 
+#define RND_OBJ_PROP_TREE_PRIV "librnd_tree_priv"
+
+typedef struct {
+	gtkc_event_xyz_fwd_t ev;
+	gulong kpsig;
+} tree_priv_t;
+
 static GtkTreeIter *rnd_gtk_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, rnd_hid_row_t *r, int prepend, GtkTreeIter *sibling)
 {
 	int c;
@@ -232,8 +239,10 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 
 /* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
    Enter -> row-activate. */
-static gboolean rnd_gtk_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, rnd_hid_attribute_t *attr)
+static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long key_raw, long keyval, void *fwd, void *udata)
 {
+	GtkTreeView *tree_view = GTK_TREE_VIEW(wdg);
+	rnd_hid_attribute_t *attr = udata;
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -242,17 +251,17 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEvent
 	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
-	arrow_key = ((event->keyval == RND_GTK_KEY(Up)) || (event->keyval == RND_GTK_KEY(KP_Up))
-		|| (event->keyval == RND_GTK_KEY(Down)) || (event->keyval == RND_GTK_KEY(KP_Down))
-		|| (event->keyval == RND_GTK_KEY(KP_Page_Down)) || (event->keyval == RND_GTK_KEY(KP_Page_Up))
-		|| (event->keyval == RND_GTK_KEY(Page_Down)) || (event->keyval == RND_GTK_KEY(Page_Up))
-		|| (event->keyval == RND_GTK_KEY(KP_Home)) || (event->keyval == RND_GTK_KEY(KP_End))
-		|| (event->keyval == RND_GTK_KEY(Home)) || (event->keyval == RND_GTK_KEY(End)));
-	enter_key = (event->keyval == RND_GTK_KEY(Return)) || (event->keyval == RND_GTK_KEY(KP_Enter));
+	arrow_key = ((keyval == RND_GTK_KEY(Up)) || (keyval == RND_GTK_KEY(KP_Up))
+		|| (keyval == RND_GTK_KEY(Down)) || (keyval == RND_GTK_KEY(KP_Down))
+		|| (keyval == RND_GTK_KEY(KP_Page_Down)) || (keyval == RND_GTK_KEY(KP_Page_Up))
+		|| (keyval == RND_GTK_KEY(Page_Down)) || (keyval == RND_GTK_KEY(Page_Up))
+		|| (keyval == RND_GTK_KEY(KP_Home)) || (keyval == RND_GTK_KEY(KP_End))
+		|| (keyval == RND_GTK_KEY(Home)) || (keyval == RND_GTK_KEY(End)));
+	enter_key = (keyval == RND_GTK_KEY(Return)) || (keyval == RND_GTK_KEY(KP_Enter));
 	key_handled = (enter_key || arrow_key);
 
 	/* Handle ctrl+c and ctrl+C: copy current name to clipboard */
-	if (((event->state & default_mod_mask) == GDK_CONTROL_MASK) && ((event->keyval == RND_GTK_KEY(c)) || (event->keyval == RND_GTK_KEY(C)))) {
+	if (((mods & default_mod_mask) == GDK_CONTROL_MASK) && ((keyval == RND_GTK_KEY(c)) || (keyval == RND_GTK_KEY(C)))) {
 		rnd_hid_tree_t *tree = attr->wdata;
 		rnd_hid_row_t *r;
 		const char *cliptext;
@@ -284,11 +293,8 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEvent
 		return FALSE;
 
 	/* If arrows (up or down), let GTK process the selection change. Then activate the new selected row. */
-	if (arrow_key) {
-		GtkWidgetClass *class = GTK_WIDGET_GET_CLASS(tree_view);
-
-		class->key_press_event(GTK_WIDGET(tree_view), event);
-	}
+	if (arrow_key)
+		GTKC_TREE_FORWARD_EVENT;
 
 	selection = gtk_tree_view_get_selection(tree_view);
 	g_return_val_if_fail(selection != NULL, TRUE);
@@ -536,7 +542,6 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 #endif
 
 	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
-	g_signal_connect(G_OBJECT(view), "key-press-event", G_CALLBACK(rnd_gtk_tree_table_key_press_cb), attr);
 	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(rnd_gtk_tree_table_row_activated_cb), attr);
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
@@ -545,12 +550,25 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	gtk_widget_set_tooltip_text(view, attr->help_text);
 	frame_scroll_(parent, attr->rnd_hatt_flags, &ctx->wltop[j], view);
 	g_object_set_data(G_OBJECT(view), RND_OBJ_PROP, ctx);
+
+	{
+		tree_priv_t *tp = malloc(sizeof(tree_priv_t));
+		g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_TREE_PRIV, tp);
+		g_object_set_data(G_OBJECT(view), RND_OBJ_PROP_TREE_PRIV, tp);
+		tp->kpsig = gtkc_bind_key_press_fwd(view, rnd_gtkc_xyz_fwd_ev(&tp->ev, rnd_gtk_tree_table_key_press_cb, attr))
+	}
+
 	return view;
 }
 
 static void rnd_gtk_tree_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
 {
 	GtkWidget *tt = ctx->wl[j];
+	tree_priv_t *tp = g_object_get_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_TREE_PRIV);
+
+	free(tp);
+	g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_TREE_PRIV, NULL);
+
 	/* make sure the model filter functions are not called back in an async call
 	   when we already free'd attr */
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tt), NULL);

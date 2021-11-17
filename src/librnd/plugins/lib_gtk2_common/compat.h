@@ -174,6 +174,13 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 	gtk_table_attach(GTK_TABLE(table), child, col, col+1, row, row+1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 4, 4);
 }
 
+#define GTKC_TREE_FORWARD_EVENT \
+	do { \
+		GtkWidgetClass *class = GTK_WIDGET_GET_CLASS(tree_view); \
+		class->key_press_event(GTK_WIDGET(tree_view), fwd); \
+	} while(0)
+
+
 #define gtkc_entry_get_text(entry)        gtk_entry_get_text(entry)
 #define gtkc_entry_set_text(entry, str)   gtk_entry_set_text(entry, str)
 #define gtkc_entry_set_width_chars(e, w)  gtk_entry_set_width_chars(e, w)
@@ -222,6 +229,9 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_motion_cb), ev);
+
+#define gtkc_bind_key_press_fwd(widget, ev) \
+	g_signal_connect(G_OBJECT(widget), "key_press_event", G_CALLBACK(gtkc_key_press_fwd_cb), ev);
 
 #define gtkc_bind_key_press(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "key_press_event", G_CALLBACK(gtkc_key_press_cb), ev);

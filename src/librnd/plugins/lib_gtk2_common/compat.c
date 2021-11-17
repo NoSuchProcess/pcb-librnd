@@ -124,6 +124,18 @@ static inline int rnd_gtkc_key_translate(const GdkEventKey *kev, int *out_mods, 
 	return rnd_gtk_key_translate(kev->keyval, kev->state, key_raw,   out_mods, out_key_raw, out_kv);
 }
 
+gint gtkc_key_press_fwd_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
+{
+	gtkc_event_xyz_fwd_t *rs = rs_;
+	int mods;
+	unsigned short int key_raw, kv;
+
+	if (rnd_gtkc_key_translate(kev, &mods, &key_raw, &kv) != 0)
+		return FALSE;
+
+	return rs->cb(widget, mods, key_raw, kv, kev, rs->user_data);
+}
+
 gint gtkc_key_press_cb(GtkWidget *widget, GdkEventKey *kev, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;

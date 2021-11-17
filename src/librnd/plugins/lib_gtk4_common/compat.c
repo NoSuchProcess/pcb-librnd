@@ -67,6 +67,19 @@ static inline int rnd_gtkc_key_translate(GtkEventControllerKey *self, guint keyv
 }
 
 
+gint gtkc_key_press_fwd_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
+{
+	gtkc_event_xyz_t *rs = rs_;
+	GtkWidget *widget = EVCTRL_WIDGET;
+	int mods;
+	unsigned short int key_raw, kv;
+
+	if (rnd_gtkc_key_translate(self, keyval, keycode, state, &mods, &key_raw, &kv) != 0)
+		return FALSE;
+
+	return rs->cb(widget, mods, key_raw, kv, self, rs->user_data);
+}
+
 gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
