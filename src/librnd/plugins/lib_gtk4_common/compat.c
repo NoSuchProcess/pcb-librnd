@@ -218,7 +218,7 @@ void gtkc_window_resize(GtkWindow *win, int x, int y)
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
 	if (GDK_IS_X11_DISPLAY(display)) {
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
-		Display *dsp = GDK_SURFACE_XDISPLAY(GTK_WIDGET(win));
+		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf);
 		XResizeWindow(dsp, xw, x, y);
 	}
@@ -232,7 +232,7 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
 	if (GDK_IS_X11_DISPLAY(display)) {
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
-		Display *dsp = GDK_SURFACE_XDISPLAY(GTK_WIDGET(win));
+		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf);
 		XMoveWindow(dsp, xw, x, y);
 	}
