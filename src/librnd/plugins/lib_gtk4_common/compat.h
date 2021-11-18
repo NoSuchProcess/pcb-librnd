@@ -250,6 +250,8 @@ void gtkc_window_move(GtkWindow *win, int x, int y);
 #define gtkc_bgcolor_box_set_child(b, ch) gtkc_box_pack_append(b, ch, TRUE, 0)
 #define gtkc_setup_events(dwg, mb, ms, mo, key, ex, ent)
 #define gtkc_widget_set_focusable(w)      gtk_widget_set_focusable(w, TRUE)
+#define gtkc_vscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, sc)
+#define gtkc_hscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, sc)
 
 static inline void gtkc_wait_pending_events(void)
 {

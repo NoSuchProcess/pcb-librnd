@@ -397,7 +397,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_box_pack_append(hbox, tw->drawing_area, TRUE, 0);
 
 	tw->v_adjustment = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
-	tw->v_range = gtk_vscrollbar_new(GTK_ADJUSTMENT(tw->v_adjustment));
+	tw->v_range = gtkc_vscrollbar_new(GTK_ADJUSTMENT(tw->v_adjustment));
 
 	gtkc_box_pack_append(hbox, tw->v_range, FALSE, 0);
 
@@ -406,7 +406,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	tw->h_adjustment = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
 
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
-	tw->h_range = gtk_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
+	tw->h_range = gtkc_hscrollbar_new(GTK_ADJUSTMENT(tw->h_adjustment));
 	fullscreen_btn = create_image_button_from_xpm_data(FullScreen_xpm);
 	g_signal_connect(G_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL); /* gtk2-gtk4 compatible */
 	gtkc_box_pack_append(hbox_scroll, tw->h_range, TRUE, 0);

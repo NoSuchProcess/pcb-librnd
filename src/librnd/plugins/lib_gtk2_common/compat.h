@@ -215,6 +215,8 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_bgcolor_box_new()            gtk_event_box_new()
 #define gtkc_bgcolor_box_set_child(b, ch) gtk_container_add(GTK_CONTAINER(b), ch)
 #define gtkc_widget_set_focusable(w)      GTK_WIDGET_SET_FLAGS(w, GTK_CAN_FOCUS)
+#define gtkc_vscrollbar_new(sc)           gtk_vscrollbar_new(sc)
+#define gtkc_hscrollbar_new(sc)           gtk_hscrollbar_new(sc)
 
 
 static inline void gtkc_wait_pending_events(void)
