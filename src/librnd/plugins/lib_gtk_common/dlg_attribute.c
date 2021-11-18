@@ -839,7 +839,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
-	gtk_window_set_role(GTK_WINDOW(ctx->dialog), id);
+	gtkc_window_set_role(GTK_WINDOW(ctx->dialog), id); /* optional hint for the window manager for figuring session placement/restore */
 	gtk_window_set_modal(GTK_WINDOW(ctx->dialog), modal);
 
 	if (rnd_conf.editor.auto_place) {
