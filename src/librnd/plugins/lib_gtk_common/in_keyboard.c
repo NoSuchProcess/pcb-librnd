@@ -92,7 +92,7 @@ int rnd_gtk_key_translate(int in_keyval, int in_state, int in_key_raw, int *out_
 	kv = in_keyval;
 	rnd_gtk_glob_mask = state;
 
-	if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
+	if (state & GDKC_MOD1_MASK)   mods |= RND_M_Alt;
 	if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
 	if (state & GDK_SHIFT_MASK)   mods |= RND_M_Shift;
 
