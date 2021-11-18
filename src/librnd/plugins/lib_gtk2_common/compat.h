@@ -171,6 +171,8 @@ static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 	gtk_widget_hide(widget);
 }
 
+#define gtkc_widget_show_all(w) gtk_widget_show_all(w)
+
 /* create a table with known size (all rows and cols created empty) */
 static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
 {

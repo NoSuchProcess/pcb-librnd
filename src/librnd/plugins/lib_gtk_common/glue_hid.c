@@ -221,7 +221,7 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	rnd_gtk_topwinplace(gctx->hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), rnd_app.package);
 
-	gtk_widget_show_all(gctx->port.top_window);
+	gtkc_widget_show_all(gctx->port.top_window);
 	return 0;
 }
 

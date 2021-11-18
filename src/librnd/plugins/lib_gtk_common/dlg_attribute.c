@@ -858,7 +858,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 
 	rnd_gtk_attr_dlg_add(ctx, main_vbox, NULL, 0);
 
-	gtk_widget_show_all(ctx->dialog);
+	gtkc_widget_show_all(ctx->dialog);
 	gtk4c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 
 	rnd_gtk_initial_wstates(ctx);
@@ -885,7 +885,7 @@ void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attri
 
 	rnd_gtk_attr_dlg_add(ctx, parent_box, NULL, 0);
 
-	gtk_widget_show_all(parent_box);
+	gtkc_widget_show_all(parent_box);
 
 	rnd_gtk_initial_wstates(ctx);
 

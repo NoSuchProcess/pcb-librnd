@@ -136,7 +136,7 @@ int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	if ((sub->dlg_minx > 0) && (sub->dlg_miny > 0))
 		gtk_widget_set_size_request(frame, sub->dlg_minx, sub->dlg_miny);
 
-	gtk_widget_show_all(frame); /* can not show after creating the sub: some widgets may start out as hidden! */
+	gtkc_widget_show_all(frame); /* can not show after creating the sub: some widgets may start out as hidden! */
 
 	sub->parent_poke = rnd_gtk_dock_poke;
 	sub->dlg_hid_ctx = docked->hid_ctx = rnd_gtk_attr_sub_new(ghidgui, docked->hvbox, sub->dlg, sub->dlg_len, sub);
@@ -472,7 +472,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
 	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
 
-	gtk_widget_show_all(ghidgui->wtop_window);
+	gtkc_widget_show_all(ghidgui->wtop_window);
 	gtk4c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
 
 	rnd_gtk_fullscreen_apply(tw);
