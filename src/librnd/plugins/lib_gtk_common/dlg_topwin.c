@@ -280,7 +280,7 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	image = gtk_image_new_from_pixbuf(pixbuf);
 	g_object_unref(pixbuf);
 
-	gtk_button_set_image(GTK_BUTTON(button), image);
+	gtkc_button_set_image(GTK_BUTTON(button), image);
 
 	return button;
 }

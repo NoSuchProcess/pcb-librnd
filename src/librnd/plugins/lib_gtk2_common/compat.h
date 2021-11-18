@@ -201,6 +201,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_scrolled_window_new()        gtk_scrolled_window_new(NULL, NULL)
 #define gtkc_scrolled_window_set_child(sw, ch) gtk_container_add(GTK_CONTAINER(sw), ch)
 #define gtkc_button_set_child(btn, ch)    gtk_container_add(GTK_CONTAINER(btn), ch)
+#define gtkc_button_set_image(btn, img)   gtk_button_set_image(btn, img)
 #define gtkc_window_destroy(win)          gtk_widget_destroy(win)
 #define gtkc_paned_pack1(pane, ch, resiz) gtk_paned_pack1(pane, ch, resiz, FALSE)
 #define gtkc_paned_pack2(pane, ch, resiz) gtk_paned_pack2(pane, ch, resiz, FALSE)
