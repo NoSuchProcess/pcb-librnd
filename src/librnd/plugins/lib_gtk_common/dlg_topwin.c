@@ -237,10 +237,12 @@ static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *dat
 	return TRUE;
 }
 
-static void destroy_chart_cb(GtkWidget *widget, rnd_gtk_t *ctx)
+static gint destroy_chart_cb(GtkWidget *widget, long x, long y, long z, void *data)
 {
+	rnd_gtk_t *ctx = data;
 	ctx->impl.shutdown_renderer(ctx->impl.gport);
 	gtk_main_quit();
+	return FALSE;
 }
 
 static void fullscreen_cb(GtkButton *btn, void *data)
@@ -433,7 +435,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_bind_mouse_enter(tw->drawing_area, rnd_gtkc_xy_ev(&ghidgui->wtop_enter, drawing_area_enter_cb, tw));
 	gtk2c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
 	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
-	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
+	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_destr, destroy_chart_cb, ctx));
 
 	gtkc_widget_show_all(ghidgui->wtop_window);
 	gtk4c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
