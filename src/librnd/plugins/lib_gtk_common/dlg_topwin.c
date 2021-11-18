@@ -310,7 +310,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	rnd_gtk_tw_dock_init();
 
 	vbox_main = gtkc_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(ghidgui->wtop_window), vbox_main);
+	gtkc_window_set_child(ghidgui->wtop_window, vbox_main);
 
 	/* -- Top control bar */
 	tw->top_bar_background = gtk_event_box_new();
