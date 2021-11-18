@@ -1058,8 +1058,10 @@ int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
+#ifdef RND_FOR_GTK2
 	/* For whatever reason, get_allocation doesn't set these. Gtk. */
 	gtk_window_get_position(GTK_WINDOW(widget), &allocation.x, &allocation.y);
+#endif
 
 	rnd_event(hidlib, RND_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
 		(int)allocation.x, (int)allocation.y, (int)allocation.width, (int)allocation.height);
