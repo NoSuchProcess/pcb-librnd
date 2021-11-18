@@ -55,6 +55,9 @@ static inline void gtkc_dlg_add_content(GtkDialog *dlg, GtkWidget *child)
 	gtkc_box_pack_append(content_area, child, TRUE, 0);
 }
 
+GtkResponseType gtkc_dialog_run(GtkDialog *dlg, int is_modal);
+
+
 typedef GdkRGBA rnd_gtk_color_t;
 
 static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)

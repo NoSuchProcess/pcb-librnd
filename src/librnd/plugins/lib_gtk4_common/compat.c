@@ -240,3 +240,24 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 /* Not available on wayland */
 }
 
+
+static void gtkci_stop_mainloop_cb(GtkWidget *widget, gpointer udata)
+{
+	GMainLoop *loop = udata;
+	if (g_main_loop_is_running(loop))
+		g_main_loop_quit(loop);
+}
+
+GtkResponseType gtkc_dialog_run(GtkDialog *dlg, int is_modal)
+{
+		GMainLoop *loop;
+
+	if (is_modal)
+		gtk_window_set_modal(GTK_WINDOW(dlg), TRUE);
+
+	loop = g_main_loop_new(NULL, FALSE);
+	g_signal_connect(dlg, "destroy", G_CALLBACK(gtkci_stop_mainloop_cb), loop);
+	g_main_loop_run(loop);
+	g_main_loop_unref(loop);
+	return GTK_RESPONSE_NONE;
+}
