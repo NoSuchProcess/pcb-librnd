@@ -187,6 +187,16 @@ static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
 	gtk_widget_hide(widget);
 }
 
+/* gtk deprecated gtk_widget_show_all() for some reason; this naive
+   implementation seems to work. */
+static inline void gtkc_widget_show_all(GtkWidget *widget)
+{
+	GtkWidget *ch;
+	for(ch = gtk_widget_get_first_child(widget); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
+		rnd_gtk_widget_show_all(ch);
+	gtk_widget_show(widget);
+}
+
 /* create a table with known size (all rows and cols created empty) */
 static inline GtkWidget *gtkc_table_static(int rows, int cols, gboolean homog)
 {
