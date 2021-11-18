@@ -943,8 +943,7 @@ void rnd_gtk_attr_dlg_free(void *hid_ctx)
 	if ((ctx->dialog != NULL) && (!ctx->freeing_gui)) {
 		gtkc_window_destroy(ctx->dialog);
 		while(!ctx->freeing_gui) /* wait for the destroy event to get delivered */
-			while(gtk_events_pending())
-				gtk_main_iteration_do(0);
+			gtkc_wait_pending_events();
 	}
 
 	free(ctx->id);

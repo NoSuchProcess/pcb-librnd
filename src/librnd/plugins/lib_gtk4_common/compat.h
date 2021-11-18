@@ -244,6 +244,12 @@ void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
 #define gtkc_widget_destroy(w)            gtk_box_remove(GTK_BOX(gtk_widget_get_parent(w)), w)
 
+static inline void gtkc_wait_pending_events(void)
+{
+	while(g_main_context_pending(NULL))
+		g_main_context_iteration(NULL, 0);
+}
+
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)
 {
