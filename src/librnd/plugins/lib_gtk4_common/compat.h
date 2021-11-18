@@ -249,7 +249,7 @@ void gtkc_window_move(GtkWindow *win, int x, int y);
 #define gtk_bgcolor_box_new()             gtkc_hbox_new(TRUE, 0)
 #define gtk_bgcolor_box_set_child(b, ch)  gtkc_box_pack_append(b, ch, TRUE, 0)
 #define gtkc_setup_events(dwg, mb, ms, mo, key, ex, ent)
-
+#define gtkc_widget_set_focusable(w)      gtk_widget_set_focusable(w, TRUE)
 
 static inline void gtkc_wait_pending_events(void)
 {

@@ -214,6 +214,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_main_quit()                  gtk_main_quit()
 #define gtk_bgcolor_box_new()             gtk_event_box_new()
 #define gtk_bgcolor_box_set_child(b, ch)  gtk_container_add(GTK_CONTAINER(b), ch)
+#define gtkc_widget_set_focusable(w)      GTK_WIDGET_SET_FLAGS(w, GTK_CAN_FOCUS)
 
 
 static inline void gtkc_wait_pending_events(void)

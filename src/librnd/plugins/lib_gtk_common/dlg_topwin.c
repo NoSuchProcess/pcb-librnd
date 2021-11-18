@@ -392,7 +392,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	/* This is required to get the drawing_area key-press-event.  Also the
 	 * enter and button press callbacks grab focus to be sure we have it
 	 * when in the drawing_area. */
-	GTK_WIDGET_SET_FLAGS(tw->drawing_area, GTK_CAN_FOCUS);
+	gtkc_widget_set_focusable(tw->drawing_area);
 
 	gtkc_box_pack_append(hbox, tw->drawing_area, TRUE, 0);
 
