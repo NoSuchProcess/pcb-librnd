@@ -243,6 +243,8 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
 #define gtkc_widget_destroy(w)            gtk_box_remove(GTK_BOX(gtk_widget_get_parent(w)), w)
+#define gtkc_main_quit()                  g_main_loop_quit(NULL)
+
 
 static inline void gtkc_wait_pending_events(void)
 {

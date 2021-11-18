@@ -241,7 +241,7 @@ static gint destroy_chart_cb(GtkWidget *widget, long x, long y, long z, void *da
 {
 	rnd_gtk_t *ctx = data;
 	ctx->impl.shutdown_renderer(ctx->impl.gport);
-	gtk_main_quit();
+	gtkc_main_quit();
 	return FALSE;
 }
 
