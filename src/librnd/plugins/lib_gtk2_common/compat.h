@@ -217,7 +217,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_widget_set_focusable(w)      GTK_WIDGET_SET_FLAGS(w, GTK_CAN_FOCUS)
 #define gtkc_vscrollbar_new(sc)           gtk_vscrollbar_new(sc)
 #define gtkc_hscrollbar_new(sc)           gtk_hscrollbar_new(sc)
-
+#define GDKC_MOD1_MASK                    GDK_MOD1_MASK
 
 static inline void gtkc_wait_pending_events(void)
 {

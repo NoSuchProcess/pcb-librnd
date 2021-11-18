@@ -61,7 +61,7 @@ ModifierKeysState rnd_gtk_modifier_keys_state(GtkWidget *drawing_area, GdkModifi
 
 	shift = (mask & GDK_SHIFT_MASK);
 	control = (mask & GDK_CONTROL_MASK);
-	mod1 = (mask & GDK_MOD1_MASK);
+	mod1 = (mask & GDKC_MOD1_MASK);
 
 	if (shift && !control && !mod1)
 		mk = SHIFT_PRESSED;
