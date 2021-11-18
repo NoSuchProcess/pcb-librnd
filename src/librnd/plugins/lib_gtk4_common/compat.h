@@ -196,7 +196,7 @@ static inline void gtkc_widget_show_all(GtkWidget *widget)
 {
 	GtkWidget *ch;
 	for(ch = gtk_widget_get_first_child(widget); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
-		rnd_gtk_widget_show_all(ch);
+		gtkc_widget_show_all(ch);
 	gtk_widget_show(widget);
 }
 
