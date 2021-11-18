@@ -198,3 +198,45 @@ int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
 	return 0;
 }
 
+
+/* Some basic functionality is not available on wayland and got removed from
+   gtk4. Reimplement them for X11.
+   Dispatch: https://gnome.pages.gitlab.gnome.org/gtk/gdk4/x11.html
+*/
+
+#ifdef GDK_WINDOWING_X11
+#	include <gdk/x11/gdkx.h>
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+#	include <gdk/wayland/gdkwayland.h>
+#endif
+
+
+void gtkc_window_resize(GtkWindow win, int x, int y)
+{
+#ifdef GDK_WINDOWING_X11
+	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
+	if (GDK_IS_X11_DISPLAY(display)) {
+		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
+		Display *dsp = GDK_SURFACE_XDISPLAY(GTK_WIDGET(win));
+		Window xw = gdk_x11_surface_get_xid(surf);
+		XResizeWindow(dsp, xw, x, y);
+	}
+#endif
+/* Not available on wayland */
+}
+
+void gtkc_window_move(GtkWindow win, int x, int y)
+{
+#ifdef GDK_WINDOWING_X11
+	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
+	if (GDK_IS_X11_DISPLAY(display)) {
+		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
+		Display *dsp = GDK_SURFACE_XDISPLAY(GTK_WIDGET(win));
+		Window xw = gdk_x11_surface_get_xid(surf);
+		XMoveWindow(dsp, xw, x, y);
+	}
+#endif
+/* Not available on wayland */
+}
+

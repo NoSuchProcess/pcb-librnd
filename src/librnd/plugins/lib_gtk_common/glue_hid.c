@@ -187,9 +187,9 @@ static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 
 	if (rnd_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
-			gtk_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
+			gtkc_window_resize(GTK_WINDOW(dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))
-			gtk_window_move(GTK_WINDOW(dialog), plc[0], plc[1]);
+			gtkc_window_move(GTK_WINDOW(dialog), plc[0], plc[1]);
 	}
 }
 

@@ -193,6 +193,8 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_paned_pack1(pane, ch, resiz) gtk_paned_pack1(pane, ch, resiz, FALSE)
 #define gtkc_paned_pack2(pane, ch, resiz) gtk_paned_pack2(pane, ch, resiz, FALSE)
 #define gtkc_window_set_role(win, id)     gtk_window_set_role(win, id)
+#define gtkc_window_resize(win, x, y)     gtk_window_resize(win, x, y)
+#define gtkc_window_move(win, x, y)       gtk_window_move(win, x, y)
 
 /*** Event/signal compatibility ***/
 

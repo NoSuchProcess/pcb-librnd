@@ -844,12 +844,12 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 
 	if (rnd_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))
-			gtk_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
+			gtkc_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
 		if ((plc[0] >= 0) && (plc[1] >= 0))
-			gtk_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
+			gtkc_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
 	}
 	else if ((defx > 0) && (defy > 0))
-		gtk_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
+		gtkc_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
 	gtk2c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 	ctx->destroy_handler = gtkc_bind_win_destroy(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_destroy, rnd_gtk_attr_dlg_destroy_event_cb, ctx));
