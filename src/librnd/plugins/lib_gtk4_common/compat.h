@@ -179,11 +179,11 @@ static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
    implementation seems to work. */
-static inline void rnd_gtk_widget_hide_all(GtkWidget *widget)
+static inline void gtkc_widget_hide_all(GtkWidget *widget)
 {
 	GtkWidget *ch;
 	for(ch = gtk_widget_get_first_child(widget); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
-		rnd_gtk_widget_hide_all(ch);
+		gtkc_widget_hide_all(ch);
 	gtk_widget_hide(widget);
 }
 
