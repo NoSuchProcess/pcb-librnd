@@ -377,7 +377,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_box_pack_append(tw->vbox_middle, hboxi, FALSE, 0);
 
 	if (rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR] != NULL)
-		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR]);
+		gtkc_widget_modify_bg(evb, GTK_STATE_NORMAL, rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR]);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtkc_box_pack_append(tw->vbox_middle, hbox, TRUE, 0);
