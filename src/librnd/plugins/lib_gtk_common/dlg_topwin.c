@@ -365,14 +365,14 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	/* -- The PCB layout output drawing area */
 
-	/* info bar: hboxi->event_box->hbox2:
+	/* info bar: hboxi->bgcolor_box->hbox2:
 	   hboxi is for the layout (horizontal fill)
-	   the event box is neeed for background color
+	   the bgcolor_box is needed only for background color
 	   vbox is tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
 	hboxi = gtkc_hbox_new(TRUE, 0);
 	tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] = gtkc_vbox_new(TRUE, 0);
-	evb = gtk_event_box_new();
-	gtk_container_add(GTK_CONTAINER(evb), tw->dockbox[RND_HID_DOCK_TOP_INFOBAR]);
+	evb = gtk_bgcolor_box_new();
+	gtk_bgcolor_box_set_child(evb, tw->dockbox[RND_HID_DOCK_TOP_INFOBAR]);
 	gtkc_box_pack_append(hboxi, evb, TRUE, 0);
 	gtkc_box_pack_append(tw->vbox_middle, hboxi, FALSE, 0);
 
