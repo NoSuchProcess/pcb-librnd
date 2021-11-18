@@ -34,6 +34,8 @@ static void fix_topbar_theming(rnd_gtk_topwin_t *tw)
 	/* disabled for now: it crashes on some user but there is no easy way
 	   to reproduce it; risking a crash is not worth the feature of auto-updating
 	   the toolbar without restart.
+	   WARNING: this also depends on top_bar_background being an event_box
+	   which has changed for th gtk4 port - it's a plain old box now.
 	{
 		GtkSettings *settings;
 		settings = gtk_widget_get_settings(tw->top_bar_background);

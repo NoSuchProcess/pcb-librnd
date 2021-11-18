@@ -313,11 +313,11 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_window_set_child(ghidgui->wtop_window, vbox_main);
 
 	/* -- Top control bar */
-	tw->top_bar_background = gtk_event_box_new();
+	tw->top_bar_background = gtkc_hbox_new(TRUE, 0);
 	gtkc_box_pack_append(vbox_main, tw->top_bar_background, FALSE, 0);
 
 	tw->top_hbox = gtkc_hbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(tw->top_bar_background), tw->top_hbox);
+	gtkc_box_pack_append(tw->top_bar_background, tw->top_hbox, TRUE, 0);
 
 	/* menu_hbox will be made insensitive when the gui needs
 	   a modal button GetLocation button press. */
