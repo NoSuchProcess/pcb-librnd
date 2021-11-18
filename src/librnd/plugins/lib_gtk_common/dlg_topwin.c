@@ -162,7 +162,7 @@ void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 {
 	docked_t *docked = sub->parent_ctx;
 	GtkWidget *frame = gtk_widget_get_parent(docked->hvbox);
-	gtk_widget_destroy(docked->hvbox);
+	gtkc_widget_destroy(docked->hvbox);
 	gdl_remove(&tw->dock[docked->where], sub, link);
 	free(docked);
 	RND_DAD_FREE(sub->dlg);
