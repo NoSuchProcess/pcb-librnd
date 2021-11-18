@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <librnd/plugins/lib_gtk_common/dlg_fileselect.h>
 #include <librnd/plugins/lib_hid_common/dlg_fileselect.h>
 
