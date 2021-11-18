@@ -222,8 +222,8 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 #define gtkc_paned_pack1(pane, ch, resiz) gtk_paned_set_start_child(pane, ch)
 #define gtkc_paned_pack2(pane, ch, resiz) gtk_paned_set_end_child(pane, ch)
 #define gtkc_window_set_role(win, id)
-void gtkc_window_resize(GtkWindow win, int x, int y);
-void gtkc_window_move(GtkWindow win, int x, int y);
+void gtkc_window_resize(GtkWindow *win, int x, int y);
+void gtkc_window_move(GtkWindow *win, int x, int y);
 
 
 /* Attach child in a single cell of the table */

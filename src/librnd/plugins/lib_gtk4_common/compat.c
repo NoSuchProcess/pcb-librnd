@@ -212,7 +212,7 @@ int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
 #endif
 
 
-void gtkc_window_resize(GtkWindow win, int x, int y)
+void gtkc_window_resize(GtkWindow *win, int x, int y)
 {
 #ifdef GDK_WINDOWING_X11
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
@@ -226,7 +226,7 @@ void gtkc_window_resize(GtkWindow win, int x, int y)
 /* Not available on wayland */
 }
 
-void gtkc_window_move(GtkWindow win, int x, int y)
+void gtkc_window_move(GtkWindow *win, int x, int y)
 {
 #ifdef GDK_WINDOWING_X11
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
