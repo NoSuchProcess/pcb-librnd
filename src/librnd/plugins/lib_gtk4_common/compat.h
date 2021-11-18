@@ -242,7 +242,7 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 #define gtkc_window_set_role(win, id)
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
-
+#define gtkc_widget_destroy(w)            gtk_box_remove(GTK_BOX(gtk_widget_get_parent(w)), w)
 
 /* Attach child in a single cell of the table */
 static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int row, int col)
