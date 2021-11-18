@@ -46,9 +46,14 @@ static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboole
 #define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))
 
 #define gtkc_widget_get_allocation(w, a) gtk_widget_get_allocation(w, a)
-#define gtkc_dialog_get_content_area(d)  ((d)->vbox)
 #define gtkc_combo_box_entry_new_text()  gtk_combo_box_text_new_with_entry()
 #define gtkc_combo_box_get_entry(combo)  GTK_ENTRY(gtk_combo_box_get_child(GTK_COMBO_BOX(combo)))
+
+static inline void gtkc_dlg_add_content(GtkDialog *dlg, GtkWidget *child)
+{
+	GtkWidget *content_area = gtk_dialog_get_content_area(dlg);
+	gtkc_box_pack_append(content_area, child, TRUE, 0);
+}
 
 typedef GdkRGBA rnd_gtk_color_t;
 

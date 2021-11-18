@@ -810,7 +810,6 @@ static void rnd_gtk_initial_wstates(attr_dlg_t *ctx)
 
 void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	GtkWidget *content_area;
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
 	int plc[4] = {-1, -1, -1, -1};
@@ -855,9 +854,7 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 	ctx->destroy_handler = gtkc_bind_win_destroy(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_destroy, rnd_gtk_attr_dlg_destroy_event_cb, ctx));
 
 	main_vbox = gtkc_vbox_new(FALSE, 6);
-	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 6);
-	content_area = gtkc_dialog_get_content_area(GTK_DIALOG(ctx->dialog));
-	gtk_container_add_with_properties(GTK_CONTAINER(content_area), main_vbox, "expand", TRUE, "fill", TRUE, NULL);
+	gtkc_dlg_add_content(GTK_DIALOG(ctx->dialog), main_vbox);
 
 	rnd_gtk_attr_dlg_add(ctx, main_vbox, NULL, 0);
 

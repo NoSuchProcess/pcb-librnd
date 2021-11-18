@@ -50,9 +50,19 @@ do { \
 	*(a) = (GTK_WIDGET(w)->allocation); \
 } while(0) \
 
-#define gtkc_dialog_get_content_area(d)  ((d)->vbox)
 #define gtkc_combo_box_entry_new_text()  gtk_combo_box_entry_new_text()
 #define gtkc_combo_box_get_entry(combo) GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo)))
+
+
+#define gtkci_dialog_get_content_area(d)  ((d)->vbox)
+static inline void gtkc_dlg_add_content(GtkDialog *dlg, GtkWidget *child)
+{
+	GtkWidget *content_area = gtkci_dialog_get_content_area(dlg);
+	gtk_container_set_border_width(GTK_CONTAINER(child), 6);
+	gtk_container_add_with_properties(GTK_CONTAINER(content_area), child, "expand", TRUE, "fill", TRUE, NULL);
+}
+#undef gtkci_dialog_get_content_area
+
 
 typedef GdkColor rnd_gtk_color_t;
 
