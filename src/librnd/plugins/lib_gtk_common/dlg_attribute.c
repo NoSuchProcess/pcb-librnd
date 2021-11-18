@@ -898,7 +898,7 @@ int rnd_gtk_attr_dlg_run(void *hid_ctx)
 	int modal = ctx->modal;
 	GtkWidget *dialog = ctx->dialog;
 
-	GtkResponseType res = gtk_dialog_run(GTK_DIALOG(ctx->dialog));
+	GtkResponseType res = gtkc_dialog_run(GTK_DIALOG(ctx->dialog), modal);
 
 	/* NOTE: ctx may be invalid by now (user callback free'd it) */
 
