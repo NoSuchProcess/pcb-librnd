@@ -1,6 +1,7 @@
 #include "compat.h"
 
 #define gtkc_topwin_new() gtk_window_new(GTK_WINDOW_TOPLEVEL)
+#define gdkc_window_get_origin(win, x, y)   gdk_window_get_origin(win, x, y)
 
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 

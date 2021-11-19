@@ -240,6 +240,22 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 /* Not available on wayland */
 }
 
+void gtkc_window_origin(GtkWindow *win, int *x, int *y)
+{
+#ifdef GDK_WINDOWING_X11
+	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
+	if (GDK_IS_X11_DISPLAY(display)) {
+		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
+		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
+		Window xw = gdk_x11_surface_get_xid(surf), rw = GDK_SURFACE_XROOTWIN(surf), child;
+		XTranslateCoordinates(dsp, xw, rw, GDK_WINDOW_XROOTWIN (window), 0, 0, x, y, &child);
+		return;
+	}
+#endif
+/* Not available on wayland */
+	*x = *y = 0;
+}
+
 
 static void gtkci_stop_mainloop_cb(GtkWidget *widget, gpointer udata)
 {

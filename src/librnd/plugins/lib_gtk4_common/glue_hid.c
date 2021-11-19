@@ -2,6 +2,9 @@
 
 static GtkApplication *app;
 #define gtkc_topwin_new() gtk_application_window_new(app)
+#define gdkc_window_get_origin(win, x, y)  gtkc_window_origin(win, x, y)
+
+
 
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 
