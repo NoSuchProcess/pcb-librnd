@@ -136,7 +136,6 @@ static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 	return w;
 }
 
-#define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, GdkEventExpose *))val
 typedef GdkEventExpose rnd_gtk_expose_t;
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)

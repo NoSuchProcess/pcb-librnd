@@ -261,7 +261,7 @@ static void rnd_gtk_preview_class_init(rnd_gtk_preview_class_t *klass)
 	gobject_class->get_property = rnd_gtk_preview_get_property;
 	gobject_class->constructed = rnd_gtk_preview_constructed;
 
-	RND_GTK_EXPOSE_EVENT_SET(gtk_widget_class, rnd_gtk_preview_expose);
+	RND_GTK_EXPOSE_EVENT_SET(gtk_widget_class);
 
 	rnd_gtk_preview_parent_class = (GObjectClass *) g_type_class_peek_parent(klass);
 
