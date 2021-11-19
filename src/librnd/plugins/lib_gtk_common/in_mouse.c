@@ -71,8 +71,8 @@ void rnd_gtk_watch_cursor(rnd_gtk_t *ctx)
 {
 	static GdkCursor *xc;
 
-	cursor_override = GDK_WATCH;
-	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+	cursor_override = GDKC_WATCH;
+	if (xc == NULL) xc = gdkc_cursor_new(ctx, cursor_override);
 	cursor_override_X = xc;
 	rnd_gtk_mode_cursor(ctx);
 }
@@ -81,8 +81,8 @@ static void rnd_gtk_hand_cursor(rnd_gtk_t *ctx)
 {
 	static GdkCursor *xc;
 
-	cursor_override = GDK_HAND2;
-	if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+	cursor_override = GDKC_HAND2;
+	if (xc == NULL) xc = gdkc_cursor_new(ctx, cursor_override);
 	cursor_override_X = xc;
 	rnd_gtk_mode_cursor(ctx);
 }
@@ -92,8 +92,8 @@ void rnd_gtk_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed)
 {
 	if (grabbed) {
 		static GdkCursor *xc;
-		cursor_override = GDK_DRAPED_BOX;
-		if (xc == NULL) xc = gdk_cursor_new(cursor_override);
+		cursor_override = GDKC_DRAPED_BOX;
+		if (xc == NULL) xc = gdkc_cursor_new(ctx, cursor_override);
 		cursor_override_X = xc;
 	}
 	else
@@ -347,26 +347,6 @@ static GdkPixbuf *rnd_gtk_cursor_from_xbm_data(const unsigned char *data, const 
 }
 
 
-typedef struct {
-	const char *name;
-	rnd_gtkc_cursor_type_t shape;
-} named_cursor_t;
-
-static const named_cursor_t named_cursors[] = {
-	{"question_arrow", GDK_QUESTION_ARROW},
-	{"left_ptr", GDK_LEFT_PTR},
-	{"hand", GDK_HAND1},
-	{"crosshair", GDK_CROSSHAIR},
-	{"dotbox", GDK_DOTBOX},
-	{"pencil", GDK_PENCIL},
-	{"up_arrow", GDK_SB_UP_ARROW},
-	{"ul_angle", GDK_UL_ANGLE},
-	{"pirate", GDK_PIRATE},
-	{"xterm", GDK_XTERM},
-	{"iron_cross", GDK_IRON_CROSS},
-	{NULL, 0}
-};
-
 #define RND_GTK_CURSOR_START (GDK_LAST_CURSOR+10)
 
 void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
@@ -380,14 +360,14 @@ void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const u
 			for(c = named_cursors; c->name != NULL; c++) {
 				if (strcmp(c->name, name) == 0) {
 					mc->shape = c->shape;
-					mc->X_cursor = gdk_cursor_new(mc->shape);
+					mc->X_cursor = gdkc_cursor_new(ctx, mc->shape);
 					return;
 				}
 			}
 			rnd_message(RND_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
 		}
 		mc->shape = GDK_LEFT_PTR; /* default */
-		mc->X_cursor = gdk_cursor_new(mc->shape);
+		mc->X_cursor = gdkc_cursor_new(ctx, mc->shape);
 	}
 	else {
 		mc->shape = RND_GTK_CURSOR_START + idx;
