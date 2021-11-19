@@ -60,10 +60,6 @@ rnd_hid_cfg_mod_t rnd_gtk_mouse_button(int ev_button)
 static rnd_gtkc_cursor_type_t cursor_override;
 static GdkCursor *cursor_override_X;
 
-#define CUSTOM_CURSOR_CLOCKWISE		(GDK_LAST_CURSOR + 10)
-#define CUSTOM_CURSOR_DRAG			  (GDK_LAST_CURSOR + 11)
-#define CUSTOM_CURSOR_LOCK			  (GDK_LAST_CURSOR + 12)
-
 #define ICON_X_HOT 8
 #define ICON_Y_HOT 8
 
