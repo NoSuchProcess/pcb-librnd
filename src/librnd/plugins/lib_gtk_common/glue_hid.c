@@ -205,7 +205,7 @@ static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 	rnd_pixel_slop = 300;
 
 	gctx->impl.init_renderer(argc, argv, &gctx->port);
-	gctx->wtop_window = window = gctx->port.top_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gctx->wtop_window = window = gctx->port.top_window = gtkc_topwin_new();
 
 	rnd_gtk_topwinplace(gctx->hidlib, window, "top");
 	gtk_window_set_title(GTK_WINDOW(window), rnd_app.package);

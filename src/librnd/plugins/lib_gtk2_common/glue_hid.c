@@ -1,4 +1,7 @@
 #include "compat.h"
+
+#define gtkc_topwin_new() gtk_window_new(GTK_WINDOW_TOPLEVEL)
+
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 
 static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
@@ -17,6 +20,7 @@ static void rnd_gtkg_do_exit(rnd_hid_t *hid)
 	rnd_gtkg_do_exit_(gctx);
 	gtk_main_quit();
 }
+
 
 int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
