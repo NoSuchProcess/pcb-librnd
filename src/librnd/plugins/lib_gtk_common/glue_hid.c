@@ -118,11 +118,8 @@ static gboolean rnd_gtkg_drawing_area_configure_event_cb(GtkWidget *widget, long
 	return 0;
 }
 
-
-static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void rnd_gtkg_main_export_init(rnd_gtk_t *gctx)
 {
-	rnd_gtk_t *gctx = hid->hid_data;
-
 	gctx->hid_active = 1;
 
 	rnd_hid_cfg_keys_init(&rnd_gtk_keymap);
@@ -130,7 +127,10 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	rnd_gtk_keymap.key_name = rnd_gtk_key_name;
 	rnd_gtk_keymap.auto_chr = 1;
 	rnd_gtk_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
+}
 
+static void rnd_gtkg_main_export_widgets(rnd_gtk_t *gctx)
+{
 	rnd_gtk_create_topwin_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
 	gctx->port.drawing_area = gctx->topwin.drawing_area;
@@ -156,8 +156,10 @@ TODO(": move this to render init")
 	   while the mouse cursor is over the top window or children widgets,
 	   before first entering the drawing area */
 	gtk_widget_grab_focus(gctx->port.drawing_area);
+}
 
-	gtk_main();
+static void rnd_gtkg_main_export_uninit(rnd_gtk_t *gctx, rnd_hid_t *hid)
+{
 	rnd_hid_cfg_keys_uninit(&rnd_gtk_keymap);
 
 	gctx->hid_active = 0;
@@ -166,18 +168,19 @@ TODO(": move this to render init")
 	hid->hid_data = NULL;
 }
 
-static void rnd_gtkg_do_exit(rnd_hid_t *hid)
-{
-	rnd_gtk_t *gctx = hid->hid_data;
+static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
 
+static void rnd_gtkg_do_exit_(rnd_gtk_t *gctx)
+{
 	/* Need to force-close the command entry first because it has its own main
 	   loop that'd block the exit until the user closes the entry */
 	rnd_gtk_cmd_close(&gctx->topwin.cmd);
 
 	rnd_gtk_tw_dock_uninit();
-
-	gtk_main_quit();
 }
+
+static void rnd_gtkg_do_exit(rnd_hid_t *hid);
+
 
 static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
 {
