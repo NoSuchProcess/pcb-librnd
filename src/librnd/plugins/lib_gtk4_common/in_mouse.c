@@ -34,4 +34,16 @@ static const char GTKC_MC_CUSTOM_SHAPE_NAME[] = "rnd-custom-cursor";
 
 #define gtkc_mc_custom_idx2shape(idx)    GTKC_MC_CUSTOM_SHAPE_NAME
 
+
+static GdkCursor *gdkc_cursor_new_from_pixbuf(GtkWidget *widget, GdkPixbuf *pb, int hx, int hy)
+{
+	GdkCursor *res;
+	GdkTexture *texture = gdk_texture_new_for_pixbuf(pb);
+	res = gdk_cursor_new_from_texture(texture, hx, hy, NULL);
+	g_object_unref(pb);
+	g_object_unref(texture);
+	return res;
+}
+
+
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>
