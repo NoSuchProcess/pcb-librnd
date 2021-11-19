@@ -178,7 +178,6 @@ static void rnd_gtk_preview_finalize(GObject *object)
 static void rnd_gtk_preview_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(object);
-	GdkWindow *window = gtkc_widget_get_window(GTK_WIDGET(preview));
 
 	switch (property_id) {
 	case PROP_GPORT:
@@ -195,8 +194,7 @@ static void rnd_gtk_preview_set_property(GObject *object, guint property_id, con
 		break;
 	case PROP_DRAW_DATA:
 		preview->expose_data.draw_data = g_value_get_pointer(value);
-		if (window != NULL)
-			gdk_window_invalidate_rect(window, NULL, FALSE);
+		rnd_gtk_preview_redraw_all(preview);
 		break;
 	case PROP_DIALOG_DRAW:
 		preview->expose_data.expose_cb = (void *) g_value_get_pointer(value);
