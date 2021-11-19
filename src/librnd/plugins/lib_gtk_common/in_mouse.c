@@ -366,7 +366,7 @@ void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const u
 			}
 			rnd_message(RND_MSG_ERROR, "Failed to register named mouse cursor for tool: '%s' is unknown name\n", name);
 		}
-		mc->shape = GDK_LEFT_PTR; /* default */
+		mc->shape = GDKC_LEFT_PTR; /* default */
 		mc->X_cursor = gdkc_cursor_new(ctx, mc->shape);
 	}
 	else {

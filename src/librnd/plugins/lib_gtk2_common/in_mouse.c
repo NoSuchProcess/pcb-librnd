@@ -3,6 +3,7 @@
 #define GDKC_HAND2       GDK_HAND2
 #define GDKC_WATCH       GDK_WATCH
 #define GDKC_DRAPED_BOX  GDK_DRAPED_BOX
+#define GDKC_LEFT_PTR    GDK_LEFT_PTR
 
 typedef struct {
 	const char *name;
