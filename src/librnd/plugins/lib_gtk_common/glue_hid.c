@@ -196,23 +196,9 @@ static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 	}
 }
 
-/* Create top level window for routines that will need top_window before rnd_gtk_create_topwin_widgets() is called. */
-int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
+static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 {
-	rnd_gtk_t *gctx = hid->hid_data;
 	GtkWidget *window;
-
-#ifdef WIN32
-	/* make sure gtk won't ruin the locale */
-	gtk_disable_setlocale();
-#endif
-
-	rnd_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
-
-	if (!gtk_init_check(argc, argv)) {
-		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
-		return 1; /* recoverable error - try another HID */
-	}
 
 	gctx->port.view.use_max_hidlib = 1;
 	gctx->port.view.coord_per_px = 300.0;
@@ -225,8 +211,21 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	gtk_window_set_title(GTK_WINDOW(window), rnd_app.package);
 
 	gtkc_widget_show_all(gctx->port.top_window);
-	return 0;
 }
+
+static void rnd_gtk_parse_arguments_first(rnd_gtk_t *gctx, rnd_hid_t *hid, int *argc, char ***argv)
+{
+#ifdef WIN32
+	/* make sure gtk won't ruin the locale */
+	gtk_disable_setlocale();
+#endif
+
+	rnd_conf_parse_arguments("plugins/hid_gtk/", argc, argv);
+
+}
+
+/* Create top level window for routines that will need top_window before rnd_gtk_create_topwin_widgets() is called. */
+int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv);
 
 static void rnd_gtkg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {

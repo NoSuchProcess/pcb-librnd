@@ -17,3 +17,20 @@ static void rnd_gtkg_do_exit(rnd_hid_t *hid)
 	rnd_gtkg_do_exit_(gctx);
 	gtk_main_quit();
 }
+
+int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
+{
+	rnd_gtk_t *gctx = hid->hid_data;
+
+	rnd_gtk_parse_arguments_first(gctx, hid, argc, argv);
+
+	if (!gtk_init_check(argc, argv)) {
+		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
+		return 1; /* recoverable error - try another HID */
+	}
+
+	/* this can't wait until do_export because of potential change to argc/argv */
+	rnd_gtk_topwin_create(gctx, argc, argv);
+
+	return 0;
+}
