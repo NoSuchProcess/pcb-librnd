@@ -591,7 +591,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	gtkc_bind_key_release(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->krelease, preview_key_release_cb, NULL));
 
 	/* keyboard handling needs focusable */
-	GTK_WIDGET_SET_FLAGS(prv, GTK_CAN_FOCUS);
+	gtkc_widget_set_focusable(prv);
 
 	gdl_insert(&ctx->previews, prv, link);
 	return GTK_WIDGET(prv);
