@@ -141,7 +141,6 @@ static inline GtkWidget *gtkc_trunctext_new(const gchar *str)
 	return w;
 }
 
-#define RND_GTK_EXPOSE_EVENT_SET(obj, val) obj->expose_event = (gboolean (*)(GtkWidget *, rnd_gtk_expose_t *))val
 typedef struct {
 	GtkGLArea *area;
 	GdkGLContext *context;
