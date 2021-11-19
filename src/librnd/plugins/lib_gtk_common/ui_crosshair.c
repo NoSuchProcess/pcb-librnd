@@ -38,7 +38,6 @@
 void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_x, int offset_y, rnd_gtk_view_t *view)
 {
 	GdkDisplay *display;
-	GdkScreen *screen;
 	int widget_x, widget_y;
 	int pointer_x, pointer_y;
 	rnd_coord_t design_x, design_y;
@@ -66,7 +65,7 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		 */
 
 		/* Find out where the pointer is relative to the display */
-		gdk_display_get_pointer(display, NULL, &pointer_x, &pointer_y, NULL);
+		gtkc_display_get_pointer(display, &pointer_x, &pointer_y);
 
 		widget_x = pointer_x - offset_x;
 		widget_y = pointer_y - offset_y;
@@ -80,14 +79,12 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		/* Fall through */
 
 	case HID_SC_WARP_POINTER:
-		screen = gdk_display_get_default_screen(display);
-
 		rnd_gtk_coords_design2event(view, x, y, &widget_x, &widget_y);
 
 		pointer_x = offset_x + widget_x;
 		pointer_y = offset_y + widget_y;
 
-		gdk_display_warp_pointer(display, screen, pointer_x, pointer_y);
+		gtkc_display_warp_pointer(display, pointer_x, pointer_y);
 
 		break;
 	}
