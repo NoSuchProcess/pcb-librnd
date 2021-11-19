@@ -30,4 +30,8 @@ static inline GdkCursor *gdkc_cursor_new(void *ctx, const char *name)
 	return gdk_cursor_new_from_name(name, NULL);
 }
 
+static const char GTKC_MC_CUSTOM_SHAPE_NAME[] = "rnd-custom-cursor";
+
+#define gtkc_mc_custom_idx2shape(idx)    GTKC_MC_CUSTOM_SHAPE_NAME
+
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>

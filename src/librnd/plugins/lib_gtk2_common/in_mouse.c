@@ -25,6 +25,8 @@ static const named_cursor_t named_cursors[] = {
 	{NULL, 0}
 };
 
+#define RND_GTK_CURSOR_START             (GDK_LAST_CURSOR+10)
 #define gdkc_cursor_new(ctx, mc)         gdk_cursor_new(mc)
+#define gtkc_mc_custom_idx2shape(idx)    (RND_GTK_CURSOR_START + (idx))
 
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>

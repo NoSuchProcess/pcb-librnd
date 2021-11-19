@@ -346,9 +346,6 @@ static GdkPixbuf *rnd_gtk_cursor_from_xbm_data(const unsigned char *data, const 
 	return dest;
 }
 
-
-#define RND_GTK_CURSOR_START (GDK_LAST_CURSOR+10)
-
 void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	rnd_gtk_cursor_t *mc = vtmc_get(&ctx->mouse.cursor, idx, 1);
@@ -370,7 +367,7 @@ void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const u
 		mc->X_cursor = gdkc_cursor_new(ctx, mc->shape);
 	}
 	else {
-		mc->shape = RND_GTK_CURSOR_START + idx;
+		mc->shape = gtkc_mc_custom_idx2shape(idx);
 		mc->pb = rnd_gtk_cursor_from_xbm_data(pixel, mask, 16, 16);
 		mc->X_cursor = gdk_cursor_new_from_pixbuf(gtk_widget_get_display(ctx->topwin.drawing_area), mc->pb, ICON_X_HOT, ICON_Y_HOT);
 	}
