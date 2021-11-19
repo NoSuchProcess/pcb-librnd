@@ -29,4 +29,7 @@ static const named_cursor_t named_cursors[] = {
 #define gdkc_cursor_new(ctx, mc)         gdk_cursor_new(mc)
 #define gtkc_mc_custom_idx2shape(idx)    (RND_GTK_CURSOR_START + (idx))
 
+#define gdkc_cursor_new_from_pixbuf(widget, pb, hx, hy) \
+	gdk_cursor_new_from_pixbuf(gtk_widget_get_display(widget), pb, hx, hy)
+
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>
