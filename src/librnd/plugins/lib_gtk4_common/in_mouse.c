@@ -28,7 +28,7 @@ static const named_cursor_t named_cursors[] = {
 
 static inline GdkCursor *gdkc_cursor_new(rnd_gtk_t *ctx, const char *name)
 {
-	gtk_widget_set_cursor(ctx->wtop_window, gdk_cursor_new_from_name(name, NULL));
+	return gdk_cursor_new_from_name(name, NULL);
 }
 
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>
