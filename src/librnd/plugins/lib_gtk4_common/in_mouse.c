@@ -1,7 +1,5 @@
 #include "compat.h"
 
-#include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
-
 #define GDKC_HAND2       "pointer"
 #define GDKC_WATCH       "progress"
 #define GDKC_DRAPED_BOX  "all-scroll"
@@ -26,7 +24,7 @@ static const named_cursor_t named_cursors[] = {
 	{NULL, 0}
 };
 
-static inline GdkCursor *gdkc_cursor_new(rnd_gtk_t *ctx, const char *name)
+static inline GdkCursor *gdkc_cursor_new(void *ctx, const char *name)
 {
 	return gdk_cursor_new_from_name(name, NULL);
 }
