@@ -1,0 +1,15 @@
+<html>
+<body>
+<h1> Limitations on various GUI backends </h1>
+
+<h2> Wayland (with gtk4) </h2>
+
+<p>
+The mouse cursor can not be moved to a specific location on the screen
+thus functionality where pcb-rnd would move the crosshair to a location
+will not work.
+
+<p>
+Remembering window geometry won't work because there is no gtk API for
+setting window size or position.
+
