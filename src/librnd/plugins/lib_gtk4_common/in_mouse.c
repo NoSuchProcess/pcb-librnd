@@ -33,6 +33,7 @@ static inline GdkCursor *gdkc_cursor_new(void *ctx, const char *name)
 static const char GTKC_MC_CUSTOM_SHAPE_NAME[] = "rnd-custom-cursor";
 
 #define gtkc_mc_custom_idx2shape(idx)    GTKC_MC_CUSTOM_SHAPE_NAME
+#define gtkc_window_set_cursor(wdg, cur) gtk_widget_set_cursor(wdg, cur)
 
 
 static GdkCursor *gdkc_cursor_new_from_pixbuf(GtkWidget *widget, GdkPixbuf *pb, int hx, int hy)

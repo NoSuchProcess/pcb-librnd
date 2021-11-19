@@ -372,7 +372,6 @@ void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const u
 void rnd_gtk_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 {
 	rnd_gtk_cursor_t *mc = (idx >= 0) ? vtmc_get(&ctx->mouse.cursor, idx, 0) : NULL;
-	GdkWindow *window;
 
 	ctx->mouse.last_cursor_idx = idx;
 
@@ -385,15 +384,9 @@ void rnd_gtk_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 	if (ctx->topwin.drawing_area == NULL)
 		return;
 
-	window = gtkc_widget_get_window(ctx->topwin.drawing_area);
-
-	/* check if window exists to prevent from fatal errors */
-	if (window == NULL)
-		return;
-
 	if (cursor_override != 0) {
 		ctx->mouse.X_cursor_shape = cursor_override;
-		gdk_window_set_cursor(window, cursor_override_X);
+		gtkc_window_set_cursor(ctx->topwin.drawing_area, cursor_override_X);
 		return;
 	}
 
@@ -404,7 +397,7 @@ void rnd_gtk_set_mouse_cursor(rnd_gtk_t *ctx, int idx)
 	ctx->mouse.X_cursor_shape = mc->shape;
 	ctx->mouse.X_cursor = mc->X_cursor;
 
-	gdk_window_set_cursor(window, ctx->mouse.X_cursor);
+	gtkc_window_set_cursor(ctx->topwin.drawing_area, ctx->mouse.X_cursor);
 }
 
 void rnd_gtk_mode_cursor(rnd_gtk_t *ctx)

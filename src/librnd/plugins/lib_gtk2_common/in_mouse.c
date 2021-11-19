@@ -32,4 +32,14 @@ static const named_cursor_t named_cursors[] = {
 #define gdkc_cursor_new_from_pixbuf(widget, pb, hx, hy) \
 	gdk_cursor_new_from_pixbuf(gtk_widget_get_display(widget), pb, hx, hy)
 
+static inline void gtkc_window_set_cursor(GtkWidget *widget, GdkCursor *curs)
+{
+	GdkWindow *window = gtkc_widget_get_window(widget);
+
+	if (window == NULL)
+		return; /* prevent from fatal errors if window doesn't exist */
+
+	gdk_window_set_cursor(window, curs);
+}
+
 #include <librnd/plugins/lib_gtk_common/in_mouse.c>
