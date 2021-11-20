@@ -188,3 +188,17 @@ int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
 	gtk_clipboard_set_text(clipboard, text, -1);
 	return 0;
 }
+
+int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len)
+{
+	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+	if (gtk_clipboard_wait_is_text_available(cbrd)) {
+		gchar *txt = gtk_clipboard_wait_for_text(cbrd);
+		*data = txt;
+		*len = strlen(txt) + 1;
+		return 0;
+	}
+
+	return -1;
+}

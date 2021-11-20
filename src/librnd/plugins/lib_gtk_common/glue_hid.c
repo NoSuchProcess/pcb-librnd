@@ -329,31 +329,25 @@ static const char *rnd_gtk_command_entry(rnd_hid_t *hid, const char *ovr, int *c
 
 static int rnd_gtkg_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
 {
-	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	rnd_gtk_t *gctx = hid->hid_data;
 
 	switch(format) {
 		case RND_HID_CLIPFMT_TEXT:
-			gtk_clipboard_set_text(cbrd, data, len);
+			gtkc_clipboard_set_text(gctx->topwin.drawing_area, data);
 			break;
 	}
 	return 0;
 }
 
-
-
 int rnd_gtkg_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
 {
-	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	rnd_gtk_t *gctx = hid->hid_data;
+	int res = gtkc_clipboard_get_text(gctx->topwin.drawing_area, data, len);
 
-	if (gtk_clipboard_wait_is_text_available(cbrd)) {
-		gchar *txt = gtk_clipboard_wait_for_text(cbrd);
+	if (res == 0)
 		*format = RND_HID_CLIPFMT_TEXT;
-		*data = txt;
-		*len = strlen(txt) + 1;
-		return 0;
-	}
 
-	return -1;
+	return res;
 }
 
 void rnd_gtkg_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
