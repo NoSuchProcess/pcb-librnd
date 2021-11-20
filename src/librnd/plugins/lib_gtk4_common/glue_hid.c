@@ -4,7 +4,7 @@ static GtkApplication *app;
 #define gtkc_topwin_new() gtk_application_window_new(app)
 #define gdkc_widget_window_get_origin(wdg, x, y)  gtkc_widget_window_origin(wdg, x, y)
 
-
+#define gtkc_mod1_in_mask(mask) ((mask & GDK_ALT_MASK) ? TRUE : FALSE)
 
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 

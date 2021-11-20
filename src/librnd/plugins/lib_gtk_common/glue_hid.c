@@ -536,11 +536,8 @@ static int rnd_gtkg_mod1_is_pressed(rnd_hid_t *hid)
 		return 0;
 
 	gdkc_window_get_pointer(out->drawing_area, NULL, NULL, &mask);
-#ifdef __APPLE__
-	return (mask & (1 << 13)) ? TRUE : FALSE;	/* The option key is not MOD1, although it should be... */
-#else
-	return (mask & GDK_MOD1_MASK) ? TRUE : FALSE;
-#endif
+
+	return gtkc_mod1_in_mask(mask);
 }
 
 static void rnd_gtkg_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)

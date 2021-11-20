@@ -3,6 +3,13 @@
 #define gtkc_topwin_new() gtk_window_new(GTK_WINDOW_TOPLEVEL)
 #define gdkc_widget_window_get_origin(wdg, x, y)   gdk_window_get_origin(gtkc_widget_get_window(wdg), x, y)
 
+#ifdef __APPLE__
+/* The option key is not MOD1, although it should be... */
+#	define gtkc_mod1_in_mask(mask) ((mask & (1 << 13)) ? TRUE : FALSE)
+#else
+#	define gtkc_mod1_in_mask(mask) ((mask & GDK_MOD1_MASK) ? TRUE : FALSE)
+#endif
+
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 
 static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
