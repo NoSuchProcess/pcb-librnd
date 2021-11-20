@@ -2,7 +2,7 @@
 
 static GtkApplication *app;
 #define gtkc_topwin_new() gtk_application_window_new(app)
-#define gdkc_window_get_origin(win, x, y)  gtkc_window_origin(win, x, y)
+#define gdkc_widget_window_get_origin(wdg, x, y)  gtkc_widget_window_origin(wdg, x, y)
 
 
 

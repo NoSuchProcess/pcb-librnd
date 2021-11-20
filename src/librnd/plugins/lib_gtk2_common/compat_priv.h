@@ -39,3 +39,5 @@ gint gtkc_key_release_cb(GtkWidget *widget, GdkEventKey *kev, void *rs);
 gint gtkc_win_resize_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs);
 gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs);
 gint gtkc_win_delete_cb(GtkWidget *widget, GdkEvent *ev, void *rs);
+
+#define gtkc_widget_get_window(w) (GDK_WINDOW(GTK_WIDGET(w)->window))

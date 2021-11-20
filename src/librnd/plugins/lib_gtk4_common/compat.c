@@ -240,13 +240,12 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 /* Not available on wayland */
 }
 
-void gtkc_window_origin(GtkWindow *win, int *x, int *y)
+void gtkc_window_origin(GtkWidget *wdg, int *x, int *y)
 {
 #ifdef GDK_WINDOWING_X11
-
-	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
+	GdkDisplay *display = gtk_widget_get_display(wdg);
 	if (GDK_IS_X11_DISPLAY(display)) {
-		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
+		GdkSurface *surf = gtkc_win_surface(wdg);
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf), child;
 		Window rw = gdk_x11_display_get_xrootwindow(display);
