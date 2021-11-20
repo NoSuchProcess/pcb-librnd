@@ -1,4 +1,5 @@
 test:
+	- the quit action
 	- top window drawign: scroll wheel zoom
 	- top window drawign: scroll wheel pan with shift and ctrl
 	- preview window drawign: scroll wheel zoom
