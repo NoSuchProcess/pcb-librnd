@@ -18,3 +18,8 @@ TODO("This is probably not needed as all fields got written via calls");
 }
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
+
+void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
+{
+	gtk_gl_area_queue_render(GTK_GL_AREA(port->drawing_area));
+}

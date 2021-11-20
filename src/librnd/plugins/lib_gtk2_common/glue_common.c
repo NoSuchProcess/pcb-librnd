@@ -13,3 +13,8 @@ static inline void rnd_gtkc_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view
 }
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
+
+void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
+{
+	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
+}

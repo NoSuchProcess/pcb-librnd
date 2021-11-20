@@ -323,11 +323,6 @@ static void rnd_gtkg_load_bg_image(void)
 	}
 }
 
-void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
-{
-	gdk_window_invalidate_rect(gtkc_widget_get_window(port->drawing_area), rect, FALSE);
-}
-
 void rnd_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	rnd_box_t screen;
