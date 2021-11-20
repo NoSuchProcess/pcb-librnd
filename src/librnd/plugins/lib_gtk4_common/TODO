@@ -7,6 +7,7 @@ test:
 	- full size button in top window - image button...
 	- pointer warp on X11 (ui_crosshair.c)
 	- clipboard, using board padstack proto lib dialog
+	- benchmark
 
 figure:
 	- gtkc_box_pack_append() padding is ignored

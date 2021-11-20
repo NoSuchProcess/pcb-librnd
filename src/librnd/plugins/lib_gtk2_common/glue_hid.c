@@ -50,3 +50,27 @@ static void rnd_gtkg_iterate(rnd_hid_t *hid)
 	while(gtk_events_pending())
 		gtk_main_iteration_do(0);
 }
+
+static double rnd_gtkg_benchmark(rnd_hid_t *hid)
+{
+	rnd_gtk_t *gctx = hid->hid_data;
+	int i = 0;
+	time_t start, end;
+	GdkDisplay *display;
+	GdkWindow *window;
+
+	window = gtkc_widget_get_window(gctx->port.drawing_area);
+	display = gtk_widget_get_display(gctx->port.drawing_area);
+
+	gdk_display_sync(display);
+	time(&start);
+	do {
+		rnd_gui->invalidate_all(rnd_gui);
+		gdk_window_process_updates(window, FALSE);
+		time(&end);
+		i++;
+	}
+	while (end - start < 10);
+
+	return i/10.0;
+}

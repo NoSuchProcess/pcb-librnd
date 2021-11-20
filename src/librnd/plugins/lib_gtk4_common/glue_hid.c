@@ -64,3 +64,23 @@ static void rnd_gtkg_iterate(rnd_hid_t *hid)
 {
 	gtkc_wait_pending_events();
 }
+
+static double rnd_gtkg_benchmark(rnd_hid_t *hid)
+{
+	rnd_gtk_t *gctx = hid->hid_data;
+	int i = 0;
+	time_t start, end;
+	GdkDisplay *display = gtk_widget_get_display(gctx->port.drawing_area);
+
+	gdk_display_sync(display);
+	time(&start);
+	do {
+		rnd_gui->invalidate_all(rnd_gui);
+		gtkc_wait_pending_events();
+		time(&end);
+		i++;
+	}
+	while (end - start < 10);
+
+	return i/10.0;
+}
