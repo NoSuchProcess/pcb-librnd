@@ -52,3 +52,8 @@ GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 {
 	return NULL;
 }
+
+void gtkc_menu_popup(void *gctx, GtkWidget *menu)
+{
+}
+
