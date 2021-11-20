@@ -191,17 +191,7 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_
 }
 #endif
 
-int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
-{
-	GdkClipboard *cbrd = gtk_widget_get_clipboard(widget);
-	gdk_clipboard_set_text(cbrd, text);
-	return 0;
-}
-
-int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len)
-{
-	
-}
+#include "compat_clipboard.c"
 
 
 /* Some basic functionality is not available on wayland and got removed from
