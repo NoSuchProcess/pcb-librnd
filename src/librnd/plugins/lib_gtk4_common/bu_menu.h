@@ -30,4 +30,7 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
 /* Return the gtk widget (if already created, else NULL) for a menu node */
 GtkWidget *rnd_gtk_menu_widget(lht_node_t *node);
 
+/* open a popup menu */
+void gtkc_menu_popup(void *gctx, GtkWidget *menu);
+
 #endif
