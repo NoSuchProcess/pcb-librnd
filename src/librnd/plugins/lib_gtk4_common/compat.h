@@ -332,4 +332,11 @@ static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *
 int gtkc_clipboard_set_text(GtkWidget *widget, const char *text);
 int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len);
 
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+extern Bool (*gtkc_XQueryPointer)(Display*,Window,Window*,Window*,int*,int*,int*,int*,unsigned int*);
+extern int (*gtkc_XWarpPointer)(Display*,Window,Window,int,int,unsigned int,unsigned int,int,int);
+int gtkc_resolve_X(void);
+#endif
+
 #endif  /* RND_GTK_COMPAT_H */

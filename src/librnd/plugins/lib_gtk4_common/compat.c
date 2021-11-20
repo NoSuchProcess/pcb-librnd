@@ -8,6 +8,39 @@
 #define EVCTRL_WIDGET  gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self))
 #define EVCTRL_STATE   gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(self))
 
+#ifdef GDK_WINDOWING_X11
+#include <dlfcn.h>
+
+Bool (*gtkc_XQueryPointer)(Display*,Window,Window*,Window*,int*,int*,int*,int*,unsigned int*) = NULL;
+int (*gtkc_XWarpPointer)(Display*,Window,Window,int,int,unsigned int,unsigned int,int,int) = NULL;
+
+int (*gtkc_XResizeWindow)(Display*,Window,unsigned int,unsigned int);
+int (*gtkc_XMoveWindow)(Display*,Window,int,int);
+Bool (*gtkc_XTranslateCoordinates)(Display*,Window,Window,int,int,int*,int*,Window*);
+
+
+/* Can't directly use these symbols because there's no -lX11 as we don't know
+   whether the executable will be running on X11 or Wayland */
+int gtkc_resolve_X(void)
+{
+	static int inited = 0;
+
+	if (!inited) {
+		void *handle = dlopen(NULL, 0);
+		gtkc_XQueryPointer         = dlsym(handle, "XQueryPointer");
+		gtkc_XWarpPointer          = dlsym(handle, "XWarpPointer");
+		gtkc_XResizeWindow         = dlsym(handle, "XResizeWindow");
+		gtkc_XMoveWindow           = dlsym(handle, "XMoveWindow");
+		gtkc_XTranslateCoordinates = dlsym(handle, "XTranslateCoordinates");
+		inited = 1;
+	}
+
+	return (gtkc_XQueryPointer == NULL) || (gtkc_XWarpPointer == NULL) || (gtkc_XResizeWindow == NULL) || (gtkc_XMoveWindow == NULL);
+}
+
+#endif
+
+
 gboolean gtkc_resize_dwg_cb(GtkWidget *widget, gint width, gint height, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
@@ -215,7 +248,8 @@ void gtkc_window_resize(GtkWindow *win, int x, int y)
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf);
-		XResizeWindow(dsp, xw, x, y);
+		if (gtkc_resolve_X()) return;
+		gtkc_XResizeWindow(dsp, xw, x, y);
 	}
 #endif
 /* Not available on wayland */
@@ -229,7 +263,8 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf);
-		XMoveWindow(dsp, xw, x, y);
+		if (gtkc_resolve_X()) return;
+		gtkc_XMoveWindow(dsp, xw, x, y);
 	}
 #endif
 /* Not available on wayland */
@@ -244,7 +279,8 @@ void gtkc_window_origin(GtkWidget *wdg, int *x, int *y)
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
 		Window xw = gdk_x11_surface_get_xid(surf), child;
 		Window rw = gdk_x11_display_get_xrootwindow(display);
-		XTranslateCoordinates(dsp, xw, rw, 0, 0, x, y, &child);
+		if (gtkc_resolve_X()) return;
+		gtkc_XTranslateCoordinates(dsp, xw, rw, 0, 0, x, y, &child);
 		return;
 	}
 #endif
