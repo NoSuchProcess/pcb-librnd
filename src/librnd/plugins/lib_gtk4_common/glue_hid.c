@@ -59,3 +59,8 @@ static void rnd_gtkg_beep(rnd_hid_t *hid)
 	surf = gtkc_win_surface(gctx->port.drawing_area);
 	gdk_surface_beep(surf);
 }
+
+static void rnd_gtkg_iterate(rnd_hid_t *hid)
+{
+	gtkc_wait_pending_events();
+}

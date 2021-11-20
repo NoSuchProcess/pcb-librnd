@@ -356,11 +356,7 @@ void rnd_gtkg_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, si
 	}
 }
 
-static void rnd_gtkg_iterate(rnd_hid_t *hid)
-{
-	while(gtk_events_pending())
-		gtk_main_iteration_do(0);
-}
+static void rnd_gtkg_iterate(rnd_hid_t *hid);
 
 static double rnd_gtkg_benchmark(rnd_hid_t *hid)
 {
