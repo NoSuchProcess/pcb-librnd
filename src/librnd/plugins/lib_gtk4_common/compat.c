@@ -198,6 +198,11 @@ int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
 	return 0;
 }
 
+int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len)
+{
+	
+}
+
 
 /* Some basic functionality is not available on wayland and got removed from
    gtk4. Reimplement them for X11.
