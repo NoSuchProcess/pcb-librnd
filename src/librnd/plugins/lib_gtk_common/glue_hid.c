@@ -426,7 +426,7 @@ static int rnd_gtkg_open_popup(rnd_hid_t *hid, const char *menupath)
 		return 1;
 
 	menu = rnd_gtk_menu_widget(menu_node);
-	if (!GTK_IS_MENU(menu)) {
+	if (menu == NULL) {
 		rnd_message(RND_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
 		return 1;
 	}
@@ -434,8 +434,8 @@ static int rnd_gtkg_open_popup(rnd_hid_t *hid, const char *menupath)
 	gctx->port.view.panning = 0; /* corner case: on a popup gtk won't deliver button releases because the popup takes focus; it's safer to turn off panning */
 
 	gtk_widget_grab_focus(gctx->port.drawing_area);
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
-	gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(gctx->port.drawing_area)));
+	gtkc_menu_popup(gctx, menu);
+
 	return 0;
 }
 

@@ -64,6 +64,10 @@ GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 	if (node->user_data == NULL) return NULL;
 
 	m = node->user_data;
+
+	if (!GTK_IS_MENU(m->widget))
+		return NULL;
+
 	return m->widget;
 }
 

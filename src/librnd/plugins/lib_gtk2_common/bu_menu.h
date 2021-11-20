@@ -30,4 +30,10 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
 /* Return the gtk widget (if already created, else NULL) for a menu node */
 GtkWidget *rnd_gtk_menu_widget(lht_node_t *node);
 
+#define gtkc_menu_popup(gctx, menu) \
+	do { \
+		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time()); \
+		gtk_window_set_transient_for(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menu))), GTK_WINDOW(gtk_widget_get_toplevel(gctx->port.drawing_area))); \
+	} while(0)
+
 #endif
