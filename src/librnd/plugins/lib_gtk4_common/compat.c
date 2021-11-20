@@ -270,7 +270,7 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 /* Not available on wayland */
 }
 
-void gtkc_window_origin(GtkWidget *wdg, int *x, int *y)
+void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y)
 {
 #ifdef GDK_WINDOWING_X11
 	GdkDisplay *display = gtk_widget_get_display(wdg);
