@@ -8,7 +8,7 @@ static inline void rnd_gtkc_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view
 
 	gtk_adjustment_set_page_size(adj, ps);
 	gtk_adjustment_set_lower(adj, -view_size);
-	gtk_adjustment_set_upper(adj, board_size + adj->page_size);
+	gtk_adjustment_set_upper(adj, board_size + ps);
 
 	gtk_adjustment_set_step_increment(adj, ps / 100.0);
 	gtk_adjustment_set_page_increment(adj, ps / 10.0);
