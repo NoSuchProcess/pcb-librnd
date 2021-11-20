@@ -267,10 +267,7 @@ static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attri
 	return rnd_gtk_attr_dlg_new((rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
-static void rnd_gtkg_beep(rnd_hid_t *hid)
-{
-	gdk_beep();
-}
+static void rnd_gtkg_beep(rnd_hid_t *hid);
 
 static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 {

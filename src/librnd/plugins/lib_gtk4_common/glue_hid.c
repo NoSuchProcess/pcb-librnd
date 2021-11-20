@@ -47,3 +47,15 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	return 0;
 }
+
+static void rnd_gtkg_beep(rnd_hid_t *hid)
+{
+	rnd_gtk_t *gctx = hid->hid_data;
+	GdkSurface *surf;
+
+	if (gctx->port.drawing_area == NULL)
+		return;
+
+	surf = gtkc_win_surface(gctx->port.drawing_area);
+	gdk_surface_beep(surf);
+}
