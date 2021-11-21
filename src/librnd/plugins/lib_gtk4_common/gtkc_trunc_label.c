@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <librnd/core/compat_misc.h>
 #include "gtkc_trunc_label.h"
 
 
@@ -33,6 +34,7 @@ static void gtkc_trunc_label_dispose(GObject *object)
 	GtkcTruncLabel *tl = GTKC_TRUNC_LABEL(object);
 
 	free(tl->text);
+	tl->text = NULL;
 
 	gtkc_trunc_label_invalidate(tl);
 	if (tl->attrs != NULL)
@@ -178,7 +180,7 @@ static void gtkc_trunc_label_class_init(GtkcTruncLabelClass *class)
 GtkWidget *gtkc_trunc_label_new(const char *text)
 {
 	GtkcTruncLabel *tl = g_object_new(gtkc_trunc_label_get_type(), NULL);
-	tl->text = strdup(text);
+	tl->text = rnd_strdup(text);
 	return GTK_WIDGET(tl);
 }
 
