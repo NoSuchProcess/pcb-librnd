@@ -17,8 +17,11 @@ TODO("This is probably not needed as all fields got written via calls");
 /*	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");*/
 }
 
-#define gtkc_adj_setval(adj, val) gtk_adjustment_set_value(GTK_ADJUSTMENT(adj), val)
-
+static inline void gtkc_adj_setval(GtkWidget *scrollb, double val)
+{
+	GtkWidget *adj = gtk_scrollbar_get_adjustment(scrollb);
+	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj), val);
+}
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
 
