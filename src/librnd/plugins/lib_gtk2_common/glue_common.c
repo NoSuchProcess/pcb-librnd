@@ -2,8 +2,10 @@
 #include "compat.h"
 
 /* Update adj limits to match the current zoom level */
-static inline void rnd_gtkc_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view_size, rnd_coord_t board_size)
+static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollbar, rnd_coord_t view_size, rnd_coord_t board_size)
 {
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(scrollbar));
+
 	adj->page_size = MIN(view_size, board_size);
 	adj->lower = -view_size;
 	adj->upper = board_size + adj->page_size;

@@ -159,8 +159,8 @@ void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
 	rnd_gtk_zoom_post(view);
 
-	rnd_gtkc_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->h_range)), view->width, gctx->hidlib->size_x);
-	rnd_gtkc_zoom_adjustment(gtk_range_get_adjustment(GTK_RANGE(tw->v_range)), view->height, gctx->hidlib->size_y);
+	gtkc_scb_zoom_adjustment(tw->h_range, view->width, gctx->hidlib->size_x);
+	gtkc_scb_zoom_adjustment(tw->v_range, view->height, gctx->hidlib->size_y);
 }
 
 void rnd_gtk_port_ranges_changed(void)
