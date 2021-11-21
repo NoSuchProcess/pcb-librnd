@@ -17,10 +17,16 @@ TODO("This is probably not needed as all fields got written via calls");
 /*	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");*/
 }
 
+static inline double gtkc_scb_getval(GtkWidget *scrollb)
+{
+	GtkAdjustment *adj = gtk_scrollbar_get_adjustment(GTK_SCROLLBAR(scrollb));
+	return gtk_adjustment_get_value(adj);
+}
+
 static inline void gtkc_adj_setval(GtkWidget *scrollb, double val)
 {
-	GtkWidget *adj = gtk_scrollbar_get_adjustment(scrollb);
-	gtk_adjustment_set_value(GTK_ADJUSTMENT(adj), val);
+	GtkAdjustment *adj = gtk_scrollbar_get_adjustment(GTK_SCROLLBAR(scrollb));
+	gtk_adjustment_set_value(adj, val);
 }
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>

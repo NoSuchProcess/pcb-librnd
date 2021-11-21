@@ -12,6 +12,12 @@ static inline void rnd_gtkc_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view
 	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");
 }
 
+static inline double gtkc_scb_getval(GtkWidget *scrollbar)
+{
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(scrollbar));
+	return gtk_adjustment_get_value(adj);
+}
+
 #define gtkc_adj_setval(adj, val) gtk_range_set_value(GTK_RANGE(adj), val)
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>

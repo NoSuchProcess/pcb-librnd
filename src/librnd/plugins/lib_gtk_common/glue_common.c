@@ -165,12 +165,8 @@ void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 
 void rnd_gtk_port_ranges_changed(void)
 {
-	GtkAdjustment *h_adj, *v_adj;
-
-	h_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.h_range));
-	v_adj = gtk_range_get_adjustment(GTK_RANGE(ghidgui->topwin.v_range));
-	ghidgui->port.view.x0 = gtk_adjustment_get_value(h_adj);
-	ghidgui->port.view.y0 = gtk_adjustment_get_value(v_adj);
+	ghidgui->port.view.x0 = gtkc_scb_getval(ghidgui->topwin.h_range);
+	ghidgui->port.view.y0 = gtkc_scb_getval(ghidgui->topwin.v_range);
 
 	rnd_gui->invalidate_all(rnd_gui);
 }
