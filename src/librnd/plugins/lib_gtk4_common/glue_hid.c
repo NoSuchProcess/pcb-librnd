@@ -1,30 +1,23 @@
 #include "compat.h"
 
-static GtkApplication *app;
-#define gtkc_topwin_new() gtk_application_window_new(app)
+#define gtkc_topwin_new() gtk_window_new()
 #define gdkc_widget_window_get_origin(wdg, x, y)  gtkc_widget_window_origin(wdg, x, y)
 
 #define gtkc_mod1_in_mask(mask) ((mask & GDK_ALT_MASK) ? TRUE : FALSE)
 
 #include <librnd/plugins/lib_gtk_common/glue_hid.c>
 
-
-static void rnd_gtk_main_activate(GtkApplication* app, gpointer user_data)
-{
-	rnd_gtkg_main_export_widgets(user_data);
-}
+static int rnd_gtkg_gtk4_stay = 1;
 
 static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	int argc = 0;
-	char *argv[1] = { NULL };
 
 	rnd_gtkg_main_export_init(gctx);
+	rnd_gtkg_main_export_widgets(gctx);
 
-	g_signal_connect(app, "activate", G_CALLBACK(rnd_gtk_main_activate), gctx);
-	g_application_run(G_APPLICATION(app), argc, argv);
-	g_object_unref(app);
+	while(rnd_gtkg_gtk4_stay)
+		g_main_context_iteration(NULL, TRUE);
 
 	rnd_gtkg_main_export_uninit(gctx, hid);
 }
@@ -33,7 +26,8 @@ static void rnd_gtkg_do_exit(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	rnd_gtkg_do_exit_(gctx);
-	g_main_loop_quit(NULL);
+	rnd_gtkg_gtk4_stay = 0;
+	g_main_context_wakeup(NULL);
 }
 
 int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
@@ -42,7 +36,10 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	rnd_gtk_parse_arguments_first(gctx, hid, argc, argv);
 
-	app = gtk_application_new("hu.repo.pcb-rnd", G_APPLICATION_FLAGS_NONE);
+	if (!gtk_init_check()) {
+		fprintf(stderr, "gtk_init_check() fail - maybe $DISPLAY not set or X/GUI not accessible?\n");
+		return 1; /* recoverable error - try another HID */
+	}
 
 	/* this can't wait until do_export because of potential change to argc/argv */
 	rnd_gtk_topwin_create(gctx, argc, argv);
