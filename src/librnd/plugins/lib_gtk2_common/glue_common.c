@@ -12,6 +12,8 @@ static inline void rnd_gtkc_zoom_adjustment(GtkAdjustment *adj, rnd_coord_t view
 	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");
 }
 
+#define gtkc_adj_setval(adj, val) gtk_range_set_value(GTK_RANGE(adj), val)
+
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
 
 void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)

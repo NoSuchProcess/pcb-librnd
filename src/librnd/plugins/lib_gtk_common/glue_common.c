@@ -178,8 +178,8 @@ void rnd_gtk_port_ranges_changed(void)
 void rnd_gtk_pan_common(void)
 {
 	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.h_range), ghidgui->port.view.x0);
-	gtk_range_set_value(GTK_RANGE(ghidgui->topwin.v_range), ghidgui->port.view.y0);
+	gtkc_adj_setval(ghidgui->topwin.h_range, ghidgui->port.view.x0);
+	gtkc_adj_setval(ghidgui->topwin.v_range, ghidgui->port.view.y0);
 	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
 
 	rnd_gtk_port_ranges_changed();

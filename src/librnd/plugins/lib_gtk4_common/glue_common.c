@@ -17,6 +17,9 @@ TODO("This is probably not needed as all fields got written via calls");
 /*	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");*/
 }
 
+#define gtkc_adj_setval(adj, val) gtk_adjustment_set_value(GTK_ADJUSTMENT(adj), val)
+
+
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
 
 void rnd_gtkg_draw_area_update(rnd_gtk_port_t *port, GdkRectangle *rect)
