@@ -202,7 +202,7 @@ static GtkWidget *chk_btn_new(GtkWidget *box, gboolean active, void (*cb_func)(G
 		b = gtk_check_button_new();
 	gtkc_check_button_set_active(b, active);
 	gtkc_box_pack_append(box, b, FALSE, 0);
-	g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
+	g_signal_connect(b, GTKC_CHECK_BUTTON_TOGGLE_SIG, G_CALLBACK(cb_func), data);
 	return b;
 }
 

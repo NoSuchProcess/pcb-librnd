@@ -254,6 +254,7 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 #define gtkc_hscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, sc)
 #define GDKC_MOD1_MASK                    GDK_ALT_MASK
 #define gtkc_check_button_set_active(b, act) gtk_check_button_set_active(GTK_CHECK_BUTTON(b), act)
+#define GTKC_CHECK_BUTTON_TOGGLE_SIG      "toggled"
 
 static inline void gtkc_wait_pending_events(void)
 {
