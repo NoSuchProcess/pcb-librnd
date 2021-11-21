@@ -648,7 +648,7 @@ static int rnd_gtk_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val
 
 		case RND_HATT_BOOL:
 			{
-				int chk = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]));
+				int chk = gtkc_check_button_get_active(ctx->wl[idx]);
 				if (chk == val->lng)
 					goto nochg;
 				gtkc_check_button_set_active(ctx->wl[idx], val->lng);
