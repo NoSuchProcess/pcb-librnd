@@ -215,6 +215,8 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_vscrollbar_new(sc)           gtk_vscrollbar_new(sc)
 #define gtkc_hscrollbar_new(sc)           gtk_hscrollbar_new(sc)
 #define GDKC_MOD1_MASK                    GDK_MOD1_MASK
+#define gtkc_check_button_set_active(b, act) gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), act)
+
 
 static inline void gtkc_wait_pending_events(void)
 {

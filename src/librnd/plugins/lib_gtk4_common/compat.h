@@ -193,9 +193,9 @@ static inline void gtkc_widget_hide_all(GtkWidget *widget)
    implementation seems to work. */
 static inline void gtkc_widget_show_all(GtkWidget *widget)
 {
-	GtkWidget *ch;
+/*	GtkWidget *ch;
 	for(ch = gtk_widget_get_first_child(widget); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
-		gtkc_widget_show_all(ch);
+		gtkc_widget_show_all(ch);*/
 	gtk_widget_show(widget);
 }
 
@@ -253,6 +253,7 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 #define gtkc_vscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, sc)
 #define gtkc_hscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, sc)
 #define GDKC_MOD1_MASK                    GDK_ALT_MASK
+#define gtkc_check_button_set_active(b, act) gtk_check_button_set_active(GTK_CHECK_BUTTON(b), act)
 
 static inline void gtkc_wait_pending_events(void)
 {

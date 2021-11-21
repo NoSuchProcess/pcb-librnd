@@ -200,7 +200,7 @@ static GtkWidget *chk_btn_new(GtkWidget *box, gboolean active, void (*cb_func)(G
 		b = gtk_check_button_new_with_label(string);
 	else
 		b = gtk_check_button_new();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(b), active);
+	gtkc_check_button_set_active(b, active);
 	gtkc_box_pack_append(box, b, FALSE, 0);
 	g_signal_connect(b, "clicked", G_CALLBACK(cb_func), data);
 	return b;
@@ -651,7 +651,7 @@ static int rnd_gtk_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val
 				int chk = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]));
 				if (chk == val->lng)
 					goto nochg;
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), val->lng);
+				gtkc_check_button_set_active(ctx->wl[idx], val->lng);
 			}
 			break;
 
