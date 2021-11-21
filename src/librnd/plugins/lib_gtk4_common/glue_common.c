@@ -23,7 +23,7 @@ static inline double gtkc_scb_getval(GtkWidget *scrollb)
 	return gtk_adjustment_get_value(adj);
 }
 
-static inline void gtkc_adj_setval(GtkWidget *scrollb, double val)
+static inline void gtkc_scb_setval(GtkWidget *scrollb, double val)
 {
 	GtkAdjustment *adj = gtk_scrollbar_get_adjustment(GTK_SCROLLBAR(scrollb));
 	gtk_adjustment_set_value(adj, val);

@@ -18,7 +18,7 @@ static inline double gtkc_scb_getval(GtkWidget *scrollbar)
 	return gtk_adjustment_get_value(adj);
 }
 
-#define gtkc_adj_setval(adj, val) gtk_range_set_value(GTK_RANGE(adj), val)
+#define gtkc_scb_setval(scb, val) gtk_range_set_value(GTK_RANGE(scb), val)
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
 
