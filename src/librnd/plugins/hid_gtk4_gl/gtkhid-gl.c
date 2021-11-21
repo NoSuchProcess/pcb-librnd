@@ -3,6 +3,17 @@
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 
+void ghid_gl_destroy_gc(rnd_hid_gc_t gc)
+{
+	free(gc);
+}
+
+rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
+{
+	return calloc(128, 1);
+}
+
+
 static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
 {
 	return gtk_gl_area_new();
@@ -34,4 +45,29 @@ fprintf(stderr, "No GL rendering for gtk4 yet\n");
 		impl->map_color = gtk_gl4_dummy;
 		impl->draw_pixmap = gtk_gl4_dummy;
 	}
+
+	if (hid != NULL) {
+		hid->invalidate_lr = gtk_gl4_dummy;
+		hid->invalidate_all = gtk_gl4_dummy;
+		hid->notify_crosshair_change = gtk_gl4_dummy;
+		hid->notify_mark_change = gtk_gl4_dummy;
+		hid->set_layer_group = gtk_gl4_dummy;
+		hid->make_gc = ghid_gl_make_gc;
+		hid->destroy_gc = ghid_gl_destroy_gc;
+		hid->set_color = gtk_gl4_dummy;
+		hid->set_line_cap = gtk_gl4_dummy;
+		hid->set_line_width = gtk_gl4_dummy;
+		hid->set_draw_xor = gtk_gl4_dummy;
+		hid->draw_line = gtk_gl4_dummy;
+		hid->draw_arc = gtk_gl4_dummy;
+		hid->draw_rect = gtk_gl4_dummy;
+		hid->fill_circle = gtk_gl4_dummy;
+		hid->fill_polygon = gtk_gl4_dummy;
+		hid->fill_polygon_offs = gtk_gl4_dummy;
+		hid->fill_rect = gtk_gl4_dummy;
+
+		hid->set_drawing_mode = gtk_gl4_dummy;
+		hid->render_burst = gtk_gl4_dummy;
+	}
+
 }
