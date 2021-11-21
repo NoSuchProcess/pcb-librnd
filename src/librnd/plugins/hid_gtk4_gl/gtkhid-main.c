@@ -18,12 +18,6 @@ rnd_hid_t gtk4_gl_hid;
 
 extern void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid);
 
-void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
-{
-TODO("remove this and link gtkhid-gl instead");
-fprintf(stderr, "No GL rendering for gtk4 yet\n");
-}
-
 int gtk4_gl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_gtkg_glue_common_init(ghid_gl_cookie);

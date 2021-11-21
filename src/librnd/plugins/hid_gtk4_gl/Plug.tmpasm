@@ -1,6 +1,7 @@
 put /local/pcb/mod {hid_gtk4_gl}
 put /local/pcb/mod/OBJS_C99 [@
 	$(LIBRND_PLUGDIR)/hid_gtk4_gl/gtkhid-main.o
+	$(LIBRND_PLUGDIR)/hid_gtk4_gl/gtkhid-gl.o
 @]
 
 switch /local/pcb/hid_gtk4_gl/controls
