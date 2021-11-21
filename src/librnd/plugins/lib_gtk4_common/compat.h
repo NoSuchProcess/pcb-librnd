@@ -244,7 +244,6 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
 void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
-#define gtkc_widget_destroy(w)            gtk_box_remove(GTK_BOX(gtk_widget_get_parent(w)), w)
 #define gtkc_main_quit()                  g_main_loop_quit(NULL)
 #define gtkc_bgcolor_box_new()            gtkc_hbox_new(TRUE, 0)
 #define gtkc_bgcolor_box_set_child(b, ch) gtkc_box_pack_append(b, ch, TRUE, 0)
@@ -256,6 +255,18 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 #define gtkc_check_button_set_active(b, act) gtk_check_button_set_active(GTK_CHECK_BUTTON(b), act)
 #define gtkc_check_button_get_active(b)   gtk_check_button_get_active(GTK_CHECK_BUTTON(b))
 #define GTKC_CHECK_BUTTON_TOGGLE_SIG      "toggled"
+
+static inline void gtkc_widget_destroy(GtkWidget *w)
+{
+	GtkWidget *parent = gtk_widget_get_parent(w);
+	if (GTK_IS_FRAME(parent))
+		gtk_frame_set_child(GTK_FRAME(parent), NULL);
+	else if (GTK_IS_BOX(parent))
+		gtk_box_remove(GTK_BOX(parent), w);
+	else
+		abort();
+}
+
 
 static inline void gtkc_wait_pending_events(void)
 {
