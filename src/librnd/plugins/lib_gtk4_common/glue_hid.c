@@ -42,7 +42,7 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	rnd_gtk_parse_arguments_first(gctx, hid, argc, argv);
 
-	app = gtk_application_new("pcb-rnd", G_APPLICATION_FLAGS_NONE);
+	app = gtk_application_new("hu.repo.pcb-rnd", G_APPLICATION_FLAGS_NONE);
 
 	/* this can't wait until do_export because of potential change to argc/argv */
 	rnd_gtk_topwin_create(gctx, argc, argv);
