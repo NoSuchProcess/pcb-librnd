@@ -260,6 +260,8 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 static inline void gtkc_workaround_image_scale_bug(GtkWidget *img, GdkPixbuf *pxb)
 {
 	gtk_image_set_pixel_size(GTK_IMAGE(img), MAX(gdk_pixbuf_get_width(pxb), gdk_pixbuf_get_height(pxb)));
+	gtk_widget_set_halign(img, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(img, GTK_ALIGN_CENTER);
 }
 
 
