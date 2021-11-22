@@ -249,6 +249,35 @@ static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
 		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
+static void ghid_gl_draw_bg_solid_color(rnd_hidlib_t *hidlib, float red, float green, float blue)
+{
+	float points[4][6];
+	int i;
+	for(i=0;i<4;++i)
+	{
+		points[i][2] = red;
+		points[i][3] = green;
+		points[i][4] = blue;
+		points[i][5] = 1.0f;
+	}
+
+	points[0][0] = 0.0f;
+	points[0][1] = 0.0f;
+	points[1][0] = hidlib->size_x;
+	points[1][1] = 0.0f;
+	points[2][0] = hidlib->size_x;
+	points[2][1] = hidlib->size_y;
+	points[3][0] = 0.0f;
+	points[3][1] = hidlib->size_y;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
+	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+}
 
 /* Config helper functions for when the user changes color preferences.
    set_special colors used in the gtkhid. */
@@ -766,14 +795,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
-	glColor3f(priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
-	glBegin(GL_QUADS);
-	glVertex3i(0, 0, 0);
-	glVertex3i(hidlib->size_x, 0, 0);
-	glVertex3i(hidlib->size_x, hidlib->size_y, 0);
-	glVertex3i(0, hidlib->size_y, 0);
-	glEnd();
-
+	ghid_gl_draw_bg_solid_color(hidlib,priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
 	ghid_gl_draw_bg_image(hidlib);
 
 	ghid_gl_invalidate_current_gc();
