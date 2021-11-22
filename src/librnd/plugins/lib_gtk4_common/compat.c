@@ -311,3 +311,14 @@ GtkResponseType gtkc_dialog_run(GtkDialog *dlg, int is_modal)
 	g_main_loop_unref(loop);
 	return GTK_RESPONSE_NONE;
 }
+
+void gtkci_widget_css_add(GtkWidget *widget, const char *css, const char *namspc)
+{
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	GtkCssProvider *provider = gtk_css_provider_new();
+
+	gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), css, -1);
+	gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	gtk_style_context_add_class(context, namspc);
+	g_object_unref(provider);
+}
