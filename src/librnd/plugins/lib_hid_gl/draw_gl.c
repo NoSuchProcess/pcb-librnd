@@ -370,28 +370,40 @@ RND_INLINE void drawgl_add_mask_use()
 	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
 }
 
+RND_INLINE void drawgl_direct_draw_rect( GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+{
+	float points[4][6];
+	int i;
+	for(i=0;i<4;++i)
+	{
+		points[i][2] = red;
+		points[i][3] = green;
+		points[i][4] = blue;
+		points[i][5] = alpha;
+	}
+
+	points[0][0] = x1;	points[0][1] = y1;
+	points[1][0] = x2;	points[1][1] = y1;
+	points[2][0] = x2;	points[2][1] = y2;
+	points[3][0] = x1;	points[3][1] = y2;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
+	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
+	glDrawArrays(mode, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+}
+
 RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	glBegin(GL_LINE_LOOP);
-	glColor4f(red, green, blue, alpha);
-	glVertex2f(x1, y1);
-	glVertex2f(x2, y1);
-	glVertex2f(x2, y2);
-	glVertex2f(x1, y2);
-	glEnd();
+	drawgl_direct_draw_rect(GL_LINE_LOOP,x1,y1,x2,y2);
 }
 
 RND_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	glBegin(GL_TRIANGLES);
-	glColor4f(red, green, blue, alpha);
-	glVertex2f(x1, y1);
-	glVertex2f(x2, y1);
-	glVertex2f(x1, y2);
-	glVertex2f(x2, y1);
-	glVertex2f(x2, y2);
-	glVertex2f(x1, y2);
-	glEnd();
+	drawgl_direct_draw_rect(GL_TRIANGLE_FAN,x1,y1,x2,y2);
 }
 
 RND_INLINE void drawgl_reserve_triangles(int count)
