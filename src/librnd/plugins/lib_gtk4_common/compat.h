@@ -264,6 +264,12 @@ static inline void gtkc_workaround_image_scale_bug(GtkWidget *img, GdkPixbuf *px
 	gtk_widget_set_valign(img, GTK_ALIGN_CENTER);
 }
 
+/* gtk4 CSS spaceship adds unnecessary passing around small images */
+static inline void gtkc_workaround_image_button_border_bug(GtkWidget *btn, GdkPixbuf *pxb)
+{
+	gtkci_widget_css_add(btn, "*.picbtn {\npadding: 3px;\nmargin: 0px;min-height: 2px;min-width: 2px;\n}\n", "picbtn");
+}
+
 
 static inline void gtkc_widget_destroy(GtkWidget *w)
 {

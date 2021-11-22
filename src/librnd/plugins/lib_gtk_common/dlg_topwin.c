@@ -286,6 +286,8 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 
 	gtkc_button_set_image(GTK_BUTTON(button), image);
 
+	gtkc_workaround_image_button_border_bug(button, pixbuf);
+
 	return button;
 }
 

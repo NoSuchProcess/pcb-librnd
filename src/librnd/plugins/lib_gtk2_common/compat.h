@@ -219,6 +219,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_check_button_get_active(b)   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(b));
 #define GTKC_CHECK_BUTTON_TOGGLE_SIG      "clicked"
 #define gtkc_workaround_image_scale_bug(i,p)
+#define gtkc_workaround_image_button_border_bug(i,p)
 
 
 static inline void gtkc_wait_pending_events(void)

@@ -180,6 +180,8 @@ static GtkWidget *rnd_gtk_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t 
 
 	gtkc_button_set_child(button, img);
 
+	gtkc_workaround_image_button_border_bug(button, pixbuf);
+
 	gtkc_box_pack_append(bparent, button, expfill, 0);
 	gtk_widget_set_tooltip_text(button, attr->help_text);
 
