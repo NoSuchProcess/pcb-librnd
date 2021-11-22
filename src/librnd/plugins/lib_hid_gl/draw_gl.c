@@ -329,7 +329,7 @@ RND_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLf
 																					GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
 																					GLuint texture_id )
 {
-	primitive_buffer_add(GL_QUADS, vertex_buffer.size, 4, texture_id);
+	primitive_buffer_add(GL_TRIANGLE_FAN, vertex_buffer.size, 4, texture_id);
 	vertex_buffer_reserve_extra(4);
 	vertex_buffer_add_xyuv(x1, y1, u1, v1);
 	vertex_buffer_add_xyuv(x2, y2, u2, v2);
