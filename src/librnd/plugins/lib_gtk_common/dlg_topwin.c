@@ -134,7 +134,7 @@ int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rn
 	if (rnd_dock_has_frame[where])
 		gtkc_frame_set_child(frame, docked->hvbox);
 	else
-		gtkc_box_pack_append(frame, docked->hvbox, 1, 0);
+		gtkc_box_pack_append(frame, docked->hvbox, 0, 0);
 
 	if ((sub->dlg_minx > 0) && (sub->dlg_miny > 0))
 		gtk_widget_set_size_request(frame, sub->dlg_minx, sub->dlg_miny);
