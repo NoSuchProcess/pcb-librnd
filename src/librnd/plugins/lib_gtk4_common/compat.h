@@ -256,6 +256,13 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 #define gtkc_check_button_get_active(b)   gtk_check_button_get_active(GTK_CHECK_BUTTON(b))
 #define GTKC_CHECK_BUTTON_TOGGLE_SIG      "toggled"
 
+/* gtk4 outsmarts the code and automatically scales up small images */
+static inline void gtkc_workaround_image_scale_bug(GtkWidget *img, GdkPixbuf *pxb)
+{
+	gtk_image_set_pixel_size(GTK_IMAGE(img), MAX(gdk_pixbuf_get_width(pxb), gdk_pixbuf_get_height(pxb)));
+}
+
+
 static inline void gtkc_widget_destroy(GtkWidget *w)
 {
 	GtkWidget *parent = gtk_widget_get_parent(w);

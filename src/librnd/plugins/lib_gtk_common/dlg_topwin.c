@@ -281,6 +281,7 @@ static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 	button = gtk_button_new();
 	pixbuf = rnd_gtk_xpm2pixbuf(xpm_data, 1);
 	image = gtk_image_new_from_pixbuf(pixbuf);
+	gtkc_workaround_image_scale_bug(image, pixbuf);
 	g_object_unref(pixbuf);
 
 	gtkc_button_set_image(GTK_BUTTON(button), image);

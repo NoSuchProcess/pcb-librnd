@@ -150,6 +150,7 @@ static GtkWidget *rnd_gtk_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 
 	pixbuf = rnd_gtk_xpm2pixbuf(attr->wdata, 1);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
+	gtkc_workaround_image_scale_bug(pic, pixbuf);
 	evb = wrap_bind_click(pic, rnd_gtkc_xy_ev(&ev_click, click_cb, NULL));
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP, click_ctx);
 	g_object_set_data(G_OBJECT(evb), RND_OBJ_PROP_CLICK, attr);
@@ -170,6 +171,7 @@ static GtkWidget *rnd_gtk_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t 
 
 	pixbuf = rnd_gtk_xpm2pixbuf(attr->wdata, 1);
 	img = gtk_image_new_from_pixbuf(pixbuf);
+	gtkc_workaround_image_scale_bug(img, pixbuf);
 
 	if (toggle)
 		button = gtk_toggle_button_new();
