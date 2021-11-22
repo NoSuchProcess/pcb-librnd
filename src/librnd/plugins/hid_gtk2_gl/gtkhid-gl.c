@@ -561,23 +561,16 @@ static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 	ghid_gl_invalidate_all(hid);
 }
 
-static void rnd_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
-{
-	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
-		return;
-
-	glVertex3i(x, miny, z);
-	glVertex3i(x, maxy, z);
-	glVertex3i(minx, y, z);
-	glVertex3i(maxx, y, z);
-}
-
 static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
 	GLint x, y, z;
 	static int done_once = 0;
 	static rnd_gtk_color_t cross_color;
 	static unsigned long cross_color_packed;
+	float points[4][6];
+	float red;
+	float green;
+	float blue;
 
 	if (!paint_new_location)
 		return;
@@ -591,16 +584,43 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	y = ghidgui->port.view.crosshair_y;
 	z = 0;
 
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
+	red = cross_color.red / 65535.0f;
+	green = cross_color.green / 65535.0f;
+	blue = cross_color.blue / 65535.0f;
 
-	glColor3f(cross_color.red / 65535., cross_color.green / 65535., cross_color.blue / 65535.);
+	if(ghidgui->topwin.active && ghidgui->port.view.has_entered)
+	{
+		int i;
+		for(i=0;i<4;++i)
+		{
+			points[i][2] = red;
+			points[i][3] = green;
+			points[i][4] = blue;
+			points[i][5] = 1.0f;
+		}
 
-	glBegin(GL_LINES);
-	rnd_gl_draw_crosshair(hidlib, x, y, z, minx, miny, maxx, maxy);
-	glEnd();
+		points[0][0] = x;
+		points[0][1] = miny;
+		points[1][0] = x;
+		points[1][1] = maxy;
+		points[2][0] = minx;
+		points[2][1] = y;
+		points[3][0] = maxx;
+		points[3][1] = y;
 
-	glDisable(GL_COLOR_LOGIC_OP);
+		glEnable(GL_COLOR_LOGIC_OP);
+		glLogicOp(GL_XOR);
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+		glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
+		glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
+		glDrawArrays(GL_LINES, 0, 4);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+	
+		glDisable(GL_COLOR_LOGIC_OP);
+	}
 }
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
