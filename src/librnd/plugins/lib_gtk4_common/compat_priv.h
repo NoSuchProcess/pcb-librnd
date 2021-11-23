@@ -29,12 +29,12 @@
 void gtkci_widget_css_add(GtkWidget *widget, const char *css, const char *namspc);
 
 /* INTERNAL: set fill/exp for a widget (not part of the API, do not call from elsewhere) */
-static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w)
+static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill)
 {
-	int h = 1, v = 1;
+	int h = expfill, v = expfill;
 
 	/* set fill/exp in parent box if parent is a box: figure parent orientation */
-	if (GTK_IS_BOX(parent)) {
+	if (expfill && GTK_IS_BOX(parent)) {
 		GtkOrientation o = gtk_orientable_get_orientation(GTK_ORIENTABLE(parent));
 		if (o == GTK_ORIENTATION_HORIZONTAL) v = 0;
 		if (o == GTK_ORIENTATION_VERTICAL) h = 0;
@@ -44,10 +44,18 @@ static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w)
 		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
 		gtk_widget_set_hexpand(w, 1);
 	}
+	else {
+		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_hexpand(w, 0);
+	}
 
 	if (v) {
 		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
 		gtk_widget_set_vexpand(w, 1);
+	}
+	else {
+		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_vexpand(w, 0);
 	}
 }
 
