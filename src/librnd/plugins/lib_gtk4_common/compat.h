@@ -52,7 +52,13 @@ static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboole
 static inline void gtkc_dlg_add_content(GtkDialog *dlg, GtkWidget *child)
 {
 	GtkWidget *content_area = gtk_dialog_get_content_area(dlg);
-	gtkc_box_pack_append(content_area, child, TRUE, 0);
+	gtk_box_append(GTK_BOX(content_area), child);
+
+	/* make sure content fills the whole dialog box */
+	gtk_widget_set_halign(child, GTK_ALIGN_FILL);
+	gtk_widget_set_hexpand(child, 1);
+	gtk_widget_set_valign(child, GTK_ALIGN_FILL);
+	gtk_widget_set_vexpand(child, 1);
 }
 
 GtkResponseType gtkc_dialog_run(GtkDialog *dlg, int is_modal);
