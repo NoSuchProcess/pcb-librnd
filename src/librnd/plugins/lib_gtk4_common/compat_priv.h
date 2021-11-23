@@ -29,7 +29,7 @@
 void gtkci_widget_css_add(GtkWidget *widget, const char *css, const char *namspc);
 
 /* INTERNAL: set fill/exp for a widget (not part of the API, do not call from elsewhere) */
-static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill)
+static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill, int start)
 {
 	int h = expfill, v = expfill;
 
@@ -45,7 +45,7 @@ static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill)
 		gtk_widget_set_hexpand(w, 1);
 	}
 	else {
-		gtk_widget_set_halign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_halign(w, start ? GTK_ALIGN_START : GTK_ALIGN_FILL);
 		gtk_widget_set_hexpand(w, 0);
 	}
 
@@ -54,7 +54,7 @@ static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill)
 		gtk_widget_set_vexpand(w, 1);
 	}
 	else {
-		gtk_widget_set_valign(w, GTK_ALIGN_FILL);
+		gtk_widget_set_valign(w, start ? GTK_ALIGN_BASELINE : GTK_ALIGN_FILL);
 		gtk_widget_set_vexpand(w, 0);
 	}
 }

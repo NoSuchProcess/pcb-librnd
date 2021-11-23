@@ -412,7 +412,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP, ctx);
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_CLICK, &(ctx->attrs[j]));
 
-				gtkc_box_pack_append(parent, ctx->wltop[j], FALSE, 0);
+				gtkc_box_pack_append_start(parent, ctx->wltop[j], FALSE, 0);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				}
 				break;
@@ -427,10 +427,10 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_STRING:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtkc_box_pack_append(parent, hbox, expfill, 0);
+				gtkc_box_pack_append_start(parent, hbox, expfill, 0);
 
 				entry = gtk_entry_new();
-				gtkc_box_pack_append(hbox, entry, expfill, 0);
+				gtkc_box_pack_append_start(hbox, entry, expfill, 0);
 				g_object_set_data(G_OBJECT(entry), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = entry;
 
@@ -455,11 +455,11 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_ENUM:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
-				gtkc_box_pack_append(parent, hbox, expfill, 0);
+				gtkc_box_pack_append_start(parent, hbox, expfill, 0);
 
 				combo = gtkc_combo_box_text_new();
 				gtk_widget_set_tooltip_text(combo, ctx->attrs[j].help_text);
-				gtkc_box_pack_append(hbox, combo, expfill, 0);
+				gtkc_box_pack_append_start(hbox, combo, expfill, 0);
 				g_object_set_data(G_OBJECT(combo), RND_OBJ_PROP, ctx);
 				ctx->wl[j] = combo;
 
@@ -522,13 +522,13 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 
 			case RND_HATT_BUTTON:
 				hbox = gtkc_hbox_new(FALSE, 4);
-				gtkc_box_pack_append(parent, hbox, expfill, 0);
+				gtkc_box_pack_append_start(parent, hbox, expfill, 0);
 
 				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE)
 					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str);
 				else
 					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str);
-				gtkc_box_pack_append(hbox, ctx->wl[j], expfill, 0);
+				gtkc_box_pack_append_start(hbox, ctx->wl[j], expfill, 0);
 
 				gtk_widget_set_tooltip_text(ctx->wl[j], ctx->attrs[j].help_text);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));

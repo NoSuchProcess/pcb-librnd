@@ -69,7 +69,13 @@ typedef GdkRGBA rnd_gtk_color_t;
 static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
 {
 	gtk_box_append(GTK_BOX(box), child);
-	gtkci_expfill(box, child, expfill);
+	gtkci_expfill(box, child, expfill, 0);
+}
+
+static inline void gtkc_box_pack_append_start(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
+{
+	gtk_box_append(GTK_BOX(box), child);
+	gtkci_expfill(box, child, expfill, 1);
 }
 
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)

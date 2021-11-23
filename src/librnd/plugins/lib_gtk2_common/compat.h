@@ -43,6 +43,9 @@
 #define gtkc_box_pack_append(parent_widget, child_widget, expfill, padding) \
 	gtk_box_pack_start(GTK_BOX(parent_widget), child_widget, expfill, expfill, padding)
 
+#define gtkc_box_pack_append_start(parent_widget, child_widget, expfill, padding) \
+	gtk_box_pack_start(GTK_BOX(parent_widget), child_widget, expfill, expfill, padding)
+
 #define gtkc_widget_get_allocation(w, a) \
 do { \
 	*(a) = (GTK_WIDGET(w)->allocation); \
