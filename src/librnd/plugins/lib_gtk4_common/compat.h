@@ -305,7 +305,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 {
 	GtkWidget *bb = gtkc_hbox_new(0, 5); /* this box enables child to grow horizontally */
 	gtkc_box_pack_append(bb, child, 1, 0);
-	gtk_grid_attach(GTK_GRID(table), bb, row, col, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), bb, col, row, 1, 1);
 }
 
 /* In the following all rs is gtkc_event_xyz_t, filled in by the caller */
