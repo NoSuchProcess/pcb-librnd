@@ -647,9 +647,9 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 		glDrawArrays(GL_LINES, 0, 4);
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
-	
-		glDisable(GL_COLOR_LOGIC_OP);
 	}
+
+	glDisable(GL_COLOR_LOGIC_OP);
 }
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
