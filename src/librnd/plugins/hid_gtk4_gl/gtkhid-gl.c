@@ -2,6 +2,7 @@
 
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
+#include <epoxy/gl.h>
 
 void ghid_gl_destroy_gc(rnd_hid_gc_t gc)
 {
@@ -14,9 +15,50 @@ rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 }
 
 
+
+/* We need to set up our state when we realize the GtkGLArea widget */
+static void realize(GtkWidget *widget)
+{
+	gtk_gl_area_make_current(GTK_GL_AREA(widget));
+}
+
+/* We should tear down the state when unrealizing */
+static void unrealize(GtkWidget *widget)
+{
+	gtk_gl_area_make_current(GTK_GL_AREA(widget));
+}
+
+static gboolean render(GtkGLArea *area, GdkGLContext *context)
+{
+	if (gtk_gl_area_get_error(area) != NULL)
+		return FALSE;
+
+	/* Clear the viewport */
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	/* Draw our object */
+/*	draw_triangle();*/
+
+	/* Flush the contents of the pipeline */
+	glFlush();
+
+	return TRUE;
+}
+
 static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
 {
-	return gtk_gl_area_new();
+	GtkWidget *drw = gtk_gl_area_new();
+
+	gtk_widget_set_hexpand(drw, TRUE);
+	gtk_widget_set_vexpand(drw, TRUE);
+	gtk_widget_set_size_request(drw, 100, 100);
+
+	g_signal_connect(drw, "realize", G_CALLBACK(realize), NULL);
+	g_signal_connect(drw, "unrealize", G_CALLBACK(unrealize), NULL);
+	g_signal_connect(drw, "render", G_CALLBACK(render), NULL);
+
+	return drw;
 }
 
 
