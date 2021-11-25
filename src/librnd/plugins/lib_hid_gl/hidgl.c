@@ -358,7 +358,7 @@ static void draw_cap(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_angle_
 
 #define NEEDS_CAP(width, coord_per_pix) (width > coord_per_pix)
 
-void hidgl_draw_line(int cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double scale)
+void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double scale)
 {
 	double angle;
 	float deltax, deltay, length;
