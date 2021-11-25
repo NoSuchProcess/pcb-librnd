@@ -1,7 +1,7 @@
 This directory does not host a real plugin, only source files other
-lib_gtkN_common plugins can use. The idea is to have all-gtk-version-common
-code here while being able to put per-version-common code in the
-respective plugin.
+lib_gtkN_common and hid_gtkN_* plugins can use. The idea is to have
+all-gtk-version-common code here while being able to put
+per-version-common code in the respective plugin.
 
 Naming convention in this directory:
 

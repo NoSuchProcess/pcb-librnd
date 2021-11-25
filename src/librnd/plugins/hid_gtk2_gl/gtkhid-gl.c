@@ -36,7 +36,7 @@ do { \
 	if (!use_gc(gc)) return; \
 } while(0)
 
-#include <librnd/plugins/hid_gtk2_gl/gtk_gl_common.c>
+#include <librnd/plugins/lib_gtk_common/gtk_gl_common.c>
 
 /* Returns TRUE only if color_string has been allocated to color. */
 static rnd_bool map_color(const rnd_color_t *inclr, rnd_gtk_color_t *color)
