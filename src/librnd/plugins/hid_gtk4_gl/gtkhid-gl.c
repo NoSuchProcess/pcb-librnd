@@ -80,6 +80,7 @@ void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 
 fprintf(stderr, "No GL rendering for gtk4 yet\n");
 	if (impl != NULL) {
+		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		impl->new_drawing_widget = ghid_gdk_new_drawing_widget;
 		impl->init_drawing_widget = gtk_gl4_dummy;
 		impl->drawing_realize = gtk_gl4_dummy;
