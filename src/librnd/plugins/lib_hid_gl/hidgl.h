@@ -35,7 +35,7 @@ void hidgl_set_depth(float depth);
 void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double scale);
 void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vrx, rnd_coord_t vry, rnd_angle_t start_angle, rnd_angle_t delta_angle, double scale);
 void hidgl_draw_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-void hidgl_draw_texture_rect(	rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id );
+void hidgl_draw_texture_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id);
 void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale);
 void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y);
 void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);

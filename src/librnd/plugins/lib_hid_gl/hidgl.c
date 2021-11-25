@@ -514,9 +514,9 @@ void hidgl_draw_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t
 	drawgl_add_rectangle(x1, y1, x2, y2);
 }
 
-void hidgl_draw_texture_rect(	rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id )
+void hidgl_draw_texture_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id)
 {
-	drawgl_add_texture_quad(x1,y1,0.0,0.0, x2,y1,1.0,0.0, x2,y2,1.0,1.0, x1,y2,0.0,1.0, texture_id);
+	drawgl_add_texture_quad(x1, y1, 0.0, 0.0, x2, y1, 1.0, 0.0, x2, y2, 1.0, 1.0, x1, y2, 0.0, 1.0, texture_id);
 }
 
 void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale)

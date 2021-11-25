@@ -323,11 +323,11 @@ RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 
 }
 
-RND_INLINE void drawgl_add_texture_quad(	GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
-																					GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
-																					GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
-																					GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
-																					GLuint texture_id )
+RND_INLINE void drawgl_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
+	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
+	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
+	GLuint texture_id)
 {
 	primitive_buffer_add(GL_TRIANGLE_FAN, vertex_buffer.size, 4, texture_id);
 	vertex_buffer_reserve_extra(4);
