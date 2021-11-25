@@ -4,17 +4,19 @@
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <epoxy/gl.h>
 
-void ghid_gl_destroy_gc(rnd_hid_gc_t gc)
-{
-	free(gc);
-}
+extern rnd_hid_t gtk4_gl_hid;
 
-rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
-{
-	return calloc(128, 1);
-}
+/* Sets ghidgui->port.u_gc to the "right" GC to use (wrt mask or window) */
+#define USE_GC(gc) \
+do { \
+	if (gc->me_pointer != &gtk4_gl_hid) { \
+		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n"); \
+		abort(); \
+	} \
+	if (!use_gc(gc)) return; \
+} while(0)
 
-
+#include <librnd/plugins/lib_gtk_common/gtk_gl_common.c>
 
 /* We need to set up our state when we realize the GtkGLArea widget */
 static void realize(GtkWidget *widget)
@@ -61,6 +63,11 @@ static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
 	return drw;
 }
 
+static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
+{
+	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
+}
+
 
 static int gtk_gl4_dummy(int foo, ...)
 {
@@ -69,47 +76,15 @@ static int gtk_gl4_dummy(int foo, ...)
 
 void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
-TODO("remove this and link gtkhid-gl instead");
+	ghid_gl_install_common(impl, hid);
+
 fprintf(stderr, "No GL rendering for gtk4 yet\n");
 	if (impl != NULL) {
 		impl->new_drawing_widget = ghid_gdk_new_drawing_widget;
 		impl->init_drawing_widget = gtk_gl4_dummy;
 		impl->drawing_realize = gtk_gl4_dummy;
-		impl->drawing_area_expose = gtk_gl4_dummy;
 		impl->preview_expose = gtk_gl4_dummy;
-		impl->set_special_colors = gtk_gl4_dummy;
 		impl->init_renderer = gtk_gl4_dummy;
-		impl->screen_update = gtk_gl4_dummy;
-		impl->draw_grid_local = gtk_gl4_dummy;
-		impl->drawing_area_configure_hook = gtk_gl4_dummy;
 		impl->shutdown_renderer = gtk_gl4_dummy;
-		impl->get_color_name = gtk_gl4_dummy;
-		impl->map_color = gtk_gl4_dummy;
-		impl->draw_pixmap = gtk_gl4_dummy;
 	}
-
-	if (hid != NULL) {
-		hid->invalidate_lr = gtk_gl4_dummy;
-		hid->invalidate_all = gtk_gl4_dummy;
-		hid->notify_crosshair_change = gtk_gl4_dummy;
-		hid->notify_mark_change = gtk_gl4_dummy;
-		hid->set_layer_group = gtk_gl4_dummy;
-		hid->make_gc = ghid_gl_make_gc;
-		hid->destroy_gc = ghid_gl_destroy_gc;
-		hid->set_color = gtk_gl4_dummy;
-		hid->set_line_cap = gtk_gl4_dummy;
-		hid->set_line_width = gtk_gl4_dummy;
-		hid->set_draw_xor = gtk_gl4_dummy;
-		hid->draw_line = gtk_gl4_dummy;
-		hid->draw_arc = gtk_gl4_dummy;
-		hid->draw_rect = gtk_gl4_dummy;
-		hid->fill_circle = gtk_gl4_dummy;
-		hid->fill_polygon = gtk_gl4_dummy;
-		hid->fill_polygon_offs = gtk_gl4_dummy;
-		hid->fill_rect = gtk_gl4_dummy;
-
-		hid->set_drawing_mode = gtk_gl4_dummy;
-		hid->render_burst = gtk_gl4_dummy;
-	}
-
 }
