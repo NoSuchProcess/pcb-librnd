@@ -98,43 +98,6 @@ static rnd_bool map_color(const rnd_color_t *inclr, rnd_gtk_color_t *color)
 	return TRUE;
 }
 
-
-#if 0
-static void start_subcomposite(void)
-{
-	render_priv_t *priv = ghidgui->port.render_priv;
-	int stencil_bit;
-
-	/* Flush out any existing geometry to be rendered */
-	hidgl_flush_triangles();
-
-	glEnable(GL_STENCIL_TEST); /* Enable Stencil test */
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); /* Stencil pass => replace stencil value (with 1) */
-
-	stencil_bit = hidgl_assign_clear_stencil_bit(); /* Get a new (clean) bitplane to stencil with */
-	glStencilMask(stencil_bit); /* Only write to our subcompositing stencil bitplane */
-	glStencilFunc(GL_GREATER, stencil_bit, stencil_bit); /* Pass stencil test if our assigned bit is clear */
-
-	priv->subcomposite_stencil_bit = stencil_bit;
-}
-
-static void end_subcomposite(void)
-{
-	render_priv_t *priv = ghidgui->port.render_priv;
-
-	/* Flush out any existing geometry to be rendered */
-	hidgl_flush_triangles();
-
-	hidgl_return_stencil_bit(priv->subcomposite_stencil_bit); /* Relinquish any bitplane we previously used */
-
-	glStencilMask(0);
-	glStencilFunc(GL_ALWAYS, 0, 0); /* Always pass stencil test */
-	glDisable(GL_STENCIL_TEST); /* Disable Stencil test */
-
-	priv->subcomposite_stencil_bit = 0;
-}
-#endif
-
 int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
