@@ -1,0 +1,11 @@
+- split up: ghid_gl_preview_expose
+- split up: gl: show_crosshair - maybe move out middle sect?
+- 2: colormap
+- gl: draw_bg_solid_color
+- 2: use_gc self-check (should be in USE_GC macro?)
+- 2: ghid_gl_init_render; gtk4: gtk_gl_area_set_has_stencil_buffer
+- 2: ghid_gl_init_drawing_widget
+- 2: ghid_gl_start_drawing
+- 2: ghid_gl_end_drawing
+- 2: ghid_gl_port_drawing_realize
+- 2: ghid_gl_new_drawing_widget
