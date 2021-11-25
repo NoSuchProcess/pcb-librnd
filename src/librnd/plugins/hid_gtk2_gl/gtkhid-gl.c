@@ -570,7 +570,7 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	green = cross_color.green / 65535.0f;
 	blue = cross_color.blue / 65535.0f;
 
-	if(ghidgui->topwin.active && ghidgui->port.view.has_entered) {
+	if (ghidgui->topwin.active && ghidgui->port.view.has_entered) {
 		int i;
 		for(i=0; i<4; ++i) {
 			points[i][2] = red;
