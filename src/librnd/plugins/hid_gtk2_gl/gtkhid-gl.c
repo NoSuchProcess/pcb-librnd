@@ -695,13 +695,9 @@ static void ghid_gl_screen_update(void)
 {
 }
 
-/* Settles background color + inital GL configuration, to allow further drawing in GL area.
-    (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
-    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
-static void rnd_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
+/* Prepare gl context for expose: set viewport, model, projection, stencil, color */
+void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c)
 {
-	hidgl_init();
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -725,6 +721,15 @@ static void rnd_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr
 	glDisable(GL_STENCIL_TEST);
 	glStencilMask(0);
 	glStencilFunc(GL_ALWAYS, 0, 0);
+}
+
+/* Settles background color + inital GL configuration, to allow further drawing in GL area.
+    (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
+    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
+static void rnd_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
+{
+	hidgl_init();
+	hidgl_expose_init(w, h, bg_c);
 }
 
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
@@ -842,28 +847,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	}
 	ghidgui->port.render_priv->in_context = rnd_true;
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, allocation.width, allocation.height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, allocation.width, allocation.height, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
-
-	glEnable(GL_STENCIL_TEST);
-	glClearColor(priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb, 1.);
-	glStencilMask(~0);
-	glClearStencil(0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	stencilgl_reset_stencil_usage();
-	glDisable(GL_STENCIL_TEST);
-	glStencilMask(0);
-	glStencilFunc(GL_ALWAYS, 0, 0);
+	hidgl_expose_init(allocation.width, allocation.height, &priv->bg_color);
 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
