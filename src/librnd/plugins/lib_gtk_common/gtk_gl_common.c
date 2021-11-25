@@ -18,7 +18,6 @@
 
 #include <librnd/plugins/lib_hid_gl/opengl.h>
 #include <librnd/plugins/lib_hid_gl/draw_gl.h>
-#include <gtk/gtkgl.h>
 #include <librnd/plugins/lib_hid_gl/hidgl.h>
 #include <librnd/plugins/lib_hid_gl/stencil_gl.h>
 
