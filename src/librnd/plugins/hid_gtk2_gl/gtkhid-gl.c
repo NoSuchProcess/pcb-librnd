@@ -426,16 +426,6 @@ void ghid_gl_set_draw_xor(rnd_hid_gc_t gc, int xor)
 	   We manage our own drawing model for that anyway. */
 }
 
-void ghid_gl_set_draw_faded(rnd_hid_gc_t gc, int faded)
-{
-	printf("ghid_gl_set_draw_faded(%p,%d) -- not implemented\n", (void *)gc, faded);
-}
-
-void ghid_gl_set_line_cap_angle(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-	printf("ghid_gl_set_line_cap_angle() -- not implemented\n");
-}
-
 static void ghid_gl_invalidate_current_gc(void)
 {
 	current_gc = NULL;
