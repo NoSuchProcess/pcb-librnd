@@ -741,3 +741,36 @@ void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c)
 	glStencilMask(0);
 	glStencilFunc(GL_ALWAYS, 0, 0);
 }
+
+void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, float blue, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
+{
+	int i;
+	float points[4][6];
+
+	for(i=0; i<4; ++i) {
+		points[i][2] = red;
+		points[i][3] = green;
+		points[i][4] = blue;
+		points[i][5] = 1.0f;
+	}
+
+	points[0][0] = x;
+	points[0][1] = miny;
+	points[1][0] = x;
+	points[1][1] = maxy;
+	points[2][0] = minx;
+	points[2][1] = y;
+	points[3][0] = maxx;
+	points[3][1] = y;
+
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_XOR);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
+	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
+	glDrawArrays(GL_LINES, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+}

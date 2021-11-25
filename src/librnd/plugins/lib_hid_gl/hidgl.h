@@ -49,4 +49,7 @@ rnd_composite_op_t hidgl_get_drawing_mode();
 /* Prepare gl context for expose: set viewport, model, projection, stencil, color */
 void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c);
 
+void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, float blue, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy);
+
+
 #endif /* RND_HID_COMMON_HIDGL_H  */
