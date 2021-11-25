@@ -1,4 +1,4 @@
-- split up: ghid_gl_preview_expose
+- split up: ghid_gl_preview_expose (gtk2 gl admin vs. generic draw part)
 - split up: gl: show_crosshair - maybe move out middle sect?
 - 2: colormap
 - gl: draw_bg_solid_color
