@@ -215,8 +215,8 @@ static void ghid_gl_draw_bg_solid_color(rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 {
 	float points[4][6];
 	int i;
-	for(i=0;i<4;++i)
-	{
+
+	for(i=0; i<4; ++i) {
 		points[i][2] = red;
 		points[i][3] = green;
 		points[i][4] = blue;
