@@ -18,6 +18,18 @@ do { \
 
 #include <librnd/plugins/lib_gtk_common/gtk_gl_common.c>
 
+static const gchar *get_color_name(rnd_gtk_color_t *color)
+{
+	static char tmp[16];
+
+	if (!color)
+		return "#000000";
+
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", rnd_round(color->red * 255.0), rnd_round(color->green * 255.0), rnd_round(color->blue * 255.0));
+	return tmp;
+}
+
+
 /* We need to set up our state when we realize the GtkGLArea widget */
 static void realize(GtkWidget *widget)
 {
@@ -80,6 +92,7 @@ void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 
 fprintf(stderr, "No GL rendering for gtk4 yet\n");
 	if (impl != NULL) {
+		impl->get_color_name = get_color_name;
 		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		impl->new_drawing_widget = ghid_gdk_new_drawing_widget;
 		impl->init_drawing_widget = gtk_gl4_dummy;
