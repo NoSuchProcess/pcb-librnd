@@ -146,6 +146,11 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 	TODO("figure");
 }
 
+static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
+{
+	/* nop: old gtk2 bugfix */
+}
+
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
 {
 	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
@@ -204,7 +209,7 @@ TODO("this should call expose for main drawing area and/or maybe preview too");
 	return TRUE;
 }
 
-static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
+static GtkWidget *ghid_gl_new_drawing_widget(rnd_gtk_impl_t *common)
 {
 	GtkWidget *drw = gtk_gl_area_new();
 
@@ -219,26 +224,20 @@ static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
 	return drw;
 }
 
-
-
-static int gtk_gl4_dummy(int foo, ...)
-{
-	return 0;
-}
-
 void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
 	ghid_gl_install_common(impl, hid);
 
 fprintf(stderr, "No GL rendering for gtk4 yet\n");
+
 	if (impl != NULL) {
 		impl->get_color_name = get_color_name;
 		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
-		impl->new_drawing_widget = ghid_gdk_new_drawing_widget;
-		impl->init_drawing_widget = gtk_gl4_dummy;
-		impl->drawing_realize = gtk_gl4_dummy;
-		impl->preview_expose = gtk_gl4_dummy;
-		impl->init_renderer = gtk_gl4_dummy;
-		impl->shutdown_renderer = gtk_gl4_dummy;
+		impl->new_drawing_widget = ghid_gl_new_drawing_widget;
+		impl->init_drawing_widget = ghid_gl_init_drawing_widget;
+		impl->drawing_realize = ghid_gl_port_drawing_realize_cb;
+		impl->preview_expose = ghid_gl_preview_expose;
+		impl->init_renderer = ghid_gl_init_renderer;
+		impl->shutdown_renderer = ghid_gl_shutdown_renderer;
 	}
 }
