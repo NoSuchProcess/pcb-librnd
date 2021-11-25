@@ -44,7 +44,7 @@ void hidgl_init(void);
 void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
 rnd_composite_op_t hidgl_get_drawing_mode();
 
-#define Z_NEAR 3.0
+#define HIDGL_Z_NEAR 3.0
 
 /* Prepare gl context for expose: set viewport, model, projection, stencil, color */
 void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c);

@@ -104,7 +104,7 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
+	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
 
 	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / ghidgui->port.view.coord_per_px);
 	glTranslatef(rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);

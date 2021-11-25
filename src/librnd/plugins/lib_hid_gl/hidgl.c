@@ -727,7 +727,7 @@ void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c)
 	glOrtho(0, w, h, 0, 0, 100);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -Z_NEAR);
+	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
 	glClearColor(bg_c->fr, bg_c->fg, bg_c->fb, 1.);
