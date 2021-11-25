@@ -211,7 +211,7 @@ static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
 		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
 }
 
-static void ghid_gl_draw_bg_solid_color(rnd_hidlib_t *hidlib, float red, float green, float blue)
+static void ghid_gl_draw_bg_solid_color(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float red, float green, float blue)
 {
 	float points[4][6];
 	int i;
@@ -223,14 +223,14 @@ static void ghid_gl_draw_bg_solid_color(rnd_hidlib_t *hidlib, float red, float g
 		points[i][5] = 1.0f;
 	}
 
-	points[0][0] = 0.0f;
-	points[0][1] = 0.0f;
-	points[1][0] = hidlib->size_x;
-	points[1][1] = 0.0f;
-	points[2][0] = hidlib->size_x;
-	points[2][1] = hidlib->size_y;
-	points[3][0] = 0.0f;
-	points[3][1] = hidlib->size_y;
+	points[0][0] = x1;
+	points[0][1] = y1;
+	points[1][0] = x2;
+	points[1][1] = y1;
+	points[2][0] = x2;
+	points[2][1] = y2;
+	points[3][0] = x1;
+	points[3][1] = y2;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -690,7 +690,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
 
 	/* Draw PCB background, before PCB primitives */
-	ghid_gl_draw_bg_solid_color(hidlib,priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
+	ghid_gl_draw_bg_solid_color(0, 0, hidlib->size_x, hidlib->size_y, priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
 	ghid_gl_draw_bg_image(hidlib);
 
 	ghid_gl_invalidate_current_gc();
