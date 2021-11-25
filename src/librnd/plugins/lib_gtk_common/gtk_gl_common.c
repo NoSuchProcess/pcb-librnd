@@ -436,7 +436,7 @@ static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr
 	hidgl_expose_init(w, h, bg_c);
 }
 
-static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
+static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
 {
 	rnd_gtk_port_t *port = vport;
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
@@ -465,7 +465,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	ghid_gl_invalidate_current_gc();
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	rnd_app.expose_main(&gtk2_gl_hid, &ctx, NULL);
+	rnd_app.expose_main(hid, &ctx, NULL);
 	drawgl_flush();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -490,7 +490,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 }
 
 /* Assumes gl context is set up for drawing in the target widget */
-static void ghid_gl_preview_expose_common(rnd_hidlib_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
+static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	double xz, yz, vw, vh;
@@ -535,7 +535,7 @@ static void ghid_gl_preview_expose_common(rnd_hidlib_t *hidlib, rnd_gtk_expose_t
 	glTranslatef(rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
 
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
-	expcall(&gtk2_gl_hid, ctx);
+	expcall(hid, ctx);
 
 	drawgl_flush();
 	glPopMatrix();
@@ -556,7 +556,6 @@ static void ghid_gl_preview_expose_common(rnd_hidlib_t *hidlib, rnd_gtk_expose_t
 void ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
 	if (impl != NULL) {
-		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		impl->set_special_colors = ghid_gl_set_special_colors;
 		impl->screen_update = ghid_gl_screen_update;
 		impl->draw_grid_local = ghid_gl_draw_grid_local;

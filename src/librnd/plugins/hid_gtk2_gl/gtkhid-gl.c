@@ -251,6 +251,12 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
+static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
+{
+	return ghid_gl_drawing_area_expose_cb_common(&gtk2_gl_hid, widget, ev, vport);
+}
+
+
 static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
@@ -265,7 +271,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 		return FALSE;
 	}
 
-	ghid_gl_preview_expose_common(hidlib, ev, expcall, ctx, allocation.width, allocation.height);
+	ghid_gl_preview_expose_common(&gtk2_gl_hid, hidlib, ev, expcall, ctx, allocation.width, allocation.height);
 
 	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
 		gdk_gl_drawable_swap_buffers(pGlDrawable);
@@ -293,6 +299,7 @@ void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 	ghid_gl_install_common(impl, hid);
 
 	if (impl != NULL) {
+		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		impl->new_drawing_widget = ghid_gl_new_drawing_widget;
 		impl->init_drawing_widget = ghid_gl_init_drawing_widget;
 		impl->drawing_realize = ghid_gl_port_drawing_realize_cb;
