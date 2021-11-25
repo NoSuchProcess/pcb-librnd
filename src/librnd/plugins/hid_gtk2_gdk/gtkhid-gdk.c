@@ -1454,7 +1454,7 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev,
 	/* clear background */
 	gdk_draw_rectangle(window, priv->bg_gc, TRUE, 0, 0, allocation.width, allocation.height);
 
-	RND_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
+	RND_GTKC_PREVIEW_TUNE_EXTENT(ctx, allocation.width, allocation.height);
 
 	/* call the drawing routine */
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;

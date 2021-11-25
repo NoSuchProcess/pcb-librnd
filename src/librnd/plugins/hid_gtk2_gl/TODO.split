@@ -1,6 +1,5 @@
 - split up: ghid_gl_preview_expose (gtk2 gl admin vs. generic draw part)
 - 2: colormap
-- gl: draw_bg_solid_color
 - 2: use_gc self-check (should be in USE_GC macro?)
 - 2: ghid_gl_init_render; gtk4: gtk_gl_area_set_has_stencil_buffer
 - 2: ghid_gl_init_drawing_widget

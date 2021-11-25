@@ -11,11 +11,11 @@ void rnd_gtkg_draw_area_update(rnd_gtk_port_t *out, GdkRectangle *rect);
 
 /* make sure the context is set to draw the whole widget size, which might
    be slightly larger than the original request */
-#define RND_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation) \
+#define RND_GTKC_PREVIEW_TUNE_EXTENT(ctx, xs, ys) \
 do { \
 	rnd_coord_t nx1, ny1, nx2, ny2; \
-	nx1 = Px(0); nx2 = Px(allocation.width); \
-	ny1 = Py(0); ny2 = Py(allocation.height); \
+	nx1 = Px(0); nx2 = Px((double)(xs)); \
+	ny1 = Py(0); ny2 = Py((double)(ys)); \
 	if (nx1 < nx2) { \
 		ctx->view.X1 = nx1; \
 		ctx->view.X2 = nx2; \

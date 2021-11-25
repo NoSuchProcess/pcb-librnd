@@ -706,53 +706,44 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
-static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+/* Assumes gl context is set up for drawing in the target widget */
+static void ghid_gl_preview_expose_common(rnd_hidlib_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
 {
-	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
-	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
-	GtkAllocation allocation;
 	render_priv_t *priv = ghidgui->port.render_priv;
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
-	rnd_gtk_view_t save_view;
-	int save_width, save_height;
 	double xz, yz, vw, vh;
 	rnd_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 	rnd_coord_t save_cpp;
+	rnd_gtk_view_t save_view;
+	int save_width, save_height;
 
+	/* Setup zoom factor for drawing routines */
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
+	xz = vw / (double)widget_xs;
+	yz = vh / (double)widget_ys;
 
 	save_view = ghidgui->port.view;
 	save_width = ghidgui->port.view.canvas_width;
 	save_height = ghidgui->port.view.canvas_height;
 	save_cpp = rnd_gui->coord_per_pix;
 
-	/* Setup zoom factor for drawing routines */
-	gtkc_widget_get_allocation(widget, &allocation);
-	xz = vw / (double)allocation.width;
-	yz = vh / (double)allocation.height;
-
 	if (xz > yz)
 		ghidgui->port.view.coord_per_px = xz;
 	else
 		ghidgui->port.view.coord_per_px = yz;
 
-	ghidgui->port.view.canvas_width = allocation.width;
-	ghidgui->port.view.canvas_height = allocation.height;
-	ghidgui->port.view.width = allocation.width * ghidgui->port.view.coord_per_px;
-	ghidgui->port.view.height = allocation.height * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.canvas_width = widget_xs;
+	ghidgui->port.view.canvas_height = widget_ys;
+	ghidgui->port.view.width = (double)widget_xs * ghidgui->port.view.coord_per_px;
+	ghidgui->port.view.height = (double)widget_ys * ghidgui->port.view.coord_per_px;
 	ghidgui->port.view.x0 = (vw - ghidgui->port.view.width) / 2 + ctx->view.X1;
 	ghidgui->port.view.y0 = (vh - ghidgui->port.view.height) / 2 + ctx->view.Y1;
 
-	RND_GTK_PREVIEW_TUNE_EXTENT(ctx, allocation);
+	RND_GTKC_PREVIEW_TUNE_EXTENT(ctx, widget_xs, widget_ys);
 
-	/* make GL-context "current" */
-	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
-		return FALSE;
-	}
 	ghidgui->port.render_priv->in_context = rnd_true;
 
-	hidgl_expose_init(allocation.width, allocation.height, &priv->bg_color);
+	hidgl_expose_init(widget_xs, widget_ys, &priv->bg_color);
 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
@@ -766,14 +757,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	drawgl_flush();
 	glPopMatrix();
 
-	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
-		gdk_gl_drawable_swap_buffers(pGlDrawable);
-	else
-		glFlush();
-
-	/* end drawing to current GL-context */
 	ghidgui->port.render_priv->in_context = rnd_false;
-	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	/* restore the original context and priv */
 	ctx->view.X1 = ox1;
@@ -784,6 +768,31 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	ghidgui->port.view = save_view;
 	ghidgui->port.view.canvas_width = save_width;
 	ghidgui->port.view.canvas_height = save_height;
+}
+
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+{
+	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
+	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
+	GtkAllocation allocation;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+
+	gtkc_widget_get_allocation(widget, &allocation);
+
+	/* make GL-context "current" */
+	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
+		return FALSE;
+	}
+
+	ghid_gl_preview_expose_common(hidlib, ev, expcall, ctx, allocation.width, allocation.height);
+
+	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
+		gdk_gl_drawable_swap_buffers(pGlDrawable);
+	else
+		glFlush();
+
+	/* end drawing to current GL-context */
+	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	return FALSE;
 }
