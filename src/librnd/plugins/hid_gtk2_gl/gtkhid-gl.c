@@ -546,7 +546,7 @@ static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 
 static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
-	GLint x, y, z;
+	GLint x, y;
 	static int done_once = 0;
 	static rnd_gtk_color_t cross_color;
 	static unsigned long cross_color_packed;
@@ -565,7 +565,6 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	}
 	x = ghidgui->port.view.crosshair_x;
 	y = ghidgui->port.view.crosshair_y;
-	z = 0;
 
 	red = cross_color.red / 65535.0f;
 	green = cross_color.green / 65535.0f;
