@@ -103,6 +103,25 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 	drawgl_set_colour(r, g, b, a);
 }
 
+static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)
+{
+	rnd_gtk_port_t *port = vport;
+	render_priv_t *priv;
+
+	port->render_priv = priv = g_new0(render_priv_t, 1);
+
+	/* Setup HID function pointers specific to the GL renderer */
+	gtk4_gl_hid.end_layer = ghid_gl_end_layer;
+}
+
+static void ghid_gl_shutdown_renderer(void *p)
+{
+	rnd_gtk_port_t *port = p;
+
+	g_free(port->render_priv);
+	port->render_priv = NULL;
+}
+
 
 
 /* We need to set up our state when we realize the GtkGLArea widget */
