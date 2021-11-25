@@ -117,7 +117,7 @@ rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 	rnd_hid_gc_t rv;
 
 	rv = g_new0(rnd_hid_gc_s, 1);
-	rv->me_pointer = &gtk2_gl_hid;
+	rv->me_pointer = hid;
 	rv->pcolor = &rnd_conf.appearance.color.background;
 	rv->alpha_mult = 1.0;
 	return rv;
