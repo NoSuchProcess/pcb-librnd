@@ -566,6 +566,7 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 			minx, miny, maxx, maxy);
 	}
 
+	TODO("This shouldn't be here, but it's missing from somewhere else; if removed, moving out from the drawing area and clicking a tool button will recolor the backgrouind on intel");
 	glDisable(GL_COLOR_LOGIC_OP);
 }
 
