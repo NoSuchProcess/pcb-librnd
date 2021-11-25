@@ -430,7 +430,7 @@ static void ghid_gl_screen_update(void)
 /* Settles background color + inital GL configuration, to allow further drawing in GL area.
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
-static void rnd_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
+static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_init();
 	hidgl_expose_init(w, h, bg_c);
@@ -453,7 +453,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	ctx.view.X2 = MAX(Px(0), Px(allocation.width + 1));
 	ctx.view.Y2 = MAX(Py(0), Py(allocation.height + 1));
 
-	rnd_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
+	rnd_gl_draw_expose_init(allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
 
 	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
 	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
