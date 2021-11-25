@@ -1,3 +1,6 @@
+#ifndef RND_GTK_GLUE_COMMON_H
+#define RND_GTK_GLUE_COMMON_H
+
 #include <librnd/core/hid.h>
 #include "rnd_gtk.h"
 
@@ -62,3 +65,5 @@ RND_INLINE unsigned rnd_gtk_color8to16(unsigned c)
 		res |= 0x00FF;
 	return res;
 }
+
+#endif

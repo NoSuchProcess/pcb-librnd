@@ -1,3 +1,6 @@
+#ifndef RND_GTK_COORD_CONV_H
+#define RND_GTK_COORD_CONV_H
+
 /* Coordinate conversions */
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib_conf.h>
@@ -89,3 +92,5 @@ static inline int rnd_gtk_dot_in_canvas(rnd_coord_t penwidth, double dx1, double
 	return ((dx1+penwidth >= 0) && (dx1-penwidth <= ghidgui->port.view.canvas_width) && (dy1+penwidth >= 0) && (dy1-penwidth <= ghidgui->port.view.canvas_height));
 }
 
+
+#endif
