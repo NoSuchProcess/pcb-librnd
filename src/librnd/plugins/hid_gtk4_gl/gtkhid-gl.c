@@ -25,7 +25,7 @@ static const gchar *get_color_name(rnd_gtk_color_t *color)
 	if (!color)
 		return "#000000";
 
-	sprintf(tmp, "#%2.2x%2.2x%2.2x", rnd_round(color->red * 255.0), rnd_round(color->green * 255.0), rnd_round(color->blue * 255.0));
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", (unsigned)rnd_round(color->red * 255.0), (unsigned)rnd_round(color->green * 255.0), (unsigned)rnd_round(color->blue * 255.0));
 	return tmp;
 }
 
