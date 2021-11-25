@@ -151,6 +151,26 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
 }
 
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+{
+	GtkAllocation allocation;
+	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+
+	gtkc_widget_get_allocation(widget, &allocation);
+
+	/* make GL-context "current" */
+	TODO("figure");
+
+	ghid_gl_preview_expose_common(&gtk4_gl_hid, hidlib, ev, expcall, ctx, allocation.width, allocation.height);
+
+	glFlush();
+
+	/* end drawing to current GL-context */
+	TODO("figure");
+
+	return FALSE;
+}
+
 
 
 /* We need to set up our state when we realize the GtkGLArea widget */
@@ -176,6 +196,7 @@ static gboolean render(GtkGLArea *area, GdkGLContext *context)
 
 	/* Draw our object */
 /*	draw_triangle();*/
+TODO("this should call expose for main drawing area and/or maybe preview too");
 
 	/* Flush the contents of the pipeline */
 	glFlush();
