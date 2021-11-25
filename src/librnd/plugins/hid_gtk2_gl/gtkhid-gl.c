@@ -410,6 +410,8 @@ void ghid_gl_set_alpha_mult(rnd_hid_gc_t gc, double alpha_mult)
 
 void ghid_gl_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
+	/* nop: each line render gets the cap style from the core gc because
+	   low level line draw function has to build the ap from triangles */
 }
 
 void ghid_gl_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
