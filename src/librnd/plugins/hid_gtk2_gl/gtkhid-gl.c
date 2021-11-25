@@ -38,6 +38,17 @@ do { \
 
 #include <librnd/plugins/lib_gtk_common/gtk_gl_common.c>
 
+static const gchar *get_color_name(rnd_gtk_color_t *color)
+{
+	static char tmp[16];
+
+	if (!color)
+		return "#000000";
+
+	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
+	return tmp;
+}
+
 /* Returns TRUE only if color_string has been allocated to color. */
 static rnd_bool map_color(const rnd_color_t *inclr, rnd_gtk_color_t *color)
 {
@@ -299,6 +310,7 @@ void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 	ghid_gl_install_common(impl, hid);
 
 	if (impl != NULL) {
+		impl->get_color_name = get_color_name;
 		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
 		impl->new_drawing_widget = ghid_gl_new_drawing_widget;
 		impl->init_drawing_widget = ghid_gl_init_drawing_widget;

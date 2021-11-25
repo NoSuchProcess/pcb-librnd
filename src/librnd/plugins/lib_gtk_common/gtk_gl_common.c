@@ -67,17 +67,6 @@ void ghid_gl_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *sc
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
 
-static const gchar *get_color_name(rnd_gtk_color_t *color)
-{
-	static char tmp[16];
-
-	if (!color)
-		return "#000000";
-
-	sprintf(tmp, "#%2.2x%2.2x%2.2x", (color->red >> 8) & 0xff, (color->green >> 8) & 0xff, (color->blue >> 8) & 0xff);
-	return tmp;
-}
-
 int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
@@ -560,7 +549,6 @@ void ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 		impl->screen_update = ghid_gl_screen_update;
 		impl->draw_grid_local = ghid_gl_draw_grid_local;
 		impl->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
-		impl->get_color_name = get_color_name;
 		impl->map_color = map_color;
 		impl->draw_pixmap = ghid_gl_draw_pixmap;
 	}
