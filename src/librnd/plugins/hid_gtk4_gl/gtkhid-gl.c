@@ -29,6 +29,81 @@ static const gchar *get_color_name(rnd_gtk_color_t *color)
 	return tmp;
 }
 
+/* Returns TRUE only if color_string has been allocated to color. */
+static rnd_bool map_color(const rnd_color_t *inclr, rnd_gtk_color_t *color)
+{
+	/* no need to allocate colors */
+	return TRUE;
+}
+
+static void set_gl_color_for_gc(rnd_hid_gc_t gc)
+{
+	render_priv_t *priv = ghidgui->port.render_priv;
+	double r, g, b, a;
+	rnd_composite_op_t composite_op = hidgl_get_drawing_mode();
+	int is_xor = (composite_op == RND_HID_COMP_POSITIVE_XOR);
+
+	if (*gc->pcolor->str == '\0') {
+		fprintf(stderr, "set_gl_color_for_gc:  gc->colorname = 0, setting to magenta\n");
+		gc->pcolor = rnd_color_magenta;
+	}
+
+	if ((priv->current_color_packed == gc->pcolor->packed) && (priv->current_alpha_mult == gc->alpha_mult) && (priv->current_color_xor == is_xor))
+		return;
+
+	priv->current_color_packed = (is_xor ? ~gc->pcolor->packed : gc->pcolor->packed);
+	priv->current_color_xor = is_xor;
+	priv->current_alpha_mult = gc->alpha_mult;
+
+	if (rnd_color_is_drill(gc->pcolor)) {
+		r = priv->offlimits_color.fr;
+		g = priv->offlimits_color.fg;
+		b = priv->offlimits_color.fb;
+		a = rnd_conf.appearance.drill_alpha;
+	}
+	else {
+		r = gc->pcolor->fr;
+		g = gc->pcolor->fg;
+		b = gc->pcolor->fb;
+
+		if (composite_op == RND_HID_COMP_POSITIVE_XOR) {
+			r = (double)((unsigned)rnd_round(r * 255.0) ^ ((unsigned)priv->bg_color.r)) / 255.0;
+			g = (double)((unsigned)rnd_round(g * 255.0) ^ ((unsigned)priv->bg_color.g)) / 255.0;
+			b = (double)((unsigned)rnd_round(b * 255.0) ^ ((unsigned)priv->bg_color.b)) / 255.0;
+		}
+		a = rnd_conf.appearance.layer_alpha;
+	}
+	if (1) {
+		double maxi, mult;
+		a *= gc->alpha_mult;
+		if (!priv->trans_lines)
+			a = 1.0;
+		maxi = r;
+		if (g > maxi)
+			maxi = g;
+		if (b > maxi)
+			maxi = b;
+		mult = MIN(1 / a, 1 / maxi);
+		r = r * mult;
+		g = g * mult;
+		b = b * mult;
+	}
+
+	if (!priv->in_context)
+		return;
+
+
+	/* We need to flush the draw buffer when changing colour so that new primitives
+	   don't get merged. This actually isn't a problem with the colour but due to 
+	   way that the final render pass iterates through the primitive buffer in 
+	   reverse order. If the new primitives are merged with previous ones then they
+	   will be drawn in the wrong order. */
+	drawgl_flush();
+
+	drawgl_set_colour(r, g, b, a);
+}
+
+
 
 /* We need to set up our state when we realize the GtkGLArea widget */
 static void realize(GtkWidget *widget)
