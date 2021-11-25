@@ -122,6 +122,35 @@ static void ghid_gl_shutdown_renderer(void *p)
 	port->render_priv = NULL;
 }
 
+static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
+{
+	rnd_gtk_port_t *port = port_;
+	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(widget), 1);
+}
+
+static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
+{
+	port->render_priv->in_context = rnd_true;
+	return TRUE;
+}
+
+static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
+{
+	GtkWidget *widget = port->drawing_area;
+
+	glFlush();
+
+	port->render_priv->in_context = rnd_false;
+
+	/* end drawing to current GL-context */
+	TODO("figure");
+}
+
+static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
+{
+	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
+}
+
 
 
 /* We need to set up our state when we realize the GtkGLArea widget */
@@ -169,10 +198,6 @@ static GtkWidget *ghid_gdk_new_drawing_widget(rnd_gtk_impl_t *common)
 	return drw;
 }
 
-static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
-{
-	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
-}
 
 
 static int gtk_gl4_dummy(int foo, ...)
