@@ -28,6 +28,8 @@
 
 #include "compat.h"
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
+#include <librnd/plugins/lib_gtk_common/in_keyboard.h>
+#include <librnd/plugins/lib_hid_common/menu_helper.h>
 
 #include "bu_menu.h"
 
@@ -46,6 +48,147 @@ int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd)
 	return -1;
 }
 
+static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label, int check, int arrow)
+{
+	GtkWidget *chk, *aw;
+	GtkWidget *hbox = gtkc_hbox_new(FALSE, 5);
+	GtkWidget *spring = gtkc_hbox_new(FALSE, 5);
+	GtkWidget *l = gtk_label_new(label);
+	GtkWidget *accel = gtk_label_new(accel_label);
+
+	if (!check) {
+		chk = gtk_image_new_from_paintable(gdk_paintable_new_empty(64,64));
+	}
+	else
+		chk = gtk_check_button_new();
+
+	gtkc_box_pack_append(hbox, chk, 0, 0);
+	gtkc_box_pack_append(hbox, l, 0, 0);
+	gtkc_box_pack_append(hbox, spring, 1, 0);
+	gtkc_box_pack_append(hbox, accel, 0, 0);
+
+	if (arrow)
+		aw = gtk_label_new(" > ");
+	else
+		aw = gtk_label_new("     ");
+
+	gtkc_box_pack_append(hbox, aw, 0, 0);
+
+	return hbox;
+}
+
+
+static GtkWidget *gtkci_menu_tear_new(void)
+{
+	GtkWidget *l = gtk_label_new("<span alpha=\"25%\"> &gt;&gt;&gt; </span>");
+	gtk_label_set_use_markup(GTK_LABEL(l), 1);
+	return l;
+}
+
+static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd)
+{
+	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
+	GtkWidget *item, *ch;
+	GtkListBoxRow *row;
+	int after = -1;
+
+	/* figure where to insert by index (count widgets) */
+	if (after_w != NULL) {
+		int n;
+		
+		for(ch = gtk_widget_get_first_child(parent_w), n = 0; ch != NULL; ch = gtk_widget_get_next_sibling(ch), n++) {
+			if (ch == after_w) {
+				after = n;
+				break;
+			}
+		}
+	}
+
+	if ((strcmp(text, "sep") == 0) || (strcmp(text, "-") == 0)) {
+		if (after == -1) {
+			/* need to know the number of items so that row can be queried */
+			after = 0;
+			for(ch = gtk_widget_get_first_child(parent_w); ch != NULL; ch = gtk_widget_get_next_sibling(ch))
+				after++;
+		}
+
+		item = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
+		row = gtk_list_box_get_row_at_index(GTK_LIST_BOX(parent_w), after);
+		gtk_list_box_row_set_activatable(row, 0);
+		gtk_list_box_row_set_selectable(row, 0);
+	}
+	else {
+		const char *checked = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
+		const char *update_on = rnd_hid_cfg_menu_field_str(mnd, RND_MF_UPDATE_ON);
+		const char *label = rnd_hid_cfg_menu_field_str(mnd, RND_MF_SENSITIVE);
+		const char *tip = rnd_hid_cfg_menu_field_str(mnd, RND_MF_TIP);
+		const char *accel = "";
+		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(mnd, RND_MF_ACCELERATOR, NULL);
+
+		if (n_keydesc != NULL)
+			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
+
+printf("text=%s\n", text);
+		item = gtkci_menu_item_new(text, accel, 1, 0);
+		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
+	}
+}
+
+static void menu_row_cb(GtkWidget *widget, gpointer data)
+{
+	GtkListBoxRow *row = gtk_list_box_get_selected_row(GTK_LIST_BOX(widget));
+
+	printf("Clicked menu %d\n", gtk_list_box_row_get_index(row));
+	fflush(stdout);
+}
+
+
+static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd)
+{
+	GtkWidget *popow, *vbox, *item;
+	GtkListBoxRow *row;
+	lht_node_t *n;
+
+	vbox = gtk_list_box_new();
+
+	item = gtkci_menu_tear_new();
+	gtk_list_box_append(GTK_LIST_BOX(vbox), item);
+
+	for(n = mnd->data.list.first; n != NULL; n = n->next)
+		gtkci_menu_real_add_node(ctx, vbox, NULL, n);
+
+	g_signal_connect(vbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
+
+	popow = gtk_popover_new();
+	gtk_popover_set_position(GTK_POPOVER(popow), GTK_POS_BOTTOM);
+	gtk_widget_set_parent(popow, widget);
+	gtk_popover_set_child(GTK_POPOVER(popow), vbox);
+	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
+	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1);
+	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
+	g_signal_connect(popow, "unmap", G_CALLBACK (gtk_widget_unparent), NULL);
+	gtk_popover_popup(GTK_POPOVER(popow));
+}
+
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd)
+{
+	if (rnd_hid_cfg_has_submenus(mnd)) {
+		gtkci_menu_open(ctx, widget, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL));
+		return;
+	}
+	printf("Activate menu!\n");
+}
+
+
+static void open_main_menu_cb(GtkWidget *widget, gpointer data)
+{
+	lht_node_t *mm = data;
+	rnd_gtk_menu_ctx_t *ctx = mm->doc->root->user_data;
+
+	gtkci_menu_activate(ctx, widget, mm);
+}
+
 static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_bar, const lht_node_t *base)
 {
 	lht_node_t *n;
@@ -59,6 +202,7 @@ static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_
 	for(n = base->data.list.first; n != NULL; n = n->next) {
 		GtkWidget *btn = gtk_button_new_with_label(n->name);
 		gtkc_box_pack_append(menu_bar, btn, FALSE, 0);
+		g_signal_connect(btn, "clicked", G_CALLBACK(open_main_menu_cb), n);
 	}
 }
 
