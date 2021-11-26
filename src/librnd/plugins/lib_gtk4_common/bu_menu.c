@@ -129,7 +129,6 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 		if (n_keydesc != NULL)
 			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
 
-printf("text=%s\n", text);
 		item = gtkci_menu_item_new(text, accel, 1, 0);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
 	}
