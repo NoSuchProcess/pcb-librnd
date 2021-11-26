@@ -175,8 +175,12 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 	GdkSurface *surf = gtk_native_get_surface(nat);
 
 	gdk_surface_get_device_position(surf, dev, &dx, &dy, mask);
-	*x = rnd_round(dx);
-	*y = rnd_round(dy);
+
+	if (x != NULL)
+		*x = rnd_round(dx);
+
+	if (y != NULL)
+		*y = rnd_round(dy);
 }
 
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
