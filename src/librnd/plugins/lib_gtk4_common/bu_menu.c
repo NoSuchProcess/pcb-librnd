@@ -175,7 +175,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
 	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1);
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
-	g_signal_connect(popow, "unmap", G_CALLBACK (gtk_widget_unparent), NULL);
+	g_signal_connect(popow, "unmap", G_CALLBACK(gtk_widget_unparent), NULL);
 	gtk_popover_popup(GTK_POPOVER(popow));
 
 	if (is_main)
