@@ -258,6 +258,21 @@ static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_
 	}
 }
 
+static void gtkci_menu_install_hotkeys(rnd_gtk_menu_ctx_t *menu, const lht_node_t *mnd)
+{
+	lht_node_t *n;
+	for(n = mnd->data.list.first; n != NULL; n = n->next) {
+		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(n, RND_MF_ACCELERATOR, NULL);
+
+		if (n_keydesc != NULL) {
+			lht_node_t *n_action = rnd_hid_cfg_menu_field(n, RND_MF_ACTION, NULL);
+			rnd_hid_cfg_keys_add_by_desc(&rnd_gtk_keymap, n_keydesc, n_action);
+		}
+
+		if (rnd_hid_cfg_has_submenus(n))
+			gtkci_menu_install_hotkeys(menu, rnd_hid_cfg_menu_field(n, RND_MF_SUBMENU, NULL));
+	}
+}
 
 GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 {
@@ -274,6 +289,7 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 		rnd_gtk_main_menu_add_node(menu, menu_bar, mr);
 		mr->doc->root->user_data = menu;
 		gtk_widget_show(menu_bar);
+		gtkci_menu_install_hotkeys(menu, mr);
 	}
 
 	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/popups");
@@ -282,6 +298,7 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 		if (mr->type != LHT_LIST)
 			rnd_hid_cfg_error(mr, "/popups should be a list\n");
 		mr->doc->root->user_data = menu;
+		gtkci_menu_install_hotkeys(menu, mr);
 	}
 
 	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/mouse");
