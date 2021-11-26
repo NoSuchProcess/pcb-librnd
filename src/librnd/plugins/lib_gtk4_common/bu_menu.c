@@ -142,6 +142,29 @@ static void menu_row_cb(GtkWidget *widget, gpointer data)
 	fflush(stdout);
 }
 
+static gboolean menu_unparent_cb(void *user_data)
+{
+	gtk_widget_unparent(GTK_WIDGET(user_data));
+	return FALSE; /* turn timer off */
+}
+
+
+static void menu_unmap_cb(GtkWidget *widget, gpointer data)
+{
+	rnd_gtk_menu_ctx_t *ctx = data;
+
+	/* if menu popover being destroyed is main menu top "currently open" one,
+	   reset it so the menu system understands nothing is open */
+	if (ctx->main_open_w == widget) {
+		ctx->main_open_w = NULL;
+		ctx->main_open_n = NULL;
+	}
+
+	/* This looks like a GTK bug: if we unparent here immediately, other parts
+	   of gtk will still try to reach fields of widget. Free it only after some
+	   time. */
+	g_timeout_add(1000, menu_unparent_cb, widget);
+}
 
 static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main)
 {
@@ -151,12 +174,11 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 
 	if (is_main) {
 		if (ctx->main_open_w != NULL) {
-			gtk_popover_popdown(ctx->main_open_w);
+			gtk_popover_popdown(GTK_POPOVER(ctx->main_open_w));
 			ctx->main_open_w = NULL;
 		}
 		ctx->main_open_n = nparent;
 	}
-
 
 	vbox = gtk_list_box_new();
 
@@ -175,7 +197,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
 	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1);
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
-	g_signal_connect(popow, "unmap", G_CALLBACK(gtk_widget_unparent), NULL);
+	g_signal_connect(popow, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
 	gtk_popover_popup(GTK_POPOVER(popow));
 
 	if (is_main)
@@ -231,7 +253,6 @@ static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_
 		g_signal_connect(btn, "clicked", G_CALLBACK(open_main_menu_cb), n);
 
 		ctrl = gtk_event_controller_motion_new();
-		gtk_event_controller_set_propagation_limit(ctrl, GTK_LIMIT_NONE);
 		g_signal_connect(ctrl, "enter", G_CALLBACK(enter_main_menu_cb), n);
 		gtk_widget_add_controller(GTK_WIDGET(btn), ctrl);
 	}
