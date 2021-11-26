@@ -14,6 +14,9 @@ typedef struct rnd_gtk_menu_ctx_s {
 	rnd_conf_hid_id_t rnd_gtk_menuconf_id;
 	void (*confchg_checkbox)(rnd_conf_native_t *cfg, int arr_idx);
 	rnd_hidlib_t *hidlib;
+
+	GtkWidget *main_open_w;   /* set to the menu popover widget that is open from the main menu at the moment */
+	lht_node_t *main_open_n;  /* set to the maun submenu node that is open from the main menu at the moment */
 } rnd_gtk_menu_ctx_t;
 
 /* Updates the toggle/active state of all items: loops through all actions,

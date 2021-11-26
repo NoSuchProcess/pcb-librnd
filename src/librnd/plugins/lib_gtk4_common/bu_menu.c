@@ -143,11 +143,20 @@ static void menu_row_cb(GtkWidget *widget, gpointer data)
 }
 
 
-static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd)
+static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main)
 {
 	GtkWidget *popow, *vbox, *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
+
+	if (is_main) {
+		if (ctx->main_open_w != NULL) {
+			gtk_popover_popdown(ctx->main_open_w);
+			ctx->main_open_w = NULL;
+		}
+		ctx->main_open_n = nparent;
+	}
+
 
 	vbox = gtk_list_box_new();
 
@@ -168,24 +177,39 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
 	g_signal_connect(popow, "unmap", G_CALLBACK (gtk_widget_unparent), NULL);
 	gtk_popover_popup(GTK_POPOVER(popow));
+
+	if (is_main)
+		ctx->main_open_w = popow;
 }
 
-static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd)
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main)
 {
 	if (rnd_hid_cfg_has_submenus(mnd)) {
-		gtkci_menu_open(ctx, widget, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL));
+		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main);
 		return;
 	}
 	printf("Activate menu!\n");
 }
 
+static void enter_main_menu_cb(GtkEventController *controller, double x, double y, gpointer data)
+{
+	lht_node_t *mm = data;
+	rnd_gtk_menu_ctx_t *ctx = mm->doc->root->user_data;
+
+	/* If there is an open active menu from the menu bar and another menu bar
+	   button is hovered, switch to that menu (opening it without a click) */
+	if ((ctx->main_open_w != NULL) && (ctx->main_open_n != mm)) {
+		GtkWidget *widget = gtk_event_controller_get_widget(controller);
+		gtkci_menu_activate(ctx, widget, mm, 1);
+	}
+}
 
 static void open_main_menu_cb(GtkWidget *widget, gpointer data)
 {
 	lht_node_t *mm = data;
 	rnd_gtk_menu_ctx_t *ctx = mm->doc->root->user_data;
 
-	gtkci_menu_activate(ctx, widget, mm);
+	gtkci_menu_activate(ctx, widget, mm, 1);
 }
 
 static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_bar, const lht_node_t *base)
@@ -199,9 +223,17 @@ static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_
 
 	/* create main menu buttons */
 	for(n = base->data.list.first; n != NULL; n = n->next) {
-		GtkWidget *btn = gtk_button_new_with_label(n->name);
+		GtkEventController *ctrl;
+		GtkWidget *btn;
+		
+		btn = gtk_button_new_with_label(n->name);
 		gtkc_box_pack_append(menu_bar, btn, FALSE, 0);
 		g_signal_connect(btn, "clicked", G_CALLBACK(open_main_menu_cb), n);
+
+		ctrl = gtk_event_controller_motion_new();
+		gtk_event_controller_set_propagation_limit(ctrl, GTK_LIMIT_NONE);
+		g_signal_connect(ctrl, "enter", G_CALLBACK(enter_main_menu_cb), n);
+		gtk_widget_add_controller(GTK_WIDGET(btn), ctrl);
 	}
 }
 
