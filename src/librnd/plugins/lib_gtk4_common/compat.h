@@ -264,8 +264,6 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
 #define gtkc_bgcolor_box_set_child(b, ch) gtkc_box_pack_append(b, ch, TRUE, 0)
 #define gtkc_setup_events(dwg, mb, ms, mo, key, ex, ent)
 #define gtkc_widget_set_focusable(w)      gtk_widget_set_focusable(w, TRUE)
-#define gtkc_vscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, sc)
-#define gtkc_hscrollbar_new(sc)           gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, sc)
 #define GDKC_MOD1_MASK                    GDK_ALT_MASK
 #define gtkc_check_button_set_active(b, act) gtk_check_button_set_active(GTK_CHECK_BUTTON(b), act)
 #define gtkc_check_button_get_active(b)   gtk_check_button_get_active(GTK_CHECK_BUTTON(b))

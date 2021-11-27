@@ -45,4 +45,22 @@ static void fix_topbar_theming(rnd_gtk_topwin_t *tw)
 	*/
 }
 
+static inline GtkWidget *gtkc_vscrollbar_new(GCallback vchg, void *cbdata)
+{
+	GtkWidget *scb;
+	GObject *adj = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
+	scb = gtk_vscrollbar_new(GTK_ADJUSTMENT(adj));
+	g_signal_connect(adj, "value_changed", vchg, cbdata);
+	return scb;
+}
+
+static inline GtkWidget *gtkc_hscrollbar_new(GCallback vchg, void *cbdata)
+{
+	GtkWidget *scb;
+	GObject *adj = G_OBJECT(gtk_adjustment_new(0.0, 0.0, 100.0, 10.0, 10.0, 10.0));
+	scb = gtk_hscrollbar_new(GTK_ADJUSTMENT(adj));
+	g_signal_connect(adj, "value_changed", vchg, cbdata);
+	return scb;
+}
+
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.c>
