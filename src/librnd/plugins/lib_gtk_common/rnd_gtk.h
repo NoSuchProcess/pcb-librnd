@@ -145,7 +145,6 @@ struct rnd_gtk_topwin_s {
 	GtkWidget *vbox_middle, *hpaned_middle;
 
 	GtkWidget *h_range, *v_range;
-	GObject *h_adjustment, *v_adjustment;
 
 	/* own internal states */
 	gboolean adjustment_changed_holdoff;
