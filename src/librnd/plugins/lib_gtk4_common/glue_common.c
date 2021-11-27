@@ -1,6 +1,8 @@
 #include <librnd/core/global_typedefs.h>
 #include "compat.h"
 
+#if GTK4_BUG_ON_SCROLLBAR_FIXED
+
 /* Update adj limits to match the current zoom level */
 static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollb, rnd_coord_t view_size, rnd_coord_t board_size)
 {
@@ -18,6 +20,7 @@ TODO("This is probably not needed as all fields got written via calls");
 /*	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");*/
 }
 
+
 static inline double gtkc_scb_getval(GtkWidget *scrollb)
 {
 	GtkAdjustment *adj = gtk_scrollbar_get_adjustment(GTK_SCROLLBAR(scrollb));
@@ -27,8 +30,29 @@ static inline double gtkc_scb_getval(GtkWidget *scrollb)
 static inline void gtkc_scb_setval(GtkWidget *scrollb, double val)
 {
 	GtkAdjustment *adj = gtk_scrollbar_get_adjustment(GTK_SCROLLBAR(scrollb));
-	gtk_adjustment_set_value(adj, val);
+
+printf("setal to %f\n", val);
+gtk_adjustment_set_value(adj, 20);
+//	gtk_adjustment_set_value(adj, val);
 }
+
+#else
+
+#include "gtkc_scrollbar.h"
+
+/* Update adj limits to match the current zoom level */
+static inline void gtkc_scb_zoom_adjustment(GtkWidget *scb, rnd_coord_t view_size, rnd_coord_t board_size)
+{
+	double ps = MIN(view_size, board_size);
+	gtkc_scrollbar_set_range(scb, -view_size, board_size + ps, ps);
+}
+
+#define gtkc_scb_getval(scb)     gtkc_scrollbar_get_val(scb)
+#define gtkc_scb_setval(scb, v)  gtkc_scrollbar_set_val(scb, v)
+
+#endif
+
+
 
 #include <librnd/plugins/lib_gtk_common/glue_common.c>
 

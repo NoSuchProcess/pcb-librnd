@@ -10,6 +10,7 @@ put /local/pcb/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_gtk4_common/compat.o
 
   $(LIBRND_PLUGDIR)/lib_gtk4_common/gtkc_trunc_label.o
+  $(LIBRND_PLUGDIR)/lib_gtk4_common/gtkc_scrollbar.o
 
   $(LIBRND_PLUGDIR)/lib_gtk4_common/bu_dwg_tooltip.o
   $(LIBRND_PLUGDIR)/lib_gtk4_common/bu_menu.o
