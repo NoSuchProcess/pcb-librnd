@@ -48,7 +48,7 @@ int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd)
 	return -1;
 }
 
-static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label, int check, int arrow)
+static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label, int check, int arrow, int sensitive)
 {
 	GtkWidget *chk, *aw;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 5);
@@ -61,6 +61,9 @@ static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label
 	}
 	else
 		chk = gtk_check_button_new();
+
+	if (!sensitive)
+		gtkci_widget_css_add(l, "*.insens {\ncolor: #777777;\n}\n", "insens");
 
 	gtkc_box_pack_append(hbox, chk, 0, 0);
 	gtkc_box_pack_append(hbox, l, 0, 0);
@@ -121,15 +124,21 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 	else {
 		const char *checked = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
 		const char *update_on = rnd_hid_cfg_menu_field_str(mnd, RND_MF_UPDATE_ON);
-		const char *label = rnd_hid_cfg_menu_field_str(mnd, RND_MF_SENSITIVE);
+		const char *senss = rnd_hid_cfg_menu_field_str(mnd, RND_MF_SENSITIVE);
 		const char *tip = rnd_hid_cfg_menu_field_str(mnd, RND_MF_TIP);
 		const char *accel = "";
 		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(mnd, RND_MF_ACCELERATOR, NULL);
+		int sens = 1;
 
 		if (n_keydesc != NULL)
 			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
 
-		item = gtkci_menu_item_new(text, accel, (checked != NULL), rnd_hid_cfg_has_submenus(mnd));
+		if ((senss != NULL) && (strcmp(senss, "false") == 0))
+			sens = 0;
+
+		item = gtkci_menu_item_new(text, accel, (checked != NULL), rnd_hid_cfg_has_submenus(mnd), sens);
+		if (tip != NULL)
+			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
 	}
 }
