@@ -17,6 +17,10 @@ typedef struct rnd_gtk_menu_ctx_s {
 
 	GtkWidget *main_open_w;   /* set to the menu popover widget that is open from the main menu at the moment */
 	lht_node_t *main_open_n;  /* set to the maun submenu node that is open from the main menu at the moment */
+
+	guint hover_timer;
+	struct lht_node_s *hover_mnd;
+	GtkWidget *hover_row;
 } rnd_gtk_menu_ctx_t;
 
 /* Updates the toggle/active state of all items: loops through all actions,

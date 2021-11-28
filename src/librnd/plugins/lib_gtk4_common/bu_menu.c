@@ -38,6 +38,7 @@
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
 
 #define RND_OM "RndOM"
+#define HOVER_POPUP_DELAY_MS 500
 
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
@@ -104,13 +105,41 @@ static int menu_is_sensitive(lht_node_t *mnd)
 	return 1;
 }
 
-static void menu_row_hover_cb(GtkEventControllerMotion* self, gdouble x, gdouble y, gpointer user_data)
+static void stop_hover_timer(rnd_gtk_menu_ctx_t *ctx)
+{
+	if (ctx->hover_timer != 0) {
+		g_source_remove(ctx->hover_timer);
+		ctx->hover_timer = 0;
+	}
+}
+
+static gboolean hover_timer_cb(void *user_data)
+{
+	rnd_gtk_menu_ctx_t *ctx = user_data;
+	ctx->hover_timer = 0;
+	gtkci_menu_activate(ctx, ctx->hover_row, ctx->hover_mnd, 0, 0);
+	return FALSE;  /* Turns timer off */
+}
+
+static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
 {
 	lht_node_t *mnd = user_data;
 	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
 	GtkWidget *row = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
 /*	printf("hover: %f %f <%p>\n", x, y, row);*/
-	gtkci_menu_activate(ctx, row, mnd, 0, 0);
+
+	stop_hover_timer(ctx);
+	ctx->hover_mnd = mnd;
+	ctx->hover_row = row;
+	ctx->hover_timer = g_timeout_add(HOVER_POPUP_DELAY_MS, (GSourceFunc)hover_timer_cb, ctx);
+}
+
+static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
+{
+	lht_node_t *mnd = user_data;
+	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
+
+	stop_hover_timer(ctx);
 }
 
 static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd)
@@ -164,6 +193,7 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 
 		ctrl = gtk_event_controller_motion_new();
 		g_signal_connect(G_OBJECT(ctrl), "enter", G_CALLBACK(menu_row_hover_cb), mnd);
+		g_signal_connect(G_OBJECT(ctrl), "leave", G_CALLBACK(menu_row_unhover_cb), mnd);
 		gtk_widget_add_controller(item, ctrl);
 	}
 }
@@ -219,6 +249,8 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 		ctx->main_open_w = NULL;
 		ctx->main_open_n = NULL;
 	}
+
+	stop_hover_timer(ctx);
 
 	if (om != NULL) {
 		g_object_set_data(G_OBJECT(om->lbox), RND_OM, NULL);
