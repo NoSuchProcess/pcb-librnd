@@ -191,7 +191,7 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 
 static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main)
 {
-	GtkWidget *popow, *vbox, *item;
+	GtkWidget *popow, *lbox, *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
 
@@ -203,20 +203,20 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_n = nparent;
 	}
 
-	vbox = gtk_list_box_new();
+	lbox = gtk_list_box_new();
 
 	item = gtkci_menu_tear_new();
-	gtk_list_box_append(GTK_LIST_BOX(vbox), item);
+	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
 
 	for(n = mnd->data.list.first; n != NULL; n = n->next)
-		gtkci_menu_real_add_node(ctx, vbox, NULL, n);
+		gtkci_menu_real_add_node(ctx, lbox, NULL, n);
 
-	g_signal_connect(vbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
+	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
 
 	popow = gtk_popover_new();
 	gtk_popover_set_position(GTK_POPOVER(popow), GTK_POS_BOTTOM);
 	gtk_widget_set_parent(popow, widget);
-	gtk_popover_set_child(GTK_POPOVER(popow), vbox);
+	gtk_popover_set_child(GTK_POPOVER(popow), lbox);
 	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
 	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1);
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);

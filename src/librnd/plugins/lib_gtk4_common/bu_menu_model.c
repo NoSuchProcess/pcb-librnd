@@ -1,6 +1,6 @@
 typedef struct {
 	lht_node_t *parent;       /* the menu node that this popover/dialog is open for */
-	GtkWidget *widget;
+	GtkWidget *lbox;
 	vtp0_t mnd;               /* lht_node_t * for each menu item as indexed in the dialog */
 	unsigned int floating:1;  /* tear-off menu; 0=popover, 1=non-modal dialog */
 	gdl_elem_t link;          /* in list of all open menus */
@@ -8,13 +8,13 @@ typedef struct {
 
 static gdl_list_t open_menu;
 
-static open_menu_t *gtkc_open_menu_new(lht_node_t *parent, GtkWidget *widget, int floating)
+static open_menu_t *gtkc_open_menu_new(lht_node_t *parent, GtkWidget *lbox, int floating)
 {
 	open_menu_t *om = calloc(sizeof(open_menu_t), 1);
 
 	om->parent = parent;
 	om->floating = floating;
-	om->widget = widget;
+	om->lbox = lbox;
 
 	gdl_append(&open_menu, om, link);
 	return om;
