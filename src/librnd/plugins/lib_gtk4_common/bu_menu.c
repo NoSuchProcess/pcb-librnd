@@ -270,7 +270,7 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 
 static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main)
 {
-	GtkWidget *popow, *lbox, *item;
+	GtkWidget *popov, *lbox, *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
 	open_menu_t *om;
@@ -283,10 +283,10 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_n = nparent;
 	}
 
-	popow = gtk_popover_new();
+	popov = gtk_popover_new();
 	lbox = gtk_list_box_new();
 
-	om = gtkc_open_menu_new(nparent, popow, lbox, 0);
+	om = gtkc_open_menu_new(nparent, popov, lbox, 0);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
 	item = gtkci_menu_tear_new();
@@ -301,19 +301,19 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
 
 
-	gtk_popover_set_position(GTK_POPOVER(popow), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
-	gtk_widget_set_parent(popow, widget);
-	gtk_popover_set_child(GTK_POPOVER(popow), lbox);
-	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
-/*	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1); -> can't pop down a child without also destroying parent, not good */
-	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
-	g_signal_connect(popow, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
-	gtk_popover_popup(GTK_POPOVER(popow));
-	g_object_set_data(G_OBJECT(popow), RND_OM, om);
+	gtk_popover_set_position(GTK_POPOVER(popov), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
+	gtk_widget_set_parent(popov, widget);
+	gtk_popover_set_child(GTK_POPOVER(popov), lbox);
+	gtk_popover_set_autohide(GTK_POPOVER(popov), 1);
+/*	gtk_popover_set_cascade_popdown(GTK_POPOVER(popov), 1); -> can't pop down a child without also destroying parent, not good */
+	gtk_popover_set_has_arrow(GTK_POPOVER(popov), 0);
+	g_signal_connect(popov, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
+	gtk_popover_popup(GTK_POPOVER(popov));
+	g_object_set_data(G_OBJECT(popov), RND_OM, om);
 
 
 	if (is_main)
-		ctx->main_open_w = popow;
+		ctx->main_open_w = popov;
 }
 
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
@@ -323,10 +323,10 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 	for(om = gdl_first(&open_menu); om != NULL; om = next) {
 		next = om->link.next;
 		if (om->parent == NULL) continue;
-/*		printf("open: %s (%s == %s) popov=%p om=%p\n", om->parent->name, om->parent->parent->parent->name, mnd->name, om->popow, om);*/
+/*		printf("open: %s (%s == %s) popov=%p om=%p\n", om->parent->name, om->parent->parent->parent->name, mnd->name, om->popov, om);*/
 		if (om->parent->parent->parent == mnd) {
 /*			printf(" Close!\n");*/
-			gtk_popover_popdown(GTK_POPOVER(om->popow)); /* this will also call gtkc_open_menu_del() from unmap */
+			gtk_popover_popdown(GTK_POPOVER(om->popov)); /* this will also call gtkc_open_menu_del() from unmap */
 		}
 	}
 }
