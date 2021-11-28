@@ -2,7 +2,7 @@ typedef struct {
 	lht_node_t *parent;       /* the menu node that this popover/dialog is open for */
 	GtkWidget *popwin;        /* host popover or window/dialog - this one needs to be popped down to close this instance */
 	GtkWidget *lbox;
-	vtp0_t mnd;               /* lht_node_t * for each menu item as indexed in the dialog */
+	vtp0_t mnd;               /* lht_node_t * for each menu item as indexed in the dialog; [0] is for the tear-off and contains the menu ctx */
 	unsigned int floating:1;  /* tear-off menu; 0=popover, 1=non-modal dialog */
 	gdl_elem_t link;          /* in list of all open menus */
 } open_menu_t;

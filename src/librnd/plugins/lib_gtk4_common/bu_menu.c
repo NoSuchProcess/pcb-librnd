@@ -219,6 +219,7 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 
 	idx = gtk_list_box_row_get_index(row);
 	if (idx == 0) { /* tearoff */
+		ctx = om->mnd.array[0];
 		if (om->floating)
 			gtk_window_destroy(GTK_WINDOW(om->popwin));
 		else
@@ -309,7 +310,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 
 	item = gtkci_menu_tear_new(is_tearoff);
 	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
-	vtp0_append(&om->mnd, NULL);
+	vtp0_append(&om->mnd, ctx);
 
 	for(n = mnd->data.list.first; n != NULL; n = n->next) {
 		gtkci_menu_real_add_node(ctx, lbox, NULL, n);
