@@ -36,6 +36,7 @@
 #include "bu_menu_model.c"
 
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
+static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff);
 
 #define RND_OM "RndOM"
 #define HOVER_POPUP_DELAY_MS 500
@@ -88,9 +89,14 @@ static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label
 }
 
 
-static GtkWidget *gtkci_menu_tear_new(void)
+static GtkWidget *gtkci_menu_tear_new(int teared_off)
 {
-	GtkWidget *l = gtk_label_new("<span alpha=\"25%\"> &gt;&gt;&gt; </span>");
+	GtkWidget *l;
+
+	if (teared_off)
+		l = gtk_label_new("<span alpha=\"25%\"> &lt;&lt;&lt; </span>");
+	else
+		l = gtk_label_new("<span alpha=\"25%\"> &gt;&gt;&gt; </span>");
 	gtk_label_set_use_markup(GTK_LABEL(l), 1);
 	return l;
 }
@@ -212,9 +218,11 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 	}
 
 	idx = gtk_list_box_row_get_index(row);
-	if (idx == 0) {
-TODO("tearoff");
-		printf("tearoff!");
+	if (idx == 0) { /* tearoff */
+		if (om->floating)
+			gtk_window_destroy(GTK_WINDOW(om->popwin));
+		else
+			gtkci_menu_open(ctx, NULL, om->parent, rnd_hid_cfg_menu_field(om->parent, RND_MF_SUBMENU, NULL), 0, 1);
 		return;
 	}
 
@@ -237,15 +245,13 @@ static gboolean menu_unparent_cb(void *user_data)
 	return FALSE; /* turn timer off */
 }
 
-
-static void menu_unmap_cb(GtkWidget *widget, gpointer data)
+static void menu_unmap(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, int is_tearoff)
 {
-	rnd_gtk_menu_ctx_t *ctx = data;
 	open_menu_t *om = g_object_get_data(G_OBJECT(widget), RND_OM);
 
 	/* if menu popover being destroyed is main menu top "currently open" one,
 	   reset it so the menu system understands nothing is open */
-	if (ctx->main_open_w == widget) {
+	if (!is_tearoff && (ctx->main_open_w == widget)) {
 		ctx->main_open_w = NULL;
 		ctx->main_open_n = NULL;
 	}
@@ -261,11 +267,23 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 		rnd_message(RND_MSG_ERROR, "gtk4 bu_menu internal error: om==NULL in menu_unmap_cb\n");
 
 
+	if (!is_tearoff) {
+		/* We need to unparent the popover to destroy it, else it's only hidden.
+		   This looks like a GTK bug: if we unparent here immediately, other parts
+		   of gtk will still try to reach fields of widget. Free it only after some
+		   time. */
+		g_timeout_add(1000, menu_unparent_cb, widget);
+	}
+}
 
-	/* This looks like a GTK bug: if we unparent here immediately, other parts
-	   of gtk will still try to reach fields of widget. Free it only after some
-	   time. */
-	g_timeout_add(1000, menu_unparent_cb, widget);
+static void menu_unmap_popover_cb(GtkWidget *widget, gpointer data)
+{
+	menu_unmap(data, widget, 0);
+}
+
+static void menu_unmap_tearoff_cb(GtkWidget *widget, gpointer data)
+{
+	menu_unmap(data, widget, 1);
 }
 
 static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff)
@@ -289,7 +307,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	om = gtkc_open_menu_new(nparent, popwin, lbox, is_tearoff);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
-	item = gtkci_menu_tear_new();
+	item = gtkci_menu_tear_new(is_tearoff);
 	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
 	vtp0_append(&om->mnd, NULL);
 
@@ -299,15 +317,18 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	}
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
-	g_signal_connect(popwin, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
+
 	g_object_set_data(G_OBJECT(popwin), RND_OM, om);
 
 	if (is_tearoff) {
-		gtk_window_set_title(GTK_WINDOW(popwin), mnd->name);
+		g_signal_connect(popwin, "unmap", G_CALLBACK(menu_unmap_tearoff_cb), ctx);
+		gtk_window_set_title(GTK_WINDOW(popwin), nparent->name);
+		gtk_window_set_transient_for(GTK_WINDOW(popwin), GTK_WINDOW(ghidgui->wtop_window));
 		gtkc_dlg_add_content(GTK_DIALOG(popwin), lbox);
 		gtk_window_present(GTK_WINDOW(popwin));
 	}
 	else {
+		g_signal_connect(popwin, "unmap", G_CALLBACK(menu_unmap_popover_cb), ctx);
 		gtk_popover_set_position(GTK_POPOVER(popwin), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
 		gtk_widget_set_parent(popwin, widget);
 		gtk_popover_set_child(GTK_POPOVER(popwin), lbox);
