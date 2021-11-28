@@ -33,6 +33,8 @@
 
 #include "bu_menu.h"
 
+#include "bu_menu_model.c"
+
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main);
 
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
