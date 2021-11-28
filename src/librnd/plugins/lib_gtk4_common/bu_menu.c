@@ -253,7 +253,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
 
 	popow = gtk_popover_new();
-	gtk_popover_set_position(GTK_POPOVER(popow), GTK_POS_BOTTOM);
+	gtk_popover_set_position(GTK_POPOVER(popow), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
 	gtk_widget_set_parent(popow, widget);
 	gtk_popover_set_child(GTK_POPOVER(popow), lbox);
 	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
