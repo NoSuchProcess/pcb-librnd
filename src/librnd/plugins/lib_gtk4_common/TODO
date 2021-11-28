@@ -1,3 +1,6 @@
+optimize/cleanup:
+	- layersel should use css for label selection because real selection triggers clipboard
+
 test:
 	- the quit action
 	- top window drawign: scroll wheel zoom
