@@ -35,7 +35,7 @@
 
 #include "bu_menu_model.c"
 
-static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main);
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
 
 #define RND_OM "RndOM"
 
@@ -104,6 +104,15 @@ static int menu_is_sensitive(lht_node_t *mnd)
 	return 1;
 }
 
+static void menu_row_hover_cb(GtkEventControllerMotion* self, gdouble x, gdouble y, gpointer user_data)
+{
+	lht_node_t *mnd = user_data;
+	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
+	GtkWidget *row = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
+/*	printf("hover: %f %f <%p>\n", x, y, row);*/
+	gtkci_menu_activate(ctx, row, mnd, 0, 0);
+}
+
 static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd)
 {
 	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
@@ -142,6 +151,7 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 		const char *update_on = rnd_hid_cfg_menu_field_str(mnd, RND_MF_UPDATE_ON);
 		const char *tip = rnd_hid_cfg_menu_field_str(mnd, RND_MF_TIP);
 		const char *accel = "";
+		GtkEventController *ctrl;
 		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(mnd, RND_MF_ACCELERATOR, NULL);
 
 		if (n_keydesc != NULL)
@@ -151,10 +161,14 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 		if (tip != NULL)
 			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
+
+		ctrl = gtk_event_controller_motion_new();
+		g_signal_connect(G_OBJECT(ctrl), "enter", G_CALLBACK(menu_row_hover_cb), mnd);
+		gtk_widget_add_controller(item, ctrl);
 	}
 }
 
-static void menu_row_cb(GtkWidget *widget, gpointer data)
+static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 {
 	lht_node_t *mnd, **mnp;
 	GtkListBoxRow *row = gtk_list_box_get_selected_row(GTK_LIST_BOX(widget));
@@ -184,7 +198,7 @@ TODO("tearoff");
 	ctx = mnd->doc->root->user_data;
 	printf("Clicked menu %d: %s\n", idx, mnd->name);
 	fflush(stdout);
-	gtkci_menu_activate(ctx, row, mnd, 0);
+	gtkci_menu_activate(ctx, row, mnd, 0, 1);
 }
 
 static gboolean menu_unparent_cb(void *user_data)
@@ -250,7 +264,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		vtp0_append(&om->mnd, n);
 	}
 
-	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
+	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
 
 	popow = gtk_popover_new();
 	gtk_popover_set_position(GTK_POPOVER(popow), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
@@ -268,7 +282,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_w = popow;
 }
 
-static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main)
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
 {
 	if (!menu_is_sensitive(mnd)) {
 		printf("insensitive\n");
@@ -276,9 +290,13 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 	}
 
 	if (rnd_hid_cfg_has_submenus(mnd)) {
+TODO("close any other open popver for the parent");
 		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main);
 		return;
 	}
+
+	if (!clicked)
+		return;
 
 	printf("Activate menu %s!\n", mnd->name);
 }
@@ -292,7 +310,7 @@ static void enter_main_menu_cb(GtkEventController *controller, double x, double 
 	   button is hovered, switch to that menu (opening it without a click) */
 	if ((ctx->main_open_w != NULL) && (ctx->main_open_n != mm)) {
 		GtkWidget *widget = gtk_event_controller_get_widget(controller);
-		gtkci_menu_activate(ctx, widget, mm, 1);
+		gtkci_menu_activate(ctx, widget, mm, 1, 1);
 	}
 }
 
@@ -301,7 +319,7 @@ static void open_main_menu_cb(GtkWidget *widget, gpointer data)
 	lht_node_t *mm = data;
 	rnd_gtk_menu_ctx_t *ctx = mm->doc->root->user_data;
 
-	gtkci_menu_activate(ctx, widget, mm, 1);
+	gtkci_menu_activate(ctx, widget, mm, 1, 1);
 }
 
 static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_bar, const lht_node_t *base)
