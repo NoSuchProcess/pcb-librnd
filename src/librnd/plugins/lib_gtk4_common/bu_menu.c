@@ -268,9 +268,9 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 	g_timeout_add(1000, menu_unparent_cb, widget);
 }
 
-static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main)
+static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff)
 {
-	GtkWidget *popov, *lbox, *item;
+	GtkWidget *popwin, *lbox, *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
 	open_menu_t *om;
@@ -283,10 +283,10 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_n = nparent;
 	}
 
-	popov = gtk_popover_new();
+	popwin = is_tearoff ? gtk_dialog_new() : gtk_popover_new();
 	lbox = gtk_list_box_new();
 
-	om = gtkc_open_menu_new(nparent, popov, lbox, 0);
+	om = gtkc_open_menu_new(nparent, popwin, lbox, is_tearoff);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
 	item = gtkci_menu_tear_new();
@@ -299,21 +299,26 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	}
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
+	g_signal_connect(popwin, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
+	g_object_set_data(G_OBJECT(popwin), RND_OM, om);
 
-
-	gtk_popover_set_position(GTK_POPOVER(popov), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
-	gtk_widget_set_parent(popov, widget);
-	gtk_popover_set_child(GTK_POPOVER(popov), lbox);
-	gtk_popover_set_autohide(GTK_POPOVER(popov), 1);
-/*	gtk_popover_set_cascade_popdown(GTK_POPOVER(popov), 1); -> can't pop down a child without also destroying parent, not good */
-	gtk_popover_set_has_arrow(GTK_POPOVER(popov), 0);
-	g_signal_connect(popov, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
-	gtk_popover_popup(GTK_POPOVER(popov));
-	g_object_set_data(G_OBJECT(popov), RND_OM, om);
-
+	if (is_tearoff) {
+		gtk_window_set_title(GTK_WINDOW(popwin), mnd->name);
+		gtkc_dlg_add_content(GTK_DIALOG(popwin), lbox);
+		gtk_window_present(GTK_WINDOW(popwin));
+	}
+	else {
+		gtk_popover_set_position(GTK_POPOVER(popwin), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
+		gtk_widget_set_parent(popwin, widget);
+		gtk_popover_set_child(GTK_POPOVER(popwin), lbox);
+		gtk_popover_set_autohide(GTK_POPOVER(popwin), 1);
+	/*	gtk_popover_set_cascade_popdown(GTK_POPOVER(popwin), 1); -> can't pop down a child without also destroying parent, not good */
+		gtk_popover_set_has_arrow(GTK_POPOVER(popwin), 0);
+		gtk_popover_popup(GTK_POPOVER(popwin));
+	}
 
 	if (is_main)
-		ctx->main_open_w = popov;
+		ctx->main_open_w = popwin;
 }
 
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
@@ -324,9 +329,9 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 		next = om->link.next;
 		if (om->parent == NULL) continue;
 /*		printf("open: %s (%s == %s) popov=%p om=%p\n", om->parent->name, om->parent->parent->parent->name, mnd->name, om->popov, om);*/
-		if (om->parent->parent->parent == mnd) {
+		if (!om->floating && (om->parent->parent->parent == mnd)) {
 /*			printf(" Close!\n");*/
-			gtk_popover_popdown(GTK_POPOVER(om->popov)); /* this will also call gtkc_open_menu_del() from unmap */
+			gtk_popover_popdown(GTK_POPOVER(om->popwin)); /* this will also call gtkc_open_menu_del() from unmap */
 		}
 	}
 }
@@ -342,7 +347,7 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 		lht_node_t *parent = mnd->parent->parent;
 		if (rnd_hid_cfg_has_submenus(parent))
 			menu_close_subs(ctx, parent);
-		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main);
+		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main, 0);
 		return;
 	}
 
