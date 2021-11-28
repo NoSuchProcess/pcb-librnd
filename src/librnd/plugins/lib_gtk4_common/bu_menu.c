@@ -33,6 +33,8 @@
 
 #include "bu_menu.h"
 
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main);
+
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
 
@@ -88,6 +90,16 @@ static GtkWidget *gtkci_menu_tear_new(void)
 	return l;
 }
 
+static int menu_is_sensitive(lht_node_t *mnd)
+{
+	const char *senss = rnd_hid_cfg_menu_field_str(mnd, RND_MF_SENSITIVE);
+
+	if ((senss != NULL) && (strcmp(senss, "false") == 0))
+		return 0;
+
+	return 1;
+}
+
 static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd)
 {
 	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
@@ -124,19 +136,14 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 	else {
 		const char *checked = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
 		const char *update_on = rnd_hid_cfg_menu_field_str(mnd, RND_MF_UPDATE_ON);
-		const char *senss = rnd_hid_cfg_menu_field_str(mnd, RND_MF_SENSITIVE);
 		const char *tip = rnd_hid_cfg_menu_field_str(mnd, RND_MF_TIP);
 		const char *accel = "";
 		lht_node_t *n_keydesc = rnd_hid_cfg_menu_field(mnd, RND_MF_ACCELERATOR, NULL);
-		int sens = 1;
 
 		if (n_keydesc != NULL)
 			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
 
-		if ((senss != NULL) && (strcmp(senss, "false") == 0))
-			sens = 0;
-
-		item = gtkci_menu_item_new(text, accel, (checked != NULL), rnd_hid_cfg_has_submenus(mnd), sens);
+		item = gtkci_menu_item_new(text, accel, (checked != NULL), rnd_hid_cfg_has_submenus(mnd), menu_is_sensitive(mnd));
 		if (tip != NULL)
 			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
@@ -145,10 +152,15 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 
 static void menu_row_cb(GtkWidget *widget, gpointer data)
 {
+	lht_node_t *mnd;
 	GtkListBoxRow *row = gtk_list_box_get_selected_row(GTK_LIST_BOX(widget));
 
-	printf("Clicked menu %d\n", gtk_list_box_row_get_index(row));
+/*
+	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
+	printf("Clicked menu %d: %s\n", gtk_list_box_row_get_index(row), mnd->name);
 	fflush(stdout);
+	gtkci_menu_activate(ctx, widget, mnd, 0);
+	*/
 }
 
 static gboolean menu_unparent_cb(void *user_data)
@@ -215,11 +227,17 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main)
 {
+	if (!menu_is_sensitive(mnd)) {
+		printf("insensitive\n");
+		return;
+	}
+
 	if (rnd_hid_cfg_has_submenus(mnd)) {
 		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main);
 		return;
 	}
-	printf("Activate menu!\n");
+
+	printf("Activate menu %s!\n", mnd->name);
 }
 
 static void enter_main_menu_cb(GtkEventController *controller, double x, double y, gpointer data)
