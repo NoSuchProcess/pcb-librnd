@@ -37,6 +37,8 @@
 
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main);
 
+#define RND_OM "RndOM"
+
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
 
@@ -154,15 +156,35 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 
 static void menu_row_cb(GtkWidget *widget, gpointer data)
 {
-	lht_node_t *mnd;
+	lht_node_t *mnd, **mnp;
 	GtkListBoxRow *row = gtk_list_box_get_selected_row(GTK_LIST_BOX(widget));
+	open_menu_t *om = g_object_get_data(G_OBJECT(widget), RND_OM);
+	rnd_gtk_menu_ctx_t *ctx;
+	int idx;
 
-/*
-	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
-	printf("Clicked menu %d: %s\n", gtk_list_box_row_get_index(row), mnd->name);
+	if (om == NULL) {
+		rnd_message(RND_MSG_ERROR, "gtk4 bu_menu internal error: om==NULL in menu_row_cb\n");
+		return;
+	}
+
+	idx = gtk_list_box_row_get_index(row);
+	if (idx == 0) {
+TODO("tearoff");
+		printf("tearoff!");
+		return;
+	}
+
+	mnp = (lht_node_t **)vtp0_get(&om->mnd, idx, 0);
+	if ((mnp == NULL) || (*mnp == NULL)) {
+		rnd_message(RND_MSG_ERROR, "gtk4 bu_menu internal error: mnp==NULL in menu_row_cb\n");
+		return;
+	}
+	mnd = *mnp;
+
+	ctx = mnd->doc->root->user_data;
+	printf("Clicked menu %d: %s\n", idx, mnd->name);
 	fflush(stdout);
-	gtkci_menu_activate(ctx, widget, mnd, 0);
-	*/
+	gtkci_menu_activate(ctx, row, mnd, 0);
 }
 
 static gboolean menu_unparent_cb(void *user_data)
@@ -175,6 +197,7 @@ static gboolean menu_unparent_cb(void *user_data)
 static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 {
 	rnd_gtk_menu_ctx_t *ctx = data;
+	open_menu_t *om = g_object_get_data(G_OBJECT(widget), RND_OM);
 
 	/* if menu popover being destroyed is main menu top "currently open" one,
 	   reset it so the menu system understands nothing is open */
@@ -182,6 +205,16 @@ static void menu_unmap_cb(GtkWidget *widget, gpointer data)
 		ctx->main_open_w = NULL;
 		ctx->main_open_n = NULL;
 	}
+
+	if (om != NULL) {
+		g_object_set_data(G_OBJECT(om->lbox), RND_OM, NULL);
+		g_object_set_data(G_OBJECT(widget), RND_OM, NULL);
+		gtkc_open_menu_del(om);
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "gtk4 bu_menu internal error: om==NULL in menu_unmap_cb\n");
+
+
 
 	/* This looks like a GTK bug: if we unparent here immediately, other parts
 	   of gtk will still try to reach fields of widget. Free it only after some
@@ -194,6 +227,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	GtkWidget *popow, *lbox, *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
+	open_menu_t *om;
 
 	if (is_main) {
 		if (ctx->main_open_w != NULL) {
@@ -204,12 +238,17 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	}
 
 	lbox = gtk_list_box_new();
+	om = gtkc_open_menu_new(nparent, lbox, 0);
+	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
 	item = gtkci_menu_tear_new();
 	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
+	vtp0_append(&om->mnd, NULL);
 
-	for(n = mnd->data.list.first; n != NULL; n = n->next)
+	for(n = mnd->data.list.first; n != NULL; n = n->next) {
 		gtkci_menu_real_add_node(ctx, lbox, NULL, n);
+		vtp0_append(&om->mnd, n);
+	}
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_cb), NULL);
 
@@ -222,6 +261,8 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
 	g_signal_connect(popow, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
 	gtk_popover_popup(GTK_POPOVER(popow));
+	g_object_set_data(G_OBJECT(popow), RND_OM, om);
+
 
 	if (is_main)
 		ctx->main_open_w = popow;
