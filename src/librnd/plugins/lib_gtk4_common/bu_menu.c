@@ -283,8 +283,10 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_n = nparent;
 	}
 
+	popow = gtk_popover_new();
 	lbox = gtk_list_box_new();
-	om = gtkc_open_menu_new(nparent, lbox, 0);
+
+	om = gtkc_open_menu_new(nparent, popow, lbox, 0);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
 	item = gtkci_menu_tear_new();
@@ -298,12 +300,12 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
 
-	popow = gtk_popover_new();
+
 	gtk_popover_set_position(GTK_POPOVER(popow), is_main ? GTK_POS_BOTTOM : GTK_POS_RIGHT);
 	gtk_widget_set_parent(popow, widget);
 	gtk_popover_set_child(GTK_POPOVER(popow), lbox);
 	gtk_popover_set_autohide(GTK_POPOVER(popow), 1);
-	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1);
+/*	gtk_popover_set_cascade_popdown(GTK_POPOVER(popow), 1); -> can't pop down a child without also destroying parent, not good */
 	gtk_popover_set_has_arrow(GTK_POPOVER(popow), 0);
 	g_signal_connect(popow, "unmap", G_CALLBACK(menu_unmap_cb), ctx);
 	gtk_popover_popup(GTK_POPOVER(popow));
@@ -314,6 +316,21 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 		ctx->main_open_w = popow;
 }
 
+static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
+{
+	open_menu_t *om, *next;
+
+	for(om = gdl_first(&open_menu); om != NULL; om = next) {
+		next = om->link.next;
+		if (om->parent == NULL) continue;
+/*		printf("open: %s (%s == %s) popov=%p om=%p\n", om->parent->name, om->parent->parent->parent->name, mnd->name, om->popow, om);*/
+		if (om->parent->parent->parent == mnd) {
+/*			printf(" Close!\n");*/
+			gtk_popover_popdown(GTK_POPOVER(om->popow)); /* this will also call gtkc_open_menu_del() from unmap */
+		}
+	}
+}
+
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
 {
 	if (!menu_is_sensitive(mnd)) {
@@ -322,7 +339,9 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 	}
 
 	if (rnd_hid_cfg_has_submenus(mnd)) {
-TODO("close any other open popver for the parent");
+		lht_node_t *parent = mnd->parent->parent;
+		if (rnd_hid_cfg_has_submenus(parent))
+			menu_close_subs(ctx, parent);
 		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main);
 		return;
 	}
