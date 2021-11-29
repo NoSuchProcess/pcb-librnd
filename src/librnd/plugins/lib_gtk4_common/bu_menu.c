@@ -79,12 +79,10 @@ static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label
 	gtkc_box_pack_append(hbox, spring, 1, 0);
 	gtkc_box_pack_append(hbox, accel, 0, 0);
 
-	if (arrow)
+	if (arrow) {
 		aw = gtk_label_new(" > ");
-	else
-		aw = gtk_label_new("     ");
-
-	gtkc_box_pack_append(hbox, aw, 0, 0);
+		gtkc_box_pack_append(hbox, aw, 0, 0);
+	}
 
 	return hbox;
 }
