@@ -37,6 +37,7 @@
 
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
 static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff);
+static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
 
 #define RND_OM "RndOM"
 #define HOVER_POPUP_DELAY_MS 500
@@ -127,9 +128,19 @@ static gboolean hover_timer_cb(void *user_data)
 	return FALSE;  /* Turns timer off */
 }
 
+static gboolean sel_timer_cb(void *user_data)
+{
+	GtkWidget *real_row = user_data;
+	GtkWidget *popwin = gtk_widget_get_parent(real_row);
+/*printf("  select[%p] %p -> %p!\n", popwin, real_row, gtk_list_box_get_selected_row(GTK_LIST_BOX(popwin)));*/
+	gtk_list_box_select_row(GTK_LIST_BOX(popwin), GTK_LIST_BOX_ROW(real_row));
+	return FALSE;  /* Turns timer off */
+}
+
+
 static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
 {
-	lht_node_t *mnd = user_data;
+	lht_node_t *old, *mnd = user_data;
 	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
 	GtkWidget *row = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self)); /* row hbox */
 	GtkWidget *real_row = gtk_widget_get_parent(row); /* GtkListBoxRow hosting the hbox */
@@ -139,14 +150,31 @@ static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble
 
 	assert(om != NULL);
 
+	old = ctx->hover_mnd;
+
 	stop_hover_timer(ctx);
 	ctx->hover_mnd = mnd;
 	ctx->hover_row = row;
 	ctx->hover_timer = g_timeout_add(HOVER_POPUP_DELAY_MS, (GSourceFunc)hover_timer_cb, ctx);
 
-	if (!om->floating)
-		gtk_list_box_select_row(GTK_LIST_BOX(popwin), GTK_LIST_BOX_ROW(real_row));
+/*printf("mnd=%p %s\n", mnd, mnd->name);*/
+
+	if (mnd == old)
+		return; /* don't trigger for staying with the same */
+
+	if (!om->floating) {
+		lht_node_t *parent = mnd->parent->parent;
+		g_timeout_add(10, (GSourceFunc)sel_timer_cb, real_row);
+		if (rnd_hid_cfg_has_submenus(parent))
+			menu_close_subs(ctx, parent);
+	}
 }
+
+/*static void menu_row_sel_cb(GtkWidget *widget, GtkWidget *row, void *data)
+{
+	printf("selected[%p]: %p\n", widget, row);
+}*/
+
 
 static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
 {
@@ -326,6 +354,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	}
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
+/*	g_signal_connect(lbox, "row-selected", G_CALLBACK(menu_row_sel_cb), NULL);*/
 
 	g_object_set_data(G_OBJECT(popwin), RND_OM, om);
 
