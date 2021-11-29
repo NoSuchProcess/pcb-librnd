@@ -417,10 +417,10 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 		return;
 	}
 
-	if (!clicked)
-		return;
-
-	printf("Activate menu %s!\n", mnd->name);
+	if (clicked) {
+		lht_node_t *n_action = rnd_hid_cfg_menu_field(mnd, RND_MF_ACTION, NULL);
+		rnd_hid_cfg_action(ghidgui->hidlib, n_action);
+	}
 }
 
 static void enter_main_menu_cb(GtkEventController *controller, double x, double y, gpointer data)
