@@ -179,6 +179,7 @@ static void rnd_hook_detect_hid()
 		else {
 			report_repeat("WARNING: Since there's no libgtk4 and libepoxy found, disabling hid_gtk4_gl...\n");
 			hook_custom_arg("disable-hid_gtk4_gl", NULL);
+			hook_custom_arg("disable-lib_gtk4_common", NULL);
 		}
 	}
 
@@ -244,6 +245,8 @@ static void rnd_hook_detect_hid()
 			hook_custom_arg("disable-hid_gtk2_gdk", NULL);
 			hook_custom_arg("disable-hid_gtk2_gl", NULL);
 			hook_custom_arg("disable-hid_gtk4_gl", NULL);
+			hook_custom_arg("disable-lib_gtk2_common", NULL);
+			hook_custom_arg("disable-lib_gtk4_common", NULL);
 		}
 	}
 }
