@@ -164,7 +164,16 @@ static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble
 
 	if (!om->floating) {
 		lht_node_t *parent = mnd->parent->parent;
+
+		/* Gtk4 bug: if autohide is set, gtk_popover_show() will move the focus to
+		   the next row automatically as a side effect. So if a middle item has
+		   a submenu, the item is hover-selected, the submenu is open, then cusor
+		   hovers up one item, the submenu is closed; but then popover automatically
+		   selects the _next_ item, overriding our seleciton of the previous item.
+		   It can not be turned off. Workaround: run our selection from a timer
+		   after this builtin focus move */
 		g_timeout_add(10, (GSourceFunc)sel_timer_cb, real_row);
+
 		if (rnd_hid_cfg_has_submenus(parent))
 			menu_close_subs(ctx, parent);
 	}
