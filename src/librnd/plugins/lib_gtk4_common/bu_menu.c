@@ -247,6 +247,15 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 	}
 }
 
+static void main_menu_popdown_all(rnd_gtk_menu_ctx_t *ctx)
+{
+	if (ctx->main_open_w != NULL) {
+		gtk_popover_popdown(GTK_POPOVER(ctx->main_open_w));
+		ctx->main_open_w = NULL;
+		ctx->main_open_n = NULL;
+	}
+}
+
 static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 {
 	lht_node_t *mnd, **mnp;
@@ -263,10 +272,13 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 	idx = gtk_list_box_row_get_index(row);
 	if (idx == 0) { /* tearoff */
 		ctx = om->mnd.array[0];
-		if (om->floating)
+		if (om->floating) {
 			gtk_window_destroy(GTK_WINDOW(om->popwin));
-		else
+		}
+		else {
 			gtkci_menu_open(ctx, NULL, om->parent, rnd_hid_cfg_menu_field(om->parent, RND_MF_SUBMENU, NULL), 0, 1);
+			main_menu_popdown_all(ctx);
+		}
 		return;
 	}
 
@@ -338,10 +350,7 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	open_menu_t *om;
 
 	if (is_main) {
-		if (ctx->main_open_w != NULL) {
-			gtk_popover_popdown(GTK_POPOVER(ctx->main_open_w));
-			ctx->main_open_w = NULL;
-		}
+		main_menu_popdown_all(ctx);
 		ctx->main_open_n = nparent;
 	}
 
@@ -419,6 +428,7 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 
 	if (clicked) {
 		lht_node_t *n_action = rnd_hid_cfg_menu_field(mnd, RND_MF_ACTION, NULL);
+		main_menu_popdown_all(ctx);
 		rnd_hid_cfg_action(ghidgui->hidlib, n_action);
 	}
 }
