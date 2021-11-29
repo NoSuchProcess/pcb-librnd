@@ -131,13 +131,21 @@ static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble
 {
 	lht_node_t *mnd = user_data;
 	rnd_gtk_menu_ctx_t *ctx = mnd->doc->root->user_data;
-	GtkWidget *row = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self));
+	GtkWidget *row = gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self)); /* row hbox */
+	GtkWidget *real_row = gtk_widget_get_parent(row); /* GtkListBoxRow hosting the hbox */
+	GtkWidget *popwin = gtk_widget_get_parent(real_row);
+	open_menu_t *om = g_object_get_data(G_OBJECT(popwin), RND_OM);
 /*	printf("hover: %f %f <%p>\n", x, y, row);*/
+
+	assert(om != NULL);
 
 	stop_hover_timer(ctx);
 	ctx->hover_mnd = mnd;
 	ctx->hover_row = row;
 	ctx->hover_timer = g_timeout_add(HOVER_POPUP_DELAY_MS, (GSourceFunc)hover_timer_cb, ctx);
+
+	if (!om->floating)
+		gtk_list_box_select_row(GTK_LIST_BOX(popwin), GTK_LIST_BOX_ROW(real_row));
 }
 
 static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdouble y, gpointer user_data)
