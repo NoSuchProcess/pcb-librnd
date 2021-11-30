@@ -3,6 +3,7 @@ typedef struct {
 	GtkWidget *popwin;        /* host popover or window/dialog - this one needs to be popped down to close this instance */
 	GtkWidget *lbox;
 	vtp0_t mnd;               /* lht_node_t * for each menu item as indexed in the dialog; [0] is for the tear-off and contains the menu ctx */
+	vtp0_t confnat;           /* rnd_conf_native_t * for each menu item that has a checkbox */
 	unsigned int floating:1;  /* tear-off menu; 0=popover, 1=non-modal dialog */
 	gdl_elem_t link;          /* in list of all open menus */
 } open_menu_t;
@@ -25,6 +26,7 @@ static open_menu_t *gtkc_open_menu_new(lht_node_t *parent, GtkWidget *popwin, Gt
 static void gtkc_open_menu_del(open_menu_t *om)
 {
 	vtp0_uninit(&om->mnd);
+	vtp0_uninit(&om->confnat);
 	gdl_remove(&open_menu, om, link);
 	free(om);
 }

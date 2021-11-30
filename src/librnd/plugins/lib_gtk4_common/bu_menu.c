@@ -43,9 +43,65 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
 #define HOVER_POPUP_DELAY_MS 500
 #define gtk4_listrow_focus_bug 1
 
+static void menu_set_label_insens(GtkWidget *l)
+{
+	gtkci_widget_css_add(l, "*.insens {\ncolor: #777777;\n}\n", "insens");
+}
+
+static void maybe_set_chkbtn(GtkWidget *chk, int v)
+{
+	int curr = gtk_check_button_get_active(GTK_CHECK_BUTTON(chk));
+	if (curr == v) return;
+	gtk_check_button_set_active(GTK_CHECK_BUTTON(chk), v);
+}
+
+static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
+{
+	int n, v;
+	GtkWidget *real_row, *hbox, *chk, *lab, *w;
+
+	real_row = gtk_widget_get_first_child(om->lbox);
+	real_row = gtk_widget_get_next_sibling(real_row);
+	for(n = 1; n < om->mnd.used; n++, real_row = gtk_widget_get_next_sibling(real_row)) {
+		rnd_conf_native_t *confnat = om->confnat.array[n];
+		if (confnat != NULL) {
+			lht_node_t *mnd = om->mnd.array[n];
+			hbox = gtk_widget_get_first_child(real_row);
+			const char *tf;
+
+			if (!GTK_IS_BOX(hbox)) continue;
+
+			lab = chk = NULL;
+			for(w = gtk_widget_get_first_child(hbox); w != NULL; w = gtk_widget_get_next_sibling(w)) {
+				if ((chk == NULL) && (GTK_IS_CHECK_BUTTON(w)))
+						chk = w;
+				if ((lab == NULL) && (GTK_IS_LABEL(w)))
+						lab = w;
+				if ((chk != NULL) && (lab != NULL))
+					break;
+			}
+			if (chk == NULL) continue;
+
+			tf = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
+			if (tf == NULL) continue;
+
+			v = rnd_hid_get_flag(hidlib, tf);
+			if (v < 0) {
+				maybe_set_chkbtn(chk, 0);
+				if (lab != NULL)
+					menu_set_label_insens(lab);
+			}
+			else
+				maybe_set_chkbtn(chk, !!v);
+		}
+	}
+}
+
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
-
+	open_menu_t *om;
+	for(om = gdl_first(&open_menu); om != NULL; om = om->link.next)
+		menu_update_toggle_state(hidlib, om);
 }
 
 int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
@@ -58,7 +114,7 @@ int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd)
 	return -1;
 }
 
-static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label, int check, int arrow, int sensitive)
+static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label, const char *accel_label, const char *update_on, const char *checked, int arrow, int sensitive, rnd_conf_native_t **confnat)
 {
 	GtkWidget *chk, *aw;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 5);
@@ -66,14 +122,40 @@ static GtkWidget *gtkci_menu_item_new(const char *label, const char *accel_label
 	GtkWidget *l = gtk_label_new(label);
 	GtkWidget *accel = gtk_label_new(accel_label);
 
-	if (!check) {
-		chk = gtk_image_new_from_paintable(gdk_paintable_new_empty(64,64));
-	}
-	else
+	if ((update_on != NULL) || (checked != NULL)) {
+		rnd_conf_native_t *nat = NULL;
+
 		chk = gtk_check_button_new();
+		TODO("Code dup with gtk2: rnd_gtk_add_menu");
+		if (update_on != NULL)
+			nat = rnd_conf_get_field(update_on);
+		else
+			nat = rnd_conf_get_field(checked);
+
+		if (nat != NULL) {
+			static rnd_conf_hid_callbacks_t cbs;
+			static int cbs_inited = 0;
+			if (!cbs_inited) {
+				memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
+				cbs.val_change_post = ctx->confchg_checkbox;
+				cbs_inited = 1;
+			}
+			rnd_conf_hid_set_cb(nat, ctx->rnd_gtk_menuconf_id, &cbs);
+		}
+		else {
+			if ((update_on == NULL) || (*update_on != '\0'))
+				rnd_message(RND_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+		}
+
+		*confnat = nat;
+	}
+	else {
+		chk = gtk_image_new_from_paintable(gdk_paintable_new_empty(64,64));
+		*confnat = NULL;
+	}
 
 	if (!sensitive)
-		gtkci_widget_css_add(l, "*.insens {\ncolor: #777777;\n}\n", "insens");
+		menu_set_label_insens(l);
 
 	gtkc_box_pack_append(hbox, chk, 0, 0);
 	gtkc_box_pack_append(hbox, l, 0, 0);
@@ -193,12 +275,14 @@ static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdoub
 	stop_hover_timer(ctx);
 }
 
-static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd)
+static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd, rnd_conf_native_t **confnat)
 {
 	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
 	GtkWidget *item, *ch;
 	GtkListBoxRow *row;
 	int after = -1;
+
+	*confnat = NULL;
 
 	/* figure where to insert by index (count widgets) */
 	if (after_w != NULL) {
@@ -237,7 +321,7 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 		if (n_keydesc != NULL)
 			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
 
-		item = gtkci_menu_item_new(text, accel, (checked != NULL), rnd_hid_cfg_has_submenus(mnd), menu_is_sensitive(mnd));
+		item = gtkci_menu_item_new(ctx, text, accel, update_on, checked, rnd_hid_cfg_has_submenus(mnd), menu_is_sensitive(mnd), confnat);
 		if (tip != NULL)
 			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
@@ -365,10 +449,14 @@ static void gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node
 	item = gtkci_menu_tear_new(is_tearoff);
 	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
 	vtp0_append(&om->mnd, ctx);
+	vtp0_append(&om->confnat, NULL);
 
 	for(n = mnd->data.list.first; n != NULL; n = n->next) {
-		gtkci_menu_real_add_node(ctx, lbox, NULL, n);
+		rnd_conf_native_t *confnat;
+
+		gtkci_menu_real_add_node(ctx, lbox, NULL, n, &confnat);
 		vtp0_append(&om->mnd, n);
+		vtp0_append(&om->confnat, confnat);
 	}
 
 	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
