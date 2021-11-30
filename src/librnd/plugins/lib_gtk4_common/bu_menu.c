@@ -128,6 +128,8 @@ static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label
 		rnd_conf_native_t *nat = NULL;
 
 		chk = gtk_check_button_new();
+		gtk_widget_set_sensitive(chk, 0); /* gtk shouldn't toggle it on click; hbox click should be relayed to core and that should then sync all menu items */
+
 		TODO("Code dup with gtk2: rnd_gtk_add_menu");
 		if (update_on != NULL)
 			nat = rnd_conf_get_field(update_on);
