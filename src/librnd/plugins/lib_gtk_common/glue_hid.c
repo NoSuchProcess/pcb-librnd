@@ -419,13 +419,13 @@ static void rnd_gtkg_open_command(rnd_hid_t *hid)
 static int rnd_gtkg_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	GtkWidget *menu = NULL;
+	void *menu = NULL;
 	lht_node_t *menu_node = rnd_hid_cfg_get_menu(hid->menu, menupath);
 
 	if (menu_node == NULL)
 		return 1;
 
-	menu = rnd_gtk_menu_widget(menu_node);
+	menu = rnd_gtk_menu_popup_pre(menu_node);
 	if (menu == NULL) {
 		rnd_message(RND_MSG_ERROR, "The specified popup menu \"%s\" has not been defined.\n", menupath);
 		return 1;

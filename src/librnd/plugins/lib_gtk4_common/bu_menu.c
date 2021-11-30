@@ -635,13 +635,12 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 	return menu_bar;
 }
 
-GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
+lht_node_t *rnd_gtk_menu_popup_pre(lht_node_t *node)
 {
-	TODO("implement me!\n");
-	return NULL;
+	return node;
 }
 
-void gtkc_menu_popup(void *gctx, GtkWidget *menu)
+void gtkc_menu_popup(void *gctx, lht_node_t *menu)
 {
 	TODO("implement me!\n");
 }

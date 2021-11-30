@@ -27,8 +27,8 @@ int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd);
 /* Load and build all menus (main menu and popups) from the rnd_gui->menu */
 GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib);
 
-/* Return the gtk widget (if already created, else NULL) for a menu node */
-GtkWidget *rnd_gtk_menu_widget(lht_node_t *node);
+/* Return the gtk widget (if already created, else NULL) for a popup menu node */
+GtkWidget *rnd_gtk_menu_popup_pre(lht_node_t *node);
 
 #define gtkc_menu_popup(gctx, menu) \
 	do { \

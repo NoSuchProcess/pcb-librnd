@@ -56,7 +56,7 @@ static menu_handle_t *handle_alloc(GtkWidget *widget, GtkWidget *destroy, GtkAct
 	return m;
 }
 
-GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
+GtkWidget *rnd_gtk_menu_popup_pre(lht_node_t *node)
 {
 	menu_handle_t *m;
 
