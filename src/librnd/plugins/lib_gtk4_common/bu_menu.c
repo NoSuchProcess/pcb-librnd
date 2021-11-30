@@ -106,11 +106,13 @@ void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menu
 
 int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
 {
+	TODO("implement me!\n");
 	return -1;
 }
 
 int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd)
 {
+	TODO("implement me!\n");
 	return -1;
 }
 
@@ -633,10 +635,12 @@ GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
 
 GtkWidget *rnd_gtk_menu_widget(lht_node_t *node)
 {
+	TODO("implement me!\n");
 	return NULL;
 }
 
 void gtkc_menu_popup(void *gctx, GtkWidget *menu)
 {
+	TODO("implement me!\n");
 }
 
