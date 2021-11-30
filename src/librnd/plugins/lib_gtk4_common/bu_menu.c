@@ -41,6 +41,7 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
 
 #define RND_OM "RndOM"
 #define HOVER_POPUP_DELAY_MS 500
+#define gtk4_listrow_focus_bug 1
 
 void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
 {
@@ -163,14 +164,15 @@ static void menu_row_hover_cb(GtkEventControllerMotion *self, gdouble x, gdouble
 	if (!om->floating) {
 		lht_node_t *parent = mnd->parent->parent;
 
-		/* Gtk4 bug: if autohide is set, gtk_popover_show() will move the focus to
+		/* Gtk4 bug #6: if autohide is set, gtk_popover_show() will move the focus to
 		   the next row automatically as a side effect. So if a middle item has
 		   a submenu, the item is hover-selected, the submenu is open, then cusor
 		   hovers up one item, the submenu is closed; but then popover automatically
 		   selects the _next_ item, overriding our seleciton of the previous item.
 		   It can not be turned off. Workaround: run our selection from a timer
 		   after this builtin focus move */
-		g_timeout_add(10, (GSourceFunc)sel_timer_cb, real_row);
+		if (gtk4_listrow_focus_bug)
+			g_timeout_add(10, (GSourceFunc)sel_timer_cb, real_row);
 
 		if (rnd_hid_cfg_has_submenus(parent))
 			menu_close_subs(ctx, parent);
@@ -411,11 +413,22 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 	}
 }
 
+/* Execute actions for a menu or open a submenu */
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
 {
 	if (!menu_is_sensitive(mnd)) {
 		printf("insensitive\n");
 		return;
+	}
+
+	if (!is_main && gtk4_listrow_focus_bug) {  /* see: gtk4 bug #6 */
+		GtkWidget *real_row = widget;
+
+		if (!GTK_IS_LIST_BOX_ROW(real_row))
+			real_row = gtk_widget_get_parent(real_row); /* GtkListBoxRow hosting the hbox that's passed */
+		assert(GTK_IS_LIST_BOX_ROW(real_row));
+
+		g_timeout_add(10, (GSourceFunc)sel_timer_cb, real_row);
 	}
 
 	if (rnd_hid_cfg_has_submenus(mnd)) {
