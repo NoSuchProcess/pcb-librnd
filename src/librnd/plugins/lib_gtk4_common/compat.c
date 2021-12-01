@@ -372,3 +372,14 @@ void gtkci_widget_css_del(GtkWidget *widget, const char *namspc)
 	gtk_style_context_remove_class(context, namspc);
 }
 
+
+void gtkc_widget_modify_bg_(GtkWidget *w, rnd_gtk_color_t *color)
+{
+	char tmp[256];
+
+	rnd_snprintf(tmp, sizeof(tmp),
+		"*.wbgc {\nbackground-image: none;\nbackground-color: #%02x%02x%02x;\n}\n",
+		rnd_round(color->red*255.0), rnd_round(color->green*255.0), rnd_round(color->blue*255.0));
+	gtkci_widget_css_del(w, "wbgc");
+	gtkci_widget_css_add(w, tmp, "wbgc", 0);
+}
