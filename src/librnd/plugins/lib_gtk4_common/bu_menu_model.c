@@ -5,17 +5,19 @@ typedef struct {
 	vtp0_t mnd;               /* lht_node_t * for each menu item as indexed in the dialog; [0] is for the tear-off and contains the menu ctx */
 	vtp0_t confnat;           /* rnd_conf_native_t * for each menu item that has a checkbox */
 	unsigned int floating:1;  /* tear-off menu; 0=popover, 1=non-modal dialog */
+	unsigned int ctx_popup:1; /* context popup menu; 0=normal, 1=context popup; context popups can not be teared off as they should be modal */
 	gdl_elem_t link;          /* in list of all open menus */
 } open_menu_t;
 
 static gdl_list_t open_menu;
 
-static open_menu_t *gtkc_open_menu_new(lht_node_t *parent, GtkWidget *popwin, GtkWidget *lbox, int floating)
+static open_menu_t *gtkc_open_menu_new(lht_node_t *parent, GtkWidget *popwin, GtkWidget *lbox, int floating, int ctx_popup)
 {
 	open_menu_t *om = calloc(sizeof(open_menu_t), 1);
 
 	om->parent = parent;
 	om->floating = floating;
+	om->ctx_popup = ctx_popup;
 	om->popwin = popwin;
 	om->lbox = lbox;
 

@@ -38,6 +38,7 @@
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
 static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup);
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
+static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_t *mnd);
 
 #define RND_OM "RndOM"
 #define HOVER_POPUP_DELAY_MS 500
@@ -104,16 +105,61 @@ void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menu
 		menu_update_toggle_state(hidlib, om);
 }
 
-int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+/* Remove all widgets from om's listbox and rebuild them from lihata */
+static void gtkc_menu_rebuild(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om)
 {
-	TODO("implement me!\n");
-	return -1;
+	GtkWidget *w, *next;
+	lht_node_t *mnd = rnd_hid_cfg_menu_field(om->parent, RND_MF_SUBMENU, NULL);
+
+	if (mnd == NULL)
+		return;
+
+	/* remove existing children */
+	for(w = gtk_widget_get_first_child(om->lbox); w != NULL; w = next) {
+		next = gtk_widget_get_next_sibling(w);
+		gtk_list_box_remove(GTK_LIST_BOX(om->lbox), w);
+	}
+
+	gtkci_menu_build(ctx, om, mnd);
 }
 
-int rnd_gtk_remove_menu_widget(void *ctx, lht_node_t *nd)
+/* Rebuild the open parent submenu popover/window of nd */
+static int gtkc_menu_rebuild_parent(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 {
-	TODO("implement me!\n");
-	return -1;
+	open_menu_t *om;
+	lht_node_t *parent = mnd->parent->parent;
+
+	if (!rnd_hid_cfg_has_submenus(parent))
+		return 0;
+
+	for(om = gdl_first(&open_menu); om != NULL; om = om->link.next)
+		if (om->parent == parent)
+			gtkc_menu_rebuild(ctx, om);
+
+	return 0;
+}
+
+int rnd_gtk_create_menu_widget(void *ctx_, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item)
+{
+	rnd_gtk_menu_ctx_t *ctx = ctx_;
+	return gtkc_menu_rebuild_parent(ctx, menu_item);
+}
+
+int rnd_gtk_remove_menu_widget(void *ctx_, lht_node_t *nd)
+{
+	rnd_gtk_menu_ctx_t *ctx = &ghidgui->topwin.menu;
+	open_menu_t *om;
+
+	for(om = gdl_first(&open_menu); om != NULL; om = om->link.next) {
+		if (om->parent == nd) {
+			 /* this will also call gtkc_open_menu_del() from unmap */
+			if (om->floating)
+				gtk_window_destroy(GTK_WINDOW(om->popwin));
+			else
+				gtk_popover_popdown(GTK_POPOVER(om->popwin));
+		}
+	}
+	return gtkc_menu_rebuild_parent(ctx, nd);
 }
 
 static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label, const char *accel_label, const char *update_on, const char *checked, int arrow, int sensitive, rnd_conf_native_t **confnat)
@@ -432,12 +478,40 @@ static void menu_unmap_tearoff_cb(GtkWidget *widget, gpointer data)
 	menu_unmap(data, widget, 1);
 }
 
-static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup)
+static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_t *mnd)
 {
-	GtkWidget *popwin, *lbox, *item;
+	GtkWidget *item;
 	GtkListBoxRow *row;
 	lht_node_t *n;
+
+	if (om->ctx_popup) {
+		item = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+		gtk_widget_hide(item);
+	}
+	else
+		item = gtkci_menu_tear_new(om->floating);
+
+	gtk_list_box_append(GTK_LIST_BOX(om->lbox), item);
+	vtp0_append(&om->mnd, ctx);
+	vtp0_append(&om->confnat, NULL);
+
+	for(n = mnd->data.list.first; n != NULL; n = n->next) {
+		rnd_conf_native_t *confnat;
+
+		gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &confnat);
+		vtp0_append(&om->mnd, n);
+		vtp0_append(&om->confnat, confnat);
+	}
+
+	g_signal_connect(om->lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
+/*	g_signal_connect(om->lbox, "row-selected", G_CALLBACK(menu_row_sel_cb), NULL);*/
+
+}
+
+static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup)
+{
 	open_menu_t *om;
+	GtkWidget *popwin, *lbox;
 
 	if (is_main) {
 		main_menu_popdown_all(ctx);
@@ -447,30 +521,10 @@ static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lh
 	popwin = is_tearoff ? gtk_dialog_new() : gtk_popover_new();
 	lbox = gtk_list_box_new();
 
-	om = gtkc_open_menu_new(nparent, popwin, lbox, is_tearoff);
+	om = gtkc_open_menu_new(nparent, popwin, lbox, is_tearoff, is_ctx_popup);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
-	if (is_ctx_popup) {
-		item = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-		gtk_widget_hide(item);
-	}
-	else
-		item = gtkci_menu_tear_new(is_tearoff);
-
-	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
-	vtp0_append(&om->mnd, ctx);
-	vtp0_append(&om->confnat, NULL);
-
-	for(n = mnd->data.list.first; n != NULL; n = n->next) {
-		rnd_conf_native_t *confnat;
-
-		gtkci_menu_real_add_node(ctx, lbox, NULL, n, &confnat);
-		vtp0_append(&om->mnd, n);
-		vtp0_append(&om->confnat, confnat);
-	}
-
-	g_signal_connect(lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
-/*	g_signal_connect(lbox, "row-selected", G_CALLBACK(menu_row_sel_cb), NULL);*/
+	gtkci_menu_build(ctx, om, mnd);
 
 	g_object_set_data(G_OBJECT(popwin), RND_OM, om);
 
@@ -500,6 +554,7 @@ static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lh
 		ctx->main_open_w = popwin;
 
 	return popwin;
+
 }
 
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
