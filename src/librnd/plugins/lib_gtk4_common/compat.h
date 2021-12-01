@@ -185,11 +185,14 @@ static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkMo
 
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 {
-	/* race condition... */
-	if (set)
+	if (set) {
+		gtkci_widget_css_add(widget, "@define-color theme_selected_bg_color #ff0000;\n@define-color theme_selected_fg_color #000000;\n\n", "selbgc", 1);
 		gtkci_widget_css_add(widget, "*.selbg {\nbackground-image: none;\nbackground-color: @theme_selected_bg_color;\ncolor: @theme_selected_fg_color;\n}\n", "selbg", 0);
-	else
+	}
+	else {
+		gtkci_widget_css_del(widget, "selbgc");
 		gtkci_widget_css_del(widget, "selbg");
+	}
 }
 
 /* gtk deprecated gtk_widget_hide_all() for some reason; this naive
