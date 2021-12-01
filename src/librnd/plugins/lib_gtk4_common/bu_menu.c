@@ -159,6 +159,14 @@ int rnd_gtk_remove_menu_widget(void *ctx_, lht_node_t *nd)
 				gtk_popover_popdown(GTK_POPOVER(om->popwin));
 		}
 	}
+
+	if (nd->type != LHT_HASH)
+		return 0;
+
+	/* We are called before nd is actually removed from the lihata document;
+	   mark nd so it is not created on menu rebuild */
+	lht_dom_hash_put(nd, lht_dom_node_alloc(LHT_TEXT, "del"));
+
 	return gtkc_menu_rebuild_parent(ctx, nd);
 }
 
@@ -482,7 +490,7 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 {
 	GtkWidget *item;
 	GtkListBoxRow *row;
-	lht_node_t *n;
+	lht_node_t *n, *mark;
 
 	if (om->ctx_popup) {
 		item = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
@@ -497,6 +505,12 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 
 	for(n = mnd->data.list.first; n != NULL; n = n->next) {
 		rnd_conf_native_t *confnat;
+
+		if (n->type == LHT_HASH) {
+			mark = lht_dom_hash_get(n, "del");
+			if (mark != NULL)
+				continue; /* being deleted, don't create */
+		}
 
 		gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &confnat);
 		vtp0_append(&om->mnd, n);
