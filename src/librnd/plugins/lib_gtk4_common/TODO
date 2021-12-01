@@ -1,14 +1,17 @@
 test:
 	- the quit action
+	- gtkc_widget_modify_bg(): orange background in file reload warning banner?
+	- full size button in top window - image button...
+	- clipboard, using board padstack proto lib dialog
+
+test-opengl:
 	- top window drawign: scroll wheel zoom
 	- top window drawign: scroll wheel pan with shift and ctrl
 	- preview window drawign: scroll wheel zoom
 	- preview window drawign: scroll wheel pan with shift and ctrl
-	- gtkc_widget_modify_bg(): orange background in file reload warning banner?
-	- full size button in top window - image button...
 	- pointer warp on X11 (ui_crosshair.c)
-	- clipboard, using board padstack proto lib dialog
 	- benchmark
+
 
 figure:
 	- gtkc_box_pack_append() padding is ignored
