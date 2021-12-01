@@ -658,7 +658,6 @@ void gtkc_menu_popup(void *gctx_, lht_node_t *mnd)
 	if (evw != NULL) {
 		rect.x = gtkc_event_x;
 		rect.y = gtkc_event_y;
-printf("x=%d y=%d\n", rect.x, rect.y);
 	}
 	else
 		evw = gctx->topwin.drawing_area;

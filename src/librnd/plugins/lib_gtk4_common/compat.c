@@ -200,6 +200,18 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, gint n_press, double x, do
 	return res;
 }
 #else
+
+/* Translate gdk event coords (screen coords) to widget relative coords */
+static inline void gdkc_widget_coords(GtkWidget *widget, double *x, double *y)
+{
+	double dx, dy;
+	GtkWidget *root = gtk_widget_get_root(widget);
+
+	gtk_widget_translate_coordinates(root, widget, *x, *y, &dx, &dy);
+	*x = dx;
+	*y = dy;
+}
+
 gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
@@ -217,6 +229,7 @@ gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 	mk = rnd_gtk_modifier_keys_state(widget, &state);
 
 	gdk_event_get_position(ev, &x, &y);
+	gdkc_widget_coords(widget, &x, &y);
 	btn = rnd_gtk_mouse_button(gdk_button_event_get_button(ev));
 
 	save = gtkc_event_widget; gtkc_event_widget = widget;
@@ -243,6 +256,7 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_
 	mk = rnd_gtk_modifier_keys_state(widget, &state);
 
 	gdk_event_get_position(ev, &x, &y);
+	gdkc_widget_coords(widget, &x, &y);
 	btn = rnd_gtk_mouse_button(gdk_button_event_get_button(ev));
 
 	save = gtkc_event_widget; gtkc_event_widget = widget;
