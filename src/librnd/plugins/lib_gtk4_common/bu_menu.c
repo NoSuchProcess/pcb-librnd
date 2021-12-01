@@ -119,6 +119,8 @@ static void gtkc_menu_rebuild(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om)
 		next = gtk_widget_get_next_sibling(w);
 		gtk_list_box_remove(GTK_LIST_BOX(om->lbox), w);
 	}
+	om->mnd.used = 0;
+	om->confnat.used = 0;
 
 	gtkci_menu_build(ctx, om, mnd);
 }
