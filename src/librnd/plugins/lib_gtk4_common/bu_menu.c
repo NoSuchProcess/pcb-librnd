@@ -46,7 +46,7 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 
 static void menu_set_label_insens(GtkWidget *l)
 {
-	gtkci_widget_css_add(l, "*.insens {\ncolor: #777777;\n}\n", "insens");
+	gtkci_widget_css_add(l, "*.insens {\ncolor: #777777;\n}\n", "insens", 0);
 }
 
 static void maybe_set_chkbtn(GtkWidget *chk, int v)
@@ -657,7 +657,7 @@ static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_
 		btn = gtk_button_new_with_label(n->name);
 		gtkc_box_pack_append(menu_bar, btn, FALSE, 0);
 		g_signal_connect(btn, "clicked", G_CALLBACK(open_main_menu_cb), n);
-		gtkci_widget_css_add(btn, "*.menubtn {\nborder: 0px; padding: 2px 6px 2px 6px;\n}\n", "menubtn");
+		gtkci_widget_css_add(btn, "*.menubtn {\nborder: 0px; padding: 2px 6px 2px 6px;\n}\n", "menubtn", 0);
 
 		ctrl = gtk_event_controller_motion_new();
 		g_signal_connect(ctrl, "enter", G_CALLBACK(enter_main_menu_cb), n);

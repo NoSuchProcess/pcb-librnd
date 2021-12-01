@@ -187,7 +187,7 @@ static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
 {
 	/* race condition... */
 	if (set)
-		gtkci_widget_css_add(widget, "*.selbg {\nbackground-image: none;\nbackground-color: @theme_selected_bg_color;\ncolor: @theme_selected_fg_color;\n}\n", "selbg");
+		gtkci_widget_css_add(widget, "*.selbg {\nbackground-image: none;\nbackground-color: @theme_selected_bg_color;\ncolor: @theme_selected_fg_color;\n}\n", "selbg", 0);
 	else
 		gtkci_widget_css_del(widget, "selbg");
 }
@@ -278,7 +278,7 @@ static inline void gtkc_workaround_image_scale_bug(GtkWidget *img, GdkPixbuf *px
 /* gtk4 CSS spaceship adds unnecessary passing around small images */
 static inline void gtkc_workaround_image_button_border_bug(GtkWidget *btn, GdkPixbuf *pxb)
 {
-	gtkci_widget_css_add(btn, "*.picbtn {\npadding: 3px;\nmargin: 0px;min-height: 2px;min-width: 2px;\n}\n", "picbtn");
+	gtkci_widget_css_add(btn, "*.picbtn {\npadding: 3px;\nmargin: 0px;min-height: 2px;min-width: 2px;\n}\n", "picbtn", 0);
 }
 
 
