@@ -666,6 +666,7 @@ void gtkc_menu_popup(void *gctx_, lht_node_t *mnd)
 	gtk_widget_set_parent(p, gtkc_event_widget);
 	gtk_popover_set_pointing_to(GTK_POPOVER(p), &rect);
 	gtk_popover_set_position(GTK_POPOVER(p), GTK_POS_RIGHT);
+	gtk_popover_set_has_arrow(GTK_POPOVER(p), 1);
 	gtk_popover_popup(GTK_POPOVER(p));
 }
 
