@@ -97,7 +97,7 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 	if (ctx->inhibit_valchg)
 		return;
 
-	dst->val.lng = gtk_toggle_button_get_active(button);
+	dst->val.lng = gtkc_check_button_get_active(button);
 	change_cb(ctx, dst);
 }
 
