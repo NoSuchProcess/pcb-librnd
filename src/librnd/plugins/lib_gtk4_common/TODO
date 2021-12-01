@@ -1,8 +1,8 @@
 optimize/cleanup:
 	- layersel should use css for label selection because real selection triggers clipboard
 
-bu_menu:
-	- load context popups
+bug:
+	- tear off the file menu; CreateMenu("/main_menu/File/foo", 1, 2, 3); RemoveMenu("/main_menu/File/foo", 3); quit using the teared off file menu -> segf
 
 test:
 	- the quit action
