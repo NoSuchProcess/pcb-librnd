@@ -1,8 +1,26 @@
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
+	- gtk4:
+		- BUG: gtkc_widget_modify_bg(): orange background in file reload warning banner
+		- BUG: match top window scroll bar widths
+		- BUG: on quit gtk hid menu is not unregistered
+		- BUG: press {:} then enter -> signal related gtk warnings
+		- BUG: select style using the mouse -> gtk warnings
+		- BUG: view/route styles menu checkboxes don't work
+		- BUG: view/route styles menu should hide @routestyles
+		- BUG: gtkc_box_pack_append() padding is ignored
+
 - 3.1.1
 	- remove gtk2 grip handle widget (dlg_topwin_grip.c)
+	- gtk4 opengl:
+		- top window drawign: scroll wheel zoom
+		- top window drawign: scroll wheel pan with shift and ctrl
+		- preview window drawign: scroll wheel zoom
+		- preview window drawign: scroll wheel pan with shift and ctrl
+		- pointer warp on X11 (ui_crosshair.c)
+		- benchmark
+
 - 4.0.0:
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
