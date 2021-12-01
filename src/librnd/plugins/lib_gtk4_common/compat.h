@@ -31,6 +31,9 @@
 
 #define RND_FOR_GTK4 1
 
+#define GTKC_LITERAL_COLOR(a,r,g,b) {.red=r/65536.0, .green=g/65536.0, .blue=b/65536.0, .alpha = a/65536.0}
+
+
 #define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk4_common/bu_menu.h>
 
 #include <gtk/gtk.h>

@@ -40,6 +40,8 @@
 #define RND_GTK_KEY(keyname)   RND_GTK2_KEY(keyname)
 #define rnd_gtkc_cursor_type_t GdkCursorType
 
+#define GTKC_LITERAL_COLOR(a,r,g,b) {a,r,g,b}
+
 #define gtkc_box_pack_append(parent_widget, child_widget, expfill, padding) \
 	gtk_box_pack_start(GTK_BOX(parent_widget), child_widget, expfill, expfill, padding)
 
