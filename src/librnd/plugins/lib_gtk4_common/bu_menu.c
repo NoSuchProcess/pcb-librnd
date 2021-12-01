@@ -518,10 +518,6 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 		vtp0_append(&om->mnd, n);
 		vtp0_append(&om->confnat, confnat);
 	}
-
-	g_signal_connect(om->lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
-/*	g_signal_connect(om->lbox, "row-selected", G_CALLBACK(menu_row_sel_cb), NULL);*/
-
 }
 
 static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup)
@@ -543,6 +539,8 @@ static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lh
 	gtkci_menu_build(ctx, om, mnd);
 
 	g_object_set_data(G_OBJECT(popwin), RND_OM, om);
+	g_signal_connect(om->lbox, "row-activated", G_CALLBACK(menu_row_click_cb), NULL);
+/*	g_signal_connect(om->lbox, "row-selected", G_CALLBACK(menu_row_sel_cb), NULL);*/
 
 	if (is_tearoff) {
 		g_signal_connect(popwin, "unmap", G_CALLBACK(menu_unmap_tearoff_cb), ctx);
