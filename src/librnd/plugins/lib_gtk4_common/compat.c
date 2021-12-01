@@ -365,3 +365,10 @@ void gtkci_widget_css_add(GtkWidget *widget, const char *css, const char *namspc
 	gtk_style_context_add_class(context, namspc);
 	g_object_unref(provider);
 }
+
+void gtkci_widget_css_del(GtkWidget *widget, const char *namspc)
+{
+	GtkStyleContext *context = gtk_widget_get_style_context(widget);
+	gtk_style_context_remove_class(context, namspc);
+}
+

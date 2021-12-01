@@ -27,6 +27,7 @@
 /* internals of compat.h that are not included in the public API, gtk4 version */
 
 void gtkci_widget_css_add(GtkWidget *widget, const char *css, const char *namspc);
+void gtkci_widget_css_del(GtkWidget *widget, const char *namspc);
 
 /* INTERNAL: set fill/exp for a widget (not part of the API, do not call from elsewhere) */
 static inline void gtkci_expfill(GtkWidget *parent, GtkWidget *w, int expfill, int start)
