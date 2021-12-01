@@ -2,7 +2,6 @@
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- gtk4:
-		- BUG: gtkc_widget_modify_bg(): orange background in file reload warning banner
 		- BUG: match top window scroll bar widths
 		- BUG: on quit gtk hid menu is not unregistered
 		- BUG: press {:} then enter -> signal related gtk warnings
