@@ -1,4 +1,5 @@
 #include "compat.h"
+#include <librnd/core/math_helper.h>
 
 void gtkc_create_resize_grip(GtkWidget *parent) {}
 
@@ -42,5 +43,13 @@ static inline GtkWidget *gtkc_hscrollbar_new(GCallback vchg, void *cbdata)
 }
 
 #endif
+
+/* make sure scrollbars are of the same thickness */
+static inline void gtkc_unify_hvscroll(GtkWidget *hscb, GtkWidget *vscb)
+{
+	gtk_widget_set_size_request(hscb, 15, 15);
+	gtk_widget_set_size_request(vscb, 15, 15);
+}
+
 
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.c>

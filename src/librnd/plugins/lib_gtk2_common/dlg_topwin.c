@@ -63,4 +63,6 @@ static inline GtkWidget *gtkc_hscrollbar_new(GCallback vchg, void *cbdata)
 	return scb;
 }
 
+#define gtkc_unify_hvscroll(hscb, vscb)
+
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.c>

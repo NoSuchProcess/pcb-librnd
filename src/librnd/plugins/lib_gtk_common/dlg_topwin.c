@@ -414,7 +414,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_box_pack_append(hbox_scroll, fullscreen_btn, FALSE, 0);
 	gtkc_box_pack_append(tw->vbox_middle, hbox_scroll, FALSE, 0);
 
-
+	gtkc_unify_hvscroll(tw->h_range, tw->v_range);
 
 	/* -- The bottom status line label */
 	tw->bottom_hbox = gtkc_hbox_new(FALSE, 0);
@@ -445,6 +445,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	gtk_widget_hide(tw->cmd.command_combo_box);
 	gtk_widget_hide(tw->cmd.prompt_label);
+
 }
 
 /* We'll set the interface insensitive when a g_main_loop is running so the
