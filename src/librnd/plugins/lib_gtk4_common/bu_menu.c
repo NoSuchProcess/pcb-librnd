@@ -36,7 +36,7 @@
 #include "bu_menu_model.c"
 
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
-static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff);
+static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup);
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
 
 #define RND_OM "RndOM"
@@ -366,7 +366,7 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 			gtk_window_destroy(GTK_WINDOW(om->popwin));
 		}
 		else {
-			gtkci_menu_open(ctx, NULL, om->parent, rnd_hid_cfg_menu_field(om->parent, RND_MF_SUBMENU, NULL), 0, 1);
+			gtkci_menu_open(ctx, NULL, om->parent, rnd_hid_cfg_menu_field(om->parent, RND_MF_SUBMENU, NULL), 0, 1, 0);
 			main_menu_popdown_all(ctx);
 		}
 		return;
@@ -432,7 +432,7 @@ static void menu_unmap_tearoff_cb(GtkWidget *widget, gpointer data)
 	menu_unmap(data, widget, 1);
 }
 
-static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff)
+static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup)
 {
 	GtkWidget *popwin, *lbox, *item;
 	GtkListBoxRow *row;
@@ -450,7 +450,13 @@ static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lh
 	om = gtkc_open_menu_new(nparent, popwin, lbox, is_tearoff);
 	g_object_set_data(G_OBJECT(lbox), RND_OM, om);
 
-	item = gtkci_menu_tear_new(is_tearoff);
+	if (is_ctx_popup) {
+		item = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+		gtk_widget_hide(item);
+	}
+	else
+		item = gtkci_menu_tear_new(is_tearoff);
+
 	gtk_list_box_append(GTK_LIST_BOX(lbox), item);
 	vtp0_append(&om->mnd, ctx);
 	vtp0_append(&om->confnat, NULL);
@@ -533,7 +539,7 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 		lht_node_t *parent = mnd->parent->parent;
 		if (rnd_hid_cfg_has_submenus(parent))
 			menu_close_subs(ctx, parent);
-		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main, 0);
+		gtkci_menu_open(ctx, widget, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), is_main, 0, 0);
 		return;
 	}
 
@@ -662,7 +668,7 @@ void gtkc_menu_popup(void *gctx_, lht_node_t *mnd)
 	else
 		evw = gctx->topwin.drawing_area;
 
-	p = gtkci_menu_open(&gctx->topwin.menu, NULL, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), 0, 0);
+	p = gtkci_menu_open(&gctx->topwin.menu, NULL, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), 0, 0, 1);
 	gtk_widget_set_parent(p, gtkc_event_widget);
 	gtk_popover_set_pointing_to(GTK_POPOVER(p), &rect);
 	gtk_popover_set_position(GTK_POPOVER(p), GTK_POS_RIGHT);
