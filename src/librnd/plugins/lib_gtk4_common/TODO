@@ -1,15 +1,12 @@
 bugs:
+	- gtkc_widget_modify_bg(): orange background in file reload warning banner
+	- match top window scroll bar widths
 	- on quit gtk hid menu is not unregistered
 	- press {:} then enter -> signal related gtk warnings
 	- select style using the mouse -> gtk warnings
 	- view/route styles menu checkboxes don't work
 	- view/route styles menu should hide @routestyles
-
-test:
-	- the quit action
-	- gtkc_widget_modify_bg(): orange background in file reload warning banner?
-	- full size button in top window - image button...
-	- clipboard, using board padstack proto lib dialog
+	- gtkc_box_pack_append() padding is ignored
 
 test-opengl:
 	- top window drawign: scroll wheel zoom
@@ -19,6 +16,3 @@ test-opengl:
 	- pointer warp on X11 (ui_crosshair.c)
 	- benchmark
 
-
-figure:
-	- gtkc_box_pack_append() padding is ignored
