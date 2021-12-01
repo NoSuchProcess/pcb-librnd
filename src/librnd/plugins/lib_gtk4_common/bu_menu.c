@@ -646,14 +646,25 @@ lht_node_t *rnd_gtk_menu_popup_pre(lht_node_t *node)
 	return node;
 }
 
+extern GtkWidget *gtkc_event_widget;
+extern double gtkc_event_x, gtkc_event_y;
+
 void gtkc_menu_popup(void *gctx_, lht_node_t *mnd)
 {
 	rnd_gtk_t *gctx = gctx_;
-	GtkWidget *p;
+	GtkWidget *p, *evw = gtkc_event_widget;
 	GdkRectangle rect = {0};
 
+	if (evw != NULL) {
+		rect.x = gtkc_event_x;
+		rect.y = gtkc_event_y;
+printf("x=%d y=%d\n", rect.x, rect.y);
+	}
+	else
+		evw = gctx->topwin.drawing_area;
+
 	p = gtkci_menu_open(&gctx->topwin.menu, NULL, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), 0, 0);
-	gtk_widget_set_parent(p, gctx->topwin.drawing_area);
+	gtk_widget_set_parent(p, gtkc_event_widget);
 	gtk_popover_set_pointing_to(GTK_POPOVER(p), &rect);
 	gtk_popover_set_position(GTK_POPOVER(p), GTK_POS_RIGHT);
 	gtk_popover_popup(GTK_POPOVER(p));

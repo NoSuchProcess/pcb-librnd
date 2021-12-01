@@ -11,6 +11,9 @@
 #ifdef GDK_WINDOWING_X11
 #include <dlfcn.h>
 
+GtkWidget *gtkc_event_widget;
+double gtkc_event_x, gtkc_event_y;
+
 Bool (*gtkc_XQueryPointer)(Display*,Window,Window*,Window*,int*,int*,int*,int*,unsigned int*) = NULL;
 int (*gtkc_XWarpPointer)(Display*,Window,Window,int,int,unsigned int,unsigned int,int,int) = NULL;
 
@@ -116,27 +119,33 @@ gint gtkc_key_press_fwd_cb(GtkEventControllerKey *self, guint keyval, guint keyc
 gint gtkc_key_press_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	GtkWidget *widget = EVCTRL_WIDGET;
-	int mods;
+	GtkWidget *widget = EVCTRL_WIDGET, *save;
+	int mods, res;
 	unsigned short int key_raw, kv;
 
 	if (rnd_gtkc_key_translate(self, keyval, keycode, state, &mods, &key_raw, &kv) != 0)
 		return FALSE;
 
-	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	res = rs->cb(widget, mods, key_raw, kv, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 
 gint gtkc_key_release_cb(GtkEventControllerKey *self, guint keyval, guint keycode, GdkModifierType state, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	GtkWidget *widget = EVCTRL_WIDGET;
-	int mods;
+	GtkWidget *widget = EVCTRL_WIDGET, *save;
+	int mods, res;
 	unsigned short int key_raw, kv;
 
 	if (rnd_gtkc_key_translate(self, keyval, keycode, state, &mods, &key_raw, &kv) != 0)
 		return FALSE;
 
-	return rs->cb(widget, mods, key_raw, kv, rs->user_data);
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	res = rs->cb(widget, mods, key_raw, kv, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 
 gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
@@ -164,29 +173,39 @@ gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
 gboolean gtkc_mouse_press_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	guint btn = rnd_gtk_mouse_button(gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self)));
+	GtkWidget *widget = EVCTRL_WIDGET, *save;
+	guint res, btn = rnd_gtk_mouse_button(gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self)));
 	GdkModifierType state = EVCTRL_STATE;
 	ModifierKeysState mk = rnd_gtk_modifier_keys_state(widget, &state);
 
-	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	gtkc_event_x = x; gtkc_event_y = y;
+	res = rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 
 gboolean gtkc_mouse_release_cb(GtkGestureClick *self, gint n_press, double x, double y, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	guint btn = rnd_gtk_mouse_button(gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self)));
+	guint res, btn = rnd_gtk_mouse_button(gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(self)));
+	GtkWidget *widget = EVCTRL_WIDGET, *save;
 	GdkModifierType state = EVCTRL_STATE;
 	ModifierKeysState mk = rnd_gtk_modifier_keys_state(widget, &state);
 
-	return rs->cb(widget, rnd_round(x), rnd_round(ev->y), btn | mk, rs->user_data);
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	gtkc_event_x = x; gtkc_event_y = y;
+	res = rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 #else
 gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
-	guint btn;
-	GtkWidget *widget;
+	guint btn, res;
+	GtkWidget *widget, *save;
 	GdkEventType type = gdk_event_get_event_type(ev);
 	GdkModifierType state;
 	ModifierKeysState mk;
@@ -199,15 +218,20 @@ gboolean gtkc_mouse_press_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 
 	gdk_event_get_position(ev, &x, &y);
 	btn = rnd_gtk_mouse_button(gdk_button_event_get_button(ev));
-	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	gtkc_event_x = x; gtkc_event_y = y;
+	res = rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 
 gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
 	double x, y;
-	guint btn;
-	GtkWidget *widget;
+	guint btn, res;
+	GtkWidget *widget, *save;
 	GdkEventType type = gdk_event_get_event_type(ev);
 	GdkModifierType state;
 	ModifierKeysState mk;
@@ -220,7 +244,12 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, GdkEvent *ev, gpointer rs_
 
 	gdk_event_get_position(ev, &x, &y);
 	btn = rnd_gtk_mouse_button(gdk_button_event_get_button(ev));
-	return rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+
+	save = gtkc_event_widget; gtkc_event_widget = widget;
+	gtkc_event_x = x; gtkc_event_y = y;
+	res = rs->cb(widget, rnd_round(x), rnd_round(y), btn | mk, rs->user_data);
+	gtkc_event_widget = save;
+	return res;
 }
 #endif
 
