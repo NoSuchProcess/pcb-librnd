@@ -1,8 +1,6 @@
 - 3.1.0
 	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
-	- gtk4:
-		- BUG: gtkc_box_pack_append() padding is ignored
 
 - 3.1.1
 	- remove gtk2 grip handle widget (dlg_topwin_grip.c)
