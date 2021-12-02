@@ -61,33 +61,33 @@ static void maybe_set_chkbtn(GtkWidget *chk, int v)
 static void menu_item_update_chkbox(rnd_hidlib_t *hidlib, lht_node_t *mnd, GtkWidget *real_row)
 {
 	int v;
-			GtkWidget *w, *lab, *chk, *hbox = gtk_widget_get_first_child(real_row);
-			const char *tf;
+	GtkWidget *w, *lab, *chk, *hbox = gtk_widget_get_first_child(real_row);
+	const char *tf;
 
-			if (!GTK_IS_BOX(hbox)) return;
+	if (!GTK_IS_BOX(hbox)) return;
 
-			lab = chk = NULL;
-			for(w = gtk_widget_get_first_child(hbox); w != NULL; w = gtk_widget_get_next_sibling(w)) {
-				if ((chk == NULL) && (GTK_IS_CHECK_BUTTON(w)))
-						chk = w;
-				if ((lab == NULL) && (GTK_IS_LABEL(w)))
-						lab = w;
-				if ((chk != NULL) && (lab != NULL))
-					break;
-			}
-			if (chk == NULL) return;
+	lab = chk = NULL;
+	for(w = gtk_widget_get_first_child(hbox); w != NULL; w = gtk_widget_get_next_sibling(w)) {
+		if ((chk == NULL) && (GTK_IS_CHECK_BUTTON(w)))
+				chk = w;
+		if ((lab == NULL) && (GTK_IS_LABEL(w)))
+				lab = w;
+		if ((chk != NULL) && (lab != NULL))
+			break;
+	}
+	if (chk == NULL) return;
 
-			tf = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
-			if (tf == NULL) return;
+	tf = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
+	if (tf == NULL) return;
 
-			v = rnd_hid_get_flag(hidlib, tf);
-			if (v < 0) {
-				maybe_set_chkbtn(chk, 0);
-				if (lab != NULL)
-					menu_set_label_insens(lab);
-			}
-			else
-				maybe_set_chkbtn(chk, !!v);
+	v = rnd_hid_get_flag(hidlib, tf);
+	if (v < 0) {
+		maybe_set_chkbtn(chk, 0);
+		if (lab != NULL)
+			menu_set_label_insens(lab);
+	}
+	else
+		maybe_set_chkbtn(chk, !!v);
 }
 
 static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
