@@ -551,7 +551,7 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 		tree_priv_t *tp = malloc(sizeof(tree_priv_t));
 		g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_TREE_PRIV, tp);
 		g_object_set_data(G_OBJECT(view), RND_OBJ_PROP_TREE_PRIV, tp);
-		tp->kpsig = gtkc_bind_key_press_fwd(view, rnd_gtkc_xyz_fwd_ev(&tp->ev, rnd_gtk_tree_table_key_press_cb, attr))
+		tp->kpsig = gtkc_bind_key_press_fwd(view, rnd_gtkc_xyz_fwd_ev(&tp->ev, rnd_gtk_tree_table_key_press_cb, attr));
 	}
 
 	return view;

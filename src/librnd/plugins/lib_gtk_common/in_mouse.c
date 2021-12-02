@@ -196,9 +196,9 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 	lctx.pressed_esc = FALSE;
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 
-	button_handler = gtkc_bind_mouse_press(ctx->topwin.drawing_area, rnd_gtkc_xy_ev(&lctx.mpress_rs, loop_button_press_cb, &lctx))
-	key_handler1 = gtkc_bind_key_press(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.kpress_rs, loop_key_press_cb, &lctx))
-	key_handler2 = gtkc_bind_key_release(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.krelease_rs, loop_key_release_cb, &lctx))
+	button_handler = gtkc_bind_mouse_press(ctx->topwin.drawing_area, rnd_gtkc_xy_ev(&lctx.mpress_rs, loop_button_press_cb, &lctx));
+	key_handler1 = gtkc_bind_key_press(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.kpress_rs, loop_key_press_cb, &lctx));
+	key_handler2 = gtkc_bind_key_release(ctx->wtop_window, rnd_gtkc_xy_ev(&lctx.krelease_rs, loop_key_release_cb, &lctx));
 
 	lctx.loop = g_main_loop_new(NULL, FALSE);
 	lctx.gctx = ctx;

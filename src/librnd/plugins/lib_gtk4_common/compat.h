@@ -318,43 +318,43 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 /* In the following all rs is gtkc_event_xyz_t, filled in by the caller */
 
 #define gtkc_bind_resize_dwg(widget, rs) \
-	g_signal_connect(G_OBJECT(GTK_WIDGET(widget)), "resize", G_CALLBACK(gtkc_resize_dwg_cb), rs);
+	g_signal_connect(G_OBJECT(GTK_WIDGET(widget)), "resize", G_CALLBACK(gtkc_resize_dwg_cb), rs)
 
 #define gtkc_bind_mouse_scroll(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_scroll(GTK_WIDGET(widget))), "scroll", G_CALLBACK(gtkc_mouse_scroll_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_scroll(GTK_WIDGET(widget))), "scroll", G_CALLBACK(gtkc_mouse_scroll_cb), ev)
 
 #define gtkc_bind_mouse_enter(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "enter", G_CALLBACK(gtkc_mouse_enter_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "enter", G_CALLBACK(gtkc_mouse_enter_cb), ev)
 
 #define gtkc_bind_mouse_leave(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "leave", G_CALLBACK(gtkc_mouse_leave_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "leave", G_CALLBACK(gtkc_mouse_leave_cb), ev)
 
 #if GTK4_BUG_ON_GESTURE_CLICK_FIXED
 #	define gtkc_bind_mouse_press(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "pressed", G_CALLBACK(gtkc_mouse_press_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "pressed", G_CALLBACK(gtkc_mouse_press_cb), ev)
 
 #	define gtkc_bind_mouse_release(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "released", G_CALLBACK(gtkc_mouse_release_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "released", G_CALLBACK(gtkc_mouse_release_cb), ev)
 #else
 #	define gtkc_bind_mouse_press(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "event", G_CALLBACK(gtkc_mouse_press_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "event", G_CALLBACK(gtkc_mouse_press_cb), ev)
 
 #	define gtkc_bind_mouse_release(widget, ev) \
-		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "event", G_CALLBACK(gtkc_mouse_release_cb), ev);
+		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "event", G_CALLBACK(gtkc_mouse_release_cb), ev)
 #endif
 
 #define gtkc_bind_mouse_motion(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "motion", G_CALLBACK(gtkc_mouse_motion_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "motion", G_CALLBACK(gtkc_mouse_motion_cb), ev)
 
 
 #define gtkc_bind_key_press_fwd(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_fwd_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_fwd_cb), ev)
 
 #define gtkc_bind_key_press(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_cb), ev)
 
 #define gtkc_bind_key_release(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-released", G_CALLBACK(gtkc_key_release_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-released", G_CALLBACK(gtkc_key_release_cb), ev)
 
 #define gtkc_unbind_key(w, ev, sig)  g_signal_handler_disconnect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(w))), sig)
 
@@ -362,15 +362,15 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 #define gtk2c_bind_win_resize(widget, ev)
 #define gtk4c_bind_win_resize(widget, ev) \
-	g_signal_connect(G_OBJECT(gtkc_win_surface(GTK_WIDGET(widget))), "layout", G_CALLBACK(gtkc_win_resize_cb), ev);
+	g_signal_connect(G_OBJECT(gtkc_win_surface(GTK_WIDGET(widget))), "layout", G_CALLBACK(gtkc_win_resize_cb), ev)
 
 #define gtkc_bind_win_destroy(widget, ev) \
-	g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev);
+	g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev)
 
 #define gtkc_bind_widget_destroy(widget, ev) gtkc_bind_win_destroy(widget, ev)
 
 #define gtkc_bind_win_delete(widget, ev) \
-	g_signal_connect(G_OBJECT(widget), "close-request", G_CALLBACK(gtkc_win_delete_cb), ev);
+	g_signal_connect(G_OBJECT(widget), "close-request", G_CALLBACK(gtkc_win_delete_cb), ev)
 
 struct gtkc_event_xyz_s;
 
