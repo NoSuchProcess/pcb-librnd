@@ -69,16 +69,27 @@ GtkResponseType gtkc_dialog_run(GtkDialog *dlg, int is_modal);
 
 typedef GdkRGBA rnd_gtk_color_t;
 
+#define gtkci_widget_padding(w, padding) \
+do { \
+	if (padding != 0) { \
+		char tmp[128]; \
+		sprintf(tmp, "*.rnd_pad {\npadding: %dpx;\n}\n", padding); \
+		gtkci_widget_css_add(w, tmp, "rnd_pad", 0); \
+	} \
+} while(0)
+
 static inline void gtkc_box_pack_append(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
 {
 	gtk_box_append(GTK_BOX(box), child);
 	gtkci_expfill(box, child, expfill, 0);
+	gtkci_widget_padding(child, padding);
 }
 
 static inline void gtkc_box_pack_append_start(GtkWidget *box, GtkWidget *child, gboolean expfill, guint padding)
 {
 	gtk_box_append(GTK_BOX(box), child);
 	gtkci_expfill(box, child, expfill, 1);
+	gtkci_widget_padding(child, padding);
 }
 
 static inline GtkWidget *gtkc_hbox_new(gboolean homogenous, gint spacing)
