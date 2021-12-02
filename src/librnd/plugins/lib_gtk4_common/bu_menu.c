@@ -336,7 +336,7 @@ static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdoub
 	stop_hover_timer(ctx);
 }
 
-static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd, rnd_conf_native_t **confnat)
+static int gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd, rnd_conf_native_t **confnat)
 {
 	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
 	GtkWidget *item, *ch;
@@ -344,6 +344,9 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 	int after = -1;
 
 	*confnat = NULL;
+
+	if ((text != NULL) && (*text == '@'))
+		return 1; /* skip creating anchors */
 
 	/* figure where to insert by index (count widgets) */
 	if (after_w != NULL) {
@@ -392,6 +395,8 @@ static void gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_
 		g_signal_connect(G_OBJECT(ctrl), "leave", G_CALLBACK(menu_row_unhover_cb), mnd);
 		gtk_widget_add_controller(item, ctrl);
 	}
+
+	return 0;
 }
 
 static void main_menu_popdown_all(rnd_gtk_menu_ctx_t *ctx)
@@ -514,9 +519,10 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 				continue; /* being deleted, don't create */
 		}
 
-		gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &confnat);
-		vtp0_append(&om->mnd, n);
-		vtp0_append(&om->confnat, confnat);
+		if (gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &confnat) == 0) {
+			vtp0_append(&om->mnd, n);
+			vtp0_append(&om->confnat, confnat);
+		}
 	}
 }
 
