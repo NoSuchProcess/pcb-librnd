@@ -257,6 +257,7 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 #define gtkc_bind_mouse_scroll(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "scroll_event", G_CALLBACK(gtkc_mouse_scroll_cb), ev)
 
+
 #define gtkc_bind_mouse_enter(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "enter_notify_event", G_CALLBACK(gtkc_mouse_enter_cb), ev)
 
@@ -271,6 +272,8 @@ static inline void gtkc_setup_events(GtkWidget *dwg, int mbutton, int mscroll, i
 
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "motion_notify_event", G_CALLBACK(gtkc_mouse_motion_cb), ev)
+
+#define gtkc_unbind_mouse_btn(w, ev, sig) g_signal_handler_disconnect(G_OBJECT(w), sig)
 
 
 #define gtkc_bind_key_press_fwd(widget, ev) \

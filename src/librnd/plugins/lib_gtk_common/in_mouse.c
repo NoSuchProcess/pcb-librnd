@@ -206,7 +206,7 @@ static int run_get_location_loop(rnd_gtk_t *ctx, const gchar * message)
 
 	g_main_loop_unref(lctx.loop);
 
-	g_signal_handler_disconnect(ctx->topwin.drawing_area, button_handler);
+	gtkc_unbind_mouse_btn(ctx->topwin.drawing_area, &lctx.mpress_rs, button_handler);
 	gtkc_unbind_key(ctx->wtop_window, &lctx.kpress_rs, key_handler1);
 	gtkc_unbind_key(ctx->wtop_window, &lctx.krelease_rs, key_handler2);
 

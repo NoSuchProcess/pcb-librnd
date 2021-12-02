@@ -238,10 +238,10 @@ static void mouse_input_singals_connect(void *obj)
 static void mouse_input_singals_disconnect(void *obj)
 {
 	if (ghidgui->button_press_handler != 0)
-		g_signal_handler_disconnect(G_OBJECT(ghidgui->port.drawing_area), ghidgui->button_press_handler);
+		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, &ghidgui->mpress_rs, ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler != 0)
-		g_signal_handler_disconnect(ghidgui->port.drawing_area, ghidgui->button_release_handler);
+		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, &ghidgui->mrelease_rs, ghidgui->button_release_handler);
 
 	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
 }

@@ -343,6 +343,10 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 		g_signal_connect(G_OBJECT(gtkc_evctrl_click(GTK_WIDGET(widget))), "event", G_CALLBACK(gtkc_mouse_release_cb), ev)
 #endif
 
+#define gtkc_unbind_mouse_btn(w, ev, sig) \
+		g_signal_handler_disconnect(gtkc_evctrl_click(GTK_WIDGET(widget))), sig);
+
+
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "motion", G_CALLBACK(gtkc_mouse_motion_cb), ev)
 
