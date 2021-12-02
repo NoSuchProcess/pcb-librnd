@@ -220,11 +220,11 @@ static void kbd_input_signals_connect(int idx, void *obj)
 static void kbd_input_signals_disconnect(int idx, void *obj)
 {
 	if (ghidgui->key_press_handler[idx] != 0) {
-		g_signal_handler_disconnect(G_OBJECT(obj), ghidgui->key_press_handler[idx]);
+		gtkc_unbind_key(G_OBJECT(obj), &ghidgui->kpress_rs, ghidgui->key_press_handler[idx]);
 		ghidgui->key_press_handler[idx] = 0;
 	}
 	if (ghidgui->key_release_handler[idx] != 0) {
-		g_signal_handler_disconnect(G_OBJECT(obj), ghidgui->key_release_handler[idx]);
+		gtkc_unbind_key(G_OBJECT(obj), &ghidgui->krelease_rs, ghidgui->key_release_handler[idx]);
 		ghidgui->key_release_handler[idx] = 0;
 	}
 }

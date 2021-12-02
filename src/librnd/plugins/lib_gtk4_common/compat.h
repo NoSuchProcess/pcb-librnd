@@ -346,6 +346,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_bind_mouse_motion(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_motion(GTK_WIDGET(widget))), "motion", G_CALLBACK(gtkc_mouse_motion_cb), ev);
 
+
 #define gtkc_bind_key_press_fwd(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-pressed", G_CALLBACK(gtkc_key_press_fwd_cb), ev);
 
@@ -354,6 +355,10 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 
 #define gtkc_bind_key_release(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(widget))), "key-released", G_CALLBACK(gtkc_key_release_cb), ev);
+
+#define gtkc_unbind_key(w, ev, sig)  g_signal_handler_disconnect(G_OBJECT(gtkc_evctrl_key(GTK_WIDGET(w))), sig)
+
+
 
 #define gtk2c_bind_win_resize(widget, ev)
 #define gtk4c_bind_win_resize(widget, ev) \
