@@ -371,6 +371,9 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_bind_win_destroy(widget, ev) \
 	g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev)
 
+#define gtkc_unbind_win_destroy(w, sig) g_signal_handler_disconnect(G_OBJECT(w), sig)
+
+
 #define gtkc_bind_widget_destroy(widget, ev) gtkc_bind_win_destroy(widget, ev)
 
 #define gtkc_bind_win_delete(widget, ev) \

@@ -712,7 +712,7 @@ static void rnd_gtk_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 	/* make sure we are not called again from the destroy signal */
 	if (ctx->dialog != NULL)
-		g_signal_handler_disconnect(ctx->dialog, ctx->destroy_handler);
+		gtkc_unbind_win_destroy(ctx->dialog, ctx->destroy_handler);
 
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
