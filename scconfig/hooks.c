@@ -200,6 +200,19 @@ static void rnd_hook_detect_hid()
 		hook_custom_arg("disable-hid_gtk4_gl", NULL);
 	}
 
+	if (has_gtk2 && has_gtk4 && (plug_is_buildin("lib_gtk2_common") || plug_is_buildin("lib_gtk4_common"))) {
+		if (plug_is_buildin("lib_gtk2_common")) {
+			hook_custom_arg("disable-hid_gtk4_gl", NULL);
+			hook_custom_arg("disable-lib_gtk4_common", NULL);
+			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk2 is builtin, disabling gtk4.\n");
+		}
+		else if (plug_is_buildin("lib_gtk4_common")) {
+			hook_custom_arg("disable-hid_gtk2_gl", NULL);
+			hook_custom_arg("disable-lib_gtk2_common", NULL);
+			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk4 is builtin, disabling gtk2.\n");
+		}
+	}
+
 	/* libs/gui/gtkx is the version-independent set of flags in the XOR model */
 	if (has_gtk2) {
 		put("/target/libs/gui/gtkx/cflags", get("/target/libs/gui/gtk2/cflags"));
