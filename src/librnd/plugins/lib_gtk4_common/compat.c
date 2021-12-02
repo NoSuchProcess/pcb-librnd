@@ -287,7 +287,7 @@ void gtkc_window_resize(GtkWindow *win, int x, int y)
 {
 #ifdef GDK_WINDOWING_X11
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
-	if (GDK_IS_X11_DISPLAY(display)) gtk_widget_show(win); /* surface will be NULL without this */
+	if (GDK_IS_X11_DISPLAY(display)) gtk_widget_show(GTK_WIDGET(win)); /* surface will be NULL without this */
 	if (GDK_IS_X11_DISPLAY(display)) {
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
@@ -303,7 +303,7 @@ void gtkc_window_move(GtkWindow *win, int x, int y)
 {
 #ifdef GDK_WINDOWING_X11
 	GdkDisplay *display = gtk_widget_get_display(GTK_WIDGET(win));
-	if (GDK_IS_X11_DISPLAY(display)) gtk_widget_show(win); /* surface will be NULL without this */
+	if (GDK_IS_X11_DISPLAY(display)) gtk_widget_show(GTK_WIDGET(win)); /* surface will be NULL without this */
 	if (GDK_IS_X11_DISPLAY(display)) {
 		GdkSurface *surf = gtkc_win_surface(GTK_WIDGET(win));
 		Display *dsp = GDK_SURFACE_XDISPLAY(surf);
