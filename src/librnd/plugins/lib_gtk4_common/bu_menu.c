@@ -58,21 +58,13 @@ static void maybe_set_chkbtn(GtkWidget *chk, int v)
 	gtk_check_button_set_active(GTK_CHECK_BUTTON(chk), v);
 }
 
-static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
+static void menu_item_update_chkbox(rnd_hidlib_t *hidlib, lht_node_t *mnd, GtkWidget *real_row)
 {
-	int n, v;
-	GtkWidget *real_row, *hbox, *chk, *lab, *w;
-
-	real_row = gtk_widget_get_first_child(om->lbox);
-	real_row = gtk_widget_get_next_sibling(real_row);
-	for(n = 1; n < om->mnd.used; n++, real_row = gtk_widget_get_next_sibling(real_row)) {
-		open_menu_flag_t flg = om->flag.array[n];
-		if (flg & OM_FLAG_CHKBOX) {
-			lht_node_t *mnd = om->mnd.array[n];
-			hbox = gtk_widget_get_first_child(real_row);
+	int v;
+			GtkWidget *w, *lab, *chk, *hbox = gtk_widget_get_first_child(real_row);
 			const char *tf;
 
-			if (!GTK_IS_BOX(hbox)) continue;
+			if (!GTK_IS_BOX(hbox)) return;
 
 			lab = chk = NULL;
 			for(w = gtk_widget_get_first_child(hbox); w != NULL; w = gtk_widget_get_next_sibling(w)) {
@@ -83,10 +75,10 @@ static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
 				if ((chk != NULL) && (lab != NULL))
 					break;
 			}
-			if (chk == NULL) continue;
+			if (chk == NULL) return;
 
 			tf = rnd_hid_cfg_menu_field_str(mnd, RND_MF_CHECKED);
-			if (tf == NULL) continue;
+			if (tf == NULL) return;
 
 			v = rnd_hid_get_flag(hidlib, tf);
 			if (v < 0) {
@@ -96,7 +88,19 @@ static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
 			}
 			else
 				maybe_set_chkbtn(chk, !!v);
-		}
+}
+
+static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
+{
+	int n;
+	GtkWidget *real_row;
+
+	real_row = gtk_widget_get_first_child(om->lbox);
+	real_row = gtk_widget_get_next_sibling(real_row);
+	for(n = 1; n < om->mnd.used; n++, real_row = gtk_widget_get_next_sibling(real_row)) {
+		open_menu_flag_t flg = om->flag.array[n];
+		if (flg & OM_FLAG_CHKBOX)
+			menu_item_update_chkbox(hidlib, om->mnd.array[n], real_row);
 	}
 }
 
@@ -390,6 +394,9 @@ static int gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w
 		if (tip != NULL)
 			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
+
+		if (*flag & OM_FLAG_CHKBOX)
+			menu_item_update_chkbox(ctx->hidlib, mnd, gtk_widget_get_parent(item));
 
 		ctrl = gtk_event_controller_motion_new();
 		g_signal_connect(G_OBJECT(ctrl), "enter", G_CALLBACK(menu_row_hover_cb), mnd);
