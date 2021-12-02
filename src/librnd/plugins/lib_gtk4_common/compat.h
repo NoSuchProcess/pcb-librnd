@@ -344,7 +344,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #endif
 
 #define gtkc_unbind_mouse_btn(w, ev, sig) \
-		g_signal_handler_disconnect(gtkc_evctrl_click(GTK_WIDGET(widget))), sig);
+		g_signal_handler_disconnect(gtkc_evctrl_click(GTK_WIDGET(w)), sig)
 
 
 #define gtkc_bind_mouse_motion(widget, ev) \
