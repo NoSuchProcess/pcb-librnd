@@ -492,7 +492,6 @@ static void menu_unmap_tearoff_cb(GtkWidget *widget, gpointer data)
 static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_t *mnd)
 {
 	GtkWidget *item;
-	GtkListBoxRow *row;
 	lht_node_t *n, *mark;
 
 	if (om->ctx_popup) {
