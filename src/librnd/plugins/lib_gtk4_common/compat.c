@@ -205,7 +205,7 @@ gboolean gtkc_mouse_release_cb(GtkGestureClick *self, gint n_press, double x, do
 static inline void gdkc_widget_coords(GtkWidget *widget, double *x, double *y)
 {
 	double dx, dy;
-	GtkWidget *root = gtk_widget_get_root(widget);
+	GtkWidget *root = GTK_WIDGET(gtk_widget_get_root(widget));
 
 	gtk_widget_translate_coordinates(root, widget, *x, *y, &dx, &dy);
 	*x = dx;
