@@ -438,7 +438,7 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 	ctx = mnd->doc->root->user_data;
 	printf("Clicked menu %d: %s\n", idx, mnd->name);
 	fflush(stdout);
-	gtkci_menu_activate(ctx, row, mnd, 0, 1);
+	gtkci_menu_activate(ctx, GTK_WIDGET(row), mnd, 0, 1);
 }
 
 static gboolean menu_unparent_cb(void *user_data)
