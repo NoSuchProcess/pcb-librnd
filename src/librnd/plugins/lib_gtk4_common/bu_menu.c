@@ -25,6 +25,7 @@
  */
 
 #include <librnd/core/hidlib.h>
+#include <genvector/vti0.h>
 
 #include "compat.h"
 #include <librnd/core/hid_cfg_action.h>
@@ -65,8 +66,8 @@ static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
 	real_row = gtk_widget_get_first_child(om->lbox);
 	real_row = gtk_widget_get_next_sibling(real_row);
 	for(n = 1; n < om->mnd.used; n++, real_row = gtk_widget_get_next_sibling(real_row)) {
-		rnd_conf_native_t *confnat = om->confnat.array[n];
-		if (confnat != NULL) {
+		open_menu_flag_t flg = om->flag.array[n];
+		if (flg & OM_FLAG_CHKBOX) {
 			lht_node_t *mnd = om->mnd.array[n];
 			hbox = gtk_widget_get_first_child(real_row);
 			const char *tf;
@@ -121,7 +122,7 @@ static void gtkc_menu_rebuild(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om)
 		gtk_list_box_remove(GTK_LIST_BOX(om->lbox), w);
 	}
 	om->mnd.used = 0;
-	om->confnat.used = 0;
+	om->flag.used = 0;
 
 	gtkci_menu_build(ctx, om, mnd);
 }
@@ -173,7 +174,7 @@ int rnd_gtk_remove_menu_widget(void *ctx_, lht_node_t *nd)
 	return gtkc_menu_rebuild_parent(ctx, nd);
 }
 
-static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label, const char *accel_label, const char *update_on, const char *checked, int arrow, int sensitive, rnd_conf_native_t **confnat)
+static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label, const char *accel_label, const char *update_on, const char *checked, int arrow, int sensitive, open_menu_flag_t *flag)
 {
 	GtkWidget *chk, *aw;
 	GtkWidget *hbox = gtkc_hbox_new(FALSE, 5);
@@ -208,11 +209,11 @@ static GtkWidget *gtkci_menu_item_new(rnd_gtk_menu_ctx_t *ctx, const char *label
 				rnd_message(RND_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
 		}
 
-		*confnat = nat;
+		*flag = OM_FLAG_CHKBOX;
 	}
 	else {
 		chk = gtk_image_new_from_paintable(gdk_paintable_new_empty(64,64));
-		*confnat = NULL;
+		*flag = 0;
 	}
 
 	if (!sensitive)
@@ -336,14 +337,14 @@ static void menu_row_unhover_cb(GtkEventControllerMotion *self, gdouble x, gdoub
 	stop_hover_timer(ctx);
 }
 
-static int gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd, rnd_conf_native_t **confnat)
+static int gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w, GtkWidget *after_w, lht_node_t *mnd, open_menu_flag_t *flag)
 {
 	const char *text = (mnd->type == LHT_TEXT) ? mnd->data.text.value : mnd->name;
 	GtkWidget *item, *ch;
 	GtkListBoxRow *row;
 	int after = -1;
 
-	*confnat = NULL;
+	*flag = 0;
 
 	if ((text != NULL) && (*text == '@'))
 		return 1; /* skip creating anchors */
@@ -385,7 +386,7 @@ static int gtkci_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *parent_w
 		if (n_keydesc != NULL)
 			accel = rnd_hid_cfg_keys_gen_accel(&rnd_gtk_keymap, n_keydesc, 1, NULL);
 
-		item = gtkci_menu_item_new(ctx, text, accel, update_on, checked, rnd_hid_cfg_has_submenus(mnd), menu_is_sensitive(mnd), confnat);
+		item = gtkci_menu_item_new(ctx, text, accel, update_on, checked, rnd_hid_cfg_has_submenus(mnd), menu_is_sensitive(mnd), flag);
 		if (tip != NULL)
 			gtk_widget_set_tooltip_text(item, tip);
 		gtk_list_box_insert(GTK_LIST_BOX(parent_w), item, after);
@@ -508,10 +509,10 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 
 	gtk_list_box_append(GTK_LIST_BOX(om->lbox), item);
 	vtp0_append(&om->mnd, ctx);
-	vtp0_append(&om->confnat, NULL);
+	vti0_append(&om->flag, 0);
 
 	for(n = mnd->data.list.first; n != NULL; n = n->next) {
-		rnd_conf_native_t *confnat;
+		open_menu_flag_t flag;
 
 		if (n->type == LHT_HASH) {
 			mark = lht_dom_hash_get(n, "del");
@@ -519,9 +520,9 @@ static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_
 				continue; /* being deleted, don't create */
 		}
 
-		if (gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &confnat) == 0) {
+		if (gtkci_menu_real_add_node(ctx, om->lbox, NULL, n, &flag) == 0) {
 			vtp0_append(&om->mnd, n);
-			vtp0_append(&om->confnat, confnat);
+			vti0_append(&om->flag, flag);
 		}
 	}
 }
