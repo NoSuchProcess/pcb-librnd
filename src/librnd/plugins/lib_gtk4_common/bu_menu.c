@@ -437,8 +437,8 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 	mnd = *mnp;
 
 	ctx = mnd->doc->root->user_data;
-	printf("Clicked menu %d: %s\n", idx, mnd->name);
-	fflush(stdout);
+/*	printf("Clicked menu %d: %s\n", idx, mnd->name);
+	fflush(stdout);*/
 	gtkci_menu_activate(ctx, GTK_WIDGET(row), mnd, 0, 1);
 }
 
@@ -590,7 +590,7 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
 {
 	if (!menu_is_sensitive(mnd)) {
-		printf("insensitive\n");
+/*		printf("insensitive\n");*/
 		return;
 	}
 
