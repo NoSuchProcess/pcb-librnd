@@ -209,8 +209,8 @@ char *rnd_gtk_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, cons
 	ctx->command_entry_status_line_active = FALSE;
 
 	/* Restore the damage we did before entering the loop. */
-	gtkc_unbind_key(ctx->command_entry, &ctx->kpress, escape_sig_id);
-	gtkc_unbind_key(ctx->command_entry, &ctx->krelease, escape_sig2_id);
+	gtkc_unbind_key(ctx->command_entry, escape_sig_id);
+	gtkc_unbind_key(ctx->command_entry, escape_sig2_id);
 
 	/* Hide/show the widgets */
 	if (rnd_conf.editor.fullscreen) {

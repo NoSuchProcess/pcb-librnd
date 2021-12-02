@@ -220,11 +220,11 @@ static void kbd_input_signals_connect(int idx, void *obj)
 static void kbd_input_signals_disconnect(int idx, void *obj)
 {
 	if (ghidgui->key_press_handler[idx] != 0) {
-		gtkc_unbind_key(G_OBJECT(obj), &ghidgui->kpress_rs, ghidgui->key_press_handler[idx]);
+		gtkc_unbind_key(G_OBJECT(obj), ghidgui->key_press_handler[idx]);
 		ghidgui->key_press_handler[idx] = 0;
 	}
 	if (ghidgui->key_release_handler[idx] != 0) {
-		gtkc_unbind_key(G_OBJECT(obj), &ghidgui->krelease_rs, ghidgui->key_release_handler[idx]);
+		gtkc_unbind_key(G_OBJECT(obj), ghidgui->key_release_handler[idx]);
 		ghidgui->key_release_handler[idx] = 0;
 	}
 }
@@ -238,10 +238,10 @@ static void mouse_input_singals_connect(void *obj)
 static void mouse_input_singals_disconnect(void *obj)
 {
 	if (ghidgui->button_press_handler != 0)
-		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, &ghidgui->mpress_rs, ghidgui->button_press_handler);
+		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, ghidgui->button_press_handler);
 
 	if (ghidgui->button_release_handler != 0)
-		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, &ghidgui->mrelease_rs, ghidgui->button_release_handler);
+		gtkc_unbind_mouse_btn(ghidgui->port.drawing_area, ghidgui->button_release_handler);
 
 	ghidgui->button_press_handler = ghidgui->button_release_handler = 0;
 }
