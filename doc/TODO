@@ -1,7 +1,6 @@
 - 3.1.0
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- gtk4 bugs:
-		- preferences dialog: color buttons are empty
 		- preferences dialog: config tree tab starts with the tree paned 0 pixel wide
 
 - 3.1.1
