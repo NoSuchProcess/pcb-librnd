@@ -33,6 +33,10 @@ static const gchar *get_color_name(rnd_gtk_color_t *color)
 static rnd_bool map_color(const rnd_color_t *inclr, rnd_gtk_color_t *color)
 {
 	/* no need to allocate colors */
+	color->red = inclr->fr;
+	color->green = inclr->fg;
+	color->blue = inclr->fb;
+	color->alpha = 1.0;
 	return TRUE;
 }
 
