@@ -108,12 +108,16 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 
 static inline GtkWidget *gtkc_hpaned_new()
 {
-	return gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+	GtkWidget *wp = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_paned_set_wide_handle(wp, 1);
+	return wp;
 }
 
 static inline GtkWidget *gtkc_vpaned_new()
 {
-	return gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+	GtkWidget *wp = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+	gtk_paned_set_wide_handle(wp, 1);
+	return wp;
 }
 
 /* color button */
