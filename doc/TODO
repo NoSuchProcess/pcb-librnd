@@ -1,5 +1,4 @@
 - 3.1.0
-	- install gensexpr headers (3rd) - check if all other 3rd are installed
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
 	- gtk4 bugs:
 		- preferences dialog: color buttons are empty
