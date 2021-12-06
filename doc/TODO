@@ -1,5 +1,6 @@
 - 3.1.0
 	+ BUG: libarchdir is not written in the .mak file so camv-rnd has to guess (it is required for figuring sccbox and cquote) [report: Alain]
+	- BUG: gtk4: resize main window bigger: left pane gets exrta pixels; should respect expfill [report: Erich]
 
 - 3.1.1
 	- remove gtk2 grip handle widget (dlg_topwin_grip.c)
