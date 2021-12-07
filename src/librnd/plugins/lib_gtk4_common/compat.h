@@ -120,6 +120,20 @@ static inline GtkWidget *gtkc_vpaned_new()
 	return wp;
 }
 
+static inline void gtkc_paned_pack1(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
+{
+	gtk_paned_set_start_child(pane, ch);
+	gtk_set_shrink_start_child(pane, 0);
+	gtk_set_resize_start_child(pane, resize);
+}
+
+static inline void gtkc_paned_pack2(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
+{
+	gtk_paned_set_end_child(pane, ch);
+	gtk_set_shrink_end_child(pane, 0);
+	gtk_set_resize_end_child(pane, resize);
+}
+
 /* color button */
 
 static inline GtkWidget *gtkc_color_button_new_with_color(rnd_gtk_color_t *color)
@@ -273,8 +287,6 @@ void gtkc_widget_modify_bg_(GtkWidget *w, rnd_gtk_color_t *color);
 #define gtkc_button_set_child(btn, ch)    gtk_button_set_child(GTK_BUTTON(btn), ch)
 #define gtkc_button_set_image(btn, img)   gtk_button_set_child(btn, img)
 #define gtkc_window_destroy(win)          gtk_window_destroy(GTK_WINDOW(win))
-#define gtkc_paned_pack1(pane, ch, resiz) gtk_paned_set_start_child(pane, ch)
-#define gtkc_paned_pack2(pane, ch, resiz) gtk_paned_set_end_child(pane, ch)
 #define gtkc_window_set_role(win, id)
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
