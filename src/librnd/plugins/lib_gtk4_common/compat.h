@@ -123,15 +123,15 @@ static inline GtkWidget *gtkc_vpaned_new()
 static inline void gtkc_paned_pack1(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
 {
 	gtk_paned_set_start_child(pane, ch);
-	gtk_set_shrink_start_child(pane, 0);
-	gtk_set_resize_start_child(pane, resize);
+	gtk_paned_set_shrink_start_child(pane, 0);
+	gtk_paned_set_resize_start_child(pane, resiz);
 }
 
 static inline void gtkc_paned_pack2(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
 {
 	gtk_paned_set_end_child(pane, ch);
-	gtk_set_shrink_end_child(pane, 0);
-	gtk_set_resize_end_child(pane, resize);
+	gtk_paned_set_shrink_end_child(pane, 0);
+	gtk_paned_set_resize_end_child(pane, resiz);
 }
 
 /* color button */
