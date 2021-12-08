@@ -1,3 +1,212 @@
+librnd 3.1.0 (r33720)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: build all objects of gensexpr so that all headers can be installed
+		-Fix: install the two missing headers in src_3rd genht
+		-Add: install headers of gensexpr when the lib plugin is compiled
+
+	[core]
+		-Fix: typo in anyload declaration
+		-Add: publish safe_fs rnd_file_stat() for efficient but portable access to multiple stat fields
+		-Add: event for bootstrapping a board change from the lib (required for preferences window to mark the board changed when config on design role changes)
+		-Add: mark some menu item fields obsolete and scheduled removal
+
+	[dad]
+		-Add: publish RND_DAD_SUBDIALOG so that dialg boxes can be build to include caller supplied subdialogs
+		-Add: publish RND_DAD_STRING_SELECT_REGION so that dialog box code can force-select a region of string entries
+
+	[diag_rnd]
+		-Import: conf related diag actions from pcb-rnd so that all Ringdove apps have them
+		-Import: finish importing diag actions by enabling the plugin and triggering ./configure from tab
+
+	[doc]
+		-Add: start documenting wayland specific GUI limitations
+
+	[fsd]
+		-Fix: don't segfault in shortcut saving if there's no app dotdir
+
+	[gtk]
+		-Split: win resize binding in two, because gtk2 prefers it before show() and gtk4 needs it after show()
+		-Add: abstract GDK_MOD1_MASK: gtk4 renamed MOD1 to ALT
+		-Add: abstract mouse cursor names (enum or char * or both) to compat layer because gtk4 does it differently
+		-Add: internal xpm creation API to allow scaling later
+		-Add: configuration node to control icon_scale - optional
+		-Cleanup: replace ghid_ prefix with rnd_gtk_
+		-Cleanup: replace rnd_hid_gtk_ prefix with rnd_gtk_
+		-Cleanup: replace prefix with rnd_gtkg_ in glue API
+		-Cleanup: remove _port_ from function names not dealing with ports directly
+		-Cleanup: replace GHID_ prefix with RND_GTK_
+		-Add: extend the doc to explain the source code split in lib_gtk_common
+		-Del: drawing_area_size_allocate_cb() - it's a noop
+		-Del: gtkc_widget_get_preferred_height() - no caller
+		-Add: API to abstract drawing area configure event, installed on the top window's drawing area
+		-Cleanup: rename the dwg resize compatibility event struct to a more generic xy event since it can be reused for mouse as well
+		-Change: xy event delivers coords in long (strictly speaking: an int can be 16 bit)
+		-Change: do the top window scroll wheel binding through the event xy wrapper for gtk4 compatibility
+		-Change: extend the xy event call API to xyz so that mouse scroll wheel key modifiers can be passed back
+		-Change: do the top window drawing area enter/leave events using compat.h (for gtk4 transition)
+		-Change: do the top window drawing area mouse motion events using compat.h (for gtk4 transition)
+		-Cleanup: remove gdk event type dependency from rnd_gtk_note_event_location() so it would work in gtk4 too
+		-Change: generalize drawing area event setup, preparing for gtk4
+		-Cleanup: switch over preview widget motion, scroll and resize from direct signal binding to compat binding for portability to gtk4
+		-Change: do the preview drawing area mouse press/release events using compat.h (for gtk4 transition)
+		-Add: generalize event setup so it can be reused independently of drawing widgets
+		-Move: resize grip into a separate function; creation to compat layer since gtk4 likely won't have it
+		-Move: resize grip xpm from gtk-common to gtk2-common; it won't be supported in gtk4 in any form
+		-Move: resize grip: move out from gtk2 topwin - it's a large chunk of unrelated code and may be removed later
+		-Update: "who did what" kind of historic banner to reflect changes made for pcb-rnd
+		-Split: low level input singal connect/disconnect from common gtk to version-specific gtk as signal handling changed in gtk4
+		-Cleanup: use compat layer for top window mouse press/release signals for gtk4 portability
+		-Cleanup: figure and pass on modifier keys with mouse button press event from the compat layer so less version-dependent queries are made in gtk-common
+		-Cleanup: use version-portable mouse press event for the get location loop
+		-Add: compatibility layer for key press event handling
+		-Cleanup: top window key presses go through the compatibility layer
+		-Cleanup: use compat event bindings for location loop key events
+		-Cleanup: switch over preview widget key handling to compat layer
+		-Cleanup: bu_command uses the compat layer for key bindings
+		-Split: move label wrapper for click bind to the compat layer, it works differently in gtk4
+		-Add: compat API for tracking window size changes instead of gtk2-only configure event
+		-Add: compat layer for window and widget destroy and delete signals
+		-Cleanup: use compat layer for enter event on top window drawing area
+		-Split: keyboard translation to gtk version generic and specific halves for gtk4 porting
+		-Cleanup: strict match event callback function signature with (void *) user data
+		-Cleanup: reclassify private bu_menu functions to static
+		-Del: unused rnd_gtk_create_menu_widget_path()
+		-Del: remove accel group support from bu_menu: we are not using menu accel for hotkey handline
+		-Del: unused action group from global gtk state (we took away hotkey handling from gtk long ago)
+		-Cleanup: menu API: don't depend on the custom menu type, pass GtkWidget (gtk4 will use a different widget)
+		-Cleanup: move custom menu widget implementation into the .c file to make it private and remove it from the API; gtk4 will not need it
+		-Cleanup: move menu toggle callback to private as the glue code always called it with one specific implementation; this removes GtkAction from the API (which is really an internal implementation detail and gtk4 doesn't have)
+		-Cleanup: bu_menu: move API doc from .c to .h
+		-Cleanup: bu_menu: mark all private functions static
+		-Move: bu_menu to lib_gtk2_common - it will be a totally different implementation for gtk4
+		-Add: abstract GdkCursorType into compat.h because it's changed in gtk4
+		-Move: adjustment tune from ui_zoompan to the compat layer as it has to be done differently in gtk4
+		-Add: abstract entry set/get into the compat layer because gtk4 changed the API
+		-Add: abstract gtk_entry_set_width_chars() into the compat layer because gtk4 made this more complicated too
+		-Del: gtkc_widget_add_class_style() - only the gtk3 port depended on it
+		-Split: RND_GTK_KEY() into a gtk2 and a gtk4 variant; only gtk2 needs scconfig detection on this
+		-Add: compatibility call for widget background color set - gtk4 doesn't have this (maybe we will need to use css)
+		-Add: port wrap-click-bind on labels and picture boxes to use the centralized signal handler macros isntead of manual bindings so they will work with gtk4
+		-Cleanup: get rid of end-packing, always use start-packing (in preparation of packing abstraction needed for gtk4)
+		-Add: compat API for packing widgets; switch over from gtk2/gtk3 API to the compat API for packing widgets
+		-Cleanup: use compat rnd_gtk_color_t instead of GdkColor
+		-Add: compat API for frame-set-child
+		-Cleanup: use compat api for setting frame child when creating top window
+		-Add: abstract creating scrolled windows (gtk2 requires 2 args, gtk4 requires no arg)
+		-Add: abstract "get entry widget from combo-box-with-entry" into compat.h because gtk4 does this differently
+		-Add: abstract adding a child to a scrolled window - gtk4 requires a specific call for it
+		-Add: disable gtk2-specific tree-table workarounds for other versions of gtk
+		-Add: abstract tree-table key press binding, event forwarding included
+		-Fix: tree table key handler: use librnd's control key modifier to check if control is pressed for ctrl+c
+		-Add: abstract copy-text-to-clipboard into compat
+		-Add: abstract button child set for picture buttons
+		-Add: abstract gtk window destroy: in gtk2 it's widget destroy, in gtk4 a specific window destroy call
+		-Add: abstract packing paned children into compat (as gtk4 changed the functions slightly)
+		-Add: dad label creation API because truncated/rotated labels are different in gtk4
+		-Add: abstract window set id to compat because gtk4 doesn't have it
+		-Add: abstract window resize and move - gtk4 has removed this API because of wayland
+		-Add: abstract "add main vbox in the content area of a dialog box" mechanism into compat; gtk4 needs different packing
+		-Add: abstract show_all(), gtk4 doesn't have that
+		-Add: abstract run dialog because gtk4 doesn't have it
+		-Move: old, gtk2-only, native gtk file selector from gtk common to gtk2 common - gtk4 won't have a native version at all
+		-Add: abstract widget destroy (gtk4 doesn't have it)
+		-Add: abstract waiting for destroy events to get delivered (gtk4 removed APIs)
+		-Cleanup: move top bar theming to compat layer, hopefully gtk4 can implement it as a no-op
+		-Add: abstract gtk_main_quit() (gtk4 removed the API)
+		-Add: abstract button set image (not present in gtk4)
+		-Add: abstract top window set child (gtk4 doesn't have containers)
+		-Cleanup: replace event box with a plain box and remove container based population of it in the top window upper bar - the event box was used earlier to a theme-update trick that was disabled years ago because of risk of unreproduciable crash
+		-Add: abstract box that is created only for setting the background color - in gtk2 it was an event box, but there's no such thing in gtk4
+		-Cleanup: use compat layer for background color modification in top window alert section
+		-Add: abstract widget set focusable
+		-Add: abstract scrollbar creation for gtk4 API change
+		-Add: abstract left ptr named mouse cursor
+		-Add: abstract custom mouse cursor index-to-shape conversion because shape type differs between gtk2 and gtk4
+		-Cleanup: remove long unused mouse cursor name defs
+		-Add: abstract setting custom mouse cursor call
+		-Add: abstract widget-set-cursor
+		-Add: abstract cursor warp - gtk4 doesn't have that API because of their bondage&discipline approach
+		-Add: abstract wt preview redraw (invalidate)
+		-Fix: preview widget: use compat layer for making the widget focusable
+		-Add: abstract one more level of preview expose event as it's very different in gtk4
+		-Add: abstract main and quit because gtk4 had to change the API on this too
+		-Add: abstract parse arguments callback: gtk app initialization changed in gtk4
+		-Add: abstract low level top window creation call, gtk4 has it differently
+		-Add: abstract window origin query
+		-Move: top window drawing update to compat layer as gtk4 changed render mechanism
+		-Change: get_origin abstraction: pass on a widget, not a window, let the version-dependent backend figure how to get the window for that
+		-Add: abstract clipboard get text, it's going to be different in gtk4
+		-Add: abstract beep
+		-Add: abstract explicit iterate call
+		-Add: abstract benchmark (gtk4 needs to do flushes differently)
+		-Add: abstract opening popup menus
+		-Add: abstract mod1 mask apple fix - gtk4 likely won't need it
+		-Add: abstract checkbutton set
+		-Add: abstract check button signal name
+		-Add: abstract check button get
+		-Add: abstract setting scrollbar value - gtk4 doesn't have "range" for adjustment
+		-Add: abstract scrollbar getvalue
+		-Cleanup: rename adj to scb because our internal API is about scrollbars, adjustment is just the gtk2 implementation
+		-Fix: zoom adjustment compat API: expect a scrollbar because gtk4 won't have ranges
+		-Add: workaround button minimal size and image border (in gtk4) for image buttons
+		-Fix: when adding dock box (not frame), don't make it expand: the main drawing area should take all extra space
+		-Fix: pack attribute dialog widgets with alignment 'start' instead of 'fill' in the non-expfill direction to match DAD alignment expectations
+		-Move: gtk gl common code from gtk2 gl hid to lib_gtk_common so that it is available for gtk4 as well
+		-Fix: don't include gtk2-specific header in common code
+		-Cleanup: don't hardwire gtk2_gl where hid is easily available
+		-Fix: remove gtk2_gl direct reference where it can be avoided
+		-Cleanup: remove gtk2 hid hardwirings from the common gtk gl code
+		-Move: color-to-name function from common to gtk-version-specific plugin as color type changed from gtk2 to gtk4
+		-Add: abstract the whole scrollbar+adjustment creation code from top-dialog - gtk4 needs it differently to work around yet another gtk4 bug
+		-Change: generalize rnd_gtk_menu_widget() into rnd_gtk_menu_popup_pre(); in gtk4 it won't return a widget as popup widgets are not yet created
+		-Fix: port color literal (gtk2 uses 16 bit int, gtk4 uses float 0..1)
+		-Add: unify top window scrollbar thickness on default theme
+		-Fix: use portable check button get active in DAD code for bools
+		-Fix: symmetric keyboard unbinding macro for gtk4 event controller
+		-Fix: symmetric mouse button unbinding macro for gtk4 event controller
+		-Fix: symmetric gtk window destroy unbinding macro for gtk4 event controller
+		-Add: set paned position on widget creation: workaround for async widget creation (gtk4)
+
+	[hid]
+		-Add: rnd_hid_fileselect(), wrapper aroud hid->fileselect that long term will obsolete hid->fileselect()
+		-Cleanup: move hid->fileselect() description comment to rnd_hid_fileselect() and mark hid->fileselect() obsolete
+		-Cleanup: use rnd_hid_fileselect() instead of direct hid call
+
+	[hid_gtk2_gl]
+		-Fix: uninitialize menu on exit
+		-Del: long unused subcomposite start/end calls
+		-Del: remove long unused dummy functions for line cap angle and faded color
+		-Cleanup: split up main and preview expose gl code, move out the common gl context initialization code into a separate function (removes code dup)
+		-Cleanup: remove unused variable from crosshair rendering
+		-Change: crosshair draw function replaced interactive gl functions with vertex array
+		-Change: draw the background using vertex array instead of interactive GL functions
+		-Change: ghid_gl_draw_bg_solid_color() shouldn't take hidlib but x1,y1, x2,y2 because it's a generic low level gl rectangle draw function really
+		-Split: preview expose code into a gtk2 specific and a common (zoom-setup + gl draw) part
+		-Split: gtk2-specific code from common gtk-gl code
+		-Add: comment to explain why ghid_gl_set_line_cap() is empty
+
+	[lib_hid_common]
+		-Import: generic part of preferences window, including the last four tabs from pcb-rnd so thye are available in all ringdove apps
+		-Cleanup: remove the temporary Rnd_ prefixes, use rnd_ for the public API
+		-Fix: preferences: do the initialization with 0 app specific tabs on the first call to Preferences() action if the app did not initialize - this makes it easier and safer to use preferences dialogs for simple apps that don't have specific preferences tabs
+
+	[lib_hid_gl]
+		-Change: replace GL_QUADS with GL_TRIANGLE_FAN since GL_QUADS is deprecated
+		-Change: direct-draw a rectangle using vertex array instead of interactive GL functions
+		-Move: expose init and Z_NEAR from lib_gtk2_gl (this is generic gl utility code useful for any gl rendering)
+		-Move: background filled rectangle draw function from gtk2_gl
+		-Cleanup: use line cap enum type for line end cap instead of int to make the API self-documenting
+		-Cleanup: prefix Z_NEAR to avoid namespace pollution
+		-Split: low level crosshair draw moved to generic gl draw code - it would be used independently of the toolkit
+
+	[scconfig]
+		-Add: include full version string in config.h so apps can print it for easier debugging
+		-Add: explicit variable for libarchdir in librnd.mak
+		-Add: gtk4 detection logic
+		-Fix: don't let both gtk2 and gtk4 configured as builtin; porefer gtk2 over gtk4 for now
+
+
 librnd 3.0.2 (r33224)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]

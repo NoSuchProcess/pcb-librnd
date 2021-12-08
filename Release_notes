@@ -1,6 +1,20 @@
-librnd 3.0.2
+librnd 3.1.0
 ~~~~~~~~~~~~
 
-3.0.2 is mainly a bugfix release focusing on GUI related bugs in both gtk and
-lesstif HIDs. As a preparation for gtk4, the new, centralized, DAD based
-File Selection Dialog (fsd) is the default.
+3.1.0 implements all new API that was pending since 3.0.0:
+ - install more src_3rd minilibs (gensexpr, all headers for genht)
+ - more efficient safe_fs stat() call
+ - DAD subdialog widget
+ - DAD string region selection (used by the file selection dialog)
+ - conf diagnostic actions
+ - generalize preferences dialog; last 4 tabs of the pcb-rnd preferences dialog
+   moved to librnd among with an app-tab extensible preference dialog framework
+
+Besides the new API, there are a lot of invisible, internal change
+for a gtk refactoring to enable gtk4 within a few releases:
+ - lib_gtk_common is split to gtk2 and gtk4 variant
+ - some of the gtk opengl rendering is refactored for reuse with gtk4
+ - opengl rendering code changes to widen the range of suitable opengl versions
+
+A new, gtk HID config node is introduced to make it possible to scale icons up
+(useful on high resolution screen).
