@@ -8,13 +8,16 @@ librnd_plugins="
 hid_gtk2_gl=librnd3-hid-gtk2-gl
 hid_batch=librnd3
 lib_hid_common=librnd3-lib-gui
+lib_gtk4_common=<NOT PACKAGED IN LIBRND>
 lib_portynet=librnd3
+lib_gtk2_common=librnd3-lib-gtk
 hid_lesstif=librnd3-hid-lesstif
 irc=librnd3-lib-gui
 script=librnd3
 hid_gtk2_gdk=librnd3-hid-gtk2-gdk
+hid_gtk4_gl=<NOT PACKAGED IN LIBRND>
 lib_gensexpr=librnd3
+diag_rnd=librnd3
 lib_wget=librnd3-cloud
 lib_hid_gl=librnd3-lib-gl
-lib_gtk_common=librnd3-lib-gtk
 "

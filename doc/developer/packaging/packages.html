@@ -11,7 +11,7 @@
 <tr><th>librnd3-cloud<td> librnd3<td> lib_wget
 <tr><th>librnd3-lib-gui<td> librnd3<td> irc lib_hid_common
 <tr><th>librnd3-hid-gtk2-gdk<td> librnd3 librnd3-lib-gtk<td> hid_gtk2_gdk
-<tr><th>librnd3-lib-gtk<td> librnd3 librnd3-lib-gui<td> lib_gtk_common
+<tr><th>librnd3-lib-gtk<td> librnd3 librnd3-lib-gui<td> lib_gtk2_common
 <tr><th>librnd3-hid-lesstif<td> librnd3 librnd3-lib-gui<td> hid_lesstif
 <tr><th>librnd3<td><td>(builtin: <i>n/a</i>)
 <tr><th>librnd3-lib-gl<td> librnd3<td> lib_hid_gl
@@ -25,7 +25,7 @@
 <tr><th>librnd3-cloud<td> $P/lib_wget.pup $P/lib_wget.so <i></i><td>	Networking plugins for accessing remote resources.<td> 	Support library plugin for 'cloud' footprint/symbol access plugin 	that integrates remote, web access resources like edakrill or 	gedasymbols.org. 
 <tr><th>librnd3-lib-gui<td> $P/irc.pup $P/irc.so $P/lib_hid_common.pup $P/lib_hid_common.so <i></i><td>	Support library for building the GUI.<td> 	Provides librnd specific dialog boxes (e.g. fontsel) and top 	window GUI elements.  
 <tr><th>librnd3-hid-gtk2-gdk<td> $P/hid_gtk2_gdk.pup $P/hid_gtk2_gdk.so <i></i><td>	GUI: gtk2, software render<td> 	Software rendering on gtk2, using the gdk API.  
-<tr><th>librnd3-lib-gtk<td> $P/lib_gtk_common.pup $P/lib_gtk_common.so <i></i><td>	Support library for building the GUI with gtk.<td> 	Provides the common gtk code (e.g. dialog box engine, input handling) 	for any gtk based HID plugin.  
+<tr><th>librnd3-lib-gtk<td> $P/lib_gtk2_common.pup $P/lib_gtk2_common.so <i></i><td>	Support library for building the GUI with gtk.<td> 	Provides the common gtk code (e.g. dialog box engine, input handling) 	for any gtk based HID plugin.  
 <tr><th>librnd3-hid-lesstif<td> $P/hid_lesstif.pup $P/hid_lesstif.so <i></i><td>	GUI: motif/lesstif, software render<td> 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.  
 <tr><th>librnd3<td>$PREFIX/lib/*.so.* <i></i><td>	Ringdove 2D CAD library framework<td> 	The Ringdove library (shared objects) contains the basic 	infrastructure for 2D interactive+batch CAD applications: config, 	HID, polygon, menu, plugin system.  
 <tr><th>librnd3-lib-gl<td> $P/lib_hid_gl.pup $P/lib_hid_gl.so <i></i><td>	Support library for rendering with opengl.<td> 	Provides plugins for driving an opengl output, rendering the drawing 	on opengl.  
@@ -38,15 +38,16 @@
 <h3> ./configure arguments </h3>
 --all=disable
 --buildin-script
+--buildin-diag_rnd
 --buildin-lib_gensexpr
 --buildin-hid_batch
 --buildin-lib_portynet
 --plugin-lib_hid_gl
---plugin-lib_gtk_common
 --plugin-hid_gtk2_gdk
 --plugin-lib_wget
 --plugin-lib_hid_common
 --plugin-hid_gtk2_gl
+--plugin-lib_gtk2_common
 --plugin-hid_lesstif
 --plugin-irc
 

@@ -1,9 +1,22 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.0.2
+  ver=3.1.0
   cd /tmp
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
+
+Packaging changes between 3.1.0 and 3.0.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. plugin rename that do not affect pakcage names only installed file names:
+   plugin lib_gtk_common to lib_gtk2_common in package librnd3-lib-gtk
+
+B. changes that probably DO need action
+
+1. new configure command line
+
+
 
 Packaging changes between 3.0.2 and 3.0.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
