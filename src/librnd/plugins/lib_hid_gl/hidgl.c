@@ -577,7 +577,7 @@ static void myFreeCombined()
 static void myCombine(GLdouble coords[3], void *vertex_data[4], GLfloat weight[4], void **dataOut)
 {
 #define MAX_COMBINED_VERTICES 2500
-	static GLdouble combined_vertices[3 *MAX_COMBINED_VERTICES];
+	static GLdouble combined_vertices[3 * MAX_COMBINED_VERTICES];
 	static int num_combined_vertices = 0;
 
 	GLdouble *new_vertex;
@@ -645,7 +645,7 @@ static void myVertex(GLdouble *vertex_data)
 		printf("Vertex received with unknown type\n");
 }
 
-/* Intentaional code duplication for performance */
+/* Intentional code duplication for performance */
 void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	int i;
