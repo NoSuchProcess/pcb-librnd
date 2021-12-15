@@ -36,9 +36,9 @@
 
 #include "stencil_gl.h"
 
-#define MARKER_STACK_SIZE				16
-#define RESERVE_VERTEX_EXTRA		1024
-#define RESERVE_PRIMITIVE_EXTRA	256
+#define MARKER_STACK_SIZE       16
+#define RESERVE_VERTEX_EXTRA    1024
+#define RESERVE_PRIMITIVE_EXTRA 256
 
 enum {
 	PRIM_MASK_CREATE = 1000,
@@ -49,8 +49,7 @@ enum {
 
 /* Vertex Buffer Data
  * The vertex buffer is a dynamic array of vertices. Each vertex contains 
- * position and colour information.
- */
+ * position and colour information. */
 
 typedef struct {
 	GLfloat x;
@@ -116,8 +115,7 @@ static void vertex_buffer_destroy()
 
 /* Ensure that the total capacity of the vertex buffer is at least 'size' vertices.
  * When the buffer is reallocated, extra vertices will be added to avoid many small 
- * allocations being made.
- */
+ * allocations being made. */
 static int vertex_buffer_reserve(int size)
 {
 	int result = 0;
@@ -134,8 +132,7 @@ static int vertex_buffer_reserve(int size)
 }
 
 /* Ensure that the capacity of the vertex buffer can accomodate an allocation
- * of at least 'size' vertices.
- */
+ * of at least 'size' vertices. */
 static inline int vertex_buffer_reserve_extra(int size)
 {
 	return vertex_buffer_reserve(vertex_buffer.size + size);
@@ -144,8 +141,7 @@ static inline int vertex_buffer_reserve_extra(int size)
 /* Set the marker to the end of the active vertex data. This allows vertices 
  * added after the marker has been set to be discarded. This is required when 
  * temporary vertices are required to draw something that will not be required
- * for the final render pass.
- */
+ * for the final render pass. */
 static inline int vertex_buffer_set_marker()
 {
 	vertex_buffer.marker = vertex_buffer.size;
@@ -153,8 +149,7 @@ static inline int vertex_buffer_set_marker()
 }
 
 /* Discard vertices added after the marker was set. The end of the buffer will then be
- * the position of the marker.
- */
+ * the position of the marker. */
 static inline void vertex_buffer_rewind()
 {
 	vertex_buffer.size = vertex_buffer.marker;
@@ -191,7 +186,7 @@ static inline void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLflo
 		p_vert->x = x;
 		p_vert->y = y;
 		p_vert->u = u;
-		p_vert->v = v;		
+		p_vert->v = v;
 		p_vert->r = 1.0;
 		p_vert->g = 1.0;
 		p_vert->b = 1.0;
@@ -217,8 +212,7 @@ static void primitive_buffer_destroy()
 
 /* Ensure that the total capacity of the primitive buffer is at least 'size' 
  * primitives.  When reallocating the buffer, extra primitives will be added
- * to avoid many small reallocations.
- */
+ * to avoid many small reallocations. */
 static int primitive_buffer_reserve(int size)
 {
 	int result = 0;
@@ -237,17 +231,15 @@ static int primitive_buffer_reserve(int size)
 }
 
 /* Ensure that the capacity of the primitive buffer can accomodate an allocation
- * of at least 'size' primitives.
- */
+ * of at least 'size' primitives. */
 static inline int primitive_buffer_reserve_extra(int size)
 {
 	return primitive_buffer_reserve(primitive_buffer.size + size);
 }
 
-/* Set the marker to the end of the active primitive data. This allows primitives 
- * added after the marker to be discarded. This is required when temporary primitives 
- * are required to draw something that will not be required for the final render pass.
- */
+/* Set the marker to the end of the active primitive data. This allows primitives
+ * added after the marker to be discarded. This is required when temporary primitives
+ * are required to draw something that will not be required for the final render pass. */
 static inline int primitive_buffer_set_marker()
 {
 	primitive_buffer.marker = primitive_buffer.size;
@@ -255,8 +247,7 @@ static inline int primitive_buffer_set_marker()
 }
 
 /* Discard primitives added after the marker was set. The end of the buffer will then be
- * the position of the marker.
- */
+ * the position of the marker. */
 static inline void primitive_buffer_rewind()
 {
 	primitive_buffer.size = primitive_buffer.marker;
@@ -279,8 +270,7 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 	/* If the last primitive is the same type AND that type can be extended 
 	 * AND the last primitive is dirty AND 'first' follows the last vertex of
 	 * the previous primitive THEN we can simply append the new primitive to
-	 * the last one.
-	 */
+	 * the last one. */
 	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first))
 		last->count += count;
 	else if (primitive_buffer_reserve_extra(1) == 0) {
@@ -313,14 +303,13 @@ RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 	   vertex_buffer_add(x1,y1);  vertex_buffer_add(x2,y2);
 	   vertex_buffer_add(x2,y2);  vertex_buffer_add(x3,y3);
 	   vertex_buffer_add(x3,y3);  vertex_buffer_add(x1,y1);
-	 */
+	*/
 
 	primitive_buffer_add(GL_TRIANGLES, vertex_buffer.size, 3, 0);
 	vertex_buffer_reserve_extra(3);
 	vertex_buffer_add(x1, y1);
 	vertex_buffer_add(x2, y2);
 	vertex_buffer_add(x3, y3);
-
 }
 
 RND_INLINE void drawgl_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
@@ -370,7 +359,7 @@ RND_INLINE void drawgl_add_mask_use()
 	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
 }
 
-RND_INLINE void drawgl_direct_draw_rect( GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	float points[4][6];
 	int i;
@@ -382,10 +371,10 @@ RND_INLINE void drawgl_direct_draw_rect( GLenum mode, GLfloat x1, GLfloat y1, GL
 		points[i][5] = alpha;
 	}
 
-	points[0][0] = x1;	points[0][1] = y1;
-	points[1][0] = x2;	points[1][1] = y1;
-	points[2][0] = x2;	points[2][1] = y2;
-	points[3][0] = x1;	points[3][1] = y2;
+	points[0][0] = x1; points[0][1] = y1;
+	points[1][0] = x2; points[1][1] = y1;
+	points[2][0] = x2; points[2][1] = y2;
+	points[3][0] = x1; points[3][1] = y2;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -398,12 +387,12 @@ RND_INLINE void drawgl_direct_draw_rect( GLenum mode, GLfloat x1, GLfloat y1, GL
 
 RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	drawgl_direct_draw_rect(GL_LINE_LOOP,x1,y1,x2,y2);
+	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
 RND_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	drawgl_direct_draw_rect(GL_TRIANGLE_FAN,x1,y1,x2,y2);
+	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
 
 RND_INLINE void drawgl_reserve_triangles(int count)
@@ -412,8 +401,7 @@ RND_INLINE void drawgl_reserve_triangles(int count)
 }
 
 /* This function will draw the specified primitive but it may also modify the state of
- * the stencil buffer when MASK primtives exist.
- */
+ * the stencil buffer when MASK primtives exist. */
 static inline void drawgl_draw_primtive(primitive_t *prim)
 {
 	switch (prim->type) {
@@ -493,8 +481,7 @@ void drawgl_flush()
 }
 
 /* Draw all buffered primitives. The dirty index is ignored and will remain unchanged.
- * This function accepts stencil bits that can be used to mask the drawing.
- */
+ * This function accepts stencil bits that can be used to mask the drawing. */
 RND_INLINE void drawgl_draw_all(int stencil_bits)
 {
 	int index = primitive_buffer.size;
@@ -522,8 +509,7 @@ RND_INLINE void drawgl_draw_all(int stencil_bits)
 				/* The primitives are drawn in reverse order. The mask primitives are required
 				 * to be processed in forward order so we must search for the matching 'mask create'
 				 * primitive and then iterate through the primtives until we reach the 'mask destroy' 
-				 * primitive.
-				 */
+				 * primitive. */
 				{
 					primitive_t *next_prim = prim - 1;;
 					primitive_t *mask_prim = prim;
