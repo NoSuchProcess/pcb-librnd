@@ -267,11 +267,11 @@ static const char * FullScreen_xpm[] = {
 " .      ",
 "        "};
 
-/* Embed an XPM image in a button, and make it display as small as possible 
- *   Returns: a new image button. When freeing the object, the image needs to be freed 
- *            as well, using :
- *            g_object_unref(gtk_button_get_image(GTK_BUTTON(button)); g_object_unref(button);
- */
+/* Embed an XPM image in a button, and make it display as small as possible
+   Returns: a new image button. When freeing the object, the image needs to
+   be freed as well, using:
+   g_object_unref(gtk_button_get_image(GTK_BUTTON(button));
+   g_object_unref(button); */
 static GtkWidget *create_image_button_from_xpm_data(const char **xpm_data)
 {
 	GtkWidget *button;
