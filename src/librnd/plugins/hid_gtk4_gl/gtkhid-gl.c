@@ -134,7 +134,11 @@ static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 
 static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 {
+	GtkWidget *widget = port->drawing_area;
+
 	port->render_priv->in_context = rnd_true;
+	gtk_gl_area_make_current(GTK_GL_AREA(widget));
+
 	return TRUE;
 }
 
@@ -157,6 +161,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
 {
+rnd_trace("gl expose 1");
 	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
 }
 
@@ -194,8 +199,10 @@ static void unrealize(GtkWidget *widget)
 	gtk_gl_area_make_current(GTK_GL_AREA(widget));
 }
 
-static gboolean render(GtkGLArea *area, GdkGLContext *context)
+static gboolean render(GtkGLArea *area, GdkGLContext *context, rnd_gtk_port_t *port)
 {
+	GtkWidget *widget = port->drawing_area;
+
 	if (gtk_gl_area_get_error(area) != NULL)
 		return FALSE;
 
@@ -206,6 +213,9 @@ static gboolean render(GtkGLArea *area, GdkGLContext *context)
 	/* Draw our object */
 /*	draw_triangle();*/
 TODO("this should call expose for main drawing area and/or maybe preview too");
+rnd_trace("gl expose 2: render\n");
+
+	ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, NULL, port);
 
 	/* Flush the contents of the pipeline */
 	glFlush();
@@ -223,7 +233,7 @@ static GtkWidget *ghid_gl_new_drawing_widget(rnd_gtk_impl_t *common)
 
 	g_signal_connect(drw, "realize", G_CALLBACK(realize), NULL);
 	g_signal_connect(drw, "unrealize", G_CALLBACK(unrealize), NULL);
-	g_signal_connect(drw, "render", G_CALLBACK(render), NULL);
+	g_signal_connect(drw, "render", G_CALLBACK(render), common->gport);
 
 	return drw;
 }
