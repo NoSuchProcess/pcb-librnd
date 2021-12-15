@@ -1,8 +1,6 @@
 #include "compat.h"
 #include <librnd/core/math_helper.h>
 
-void gtkc_create_resize_grip(GtkWidget *parent) {}
-
 static void fix_topbar_theming(void *tw) {}
 
 #if GTK4_BUG_ON_SCROLLBAR_FIXED

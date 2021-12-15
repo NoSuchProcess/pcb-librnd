@@ -428,10 +428,6 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	rnd_gtk_command_combo_box_entry_create(&tw->cmd, rnd_gtk_topwin_hide_status, tw);
 	gtkc_box_pack_append(tw->bottom_hbox, tw->cmd.command_combo_box, FALSE, 0);
 
-
-	/* optional resize grip: rightmost widget in the status line hbox */
-	gtkc_create_resize_grip(tw->bottom_hbox);
-
 	gtkc_bind_mouse_enter(tw->drawing_area, rnd_gtkc_xy_ev(&ghidgui->wtop_enter, drawing_area_enter_cb, tw));
 	gtk2c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
 	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));

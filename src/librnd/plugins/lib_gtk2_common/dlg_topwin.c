@@ -3,9 +3,6 @@
 #include "compat.h"
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.h>
 
-/* obsolete resize grip */
-#include "dlg_topwin_grip.c"
-
 static void get_widget_styles(rnd_gtk_topwin_t *tw, GtkStyle **menu_bar_style)
 {
 	/* Grab the various styles we need */
