@@ -26,6 +26,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* Low level gl rendering: direct access, pre-vao, works with gtk2 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

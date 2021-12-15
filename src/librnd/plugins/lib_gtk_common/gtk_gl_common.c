@@ -17,7 +17,7 @@
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
 
 #include <librnd/plugins/lib_hid_gl/opengl.h>
-#include <librnd/plugins/lib_hid_gl/draw_gl.h>
+#include <librnd/plugins/lib_hid_gl/draw.h>
 #include <librnd/plugins/lib_hid_gl/hidgl.h>
 #include <librnd/plugins/lib_hid_gl/stencil_gl.h>
 

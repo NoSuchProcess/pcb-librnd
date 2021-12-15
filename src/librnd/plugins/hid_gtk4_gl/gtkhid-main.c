@@ -6,7 +6,7 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
-#include <librnd/plugins/lib_hid_gl/draw_gl.h>
+#include <librnd/plugins/lib_hid_gl/draw.h>
 
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>

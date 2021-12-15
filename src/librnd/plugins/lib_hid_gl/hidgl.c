@@ -40,7 +40,7 @@
 #include <librnd/poly/rtree.h>
 #include <librnd/core/hidlib.h>
 
-#include "draw_gl.c"
+#include "draw_direct.c"
 
 #include "stencil_gl.h"
 

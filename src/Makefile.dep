@@ -769,7 +769,7 @@
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_dad_spin.h \
  ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
  ../src/librnd/plugins/lib_gtk_common/glue_common.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
  ../src/librnd/plugins/lib_gtk_common/gtk_gl_common.c \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
@@ -791,7 +791,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src/librnd/core/color.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/core/color.h ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_gtk2_common/compat.h \
  ../src/librnd/plugins/lib_gtk2_common/compat_priv.h \
@@ -840,7 +840,7 @@
  ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
  ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
  ../src/librnd/plugins/lib_gtk_common/glue_common.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
 ../src/librnd/plugins/hid_gtk4_gl/gtkhid-main.o: \
@@ -861,7 +861,7 @@
  ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
  ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src/librnd/core/color.h ../src/librnd/plugins/lib_hid_gl/draw_gl.h \
+ ../src/librnd/core/color.h ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_gtk4_common/compat.h ../src/librnd/core/compat_misc.h \
  ../src/librnd/plugins/lib_gtk4_common/compat_priv.h \
@@ -2541,7 +2541,7 @@
  ../src/librnd/core/error.h ../src/librnd/core/box.h ../src/librnd/core/math_helper.h \
  ../src/librnd/core/misc_util.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
  ../src/librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h \
- ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_hid_gl/draw_gl.c \
+ ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_hid_gl/draw_direct.c \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h
 ../src/librnd/plugins/lib_hid_gl/lib_hid_gl.o: \
