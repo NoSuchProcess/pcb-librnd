@@ -214,8 +214,9 @@ static void rnd_hook_detect_hid()
 	}
 
 	if (!need_gtklibs) {
-		report("No gtk support available, disabling lib_gtk_common...\n");
-		hook_custom_arg("disable-lib_gtk_common", NULL);
+		report("No gtk support available, disabling lib_gtk*_common...\n");
+		hook_custom_arg("disable-lib_gtk2_common", NULL);
+		hook_custom_arg("disable-lib_gtk4_common", NULL);
 	}
 
 	if (plug_is_enabled("hid_lesstif")) {
@@ -304,7 +305,8 @@ static void rnd_hook_detect_coord_bits(void)
 static const char *dialog_deps[] = {
 	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
 	"/local/pcb/hid_remote/controls",
-	"/local/pcb/lib_gtk_common/controls",
+	"/local/pcb/lib_gtk2_common/controls",
+	"/local/pcb/lib_gtk4_common/controls",
 	"/local/pcb/hid_lesstif/controls",
 	NULL
 };
