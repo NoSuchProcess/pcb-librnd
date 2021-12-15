@@ -680,7 +680,7 @@ void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 	free(vertices);
 }
 
-/* Intentaional code duplication for performance */
+/* Intentional code duplication for performance */
 void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
