@@ -116,7 +116,7 @@ static void vertex_buffer_destroy()
 
 /* Ensure that the total capacity of the vertex buffer is at least 'size' vertices.
  * When the buffer is reallocated, extra vertices will be added to avoid many small 
- * allocations beingi made.
+ * allocations being made.
  */
 static int vertex_buffer_reserve(int size)
 {
