@@ -1,5 +1,4 @@
 - 3.1.1: ABI compatible, no extensions
-	- both gtk2 and gtk4 as plugins (build system): remove gtkx cflags, use separate gtk2 and gtk4 cflags else lib_gtk4_common is compiled with gtk2 flags!
 	- gtk4 opengl:
 		- top window drawign: scroll wheel zoom
 		- top window drawign: scroll wheel pan with shift and ctrl
