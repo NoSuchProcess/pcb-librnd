@@ -18,18 +18,18 @@
 	- rename textual event names from pcbev_* in event.c
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- rnd_app_t spares: conf_ignore lists (two void *)
-	- remove RND_HID_FSD_IS_TEMPLATE
+	- remove unused flags from rnd_hid_fsd_flags_t
+		- remove RND_HID_FSD_IS_TEMPLATE
+		- remove RND_HID_FSD_MAY_NOT_EXIST and RND_HID_FSD_IS_TEMPLATE (replace them with 0 in code)
 	- remove rnd_hid_t->fileselect (code should use rnd_hid_fileselect() instead, which should call lib_hid_common's fileselect through a global pointer hook, plug_ style)
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
-	- remove RND_HID_FSD_MAY_NOT_EXIST and RND_HID_FSD_IS_TEMPLATE (replace them with 0 in code)
 	- make HID_SC_ an enum
 	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor
 	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
 	- there are no spare fields in:
 		- rnd_hid_tree_t (calloced from macro so calloc is on app side!)
 		- rnd_hid_dad_subdialog_s
-	- remove unused flags from rnd_hid_fsd_flags_t
 	- simplify menu code, remove unused features:
 		- core: RND_MF_ACTIVE, RND_MF_BACKGROUND, RND_MF_FOREGROUND, RND_MF_FONT
 		- check in all HIDs as well
