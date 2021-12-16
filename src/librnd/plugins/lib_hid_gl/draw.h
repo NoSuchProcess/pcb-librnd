@@ -50,13 +50,23 @@ typedef struct hidgl_draw_s {
 	void (*prim_set_marker)(void);            /* set marker for rewind */
 	void (*prim_rewind_to_marker)(void);      /* rewind to last set marker; useful for discarding primitives after the marker */
 
+	void (*prim_reserve_triangles)(int count);
+
 
 	/*** Add primitives to the buffer ***/
-	void (*prim_solid_rectangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+	void (*prim_add_triangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3);
+	void (*prim_add_line)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+	void (*prim_add_rect)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+	void (*prim_add_solid_rectangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+	void (*prim_add_texture_quad)(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1, GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2, GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3, GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4, GLuint texture_id);
+
 
 } hidgl_draw_t;
 
 
 extern hidgl_draw_t hidgl_draw; /* active drawing backend */
+
+/* available implementations */
+extern hidgl_draw_t hidgl_draw_direct;
 
 #endif /* ! defined HID_GL_DRAW_GL_H */

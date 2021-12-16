@@ -37,14 +37,13 @@
 
 #include <librnd/core/grid.h>
 #include <librnd/core/hid.h>
-#include "hidgl.h"
 #include <librnd/poly/rtree.h>
 #include <librnd/core/hidlib.h>
 
 #include "draw.h"
-#include "draw_direct.c"
-
 #include "stencil_gl.h"
+
+#include "hidgl.h"
 
 hidgl_draw_t hidgl_draw;
 
@@ -116,8 +115,9 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 
 void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	drawgl_add_triangle(x1, y1, x1, y2, x2, y2);
-	drawgl_add_triangle(x2, y1, x2, y2, x1, y1);
+	TODO("this could be done by hidgl_draw.prim_add_solid_rectangle");
+	hidgl_draw.prim_add_triangle(x1, y1, x1, y2, x2, y2);
+	hidgl_draw.prim_add_triangle(x2, y1, x2, y2, x1, y1);
 }
 
 
@@ -276,14 +276,14 @@ static void draw_cap(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_angle_
 	if (slices > MAX_TRIANGLES_PER_CAP)
 		slices = MAX_TRIANGLES_PER_CAP;
 
-	drawgl_reserve_triangles(slices);
+	hidgl_draw.prim_reserve_triangles(slices);
 
 	last_capx = radius * cosf(angle * M_PI / 180.) + x;
 	last_capy = -radius * sinf(angle * M_PI / 180.) + y;
 	for(i = 0; i < slices; i++) {
 		capx = radius * cosf(angle * M_PI / 180. + ((float)(i + 1)) * M_PI / (float)slices) + x;
 		capy = -radius * sinf(angle * M_PI / 180. + ((float)(i + 1)) * M_PI / (float)slices) + y;
-		drawgl_add_triangle(last_capx, last_capy, capx, capy, x, y);
+		hidgl_draw.prim_add_triangle(last_capx, last_capy, capx, capy, x, y);
 		last_capx = capx;
 		last_capy = capy;
 	}
@@ -300,7 +300,7 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 	rnd_coord_t orig_width = width;
 
 	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
-		drawgl_add_line(x1, y1, x2, y2);
+		hidgl_draw.prim_add_line(x1, y1, x2, y2);
 	else {
 		if (width < scale)
 			width = scale;
@@ -349,8 +349,8 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 				circular_caps = 1;
 		}
 
-		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
-		drawgl_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
+		hidgl_draw.prim_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
+		hidgl_draw.prim_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
 
 		if (circular_caps) {
 			draw_cap(width, x1, y1, angle, scale);
@@ -405,7 +405,7 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 	if (slices > MAX_SLICES_PER_ARC)
 		slices = MAX_SLICES_PER_ARC;
 
-	drawgl_reserve_triangles(2 * slices);
+	hidgl_draw.prim_reserve_triangles(2 * slices);
 
 	angle_incr_rad = delta_angle_rad / (float)slices;
 
@@ -423,8 +423,8 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 		outer_x = -outer_r * cos_ang + x;
 		outer_y = outer_r * sin_ang + y;
 
-		drawgl_add_triangle(last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
-		drawgl_add_triangle(last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
+		hidgl_draw.prim_add_triangle(last_inner_x, last_inner_y, last_outer_x, last_outer_y, outer_x, outer_y);
+		hidgl_draw.prim_add_triangle(last_inner_x, last_inner_y, inner_x, inner_y, outer_x, outer_y);
 
 		last_inner_x = inner_x;
 		last_inner_y = inner_y;
@@ -444,12 +444,12 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 
 void hidgl_draw_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	drawgl_add_rectangle(x1, y1, x2, y2);
+	hidgl_draw.prim_add_rect(x1, y1, x2, y2);
 }
 
 void hidgl_draw_texture_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id)
 {
-	drawgl_add_texture_quad(x1, y1, 0.0, 0.0, x2, y1, 1.0, 0.0, x2, y2, 1.0, 1.0, x1, y2, 0.0, 1.0, texture_id);
+	hidgl_draw.prim_add_texture_quad(x1, y1, 0.0, 0.0, x2, y1, 1.0, 0.0, x2, y2, 1.0, 1.0, x1, y2, 0.0, 1.0, texture_id);
 }
 
 void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale)
@@ -472,7 +472,7 @@ void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double sc
 	if (slices > MAX_TRIANGLES_PER_CIRCLE)
 		slices = MAX_TRIANGLES_PER_CIRCLE;
 
-	drawgl_reserve_triangles(slices);
+	hidgl_draw.prim_reserve_triangles(slices);
 
 	last_x = vx + vr;
 	last_y = vy;
@@ -481,7 +481,7 @@ void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double sc
 		float x, y;
 		x = radius * cosf(((float)(i + 1)) * 2. * M_PI / (float)slices) + vx;
 		y = radius * sinf(((float)(i + 1)) * 2. * M_PI / (float)slices) + vy;
-		drawgl_add_triangle(vx, vy, last_x, last_y, x, y);
+		hidgl_draw.prim_add_triangle(vx, vy, last_x, last_y, x, y);
 		last_x = x;
 		last_y = y;
 	}
@@ -553,7 +553,7 @@ static void myVertex(GLdouble *vertex_data)
 			stashed_vertices++;
 		}
 		else {
-			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
+			hidgl_draw.prim_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], vertex_data[0], vertex_data[1]);
 			if (tessVertexType == GL_TRIANGLE_STRIP) {
 				/* STRIP saves the last two vertices for re-use in the next triangle */
 				triangle_vertices[0] = triangle_vertices[2];
@@ -569,7 +569,7 @@ static void myVertex(GLdouble *vertex_data)
 		triangle_vertices[triangle_comp_idx++] = vertex_data[1];
 		stashed_vertices++;
 		if (stashed_vertices == 3) {
-			drawgl_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
+			hidgl_draw.prim_add_triangle(triangle_vertices[0], triangle_vertices[1], triangle_vertices[2], triangle_vertices[3], triangle_vertices[4], triangle_vertices[5]);
 			triangle_comp_idx = 0;
 			stashed_vertices = 0;
 		}
@@ -737,3 +737,5 @@ void hidgl_draw_solid_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_c
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 }
+
+#include "draw_direct.c"

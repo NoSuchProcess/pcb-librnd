@@ -299,7 +299,7 @@ void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 	alpha = a;
 }
 
-RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
+static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
 {
 	/* Debug Drawing */
 #if 0
@@ -317,7 +317,7 @@ RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat 
 	vertex_buffer_add(x3, y3);
 }
 
-RND_INLINE void drawgl_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+static void drawgl_direct_prim_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
 	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
 	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
 	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
@@ -331,7 +331,7 @@ RND_INLINE void drawgl_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfl
 	vertex_buffer_add_xyuv(x4, y4, u4, v4);
 }
 
-RND_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void drawgl_direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primitive_buffer_add(GL_LINES, vertex_buffer.size, 2, 0);
 	vertex_buffer_reserve_extra(2);
@@ -339,7 +339,7 @@ RND_INLINE void drawgl_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 	vertex_buffer_add(x2, y2);
 }
 
-RND_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void drawgl_direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primitive_buffer_add(GL_LINE_LOOP, vertex_buffer.size, 4, 0);
 	vertex_buffer_reserve_extra(4);
@@ -395,12 +395,12 @@ RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2,
 	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
-static void drawgl_direct_prim_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void drawgl_direct_prim_add_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
 
-RND_INLINE void drawgl_reserve_triangles(int count)
+static void drawgl_direct_prim_reserve_triangles(int count)
 {
 	vertex_buffer_reserve_extra(count * 3);
 }
@@ -652,6 +652,11 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_prim_draw_all,
 	drawgl_direct_prim_set_marker,
 	drawgl_direct_prim_rewind_to_marker,
+	drawgl_direct_prim_reserve_triangles,
 
-	drawgl_direct_prim_solid_rectangle
+	drawgl_direc_prim_add_triangle,
+	drawgl_direct_prim_add_line,
+	drawgl_direct_prim_add_rect,
+	drawgl_direct_prim_add_solid_rectangle,
+	drawgl_direct_prim_add_texture_quad,
 };

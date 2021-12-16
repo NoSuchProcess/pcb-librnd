@@ -171,7 +171,7 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 		   will be set to all ones. */
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 		stencilgl_mode_write_set(comp_stencil_bit);
-		hidgl_draw.prim_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
+		hidgl_draw.prim_add_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
 	}
 	else
 		hidgl_draw.flush();
