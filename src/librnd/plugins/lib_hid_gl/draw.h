@@ -57,7 +57,7 @@ typedef struct hidgl_draw_s {
 	void (*prim_add_triangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3);
 	void (*prim_add_line)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 	void (*prim_add_rect)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
-	void (*prim_add_solid_rectangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+	void (*prim_add_fillrect)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 	void (*prim_add_texture_quad)(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1, GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2, GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3, GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4, GLuint texture_id);
 
 

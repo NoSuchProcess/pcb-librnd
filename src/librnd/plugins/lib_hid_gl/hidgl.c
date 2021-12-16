@@ -115,7 +115,7 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 
 void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	TODO("this could be done by hidgl_draw.prim_add_solid_rectangle");
+	TODO("this could be done by hidgl_draw.prim_add_fillrect");
 	hidgl_draw.prim_add_triangle(x1, y1, x1, y2, x2, y2);
 	hidgl_draw.prim_add_triangle(x2, y1, x2, y2, x1, y1);
 }

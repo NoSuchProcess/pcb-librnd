@@ -395,7 +395,7 @@ RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2,
 	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
-static void drawgl_direct_prim_add_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void drawgl_direct_prim_add_fillrect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
@@ -657,6 +657,6 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direc_prim_add_triangle,
 	drawgl_direct_prim_add_line,
 	drawgl_direct_prim_add_rect,
-	drawgl_direct_prim_add_solid_rectangle,
+	drawgl_direct_prim_add_fillrect,
 	drawgl_direct_prim_add_texture_quad,
 };
