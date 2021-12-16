@@ -691,8 +691,7 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	points[3][0] = maxx;
 	points[3][1] = y;
 
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
+	drawgl_mode_positive_xor_start();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -701,6 +700,8 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	glDrawArrays(GL_LINES, 0, 4);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
+
+	drawgl_mode_positive_xor_end();
 }
 
 void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float r, float g, float b)

@@ -48,6 +48,18 @@ RND_INLINE void stencilgl_mode_write_set(int bits)
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
+RND_INLINE void drawgl_mode_positive_xor_start(void)
+{
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_XOR);
+}
+
+RND_INLINE void drawgl_mode_positive_xor_end(void)
+{
+	glDisable(GL_COLOR_LOGIC_OP);
+}
+
+
 void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen);
 void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen);
 void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen);

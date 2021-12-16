@@ -134,7 +134,7 @@ void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 	hidgl_draw.reset();
 	glColorMask(0, 0, 0, 0); /* Disable color drawing */
 	stencilgl_reset_stencil_usage();
-	glDisable(GL_COLOR_LOGIC_OP);
+	drawgl_mode_positive_xor_end();
 	comp_stencil_bit = 0;
 }
 
@@ -146,7 +146,7 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 		hidgl_draw.flush();
 
 	glEnable(GL_STENCIL_TEST);
-	glDisable(GL_COLOR_LOGIC_OP);
+	drawgl_mode_positive_xor_end();
 	stencilgl_mode_write_set(comp_stencil_bit);
 }
 
@@ -155,14 +155,13 @@ void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 	hidgl_draw.flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
+	drawgl_mode_positive_xor_start();
 }
 
 void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
-	glDisable(GL_COLOR_LOGIC_OP);
+	drawgl_mode_positive_xor_end();
 	
 	if (comp_stencil_bit == 0) {
 		/* The stencil isn't valid yet which means that this is the first pos/neg mode
