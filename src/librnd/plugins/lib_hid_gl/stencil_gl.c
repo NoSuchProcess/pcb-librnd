@@ -126,18 +126,12 @@ static inline void stencilgl_mode_write_clear(int bits)
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
-/* temporary */
-void drawgl_draw_all(int stencil_bits);
-void drawgl_set_marker();
-void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
-
-
 static int comp_stencil_bit = 0;
 
 void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
-	drawgl_flush();
-	drawgl_reset();
+	hidgl_draw.flush();
+	hidgl_draw.reset();
 	glColorMask(0, 0, 0, 0); /* Disable color drawing */
 	stencilgl_reset_stencil_usage();
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -149,7 +143,7 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 	else
-		drawgl_flush();
+		hidgl_draw.flush();
 
 	glEnable(GL_STENCIL_TEST);
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -158,7 +152,7 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 
 void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 {
-	drawgl_flush();
+	hidgl_draw.flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 	glEnable(GL_COLOR_LOGIC_OP);
@@ -177,19 +171,19 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 		   will be set to all ones. */
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 		stencilgl_mode_write_set(comp_stencil_bit);
-		drawgl_direct_draw_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
+		hidgl_draw.prim_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
 	}
 	else
-		drawgl_flush();
+		hidgl_draw.flush();
 
 	stencilgl_mode_write_clear(comp_stencil_bit);
-	drawgl_set_marker();
+	hidgl_draw.prim_set_marker();
 }
 
 
 void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
 {
-	drawgl_flush();
+	hidgl_draw.flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	if (comp_stencil_bit) {
@@ -203,7 +197,7 @@ void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *scre
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
 
 		/* Draw all primtives through the stencil to the color buffer. */
-		drawgl_draw_all(comp_stencil_bit);
+		hidgl_draw.prim_draw_all(comp_stencil_bit);
 	}
 
 	glDisable(GL_STENCIL_TEST);

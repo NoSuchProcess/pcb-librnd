@@ -291,7 +291,7 @@ static inline int primitive_buffer_last_type(void)
 	return primitive_buffer.size > 0 ? primitive_buffer.data[primitive_buffer.size - 1].type : GL_ZERO;
 }
 
-void drawgl_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	red = r;
 	green = g;
@@ -395,7 +395,7 @@ RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2,
 	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
-void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void drawgl_direct_prim_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
@@ -457,7 +457,7 @@ static inline void drawgl_draw_primtive(primitive_t *prim)
 	}
 }
 
-void drawgl_flush(void)
+static void drawgl_direct_flush(void)
 {
 	int index = primitive_buffer.dirty_index;
 	int end = primitive_buffer.size;
@@ -485,9 +485,7 @@ void drawgl_flush(void)
 	primitive_buffer.dirty_index = end;
 }
 
-/* Draw all buffered primitives. The dirty index is ignored and will remain unchanged.
- * This function accepts stencil bits that can be used to mask the drawing. */
-void drawgl_draw_all(int stencil_bits)
+static void drawgl_direct_prim_draw_all(int stencil_bits)
 {
 	int index = primitive_buffer.size;
 	primitive_t *prim;
@@ -615,26 +613,45 @@ void drawgl_draw_all(int stencil_bits)
 
 }
 
-void drawgl_reset(void)
+void drawgl_direct_reset(void)
 {
 	vertex_buffer_clear();
 	primitive_buffer_clear();
 }
 
-void drawgl_set_marker(void)
+static void drawgl_direct_prim_set_marker(void)
 {
 	vertex_buffer_set_marker();
 	primitive_buffer_set_marker();
 }
 
-RND_INLINE void drawgl_rewind_to_marker(void)
+static void drawgl_direct_prim_rewind_to_marker(void)
 {
 	vertex_buffer_rewind();
 	primitive_buffer_rewind();
 }
 
-void drawgl_uninit(void)
+static void drawgl_direct_uninit(void)
 {
 	vertex_buffer_destroy();
 	primitive_buffer_destroy();
 }
+
+int drawgl_direct_init(void)
+{
+	return 0;
+}
+
+hidgl_draw_t hidgl_draw_direct = {
+	drawgl_direct_init,
+	drawgl_direct_uninit,
+	drawgl_direct_flush,
+	drawgl_direct_set_color,
+	drawgl_direct_reset,
+
+	drawgl_direct_prim_draw_all,
+	drawgl_direct_prim_set_marker,
+	drawgl_direct_prim_rewind_to_marker,
+
+	drawgl_direct_prim_solid_rectangle
+};

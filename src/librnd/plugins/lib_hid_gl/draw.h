@@ -32,10 +32,31 @@
 #include "config.h"
 #include "opengl.h"
 
-void drawgl_uninit(void);
-void drawgl_flush(void);
-void drawgl_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-void drawgl_reset(void);
+typedef struct hidgl_draw_s {
+ /* Returns 0 if the drawing backend is compatible with host opengl */
+	int (*init)(void);
 
+	void (*uninit)(void);
+	void (*flush)(void);
+	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	void (*reset)(void);
+
+	/*** Buffer of primitives to be drawn */
+	/* Draw all buffered primitives. The dirty index is ignored and will
+	   remain unchanged. This function accepts stencil bits that can be
+	   used to mask the drawing. */
+	void (*prim_draw_all)(int stencil_bits);
+
+	void (*prim_set_marker)(void);            /* set marker for rewind */
+	void (*prim_rewind_to_marker)(void);      /* rewind to last set marker; useful for discarding primitives after the marker */
+
+
+	/*** Add primitives to the buffer ***/
+	void (*prim_solid_rectangle)(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+
+} hidgl_draw_t;
+
+
+extern hidgl_draw_t hidgl_draw; /* active drawing backend */
 
 #endif /* ! defined HID_GL_DRAW_GL_H */

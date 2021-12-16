@@ -41,34 +41,37 @@
 #include <librnd/poly/rtree.h>
 #include <librnd/core/hidlib.h>
 
+#include "draw.h"
 #include "draw_direct.c"
 
 #include "stencil_gl.h"
 
+hidgl_draw_t hidgl_draw;
 
 void hidgl_init(void)
 {
+	hidgl_draw = hidgl_draw_direct;
 	stencilgl_init();
 }
 
 void hidgl_uninit(void)
 {
-	drawgl_uninit();
+	hidgl_draw.uninit();
 }
 
 void hidgl_flush(void)
 {
-	drawgl_flush();
+	hidgl_draw.flush();
 }
 
 void hidgl_reset(void)
 {
-	drawgl_reset();
+	hidgl_draw.reset();
 }
 
 void hidgl_set_color(float r, float g, float b, float a)
 {
-	drawgl_set_color(r, g, b, a);
+	hidgl_draw.set_color(r, g, b, a);
 }
 
 
@@ -93,8 +96,8 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 	   discarded by rewinding the primitive buffer to the marker that was
 	   set when entering NEGATIVE mode. */
 	if (composite_op == RND_HID_COMP_NEGATIVE) {
-		drawgl_flush();
-		drawgl_rewind_to_marker();
+		hidgl_draw.flush();
+		hidgl_draw.prim_rewind_to_marker();
 	}
 
 	composite_op = op;
