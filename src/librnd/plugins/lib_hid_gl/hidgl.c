@@ -121,7 +121,7 @@ void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t
 }
 
 
-static inline void reserve_grid_points(int n, int n3)
+RND_INLINE void reserve_grid_points(int n, int n3)
 {
 	if (n > grid_point_capacity) {
 		grid_point_capacity = n + 10;

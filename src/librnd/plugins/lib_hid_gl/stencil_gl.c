@@ -119,7 +119,7 @@ void stencilgl_init()
 
 
 /* Setup the stencil buffer so that writes will clear stencil bits */
-static inline void stencilgl_mode_write_clear(int bits)
+RND_INLINE void stencilgl_mode_write_clear(int bits)
 {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 	glStencilMask(bits);

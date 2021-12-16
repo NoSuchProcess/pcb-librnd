@@ -101,7 +101,7 @@ static GLfloat alpha = 0.75f;
 
 static int mask_stencil = 0;
 
-static inline void vertex_buffer_clear(void)
+RND_INLINE void vertex_buffer_clear(void)
 {
 	vertex_buffer.size = 0;
 	vertex_buffer.marker = 0;
@@ -136,7 +136,7 @@ static int vertex_buffer_reserve(int size)
 
 /* Ensure that the capacity of the vertex buffer can accomodate an allocation
    of at least 'size' vertices. */
-static inline int vertex_buffer_reserve_extra(int size)
+RND_INLINE int vertex_buffer_reserve_extra(int size)
 {
 	return vertex_buffer_reserve(vertex_buffer.size + size);
 }
@@ -145,7 +145,7 @@ static inline int vertex_buffer_reserve_extra(int size)
    added after the marker has been set to be discarded. This is required when
    temporary vertices are required to draw something that will not be required
    for the final render pass. */
-static inline int vertex_buffer_set_marker(void)
+RND_INLINE int vertex_buffer_set_marker(void)
 {
 	vertex_buffer.marker = vertex_buffer.size;
 	return vertex_buffer.marker;
@@ -153,12 +153,12 @@ static inline int vertex_buffer_set_marker(void)
 
 /* Discard vertices added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-static inline void vertex_buffer_rewind(void)
+RND_INLINE void vertex_buffer_rewind(void)
 {
 	vertex_buffer.size = vertex_buffer.marker;
 }
 
-static inline vertex_t *vertex_buffer_allocate(int size)
+RND_INLINE vertex_t *vertex_buffer_allocate(int size)
 {
 	vertex_t *p_vertex = NULL;
 	if (vertex_buffer_reserve_extra(size) == 0) {
@@ -169,7 +169,7 @@ static inline vertex_t *vertex_buffer_allocate(int size)
 	return p_vertex;
 }
 
-static inline void vertex_buffer_add(GLfloat x, GLfloat y)
+RND_INLINE void vertex_buffer_add(GLfloat x, GLfloat y)
 {
 	vertex_t *p_vert = vertex_buffer_allocate(1);
 	if (p_vert) {
@@ -182,7 +182,7 @@ static inline void vertex_buffer_add(GLfloat x, GLfloat y)
 	}
 }
 
-static inline void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
+RND_INLINE void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 {
 	vertex_t *p_vert = vertex_buffer_allocate(1);
 	if (p_vert) {
@@ -197,7 +197,7 @@ static inline void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLflo
 	}
 }
 
-static inline void primitive_buffer_clear(void)
+RND_INLINE void primitive_buffer_clear(void)
 {
 	primitive_buffer.size = 0;
 	primitive_buffer.dirty_index = 0;
@@ -235,7 +235,7 @@ static int primitive_buffer_reserve(int size)
 
 /* Ensure that the capacity of the primitive buffer can accomodate an
    allocation of at least 'size' primitives. */
-static inline int primitive_buffer_reserve_extra(int size)
+RND_INLINE int primitive_buffer_reserve_extra(int size)
 {
 	return primitive_buffer_reserve(primitive_buffer.size + size);
 }
@@ -244,7 +244,7 @@ static inline int primitive_buffer_reserve_extra(int size)
    primitives added after the marker to be discarded. This is required
    when temporary primitives are required to draw something that will
    not be required for the final render pass. */
-static inline int primitive_buffer_set_marker(void)
+RND_INLINE int primitive_buffer_set_marker(void)
 {
 	primitive_buffer.marker = primitive_buffer.size;
 	return primitive_buffer.marker;
@@ -252,17 +252,17 @@ static inline int primitive_buffer_set_marker(void)
 
 /* Discard primitives added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-static inline void primitive_buffer_rewind(void)
+RND_INLINE void primitive_buffer_rewind(void)
 {
 	primitive_buffer.size = primitive_buffer.marker;
 }
 
-static inline primitive_t *primitive_buffer_back(void)
+RND_INLINE primitive_t *primitive_buffer_back(void)
 {
 	return (primitive_buffer.size > 0) && (primitive_buffer.data) ? &primitive_buffer.data[primitive_buffer.size - 1] : NULL;
 }
 
-static inline int primitive_dirty_count(void)
+RND_INLINE int primitive_dirty_count(void)
 {
 	return primitive_buffer.size - primitive_buffer.dirty_index;
 }
@@ -286,7 +286,7 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 	}
 }
 
-static inline int primitive_buffer_last_type(void)
+RND_INLINE int primitive_buffer_last_type(void)
 {
 	return primitive_buffer.size > 0 ? primitive_buffer.data[primitive_buffer.size - 1].type : GL_ZERO;
 }
@@ -407,7 +407,7 @@ static void drawgl_direct_prim_reserve_triangles(int count)
 
 /* This function will draw the specified primitive but it may also modify the state of
    the stencil buffer when MASK primtives exist. */
-static inline void drawgl_draw_primtive(primitive_t *prim)
+RND_INLINE void drawgl_draw_primtive(primitive_t *prim)
 {
 	switch (prim->type) {
 		case PRIM_MASK_CREATE:
