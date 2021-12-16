@@ -71,9 +71,9 @@ typedef struct {
 	int capacity; /* The capacity of the buffer (by number of vertices) */
 	int size; /* The number of vertices in the buffer. */
 	int marker; /* An index that allows vertices after the marker to be removed. */
-} vertex_buffer_t;
+} vertbuf_t;
 
-static vertex_buffer_t vertex_buffer = { 0 };
+static vertbuf_t vertbuf = { 0 };
 
 /* Primitive Buffer Data */
 
@@ -90,9 +90,9 @@ typedef struct {
 	int size; /* The actual number of primitives in the primitive buffer */
 	int marker; /* An index that allows primitives after the marker to be removed. */
 	int dirty_index; /* The index of the first primitive that hasn't been drawn yet. */
-} primitive_buffer_t;
+} primbuf_t;
 
-static primitive_buffer_t primitive_buffer = { 0 };
+static primbuf_t primbuf = { 0 };
 
 static GLfloat red = 0.0f;
 static GLfloat green = 0.0f;
@@ -101,34 +101,34 @@ static GLfloat alpha = 0.75f;
 
 static int mask_stencil = 0;
 
-RND_INLINE void vertex_buffer_clear(void)
+RND_INLINE void vertbuf_clear(void)
 {
-	vertex_buffer.size = 0;
-	vertex_buffer.marker = 0;
+	vertbuf.size = 0;
+	vertbuf.marker = 0;
 }
 
-static void vertex_buffer_destroy(void)
+static void vertbuf_destroy(void)
 {
-	vertex_buffer_clear();
-	if (vertex_buffer.data) {
-		free(vertex_buffer.data);
-		vertex_buffer.data = NULL;
+	vertbuf_clear();
+	if (vertbuf.data) {
+		free(vertbuf.data);
+		vertbuf.data = NULL;
 	}
 }
 
 /* Ensure that the total capacity of the vertex buffer is at least 'size' vertices.
    When the buffer is reallocated, extra vertices will be added to avoid many small 
    allocations being made. */
-static int vertex_buffer_reserve(int size)
+static int vertbuf_reserve(int size)
 {
 	int result = 0;
-	if (size > vertex_buffer.capacity) {
-		vertex_t *p_data = realloc(vertex_buffer.data, (size + RESERVE_VERTEX_EXTRA) * sizeof(vertex_t));
+	if (size > vertbuf.capacity) {
+		vertex_t *p_data = realloc(vertbuf.data, (size + RESERVE_VERTEX_EXTRA) * sizeof(vertex_t));
 		if (p_data == NULL)
 			result = -1;
 		else {
-			vertex_buffer.data = p_data;
-			vertex_buffer.capacity = size + RESERVE_VERTEX_EXTRA;
+			vertbuf.data = p_data;
+			vertbuf.capacity = size + RESERVE_VERTEX_EXTRA;
 		}
 	}
 	return result;
@@ -136,42 +136,42 @@ static int vertex_buffer_reserve(int size)
 
 /* Ensure that the capacity of the vertex buffer can accomodate an allocation
    of at least 'size' vertices. */
-RND_INLINE int vertex_buffer_reserve_extra(int size)
+RND_INLINE int vertbuf_reserve_extra(int size)
 {
-	return vertex_buffer_reserve(vertex_buffer.size + size);
+	return vertbuf_reserve(vertbuf.size + size);
 }
 
 /* Set the marker to the end of the active vertex data. This allows vertices
    added after the marker has been set to be discarded. This is required when
    temporary vertices are required to draw something that will not be required
    for the final render pass. */
-RND_INLINE int vertex_buffer_set_marker(void)
+RND_INLINE int vertbuf_set_marker(void)
 {
-	vertex_buffer.marker = vertex_buffer.size;
-	return vertex_buffer.marker;
+	vertbuf.marker = vertbuf.size;
+	return vertbuf.marker;
 }
 
 /* Discard vertices added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-RND_INLINE void vertex_buffer_rewind(void)
+RND_INLINE void vertbuf_rewind(void)
 {
-	vertex_buffer.size = vertex_buffer.marker;
+	vertbuf.size = vertbuf.marker;
 }
 
-RND_INLINE vertex_t *vertex_buffer_allocate(int size)
+RND_INLINE vertex_t *vertbuf_allocate(int size)
 {
 	vertex_t *p_vertex = NULL;
-	if (vertex_buffer_reserve_extra(size) == 0) {
-		p_vertex = &vertex_buffer.data[vertex_buffer.size];
-		vertex_buffer.size += size;
+	if (vertbuf_reserve_extra(size) == 0) {
+		p_vertex = &vertbuf.data[vertbuf.size];
+		vertbuf.size += size;
 	}
 
 	return p_vertex;
 }
 
-RND_INLINE void vertex_buffer_add(GLfloat x, GLfloat y)
+RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
-	vertex_t *p_vert = vertex_buffer_allocate(1);
+	vertex_t *p_vert = vertbuf_allocate(1);
 	if (p_vert) {
 		p_vert->x = x;
 		p_vert->y = y;
@@ -182,9 +182,9 @@ RND_INLINE void vertex_buffer_add(GLfloat x, GLfloat y)
 	}
 }
 
-RND_INLINE void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
+RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 {
-	vertex_t *p_vert = vertex_buffer_allocate(1);
+	vertex_t *p_vert = vertbuf_allocate(1);
 	if (p_vert) {
 		p_vert->x = x;
 		p_vert->y = y;
@@ -197,36 +197,36 @@ RND_INLINE void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat 
 	}
 }
 
-RND_INLINE void primitive_buffer_clear(void)
+RND_INLINE void primbuf_clear(void)
 {
-	primitive_buffer.size = 0;
-	primitive_buffer.dirty_index = 0;
-	primitive_buffer.marker = 0;
+	primbuf.size = 0;
+	primbuf.dirty_index = 0;
+	primbuf.marker = 0;
 }
 
-static void primitive_buffer_destroy(void)
+static void primbuf_destroy(void)
 {
-	primitive_buffer_clear();
-	if (primitive_buffer.data) {
-		free(primitive_buffer.data);
-		primitive_buffer.data = NULL;
+	primbuf_clear();
+	if (primbuf.data) {
+		free(primbuf.data);
+		primbuf.data = NULL;
 	}
 }
 
 /* Ensure that the total capacity of the primitive buffer is at least 'size'
    primitives.  When reallocating the buffer, extra primitives will be added
    to avoid many small reallocations. */
-static int primitive_buffer_reserve(int size)
+static int primbuf_reserve(int size)
 {
 	int result = 0;
 
-	if (size > primitive_buffer.capacity) {
-		primitive_t *p_data = realloc(primitive_buffer.data, (size + RESERVE_PRIMITIVE_EXTRA) * sizeof(primitive_t));
+	if (size > primbuf.capacity) {
+		primitive_t *p_data = realloc(primbuf.data, (size + RESERVE_PRIMITIVE_EXTRA) * sizeof(primitive_t));
 		if (p_data == NULL)
 			result = -1;
 		else {
-			primitive_buffer.data = p_data;
-			primitive_buffer.capacity = size + RESERVE_PRIMITIVE_EXTRA;
+			primbuf.data = p_data;
+			primbuf.capacity = size + RESERVE_PRIMITIVE_EXTRA;
 		}
 	}
 
@@ -235,41 +235,41 @@ static int primitive_buffer_reserve(int size)
 
 /* Ensure that the capacity of the primitive buffer can accomodate an
    allocation of at least 'size' primitives. */
-RND_INLINE int primitive_buffer_reserve_extra(int size)
+RND_INLINE int primbuf_reserve_extra(int size)
 {
-	return primitive_buffer_reserve(primitive_buffer.size + size);
+	return primbuf_reserve(primbuf.size + size);
 }
 
 /* Set the marker to the end of the active primitive data. This allows
    primitives added after the marker to be discarded. This is required
    when temporary primitives are required to draw something that will
    not be required for the final render pass. */
-RND_INLINE int primitive_buffer_set_marker(void)
+RND_INLINE int primbuf_set_marker(void)
 {
-	primitive_buffer.marker = primitive_buffer.size;
-	return primitive_buffer.marker;
+	primbuf.marker = primbuf.size;
+	return primbuf.marker;
 }
 
 /* Discard primitives added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-RND_INLINE void primitive_buffer_rewind(void)
+RND_INLINE void primbuf_rewind(void)
 {
-	primitive_buffer.size = primitive_buffer.marker;
+	primbuf.size = primbuf.marker;
 }
 
-RND_INLINE primitive_t *primitive_buffer_back(void)
+RND_INLINE primitive_t *primbuf_back(void)
 {
-	return (primitive_buffer.size > 0) && (primitive_buffer.data) ? &primitive_buffer.data[primitive_buffer.size - 1] : NULL;
+	return (primbuf.size > 0) && (primbuf.data) ? &primbuf.data[primbuf.size - 1] : NULL;
 }
 
 RND_INLINE int primitive_dirty_count(void)
 {
-	return primitive_buffer.size - primitive_buffer.dirty_index;
+	return primbuf.size - primbuf.dirty_index;
 }
 
-static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint texture_id)
+static void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id)
 {
-	primitive_t *last = primitive_buffer_back();
+	primitive_t *last = primbuf_back();
 
 	/* If the last primitive is the same type AND that type can be extended
 	   AND the last primitive is dirty AND 'first' follows the last vertex of
@@ -277,8 +277,8 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 	   the last one. */
 	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first))
 		last->count += count;
-	else if (primitive_buffer_reserve_extra(1) == 0) {
-		primitive_t *p_prim = &primitive_buffer.data[primitive_buffer.size++];
+	else if (primbuf_reserve_extra(1) == 0) {
+		primitive_t *p_prim = &primbuf.data[primbuf.size++];
 		p_prim->type = type;
 		p_prim->first = first;
 		p_prim->count = count;
@@ -286,9 +286,9 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 	}
 }
 
-RND_INLINE int primitive_buffer_last_type(void)
+RND_INLINE int primbuf_last_type(void)
 {
-	return primitive_buffer.size > 0 ? primitive_buffer.data[primitive_buffer.size - 1].type : GL_ZERO;
+	return primbuf.size > 0 ? primbuf.data[primbuf.size - 1].type : GL_ZERO;
 }
 
 void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
@@ -303,18 +303,18 @@ static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, G
 {
 	/* Debug Drawing */
 #if 0
-	   primitive_buffer_add(GL_LINES,vertex_buffer.size,6);
-	   vertex_buffer_reserve_extra(6);
-	   vertex_buffer_add(x1,y1);  vertex_buffer_add(x2,y2);
-	   vertex_buffer_add(x2,y2);  vertex_buffer_add(x3,y3);
-	   vertex_buffer_add(x3,y3);  vertex_buffer_add(x1,y1);
+	   primbuf_add(GL_LINES,vertbuf.size,6);
+	   vertbuf_reserve_extra(6);
+	   vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
+	   vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
+	   vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
 #endif
 
-	primitive_buffer_add(GL_TRIANGLES, vertex_buffer.size, 3, 0);
-	vertex_buffer_reserve_extra(3);
-	vertex_buffer_add(x1, y1);
-	vertex_buffer_add(x2, y2);
-	vertex_buffer_add(x3, y3);
+	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0);
+	vertbuf_reserve_extra(3);
+	vertbuf_add(x1, y1);
+	vertbuf_add(x2, y2);
+	vertbuf_add(x3, y3);
 }
 
 static void drawgl_direct_prim_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
@@ -323,45 +323,45 @@ static void drawgl_direct_prim_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat 
 	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
 	GLuint texture_id)
 {
-	primitive_buffer_add(GL_TRIANGLE_FAN, vertex_buffer.size, 4, texture_id);
-	vertex_buffer_reserve_extra(4);
-	vertex_buffer_add_xyuv(x1, y1, u1, v1);
-	vertex_buffer_add_xyuv(x2, y2, u2, v2);
-	vertex_buffer_add_xyuv(x3, y3, u3, v3);
-	vertex_buffer_add_xyuv(x4, y4, u4, v4);
+	primbuf_add(GL_TRIANGLE_FAN, vertbuf.size, 4, texture_id);
+	vertbuf_reserve_extra(4);
+	vertbuf_add_xyuv(x1, y1, u1, v1);
+	vertbuf_add_xyuv(x2, y2, u2, v2);
+	vertbuf_add_xyuv(x3, y3, u3, v3);
+	vertbuf_add_xyuv(x4, y4, u4, v4);
 }
 
 static void drawgl_direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primitive_buffer_add(GL_LINES, vertex_buffer.size, 2, 0);
-	vertex_buffer_reserve_extra(2);
-	vertex_buffer_add(x1, y1);
-	vertex_buffer_add(x2, y2);
+	primbuf_add(GL_LINES, vertbuf.size, 2, 0);
+	vertbuf_reserve_extra(2);
+	vertbuf_add(x1, y1);
+	vertbuf_add(x2, y2);
 }
 
 static void drawgl_direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primitive_buffer_add(GL_LINE_LOOP, vertex_buffer.size, 4, 0);
-	vertex_buffer_reserve_extra(4);
-	vertex_buffer_add(x1, y1);
-	vertex_buffer_add(x2, y1);
-	vertex_buffer_add(x2, y2);
-	vertex_buffer_add(x1, y2);
+	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0);
+	vertbuf_reserve_extra(4);
+	vertbuf_add(x1, y1);
+	vertbuf_add(x2, y1);
+	vertbuf_add(x2, y2);
+	vertbuf_add(x1, y2);
 }
 
 RND_INLINE void drawgl_add_mask_create(void)
 {
-	primitive_buffer_add(PRIM_MASK_CREATE, 0, 0, 0);
+	primbuf_add(PRIM_MASK_CREATE, 0, 0, 0);
 }
 
 RND_INLINE void drawgl_add_mask_destroy(void)
 {
-	primitive_buffer_add(PRIM_MASK_DESTROY, 0, 0, 0);
+	primbuf_add(PRIM_MASK_DESTROY, 0, 0, 0);
 }
 
 RND_INLINE void drawgl_add_mask_use(void)
 {
-	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
+	primbuf_add(PRIM_MASK_USE, 0, 0, 0);
 }
 
 RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
@@ -402,7 +402,7 @@ static void drawgl_direct_prim_add_solid_rectangle(GLfloat x1, GLfloat y1, GLflo
 
 static void drawgl_direct_prim_reserve_triangles(int count)
 {
-	vertex_buffer_reserve_extra(count * 3);
+	vertbuf_reserve_extra(count * 3);
 }
 
 /* This function will draw the specified primitive but it may also modify the state of
@@ -459,17 +459,17 @@ RND_INLINE void drawgl_draw_primtive(primitive_t *prim)
 
 static void drawgl_direct_flush(void)
 {
-	int index = primitive_buffer.dirty_index;
-	int end = primitive_buffer.size;
-	primitive_t *prim = &primitive_buffer.data[index];
+	int index = primbuf.dirty_index;
+	int end = primbuf.size;
+	primitive_t *prim = &primbuf.data[index];
 
 	/* Setup the vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].x);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].u);
-	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].r);
+	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].x);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].u);
+	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
 
 	/* draw the primitives */
 	while(index < end) {
@@ -482,28 +482,28 @@ static void drawgl_direct_flush(void)
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 
-	primitive_buffer.dirty_index = end;
+	primbuf.dirty_index = end;
 }
 
 static void drawgl_direct_prim_draw_all(int stencil_bits)
 {
-	int index = primitive_buffer.size;
+	int index = primbuf.size;
 	primitive_t *prim;
 	int mask = 0;
 
-	if ((index == 0) || (primitive_buffer.data == NULL))
+	if ((index == 0) || (primbuf.data == NULL))
 		return;
 
 	--index;
-	prim = &primitive_buffer.data[index];
+	prim = &primbuf.data[index];
 
 	/* Setup the vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].x);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].u);
-	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertex_buffer.data[0].r);
+	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].x);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].u);
+	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
 
 	/* draw the primitives */
 	while(index >= 0) {
@@ -615,26 +615,26 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 
 void drawgl_direct_reset(void)
 {
-	vertex_buffer_clear();
-	primitive_buffer_clear();
+	vertbuf_clear();
+	primbuf_clear();
 }
 
 static void drawgl_direct_prim_set_marker(void)
 {
-	vertex_buffer_set_marker();
-	primitive_buffer_set_marker();
+	vertbuf_set_marker();
+	primbuf_set_marker();
 }
 
 static void drawgl_direct_prim_rewind_to_marker(void)
 {
-	vertex_buffer_rewind();
-	primitive_buffer_rewind();
+	vertbuf_rewind();
+	primbuf_rewind();
 }
 
 static void drawgl_direct_uninit(void)
 {
-	vertex_buffer_destroy();
-	primitive_buffer_destroy();
+	vertbuf_destroy();
+	primbuf_destroy();
 }
 
 int drawgl_direct_init(void)
