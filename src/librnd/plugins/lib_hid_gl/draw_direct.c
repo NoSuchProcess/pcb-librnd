@@ -317,7 +317,7 @@ static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, G
 	vertbuf_add(x3, y3);
 }
 
-static void drawgl_direct_prim_add_texture_quad(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+static void drawgl_direct_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
 	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
 	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
 	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
@@ -658,5 +658,5 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_prim_add_line,
 	drawgl_direct_prim_add_rect,
 	drawgl_direct_prim_add_fillrect,
-	drawgl_direct_prim_add_texture_quad,
+	drawgl_direct_prim_add_textrect,
 };
