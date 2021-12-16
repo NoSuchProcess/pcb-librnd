@@ -30,16 +30,6 @@
 #define STENCIL_GL_H
 
 #include <librnd/core/global_typedefs.h>
-
-/*
-#include "config.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>
-*/
-
 #include "opengl.h"
 
 void stencilgl_init();
