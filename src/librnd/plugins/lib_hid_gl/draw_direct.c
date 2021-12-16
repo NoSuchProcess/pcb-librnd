@@ -447,6 +447,18 @@ static void drawgl_direct_draw_points_post(void)
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
+static void drawgl_direct_draw_lines6(GLfloat *pts, int npts)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, pts);
+	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, pts+2);
+	glDrawArrays(GL_LINES, 0, npts);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+}
+
+
 static void drawgl_direct_uninit(void)
 {
 	vertbuf_destroy();
@@ -479,5 +491,5 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_draw_points_pre,
 	drawgl_direct_draw_points,
 	drawgl_direct_draw_points_post,
-
+	drawgl_direct_draw_lines6,
 };

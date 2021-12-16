@@ -65,6 +65,7 @@ typedef struct hidgl_draw_s {
 	void (*draw_points_pre)(GLfloat *pts);   /* prepare for drawing points from x;y coord array pts */
 	void (*draw_points)(int npts);           /* draw the first npts points from pts set above; can be called multiple times */
 	void (*draw_points_post)(void);          /* stop drawing points */
+	void (*draw_lines6)(GLfloat *pts, int npts); /* draw lines from an array of x,y,r,g,b,a */
 
 } hidgl_draw_t;
 
