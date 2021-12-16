@@ -39,21 +39,9 @@
 
 #include "stencil_gl.h"
 
-#define MARKER_STACK_SIZE       16
-#define RESERVE_VERTEX_EXTRA    1024
-#define RESERVE_PRIMITIVE_EXTRA 256
-
-enum {
-	PRIM_MASK_CREATE = 1000,
-	PRIM_MASK_DESTROY,
-	PRIM_MASK_USE
-};
-
-
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
    position and color information. */
-
 typedef struct {
 	GLfloat x;
 	GLfloat y;
@@ -65,34 +53,8 @@ typedef struct {
 	GLfloat a;
 } vertex_t;
 
-
-typedef struct {
-	vertex_t *data; /* A dynamic array of vertices. */
-	int capacity; /* The capacity of the buffer (by number of vertices) */
-	int size; /* The number of vertices in the buffer. */
-	int marker; /* An index that allows vertices after the marker to be removed. */
-} vertbuf_t;
-
-static vertbuf_t vertbuf = { 0 };
-
-/* Primitive Buffer Data */
-
-typedef struct {
-	int type; /* The type of the primitive, eg. GL_LINES, GL_TRIANGLES, GL_TRIANGLE_FAN */
-	GLint first; /* The index of the first vertex in the vertex buffer. */
-	GLsizei count; /* The number of vertices */
-	GLuint texture_id; /* The id of a texture to use, or 0 for no texture */
-} primitive_t;
-
-typedef struct {
-	primitive_t *data; /* A dynamic array of primitives */
-	int capacity; /* The number of primitives that can fit into the primitive_data */
-	int size; /* The actual number of primitives in the primitive buffer */
-	int marker; /* An index that allows primitives after the marker to be removed. */
-	int dirty_index; /* The index of the first primitive that hasn't been drawn yet. */
-} primbuf_t;
-
-static primbuf_t primbuf = { 0 };
+#include "vertbuf.c"
+#include "primbuf.c"
 
 static GLfloat red = 0.0f;
 static GLfloat green = 0.0f;
@@ -100,74 +62,6 @@ static GLfloat blue = 0.0f;
 static GLfloat alpha = 0.75f;
 
 static int mask_stencil = 0;
-
-RND_INLINE void vertbuf_clear(void)
-{
-	vertbuf.size = 0;
-	vertbuf.marker = 0;
-}
-
-static void vertbuf_destroy(void)
-{
-	vertbuf_clear();
-	if (vertbuf.data) {
-		free(vertbuf.data);
-		vertbuf.data = NULL;
-	}
-}
-
-/* Ensure that the total capacity of the vertex buffer is at least 'size' vertices.
-   When the buffer is reallocated, extra vertices will be added to avoid many small 
-   allocations being made. */
-static int vertbuf_reserve(int size)
-{
-	int result = 0;
-	if (size > vertbuf.capacity) {
-		vertex_t *p_data = realloc(vertbuf.data, (size + RESERVE_VERTEX_EXTRA) * sizeof(vertex_t));
-		if (p_data == NULL)
-			result = -1;
-		else {
-			vertbuf.data = p_data;
-			vertbuf.capacity = size + RESERVE_VERTEX_EXTRA;
-		}
-	}
-	return result;
-}
-
-/* Ensure that the capacity of the vertex buffer can accomodate an allocation
-   of at least 'size' vertices. */
-RND_INLINE int vertbuf_reserve_extra(int size)
-{
-	return vertbuf_reserve(vertbuf.size + size);
-}
-
-/* Set the marker to the end of the active vertex data. This allows vertices
-   added after the marker has been set to be discarded. This is required when
-   temporary vertices are required to draw something that will not be required
-   for the final render pass. */
-RND_INLINE int vertbuf_set_marker(void)
-{
-	vertbuf.marker = vertbuf.size;
-	return vertbuf.marker;
-}
-
-/* Discard vertices added after the marker was set. The end of the buffer
-   will then be the position of the marker. */
-RND_INLINE void vertbuf_rewind(void)
-{
-	vertbuf.size = vertbuf.marker;
-}
-
-RND_INLINE vertex_t *vertbuf_allocate(int size)
-{
-	vertex_t *p_vertex = NULL;
-	if (vertbuf_reserve_extra(size) == 0) {
-		p_vertex = &vertbuf.data[vertbuf.size];
-		vertbuf.size += size;
-	}
-
-	return p_vertex;
-}
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
@@ -195,100 +89,6 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 		p_vert->b = 1.0;
 		p_vert->a = 1.0;
 	}
-}
-
-RND_INLINE void primbuf_clear(void)
-{
-	primbuf.size = 0;
-	primbuf.dirty_index = 0;
-	primbuf.marker = 0;
-}
-
-static void primbuf_destroy(void)
-{
-	primbuf_clear();
-	if (primbuf.data) {
-		free(primbuf.data);
-		primbuf.data = NULL;
-	}
-}
-
-/* Ensure that the total capacity of the primitive buffer is at least 'size'
-   primitives.  When reallocating the buffer, extra primitives will be added
-   to avoid many small reallocations. */
-static int primbuf_reserve(int size)
-{
-	int result = 0;
-
-	if (size > primbuf.capacity) {
-		primitive_t *p_data = realloc(primbuf.data, (size + RESERVE_PRIMITIVE_EXTRA) * sizeof(primitive_t));
-		if (p_data == NULL)
-			result = -1;
-		else {
-			primbuf.data = p_data;
-			primbuf.capacity = size + RESERVE_PRIMITIVE_EXTRA;
-		}
-	}
-
-	return result;
-}
-
-/* Ensure that the capacity of the primitive buffer can accomodate an
-   allocation of at least 'size' primitives. */
-RND_INLINE int primbuf_reserve_extra(int size)
-{
-	return primbuf_reserve(primbuf.size + size);
-}
-
-/* Set the marker to the end of the active primitive data. This allows
-   primitives added after the marker to be discarded. This is required
-   when temporary primitives are required to draw something that will
-   not be required for the final render pass. */
-RND_INLINE int primbuf_set_marker(void)
-{
-	primbuf.marker = primbuf.size;
-	return primbuf.marker;
-}
-
-/* Discard primitives added after the marker was set. The end of the buffer
-   will then be the position of the marker. */
-RND_INLINE void primbuf_rewind(void)
-{
-	primbuf.size = primbuf.marker;
-}
-
-RND_INLINE primitive_t *primbuf_back(void)
-{
-	return (primbuf.size > 0) && (primbuf.data) ? &primbuf.data[primbuf.size - 1] : NULL;
-}
-
-RND_INLINE int primitive_dirty_count(void)
-{
-	return primbuf.size - primbuf.dirty_index;
-}
-
-static void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id)
-{
-	primitive_t *last = primbuf_back();
-
-	/* If the last primitive is the same type AND that type can be extended
-	   AND the last primitive is dirty AND 'first' follows the last vertex of
-	   the previous primitive THEN we can simply append the new primitive to
-	   the last one. */
-	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first))
-		last->count += count;
-	else if (primbuf_reserve_extra(1) == 0) {
-		primitive_t *p_prim = &primbuf.data[primbuf.size++];
-		p_prim->type = type;
-		p_prim->first = first;
-		p_prim->count = count;
-		p_prim->texture_id = texture_id;
-	}
-}
-
-RND_INLINE int primbuf_last_type(void)
-{
-	return primbuf.size > 0 ? primbuf.data[primbuf.size - 1].type : GL_ZERO;
 }
 
 void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
