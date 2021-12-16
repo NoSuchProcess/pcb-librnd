@@ -104,7 +104,7 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 	   will be drawn in the wrong order. */
 	drawgl_flush();
 
-	drawgl_set_color(r, g, b, a);
+	hidgl_set_color(r, g, b, a);
 }
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)

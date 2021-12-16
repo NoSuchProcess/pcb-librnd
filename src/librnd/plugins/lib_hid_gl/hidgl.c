@@ -56,6 +56,12 @@ void hidgl_uninit(void)
 	drawgl_uninit();
 }
 
+void hidgl_set_color(float r, float g, float b, float a)
+{
+	drawgl_set_color(r, g, b, a);
+}
+
+
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;
 

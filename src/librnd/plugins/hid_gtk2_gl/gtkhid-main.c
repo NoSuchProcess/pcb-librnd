@@ -6,7 +6,6 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
-#include <librnd/plugins/lib_hid_gl/draw.h>
 #include <librnd/plugins/lib_hid_gl/hidgl.h>
 
 #include <librnd/plugins/lib_gtk2_common/compat.h>
