@@ -57,7 +57,7 @@ static GLfloat *grid_points = NULL, *grid_points3 = NULL;
 static int grid_point_capacity = 0, grid_point_capacity3 = 0;
 
 
-static inline void mode_reset(rnd_bool direct, const rnd_box_t *screen)
+static inline void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	drawgl_reset();
@@ -67,7 +67,7 @@ static inline void mode_reset(rnd_bool direct, const rnd_box_t *screen)
 	comp_stencil_bit = 0;
 }
 
-static inline void mode_positive(rnd_bool direct, const rnd_box_t *screen)
+static inline void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 {
 	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
@@ -79,7 +79,7 @@ static inline void mode_positive(rnd_bool direct, const rnd_box_t *screen)
 	stencilgl_mode_write_set(comp_stencil_bit);
 }
 
-static inline void mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
+static inline void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -88,7 +88,7 @@ static inline void mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 	glLogicOp(GL_XOR);
 }
 
-static inline void mode_negative(rnd_bool direct, const rnd_box_t *screen)
+static inline void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 {
 	glEnable(GL_STENCIL_TEST);
 	glDisable(GL_COLOR_LOGIC_OP);
@@ -110,7 +110,7 @@ static inline void mode_negative(rnd_bool direct, const rnd_box_t *screen)
 	drawgl_set_marker();
 }
 
-static inline void mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
+static inline void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -160,19 +160,19 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 
 	switch (op) {
 		case RND_HID_COMP_RESET:
-			mode_reset(direct, screen);
+			drawgl_mode_reset(direct, screen);
 			break;
 		case RND_HID_COMP_POSITIVE_XOR:
-			mode_positive_xor(direct, screen);
+			drawgl_mode_positive_xor(direct, screen);
 			break;
 		case RND_HID_COMP_POSITIVE:
-			mode_positive(direct, screen);
+			drawgl_mode_positive(direct, screen);
 			break;
 		case RND_HID_COMP_NEGATIVE:
-			mode_negative(direct, screen);
+			drawgl_mode_negative(direct, screen);
 			break;
 		case RND_HID_COMP_FLUSH:
-			mode_flush(direct, xor_mode, screen);
+			drawgl_mode_flush(direct, xor_mode, screen);
 			break;
 		default:
 			break;
