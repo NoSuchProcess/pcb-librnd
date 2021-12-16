@@ -431,6 +431,22 @@ static void drawgl_direct_prim_rewind_to_marker(void)
 	primbuf_rewind();
 }
 
+static void drawgl_direct_draw_points_pre(GLfloat *pts)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, pts);
+}
+
+static void drawgl_direct_draw_points(int npts)
+{
+	glDrawArrays(GL_POINTS, 0, npts);
+}
+
+static void drawgl_direct_draw_points_post(void)
+{
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
 static void drawgl_direct_uninit(void)
 {
 	vertbuf_destroy();
@@ -459,4 +475,9 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_prim_add_rect,
 	drawgl_direct_prim_add_fillrect,
 	drawgl_direct_prim_add_textrect,
+
+	drawgl_direct_draw_points_pre,
+	drawgl_direct_draw_points,
+	drawgl_direct_draw_points_post,
+
 };

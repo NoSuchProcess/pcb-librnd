@@ -168,11 +168,9 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 		}
 	}
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, grid_points);
-	glDrawArrays(GL_POINTS, 0, npoints);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
+	hidgl_draw.draw_points_pre(grid_points);
+	hidgl_draw.draw_points(npoints);
+	hidgl_draw.draw_points_post();
 }
 
 void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
@@ -201,8 +199,7 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 	reserve_grid_points(n, cross_grid ? n*2 : 0);
 
 	/* draw grid center points and y offset points */
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, grid_points);
+	hidgl_draw.draw_points_pre(grid_points);
 
 	n = 0;
 	for(x = x1; x <= x2; x += hidlib->grid, ++n)
@@ -211,23 +208,23 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 	for(y = y1; y <= y2; y += hidlib->grid) {
 		for(i = 0; i < n; i++)
 			grid_points[2 * i + 1] = y;
-		glDrawArrays(GL_POINTS, 0, n);
-		if (cross_grid) {
+		hidgl_draw.draw_points(n);
+
+		if (cross_grid) { /* vertical extension */
 			for(i = 0; i < n; i++)
 				grid_points[2 * i + 1] = y-scale;
-			glDrawArrays(GL_POINTS, 0, n);
+			hidgl_draw.draw_points(n);
 			for(i = 0; i < n; i++)
 				grid_points[2 * i + 1] = y+scale;
-			glDrawArrays(GL_POINTS, 0, n);
+			hidgl_draw.draw_points(n);
 		}
 	}
+	hidgl_draw.draw_points_post();
 
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	if (cross_grid) {
-		/* draw grid points around the crossings in x.x pattern */
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, grid_points3);
+		/* draw grid points around the crossings in x.x pattern (horizontal arms) */
+		hidgl_draw.draw_points_pre(grid_points3);
 
 		n3 = 0;
 		for(x = x1; x <= x2; x += hidlib->grid) {
@@ -238,11 +235,11 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 		for(y = y1; y <= y2; y += hidlib->grid) {
 			for(i = 0; i < n3; i++)
 				grid_points3[2 * i + 1] = y;
-			glDrawArrays(GL_POINTS, 0, n3);
+			hidgl_draw.draw_points(n3);
 		}
-	}
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+		hidgl_draw.draw_points_post();
+	}
 }
 
 #define MAX_PIXELS_ARC_TO_CHORD 0.5

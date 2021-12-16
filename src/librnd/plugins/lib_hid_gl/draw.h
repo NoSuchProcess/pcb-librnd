@@ -61,6 +61,11 @@ typedef struct hidgl_draw_s {
 	void (*prim_add_textrect)(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1, GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2, GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3, GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4, GLuint texture_id);
 
 
+	/*** Immediate draw (bypasses vertex buffer and primitive buffer) ***/
+	void (*draw_points_pre)(GLfloat *pts);   /* prepare for drawing points from x;y coord array pts */
+	void (*draw_points)(int npts);           /* draw the first npts points from pts set above; can be called multiple times */
+	void (*draw_points_post)(void);          /* stop drawing points */
+
 } hidgl_draw_t;
 
 
