@@ -684,4 +684,3 @@ void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd
 	hidgl_draw.flush();
 }
 
-#include "draw_direct.c"

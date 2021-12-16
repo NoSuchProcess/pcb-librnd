@@ -29,6 +29,9 @@
 #ifndef RND_HID_COMMON_HIDGL_H
 #define RND_HID_COMMON_HIDGL_H
 
+#include <librnd/core/hidlib.h>
+#include <librnd/core/hid.h>
+
 /*extern float global_depth;*/
 void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid);
 void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid);

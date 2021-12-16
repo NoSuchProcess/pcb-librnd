@@ -29,15 +29,19 @@
 
 /* Low level gl rendering: direct access, pre-vao, works with gtk2 */
 
-#include <stdio.h>
+#include "config.h"
 #include <stdlib.h>
+
+/*#include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <assert.h>
+#include <assert.h>*/
 
-#include "config.h"
+#include <librnd/core/color.h>
 
+#include "hidgl.h"
 #include "stencil_gl.h"
+#include "draw.h"
 
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
