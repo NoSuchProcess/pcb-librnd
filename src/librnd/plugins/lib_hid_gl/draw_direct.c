@@ -41,6 +41,7 @@
 
 #include "hidgl.h"
 #include "stencil_gl.h"
+
 #include "draw.h"
 
 /* Vertex Buffer Data

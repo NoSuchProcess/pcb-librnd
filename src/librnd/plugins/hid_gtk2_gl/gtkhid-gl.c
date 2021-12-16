@@ -304,9 +304,10 @@ static GtkWidget *ghid_gl_new_drawing_widget(rnd_gtk_impl_t *impl)
 }
 
 
-void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
+int ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
-	ghid_gl_install_common(impl, hid);
+	if (ghid_gl_install_common(impl, hid) != 0)
+		return -1;
 
 	if (impl != NULL) {
 		impl->get_color_name = get_color_name;
@@ -318,4 +319,6 @@ void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 		impl->init_renderer = ghid_gl_init_renderer;
 		impl->shutdown_renderer = ghid_gl_shutdown_renderer;
 	}
+
+	return 0;
 }

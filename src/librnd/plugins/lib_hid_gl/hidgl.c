@@ -42,14 +42,27 @@
 
 #include "draw.h"
 #include "stencil_gl.h"
+#include "opengl.h"
 
 #include "hidgl.h"
 
+#include "draw_INIT.h"
+
 hidgl_draw_t hidgl_draw;
 
-void hidgl_init(void)
+int hidgl_init(void)
 {
-	hidgl_draw = hidgl_draw_direct;
+	const hidgl_draw_t *drw = hidgl_find_draw();
+
+	if (drw == NULL)
+		return -1;
+
+	hidgl_draw = *drw;
+	return 0;
+}
+
+void hidgl_stencil_init(void)
+{
 	stencilgl_init();
 }
 

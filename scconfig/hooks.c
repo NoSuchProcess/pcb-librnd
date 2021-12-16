@@ -421,6 +421,7 @@ static int rnd_hook_generate()
 	printf("Generating compat_inc.h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/core", "compat_inc.h.in", "compat_inc.h"));
 	printf("Generating librnd config.h (%d)\n", generr |= tmpasm(LIBRND_ROOT, "config.h.in", "config.h"));
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "opengl.h.in", "opengl.h"));
+	printf("Generating draw_INIT.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "draw_INIT.h.in", "draw_INIT.h"));
 
 	return generr;
 }

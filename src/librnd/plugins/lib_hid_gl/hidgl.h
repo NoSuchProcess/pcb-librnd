@@ -44,8 +44,9 @@ void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double sc
 void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y);
 void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
 void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-void hidgl_init(void);
+int hidgl_init(void);
 void hidgl_uninit(void);
+void hidgl_stencil_init(void);
 void hidgl_flush(void);
 void hidgl_reset(void);
 void hidgl_set_color(float r, float g, float b, float a);

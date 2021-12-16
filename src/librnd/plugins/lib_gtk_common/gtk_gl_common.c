@@ -420,7 +420,7 @@ static void ghid_gl_screen_update(void)
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
 static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
-	hidgl_init();
+	hidgl_stencil_init();
 	hidgl_expose_init(w, h, bg_c);
 }
 
@@ -541,8 +541,14 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	ghidgui->port.view.canvas_height = save_height;
 }
 
-void ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
+int ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
+	/* check if we have a low level draw */
+	if (hidgl_init() != 0) {
+		fprintf(stderr, "Error: ghid_gl_install_common(): failed to init hidgl\n");
+		return -1;
+	}
+
 	if (impl != NULL) {
 		impl->set_special_colors = ghid_gl_set_special_colors;
 		impl->screen_update = ghid_gl_screen_update;
@@ -575,4 +581,6 @@ void ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 		hid->set_drawing_mode = hidgl_set_drawing_mode;
 		hid->render_burst = ghid_gl_render_burst;
 	}
+
+	return 0;
 }

@@ -16,12 +16,13 @@ const char *ghid_gl_cookie = "gtk2 hid, gl";
 
 rnd_hid_t gtk2_gl_hid;
 
-extern void ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid);
+extern int ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid);
 
 int gtk2_gl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_gtkg_glue_common_init(ghid_gl_cookie);
-	ghid_gl_install(&ghidgui->impl, hid);
+	if (ghid_gl_install(&ghidgui->impl, hid) != 0)
+		return -1;
 	return rnd_gtk_parse_arguments(hid, argc, argv);
 }
 

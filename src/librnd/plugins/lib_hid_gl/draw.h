@@ -30,9 +30,9 @@
 #define HID_GL_DRAW_GL_H
 
 #include "config.h"
-#include "opengl.h"
 
 #include <librnd/core/hidlib.h>
+#include "opengl.h"
 
 
 typedef struct hidgl_draw_s {
@@ -76,8 +76,5 @@ typedef struct hidgl_draw_s {
 
 
 extern hidgl_draw_t hidgl_draw; /* active drawing backend */
-
-/* available implementations */
-extern hidgl_draw_t hidgl_draw_direct;
 
 #endif /* ! defined HID_GL_DRAW_GL_H */
