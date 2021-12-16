@@ -27,6 +27,9 @@
 
 #ifndef STENCIL_GL_H
 #define STENCIL_GL_H
+
+#include <librnd/core/global_typedefs.h>
+
 /*
 #include "config.h"
 #include <stdio.h>
@@ -56,14 +59,10 @@ static inline void stencilgl_mode_write_set(int bits)
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
-/* stencilgl_mode_write_clear
- * Setup the stencil buffer so that writes will clear stencil bits
- */
-static inline void stencilgl_mode_write_clear(int bits)
-{
-	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
-}
+void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen);
+void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen);
+void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen);
+void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen);
+void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen);
 
 #endif /* !defined STENCIL_GL_H */

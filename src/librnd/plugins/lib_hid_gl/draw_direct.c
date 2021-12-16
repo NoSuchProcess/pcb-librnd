@@ -392,7 +392,7 @@ RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2,
 	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
-RND_INLINE void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
@@ -484,7 +484,7 @@ void drawgl_flush()
 
 /* Draw all buffered primitives. The dirty index is ignored and will remain unchanged.
  * This function accepts stencil bits that can be used to mask the drawing. */
-RND_INLINE void drawgl_draw_all(int stencil_bits)
+void drawgl_draw_all(int stencil_bits)
 {
 	int index = primitive_buffer.size;
 	primitive_t *prim;
@@ -618,7 +618,7 @@ void drawgl_reset()
 	primitive_buffer_clear();
 }
 
-RND_INLINE void drawgl_set_marker()
+void drawgl_set_marker()
 {
 	vertex_buffer_set_marker();
 	primitive_buffer_set_marker();

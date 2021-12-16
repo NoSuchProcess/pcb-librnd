@@ -113,3 +113,101 @@ void stencilgl_init()
 	stencilgl_reset_stencil_usage();
 	stencilgl_clear_unassigned_stencil();
 }
+
+
+/* stencilgl_mode_write_clear
+ * Setup the stencil buffer so that writes will clear stencil bits
+ */
+static inline void stencilgl_mode_write_clear(int bits)
+{
+	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+	glStencilMask(bits);
+	glStencilFunc(GL_ALWAYS, bits, bits);
+}
+
+/* temporary */
+void drawgl_draw_all(int stencil_bits);
+void drawgl_set_marker();
+void drawgl_direct_draw_solid_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
+
+
+static int comp_stencil_bit = 0;
+
+void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
+{
+	drawgl_flush();
+	drawgl_reset();
+	glColorMask(0, 0, 0, 0); /* Disable colour drawing */
+	stencilgl_reset_stencil_usage();
+	glDisable(GL_COLOR_LOGIC_OP);
+	comp_stencil_bit = 0;
+}
+
+void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
+{
+	if (comp_stencil_bit == 0)
+		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
+	else
+		drawgl_flush();
+
+	glEnable(GL_STENCIL_TEST);
+	glDisable(GL_COLOR_LOGIC_OP);
+	stencilgl_mode_write_set(comp_stencil_bit);
+}
+
+void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
+{
+	drawgl_flush();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_XOR);
+}
+
+void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
+{
+	glEnable(GL_STENCIL_TEST);
+	glDisable(GL_COLOR_LOGIC_OP);
+	
+	if (comp_stencil_bit == 0) {
+		/* The stencil isn't valid yet which means that this is the first pos/neg mode
+		 * set since the reset. The compositing stencil bit will be allocated. Because 
+		 * this is a negative mode and it's the first mode to be set, the stencil buffer
+		 * will be set to all ones.
+		 */
+		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
+		stencilgl_mode_write_set(comp_stencil_bit);
+		drawgl_direct_draw_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
+	}
+	else
+		drawgl_flush();
+
+	stencilgl_mode_write_clear(comp_stencil_bit);
+	drawgl_set_marker();
+}
+
+
+void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
+{
+	drawgl_flush();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+	if (comp_stencil_bit) {
+		glEnable(GL_STENCIL_TEST);
+
+		/* Setup the stencil to allow writes to the colour buffer if the 
+		 * comp_stencil_bit is set. After the operation, the comp_stencil_bit
+		 * will be cleared so that any further writes to this pixel are disabled.
+		 */
+		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+		glStencilMask(comp_stencil_bit);
+		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
+
+		/* Draw all primtives through the stencil to the colour buffer. */
+		drawgl_draw_all(comp_stencil_bit);
+	}
+
+	glDisable(GL_STENCIL_TEST);
+	stencilgl_reset_stencil_usage();
+	comp_stencil_bit = 0;
+}

@@ -44,6 +44,7 @@
 
 #include "stencil_gl.h"
 
+
 void hidgl_init(void)
 {
 	stencilgl_init();
@@ -51,89 +52,9 @@ void hidgl_init(void)
 
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;
-static int comp_stencil_bit = 0;
 
 static GLfloat *grid_points = NULL, *grid_points3 = NULL;
 static int grid_point_capacity = 0, grid_point_capacity3 = 0;
-
-
-static inline void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
-{
-	drawgl_flush();
-	drawgl_reset();
-	glColorMask(0, 0, 0, 0); /* Disable colour drawing */
-	stencilgl_reset_stencil_usage();
-	glDisable(GL_COLOR_LOGIC_OP);
-	comp_stencil_bit = 0;
-}
-
-static inline void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
-{
-	if (comp_stencil_bit == 0)
-		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
-	else
-		drawgl_flush();
-
-	glEnable(GL_STENCIL_TEST);
-	glDisable(GL_COLOR_LOGIC_OP);
-	stencilgl_mode_write_set(comp_stencil_bit);
-}
-
-static inline void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
-{
-	drawgl_flush();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_STENCIL_TEST);
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
-}
-
-static inline void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
-{
-	glEnable(GL_STENCIL_TEST);
-	glDisable(GL_COLOR_LOGIC_OP);
-	
-	if (comp_stencil_bit == 0) {
-		/* The stencil isn't valid yet which means that this is the first pos/neg mode
-		 * set since the reset. The compositing stencil bit will be allocated. Because 
-		 * this is a negative mode and it's the first mode to be set, the stencil buffer
-		 * will be set to all ones.
-		 */
-		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
-		stencilgl_mode_write_set(comp_stencil_bit);
-		drawgl_direct_draw_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
-	}
-	else
-		drawgl_flush();
-
-	stencilgl_mode_write_clear(comp_stencil_bit);
-	drawgl_set_marker();
-}
-
-static inline void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
-{
-	drawgl_flush();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-	if (comp_stencil_bit) {
-		glEnable(GL_STENCIL_TEST);
-
-		/* Setup the stencil to allow writes to the colour buffer if the 
-		 * comp_stencil_bit is set. After the operation, the comp_stencil_bit
-		 * will be cleared so that any further writes to this pixel are disabled.
-		 */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-		glStencilMask(comp_stencil_bit);
-		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
-
-		/* Draw all primtives through the stencil to the colour buffer. */
-		drawgl_draw_all(comp_stencil_bit);
-	}
-
-	glDisable(GL_STENCIL_TEST);
-	stencilgl_reset_stencil_usage();
-	comp_stencil_bit = 0;
-}
 
 rnd_composite_op_t hidgl_get_drawing_mode()
 {
