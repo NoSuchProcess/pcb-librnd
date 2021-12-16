@@ -1,4 +1,5 @@
 - 3.1.1: ABI compatible, no extensions
+	- BUG: hidgl.c doesn't implement sparse grid; also check lesstif [report: Igor2]
 	- gtk4 opengl:
 		- top window drawign: scroll wheel zoom
 		- top window drawign: scroll wheel pan with shift and ctrl
