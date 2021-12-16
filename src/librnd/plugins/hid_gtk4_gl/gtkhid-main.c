@@ -7,6 +7,7 @@
 #include <librnd/core/hidlib_conf.h>
 
 #include <librnd/plugins/lib_hid_gl/draw.h>
+#include <librnd/plugins/lib_hid_gl/hidgl.h>
 
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
@@ -31,7 +32,7 @@ void pplg_uninit_hid_gtk4_gl(void)
 {
 	rnd_event_unbind_allcookie(ghid_gl_cookie);
 	rnd_conf_hid_unreg(ghid_gl_cookie);
-	drawgl_uninit();
+	hidgl_uninit();
 	rnd_gtkg_glue_common_uninit(ghid_gl_cookie);
 }
 
