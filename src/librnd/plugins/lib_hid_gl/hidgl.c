@@ -262,7 +262,7 @@ int calc_slices(float pix_radius, float sweep_angle)
 
 #define MIN_TRIANGLES_PER_CAP 3
 #define MAX_TRIANGLES_PER_CAP 90
-static void draw_cap(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_angle_t angle, double scale)
+static void draw_round_cap(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_angle_t angle, double scale)
 {
 	float last_capx, last_capy;
 	float capx, capy;
@@ -296,7 +296,7 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 	double angle;
 	float deltax, deltay, length;
 	float wdx, wdy;
-	int circular_caps = 0;
+	int round_caps = 0;
 	rnd_coord_t orig_width = width;
 
 	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
@@ -334,7 +334,7 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 
 		switch (cap) {
 			case rnd_cap_round:
-				circular_caps = 1;
+				round_caps = 1;
 				break;
 
 			case rnd_cap_square:
@@ -346,15 +346,15 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 
 			default:
 				assert(!"unhandled cap");
-				circular_caps = 1;
+				round_caps = 1;
 		}
 
 		hidgl_draw.prim_add_triangle(x1 - wdx, y1 - wdy, x2 - wdx, y2 - wdy, x2 + wdx, y2 + wdy);
 		hidgl_draw.prim_add_triangle(x1 - wdx, y1 - wdy, x2 + wdx, y2 + wdy, x1 + wdx, y1 + wdy);
 
-		if (circular_caps) {
-			draw_cap(width, x1, y1, angle, scale);
-			draw_cap(width, x2, y2, angle + 180., scale);
+		if (round_caps) {
+			draw_round_cap(width, x1, y1, angle, scale);
+			draw_round_cap(width, x2, y2, angle + 180., scale);
 		}
 	}
 }
@@ -437,8 +437,8 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 		return;
 
 	if (NEEDS_CAP(orig_width, scale)) {
-		draw_cap(width, x + rx * -cosf(start_angle_rad), y + rx * sinf(start_angle_rad), start_angle, scale);
-		draw_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad), y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
+		draw_round_cap(width, x + rx * -cosf(start_angle_rad), y + rx * sinf(start_angle_rad), start_angle, scale);
+		draw_round_cap(width, x + rx * -cosf(start_angle_rad + delta_angle_rad), y + rx * sinf(start_angle_rad + delta_angle_rad), start_angle + delta_angle + 180., scale);
 	}
 }
 
