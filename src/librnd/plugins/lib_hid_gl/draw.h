@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2009-2017 PCB Contributers (See ChangeLog for details)
  *  Copyright (C) 2017 Adrian Purser
+ *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
