@@ -49,9 +49,7 @@ int stencilgl_allocate_clear_stencil_bit();
 void stencilgl_return_stencil_bit(int bit);
 void stencilgl_reset_stencil_usage();
 
-/* stencilgl_mode_write_set
- * Setup the stencil buffer so that writes will set stencil bits
- */
+/* Setup the stencil buffer so that writes will set stencil bits */
 static inline void stencilgl_mode_write_set(int bits)
 {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);

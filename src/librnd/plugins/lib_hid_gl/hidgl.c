@@ -66,11 +66,10 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 	rnd_bool xor_mode = (composite_op == RND_HID_COMP_POSITIVE_XOR ? rnd_true : rnd_false);
 
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
-	 * in that mode were used only for creating the stencil and will not be 
-	 * drawn directly to the colour buffer. Therefore these primitives can be 
-	 * discarded by rewinding the primitive buffer to the marker that was
-	 * set when entering NEGATIVE mode.
-	 */
+	   in that mode were used only for creating the stencil and will not be
+	   drawn directly to the colour buffer. Therefore these primitives can be
+	   discarded by rewinding the primitive buffer to the marker that was
+	   set when entering NEGATIVE mode. */
 	if (composite_op == RND_HID_COMP_NEGATIVE) {
 		drawgl_flush();
 		drawgl_rewind_to_marker();
@@ -80,25 +79,13 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 	direct_mode = direct;
 
 	switch (op) {
-		case RND_HID_COMP_RESET:
-			drawgl_mode_reset(direct, screen);
-			break;
-		case RND_HID_COMP_POSITIVE_XOR:
-			drawgl_mode_positive_xor(direct, screen);
-			break;
-		case RND_HID_COMP_POSITIVE:
-			drawgl_mode_positive(direct, screen);
-			break;
-		case RND_HID_COMP_NEGATIVE:
-			drawgl_mode_negative(direct, screen);
-			break;
-		case RND_HID_COMP_FLUSH:
-			drawgl_mode_flush(direct, xor_mode, screen);
-			break;
-		default:
-			break;
+		case RND_HID_COMP_RESET:         drawgl_mode_reset(direct, screen); break;
+		case RND_HID_COMP_POSITIVE_XOR:  drawgl_mode_positive_xor(direct, screen); break;
+		case RND_HID_COMP_POSITIVE:      drawgl_mode_positive(direct, screen); break;
+		case RND_HID_COMP_NEGATIVE:      drawgl_mode_negative(direct, screen); break;
+		case RND_HID_COMP_FLUSH:         drawgl_mode_flush(direct, xor_mode, screen); break;
+		default: break;
 	}
-
 }
 
 

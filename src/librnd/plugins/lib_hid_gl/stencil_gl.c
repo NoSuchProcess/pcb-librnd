@@ -115,9 +115,7 @@ void stencilgl_init()
 }
 
 
-/* stencilgl_mode_write_clear
- * Setup the stencil buffer so that writes will clear stencil bits
- */
+/* Setup the stencil buffer so that writes will clear stencil bits */
 static inline void stencilgl_mode_write_clear(int bits)
 {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
@@ -171,10 +169,9 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 	
 	if (comp_stencil_bit == 0) {
 		/* The stencil isn't valid yet which means that this is the first pos/neg mode
-		 * set since the reset. The compositing stencil bit will be allocated. Because 
-		 * this is a negative mode and it's the first mode to be set, the stencil buffer
-		 * will be set to all ones.
-		 */
+		   set since the reset. The compositing stencil bit will be allocated. Because
+		   this is a negative mode and it's the first mode to be set, the stencil buffer
+		   will be set to all ones. */
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 		stencilgl_mode_write_set(comp_stencil_bit);
 		drawgl_direct_draw_solid_rectangle(screen->X1, screen->Y1, screen->X2, screen->Y2);
@@ -195,10 +192,9 @@ void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *scre
 	if (comp_stencil_bit) {
 		glEnable(GL_STENCIL_TEST);
 
-		/* Setup the stencil to allow writes to the colour buffer if the 
-		 * comp_stencil_bit is set. After the operation, the comp_stencil_bit
-		 * will be cleared so that any further writes to this pixel are disabled.
-		 */
+		/* Setup the stencil to allow writes to the colour buffer if the
+		   comp_stencil_bit is set. After the operation, the comp_stencil_bit
+		   will be cleared so that any further writes to this pixel are disabled. */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);

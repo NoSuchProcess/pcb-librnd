@@ -50,8 +50,8 @@ enum {
 
 
 /* Vertex Buffer Data
- * The vertex buffer is a dynamic array of vertices. Each vertex contains 
- * position and colour information. */
+   The vertex buffer is a dynamic array of vertices. Each vertex contains
+   position and colour information. */
 
 typedef struct {
 	GLfloat x;
@@ -116,8 +116,8 @@ static void vertex_buffer_destroy()
 }
 
 /* Ensure that the total capacity of the vertex buffer is at least 'size' vertices.
- * When the buffer is reallocated, extra vertices will be added to avoid many small 
- * allocations being made. */
+   When the buffer is reallocated, extra vertices will be added to avoid many small 
+   allocations being made. */
 static int vertex_buffer_reserve(int size)
 {
 	int result = 0;
@@ -134,24 +134,24 @@ static int vertex_buffer_reserve(int size)
 }
 
 /* Ensure that the capacity of the vertex buffer can accomodate an allocation
- * of at least 'size' vertices. */
+   of at least 'size' vertices. */
 static inline int vertex_buffer_reserve_extra(int size)
 {
 	return vertex_buffer_reserve(vertex_buffer.size + size);
 }
 
-/* Set the marker to the end of the active vertex data. This allows vertices 
- * added after the marker has been set to be discarded. This is required when 
- * temporary vertices are required to draw something that will not be required
- * for the final render pass. */
+/* Set the marker to the end of the active vertex data. This allows vertices
+   added after the marker has been set to be discarded. This is required when
+   temporary vertices are required to draw something that will not be required
+   for the final render pass. */
 static inline int vertex_buffer_set_marker()
 {
 	vertex_buffer.marker = vertex_buffer.size;
 	return vertex_buffer.marker;
 }
 
-/* Discard vertices added after the marker was set. The end of the buffer will then be
- * the position of the marker. */
+/* Discard vertices added after the marker was set. The end of the buffer
+   will then be the position of the marker. */
 static inline void vertex_buffer_rewind()
 {
 	vertex_buffer.size = vertex_buffer.marker;
@@ -212,9 +212,9 @@ static void primitive_buffer_destroy()
 	}
 }
 
-/* Ensure that the total capacity of the primitive buffer is at least 'size' 
- * primitives.  When reallocating the buffer, extra primitives will be added
- * to avoid many small reallocations. */
+/* Ensure that the total capacity of the primitive buffer is at least 'size'
+   primitives.  When reallocating the buffer, extra primitives will be added
+   to avoid many small reallocations. */
 static int primitive_buffer_reserve(int size)
 {
 	int result = 0;
@@ -232,24 +232,25 @@ static int primitive_buffer_reserve(int size)
 	return result;
 }
 
-/* Ensure that the capacity of the primitive buffer can accomodate an allocation
- * of at least 'size' primitives. */
+/* Ensure that the capacity of the primitive buffer can accomodate an
+   allocation of at least 'size' primitives. */
 static inline int primitive_buffer_reserve_extra(int size)
 {
 	return primitive_buffer_reserve(primitive_buffer.size + size);
 }
 
-/* Set the marker to the end of the active primitive data. This allows primitives
- * added after the marker to be discarded. This is required when temporary primitives
- * are required to draw something that will not be required for the final render pass. */
+/* Set the marker to the end of the active primitive data. This allows
+   primitives added after the marker to be discarded. This is required
+   when temporary primitives are required to draw something that will
+   not be required for the final render pass. */
 static inline int primitive_buffer_set_marker()
 {
 	primitive_buffer.marker = primitive_buffer.size;
 	return primitive_buffer.marker;
 }
 
-/* Discard primitives added after the marker was set. The end of the buffer will then be
- * the position of the marker. */
+/* Discard primitives added after the marker was set. The end of the buffer
+   will then be the position of the marker. */
 static inline void primitive_buffer_rewind()
 {
 	primitive_buffer.size = primitive_buffer.marker;
@@ -269,10 +270,10 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 {
 	primitive_t *last = primitive_buffer_back();
 
-	/* If the last primitive is the same type AND that type can be extended 
-	 * AND the last primitive is dirty AND 'first' follows the last vertex of
-	 * the previous primitive THEN we can simply append the new primitive to
-	 * the last one. */
+	/* If the last primitive is the same type AND that type can be extended
+	   AND the last primitive is dirty AND 'first' follows the last vertex of
+	   the previous primitive THEN we can simply append the new primitive to
+	   the last one. */
 	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first))
 		last->count += count;
 	else if (primitive_buffer_reserve_extra(1) == 0) {
@@ -299,13 +300,14 @@ void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 
 RND_INLINE void drawgl_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
 {
-	/* Debug Drawing 
+	/* Debug Drawing */
+#if 0
 	   primitive_buffer_add(GL_LINES,vertex_buffer.size,6);
 	   vertex_buffer_reserve_extra(6);
 	   vertex_buffer_add(x1,y1);  vertex_buffer_add(x2,y2);
 	   vertex_buffer_add(x2,y2);  vertex_buffer_add(x3,y3);
 	   vertex_buffer_add(x3,y3);  vertex_buffer_add(x1,y1);
-	*/
+#endif
 
 	primitive_buffer_add(GL_TRIANGLES, vertex_buffer.size, 3, 0);
 	vertex_buffer_reserve_extra(3);
@@ -403,7 +405,7 @@ RND_INLINE void drawgl_reserve_triangles(int count)
 }
 
 /* This function will draw the specified primitive but it may also modify the state of
- * the stencil buffer when MASK primtives exist. */
+   the stencil buffer when MASK primtives exist. */
 static inline void drawgl_draw_primtive(primitive_t *prim)
 {
 	switch (prim->type) {
@@ -509,9 +511,9 @@ void drawgl_draw_all(int stencil_bits)
 		switch (prim->type) {
 			case PRIM_MASK_DESTROY:
 				/* The primitives are drawn in reverse order. The mask primitives are required
-				 * to be processed in forward order so we must search for the matching 'mask create'
-				 * primitive and then iterate through the primtives until we reach the 'mask destroy' 
-				 * primitive. */
+				   to be processed in forward order so we must search for the matching 'mask create'
+				   primitive and then iterate through the primtives until we reach the 'mask destroy'
+				   primitive. */
 				{
 					primitive_t *next_prim = prim - 1;;
 					primitive_t *mask_prim = prim;
