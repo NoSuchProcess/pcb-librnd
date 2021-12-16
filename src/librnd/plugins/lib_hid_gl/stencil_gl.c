@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "draw.h"
+
 #include "stencil_gl.h"
 
 static GLint stencil_bits = 0;
