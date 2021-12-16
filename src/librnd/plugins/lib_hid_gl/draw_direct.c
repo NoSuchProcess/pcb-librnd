@@ -459,6 +459,33 @@ static void drawgl_direct_draw_lines6(GLfloat *pts, int npts)
 }
 
 
+static void drawgl_direct_expose_init(int w, int h, const rnd_color_t *bg_c)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glViewport(0, 0, w, h);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, w, h, 0, 0, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
+
+	glEnable(GL_STENCIL_TEST);
+	glClearColor(bg_c->fr, bg_c->fg, bg_c->fb, 1.);
+	glStencilMask(~0);
+	glClearStencil(0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	stencilgl_reset_stencil_usage();
+
+	/* Disable the stencil test until we need it - otherwise it gets dirty */
+	glDisable(GL_STENCIL_TEST);
+	glStencilMask(0);
+	glStencilFunc(GL_ALWAYS, 0, 0);
+}
+
 static void drawgl_direct_uninit(void)
 {
 	vertbuf_destroy();
@@ -476,6 +503,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_flush,
 	drawgl_direct_set_color,
 	drawgl_direct_reset,
+	drawgl_direct_expose_init,
 
 	drawgl_direct_prim_draw_all,
 	drawgl_direct_prim_set_marker,

@@ -32,6 +32,9 @@
 #include "config.h"
 #include "opengl.h"
 
+#include <librnd/core/hidlib.h>
+
+
 typedef struct hidgl_draw_s {
  /* Returns 0 if the drawing backend is compatible with host opengl */
 	int (*init)(void);
@@ -40,6 +43,8 @@ typedef struct hidgl_draw_s {
 	void (*flush)(void);
 	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	void (*reset)(void);
+	void (*expose_init)(int w, int h, const rnd_color_t *bg_c);
+
 
 	/*** Buffer of primitives to be drawn */
 	/* Draw all buffered primitives. The dirty index is ignored and will
