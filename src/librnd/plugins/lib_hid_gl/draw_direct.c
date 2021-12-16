@@ -101,13 +101,13 @@ static GLfloat alpha = 0.75f;
 
 static int mask_stencil = 0;
 
-static inline void vertex_buffer_clear()
+static inline void vertex_buffer_clear(void)
 {
 	vertex_buffer.size = 0;
 	vertex_buffer.marker = 0;
 }
 
-static void vertex_buffer_destroy()
+static void vertex_buffer_destroy(void)
 {
 	vertex_buffer_clear();
 	if (vertex_buffer.data) {
@@ -145,7 +145,7 @@ static inline int vertex_buffer_reserve_extra(int size)
    added after the marker has been set to be discarded. This is required when
    temporary vertices are required to draw something that will not be required
    for the final render pass. */
-static inline int vertex_buffer_set_marker()
+static inline int vertex_buffer_set_marker(void)
 {
 	vertex_buffer.marker = vertex_buffer.size;
 	return vertex_buffer.marker;
@@ -153,7 +153,7 @@ static inline int vertex_buffer_set_marker()
 
 /* Discard vertices added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-static inline void vertex_buffer_rewind()
+static inline void vertex_buffer_rewind(void)
 {
 	vertex_buffer.size = vertex_buffer.marker;
 }
@@ -197,14 +197,14 @@ static inline void vertex_buffer_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLflo
 	}
 }
 
-static inline void primitive_buffer_clear()
+static inline void primitive_buffer_clear(void)
 {
 	primitive_buffer.size = 0;
 	primitive_buffer.dirty_index = 0;
 	primitive_buffer.marker = 0;
 }
 
-static void primitive_buffer_destroy()
+static void primitive_buffer_destroy(void)
 {
 	primitive_buffer_clear();
 	if (primitive_buffer.data) {
@@ -244,7 +244,7 @@ static inline int primitive_buffer_reserve_extra(int size)
    primitives added after the marker to be discarded. This is required
    when temporary primitives are required to draw something that will
    not be required for the final render pass. */
-static inline int primitive_buffer_set_marker()
+static inline int primitive_buffer_set_marker(void)
 {
 	primitive_buffer.marker = primitive_buffer.size;
 	return primitive_buffer.marker;
@@ -252,17 +252,17 @@ static inline int primitive_buffer_set_marker()
 
 /* Discard primitives added after the marker was set. The end of the buffer
    will then be the position of the marker. */
-static inline void primitive_buffer_rewind()
+static inline void primitive_buffer_rewind(void)
 {
 	primitive_buffer.size = primitive_buffer.marker;
 }
 
-static inline primitive_t *primitive_buffer_back()
+static inline primitive_t *primitive_buffer_back(void)
 {
 	return (primitive_buffer.size > 0) && (primitive_buffer.data) ? &primitive_buffer.data[primitive_buffer.size - 1] : NULL;
 }
 
-static inline int primitive_dirty_count()
+static inline int primitive_dirty_count(void)
 {
 	return primitive_buffer.size - primitive_buffer.dirty_index;
 }
@@ -286,7 +286,7 @@ static void primitive_buffer_add(int type, GLint first, GLsizei count, GLuint te
 	}
 }
 
-static inline int primitive_buffer_last_type()
+static inline int primitive_buffer_last_type(void)
 {
 	return primitive_buffer.size > 0 ? primitive_buffer.data[primitive_buffer.size - 1].type : GL_ZERO;
 }
@@ -349,17 +349,17 @@ RND_INLINE void drawgl_add_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat
 	vertex_buffer_add(x1, y2);
 }
 
-RND_INLINE void drawgl_add_mask_create()
+RND_INLINE void drawgl_add_mask_create(void)
 {
 	primitive_buffer_add(PRIM_MASK_CREATE, 0, 0, 0);
 }
 
-RND_INLINE void drawgl_add_mask_destroy()
+RND_INLINE void drawgl_add_mask_destroy(void)
 {
 	primitive_buffer_add(PRIM_MASK_DESTROY, 0, 0, 0);
 }
 
-RND_INLINE void drawgl_add_mask_use()
+RND_INLINE void drawgl_add_mask_use(void)
 {
 	primitive_buffer_add(PRIM_MASK_USE, 0, 0, 0);
 }
@@ -457,7 +457,7 @@ static inline void drawgl_draw_primtive(primitive_t *prim)
 	}
 }
 
-void drawgl_flush()
+void drawgl_flush(void)
 {
 	int index = primitive_buffer.dirty_index;
 	int end = primitive_buffer.size;
@@ -615,25 +615,25 @@ void drawgl_draw_all(int stencil_bits)
 
 }
 
-void drawgl_reset()
+void drawgl_reset(void)
 {
 	vertex_buffer_clear();
 	primitive_buffer_clear();
 }
 
-void drawgl_set_marker()
+void drawgl_set_marker(void)
 {
 	vertex_buffer_set_marker();
 	primitive_buffer_set_marker();
 }
 
-RND_INLINE void drawgl_rewind_to_marker()
+RND_INLINE void drawgl_rewind_to_marker(void)
 {
 	vertex_buffer_rewind();
 	primitive_buffer_rewind();
 }
 
-void drawgl_uninit()
+void drawgl_uninit(void)
 {
 	vertex_buffer_destroy();
 	primitive_buffer_destroy();

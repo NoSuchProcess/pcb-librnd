@@ -32,10 +32,10 @@
 #include "config.h"
 #include "opengl.h"
 
-void drawgl_uninit();
-void drawgl_flush();
+void drawgl_uninit(void);
+void drawgl_flush(void);
 void drawgl_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-void drawgl_reset();
+void drawgl_reset(void);
 
 
 #endif /* ! defined HID_GL_DRAW_GL_H */
