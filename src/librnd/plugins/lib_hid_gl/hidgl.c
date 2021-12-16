@@ -67,7 +67,7 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
 	   in that mode were used only for creating the stencil and will not be
-	   drawn directly to the colour buffer. Therefore these primitives can be
+	   drawn directly to the color buffer. Therefore these primitives can be
 	   discarded by rewinding the primitive buffer to the marker that was
 	   set when entering NEGATIVE mode. */
 	if (composite_op == RND_HID_COMP_NEGATIVE) {

@@ -135,7 +135,7 @@ void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
 	drawgl_flush();
 	drawgl_reset();
-	glColorMask(0, 0, 0, 0); /* Disable colour drawing */
+	glColorMask(0, 0, 0, 0); /* Disable color drawing */
 	stencilgl_reset_stencil_usage();
 	glDisable(GL_COLOR_LOGIC_OP);
 	comp_stencil_bit = 0;
@@ -192,14 +192,14 @@ void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *scre
 	if (comp_stencil_bit) {
 		glEnable(GL_STENCIL_TEST);
 
-		/* Setup the stencil to allow writes to the colour buffer if the
+		/* Setup the stencil to allow writes to the color buffer if the
 		   comp_stencil_bit is set. After the operation, the comp_stencil_bit
 		   will be cleared so that any further writes to this pixel are disabled. */
 		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
 
-		/* Draw all primtives through the stencil to the colour buffer. */
+		/* Draw all primtives through the stencil to the color buffer. */
 		drawgl_draw_all(comp_stencil_bit);
 	}
 

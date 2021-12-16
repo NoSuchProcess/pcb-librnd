@@ -51,7 +51,7 @@ enum {
 
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
-   position and colour information. */
+   position and color information. */
 
 typedef struct {
 	GLfloat x;
@@ -290,7 +290,7 @@ static inline int primitive_buffer_last_type()
 	return primitive_buffer.size > 0 ? primitive_buffer.data[primitive_buffer.size - 1].type : GL_ZERO;
 }
 
-void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void drawgl_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	red = r;
 	green = g;

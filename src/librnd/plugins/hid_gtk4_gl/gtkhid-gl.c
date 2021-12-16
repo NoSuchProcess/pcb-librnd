@@ -97,14 +97,14 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 		return;
 
 
-	/* We need to flush the draw buffer when changing colour so that new primitives
-	   don't get merged. This actually isn't a problem with the colour but due to 
+	/* We need to flush the draw buffer when changing color so that new primitives
+	   don't get merged. This actually isn't a problem with the color but due to 
 	   way that the final render pass iterates through the primitive buffer in 
 	   reverse order. If the new primitives are merged with previous ones then they
 	   will be drawn in the wrong order. */
 	drawgl_flush();
 
-	drawgl_set_colour(r, g, b, a);
+	drawgl_set_color(r, g, b, a);
 }
 
 static void ghid_gl_init_renderer(int *argc, char ***argv, void *vport)

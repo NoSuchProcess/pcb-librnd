@@ -33,7 +33,7 @@
 
 void drawgl_uninit();
 void drawgl_flush();
-void drawgl_set_colour(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+void drawgl_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 void drawgl_reset();
 
 
