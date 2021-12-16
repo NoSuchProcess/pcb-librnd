@@ -703,34 +703,14 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	glDisableClientState(GL_COLOR_ARRAY);
 }
 
-void hidgl_draw_solid_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float red, float green, float blue)
+void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float r, float g, float b)
 {
-	float points[4][6];
-	int i;
-
-	for(i=0; i<4; ++i) {
-		points[i][2] = red;
-		points[i][3] = green;
-		points[i][4] = blue;
-		points[i][5] = 1.0f;
-	}
-
-	points[0][0] = x1;
-	points[0][1] = y1;
-	points[1][0] = x2;
-	points[1][1] = y1;
-	points[2][0] = x2;
-	points[2][1] = y2;
-	points[3][0] = x1;
-	points[3][1] = y2;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
-	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	/* we can cheat here: this is called only once, before other drawing commands
+	   to fill the background. */
+	hidgl_draw.set_color(r, g, b, 1.0f);
+	hidgl_draw.prim_add_fillrect(x1, y1, x2, y2);
+	hidgl_draw.prim_draw_all(0);
+	hidgl_draw.flush();
 }
 
 #include "draw_direct.c"
