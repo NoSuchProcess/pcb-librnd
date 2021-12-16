@@ -102,7 +102,7 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 	   way that the final render pass iterates through the primitive buffer in 
 	   reverse order. If the new primitives are merged with previous ones then they
 	   will be drawn in the wrong order. */
-	drawgl_flush();
+	hidgl_flush();
 
 	hidgl_set_color(r, g, b, a);
 }

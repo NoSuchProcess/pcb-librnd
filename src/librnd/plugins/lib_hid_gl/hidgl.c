@@ -56,6 +56,16 @@ void hidgl_uninit(void)
 	drawgl_uninit();
 }
 
+void hidgl_flush(void)
+{
+	drawgl_flush();
+}
+
+void hidgl_reset(void)
+{
+	drawgl_reset();
+}
+
 void hidgl_set_color(float r, float g, float b, float a)
 {
 	drawgl_set_color(r, g, b, a);

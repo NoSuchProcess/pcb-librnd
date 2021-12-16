@@ -43,6 +43,8 @@ void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_c
 void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 void hidgl_init(void);
 void hidgl_uninit(void);
+void hidgl_flush(void);
+void hidgl_reset(void);
 void hidgl_set_color(float r, float g, float b, float a);
 void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
 rnd_composite_op_t hidgl_get_drawing_mode();
