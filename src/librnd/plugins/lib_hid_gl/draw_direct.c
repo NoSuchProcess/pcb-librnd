@@ -93,11 +93,11 @@ static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, G
 {
 	/* Debug Drawing */
 #if 0
-	   primbuf_add(GL_LINES,vertbuf.size,6);
-	   vertbuf_reserve_extra(6);
-	   vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
-	   vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
-	   vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
+	primbuf_add(GL_LINES,vertbuf.size,6);
+	vertbuf_reserve_extra(6);
+	vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
+	vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
+	vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
 #endif
 
 	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0);
@@ -143,8 +143,8 @@ RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLf
 {
 	float points[4][6];
 	int i;
-	for(i=0;i<4;++i)
-	{
+
+	for(i=0; i<4; ++i) {
 		points[i][2] = red;
 		points[i][3] = green;
 		points[i][4] = blue;
@@ -184,23 +184,23 @@ static void drawgl_direct_prim_reserve_triangles(int count)
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
-			if (prim->texture_id > 0) {
-				glBindTexture(GL_TEXTURE_2D, prim->texture_id);
-				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glEnable(GL_TEXTURE_2D);
-				glAlphaFunc(GL_GREATER, 0.5);
-				glEnable(GL_ALPHA_TEST);
-			}
+	if (prim->texture_id > 0) {
+		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glEnable(GL_TEXTURE_2D);
+		glAlphaFunc(GL_GREATER, 0.5);
+		glEnable(GL_ALPHA_TEST);
+	}
 
-			glDrawArrays(prim->type, prim->first, prim->count);
+	glDrawArrays(prim->type, prim->first, prim->count);
 
-			if (prim->texture_id > 0) {
-				glDisable(GL_TEXTURE_2D);
-				glDisable(GL_ALPHA_TEST);
-			}
+	if (prim->texture_id > 0) {
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+	}
 }
 
 RND_INLINE void drawgl_direct_begin_prim_vertbuf(void)
