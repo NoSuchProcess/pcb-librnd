@@ -29,6 +29,8 @@
 #ifndef HID_GL_DRAW_GL_H
 #define HID_GL_DRAW_GL_H
 
+/*** DO NOT INCLUDE THIS HEADER from outside of lib_hid_gl; use hidgl.h instead. ***/
+
 #include "config.h"
 
 #include <librnd/core/hidlib.h>

@@ -29,6 +29,8 @@
 #ifndef STENCIL_GL_H
 #define STENCIL_GL_H
 
+/*** DO NOT INCLUDE THIS HEADER from outside of lib_hid_gl; use hidgl.h instead. ***/
+
 #include <librnd/core/global_typedefs.h>
 #include "opengl.h"
 

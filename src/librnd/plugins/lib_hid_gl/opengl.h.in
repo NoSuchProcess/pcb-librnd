@@ -21,6 +21,9 @@ print [@/*
  */
 #ifndef HID_GTK2_GL_OPENGL_H
 #define HID_GTK2_GL_OPENGL_H
+
+/*** DO NOT INCLUDE THIS HEADER from outside of lib_hid_gl; use hidgl.h instead. ***/
+
 @]
 
 if ?/local/pcb/has_glu
