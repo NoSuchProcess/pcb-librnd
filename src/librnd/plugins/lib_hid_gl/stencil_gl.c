@@ -37,13 +37,7 @@ static GLint stencil_bits = 0;
 static int dirty_bits = 0;
 static int assigned_bits = 0;
 
-
-int stencilgl_bit_count()
-{
-	return stencil_bits;
-}
-
-void stencilgl_clear_stencil_bits(int bits)
+static void stencilgl_clear_stencil_bits(int bits)
 {
 	glPushAttrib(GL_STENCIL_BUFFER_BIT);
 	glStencilMask(bits);
@@ -54,12 +48,12 @@ void stencilgl_clear_stencil_bits(int bits)
 	dirty_bits = (dirty_bits & ~bits) | assigned_bits;
 }
 
-void stencilgl_clear_unassigned_stencil()
+static void stencilgl_clear_unassigned_stencil()
 {
 	stencilgl_clear_stencil_bits(~assigned_bits);
 }
 
-int stencilgl_allocate_clear_stencil_bit(void)
+static int stencilgl_allocate_clear_stencil_bit(void)
 {
 	int stencil_bitmask = (1 << stencil_bits) - 1;
 	int test;
@@ -88,11 +82,6 @@ int stencilgl_allocate_clear_stencil_bit(void)
 	dirty_bits = assigned_bits;
 
 	return first_dirty;
-}
-
-void stencilgl_return_stencil_bit(int bit)
-{
-	assigned_bits &= ~bit;
 }
 
 void stencilgl_reset_stencil_usage()

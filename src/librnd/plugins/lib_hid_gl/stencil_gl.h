@@ -35,11 +35,6 @@
 #include "opengl.h"
 
 void stencilgl_init();
-int stencilgl_bit_count();
-void stencilgl_clear_stencil_bits(int bits);
-void stencilgl_clear_unassigned_stencil();
-int stencilgl_allocate_clear_stencil_bit();
-void stencilgl_return_stencil_bit(int bit);
 void stencilgl_reset_stencil_usage();
 
 /* Setup the stencil buffer so that writes will set stencil bits */
