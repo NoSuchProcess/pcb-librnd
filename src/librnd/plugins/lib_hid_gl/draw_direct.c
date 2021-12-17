@@ -426,6 +426,18 @@ void drawgl_direct_reset(void)
 	glDisable(GL_STENCIL_TEST);
 }
 
+static long drawgl_direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
+{
+	GLuint texture_id;
+
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, has_alpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	return texture_id;
+}
+
+
 static void drawgl_direct_prim_set_marker(void)
 {
 	vertbuf_set_marker();
@@ -522,6 +534,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_reset,
 	drawgl_direct_expose_init,
 	drawgl_direct_set_view,
+	drawgl_direct_texture_import,
 
 	drawgl_direct_prim_draw_all,
 	drawgl_direct_prim_set_marker,

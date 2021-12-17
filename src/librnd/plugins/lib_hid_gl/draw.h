@@ -48,6 +48,10 @@ typedef struct hidgl_draw_s {
 	/* set up transformation to translate tx,ty and zoom zx,zy,zz */
 	void (*set_view)(double tx, double ty, double zx, double zy, double zz);
 
+	/* Allocate a texture, load it from pixels and return texture gl-ID */
+	long (*texture_import)(unsigned char *pixels, int width, int height, int has_alpha);
+
+
 	/*** Buffer of primitives to be drawn */
 	/* Draw all buffered primitives. The dirty index is ignored and will
 	   remain unchanged. This function accepts stencil bits that can be

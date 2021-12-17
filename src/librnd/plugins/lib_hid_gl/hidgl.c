@@ -96,6 +96,11 @@ void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)
 	hidgl_draw.set_view(tx, ty, zx, zy, zz);
 }
 
+long hidgl_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
+{
+	hidgl_draw.texture_import(pixels, width, height, has_alpha);
+}
+
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;
 

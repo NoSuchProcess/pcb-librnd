@@ -143,8 +143,7 @@ static void rnd_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 
 static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
 {
-	GLuint texture_handle = gpm->cache.lng;
-	if (texture_handle == 0) {
+	if (gpm->cache.lng == 0) {
 		int width = gpm->pxm->sx;
 		int height = gpm->pxm->sy;
 		int rowstride = gdk_pixbuf_get_rowstride(gpm->image);
@@ -155,14 +154,10 @@ static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 		g_warn_if_fail(bits_per_sample == 8);
 		g_warn_if_fail(rowstride == width * n_channels);
 
-		glGenTextures(1, &texture_handle);
-		glBindTexture(GL_TEXTURE_2D, texture_handle);
-
 		/* XXX: We should probably determine what the maximum texture supported is,
 		        and if our image is larger, shrink it down using GDK pixbuf routines
 		        rather than having it fail below. */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, (n_channels == 4) ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
-		gpm->cache.lng = texture_handle;
+		gpm->cache.lng = hidgl_texture_import(pixels, width, height, (n_channels == 4));
 	}
 
 	rnd_gl_draw_texture(hidlib, gpm, ox, oy, bw, bh);
