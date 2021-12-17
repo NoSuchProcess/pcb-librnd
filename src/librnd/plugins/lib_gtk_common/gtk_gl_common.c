@@ -16,9 +16,7 @@
 #include <librnd/plugins/lib_gtk_common/coord_conv.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>
 
-#include <librnd/plugins/lib_hid_gl/opengl.h>
 #include <librnd/plugins/lib_hid_gl/hidgl.h>
-#include <librnd/plugins/lib_hid_gl/stencil_gl.h>
 
 #include <librnd/plugins/lib_gtk_common/hid_gtk_conf.h>
 
