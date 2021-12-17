@@ -195,7 +195,7 @@ void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *scre
 		glStencilMask(comp_stencil_bit);
 		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
 
-		/* Draw all primtives through the stencil to the color buffer. */
+		/* Draw all primitives through the stencil to the color buffer. */
 		hidgl_draw.prim_draw_all(comp_stencil_bit);
 	}
 

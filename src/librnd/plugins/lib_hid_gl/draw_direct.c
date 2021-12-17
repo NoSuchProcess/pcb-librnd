@@ -211,8 +211,8 @@ static void drawgl_direct_prim_reserve_triangles(int count)
 }
 
 /* This function will draw the specified primitive but it may also modify the state of
-   the stencil buffer when MASK primtives exist. */
-RND_INLINE void drawgl_draw_primtive(primitive_t *prim)
+   the stencil buffer when MASK primitives exist. */
+RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	switch (prim->type) {
 		case PRIM_MASK_CREATE:
@@ -282,7 +282,7 @@ static void drawgl_direct_prim_flush(void)
 
 	/* draw the primitives */
 	while(index < end) {
-		drawgl_draw_primtive(prim);
+		drawgl_draw_primitive(prim);
 		++prim;
 		++index;
 	}
@@ -314,7 +314,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 			case PRIM_MASK_DESTROY:
 				/* The primitives are drawn in reverse order. The mask primitives are required
 				   to be processed in forward order so we must search for the matching 'mask create'
-				   primitive and then iterate through the primtives until we reach the 'mask destroy'
+				   primitive and then iterate through the primitives until we reach the 'mask destroy'
 				   primitive. */
 				{
 					primitive_t *next_prim = prim - 1;;
