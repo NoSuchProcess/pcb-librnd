@@ -1,0 +1,197 @@
+digraph render {
+	ranksep=2;
+
+	subgraph cluster_0 {
+		label="application"
+		color="#aa7777";
+		style=filled;
+
+		rnd_gui_inv [label="rnd_gui->invalidate*()\nFigures a redraw is needed"]
+		draw_everything [label="draw_everything()\nRenders view (visible part of preview or design)"]
+		dialogs [label="dialog boxes\ncreated by the application"]
+	}
+
+	subgraph cluster_100 {
+		label="librnd"
+		color="#aaaaaa";
+		style=filled;
+
+
+		subgraph cluster_1 {
+			label="HID API (any GUI HID)"
+			color="#77aaaa";
+			style=filled;
+
+			hid_inv [label="HID's invalidate*()\nPrepares the widget and calls the app to render view"]
+			rnd_gui_draw [label="rnd_gui calls:\n->render_burst(), ->set_drawing_mode(), ->draw*(), ->fill*()"]
+			rnd_gui_dad  [label="dialog boxes\n(build with dad.h macros)"]
+		}
+
+		subgraph cluster_2 {
+			color="#77aa77";
+			style=filled;
+
+			label="lib_gtk_common, #included\nand thus compiled into\na hid_gtk* plugin"
+			render_gtk_common_gtk2_gl [label="ghid_gui->impl\nfunction\npointers\n\n"]
+			render_gtk_common_gtk2_gdk [label="ghid_gui->impl\nfunction\npointers\n\n"]
+			render_gtk_common_gtk4_gl [label="ghid_gui->impl\nfunction\npointers\n\n"]
+			gtk_gl_common [label="lib_gtk_common/gtk_gl_common.c\ntranslates HID API calls to hidgl operations"]
+			gtk_widgets [label="generic GTK widgets, window, and event handling"]
+		}
+
+		subgraph cluster_3 {
+			label="hid_gtk2_gdk plugin"
+			color="#77aa77";
+			style=filled;
+
+			render_gdk [label="hid_gtk2_gdk/gtkhid-gdk.c"]
+			gtk2_gdk_pass_render [label="pass-thru\nrender"]
+			gtk2_gdk_pass_widget [label="pass-thru\nwidget"]
+		}
+
+		subgraph cluster_4 {
+			label="hid_gtk2_gl plugin"
+			color="#77aa77";
+			style=filled;
+
+			render_gtk2_gl [label="hid_gtk2_gl/gtkhid-gl.c"]
+			gtk2_gl_pass_render [label="pass-thru\nrender"]
+			gtk2_gl_pass_widget [label="pass-thru\nwidget"]
+		}
+
+		subgraph cluster_5 {
+			label="hid_gtk4_gl plugin"
+			color="#77aa77";
+			style=filled;
+
+			render_gtk4_gl [label="hid_gtk4_gl/gtkhid-gl.c"]
+			gtk4_gl_pass_render [label="pass-thru\nrender"]
+			gtk4_gl_pass_widget [label="pass-thru\nwidget"]
+		}
+
+		subgraph cluster_6 {
+			label="hid_lesstif plugin"
+			color="#7777aa";
+			style=filled;
+
+			render_lesstif [label="local render impl:\nhid_lesstif/main.c"]
+			widget_lesstif [label="local widget impl:\nhid_lesstif/dialogs.c"]
+		}
+
+		subgraph cluster_7 {
+			label="lid_gtk2_common plugin"
+			color="#77aa77";
+			style=filled;
+
+			gtk2_common [label="GTK2 low level widget code\nprovides unified gtk widget API"]
+		}
+
+		subgraph cluster_8 {
+			label="lid_gtk4_common plugin"
+			color="#77aa77";
+			style=filled;
+
+			gtk4_common [label="GTK4 low level widget code\nprovides unified gtk widget API"]
+		}
+
+
+		subgraph cluster_9 {
+			label="lib_hid_gl"
+			color="#ee7777";
+			style=filled;
+
+			hidgl [label="lib_hid_gl/hidgl.h\nUnify different opengl APIs\nfor simple 2D drawing"]
+		}
+	}
+
+	subgraph cluster_200 {
+		label="system"
+		color="#aa7777";
+		style=filled;
+
+		subgraph cluster_20 {
+			label="gtk/gdk"
+			color="#11aa77";
+			style=filled;
+
+			gdk [label="gdk2\nsoftware render"]
+		}
+
+		subgraph cluster_30 {
+			label="opengl"
+			color="#aaaa77";
+			style=filled;
+
+			opengl_direct [label="draw_direct.c\nopengl direct/ClientState rendering\n(below version 4)"]
+			opengl_vao    [label="draw_vao.c\nopengl vao rendering\n(from version 4 and opengl ES)"]
+		}
+
+		subgraph cluster_40 {
+			label="X"
+			color="#aaaa77";
+			style=filled;
+
+			motif
+			xlib
+		}
+
+		subgraph cluster_41 {
+			label="win32"
+			color="#aaaa77";
+			style=filled;
+
+			win32 [label="windows:\nwinapi"]
+		}
+	}
+
+	rnd_gui_inv -> hid_inv
+	hid_inv -> draw_everything
+	draw_everything -> rnd_gui_draw
+
+# gtk pass_render-thru render
+	rnd_gui_draw -> gtk2_gdk_pass_render
+	gtk2_gdk_pass_render -> render_gtk_common_gtk2_gdk
+	rnd_gui_draw -> gtk2_gl_pass_render
+	gtk2_gl_pass_render -> render_gtk_common_gtk2_gl
+	rnd_gui_draw -> gtk4_gl_pass_render
+	gtk4_gl_pass_render -> render_gtk_common_gtk4_gl
+
+# gtk render backend
+	render_gtk_common_gtk2_gdk -> render_gdk
+	render_gdk -> gdk
+	render_gtk_common_gtk2_gl -> render_gtk2_gl
+	render_gtk2_gl -> gtk_gl_common
+	render_gtk_common_gtk4_gl -> render_gtk4_gl
+	render_gtk4_gl -> gtk_gl_common
+
+# gtk widgets
+	dialogs -> rnd_gui_dad
+	rnd_gui_dad -> gtk2_gdk_pass_widget
+	gtk2_gdk_pass_widget -> gtk_widgets
+	rnd_gui_dad -> gtk2_gl_pass_widget
+	gtk2_gl_pass_widget -> gtk_widgets
+	rnd_gui_dad -> gtk4_gl_pass_widget
+	gtk4_gl_pass_widget -> gtk_widgets
+	gtk_widgets -> gtk2_common
+	gtk_widgets -> gtk4_common
+
+
+# opengl side
+	gtk_gl_common -> hidgl
+	hidgl -> opengl_direct
+	hidgl -> opengl_vao
+
+# lesstif
+	rnd_gui_dad -> widget_lesstif
+	widget_lesstif -> motif
+	rnd_gui_draw -> render_lesstif
+	render_lesstif -> motif
+	render_lesstif -> xlib
+	motif -> xlib
+
+
+# gdk low level
+	gdk->xlib
+	gdk->win32
+
+}
