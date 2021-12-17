@@ -262,19 +262,23 @@ RND_INLINE void drawgl_draw_primtive(primitive_t *prim)
 	}
 }
 
-static void drawgl_direct_prim_flush(void)
+static void drawgl_direct_setup_vertbuf(void)
 {
-	int index = primbuf.dirty_index;
-	int end = primbuf.size;
-	primitive_t *prim = &primbuf.data[index];
-
-	/* Setup the vertex buffer */
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].x);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].u);
 	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
+}
+
+static void drawgl_direct_prim_flush(void)
+{
+	int index = primbuf.dirty_index;
+	int end = primbuf.size;
+	primitive_t *prim = &primbuf.data[index];
+
+	drawgl_direct_setup_vertbuf();
 
 	/* draw the primitives */
 	while(index < end) {
@@ -302,13 +306,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 	--index;
 	prim = &primbuf.data[index];
 
-	/* Setup the vertex buffer */
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].x);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].u);
-	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
+	drawgl_direct_setup_vertbuf();
 
 	/* draw the primitives */
 	while(index >= 0) {
