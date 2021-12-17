@@ -214,45 +214,11 @@ static void drawgl_direct_prim_reserve_triangles(int count)
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	switch (prim->type) {
-#if 1
 		case PRIM_MASK_CREATE:
 		case PRIM_MASK_USE:
 		case PRIM_MASK_DESTROY:
 			fprintf(stderr, "lib_hid_gl draw_direct drawgl_draw_primitive(): can not draw mask primitives\n");
 			break;
-#else
-/* this should never happen: mask needs to be drawn in a different order */
-		static int mask_stencil = 0;
-
-		case PRIM_MASK_CREATE:
-			if (mask_stencil)
-				stencilgl_return_stencil_bit(mask_stencil);
-			mask_stencil = stencilgl_allocate_clear_stencil_bit();
-			if (mask_stencil != 0) {
-				glPushAttrib(GL_STENCIL_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-				glStencilMask(mask_stencil);
-				glStencilFunc(GL_ALWAYS, mask_stencil, mask_stencil);
-				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-				glColorMask(0, 0, 0, 0);
-			}
-			break;
-
-		case PRIM_MASK_USE:
-			{
-				GLint ref = 0;
-				glPopAttrib();
-				glPushAttrib(GL_STENCIL_BUFFER_BIT);
-				glGetIntegerv(GL_STENCIL_REF, &ref);
-				glStencilFunc(GL_GEQUAL, ref & ~mask_stencil, mask_stencil);
-			}
-			break;
-
-		case PRIM_MASK_DESTROY:
-			glPopAttrib();
-			stencilgl_return_stencil_bit(mask_stencil);
-			mask_stencil = 0;
-			break;
-#endif
 
 		default:
 			if (prim->texture_id > 0) {
