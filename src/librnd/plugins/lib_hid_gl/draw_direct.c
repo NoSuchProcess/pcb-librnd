@@ -398,8 +398,9 @@ static int direct_init(void)
 		glGetIntegerv(GL_VERSION, &major);
 
 	if (major == 0) {
-		const char *verstr = glGetString(GL_VERSION);
-		printf("verstr = %s\n", verstr);
+		const GLubyte *verstr = glGetString(GL_VERSION);
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: you have a real ancient opengl version '%s'\n", verstr == NULL ? "<unknown>" : (const char *)verstr);
+		return 0;
 	}
 
 	if (major < 3) {
