@@ -736,6 +736,6 @@ void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd
 	hidgl_draw.prim_add_triangle(x2, y1, x2, y2, x1, y1);
 
 	hidgl_draw.prim_draw_all(0);
-	hidgl_draw.prim_flush();
+	hidgl_draw.reset();
 }
 
