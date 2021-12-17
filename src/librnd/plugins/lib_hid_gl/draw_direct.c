@@ -378,7 +378,8 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 									}
 									break;
 
-								default:
+								default: /* Draw a gl primitive on stencil */
+									/* This won't draw textures - but on a negative layer (stencil) we need the solid shape only */
 									glDrawArrays(mask_prim->type, mask_prim->first, mask_prim->count);
 									break;
 							}
@@ -396,7 +397,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 				}
 				break;
 
-			default:
+			default: /* draw a gl primitive on color buffer */
 				drawgl_draw_primitive(prim);
 		}
 
