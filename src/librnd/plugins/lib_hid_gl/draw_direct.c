@@ -81,7 +81,7 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 	}
 }
 
-static void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+static void direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	red = r;
 	green = g;
@@ -89,7 +89,7 @@ static void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 	alpha = a;
 }
 
-static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
+static void direct_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
 {
 	/* Debug Drawing */
 #if 0
@@ -107,7 +107,7 @@ static void drawgl_direc_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, G
 	vertbuf_add(x3, y3);
 }
 
-static void drawgl_direct_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
+static void direct_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
 	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
 	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
 	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
@@ -121,7 +121,7 @@ static void drawgl_direct_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, 
 	vertbuf_add_xyuv(x4, y4, u4, v4);
 }
 
-static void drawgl_direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primbuf_add(GL_LINES, vertbuf.size, 2, 0);
 	vertbuf_reserve_extra(2);
@@ -129,7 +129,7 @@ static void drawgl_direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfl
 	vertbuf_add(x2, y2);
 }
 
-static void drawgl_direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0);
 	vertbuf_reserve_extra(4);
@@ -139,7 +139,7 @@ static void drawgl_direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfl
 	vertbuf_add(x1, y2);
 }
 
-RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	float points[4][6];
 	int i;
@@ -165,17 +165,17 @@ RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLf
 	glDisableClientState(GL_COLOR_ARRAY);
 }
 
-RND_INLINE void drawgl_direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+RND_INLINE void direct_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	drawgl_direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
+	direct_draw_rect(GL_LINE_LOOP, x1, y1, x2, y2);
 }
 
-static void drawgl_direct_prim_add_fillrect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
+static void direct_prim_add_fillrect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	drawgl_direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
+	direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
 
-static void drawgl_direct_prim_reserve_triangles(int count)
+static void direct_prim_reserve_triangles(int count)
 {
 	vertbuf_reserve_extra(count * 3);
 }
@@ -203,7 +203,7 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 	}
 }
 
-RND_INLINE void drawgl_direct_begin_prim_vertbuf(void)
+RND_INLINE void direct_begin_prim_vertbuf(void)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -213,20 +213,20 @@ RND_INLINE void drawgl_direct_begin_prim_vertbuf(void)
 	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
 }
 
-RND_INLINE void drawgl_direct_end_prim_vertbuf(void)
+RND_INLINE void direct_end_prim_vertbuf(void)
 {
 	/* disable the vertex buffer */
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 }
 
-static void drawgl_direct_prim_flush(void)
+static void direct_prim_flush(void)
 {
 	int index = primbuf.dirty_index;
 	int end = primbuf.size;
 	primitive_t *prim = &primbuf.data[index];
 
-	drawgl_direct_begin_prim_vertbuf();
+	direct_begin_prim_vertbuf();
 
 	/* draw the primitives */
 	while(index < end) {
@@ -235,12 +235,12 @@ static void drawgl_direct_prim_flush(void)
 		++index;
 	}
 
-	drawgl_direct_end_prim_vertbuf();
+	direct_end_prim_vertbuf();
 
 	primbuf.dirty_index = end;
 }
 
-static void drawgl_direct_prim_draw_all(int stencil_bits)
+static void direct_prim_draw_all(int stencil_bits)
 {
 	int index = primbuf.size;
 	primitive_t *prim;
@@ -251,7 +251,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 	--index;
 	prim = &primbuf.data[index];
 
-	drawgl_direct_begin_prim_vertbuf();
+	direct_begin_prim_vertbuf();
 
 	/* draw the primitives */
 	while(index >= 0) {
@@ -260,15 +260,15 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 		--index;
 	}
 
-	drawgl_direct_end_prim_vertbuf();
+	direct_end_prim_vertbuf();
 }
 
-static void drawgl_direct_flush(void)
+static void direct_flush(void)
 {
 	glFlush();
 }
 
-static void drawgl_direct_reset(void)
+static void direct_reset(void)
 {
 	vertbuf_clear();
 	primbuf_clear();
@@ -277,21 +277,21 @@ static void drawgl_direct_reset(void)
 	drawgl_mode_positive_xor_end();
 }
 
-static void drawgl_direct_push_matrix(int projection)
+static void direct_push_matrix(int projection)
 {
 	if (projection)
 		glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 }
 
-static void drawgl_direct_pop_matrix(int projection)
+static void direct_pop_matrix(int projection)
 {
 	if (projection)
 		glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 }
 
-static long drawgl_direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
+static long direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
 {
 	GLuint texture_id;
 
@@ -303,35 +303,35 @@ static long drawgl_direct_texture_import(unsigned char *pixels, int width, int h
 }
 
 
-static void drawgl_direct_prim_set_marker(void)
+static void direct_prim_set_marker(void)
 {
 	vertbuf_set_marker();
 	primbuf_set_marker();
 }
 
-static void drawgl_direct_prim_rewind_to_marker(void)
+static void direct_prim_rewind_to_marker(void)
 {
 	vertbuf_rewind();
 	primbuf_rewind();
 }
 
-static void drawgl_direct_draw_points_pre(GLfloat *pts)
+static void direct_draw_points_pre(GLfloat *pts)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, pts);
 }
 
-static void drawgl_direct_draw_points(int npts)
+static void direct_draw_points(int npts)
 {
 	glDrawArrays(GL_POINTS, 0, npts);
 }
 
-static void drawgl_direct_draw_points_post(void)
+static void direct_draw_points_post(void)
 {
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-static void drawgl_direct_draw_lines6(GLfloat *pts, int npts)
+static void direct_draw_lines6(GLfloat *pts, int npts)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -343,7 +343,7 @@ static void drawgl_direct_draw_lines6(GLfloat *pts, int npts)
 }
 
 
-static void drawgl_direct_expose_init(int w, int h, const rnd_color_t *bg_c)
+static void direct_expose_init(int w, int h, const rnd_color_t *bg_c)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -370,7 +370,7 @@ static void drawgl_direct_expose_init(int w, int h, const rnd_color_t *bg_c)
 	glStencilFunc(GL_ALWAYS, 0, 0);
 }
 
-static void drawgl_direct_set_view(double tx, double ty, double zx, double zy, double zz)
+static void direct_set_view(double tx, double ty, double zx, double zy, double zz)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -380,43 +380,43 @@ static void drawgl_direct_set_view(double tx, double ty, double zx, double zy, d
 }
 
 
-static void drawgl_direct_uninit(void)
+static void direct_uninit(void)
 {
 	vertbuf_destroy();
 	primbuf_destroy();
 }
 
-static int drawgl_direct_init(void)
+static int direct_init(void)
 {
 	return 0;
 }
 
 hidgl_draw_t hidgl_draw_direct = {
-	drawgl_direct_init,
-	drawgl_direct_uninit,
-	drawgl_direct_set_color,
-	drawgl_direct_flush,
-	drawgl_direct_reset,
-	drawgl_direct_expose_init,
-	drawgl_direct_set_view,
-	drawgl_direct_texture_import,
-	drawgl_direct_push_matrix,
-	drawgl_direct_pop_matrix,
+	direct_init,
+	direct_uninit,
+	direct_set_color,
+	direct_flush,
+	direct_reset,
+	direct_expose_init,
+	direct_set_view,
+	direct_texture_import,
+	direct_push_matrix,
+	direct_pop_matrix,
 
-	drawgl_direct_prim_draw_all,
-	drawgl_direct_prim_set_marker,
-	drawgl_direct_prim_rewind_to_marker,
-	drawgl_direct_prim_reserve_triangles,
-	drawgl_direct_prim_flush,
+	direct_prim_draw_all,
+	direct_prim_set_marker,
+	direct_prim_rewind_to_marker,
+	direct_prim_reserve_triangles,
+	direct_prim_flush,
 
-	drawgl_direc_prim_add_triangle,
-	drawgl_direct_prim_add_line,
-	drawgl_direct_prim_add_rect,
-	drawgl_direct_prim_add_fillrect,
-	drawgl_direct_prim_add_textrect,
+	direct_prim_add_triangle,
+	direct_prim_add_line,
+	direct_prim_add_rect,
+	direct_prim_add_fillrect,
+	direct_prim_add_textrect,
 
-	drawgl_direct_draw_points_pre,
-	drawgl_direct_draw_points,
-	drawgl_direct_draw_points_post,
-	drawgl_direct_draw_lines6,
+	direct_draw_points_pre,
+	direct_draw_points,
+	direct_draw_points_post,
+	direct_draw_lines6,
 };
