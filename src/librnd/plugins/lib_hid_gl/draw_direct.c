@@ -392,6 +392,8 @@ static int direct_init(void)
 }
 
 hidgl_draw_t hidgl_draw_direct = {
+	"direct",
+
 	direct_init,
 	direct_uninit,
 	direct_set_color,

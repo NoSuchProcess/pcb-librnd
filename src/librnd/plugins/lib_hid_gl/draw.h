@@ -38,6 +38,8 @@
 
 
 typedef struct hidgl_draw_s {
+	const char *name;
+
  /* Returns 0 if the drawing backend is compatible with host opengl */
 	int (*init)(void);
 
