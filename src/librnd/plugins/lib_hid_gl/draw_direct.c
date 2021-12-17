@@ -388,6 +388,37 @@ static void direct_uninit(void)
 
 static int direct_init(void)
 {
+	GLint profmask, major = 0;
+
+#ifdef GL_MAJOR_VERSION
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+#endif
+
+	if (major == 0)
+		glGetIntegerv(GL_VERSION, &major);
+
+	if (major == 0) {
+		char *verstr = glGetString(GL_VERSION);
+		printf("verstr = %s\n", verstr);
+	}
+
+	if (major < 3) {
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: major %d is below 3\n", major);
+		return 0;
+	}
+
+#ifdef GL_CONTEXT_PROFILE_MASK
+	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profmask);
+	if (!(profmask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)) {
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK lacks compatibility mode in major %d\n", major);
+		return -1;
+	}
+#else
+	rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK missing with major %d\n", major);
+	return -1;
+#endif
+
+	rnd_message(RND_MSG_DEBUG, "opengl direct_init accept\n");
 	return 0;
 }
 

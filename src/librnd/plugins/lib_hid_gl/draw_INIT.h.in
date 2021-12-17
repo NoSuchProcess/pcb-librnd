@@ -4,10 +4,15 @@ print [@
 
 extern hidgl_draw_t hidgl_draw_direct;
 
+extern hidgl_draw_t hidgl_draw_error;
+
 /* return the first draw implementation that would work with current opengl */
 static inline const hidgl_draw_t *hidgl_find_draw(void)
 {
 	if (hidgl_draw_direct.init() == 0) return &hidgl_draw_direct;
+
+	/* must be the last, always present */
+	if (hidgl_draw_error.init() == 0) return &hidgl_draw_error;
 	return NULL;
 }
 @]
