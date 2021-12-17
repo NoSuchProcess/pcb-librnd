@@ -154,9 +154,10 @@ static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 		g_warn_if_fail(bits_per_sample == 8);
 		g_warn_if_fail(rowstride == width * n_channels);
 
-		/* XXX: We should probably determine what the maximum texture supported is,
-		        and if our image is larger, shrink it down using GDK pixbuf routines
-		        rather than having it fail below. */
+		TODO(
+			"We should probably determine what the maximum texture supported is,"
+			"and if our image is larger, shrink it down using GDK pixbuf routines"
+			"rather than having it fail below.");
 		gpm->cache.lng = hidgl_texture_import(pixels, width, height, (n_channels == 4));
 	}
 
