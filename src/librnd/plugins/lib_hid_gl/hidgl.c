@@ -86,6 +86,11 @@ void hidgl_set_color(float r, float g, float b, float a)
 	hidgl_draw.set_color(r, g, b, a);
 }
 
+void hidgl_set_grid_color(float r, float g, float b)
+{
+	glColor3f(r, g, b);
+}
+
 void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)
 {
 	hidgl_draw.set_view(tx, ty, zx, zy, zz);

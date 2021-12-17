@@ -128,7 +128,7 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!rnd_conf.editor.draw_grid))
 		return;
 
-	glColor3f(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
+	hidgl_set_grid_color(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
 
 	if (rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable)
 		hidgl_draw_local_grid(hidlib, grid_local_x, grid_local_y, grid_local_radius, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
