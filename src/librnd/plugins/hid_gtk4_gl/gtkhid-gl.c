@@ -251,8 +251,6 @@ int ghid_gl_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 	if (ghid_gl_install_common(impl, hid) != 0)
 		return -1;
 
-fprintf(stderr, "No GL rendering for gtk4 yet\n");
-
 	if (impl != NULL) {
 		impl->get_color_name = get_color_name;
 		impl->drawing_area_expose = ghid_gl_drawing_area_expose_cb;
