@@ -48,7 +48,7 @@ static void stencilgl_clear_stencil_bits(int bits)
 	dirty_bits = (dirty_bits & ~bits) | assigned_bits;
 }
 
-static void stencilgl_clear_unassigned_stencil()
+static void stencilgl_clear_unassigned_stencil(void)
 {
 	stencilgl_clear_stencil_bits(~assigned_bits);
 }
@@ -84,12 +84,12 @@ static int stencilgl_allocate_clear_stencil_bit(void)
 	return first_dirty;
 }
 
-void stencilgl_reset_stencil_usage()
+void stencilgl_reset_stencil_usage(void)
 {
 	assigned_bits = 0;
 }
 
-void stencilgl_init()
+void stencilgl_init(void)
 {
 	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
 

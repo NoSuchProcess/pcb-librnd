@@ -34,8 +34,8 @@
 #include <librnd/core/global_typedefs.h>
 #include "opengl.h"
 
-void stencilgl_init();
-void stencilgl_reset_stencil_usage();
+void stencilgl_init(void);
+void stencilgl_reset_stencil_usage(void);
 
 /* Setup the stencil buffer so that writes will set stencil bits */
 RND_INLINE void stencilgl_mode_write_set(int bits)
