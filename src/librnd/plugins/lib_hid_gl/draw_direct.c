@@ -398,7 +398,7 @@ static int direct_init(void)
 		glGetIntegerv(GL_VERSION, &major);
 
 	if (major == 0) {
-		char *verstr = glGetString(GL_VERSION);
+		const char *verstr = glGetString(GL_VERSION);
 		printf("verstr = %s\n", verstr);
 	}
 
@@ -409,8 +409,8 @@ static int direct_init(void)
 
 #ifdef GL_CONTEXT_PROFILE_MASK
 	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profmask);
-	if (!(profmask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)) {
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK lacks compatibility mode in major %d\n", major);
+	if ((profmask != 0) && !(profmask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)) {
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK (%d) lacks compatibility mode in major %d\n", profmask, major);
 		return -1;
 	}
 #else
