@@ -539,12 +539,6 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 
 int ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 {
-	/* check if we have a low level draw */
-	if (hidgl_init() != 0) {
-		fprintf(stderr, "Error: ghid_gl_install_common(): failed to init hidgl\n");
-		return -1;
-	}
-
 	if (impl != NULL) {
 		impl->set_special_colors = ghid_gl_set_special_colors;
 		impl->screen_update = ghid_gl_screen_update;

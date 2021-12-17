@@ -52,12 +52,14 @@ hidgl_draw_t hidgl_draw;
 
 int hidgl_init(void)
 {
-	const hidgl_draw_t *drw = hidgl_find_draw();
+	if (hidgl_draw.name == NULL) {
+		const hidgl_draw_t *drw = hidgl_find_draw();
 
-	if (drw == NULL)
-		return -1;
+		if (drw == NULL)
+			return -1;
 
-	hidgl_draw = *drw;
+		hidgl_draw = *drw;
+	}
 	return 0;
 }
 

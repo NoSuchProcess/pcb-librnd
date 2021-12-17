@@ -139,6 +139,13 @@ static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 	port->render_priv->in_context = rnd_true;
 	gtk_gl_area_make_current(GTK_GL_AREA(widget));
 
+	/* check if we have a low level draw */
+	if (hidgl_init() != 0) {
+		rnd_message(RND_MSG_ERROR, "Error: hidgl_init(): failed to find a working opengl backend\n");
+		return FALSE;
+	}
+
+
 	return TRUE;
 }
 

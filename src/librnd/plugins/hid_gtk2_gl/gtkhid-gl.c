@@ -223,6 +223,12 @@ static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
 
+	/* check if we have a low level draw */
+	if (hidgl_init() != 0) {
+		rnd_message(RND_MSG_ERROR, "Error: hidgl_init(): failed to find a working opengl backend\n");
+		return FALSE;
+	}
+
 	port->render_priv->in_context = rnd_true;
 
 	return TRUE;
