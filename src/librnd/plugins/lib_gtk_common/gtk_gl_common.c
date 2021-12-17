@@ -430,6 +430,7 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	rnd_hid_expose_ctx_t ctx;
+	double tx, ty, zx, zy, zz;
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
@@ -442,8 +443,12 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 
 	rnd_gl_draw_expose_init(allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
 
-	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
-	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
+	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px;
+	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px;
+	zz = ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px;
+	tx = rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0;
+	ty = rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0;
+	hidgl_set_view(tx, ty, zx, zy, zz);
 
 	/* Draw PCB background, before PCB primitives */
 	hidgl_draw_initial_fill(0, 0, hidlib->size_x, hidlib->size_y, priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
