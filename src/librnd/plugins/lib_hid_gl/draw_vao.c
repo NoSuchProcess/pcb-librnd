@@ -31,6 +31,7 @@
 
 #include "config.h"
 #include <stdlib.h>
+#include <string.h>
 
 #include <librnd/core/color.h>
 
@@ -52,6 +53,7 @@ typedef struct {
 #include "primbuf.c"
 
 static GLfloat red = 0.0f, green = 0.0f, blue = 0.0f, alpha = 0.75f;
+static GLuint program, inputColor_location, xform_location, position_buffer;
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
@@ -423,12 +425,183 @@ static int vao_init_checkver(void)
 	return 0;
 }
 
+
+/* Create and compile a shader */
+RND_INLINE GLuint vao_create_shader(int type, const char *src)
+{
+	int status;
+	GLuint shader = glCreateShader(type);
+
+	glShaderSource(shader, 1, &src, NULL);
+	glCompileShader(shader);
+
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) {
+		int log_len;
+		char *buffer;
+
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_len);
+
+		buffer = malloc(log_len + 1);
+		glGetShaderInfoLog(shader, log_len, NULL, buffer);
+		rnd_message(RND_MSG_ERROR, "opengl vao_init: Compile failure in %s shader:\n%s\n", type == GL_VERTEX_SHADER ? "vertex" : "fragment", buffer);
+		free(buffer);
+
+		glDeleteShader(shader);
+		return 0;
+	}
+
+	return shader;
+}
+
+/* Initialize the shaders and link them into a program */
+RND_INLINE int vao_init_shaders_(const char *vertex_sh, const char *fragment_sh, GLuint *program_out, GLuint *inputColor_out, GLuint *xform_out)
+{
+	GLuint vertex, fragment;
+	GLuint program = 0;
+	GLuint inputColor = 0;
+	GLuint xform = 0;
+	int status, res = -1;
+
+	vertex = vao_create_shader(GL_VERTEX_SHADER, vertex_sh);
+	if (vertex == 0)
+		return -1;
+
+	fragment = vao_create_shader(GL_FRAGMENT_SHADER, fragment_sh);
+	if (fragment == 0) {
+		glDeleteShader(vertex);
+		return -1;
+	}
+
+	program = glCreateProgram();
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
+
+	glLinkProgram(program);
+
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE) {
+		int log_len;
+		char *buffer;
+
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
+
+		buffer = malloc(log_len + 1);
+		glGetProgramInfoLog(program, log_len, NULL, buffer);
+		rnd_message(RND_MSG_ERROR, "opengl vao_init: Linking failure:\n%s\n", buffer);
+		free(buffer);
+
+		glDeleteProgram(program);
+		program = 0;
+
+		goto out;
+	}
+
+	inputColor = glGetUniformLocation(program, "inputColor");
+	xform = glGetUniformLocation(program, "xform");
+
+	glDetachShader(program, vertex);
+	glDetachShader(program, fragment);
+	res = 0;
+
+out:
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+
+	*program_out = program;
+	*inputColor_out = inputColor;
+	*xform_out = xform;
+
+	return res;
+}
+
+TODO("this should be in common")
+RND_INLINE int gl_is_es(void)
+{
+	static const char es_prefix[] = "OpenGL ES";
+	const char *ver;
+
+	/* libepoxy says: some ES implementions (e.g. PowerVR) don't have the
+	   es_prefix in their version string. For now we ignore these as
+	   they need dlsym() to detect */
+
+	ver = (const char *)glGetString(GL_VERSION);
+	if (ver == NULL)
+		return 0;
+
+	return strncmp(ver, es_prefix, sizeof(es_prefix)-1) == 0;
+}
+
+/* We need to set up our state when we realize the GtkGLArea widget */
+RND_INLINE int vao_init_shaders(void)
+{
+	const char *vertex_sh, *fragment_sh;
+
+#define NL "\n"
+
+	if (gl_is_es()) {
+		printf("gl es... are you on weyland, or what?\n");
+		vertex_sh = 
+			NL "attribute vec4 position;"
+			NL "uniform vec4 xform;"
+			NL "void main() {"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2], (position[1] + xform[1]) * xform[3], position[2], position[3]);"
+			NL "}"
+			NL;
+
+		fragment_sh =
+			NL "precision highp float;"
+			NL "uniform vec4 inputColor;"
+			NL "void main() {"
+			NL "  gl_FragColor = inputColor;"
+			NL "}"
+			NL;
+	}
+	else {
+		printf("normal gl... for us, old X11 users I guess\n");
+
+		vertex_sh = 
+			NL "#version 330"
+			NL "layout(location = 0) in vec4 position;"
+			NL "uniform vec4 xform;"
+			NL "void main() {"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2], (position[1] + xform[1]) * xform[3], position[2], position[3]);"
+			NL "}"
+			NL ";"
+			NL;
+
+		fragment_sh =
+			NL "#version 330"
+			NL "out vec4 outputColor;"
+			NL "uniform vec4 inputColor;"
+			NL "void main() {"
+			NL "  outputColor = inputColor;"
+			NL "}"
+			NL;
+	}
+
+
+	return vao_init_shaders_(vertex_sh, fragment_sh, &program, &inputColor_location, &xform_location);
+}
+
+
 static int vao_init(void)
 {
 	int vres = vao_init_checkver();
+	GLuint vao;
 
 	if (vres != 0)
 		return vres;
+
+	if (vao_init_shaders() != 0) {
+		rnd_message(RND_MSG_ERROR, "opengl vao_init: failed to init shaders, no rendering is possible\n");
+		return -1;
+	}
+
+	/* We only use one VAO, so we always keep it bound */
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glGenBuffers(1, &position_buffer);
 
 	rnd_message(RND_MSG_ERROR, "opengl vao_init: vao rendering is WIP, expect broken render\n");
 	return vres;
