@@ -34,12 +34,6 @@
 #define MARKER_STACK_SIZE       16
 #define RESERVE_PRIMITIVE_EXTRA 256
 
-enum {
-	PRIM_MASK_CREATE = 1000,
-	PRIM_MASK_DESTROY,
-	PRIM_MASK_USE
-};
-
 /* Primitive Buffer Data */
 
 typedef struct {

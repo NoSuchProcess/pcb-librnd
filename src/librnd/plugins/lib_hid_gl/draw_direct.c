@@ -148,21 +148,6 @@ static void drawgl_direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfl
 	vertbuf_add(x1, y2);
 }
 
-RND_INLINE void drawgl_add_mask_create(void)
-{
-	primbuf_add(PRIM_MASK_CREATE, 0, 0, 0);
-}
-
-RND_INLINE void drawgl_add_mask_destroy(void)
-{
-	primbuf_add(PRIM_MASK_DESTROY, 0, 0, 0);
-}
-
-RND_INLINE void drawgl_add_mask_use(void)
-{
-	primbuf_add(PRIM_MASK_USE, 0, 0, 0);
-}
-
 RND_INLINE void drawgl_direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
 	float points[4][6];
@@ -208,14 +193,6 @@ static void drawgl_direct_prim_reserve_triangles(int count)
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
-	switch (prim->type) {
-		case PRIM_MASK_CREATE:
-		case PRIM_MASK_USE:
-		case PRIM_MASK_DESTROY:
-			fprintf(stderr, "lib_hid_gl draw_direct drawgl_draw_primitive(): can not draw mask primitives\n");
-			break;
-
-		default:
 			if (prim->texture_id > 0) {
 				glBindTexture(GL_TEXTURE_2D, prim->texture_id);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -233,8 +210,6 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 				glDisable(GL_TEXTURE_2D);
 				glDisable(GL_ALPHA_TEST);
 			}
-			break;
-	}
 }
 
 RND_INLINE void drawgl_direct_begin_prim_vertbuf(void)
@@ -278,7 +253,6 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 {
 	int index = primbuf.size;
 	primitive_t *prim;
-	int mask = 0;
 
 	if ((index == 0) || (primbuf.data == NULL))
 		return;
@@ -290,93 +264,10 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 
 	/* draw the primitives */
 	while(index >= 0) {
-		switch (prim->type) {
-			case PRIM_MASK_DESTROY:
-				/* The primitives are drawn in reverse order. The mask primitives are required
-				   to be processed in forward order so we must search for the matching 'mask create'
-				   primitive and then iterate through the primitives until we reach the 'mask destroy'
-				   primitive. */
-				{
-					primitive_t *next_prim = prim - 1;;
-					primitive_t *mask_prim = prim;
-					int mask_index = index;
-					int next_index = index - 1;
-
-					/* Find the 'mask create' primitive. */
-					while((mask_index >= 0) && (mask_prim->type != PRIM_MASK_CREATE)) {
-						--mask_prim;
-						--mask_index;
-					}
-
-					/* Process the primitives in forward order until we reach the 'mask destroy' primitive */
-					if (mask_prim->type == PRIM_MASK_CREATE) {
-						next_index = mask_index;
-						next_prim = mask_prim;
-
-						while(mask_index <= index) {
-							switch (mask_prim->type) {
-								case PRIM_MASK_CREATE:
-									if (mask)
-										stencilgl_return_stencil_bit(mask);
-									mask = stencilgl_allocate_clear_stencil_bit();
-
-									if (mask != 0) {
-										glPushAttrib(GL_STENCIL_BUFFER_BIT);
-
-										glEnable(GL_STENCIL_TEST);
-										stencilgl_mode_write_set(mask);
-									}
-									glPushAttrib(GL_COLOR_BUFFER_BIT);
-									glColorMask(0, 0, 0, 0);
-									break;
-
-								case PRIM_MASK_USE:
-									glPopAttrib();
-									if (mask != 0) {
-										glEnable(GL_STENCIL_TEST);
-										glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-										glStencilFunc(GL_EQUAL, stencil_bits, stencil_bits | mask);
-										glStencilMask(stencil_bits);
-									}
-									break;
-
-								case PRIM_MASK_DESTROY:
-									if (mask != 0) {
-										glPopAttrib();
-										stencilgl_return_stencil_bit(mask);
-										mask = 0;
-									}
-									break;
-
-								default: /* Draw a gl primitive on stencil */
-									/* This won't draw textures - but on a negative layer (stencil) we need the solid shape only */
-									glDrawArrays(mask_prim->type, mask_prim->first, mask_prim->count);
-									break;
-							}
-							++mask_prim;
-							++mask_index;
-						}
-
-						index = next_index;
-						prim = next_prim;
-					}
-					else {
-						index = mask_index;
-						prim = mask_prim;
-					}
-				}
-				break;
-
-			default: /* draw a gl primitive on color buffer */
-				drawgl_draw_primitive(prim);
-		}
-
+		drawgl_draw_primitive(prim);
 		--prim;
 		--index;
 	}
-
-	if (mask)
-		stencilgl_return_stencil_bit(mask);
 
 	drawgl_direct_end_prim_vertbuf();
 }
