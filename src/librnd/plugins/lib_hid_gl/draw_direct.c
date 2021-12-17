@@ -424,6 +424,7 @@ void drawgl_direct_reset(void)
 	primbuf_clear();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
+	drawgl_mode_positive_xor_end();
 }
 
 static long drawgl_direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
