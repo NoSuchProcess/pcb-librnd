@@ -265,9 +265,13 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 				glAlphaFunc(GL_GREATER, 0.5);
 				glEnable(GL_ALPHA_TEST);
 			}
+
 			glDrawArrays(prim->type, prim->first, prim->count);
-			glDisable(GL_TEXTURE_2D);
-			glDisable(GL_ALPHA_TEST);
+
+			if (prim->texture_id > 0) {
+				glDisable(GL_TEXTURE_2D);
+				glDisable(GL_ALPHA_TEST);
+			}
 			break;
 	}
 }
