@@ -98,8 +98,19 @@ void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)
 
 long hidgl_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
 {
-	hidgl_draw.texture_import(pixels, width, height, has_alpha);
+	return hidgl_draw.texture_import(pixels, width, height, has_alpha);
 }
+
+void hidgl_push_matrix(int projection)
+{
+	hidgl_draw.push_matrix(projection);
+}
+
+void hidgl_pop_matrix(int projection)
+{
+	hidgl_draw.pop_matrix(projection);
+}
+
 
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;

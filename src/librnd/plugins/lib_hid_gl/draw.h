@@ -51,6 +51,9 @@ typedef struct hidgl_draw_s {
 	/* Allocate a texture, load it from pixels and return texture gl-ID */
 	long (*texture_import)(unsigned char *pixels, int width, int height, int has_alpha);
 
+	void (*push_matrix)(int projection);
+	void (*pop_matrix)(int projection);
+
 
 	/*** Buffer of primitives to be drawn */
 	/* Draw all buffered primitives. The dirty index is ignored and will

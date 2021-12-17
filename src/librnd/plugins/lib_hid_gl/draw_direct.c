@@ -427,6 +427,20 @@ void drawgl_direct_reset(void)
 	drawgl_mode_positive_xor_end();
 }
 
+static void drawgl_direct_push_matrix(int projection)
+{
+	if (projection)
+		glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+}
+
+static void drawgl_direct_pop_matrix(int projection)
+{
+	if (projection)
+		glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+}
+
 static long drawgl_direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
 {
 	GLuint texture_id;
@@ -536,6 +550,8 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_expose_init,
 	drawgl_direct_set_view,
 	drawgl_direct_texture_import,
+	drawgl_direct_push_matrix,
+	drawgl_direct_pop_matrix,
 
 	drawgl_direct_prim_draw_all,
 	drawgl_direct_prim_set_marker,

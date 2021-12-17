@@ -53,6 +53,8 @@ void hidgl_set_color(float r, float g, float b, float a);
 void hidgl_set_grid_color(float r, float g, float b);
 void hidgl_set_view(double tx, double ty, double zx, double zy, double zz);
 long hidgl_texture_import(unsigned char *pixels, int width, int height, int has_alpha);
+void hidgl_push_matrix(int projection);
+void hidgl_pop_matrix(int projection);
 void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
 rnd_composite_op_t hidgl_get_drawing_mode();
 

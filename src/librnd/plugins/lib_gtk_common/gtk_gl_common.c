@@ -445,12 +445,10 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	ghid_gl_draw_bg_image(hidlib);
 
 	ghid_gl_invalidate_current_gc();
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
+	hidgl_push_matrix(1);
 	rnd_app.expose_main(hid, &ctx, NULL);
 	hidgl_flush();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
+	hidgl_pop_matrix(1);
 
 	ghid_gl_draw_grid(hidlib, &ctx.view);
 
@@ -513,7 +511,7 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
-	glPushMatrix();
+	hidgl_push_matrix(0);
 
 	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px;
 	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px;
@@ -526,7 +524,7 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	expcall(hid, ctx);
 
 	hidgl_flush();
-	glPopMatrix();
+	hidgl_pop_matrix(0);
 
 	ghidgui->port.render_priv->in_context = rnd_false;
 
