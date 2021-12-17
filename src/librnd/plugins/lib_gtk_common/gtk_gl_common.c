@@ -128,17 +128,12 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!rnd_conf.editor.draw_grid))
 		return;
 
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
-
 	glColor3f(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
 
 	if (rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable)
 		hidgl_draw_local_grid(hidlib, grid_local_x, grid_local_y, grid_local_radius, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
 	else
 		hidgl_draw_grid(hidlib, drawn_area, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
-
-	glDisable(GL_COLOR_LOGIC_OP);
 }
 
 static void rnd_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
