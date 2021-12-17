@@ -56,11 +56,7 @@ typedef struct {
 #include "vertbuf.c"
 #include "primbuf.c"
 
-static GLfloat red = 0.0f;
-static GLfloat green = 0.0f;
-static GLfloat blue = 0.0f;
-static GLfloat alpha = 0.75f;
-
+static GLfloat red = 0.0f, green = 0.0f, blue = 0.0f, alpha = 0.75f;
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
