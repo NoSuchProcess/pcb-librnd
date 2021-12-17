@@ -32,11 +32,6 @@
 #include "config.h"
 #include <stdlib.h>
 
-/*#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>*/
-
 #include <librnd/core/color.h>
 
 #include "hidgl.h"
