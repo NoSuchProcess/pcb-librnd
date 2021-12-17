@@ -66,7 +66,6 @@ static GLfloat green = 0.0f;
 static GLfloat blue = 0.0f;
 static GLfloat alpha = 0.75f;
 
-static int mask_stencil = 0;
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
@@ -215,6 +214,16 @@ static void drawgl_direct_prim_reserve_triangles(int count)
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	switch (prim->type) {
+#if 1
+		case PRIM_MASK_CREATE:
+		case PRIM_MASK_USE:
+		case PRIM_MASK_DESTROY:
+			fprintf(stderr, "lib_hid_gl draw_direct drawgl_draw_primitive(): can not draw mask primitives\n");
+			break;
+#else
+/* this should never happen: mask needs to be drawn in a different order */
+		static int mask_stencil = 0;
+
 		case PRIM_MASK_CREATE:
 			if (mask_stencil)
 				stencilgl_return_stencil_bit(mask_stencil);
@@ -243,6 +252,7 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 			stencilgl_return_stencil_bit(mask_stencil);
 			mask_stencil = 0;
 			break;
+#endif
 
 		default:
 			if(prim->texture_id > 0) {
