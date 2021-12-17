@@ -255,14 +255,14 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 #endif
 
 		default:
-			if(prim->texture_id > 0) {
+			if (prim->texture_id > 0) {
 				glBindTexture(GL_TEXTURE_2D, prim->texture_id);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 				glEnable(GL_TEXTURE_2D);
-				glAlphaFunc(GL_GREATER,0.5);
+				glAlphaFunc(GL_GREATER, 0.5);
 				glEnable(GL_ALPHA_TEST);
 			}
 			glDrawArrays(prim->type, prim->first, prim->count);
