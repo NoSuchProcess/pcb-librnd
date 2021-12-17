@@ -490,6 +490,7 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	rnd_coord_t save_cpp;
 	rnd_gtk_view_t save_view;
 	int save_width, save_height;
+	double tx, ty, zx, zy, zz;
 
 	/* Setup zoom factor for drawing routines */
 	vw = ctx->view.X2 - ctx->view.X1;
@@ -523,8 +524,13 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();
 	glPushMatrix();
-	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px, 1);
-	glTranslatef(rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0, rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0, 0);
+
+	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px;
+	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px;
+	zz = 1;
+	tx = rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0;
+	ty = rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0;
+	hidgl_set_view(tx, ty, zx, zy, zz);
 
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(hid, ctx);
