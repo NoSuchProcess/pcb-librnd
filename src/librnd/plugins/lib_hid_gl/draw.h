@@ -68,7 +68,7 @@ typedef struct hidgl_draw_s {
 
 	void (*prim_reserve_triangles)(int count);
 
-	void (*prim_flush)(void);
+	void (*prim_flush)(void);                 /* draw the trailing block of dirty primitives, in order of primitive creation */
 
 
 	/*** Add primitives to the buffer ***/
