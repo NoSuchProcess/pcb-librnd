@@ -79,7 +79,7 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 
 	/* Put the renderer into a good state so that any drawing is done in standard mode */
 
-	hidgl_flush();
+	hidgl_flush_drawing();
 	hidgl_reset();
 
 	priv->trans_lines = rnd_true;
@@ -88,7 +88,7 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 
 static void ghid_gl_end_layer(rnd_hid_t *hid)
 {
-	hidgl_flush();
+	hidgl_flush_drawing();
 	hidgl_reset();
 }
 
@@ -445,7 +445,7 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	ghid_gl_invalidate_current_gc();
 	hidgl_push_matrix(1);
 	rnd_app.expose_main(hid, &ctx, NULL);
-	hidgl_flush();
+	hidgl_flush_drawing();
 	hidgl_pop_matrix(1);
 
 	ghid_gl_draw_grid(hidlib, &ctx.view);
@@ -456,11 +456,11 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 		rnd_app.draw_attached(hidlib, 0);
 	if (rnd_app.draw_marks != NULL)
 		rnd_app.draw_marks(hidlib, 0);
-	hidgl_flush();
+	hidgl_flush_drawing();
 
 	ghid_gl_show_crosshair(hidlib, TRUE, ctx.view.X1, ctx.view.Y1, ctx.view.X2, ctx.view.Y2);
 
-	hidgl_flush();
+	hidgl_flush_drawing();
 
 	ghid_gl_end_drawing(port);
 
@@ -521,7 +521,7 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 	expcall(hid, ctx);
 
-	hidgl_flush();
+	hidgl_flush_drawing();
 	hidgl_pop_matrix(0);
 
 	ghidgui->port.render_priv->in_context = rnd_false;

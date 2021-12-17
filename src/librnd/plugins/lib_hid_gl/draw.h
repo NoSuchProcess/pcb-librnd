@@ -40,7 +40,6 @@ typedef struct hidgl_draw_s {
 	int (*init)(void);
 
 	void (*uninit)(void);
-	void (*flush)(void);
 	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	void (*reset)(void);
 	void (*expose_init)(int w, int h, const rnd_color_t *bg_c);
@@ -65,6 +64,8 @@ typedef struct hidgl_draw_s {
 	void (*prim_rewind_to_marker)(void);      /* rewind to last set marker; useful for discarding primitives after the marker */
 
 	void (*prim_reserve_triangles)(int count);
+
+	void (*prim_flush)(void);
 
 
 	/*** Add primitives to the buffer ***/

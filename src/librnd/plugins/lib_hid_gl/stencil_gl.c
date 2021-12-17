@@ -130,7 +130,7 @@ static int comp_stencil_bit = 0;
 
 void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
-	hidgl_draw.flush();
+	hidgl_draw.prim_flush();
 	hidgl_draw.reset();
 	glColorMask(0, 0, 0, 0); /* Disable color drawing */
 	stencilgl_reset_stencil_usage();
@@ -143,7 +143,7 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 	if (comp_stencil_bit == 0)
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
 	else
-		hidgl_draw.flush();
+		hidgl_draw.prim_flush();
 
 	glEnable(GL_STENCIL_TEST);
 	drawgl_mode_positive_xor_end();
@@ -152,7 +152,7 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 
 void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 {
-	hidgl_draw.flush();
+	hidgl_draw.prim_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 	drawgl_mode_positive_xor_start();
@@ -173,7 +173,7 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 		hidgl_draw.prim_add_fillrect(screen->X1, screen->Y1, screen->X2, screen->Y2);
 	}
 	else
-		hidgl_draw.flush();
+		hidgl_draw.prim_flush();
 
 	stencilgl_mode_write_clear(comp_stencil_bit);
 	hidgl_draw.prim_set_marker();
@@ -182,7 +182,7 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 
 void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
 {
-	hidgl_draw.flush();
+	hidgl_draw.prim_flush();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	if (comp_stencil_bit) {

@@ -71,9 +71,9 @@ void hidgl_uninit(void)
 	hidgl_draw.uninit();
 }
 
-void hidgl_flush(void)
+void hidgl_flush_drawing(void)
 {
-	hidgl_draw.flush();
+	hidgl_draw.prim_flush();
 }
 
 void hidgl_reset(void)
@@ -133,7 +133,7 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool dire
 	   discarded by rewinding the primitive buffer to the marker that was
 	   set when entering NEGATIVE mode. */
 	if (composite_op == RND_HID_COMP_NEGATIVE) {
-		hidgl_draw.flush();
+		hidgl_draw.prim_flush();
 		hidgl_draw.prim_rewind_to_marker();
 	}
 
@@ -731,6 +731,6 @@ void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd
 	hidgl_draw.prim_add_triangle(x2, y1, x2, y2, x1, y1);
 
 	hidgl_draw.prim_draw_all(0);
-	hidgl_draw.flush();
+	hidgl_draw.prim_flush();
 }
 

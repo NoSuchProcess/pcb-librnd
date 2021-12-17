@@ -262,7 +262,7 @@ RND_INLINE void drawgl_draw_primtive(primitive_t *prim)
 	}
 }
 
-static void drawgl_direct_flush(void)
+static void drawgl_direct_prim_flush(void)
 {
 	int index = primbuf.dirty_index;
 	int end = primbuf.size;
@@ -544,7 +544,6 @@ int drawgl_direct_init(void)
 hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_init,
 	drawgl_direct_uninit,
-	drawgl_direct_flush,
 	drawgl_direct_set_color,
 	drawgl_direct_reset,
 	drawgl_direct_expose_init,
@@ -557,6 +556,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_prim_set_marker,
 	drawgl_direct_prim_rewind_to_marker,
 	drawgl_direct_prim_reserve_triangles,
+	drawgl_direct_prim_flush,
 
 	drawgl_direc_prim_add_triangle,
 	drawgl_direct_prim_add_line,
