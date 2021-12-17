@@ -422,6 +422,8 @@ void drawgl_direct_reset(void)
 {
 	vertbuf_clear();
 	primbuf_clear();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
 }
 
 static void drawgl_direct_prim_set_marker(void)

@@ -82,8 +82,6 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 
 	hidgl_flush();
 	hidgl_reset();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_STENCIL_TEST);
 
 	priv->trans_lines = rnd_true;
 	return 1;
