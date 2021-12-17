@@ -694,7 +694,11 @@ void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd
 	/* we can cheat here: this is called only once, before other drawing commands
 	   to fill the background. */
 	hidgl_draw.set_color(r, g, b, 1.0f);
-	hidgl_draw.prim_add_fillrect(x1, y1, x2, y2);
+
+	/* fillrect breaks for some reason, drawing two triangles is more stable */
+	hidgl_draw.prim_add_triangle(x1, y1, x1, y2, x2, y2);
+	hidgl_draw.prim_add_triangle(x2, y1, x2, y2, x1, y1);
+
 	hidgl_draw.prim_draw_all(0);
 	hidgl_draw.flush();
 }
