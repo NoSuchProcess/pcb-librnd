@@ -86,6 +86,10 @@ void hidgl_set_color(float r, float g, float b, float a)
 	hidgl_draw.set_color(r, g, b, a);
 }
 
+void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)
+{
+	hidgl_draw.set_view(tx, ty, zx, zy, zz);
+}
 
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = rnd_true;

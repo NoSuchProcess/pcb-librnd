@@ -45,6 +45,8 @@ typedef struct hidgl_draw_s {
 	void (*reset)(void);
 	void (*expose_init)(int w, int h, const rnd_color_t *bg_c);
 
+	/* set up transformation to translate tx,ty and zoom zx,zy,zz */
+	void (*set_view)(double tx, double ty, double zx, double zy, double zz);
 
 	/*** Buffer of primitives to be drawn */
 	/* Draw all buffered primitives. The dirty index is ignored and will

@@ -493,6 +493,16 @@ static void drawgl_direct_expose_init(int w, int h, const rnd_color_t *bg_c)
 	glStencilFunc(GL_ALWAYS, 0, 0);
 }
 
+static void drawgl_direct_set_view(double tx, double ty, double zx, double zy, double zz)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
+	glScalef(zx, zy, zz);
+	glTranslatef(tx, ty, 0);
+}
+
+
 static void drawgl_direct_uninit(void)
 {
 	vertbuf_destroy();
@@ -511,6 +521,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_set_color,
 	drawgl_direct_reset,
 	drawgl_direct_expose_init,
+	drawgl_direct_set_view,
 
 	drawgl_direct_prim_draw_all,
 	drawgl_direct_prim_set_marker,
