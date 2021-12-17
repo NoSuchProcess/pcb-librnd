@@ -86,7 +86,7 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 	}
 }
 
-void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+static void drawgl_direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	red = r;
 	green = g;
@@ -268,12 +268,12 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 	drawgl_direct_end_prim_vertbuf();
 }
 
-void drawgl_direct_flush(void)
+static void drawgl_direct_flush(void)
 {
 	glFlush();
 }
 
-void drawgl_direct_reset(void)
+static void drawgl_direct_reset(void)
 {
 	vertbuf_clear();
 	primbuf_clear();
@@ -391,7 +391,7 @@ static void drawgl_direct_uninit(void)
 	primbuf_destroy();
 }
 
-int drawgl_direct_init(void)
+static int drawgl_direct_init(void)
 {
 	return 0;
 }
