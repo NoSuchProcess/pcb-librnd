@@ -272,7 +272,7 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 	}
 }
 
-static void drawgl_direct_setup_vertbuf(void)
+RND_INLINE void drawgl_direct_begin_prim_vertbuf(void)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -282,13 +282,20 @@ static void drawgl_direct_setup_vertbuf(void)
 	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
 }
 
+RND_INLINE void drawgl_direct_end_prim_vertbuf(void)
+{
+	/* disable the vertex buffer */
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+}
+
 static void drawgl_direct_prim_flush(void)
 {
 	int index = primbuf.dirty_index;
 	int end = primbuf.size;
 	primitive_t *prim = &primbuf.data[index];
 
-	drawgl_direct_setup_vertbuf();
+	drawgl_direct_begin_prim_vertbuf();
 
 	/* draw the primitives */
 	while(index < end) {
@@ -297,9 +304,7 @@ static void drawgl_direct_prim_flush(void)
 		++index;
 	}
 
-	/* disable the vertex buffer */
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	drawgl_direct_end_prim_vertbuf();
 
 	primbuf.dirty_index = end;
 }
@@ -316,7 +321,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 	--index;
 	prim = &primbuf.data[index];
 
-	drawgl_direct_setup_vertbuf();
+	drawgl_direct_begin_prim_vertbuf();
 
 	/* draw the primitives */
 	while(index >= 0) {
@@ -408,10 +413,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 	if (mask)
 		stencilgl_return_stencil_bit(mask);
 
-	/* disable the vertex buffer */
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-
+	drawgl_direct_end_prim_vertbuf();
 }
 
 void drawgl_direct_flush(void)
