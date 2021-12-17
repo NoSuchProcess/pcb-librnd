@@ -237,7 +237,7 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
 		gdk_gl_drawable_swap_buffers(pGlDrawable);
 	else
-		glFlush();
+		hidgl_flush();
 
 	port->render_priv->in_context = rnd_false;
 
@@ -286,7 +286,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	if (gdk_gl_drawable_is_double_buffered(pGlDrawable))
 		gdk_gl_drawable_swap_buffers(pGlDrawable);
 	else
-		glFlush();
+		hidgl_flush();
 
 	/* end drawing to current GL-context */
 	gdk_gl_drawable_gl_end(pGlDrawable);

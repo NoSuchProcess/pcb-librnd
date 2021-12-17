@@ -76,6 +76,11 @@ void hidgl_flush_drawing(void)
 	hidgl_draw.prim_flush();
 }
 
+void hidgl_flush(void)
+{
+	hidgl_draw.flush();
+}
+
 void hidgl_reset(void)
 {
 	hidgl_draw.reset();

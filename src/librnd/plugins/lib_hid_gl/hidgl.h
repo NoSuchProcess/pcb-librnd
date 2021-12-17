@@ -48,6 +48,7 @@ int hidgl_init(void);
 void hidgl_uninit(void);
 void hidgl_stencil_init(void);
 void hidgl_flush_drawing(void);  /* flush primitives from CPU memory to GPU memory - no glFlush(), so things are nto yet drawn */
+void hidgl_flush(void);          /* equivalent of glFlush() */
 void hidgl_reset(void);
 void hidgl_set_color(float r, float g, float b, float a);
 void hidgl_set_grid_color(float r, float g, float b);

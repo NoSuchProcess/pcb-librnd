@@ -418,6 +418,11 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 
 }
 
+void drawgl_direct_flush(void)
+{
+	glFlush();
+}
+
 void drawgl_direct_reset(void)
 {
 	vertbuf_clear();
@@ -545,6 +550,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	drawgl_direct_init,
 	drawgl_direct_uninit,
 	drawgl_direct_set_color,
+	drawgl_direct_flush,
 	drawgl_direct_reset,
 	drawgl_direct_expose_init,
 	drawgl_direct_set_view,

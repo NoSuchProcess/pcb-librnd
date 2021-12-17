@@ -146,7 +146,7 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 {
 	GtkWidget *widget = port->drawing_area;
 
-	glFlush();
+	hidgl_flush();
 
 	port->render_priv->in_context = rnd_false;
 
@@ -177,7 +177,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 
 	ghid_gl_preview_expose_common(&gtk4_gl_hid, hidlib, ev, expcall, ctx, allocation.width, allocation.height);
 
-	glFlush();
+	hidgl_flush();
 
 	/* end drawing to current GL-context */
 	TODO("figure");
@@ -218,7 +218,7 @@ rnd_trace("gl expose 2: render\n");
 	ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, NULL, port);
 
 	/* Flush the contents of the pipeline */
-	glFlush();
+	hidgl_flush();
 
 	return TRUE;
 }

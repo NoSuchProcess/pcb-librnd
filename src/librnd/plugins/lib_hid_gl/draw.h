@@ -41,6 +41,7 @@ typedef struct hidgl_draw_s {
 
 	void (*uninit)(void);
 	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	void (*flush)(void);
 	void (*reset)(void);
 	void (*expose_init)(int w, int h, const rnd_color_t *bg_c);
 
