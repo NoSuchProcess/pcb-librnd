@@ -397,20 +397,7 @@ static void drawgl_direct_prim_draw_all(int stencil_bits)
 				break;
 
 			default:
-				if(prim->texture_id > 0) {
-					glBindTexture(GL_TEXTURE_2D, prim->texture_id);
-					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-					glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-					glEnable(GL_TEXTURE_2D);
-					glAlphaFunc(GL_GREATER,0.5);
-					glEnable(GL_ALPHA_TEST);
-				}
-				glDrawArrays(prim->type, prim->first, prim->count);
-				glDisable(GL_TEXTURE_2D);
-				glDisable(GL_ALPHA_TEST);
-				break;
+				drawgl_draw_primitive(prim);
 		}
 
 		--prim;
