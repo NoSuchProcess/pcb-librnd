@@ -48,14 +48,9 @@
    The vertex buffer is a dynamic array of vertices. Each vertex contains
    position and color information. */
 typedef struct {
-	GLfloat x;
-	GLfloat y;
-	GLfloat u;
-	GLfloat v;
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
-	GLfloat a;
+	GLfloat x, y;
+	GLfloat u, v;
+	GLfloat r, g, b, a;
 } vertex_t;
 
 #include "vertbuf.c"
