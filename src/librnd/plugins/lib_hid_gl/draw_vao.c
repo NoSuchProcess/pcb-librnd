@@ -30,6 +30,7 @@
 /* Low level gl rendering: vao, works with >=3.0 in core mode (e.g. gtk4) */
 
 #include "config.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -141,30 +142,54 @@ static void vao_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 	vertbuf_add(x1, y2);
 }
 
+static float vertbuf_last_r = -1, vertbuf_last_g = -1, vertbuf_last_b = -1, vertbuf_last_a = -1;
+
+/* Upload vertex buffer buf; buf_size is the byte size of the whole buffer;
+   the buffer is an array of elems of size elem_size. Each elem has an x,y
+   coord pair at offset x_offs. */
+RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, int x_offs)
+{
+	/* This is the buffer that holds the vertices */
+	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, buf_size, buf, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Use the vertices in our buffer */
+	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elem_size, x_offs);
+}
+
+RND_INLINE void vao_end_vertbuf(void)
+{
+}
+
+/* Set drawing color of the following glDrawArrays() calls */
+RND_INLINE void vao_color_vertbuf(float r, float g, float b, float a)
+{
+	if ((r != vertbuf_last_r) || (g != vertbuf_last_g) || (b != vertbuf_last_b) || (a != vertbuf_last_a)) {
+		vertbuf_last_r = r;
+		vertbuf_last_g = g;
+		vertbuf_last_b = b;
+		vertbuf_last_a = a;
+		glUniform4f(inputColor_location, r, g, b, a);
+	}
+}
+
+
 RND_INLINE void vao_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	float points[4][6];
-	int i;
-
-	for(i=0; i<4; ++i) {
-		points[i][2] = red;
-		points[i][3] = green;
-		points[i][4] = blue;
-		points[i][5] = alpha;
-	}
+	float points[4][2];
 
 	points[0][0] = x1; points[0][1] = y1;
 	points[1][0] = x2; points[1][1] = y1;
 	points[2][0] = x2; points[2][1] = y2;
 	points[3][0] = x1; points[3][1] = y2;
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, points);
-	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, &points[0][2]);
+	vao_begin_vertbuf(points, sizeof(points), sizeof(float) * 2, 0);
+	vao_color_vertbuf(red, green, blue, alpha);
 	glDrawArrays(mode, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	vao_end_vertbuf();
 }
 
 RND_INLINE void vao_draw_rectangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
@@ -186,6 +211,8 @@ static void vao_prim_reserve_triangles(int count)
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
+	vertex_t *first;
+
 	if (prim->texture_id > 0) {
 		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -197,6 +224,10 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 		glEnable(GL_ALPHA_TEST);
 	}
 
+TODO("switch from per-vertex-color to per-prim-color");
+	first = vertbuf.data+prim->first;
+	vao_color_vertbuf(first->r, first->g, first->b, first->a);
+
 	glDrawArrays(prim->type, prim->first, prim->count);
 
 	if (prim->texture_id > 0) {
@@ -205,21 +236,16 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 	}
 }
 
+
+
 RND_INLINE void vao_begin_prim_vertbuf(void)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].x);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].u);
-	glColorPointer(4, GL_FLOAT, sizeof(vertex_t), &vertbuf.data[0].r);
+	vao_begin_vertbuf(vertbuf.data, vertbuf.size * sizeof(vertex_t), sizeof(vertex_t),  offsetof(vertex_t, x));
 }
 
 RND_INLINE void vao_end_prim_vertbuf(void)
 {
-	/* disable the vertex buffer */
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	vao_end_vertbuf();
 }
 
 static void vao_prim_flush(void)
@@ -317,31 +343,31 @@ static void vao_prim_rewind_to_marker(void)
 	primbuf_rewind();
 }
 
+static GLfloat *vao_draw_pts;
 static void vao_draw_points_pre(GLfloat *pts)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, pts);
+	vao_draw_pts = pts;
 }
 
 static void vao_draw_points(int npts)
 {
+	vao_begin_vertbuf(vao_draw_pts, sizeof(float) * npts * 2, sizeof(float) * 2, 0);
+	vao_color_vertbuf(red, green, blue, alpha);
 	glDrawArrays(GL_POINTS, 0, npts);
 }
 
 static void vao_draw_points_post(void)
 {
-	glDisableClientState(GL_VERTEX_ARRAY);
+	vao_draw_pts = NULL;
 }
 
 static void vao_draw_lines6(GLfloat *pts, int npts)
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, pts);
-	glColorPointer(4, GL_FLOAT, sizeof(float) * 6, pts+2);
+	TODO("change draw API so we don't have to work around colors like this");
+	vao_begin_vertbuf(vao_draw_pts, sizeof(float) * npts * 2, sizeof(float) * 6, 0);
+	vao_color_vertbuf(pts[2], pts[3], pts[4], pts[5]);
 	glDrawArrays(GL_LINES, 0, npts);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	vao_end_vertbuf();
 }
 
 
