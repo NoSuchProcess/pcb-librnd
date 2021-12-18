@@ -349,6 +349,8 @@ static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 {
 	glUseProgram(program);
 
+	glViewport(0, 0, w, h);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
