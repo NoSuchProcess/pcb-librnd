@@ -424,7 +424,7 @@ static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 {
 	zx /= (double)vao_view_w;
-	zy /= -(double)vao_view_h; /* invert: opengl's y+ is upward, pcb-rnd's is pointing down */
+	zy /= -(double)vao_view_h; /* invert: opengl's y+ is upward, librnd's is pointing down */
 #ifdef DEBUG_PRINT_COORDS
 	vtx = tx; vty = ty; vzx = zx; vzy = zy;
 #endif
