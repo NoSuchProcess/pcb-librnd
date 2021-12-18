@@ -384,6 +384,8 @@ static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 
 static void vao_uninit(void)
 {
+	glDeleteProgram(program);
+	glDeleteBuffers(1, &position_buffer);
 	vertbuf_destroy();
 	primbuf_destroy();
 }
