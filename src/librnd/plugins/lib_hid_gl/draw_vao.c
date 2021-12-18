@@ -385,6 +385,7 @@ static void vao_draw_points(int npts)
 static void vao_draw_points_post(void)
 {
 	vao_draw_pts = NULL;
+	vao_end_vertbuf();
 }
 
 static void vao_draw_lines6(GLfloat *pts, int npts)
