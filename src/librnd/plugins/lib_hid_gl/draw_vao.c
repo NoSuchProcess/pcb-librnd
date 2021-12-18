@@ -390,7 +390,7 @@ static void vao_draw_points_post(void)
 static void vao_draw_lines6(GLfloat *pts, int npts)
 {
 	TODO("change draw API so we don't have to work around colors like this");
-	vao_begin_vertbuf(vao_draw_pts, sizeof(float) * npts * 2, sizeof(float) * 6, 0);
+	vao_begin_vertbuf(pts, sizeof(float) * npts * 2, sizeof(float) * 6, 0);
 	vao_color_vertbuf(pts[2], pts[3], pts[4], pts[5]);
 	glDrawArrays(GL_LINES, 0, npts);
 	vao_end_vertbuf();
