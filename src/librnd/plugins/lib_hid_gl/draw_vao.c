@@ -331,19 +331,9 @@ static void vao_reset(void)
 	drawgl_mode_positive_xor_end();
 }
 
-static void vao_push_matrix(int projection)
-{
-	if (projection)
-		glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-}
-
-static void vao_pop_matrix(int projection)
-{
-	if (projection)
-		glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-}
+/* We don't have matrix or stack for matrices, transformation is done from shader */
+static void vao_push_matrix(int projection) { }
+static void vao_pop_matrix(int projection) { }
 
 static long vao_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
 {
