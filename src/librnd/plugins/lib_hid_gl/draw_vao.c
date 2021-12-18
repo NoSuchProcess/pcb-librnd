@@ -347,17 +347,10 @@ static void vao_draw_lines6(GLfloat *pts, int npts)
 
 static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 {
+	glUseProgram(program);
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glViewport(0, 0, w, h);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, w, h, 0, 0, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
 
 	glEnable(GL_STENCIL_TEST);
 	glClearColor(bg_c->fr, bg_c->fg, bg_c->fb, 1.);
@@ -374,11 +367,7 @@ static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 
 static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 {
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -HIDGL_Z_NEAR);
-	glScalef(zx, zy, zz);
-	glTranslatef(tx, ty, 0);
+	glUniform4f(xform_location, tx, ty, zx, zy);
 }
 
 
