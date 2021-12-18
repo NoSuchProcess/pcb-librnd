@@ -164,7 +164,7 @@ static float vertbuf_last_r = -1, vertbuf_last_g = -1, vertbuf_last_b = -1, vert
 /* Upload vertex buffer buf; buf_size is the byte size of the whole buffer;
    the buffer is an array of elems of size elem_size. Each elem has an x,y
    coord pair at offset x_offs. */
-RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, int x_offs)
+RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, size_t x_offs)
 {
 	/* This is the buffer that holds the vertices */
 	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
@@ -174,7 +174,7 @@ RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, int 
 	/* Use the vertices in our buffer */
 	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elem_size, x_offs);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elem_size, (void *)x_offs);
 }
 
 RND_INLINE void vao_end_vertbuf(void)
@@ -245,6 +245,12 @@ TODO("switch from per-vertex-color to per-prim-color");
 	first = vertbuf.data+prim->first;
 	vao_color_vertbuf(first->r, first->g, first->b, first->a);
 
+#ifdef DEBUG_PRINT_COORDS
+	printf("PRIM: %d %ld %ld (%f;%f) (%f;%f) %.10f %.10f\n",
+		prim->type, (long)prim->first, (long)prim->count,
+		first->x, first->y, first[1].x, first[1].y, vzx, vzy);
+#endif
+
 	glDrawArrays(prim->type, prim->first, prim->count);
 
 	if (prim->texture_id > 0) {
@@ -270,6 +276,9 @@ static void vao_prim_flush(void)
 	int index = primbuf.dirty_index;
 	int end = primbuf.size;
 	primitive_t *prim = &primbuf.data[index];
+
+	if ((index == 0) || (primbuf.data == NULL))
+		return;
 
 	vao_begin_prim_vertbuf();
 
@@ -387,12 +396,14 @@ static void vao_draw_lines6(GLfloat *pts, int npts)
 	vao_end_vertbuf();
 }
 
-
+static int vao_view_w, vao_view_h;
 static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 {
 	glUseProgram(program);
 
 	glViewport(0, 0, w, h);
+	vao_view_w = w;
+	vao_view_h = h;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -412,6 +423,8 @@ static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
 
 static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 {
+	zx /= (double)vao_view_w;
+	zy /= (double)vao_view_h;
 #ifdef DEBUG_PRINT_COORDS
 	vtx = tx; vty = ty; vzx = zx; vzy = zy;
 #endif
