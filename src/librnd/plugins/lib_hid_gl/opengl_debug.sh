@@ -95,10 +95,13 @@ END {
 
 ' > opengl_debug.h.new
 
-exit
+len=`wc -l opengl_debug.h.new | awk '{print $1}'`
 
+if test "$len" -gt 2
+then
 (echo "
 /**** NEW CALLS - please implement them ****/
 "
 cat opengl_debug.h.new 
 ) >> opengl_debug.h
+fi
