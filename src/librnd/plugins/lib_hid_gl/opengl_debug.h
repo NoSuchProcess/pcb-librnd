@@ -55,39 +55,39 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define glTexCoordPointer(s_,t_,st_,p_) \
 	do { \
-		GLint size = (s_); \
-		GLenum type = (t_); \
-		GLsizei stride = (st_); \
-		const GLvoid *ptr = (p_); \
-		glTexCoordPointer(size,type,stride,ptr); \
-		gld_print("glCreateProgram(%d, %d, %ld, %p)", size, type, stride, ptr); \
+		GLint size__ = (s_); \
+		GLenum type__ = (t_); \
+		GLsizei stride__ = (st_); \
+		const GLvoid *ptr__ = (p_); \
+		glTexCoordPointer(size__, type__, stride__, ptr__); \
+		gld_print("glCreateProgram(%d, %d, %ld, %p)", size__, type__, stride__, ptr__); \
 	} while(0) \
 
 #define glClearColor(r_,g_,b_,a_) \
 	do { \
-		GLfloat r=(r_), g=(g_), b=(b_), a=(a_); \
-		glClearColor(r,g,b,a); \
-		gld_print("glClearColor(%f, %f, %f, %f)", r, g, b, a); \
+		GLfloat r__= (r_), g__ = (g_), b__ = (b_), a__ = (a_); \
+		glClearColor(r__, g__, b__, a__); \
+		gld_print("glClearColor(%f, %f, %f, %f)", r__, g__, b__, a__); \
 	} while(0) \
 
 
 
 #define glUniform4f(arg1, arg2, arg3, arg4, arg5) \
 	do { \
-		GLint location = (arg1); \
-		GLfloat v0 = (arg2); \
-		GLfloat v1 = (arg3); \
-		GLfloat v2 = (arg4); \
-		GLfloat v3 = (arg5); \
-		glUniform4f(location, v0, v1, v2, v3); \
-		gld_print("glUniform4f(%d, %f, %f, %f, %f)", location, v0, v1, v2, v3); \
+		GLint location__ = (arg1); \
+		GLfloat v0__ = (arg2); \
+		GLfloat v1__ = (arg3); \
+		GLfloat v2__ = (arg4); \
+		GLfloat v3__ = (arg5); \
+		glUniform4f(location__, v0__, v1__, v2__, v3__); \
+		gld_print("glUniform4f(%d, %f, %f, %f, %f)", location__, v0__, v1__, v2__, v3__); \
 	} while(0)
 
 #define  glPushAttrib(arg1) \
 	do { \
-		GLbitfield mask = (arg1); \
-		glPushAttrib(mask); \
-		gld_print("glPushAttrib(%d)", mask); \
+		GLbitfield mask__ = (arg1); \
+		glPushAttrib(mask__); \
+		gld_print("glPushAttrib(%d)", mask__); \
 	} while(0)
 
 #define  glPopAttrib() \
@@ -116,76 +116,76 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glEnable(arg1) \
 	do { \
-		GLenum cap = (arg1); \
-		glEnable(cap); \
-		gld_print("glEnable(%d=%s)", cap, #arg1); \
+		GLenum cap__ = (arg1); \
+		glEnable(cap__); \
+		gld_print("glEnable(%d=%s)", cap__, #arg1); \
 	} while(0)
 
 #define  glStencilFunc(arg1, arg2, arg3) \
 	do { \
-		GLenum func = (arg1); \
-		GLint ref = (arg2); \
-		GLuint mask = (arg3); \
-		glStencilFunc(func, ref, mask); \
-		gld_print("glStencilFunc(%d %d %u)", func, ref, mask); \
+		GLenum func__ = (arg1); \
+		GLint ref__ = (arg2); \
+		GLuint mask__ = (arg3); \
+		glStencilFunc(func__, ref__, mask__); \
+		gld_print("glStencilFunc(%d %d %u)", func__, ref__, mask__); \
 	} while(0)
 
 #define  glStencilOp(arg1, arg2, arg3) \
 	do { \
-		GLenum fail = (arg1); \
-		GLenum zfail = (arg2); \
-		GLenum zpass = (arg3); \
-		glStencilOp(fail, zfail, zpass); \
-		gld_print("glStencilOp(%d, %d, %d)", fail, zfail, zpass); \
+		GLenum fail__ = (arg1); \
+		GLenum zfail__ = (arg2); \
+		GLenum zpass__ = (arg3); \
+		glStencilOp(fail__, zfail__, zpass__); \
+		gld_print("glStencilOp(%d, %d, %d)", fail__, zfail__, zpass__); \
 	} while(0)
 
 #define  glClearStencil(arg1) \
 	do { \
-		GLint s = (arg1); \
-		glClearStencil(s); \
-		gld_print("glClearStencil(%d)", s); \
+		GLint s__ = (arg1); \
+		glClearStencil(s__); \
+		gld_print("glClearStencil(%d)", s__); \
 	} while(0)
 
 #define  glStencilMask(arg1) \
 	do { \
-		GLuint mask = (arg1); \
-		glStencilMask(mask); \
-		gld_print("glStencilMask(%d)", mask); \
+		GLuint mask__ = (arg1); \
+		glStencilMask(mask__); \
+		gld_print("glStencilMask(%d)", mask__); \
 	} while(0)
 
 #define  glDeleteBuffers(arg1, arg2) \
 	do { \
-		GLsizei n = (arg1); \
-		const GLuint * buffers = (arg2); \
-		glDeleteBuffers(n, buffers); \
-		gld_print("glDeleteBuffers(%ld, %u)", (long)n, buffers); \
+		GLsizei n__ = (arg1); \
+		const GLuint * buffers__ = (arg2); \
+		glDeleteBuffers(n__, buffers__); \
+		gld_print("glDeleteBuffers(%ld, %u)", (long)n__, buffers__); \
 	} while(0)
 
 #define  glGetProgramInfoLog(arg1, arg2, arg3, arg4) \
 	do { \
 		GLuint program__ = (arg1); \
-		GLsizei bufSize = (arg2); \
-		GLsizei * length = (arg3); \
-		GLchar * infoLog = (arg4); \
-		glGetProgramInfoLog(program__, bufSize, length, infoLog); \
-		gld_print("glGetProgramInfoLog(%d, %ld, %p, '%s')", program__, bufSize, length, infoLog); \
+		GLsizei bufSize__ = (arg2); \
+		GLsizei * length__ = (arg3); \
+		GLchar * infoLog__ = (arg4); \
+		glGetProgramInfoLog(program__, bufSize__, length__, infoLog__); \
+		gld_print("glGetProgramInfoLog(%d, %ld, %p, '%s')", program__, bufSize__, length__, infoLog__); \
 	} while(0)
 
 #define  glViewport(arg1, arg2, arg3, arg4) \
 	do { \
-		GLint x = (arg1); \
-		GLint y = (arg2); \
-		GLsizei width = (arg3); \
-		GLsizei height = (arg4); \
-		glViewport(x, y, width, height); \
-		gld_print("glViewport(%d, %d, %ld, %ld)", x, y, (long)width, (long)height); \
+		GLint x__ = (arg1); \
+		GLint y__ = (arg2); \
+		GLsizei width__ = (arg3); \
+		GLsizei height__ = (arg4); \
+		glViewport(x__, y__, width__, height__); \
+		gld_print("glViewport(%d, %d, %ld, %ld)", x__, y__, (long)width__, (long)height__); \
 	} while(0)
 
 #define  glLogicOp(arg1) \
 	do { \
-		GLenum opcode = (arg1); \
-		glLogicOp(opcode); \
-		gld_print("glLogicOp(%d)", opcode); \
+		GLenum opcode__ = (arg1); \
+		glLogicOp(opcode__); \
+		gld_print("glLogicOp(%d)", opcode__); \
 	} while(0)
 
 #define  glDeleteShader(arg1) \
@@ -197,173 +197,173 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glBindTexture(arg1, arg2) \
 	do { \
-		GLenum target = (arg1); \
-		GLuint texture = (arg2); \
-		glBindTexture(target, texture); \
-		gld_print("glBindTexture(%d, %u)", target, texture); \
+		GLenum target__ = (arg1); \
+		GLuint texture__ = (arg2); \
+		glBindTexture(target__, texture__); \
+		gld_print("glBindTexture(%d, %u)", target__, texture__); \
 	} while(0)
 
 #define  glTexParameterf(arg1, arg2, arg3) \
 	do { \
-		GLenum target = (arg1); \
-		GLenum pname = (arg2); \
-		GLfloat param = (arg3); \
-		glTexParameterf(target, pname, param); \
-		gld_print("glTexParameterf(%d, %d, %f)", target, pname, param); \
+		GLenum target__ = (arg1); \
+		GLenum pname__ = (arg2); \
+		GLfloat param__ = (arg3); \
+		glTexParameterf(target__, pname__, param__); \
+		gld_print("glTexParameterf(%d, %d, %f)", target__, pname__, param__); \
 	} while(0)
 
 #define  glScalef(arg1, arg2, arg3) \
 	do { \
-		GLfloat x = (arg1); \
-		GLfloat y = (arg2); \
-		GLfloat z = (arg3); \
-		glScalef(x, y, z); \
-		gld_print("glScalef(%f, %f, %f)", x, y, z); \
+		GLfloat x__ = (arg1); \
+		GLfloat y__ = (arg2); \
+		GLfloat z__ = (arg3); \
+		glScalef(x__, y__, z__); \
+		gld_print("glScalef(%f, %f, %f)", x__, y__, z__); \
 	} while(0)
 
 #define  glColorPointer(arg1, arg2, arg3, arg4) \
 	do { \
-		GLint size = (arg1); \
-		GLenum type = (arg2); \
-		GLsizei stride = (arg3); \
+		GLint size__ = (arg1); \
+		GLenum type__ = (arg2); \
+		GLsizei stride__ = (arg3); \
 		const GLvoid * ptr = (arg4); \
-		glColorPointer(size, type, stride, ptr); \
-		gld_print("glColorPointer(%d, %d, %ld, %p)", size, type, (long)stride, ptr); \
+		glColorPointer(size__, type__, stride__, ptr); \
+		gld_print("glColorPointer(%d, %d, %ld, %p)", size__, type__, (long)stride__, ptr); \
 	} while(0)
 
 #define  glColor3f(arg1, arg2, arg3) \
 	do { \
-		GLfloat red = (arg1); \
-		GLfloat green = (arg2); \
-		GLfloat blue = (arg3); \
-		glColor3f(red, green, blue); \
-		gld_print("glColor3f(%f, %f, %f)", red, green, blue); \
+		GLfloat red__ = (arg1); \
+		GLfloat green__ = (arg2); \
+		GLfloat blue__ = (arg3); \
+		glColor3f(red__, green__, blue__); \
+		gld_print("glColor3f(%f, %f, %f)", red__, green__, blue__); \
 	} while(0)
 
 #define  glAlphaFunc(arg1, arg2) \
 	do { \
-		GLenum func = (arg1); \
-		GLclampf ref = (arg2); \
-		glAlphaFunc(func, ref); \
-		gld_print("glAlphaFunc(%d, %f)", func, ref); \
+		GLenum func__ = (arg1); \
+		GLclampf ref__ = (arg2); \
+		glAlphaFunc(func__, ref__); \
+		gld_print("glAlphaFunc(%d, %f)", func__, ref__); \
 	} while(0)
 
 #define  glVertexAttribPointer(arg1, arg2, arg3, arg4, arg5, arg6) \
 	do { \
-		GLuint index = (arg1); \
-		GLint size = (arg2); \
-		GLenum type = (arg3); \
-		GLboolean normalized = (arg4); \
-		GLsizei stride = (arg5); \
+		GLuint index__ = (arg1); \
+		GLint size__ = (arg2); \
+		GLenum type__ = (arg3); \
+		GLboolean normalized__ = (arg4); \
+		GLsizei stride__ = (arg5); \
 		const void *pointer = (arg6); \
-		glVertexAttribPointer(index, size, type, normalized, stride, pointer); \
-		gld_print("glVertexAttribPointer(%u, %d, %d, %d, %ld, %p)", index, size, type, normalized, (long)stride, pointer); \
+		glVertexAttribPointer(index__, size__, type__, normalized__, stride__, pointer); \
+		gld_print("glVertexAttribPointer(%u, %d, %d, %d, %ld, %p)", index__, size__, type__, normalized__, (long)stride__, pointer); \
 	} while(0)
 
 #define  glDisable(arg1) \
 	do { \
-		GLenum cap = (arg1); \
-		glDisable(cap); \
-		gld_print("glDisable(%d=%s)", cap, #arg1); \
+		GLenum cap__ = (arg1); \
+		glDisable(cap__); \
+		gld_print("glDisable(%d=%s)", cap__, #arg1); \
 	} while(0)
 
 #define  glTexImage2D(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) \
 	do { \
-		GLenum target = (arg1); \
-		GLint level = (arg2); \
-		GLint internalformat = (arg3); \
-		GLsizei width = (arg4); \
-		GLsizei height = (arg5); \
-		GLint border = (arg6); \
-		GLenum format = (arg7); \
-		GLenum type = (arg8); \
+		GLenum target__ = (arg1); \
+		GLint level__ = (arg2); \
+		GLint internalformat__ = (arg3); \
+		GLsizei width__ = (arg4); \
+		GLsizei height__ = (arg5); \
+		GLint border__ = (arg6); \
+		GLenum format__ = (arg7); \
+		GLenum type__ = (arg8); \
 		const void *pixels = (arg9); \
-		glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels); \
-		gld_print("glTexImage2D(%d, %d, %d, %ld, %ld, %d, %d, %d, %p)", target, level, internalformat, (long)width, (long)height, border, format, type, pixels); \
+		glTexImage2D(target__, level__, internalformat__, width__, height__, border__, format__, type__, pixels); \
+		gld_print("glTexImage2D(%d, %d, %d, %ld, %ld, %d, %d, %d, %p)", target__, level__, internalformat__, (long)width__, (long)height__, border__, format__, type__, pixels); \
 	} while(0)
 
 #define  glGenVertexArrays(arg1, arg2) \
 	do { \
-		GLsizei n = (arg1); \
-		GLuint * arrays = (arg2); \
-		glGenVertexArrays(n, arrays); \
-		gld_print("glGenVertexArrays(%ld, %u)", (long)n, arrays); \
+		GLsizei n__ = (arg1); \
+		GLuint * arrays__ = (arg2); \
+		glGenVertexArrays(n__, arrays__); \
+		gld_print("glGenVertexArrays(%ld, %u)", (long)n__, arrays__); \
 	} while(0)
 
 #define  glGetShaderiv(arg1, arg2, arg3) \
 	do { \
 		GLuint shader__ = (arg1); \
-		GLenum pname = (arg2); \
-		GLint * params = (arg3); \
-		glGetShaderiv(shader__, pname, params); \
-		gld_print("glGetShaderiv(%u, %d, %p)", shader__, pname, params); \
+		GLenum pname__ = (arg2); \
+		GLint * param__s = (arg3); \
+		glGetShaderiv(shader__, pname__, param__s); \
+		gld_print("glGetShaderiv(%u, %d, %p)", shader__, pname__, param__s); \
 	} while(0)
 
 #define  glOrtho(arg1, arg2, arg3, arg4, arg5, arg6) \
 	do { \
-		GLdouble left = (arg1); \
-		GLdouble right = (arg2); \
-		GLdouble bottom = (arg3); \
-		GLdouble top = (arg4); \
-		GLdouble near_val = (arg5); \
-		GLdouble far_val = (arg6); \
-		glOrtho(left, right, bottom, top, near_val, far_val); \
-		gld_print("glOrtho(%f, %f, %f, %f, %f, %f)", left, right, bottom, top, near_val, far_val); \
+		GLdouble left__ = (arg1); \
+		GLdouble right__ = (arg2); \
+		GLdouble bottom__ = (arg3); \
+		GLdouble top__ = (arg4); \
+		GLdouble near_val__ = (arg5); \
+		GLdouble far_val__ = (arg6); \
+		glOrtho(left__, right__, bottom__, top__, near_val__, far_val__); \
+		gld_print("glOrtho(%f, %f, %f, %f, %f, %f)", left__, right__, bottom__, top__, near_val__, far_val__); \
 	} while(0)
 
 #define  glEnableClientState(arg1) \
 	do { \
-		GLenum cap = (arg1); \
-		glEnableClientState(cap); \
-		gld_print("glEnableClientState(%d = %s)", cap, #arg1); \
+		GLenum cap__ = (arg1); \
+		glEnableClientState(cap__); \
+		gld_print("glEnableClientState(%d = %s)", cap__, #arg1); \
 	} while(0)
 
 #define  glColorMask(arg1, arg2, arg3, arg4) \
 	do { \
-		GLboolean red = (arg1); \
-		GLboolean green = (arg2); \
-		GLboolean blue = (arg3); \
-		GLboolean alpha = (arg4); \
-		glColorMask(red, green, blue, alpha); \
-		gld_print("glColorMask(%d, %d, %d, %d)", red, green, blue, alpha); \
+		GLboolean red__ = (arg1); \
+		GLboolean green__ = (arg2); \
+		GLboolean blue__ = (arg3); \
+		GLboolean alpha__ = (arg4); \
+		glColorMask(red__, green__, blue__, alpha__); \
+		gld_print("glColorMask(%d, %d, %d, %d)", red__, green__, blue__, alpha__); \
 	} while(0)
 
 #define  glShaderSource(arg1, arg2, arg3, arg4) \
 	do { \
 		GLuint shader__ = (arg1); \
-		GLsizei count = (arg2); \
-		const GLchar * const *string = (arg3); \
-		const GLint * length = (arg4); \
-		glShaderSource(shader__, count, string, length); \
-		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader__, (long)count, *string, length); \
+		GLsizei count__ = (arg2); \
+		const GLchar * const *string__ = (arg3); \
+		const GLint * length__ = (arg4); \
+		glShaderSource(shader__, count__, string__, length__); \
+		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader__, (long)count__, *string__, length__); \
 	} while(0)
 
 #define  glDrawArrays(arg1, arg2, arg3) \
 	do { \
-		GLenum mode = (arg1); \
-		GLint first = (arg2); \
-		GLsizei count = (arg3); \
-		glDrawArrays(mode, first, count); \
-		gld_print("glDrawArrays(%d, %d, %ld)", mode, first, (long)count); \
+		GLenum mode__ = (arg1); \
+		GLint first__ = (arg2); \
+		GLsizei count__ = (arg3); \
+		glDrawArrays(mode__, first__, count__); \
+		gld_print("glDrawArrays(%d, %d, %ld)", mode__, first__, (long)count__); \
 	} while(0)
 
 #define  glVertexPointer(arg1, arg2, arg3, arg4) \
 	do { \
-		GLint size = (arg1); \
-		GLenum type = (arg2); \
-		GLsizei stride = (arg3); \
-		const GLvoid * ptr = (arg4); \
-		glVertexPointer(size, type, stride, ptr); \
-		gld_print("glVertexPointer(%d, %d, %ld, %p)", size, type, (long)stride, ptr); \
+		GLint size__ = (arg1); \
+		GLenum type__ = (arg2); \
+		GLsizei stride__ = (arg3); \
+		const GLvoid * ptr__ = (arg4); \
+		glVertexPointer(size__, type__, stride__, ptr__); \
+		gld_print("glVertexPointer(%d, %d, %ld, %p)", size__, type__, (long)stride__, ptr__); \
 	} while(0)
 
 
 #define  glGetIntegerv(arg1, arg2) \
 	do { \
-		GLenum pname = (arg1); \
-		GLint * data = (arg2); \
-		glGetIntegerv(pname, data); \
-		gld_print("glGetIntegerv(%d = %s, %d)", pname, #arg1, *data); \
+		GLenum pname__ = (arg1); \
+		GLint * data__ = (arg2); \
+		glGetIntegerv(pname__, data__); \
+		gld_print("glGetIntegerv(%d = %s, %d)", pname__, #arg1, *data__); \
 	} while(0)
 
 #define  glLinkProgram(arg1) \
@@ -375,9 +375,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glBindVertexArray(arg1) \
 	do { \
-		GLuint array = (arg1); \
-		glBindVertexArray(array); \
-		gld_print("glBindVertexArray(%u)", array); \
+		GLuint array__ = (arg1); \
+		glBindVertexArray(array__); \
+		gld_print("glBindVertexArray(%u)", array__); \
 	} while(0)
 
 #define  glDetachShader(arg1, arg2) \
@@ -390,26 +390,26 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glGenTextures(arg1, arg2) \
 	do { \
-		GLsizei n = (arg1); \
-		GLuint * textures = (arg2); \
-		glGenTextures(n, textures); \
-		gld_print("glGenTextures(%ld, %p)", n, textures); \
+		GLsizei n__ = (arg1); \
+		GLuint * texture__s = (arg2); \
+		glGenTextures(n__, texture__s); \
+		gld_print("glGenTextures(%ld, %p)", n__, texture__s); \
 	} while(0)
 
 #define  glGetProgramiv(arg1, arg2, arg3) \
 	do { \
 		GLuint program__ = (arg1); \
-		GLenum pname = (arg2); \
-		GLint * params = (arg3); \
-		glGetProgramiv(program__, pname, params); \
-		gld_print("glGetProgramiv(%u, %d, %p)", program__, pname, params); \
+		GLenum pname__ = (arg2); \
+		GLint * param__s = (arg3); \
+		glGetProgramiv(program__, pname__, param__s); \
+		gld_print("glGetProgramiv(%u, %d, %p)", program__, pname__, param__s); \
 	} while(0)
 
 #define  glClear(arg1) \
 	do { \
-		GLbitfield mask = (arg1); \
-		glClear(mask); \
-		gld_print("glClear(%d)", mask); \
+		GLbitfield mask__ = (arg1); \
+		glClear(mask__); \
+		gld_print("glClear(%d)", mask__); \
 	} while(0)
 
 #define  glUseProgram(arg1) \
@@ -427,12 +427,12 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glBufferData(arg1, arg2, arg3, arg4) \
 	do { \
-		GLenum target = (arg1); \
-		GLsizeiptr size = (arg2); \
-		const void *data = (arg3); \
-		GLenum usage = (arg4); \
-		glBufferData(target, size, data, usage); \
-		gld_print("glBufferData(%d, %ld, %p, %d = %s)", target, (long)size, data, usage, #arg4); \
+		GLenum target__ = (arg1); \
+		GLsizeiptr size__ = (arg2); \
+		const void *data__ = (arg3); \
+		GLenum usage__ = (arg4); \
+		glBufferData(target__, size__, data__, usage__); \
+		gld_print("glBufferData(%d, %ld, %p, %d = %s)", target__, (long)size__, data__, usage__, #arg4); \
 	} while(0)
 
 #define  glAttachShader(arg1, arg2) \
@@ -445,41 +445,41 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glBindBuffer(arg1, arg2) \
 	do { \
-		GLenum target = (arg1); \
-		GLuint buffer = (arg2); \
-		glBindBuffer(target, buffer); \
-		gld_print("glBindBuffer(%d, %u)", target, buffer); \
+		GLenum target__ = (arg1); \
+		GLuint buffer__ = (arg2); \
+		glBindBuffer(target__, buffer__); \
+		gld_print("glBindBuffer(%d, %u)", target__, buffer__); \
 	} while(0)
 
 #define  glMatrixMode(arg1) \
 	do { \
-		GLenum mode = (arg1); \
-		glMatrixMode(mode); \
-		gld_print("glMatrixMode(%d = %s)", mode, #arg1); \
+		GLenum mode__ = (arg1); \
+		glMatrixMode(mode__); \
+		gld_print("glMatrixMode(%d = %s)", mode__, #arg1); \
 	} while(0)
 
 #define  glDisableClientState(arg1) \
 	do { \
-		GLenum cap = (arg1); \
-		glDisableClientState(cap); \
-		gld_print("glDisableClientState(%d = %s)", cap, #arg1); \
+		GLenum cap__ = (arg1); \
+		glDisableClientState(cap__); \
+		gld_print("glDisableClientState(%d = %s)", cap__, #arg1); \
 	} while(0)
 
 #define  glGetShaderInfoLog(arg1, arg2, arg3, arg4) \
 	do { \
 		GLuint shader__ = (arg1); \
-		GLsizei bufSize = (arg2); \
-		GLsizei * length = (arg3); \
-		GLchar * infoLog = (arg4); \
-		glGetShaderInfoLog(shader__, bufSize, length, infoLog); \
-		gld_print("glGetShaderInfoLog(%u, %ld, %ld, %p)", shader__, (long)bufSize, (long)length, infoLog); \
+		GLsizei bufSize__ = (arg2); \
+		GLsizei * length__ = (arg3); \
+		GLchar * infoLog__ = (arg4); \
+		glGetShaderInfoLog(shader__, bufSize__, length__, infoLog__); \
+		gld_print("glGetShaderInfoLog(%u, %ld, %ld, %p)", shader__, (long)bufSize__, (long)length__, infoLog__); \
 	} while(0)
 
 #define  glEnableVertexAttribArray(arg1) \
 	do { \
-		GLuint index = (arg1); \
-		glEnableVertexAttribArray(index); \
-		gld_print("glEnableVertexAttribArray(%u)", index); \
+		GLuint index__ = (arg1); \
+		glEnableVertexAttribArray(index__); \
+		gld_print("glEnableVertexAttribArray(%u)", index__); \
 	} while(0)
 
 #define  glCompileShader(arg1) \
@@ -491,19 +491,19 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glTranslatef(arg1, arg2, arg3) \
 	do { \
-		GLfloat x = (arg1); \
-		GLfloat y = (arg2); \
-		GLfloat z = (arg3); \
-		glTranslatef(x, y, z); \
-		gld_print("glTranslatef(%f, %f, %f)", x, y, z); \
+		GLfloat x__ = (arg1); \
+		GLfloat y__ = (arg2); \
+		GLfloat z__ = (arg3); \
+		glTranslatef(x__, y__, z__); \
+		gld_print("glTranslatef(%f, %f, %f)", x__, y__, z__); \
 	} while(0)
 
 #define  glGenBuffers(arg1, arg2) \
 	do { \
-		GLsizei n = (arg1); \
-		GLuint * buffers = (arg2); \
-		glGenBuffers(n, buffers); \
-		gld_print("glGenBuffers(%ld, %p)", (long)n, buffers); \
+		GLsizei n__ = (arg1); \
+		GLuint * buffer__s = (arg2); \
+		glGenBuffers(n__, buffer__s); \
+		gld_print("glGenBuffers(%ld, %p)", (long)n__, buffer__s); \
 	} while(0)
 
 #define  glDeleteProgram(arg1) \
@@ -515,10 +515,10 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glBlendFunc(arg1, arg2) \
 	do { \
-		GLenum sfactor = (arg1); \
-		GLenum dfactor = (arg2); \
-		glBlendFunc(sfactor, dfactor); \
-		gld_print("glBlendFunc(%d = %s, %d = %s)", sfactor, #arg1, dfactor, #arg2); \
+		GLenum sfactor__ = (arg1); \
+		GLenum dfactor__ = (arg2); \
+		glBlendFunc(sfactor__, dfactor__); \
+		gld_print("glBlendFunc(%d = %s, %d = %s)", sfactor__, #arg1, dfactor__, #arg2); \
 	} while(0)
 
 #endif
