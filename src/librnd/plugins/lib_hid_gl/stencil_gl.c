@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "opengl_debug.h"
+
 #include "draw.h"
 
 #include "stencil_gl.h"

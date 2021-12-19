@@ -34,6 +34,8 @@
 
 #include <librnd/core/color.h>
 
+#include "opengl_debug.h"
+
 #include "hidgl.h"
 #include "stencil_gl.h"
 

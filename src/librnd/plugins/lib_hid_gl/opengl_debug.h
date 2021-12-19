@@ -1,3 +1,12 @@
+#ifndef OPENGL_DEBUG_H
+#define OPENGL_DEBUG_H
+
+#include "opengl.h"
+
+#ifdef OPENGL_DEBUG
+
+#include <stdarg.h>
+
 typedef const GLubyte * GLubyteCP;
 
 #define gld_print_ret_make(type, type_fmt) \
@@ -511,3 +520,7 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 		glBlendFunc(sfactor, dfactor); \
 		gld_print("glBlendFunc(%d = %s, %d = %s)", sfactor, #arg1, dfactor, #arg2); \
 	} while(0)
+
+#endif
+
+#endif
