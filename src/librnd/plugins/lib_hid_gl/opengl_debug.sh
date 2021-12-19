@@ -10,7 +10,7 @@ grep "gl[A-Z].*[(]" *.[chly] | sed "s/^.*gl/gl/;s/[(].*//"
 echo "@@@@end"
 
 echo "@@@@macro"
-grep "^#define gl[A-Z]" opengl_debug.h  | sed "s/^.*#define[ \t]*//;s/[(].*//"
+grep "^#define[ \t]*gl[A-Z]" opengl_debug.h  | sed "s/^.*#define[ \t]*//;s/[(].*//"
 echo "@@@@end"
 
 echo "@@@@glapi"
@@ -78,6 +78,8 @@ END {
 		args = DEF[n]
 		sub("^[^(]*[(]", "", args)
 		sub("[)][^)]*$", "", args)
+		if (args == "void")
+			args = ""
 		ca = gen_call_arg_names(args)
 
 		print "#define ", n "(" gen_call_args(args) ") \\"
