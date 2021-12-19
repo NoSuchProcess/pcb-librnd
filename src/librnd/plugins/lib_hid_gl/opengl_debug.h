@@ -325,7 +325,7 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 		GLboolean blue = (arg3); \
 		GLboolean alpha = (arg4); \
 		glColorMask(red, green, blue, alpha); \
-		gld_print("glColorMask(%f, %f, %f, %f)", red, green, blue, alpha); \
+		gld_print("glColorMask(%d, %d, %d, %d)", red, green, blue, alpha); \
 	} while(0)
 
 #define  glShaderSource(arg1, arg2, arg3, arg4) \
