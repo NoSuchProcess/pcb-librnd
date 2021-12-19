@@ -28,17 +28,72 @@ echo "@@@@end"
 #print name, "=", DEF[name] > "/dev/stderr"
 }
 
+function strip(s)
+{
+	sub("^[ \t]*", "", s)
+	sub("[ \t]*$", "", s)
+	return s
+}
+
+function gen_call_args(args   ,v,n,A,s)
+{
+	v = split(args, A, ",")
+	for(n = 1; n <= v; n++) {
+		if (n > 1)
+			s = s ", "
+		s = s "arg" n
+	}
+	return s
+}
+
+function gen_call_arg_names(args   ,v,n,A,s,a)
+{
+	v = split(args, A, ",")
+	for(n = 1; n <= v; n++) {
+		if (n > 1)
+			s = s ", "
+		a = A[n]
+		sub("^.*[*]", "", a)
+		sub("[\[(].*$", "", a)
+		sub("^.*[ \t]", "", a)
+		s = s a
+	}
+	return s
+}
+
+function print_local_vars(args   ,v,n,A,s)
+{
+	v = split(args, A, ",")
+	for(n = 1; n <= v; n++) {
+		print "\t\t" strip(A[n]) " = (arg" n "); \\"
+	}
+}
+
 # print all calls that found in the source but not in macros
 END {
 	for(n in NEED) {
 		if (n ~ "^@") continue;
 		if (n in HAVE) continue;
-		print "#define", n, "FIXME:", DEF[n]
+
+		args = DEF[n]
+		sub("^[^(]*[(]", "", args)
+		sub("[)][^)]*$", "", args)
+		ca = gen_call_arg_names(args)
+
+		print "#define ", n "(" gen_call_args(args) ") \\"
+		print "\tdo { \\"
+		print_local_vars(args)
+		print "\t\t" n "(" ca "); \\"
+		print "\t\tgld_print(\"" n "(...)\", " ca "); \\"
+		print "\t} while(0)"
+		print "----FIXME----:", DEF[n]
+		print ""
 	}
 }
 
 ' > opengl_debug.h.new
 
+exit
 
 (echo "
 /**** NEW CALLS - please implement them ****/
