@@ -335,7 +335,7 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 		const GLchar * const *string = (arg3); \
 		const GLint * length = (arg4); \
 		glShaderSource(shader, count, string, length); \
-		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader, (long)count, string, length); \
+		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader, (long)count, *string, length); \
 	} while(0)
 
 #define  glDrawArrays(arg1, arg2, arg3) \
@@ -363,7 +363,7 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 		GLenum pname = (arg1); \
 		GLint * data = (arg2); \
 		glGetIntegerv(pname, data); \
-		gld_print("glGetIntegerv(%d = %s, %p)", pname, #arg1, data); \
+		gld_print("glGetIntegerv(%d = %s, %d)", pname, #arg1, *data); \
 	} while(0)
 
 #define  glLinkProgram(arg1) \
