@@ -56,7 +56,7 @@ function gen_call_arg_names(args   ,v,n,A,s,a)
 		sub("^.*[*]", "", a)
 		sub("[\[(].*$", "", a)
 		sub("^.*[ \t]", "", a)
-		s = s a
+		s = s a "__"
 	}
 	return s
 }
@@ -65,7 +65,7 @@ function print_local_vars(args   ,v,n,A,s)
 {
 	v = split(args, A, ",")
 	for(n = 1; n <= v; n++) {
-		print "\t\t" strip(A[n]) " = (arg" n "); \\"
+		print "\t\t" strip(A[n]) "__ = (arg" n "); \\"
 	}
 }
 

@@ -163,12 +163,12 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glGetProgramInfoLog(arg1, arg2, arg3, arg4) \
 	do { \
-		GLuint program = (arg1); \
+		GLuint program__ = (arg1); \
 		GLsizei bufSize = (arg2); \
 		GLsizei * length = (arg3); \
 		GLchar * infoLog = (arg4); \
-		glGetProgramInfoLog(program, bufSize, length, infoLog); \
-		gld_print("glGetProgramInfoLog(%d, %ld, %p, '%s')", program, bufSize, length, infoLog); \
+		glGetProgramInfoLog(program__, bufSize, length, infoLog); \
+		gld_print("glGetProgramInfoLog(%d, %ld, %p, '%s')", program__, bufSize, length, infoLog); \
 	} while(0)
 
 #define  glViewport(arg1, arg2, arg3, arg4) \
@@ -190,9 +190,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glDeleteShader(arg1) \
 	do { \
-		GLuint shader = (arg1); \
-		glDeleteShader(shader); \
-		gld_print("glDeleteShader(%u)", shader); \
+		GLuint shader__ = (arg1); \
+		glDeleteShader(shader__); \
+		gld_print("glDeleteShader(%u)", shader__); \
 	} while(0)
 
 #define  glBindTexture(arg1, arg2) \
@@ -292,11 +292,11 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glGetShaderiv(arg1, arg2, arg3) \
 	do { \
-		GLuint shader = (arg1); \
+		GLuint shader__ = (arg1); \
 		GLenum pname = (arg2); \
 		GLint * params = (arg3); \
-		glGetShaderiv(shader, pname, params); \
-		gld_print("glGetShaderiv(%u, %d, %p)", shader, pname, params); \
+		glGetShaderiv(shader__, pname, params); \
+		gld_print("glGetShaderiv(%u, %d, %p)", shader__, pname, params); \
 	} while(0)
 
 #define  glOrtho(arg1, arg2, arg3, arg4, arg5, arg6) \
@@ -330,12 +330,12 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glShaderSource(arg1, arg2, arg3, arg4) \
 	do { \
-		GLuint shader = (arg1); \
+		GLuint shader__ = (arg1); \
 		GLsizei count = (arg2); \
 		const GLchar * const *string = (arg3); \
 		const GLint * length = (arg4); \
-		glShaderSource(shader, count, string, length); \
-		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader, (long)count, *string, length); \
+		glShaderSource(shader__, count, string, length); \
+		gld_print("glShaderSource(%u, %ld, '%s', %p)", shader__, (long)count, *string, length); \
 	} while(0)
 
 #define  glDrawArrays(arg1, arg2, arg3) \
@@ -368,9 +368,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glLinkProgram(arg1) \
 	do { \
-		GLuint program = (arg1); \
-		glLinkProgram(program); \
-		gld_print("glLinkProgram(%u)", program); \
+		GLuint program__ = (arg1); \
+		glLinkProgram(program__); \
+		gld_print("glLinkProgram(%u)", program__); \
 	} while(0)
 
 #define  glBindVertexArray(arg1) \
@@ -382,10 +382,10 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glDetachShader(arg1, arg2) \
 	do { \
-		GLuint program = (arg1); \
-		GLuint shader = (arg2); \
-		glDetachShader(program, shader); \
-		gld_print("glDetachShader(%u, %u)", program, shader); \
+		GLuint program__ = (arg1); \
+		GLuint shader__ = (arg2); \
+		glDetachShader(program__, shader__); \
+		gld_print("glDetachShader(%u, %u)", program__, shader__); \
 	} while(0)
 
 #define  glGenTextures(arg1, arg2) \
@@ -398,11 +398,11 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glGetProgramiv(arg1, arg2, arg3) \
 	do { \
-		GLuint program = (arg1); \
+		GLuint program__ = (arg1); \
 		GLenum pname = (arg2); \
 		GLint * params = (arg3); \
-		glGetProgramiv(program, pname, params); \
-		gld_print("glGetProgramiv(%u, %d, %p)", program, pname, params); \
+		glGetProgramiv(program__, pname, params); \
+		gld_print("glGetProgramiv(%u, %d, %p)", program__, pname, params); \
 	} while(0)
 
 #define  glClear(arg1) \
@@ -414,9 +414,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glUseProgram(arg1) \
 	do { \
-		GLuint program = (arg1); \
-		glUseProgram(program); \
-		gld_print("glUseProgram(%u)", program); \
+		GLuint program__ = (arg1); \
+		glUseProgram(program__); \
+		gld_print("glUseProgram(%u)", program__); \
 	} while(0)
 
 #define  glFlush() \
@@ -437,10 +437,10 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glAttachShader(arg1, arg2) \
 	do { \
-		GLuint program = (arg1); \
-		GLuint shader = (arg2); \
-		glAttachShader(program, shader); \
-		gld_print("glAttachShader(%u, %u)", program, shader); \
+		GLuint program__ = (arg1); \
+		GLuint shader__ = (arg2); \
+		glAttachShader(program__, shader__); \
+		gld_print("glAttachShader(%u, %u)", program__, shader__); \
 	} while(0)
 
 #define  glBindBuffer(arg1, arg2) \
@@ -467,12 +467,12 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glGetShaderInfoLog(arg1, arg2, arg3, arg4) \
 	do { \
-		GLuint shader = (arg1); \
+		GLuint shader__ = (arg1); \
 		GLsizei bufSize = (arg2); \
 		GLsizei * length = (arg3); \
 		GLchar * infoLog = (arg4); \
-		glGetShaderInfoLog(shader, bufSize, length, infoLog); \
-		gld_print("glGetShaderInfoLog(%u, %ld, %ld, %p)", shader, (long)bufSize, (long)length, infoLog); \
+		glGetShaderInfoLog(shader__, bufSize, length, infoLog); \
+		gld_print("glGetShaderInfoLog(%u, %ld, %ld, %p)", shader__, (long)bufSize, (long)length, infoLog); \
 	} while(0)
 
 #define  glEnableVertexAttribArray(arg1) \
@@ -484,9 +484,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glCompileShader(arg1) \
 	do { \
-		GLuint shader = (arg1); \
-		glCompileShader(shader); \
-		gld_print("glCompileShader(%u)", shader); \
+		GLuint shader__ = (arg1); \
+		glCompileShader(shader__); \
+		gld_print("glCompileShader(%u)", shader__); \
 	} while(0)
 
 #define  glTranslatef(arg1, arg2, arg3) \
@@ -508,9 +508,9 @@ gld_print_ret_make(GLubyteCP, "'%s'");
 
 #define  glDeleteProgram(arg1) \
 	do { \
-		GLuint program = (arg1); \
-		glDeleteProgram(program); \
-		gld_print("glDeleteProgram(%u)", program); \
+		GLuint program__ = (arg1); \
+		glDeleteProgram(program__); \
+		gld_print("glDeleteProgram(%u)", program__); \
 	} while(0)
 
 #define  glBlendFunc(arg1, arg2) \
