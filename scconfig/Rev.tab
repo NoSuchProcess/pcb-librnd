@@ -1,4 +1,4 @@
-33854	configure	internal API for supporting different opengl versions
+33856	configure	internal API for supporting different opengl versions
 33700	configure	make install should install more src_3rd
 33613	configure	lib_gtk_common upgrade for gtk4
 33245	configure	API additions for 3.1.0
