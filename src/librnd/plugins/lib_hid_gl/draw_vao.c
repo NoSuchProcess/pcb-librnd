@@ -590,7 +590,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL "attribute vec4 position;"
 			NL "uniform vec4 xform;"
 			NL "void main() {"
-			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2], (position[1] + xform[1]) * xform[3], position[2], position[3]);"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, position[2], position[3]);"
 			NL "}"
 			NL;
 
@@ -610,7 +610,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL "layout(location = 0) in vec4 position;"
 			NL "uniform vec4 xform;"
 			NL "void main() {"
-			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2], (position[1] + xform[1]) * xform[3], position[2], position[3]);"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, position[2], position[3]);"
 			NL "}"
 			NL ";"
 			NL;
