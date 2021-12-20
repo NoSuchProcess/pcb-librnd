@@ -279,7 +279,7 @@ static void vao_prim_flush(void)
 	int end = primbuf.size;
 	primitive_t *prim = &primbuf.data[index];
 
-	if ((index == 0) || (primbuf.data == NULL))
+	if ((primbuf.size == 0) || (primbuf.data == NULL))
 		return;
 
 	vao_begin_prim_vertbuf();
