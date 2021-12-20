@@ -155,7 +155,7 @@ static void rnd_hook_detect_hid()
 			require("libs/gui/gtk2/key_prefix", 0, 1);
 			require("libs/gui/gtk2gl/presents", 0, 0);
 			if (!istrue(get("libs/gui/gtk2gl/presents"))) {
-				report_repeat("WARNING: Since there's no gl support for gtk found, disabling the gl rendering...\n");
+				report_repeat("WARNING: Since there's no gl support for gtk2 found, disabling the hid_gtk2_gl rendering... (you may need to install gtkglext1)\n");
 				hook_custom_arg("disable-hid_gtk2_gl", NULL);
 			}
 			need_gtklibs = 1;
