@@ -3,6 +3,7 @@ print [@
 #include <librnd/plugins/lib_hid_gl/draw.h>
 
 extern hidgl_draw_t hidgl_draw_direct;
+extern hidgl_draw_t hidgl_draw_vao;
 
 extern hidgl_draw_t hidgl_draw_error;
 
@@ -10,6 +11,7 @@ extern hidgl_draw_t hidgl_draw_error;
 static inline const hidgl_draw_t *hidgl_find_draw(void)
 {
 	if (hidgl_draw_direct.init() == 0) return &hidgl_draw_direct;
+	if (hidgl_draw_vao.init() == 0) return &hidgl_draw_vao;
 
 	/* must be the last, always present */
 	if (hidgl_draw_error.init() == 0) return &hidgl_draw_error;
