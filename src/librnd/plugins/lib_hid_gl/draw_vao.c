@@ -27,7 +27,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Low level gl rendering: vao, works with >=3.0 in core mode (e.g. gtk4) */
+/* Low level gl rendering: vao, works with gtk4.
+   Required opengl API version: 3.0 */
 
 #include "config.h"
 #include <stddef.h>

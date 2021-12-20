@@ -27,7 +27,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Low level gl rendering: direct access, pre-vao, works with gtk2 */
+/* Low level gl rendering: direct access, pre-vao, works with gtk2.
+   Required opengl API version: 2.0 */
 
 #include "config.h"
 #include <stdlib.h>
