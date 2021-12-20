@@ -5,6 +5,7 @@
 		- xor draw does not work
 		- layer alpha: 0.88 in gtk4 looks lik 0.75 in gtk2
 		- implement prim based colors or vertex based colors
+		- preview rendering doesn't work
 	- gtk4 test afteropengl:
 		- top window drawign: scroll wheel zoom
 		- top window drawign: scroll wheel pan with shift and ctrl
