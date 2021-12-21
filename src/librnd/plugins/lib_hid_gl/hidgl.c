@@ -51,6 +51,35 @@ extern conf_lib_hid_gl_t conf_lib_hid_gl;
 
 #include "draw_INIT.h"
 
+/* return the first draw implementation that would work with current opengl */
+RND_INLINE const hidgl_draw_t *hidgl_find_draw(const RND_CFT_LIST *pref)
+{
+	hidgl_draw_t *d;
+
+	hidgl_draw_init_();
+
+	if ((pref != NULL) && (rnd_conflist_length(pref) > 0)) {
+		/* order is coming from preference */
+		gdl_iterator_t it;
+		rnd_conf_listitem_t *p;
+
+		rnd_conflist_foreach(pref, &it, p) {
+			for(d = hidgl_draws; d != NULL; d = d->next)
+				if (strcmp(d->name, p->payload) == 0)
+					if (d->init() == 0) return d;
+		}
+	}
+	else {
+		/* fallback: try them one by one, in order, if there was no preference */
+		for(d = hidgl_draws; d != NULL; d = d->next)
+			if (d->init() == 0) return d;
+	}
+
+	/* final fallback: did not find anything working  */
+	if (hidgl_draw_error.init() == 0) return &hidgl_draw_error;
+	return NULL;
+}
+
 hidgl_draw_t hidgl_draw;
 
 int hidgl_init(void)
