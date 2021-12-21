@@ -64,6 +64,7 @@ typedef struct {
 
 static GLfloat red = 0.0f, green = 0.0f, blue = 0.0f, alpha = 0.75f;
 static GLuint program, inputColor_location, xform_location, position_buffer;
+static int vao_xor_mode;
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 {
@@ -191,6 +192,12 @@ RND_INLINE void vao_end_vertbuf(void)
 RND_INLINE void vao_color_vertbuf(float r, float g, float b, float a)
 {
 	if ((r != vertbuf_last_r) || (g != vertbuf_last_g) || (b != vertbuf_last_b) || (a != vertbuf_last_a)) {
+		if (vao_xor_mode) {
+			r = 1.0 - r;
+			g = 1.0 - g;
+			b = 1.0 - b;
+			a = a / 2.0;
+		}
 		vertbuf_last_r = r;
 		vertbuf_last_g = g;
 		vertbuf_last_b = b;
@@ -431,13 +438,16 @@ static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 
 static void vao_xor_start(void)
 {
-	glEnable(GL_COLOR_LOGIC_OP);
-	glLogicOp(GL_XOR);
+	vao_xor_mode = 1;
+	glEnable(GL_BLEND);
+	glBlendFuncSeparate(GL_SRC_COLOR, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+	glBlendEquationSeparate(GL_FUNC_REVERSE_SUBTRACT, /*GL_FUNC_ADD*/GL_MIN);
 }
 
 static void vao_xor_end(void)
 {
-	glDisable(GL_COLOR_LOGIC_OP);
+	glDisable(GL_BLEND);
+	vao_xor_mode = 0;
 }
 
 
