@@ -335,7 +335,7 @@ static void vao_reset(void)
 	primbuf_clear();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
-	drawgl_mode_positive_xor_end();
+	hidgl_draw.xor_end();
 }
 
 /* We don't have matrix or stack for matrices, transformation is done from shader */
@@ -427,6 +427,17 @@ static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 	vtx = tx; vty = ty; vzx = zx; vzy = zy;
 #endif
 	glUniform4f(xform_location, tx, ty, zx, zy);
+}
+
+static void vao_xor_start(void)
+{
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_XOR);
+}
+
+static void vao_xor_end(void)
+{
+	glDisable(GL_COLOR_LOGIC_OP);
 }
 
 
@@ -676,6 +687,8 @@ hidgl_draw_t hidgl_draw_vao = {
 	vao_texture_import,
 	vao_push_matrix,
 	vao_pop_matrix,
+	vao_xor_start,
+	vao_xor_end,
 
 	vao_prim_draw_all,
 	vao_prim_set_marker,

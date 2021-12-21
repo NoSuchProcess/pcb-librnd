@@ -247,11 +247,11 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 		}
 	}
 
-	drawgl_mode_positive_xor_start();
+	hidgl_draw.xor_start();
 	hidgl_draw.draw_points_pre(grid_points);
 	hidgl_draw.draw_points(npoints);
 	hidgl_draw.draw_points_post();
-	drawgl_mode_positive_xor_end();
+	hidgl_draw.xor_end();
 }
 
 void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
@@ -259,7 +259,7 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 	rnd_coord_t x1, y1, x2, y2, n, i, n3;
 	double x, y;
 
-	drawgl_mode_positive_xor_start();
+	hidgl_draw.xor_start();
 
 	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
 	y1 = rnd_grid_fit(MAX(0, drawn_area->Y1), hidlib->grid, hidlib->grid_oy);
@@ -324,7 +324,7 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 		hidgl_draw.draw_points_post();
 	}
 
-	drawgl_mode_positive_xor_end();
+	hidgl_draw.xor_end();
 }
 
 #define MAX_PIXELS_ARC_TO_CHORD 0.5
@@ -754,9 +754,9 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	points[3][0] = maxx;
 	points[3][1] = y;
 
-	drawgl_mode_positive_xor_start();
+	hidgl_draw.xor_start();
 	hidgl_draw.draw_lines6((GLfloat *)points, 4);
-	drawgl_mode_positive_xor_end();
+	hidgl_draw.xor_end();
 }
 
 void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float r, float g, float b)

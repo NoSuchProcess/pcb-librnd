@@ -55,6 +55,8 @@ static void error_draw_points_post(void) { }
 static void error_draw_lines6(GLfloat *pts, int npts) { }
 static void error_expose_init(int w, int h, const rnd_color_t *bg_c) { }
 static void error_set_view(double tx, double ty, double zx, double zy, double zz) { }
+static void error_xor_start(void) { }
+static void error_xor_end(void) { }
 static void error_uninit(void) { }
 
 static int error_init(void)
@@ -76,6 +78,8 @@ hidgl_draw_t hidgl_draw_error = {
 	error_texture_import,
 	error_push_matrix,
 	error_pop_matrix,
+	error_xor_start,
+	error_xor_end,
 
 	error_prim_draw_all,
 	error_prim_set_marker,

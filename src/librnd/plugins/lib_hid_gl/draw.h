@@ -59,6 +59,9 @@ struct hidgl_draw_s {
 	void (*push_matrix)(int projection);
 	void (*pop_matrix)(int projection);
 
+	void (*xor_start)(void);
+	void (*xor_end)(void);
+
 
 	/*** Buffer of primitives to be drawn */
 	/* Draw all buffered primitives. The dirty index is ignored and will

@@ -280,7 +280,7 @@ static void direct_reset(void)
 	primbuf_clear();
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
-	drawgl_mode_positive_xor_end();
+	hidgl_draw.xor_end();
 }
 
 static void direct_push_matrix(int projection)
@@ -385,6 +385,17 @@ static void direct_set_view(double tx, double ty, double zx, double zy, double z
 	glTranslatef(tx, ty, 0);
 }
 
+static void direct_xor_start(void)
+{
+	glEnable(GL_COLOR_LOGIC_OP);
+	glLogicOp(GL_XOR);
+}
+
+static void direct_xor_end(void)
+{
+	glDisable(GL_COLOR_LOGIC_OP);
+}
+
 
 static void direct_uninit(void)
 {
@@ -447,6 +458,8 @@ hidgl_draw_t hidgl_draw_direct = {
 	direct_texture_import,
 	direct_push_matrix,
 	direct_pop_matrix,
+	direct_xor_start,
+	direct_xor_end,
 
 	direct_prim_draw_all,
 	direct_prim_set_marker,
