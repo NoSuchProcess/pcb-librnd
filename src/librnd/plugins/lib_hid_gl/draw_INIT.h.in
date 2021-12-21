@@ -14,7 +14,7 @@ static hidgl_draw_t *hidgl_draws;
 		hidgl_draws = &drw; \
 	} while(0)
 
-RND_INLINE const hidgl_draw_t *hidgl_draw_init_(void)
+RND_INLINE void hidgl_draw_init_(void)
 {
 	static int inited = 0;
 	if (!inited) {
