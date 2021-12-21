@@ -446,7 +446,9 @@ static void vao_xor_start(void)
 
 static void vao_xor_end(void)
 {
-	glDisable(GL_BLEND);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 	vao_xor_mode = 0;
 }
 
