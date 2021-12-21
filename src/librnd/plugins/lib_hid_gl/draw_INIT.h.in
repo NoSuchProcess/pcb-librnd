@@ -4,16 +4,36 @@ print [@
 
 extern hidgl_draw_t hidgl_draw_direct;
 extern hidgl_draw_t hidgl_draw_vao;
-
 extern hidgl_draw_t hidgl_draw_error;
+
+static hidgl_draw_t *hidgl_draws;
+
+#define DRAW_INSERT(drw) \
+	do { \
+		drw.next = hidgl_draws; \
+		hidgl_draws = drw; \
+	} while(0)
+
+static inline const hidgl_draw_t *hidgl_draw_init_(void)
+{
+	static int inited = 0;
+	if (!inited) {
+		inited = 1;
+		DRAW_INSERT(hidgl_draw_vao);
+		DRAW_INSERT(hidgl_draw_direct);
+	}
+}
 
 /* return the first draw implementation that would work with current opengl */
 static inline const hidgl_draw_t *hidgl_find_draw(void)
 {
-	if (hidgl_draw_direct.init() == 0) return &hidgl_draw_direct;
-	if (hidgl_draw_vao.init() == 0) return &hidgl_draw_vao;
+	hidgl_draw_t *d;
 
-	/* must be the last, always present */
+	/* config fallback: try them one by one, in order, if there was no preference */
+	for(d = hidgl_draws; d != NULL; d = d->next)
+		if (d->init() == 0) return d;
+
+	/* final fallback: did not find anything working  */
 	if (hidgl_draw_error.init() == 0) return &hidgl_draw_error;
 	return NULL;
 }

@@ -36,8 +36,9 @@
 #include <librnd/core/hidlib.h>
 #include "opengl.h"
 
+typedef struct hidgl_draw_s hidgl_draw_t;
 
-typedef struct hidgl_draw_s {
+struct hidgl_draw_s {
 	const char *name;
 
  /* Returns 0 if the drawing backend is compatible with host opengl */
@@ -87,7 +88,9 @@ typedef struct hidgl_draw_s {
 	void (*draw_points_post)(void);          /* stop drawing points */
 	void (*draw_lines6)(GLfloat *pts, int npts); /* draw lines from an array of x,y,r,g,b,a */
 
-} hidgl_draw_t;
+	/*** admin ***/
+	hidgl_draw_t *next; /* linked list of all backends, except for the error backend */
+};
 
 
 extern hidgl_draw_t hidgl_draw; /* active drawing backend */
