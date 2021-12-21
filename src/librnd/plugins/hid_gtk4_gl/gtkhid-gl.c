@@ -63,20 +63,13 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 		r = priv->offlimits_color.fr;
 		g = priv->offlimits_color.fg;
 		b = priv->offlimits_color.fb;
-		a = rnd_conf.appearance.drill_alpha;
 	}
 	else {
 		r = gc->pcolor->fr;
 		g = gc->pcolor->fg;
 		b = gc->pcolor->fb;
-
-		if (composite_op == RND_HID_COMP_POSITIVE_XOR) {
-			r = (double)((unsigned)rnd_round(r * 255.0) ^ ((unsigned)priv->bg_color.r)) / 255.0;
-			g = (double)((unsigned)rnd_round(g * 255.0) ^ ((unsigned)priv->bg_color.g)) / 255.0;
-			b = (double)((unsigned)rnd_round(b * 255.0) ^ ((unsigned)priv->bg_color.b)) / 255.0;
-		}
-		a = rnd_conf.appearance.layer_alpha;
 	}
+	a = rnd_conf.appearance.layer_alpha;
 
 	if (!priv->in_context)
 		return;
