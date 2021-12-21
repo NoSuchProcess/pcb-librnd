@@ -47,9 +47,6 @@
 #include "lib_hid_gl_conf.h"
 extern conf_lib_hid_gl_t conf_lib_hid_gl;
 
-#define DEBUG_PRINT_COORDS 1
-
-
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
    position and color information. */
