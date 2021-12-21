@@ -590,7 +590,7 @@ RND_INLINE int vao_init_shaders(void)
 #define NL "\n"
 
 	if (gl_is_es()) {
-		printf("gl es... are you on weyland, or what?\n");
+		rnd_message(RND_MSG_DEBUG, "opengl vao_init_shaders: opengl ES\n");
 		vertex_sh = 
 			NL "attribute vec4 position;"
 			NL "uniform vec4 xform;"
@@ -608,8 +608,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL;
 	}
 	else {
-		printf("normal gl... for us, old X11 users I guess\n");
-
+		rnd_message(RND_MSG_DEBUG, "opengl vao_init_shaders: opengl desktop\n");
 		vertex_sh = 
 			NL "#version 330"
 			NL "layout(location = 0) in vec4 position;"
