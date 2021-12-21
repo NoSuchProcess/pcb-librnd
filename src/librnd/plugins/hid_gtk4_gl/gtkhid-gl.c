@@ -77,21 +77,6 @@ static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 		}
 		a = rnd_conf.appearance.layer_alpha;
 	}
-	if (1) {
-		double maxi, mult;
-		a *= gc->alpha_mult;
-		if (!priv->trans_lines)
-			a = 1.0;
-		maxi = r;
-		if (g > maxi)
-			maxi = g;
-		if (b > maxi)
-			maxi = b;
-		mult = MIN(1 / a, 1 / maxi);
-		r = r * mult;
-		g = g * mult;
-		b = b * mult;
-	}
 
 	if (!priv->in_context)
 		return;
