@@ -46,6 +46,9 @@
 
 #include "hidgl.h"
 
+#include "lib_hid_gl_conf.h"
+extern conf_lib_hid_gl_t conf_lib_hid_gl;
+
 #include "draw_INIT.h"
 
 hidgl_draw_t hidgl_draw;
@@ -53,7 +56,7 @@ hidgl_draw_t hidgl_draw;
 int hidgl_init(void)
 {
 	if (hidgl_draw.name == NULL) {
-		const hidgl_draw_t *drw = hidgl_find_draw();
+		const hidgl_draw_t *drw = hidgl_find_draw(&conf_lib_hid_gl.plugins.lib_hid_gl.backend.preference);
 
 		if (drw == NULL)
 			return -1;
