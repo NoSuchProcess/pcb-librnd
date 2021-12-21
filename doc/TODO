@@ -2,7 +2,6 @@
 	- BUG: hidgl.c doesn't implement sparse grid; also check lesstif [report: Igor2]
 	- BUG: gtk4: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup
 	- gtk4 opengl rendering:
-		- layer alpha: 0.88 in gtk4 looks lik 0.75 in gtk2
 		- implement prim based colors or vertex based colors
 		- preview rendering doesn't work
 	- gtk4 test afteropengl:
