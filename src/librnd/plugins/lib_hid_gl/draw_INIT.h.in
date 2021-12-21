@@ -17,11 +17,14 @@ static hidgl_draw_t *hidgl_draws;
 RND_INLINE void hidgl_draw_init_(void)
 {
 	static int inited = 0;
-	if (!inited) {
-		inited = 1;
-		DRAW_INSERT(hidgl_draw_vao);
-		DRAW_INSERT(hidgl_draw_direct);
-	}
+
+	if (inited)
+		return;
+
+	DRAW_INSERT(hidgl_draw_vao);
+	DRAW_INSERT(hidgl_draw_direct);
+
+	inited = 1;
 }
 
 /* return the first draw implementation that would work with current opengl */
