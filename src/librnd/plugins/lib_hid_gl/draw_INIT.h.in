@@ -11,7 +11,7 @@ static hidgl_draw_t *hidgl_draws;
 #define DRAW_INSERT(drw) \
 	do { \
 		drw.next = hidgl_draws; \
-		hidgl_draws = drw; \
+		hidgl_draws = &drw; \
 	} while(0)
 
 static inline const hidgl_draw_t *hidgl_draw_init_(void)
@@ -28,6 +28,8 @@ static inline const hidgl_draw_t *hidgl_draw_init_(void)
 static inline const hidgl_draw_t *hidgl_find_draw(void)
 {
 	hidgl_draw_t *d;
+
+	hidgl_draw_init_();
 
 	/* config fallback: try them one by one, in order, if there was no preference */
 	for(d = hidgl_draws; d != NULL; d = d->next)
