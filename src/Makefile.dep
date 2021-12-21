@@ -769,10 +769,8 @@
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_dad_spin.h \
  ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
  ../src/librnd/plugins/lib_gtk_common/glue_common.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
- ../src/librnd/plugins/lib_gtk_common/gtk_gl_common.c \
- ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h
+ ../src/librnd/plugins/lib_hid_gl/hidgl.h \
+ ../src/librnd/plugins/lib_gtk_common/gtk_gl_common.c
 ../src/librnd/plugins/hid_gtk2_gl/gtkhid-main.o: \
  ../src/librnd/plugins/hid_gtk2_gl/gtkhid-main.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -838,9 +836,7 @@
  ../src/librnd/plugins/lib_gtk_common/lib_gtk_config.h \
  ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
  ../src/librnd/plugins/lib_gtk_common/glue_common.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h ../src/librnd/plugins/lib_hid_gl/hidgl.h \
- ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
- ../src/librnd/plugins/lib_hid_gl/opengl.h
+ ../src/librnd/plugins/lib_hid_gl/hidgl.h
 ../src/librnd/plugins/hid_gtk4_gl/gtkhid-main.o: \
  ../src/librnd/plugins/hid_gtk4_gl/gtkhid-main.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -2528,6 +2524,8 @@
  ../src/librnd/config.h ../src/librnd/core/color.h ../src/librnd/core/global_typedefs.h \
  ../src/librnd/core/rnd_bool.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_hid_gl/hidgl.h ../src/librnd/core/hidlib.h \
  ../src/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -2535,7 +2533,28 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h ../src/librnd/core/error.h \
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/unit.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/draw.h \
+ ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
+ ../src/librnd/plugins/lib_hid_gl/primbuf.c
+../src/librnd/plugins/lib_hid_gl/draw_error.o: \
+ ../src/librnd/plugins/lib_hid_gl/draw_error.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/error.h ../src/librnd/core/global_typedefs.h \
+ ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/draw.h \
+ ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_hid_gl/opengl.h
+../src/librnd/plugins/lib_hid_gl/draw_vao.o: \
+ ../src/librnd/plugins/lib_hid_gl/draw_vao.c ../config.h ../src/librnd/config.h \
+ ../src/librnd/core/color.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
+ ../src/librnd/plugins/lib_hid_gl/hidgl.h ../src/librnd/core/hidlib.h \
+ ../src/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h ../src/librnd/core/error.h \
+ ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
+ ../src/librnd/core/unit.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
  ../src/librnd/plugins/lib_hid_gl/primbuf.c
@@ -2559,6 +2578,7 @@
  ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
  ../src/librnd/plugins/lib_hid_gl/hidgl.h \
  ../src/librnd/plugins/lib_hid_gl/draw_INIT.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h
@@ -2567,13 +2587,26 @@
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h
+ ../src_3rd/puplug/error.h ../src/librnd/plugins/lib_hid_gl/conf_internal.c \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf_fields.h
 ../src/librnd/plugins/lib_hid_gl/stencil_gl.o: \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.c \
+ ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
+ ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h ../config.h ../src/librnd/config.h \
  ../src/librnd/core/hidlib.h ../src/librnd/core/global_typedefs.h \
- ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/opengl.h \
- ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
+ ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
 ../src/librnd/plugins/lib_portynet/lib_portynet.o: \
  ../src/librnd/plugins/lib_portynet/lib_portynet.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -2717,6 +2750,9 @@
  ../src_3rd/gensexpr/gsx_parse.h
 ../src_3rd/gensexpr/gsxl.o: ../src_3rd/gensexpr/gsxl.c \
  ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
+ ../src_3rd/gensexpr/gsx_parse.h ../src_3rd/gensexpr/gensexpr_impl.c
+../src_3rd/gensexpr/gsxnl.o: ../src_3rd/gensexpr/gsxnl.c \
+ ../src_3rd/gensexpr/gsxnl.h ../src_3rd/gensexpr/gensexpr_impl.h \
  ../src_3rd/gensexpr/gsx_parse.h ../src_3rd/gensexpr/gensexpr_impl.c
 ../src_3rd/libfungwbind/fawk/fungw_fawk.o: \
  ../src_3rd/libfungwbind/fawk/fungw_fawk.c ../src_3rd/libfungw/fungw.h \

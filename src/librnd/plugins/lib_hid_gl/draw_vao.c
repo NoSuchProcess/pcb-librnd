@@ -44,6 +44,9 @@
 
 #include "draw.h"
 
+#include "lib_hid_gl_conf.h"
+extern conf_lib_hid_gl_t conf_lib_hid_gl;
+
 #define DEBUG_PRINT_COORDS 1
 
 
@@ -634,9 +637,15 @@ RND_INLINE int vao_init_shaders(void)
 
 static int vao_init(void)
 {
-	int vres = vao_init_checkver();
+	int vres;
 	GLuint vao;
 
+	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_vao) {
+		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: disabled from conf\n");
+		return -1;
+	}
+
+	vres = vao_init_checkver();
 	if (vres != 0)
 		return vres;
 

@@ -42,6 +42,9 @@
 
 #include "draw.h"
 
+#include "lib_hid_gl_conf.h"
+extern conf_lib_hid_gl_t conf_lib_hid_gl;
+
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
    position and color information. */
@@ -392,6 +395,11 @@ static void direct_uninit(void)
 static int direct_init(void)
 {
 	GLint profmask, major = 0;
+
+	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_direct) {
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: disabled from conf\n");
+		return -1;
+	}
 
 #ifdef GL_MAJOR_VERSION
 	glGetIntegerv(GL_MAJOR_VERSION, &major);

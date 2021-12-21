@@ -8,6 +8,9 @@ put /local/pcb/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_hid_gl/draw_vao.o
 @]
 append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/lib_hid_gl/opengl.h }
+put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl_conf.h}
+put /local/pcb/mod/CONFFILE {lib_hid_gl.conf}
+put /local/pcb/mod/CONFVAR {lib_hid_gl_conf_internal}
 
 switch /local/pcb/lib_hid_gl/controls
 	case {disable} end;

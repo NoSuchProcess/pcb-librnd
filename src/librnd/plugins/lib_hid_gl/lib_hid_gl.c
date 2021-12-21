@@ -29,14 +29,26 @@
 #include <stdlib.h>
 #include <librnd/core/plugins.h>
 
+#include <librnd/plugins/lib_hid_gl/conf_internal.c>
+#include "lib_hid_gl_conf.h"
+
+conf_lib_hid_gl_t conf_lib_hid_gl;
+
 int pplg_check_ver_lib_hid_gl(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_hid_gl(void)
 {
+	rnd_conf_unreg_intern(lib_hid_gl_conf_internal);
+	rnd_conf_unreg_fields("plugins/lib_hid_gl/");
 }
 
 int pplg_init_lib_hid_gl(void)
 {
 	RND_API_CHK_VER;
+	rnd_conf_reg_intern(lib_hid_gl_conf_internal);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_lib_hid_gl, field,isarray,type_name,cpath,cname,desc,flags);
+#include "lib_hid_gl_conf_fields.h"
 	return 0;
 }
