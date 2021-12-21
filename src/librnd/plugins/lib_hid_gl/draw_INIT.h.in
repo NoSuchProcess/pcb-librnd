@@ -14,7 +14,7 @@ static hidgl_draw_t *hidgl_draws;
 		hidgl_draws = &drw; \
 	} while(0)
 
-static inline const hidgl_draw_t *hidgl_draw_init_(void)
+RND_INLINE const hidgl_draw_t *hidgl_draw_init_(void)
 {
 	static int inited = 0;
 	if (!inited) {
@@ -25,7 +25,7 @@ static inline const hidgl_draw_t *hidgl_draw_init_(void)
 }
 
 /* return the first draw implementation that would work with current opengl */
-static inline const hidgl_draw_t *hidgl_find_draw(void)
+RND_INLINE const hidgl_draw_t *hidgl_find_draw(void)
 {
 	hidgl_draw_t *d;
 
