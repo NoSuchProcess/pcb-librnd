@@ -2,10 +2,19 @@ print [@
 
 #include <librnd/plugins/lib_hid_gl/draw.h>
 
-extern hidgl_draw_t hidgl_draw_direct;
-extern hidgl_draw_t hidgl_draw_vao;
 extern hidgl_draw_t hidgl_draw_error;
+extern hidgl_draw_t hidgl_draw_direct;
 
+@]
+
+if ?libs/gui/gl/vao/presents
+then
+print [@
+extern hidgl_draw_t hidgl_draw_vao;
+@]
+end
+
+print [@
 static hidgl_draw_t *hidgl_draws;
 
 #define DRAW_INSERT(drw) \
@@ -21,8 +30,16 @@ RND_INLINE void hidgl_draw_init_(void)
 
 	if (inited)
 		return;
+@]
 
+if ?libs/gui/gl/vao/presents
+then
+print [@
 	DRAW_INSERT(hidgl_draw_vao);
+@]
+end
+
+print [@
 	DRAW_INSERT(hidgl_draw_direct);
 
 	inited = 1;
