@@ -199,7 +199,7 @@ static gboolean render(GtkGLArea *area, GdkGLContext *context, rnd_gtk_port_t *p
 	/* Draw our object */
 /*	draw_triangle();*/
 TODO("this should call expose for main drawing area and/or maybe preview too");
-rnd_trace("gl expose 2: render\n");
+//rnd_trace("gl expose 2: render\n");
 
 	ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, NULL, port);
 

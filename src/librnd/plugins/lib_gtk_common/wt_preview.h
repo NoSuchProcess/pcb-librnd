@@ -51,7 +51,7 @@ typedef struct rnd_gtk_preview_class_s rnd_gtk_preview_class_t;
 typedef struct rnd_gtk_preview_s rnd_gtk_preview_t;
 
 struct rnd_gtk_preview_class_s {
-	GtkDrawingAreaClass parent_class;
+	GtkcDrawingAreaClass parent_class;
 };
 
 typedef void (*rnd_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
@@ -61,7 +61,7 @@ typedef rnd_bool(*rnd_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, rnd
 typedef rnd_bool(*rnd_gtk_preview_key_ev_t)(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
 
 struct rnd_gtk_preview_s {
-	GtkDrawingArea parent_instance;
+	GtkcDrawingArea parent_instance;
 
 	rnd_hid_expose_ctx_t expose_data;
 	rnd_gtk_view_t view;

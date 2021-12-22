@@ -534,7 +534,7 @@ GType rnd_gtk_preview_get_type()
 		};
 
 		rnd_gtk_preview_type =
-			g_type_register_static(GTK_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &rnd_gtk_preview_info, (GTypeFlags) 0);
+			g_type_register_static(GTKC_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &rnd_gtk_preview_info, (GTypeFlags) 0);
 	}
 
 	return rnd_gtk_preview_type;

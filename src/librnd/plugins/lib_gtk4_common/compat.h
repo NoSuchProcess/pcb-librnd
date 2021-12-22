@@ -425,4 +425,8 @@ extern int (*gtkc_XWarpPointer)(Display*,Window,Window,int,int,unsigned int,unsi
 int gtkc_resolve_X(void);
 #endif
 
+#define GTKC_TYPE_DRAWING_AREA GTK_TYPE_GL_AREA
+#define GtkcDrawingAreaClass   GtkGLAreaClass
+#define GtkcDrawingArea        GtkGLArea
+
 #endif  /* RND_GTK_COMPAT_H */
