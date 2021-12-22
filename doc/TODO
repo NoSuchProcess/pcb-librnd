@@ -1,6 +1,8 @@
 - 3.1.1: ABI compatible, no extensions
 	- BUG: hidgl.c doesn't implement sparse grid; also check lesstif [report: Igor2]
 	- BUG: gtk4: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
+	- BUG: gtk4: message window doesn't scroll to bottom on startup initial open [report: Igor2]
+	- BUG: gtk4: window geometry is not loaded properly [report: Igor2]
 	- gtk4 test afteropengl:
 		- test pixmaps and background image
 		- pointer warp on X11 (ui_crosshair.c) [report: Igor2]
