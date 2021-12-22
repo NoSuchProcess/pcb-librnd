@@ -656,17 +656,17 @@ RND_INLINE int vao_init_shaders(void)
 
 static int vao_init(void)
 {
-	int vres;
-	GLuint vao;
-
 	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_vao) {
 		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: disabled from conf\n");
 		return -1;
 	}
 
-	vres = vao_init_checkver();
-	if (vres != 0)
-		return vres;
+	return vao_init_checkver();
+}
+
+static int vao_new_context(void)
+{
+	GLuint vao;
 
 	if (vao_init_shaders() != 0) {
 		rnd_message(RND_MSG_ERROR, "opengl vao_init: failed to init shaders, no rendering is possible\n");
@@ -679,7 +679,7 @@ static int vao_init(void)
 	glGenBuffers(1, &position_buffer);
 
 	rnd_message(RND_MSG_ERROR, "opengl vao_init: vao rendering is WIP, expect broken render\n");
-	return vres;
+	return 0;
 }
 
 
@@ -688,6 +688,7 @@ hidgl_draw_t hidgl_draw_vao = {
 
 	vao_init,
 	vao_uninit,
+	vao_new_context,
 	vao_set_color,
 	vao_flush,
 	vao_reset,

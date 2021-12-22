@@ -95,6 +95,11 @@ int hidgl_init(void)
 	return 0;
 }
 
+int hidgl_new_context(void)
+{
+	return hidgl_draw.new_context();
+}
+
 void hidgl_stencil_init(void)
 {
 	stencilgl_init();

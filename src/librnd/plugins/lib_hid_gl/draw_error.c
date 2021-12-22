@@ -58,6 +58,7 @@ static void error_set_view(double tx, double ty, double zx, double zy, double zz
 static void error_xor_start(void) { }
 static void error_xor_end(void) { }
 static void error_uninit(void) { }
+static int error_new_context(void) { return -1; }
 
 static int error_init(void)
 {
@@ -70,6 +71,7 @@ hidgl_draw_t hidgl_draw_error = {
 
 	error_init,
 	error_uninit,
+	error_new_context,
 	error_set_color,
 	error_flush,
 	error_reset,

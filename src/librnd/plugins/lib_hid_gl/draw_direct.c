@@ -445,11 +445,18 @@ static int direct_init(void)
 	return 0;
 }
 
+static void direct_new_context(void)
+{
+	return 0;
+}
+
+
 hidgl_draw_t hidgl_draw_direct = {
 	"direct",
 
 	direct_init,
 	direct_uninit,
+	direct_new_context,
 	direct_set_color,
 	direct_flush,
 	direct_reset,

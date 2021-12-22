@@ -45,6 +45,11 @@ struct hidgl_draw_s {
 	int (*init)(void);
 
 	void (*uninit)(void);
+
+	/* Call this first but only once after a new GL context has been created;
+	   returns 0 on success. */
+	int (*new_context)(void);
+
 	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	void (*flush)(void);
 	void (*reset)(void);
