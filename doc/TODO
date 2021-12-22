@@ -3,7 +3,6 @@
 	- BUG: gtk4: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup
 	- gtk4 opengl rendering:
 		- implement prim based colors or vertex based colors
-		- preview rendering doesn't work
 	- gtk4 test afteropengl:
 		- top window drawign: scroll wheel zoom
 		- top window drawign: scroll wheel pan with shift and ctrl
