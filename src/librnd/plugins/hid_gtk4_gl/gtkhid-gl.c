@@ -2,6 +2,7 @@
 
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
+#include <librnd/plugins/lib_gtk_common/wt_preview.h>
 #include <epoxy/gl.h>
 
 extern rnd_hid_t gtk4_gl_hid;
@@ -150,18 +151,22 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 {
 	GtkAllocation allocation;
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
 	/* make GL-context "current" */
-	TODO("figure");
+	gtk_gl_area_make_current(GTK_GL_AREA(widget));
+	if (!preview->draw_inited) {
+		hidgl_new_context();
+		preview->draw_inited = 1;
+	}
 
 	ghid_gl_preview_expose_common(&gtk4_gl_hid, hidlib, ev, expcall, ctx, allocation.width, allocation.height);
 
 	hidgl_flush();
 
-	/* end drawing to current GL-context */
-	TODO("figure");
+	/* end drawing to current GL-context: no need */
 
 	return FALSE;
 }

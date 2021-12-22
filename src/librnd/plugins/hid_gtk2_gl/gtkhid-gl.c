@@ -253,7 +253,9 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 /* This realize callback is used to work around a crash bug in some mesa
    versions (observed on a machine running the intel i965 driver. It isn't
    obvious why it helps, but somehow fiddling with the GL context here solves
-   the issue. The problem appears to have been fixed in recent mesa versions. */
+   the issue. The problem appears to have been fixed in recent mesa versions.
+   Plus it creates the new context in hidlg, althouth gtk2 uses the direct
+   draw backend where this is NOP */
 static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
@@ -261,6 +263,8 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
 		return;
+
+	hidgl_new_context();
 
 	gdk_gl_drawable_gl_end(gldrawable);
 	return;
@@ -278,12 +282,18 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
 	/* make GL-context "current" */
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
 		return FALSE;
+	}
+
+	if (!preview->draw_inited) {
+		hidgl_new_context();
+		preview->draw_inited = 1;
 	}
 
 	ghid_gl_preview_expose_common(&gtk2_gl_hid, hidlib, ev, expcall, ctx, allocation.width, allocation.height);
