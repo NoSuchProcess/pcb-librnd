@@ -758,15 +758,17 @@
  ../src/librnd/core/hidlib.h ../src/librnd/core/conf_hid.h \
  ../src/librnd/plugins/lib_gtk2_common/compat.h \
  ../src/librnd/plugins/lib_gtk2_common/compat_priv.h \
- ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/core/hid_cfg_input.h \
  ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
  ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk2_common/bu_menu.h \
  ../src/librnd/plugins/lib_gtk_common/bu_command.h \
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_dad_spin.h \
+ ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk_common/coord_conv.h \
  ../src/librnd/plugins/lib_gtk_common/glue_common.h \
  ../src/librnd/plugins/lib_hid_gl/hidgl.h \
@@ -828,8 +830,10 @@
  ../src/librnd/plugins/lib_gtk_common/dlg_topwin.h ../src/librnd/core/hid_dad.h \
  ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/core/color.h ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/event.h \
- ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/gtk_gl_common.c \
- ../config.h ../src/librnd/core/color_cache.h ../src_3rd/genht/hash.h \
+ ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
+ ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src/librnd/plugins/lib_gtk_common/gtk_gl_common.c ../config.h \
+ ../src/librnd/core/color_cache.h ../src_3rd/genht/hash.h \
  ../src/librnd/core/hidlib_conf.h ../src/librnd/core/pixmap.h ../src/librnd/core/globalconst.h \
  ../src/librnd/plugins/lib_hid_common/clip.h \
  ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
@@ -2534,6 +2538,11 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/unit.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
  ../src/librnd/plugins/lib_hid_gl/primbuf.c
 ../src/librnd/plugins/lib_hid_gl/draw_error.o: \
@@ -2556,6 +2565,11 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/unit.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
  ../src/librnd/plugins/lib_hid_gl/primbuf.c
 ../src/librnd/plugins/lib_hid_gl/hidgl.o: \
@@ -2580,6 +2594,7 @@
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
  ../src/librnd/plugins/lib_hid_gl/hidgl.h \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h \
  ../src/librnd/plugins/lib_hid_gl/draw_INIT.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h
 ../src/librnd/plugins/lib_hid_gl/lib_hid_gl.o: \
