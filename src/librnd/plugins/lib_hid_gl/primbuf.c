@@ -41,6 +41,9 @@ typedef struct {
 	GLint first; /* The index of the first vertex in the vertex buffer. */
 	GLsizei count; /* The number of vertices */
 	GLuint texture_id; /* The id of a texture to use, or 0 for no texture */
+#ifdef PRIM_COLOR
+	GLfloat r, g, b, a;
+#endif
 } primitive_t;
 
 typedef struct {
@@ -123,7 +126,15 @@ RND_INLINE int primitive_dirty_count(void)
 	return primbuf.size - primbuf.dirty_index;
 }
 
-static void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id)
+#ifdef PRIM_COLOR
+#	define MAYBE_COLOR , GLfloat r, GLfloat g, GLfloat b, GLfloat a
+#	define COLOR_MATCH ((r == last->r) && (g == last->g) && (b == last->b) && (a == last->a))
+#else
+#	define MAYBE_COLOR
+#	define COLOR_MATCH 1
+#endif
+
+RND_INLINE void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id MAYBE_COLOR)
 {
 	primitive_t *last = primbuf_back();
 
@@ -131,7 +142,7 @@ static void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id)
 	   AND the last primitive is dirty AND 'first' follows the last vertex of
 	   the previous primitive THEN we can simply append the new primitive to
 	   the last one. */
-	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first))
+	if (last && (primitive_dirty_count() > 0) && (last->type == type) && ((type == GL_LINES) || (type == GL_TRIANGLES) || (type == GL_POINTS)) && ((last->first + last->count) == first) && COLOR_MATCH)
 		last->count += count;
 	else if (primbuf_reserve_extra(1) == 0) {
 		primitive_t *p_prim = &primbuf.data[primbuf.size++];
@@ -139,8 +150,16 @@ static void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id)
 		p_prim->first = first;
 		p_prim->count = count;
 		p_prim->texture_id = texture_id;
+#ifdef PRIM_COLOR
+		p_prim->r = r;
+		p_prim->g = g;
+		p_prim->b = b;
+		p_prim->a = a;
+#endif
 	}
 }
+
+#undef MAYBE_COLOR
 
 RND_INLINE int primbuf_last_type(void)
 {

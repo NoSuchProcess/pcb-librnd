@@ -47,13 +47,15 @@
 #include "lib_hid_gl_conf.h"
 extern conf_lib_hid_gl_t conf_lib_hid_gl;
 
+/* Store color in primitives instead of vertices */
+#define PRIM_COLOR
+
 /* Vertex Buffer Data
    The vertex buffer is a dynamic array of vertices. Each vertex contains
    position and color information. */
 typedef struct {
 	GLfloat x, y;
 	GLfloat u, v;
-	GLfloat r, g, b, a;
 } vertex_t;
 
 #include "vertbuf.c"
@@ -69,10 +71,6 @@ RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
 	if (p_vert) {
 		p_vert->x = x;
 		p_vert->y = y;
-		p_vert->r = red;
-		p_vert->g = green;
-		p_vert->b = blue;
-		p_vert->a = alpha;
 	}
 }
 
@@ -84,10 +82,6 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 		p_vert->y = y;
 		p_vert->u = u;
 		p_vert->v = v;
-		p_vert->r = 1.0;
-		p_vert->g = 1.0;
-		p_vert->b = 1.0;
-		p_vert->a = 1.0;
 	}
 }
 
@@ -107,14 +101,14 @@ static void vao_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2
 {
 	/* Debug Drawing */
 #if 0
-	primbuf_add(GL_LINES,vertbuf.size,6);
+	primbuf_add(GL_LINES, vertbuf.size, 6, red, green, blue, alpha);
 	vertbuf_reserve_extra(6);
 	vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
 	vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
 	vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
 #endif
 
-	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0);
+	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0, red, green, blue, alpha);
 	vertbuf_reserve_extra(3);
 	vertbuf_add(x1, y1);
 	vertbuf_add(x2, y2);
@@ -137,7 +131,7 @@ static void vao_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1
 	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
 	GLuint texture_id)
 {
-	primbuf_add(GL_TRIANGLE_FAN, vertbuf.size, 4, texture_id);
+	primbuf_add(GL_TRIANGLE_FAN, vertbuf.size, 4, texture_id, red, green, blue, alpha);
 	vertbuf_reserve_extra(4);
 	vertbuf_add_xyuv(x1, y1, u1, v1);
 	vertbuf_add_xyuv(x2, y2, u2, v2);
@@ -147,7 +141,7 @@ static void vao_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1
 
 static void vao_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primbuf_add(GL_LINES, vertbuf.size, 2, 0);
+	primbuf_add(GL_LINES, vertbuf.size, 2, 0, red, green, blue, alpha);
 	vertbuf_reserve_extra(2);
 	vertbuf_add(x1, y1);
 	vertbuf_add(x2, y2);
@@ -155,7 +149,7 @@ static void vao_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 
 static void vao_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
-	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0);
+	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0, red, green, blue, alpha);
 	vertbuf_reserve_extra(4);
 	vertbuf_add(x1, y1);
 	vertbuf_add(x2, y1);
@@ -238,8 +232,6 @@ static void vao_prim_reserve_triangles(int count)
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
-	vertex_t *first;
-
 	if (prim->texture_id > 0) {
 		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -252,10 +244,8 @@ TODO("This will break as glAlphaFunc got removed");
 		glEnable(GL_ALPHA_TEST);
 	}
 
-TODO("switch from per-vertex-color to per-prim-color");
-	first = vertbuf.data+prim->first;
-	vao_color_vertbuf(first->r, first->g, first->b, first->a);
-
+	vao_color_vertbuf(prim->r, prim->g, prim->b, prim->a);
+/*printf("prim color: %f %f %f %f\n", prim->r, prim->g, prim->b, prim->a);*/
 #ifdef DEBUG_PRINT_COORDS
 	printf("PRIM: %d %ld %ld (%f;%f) (%f;%f) %.10f %.10f\n",
 		prim->type, (long)prim->first, (long)prim->count,
