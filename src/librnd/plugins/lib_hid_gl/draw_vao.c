@@ -667,8 +667,6 @@ static int vao_new_context(void)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glGenBuffers(1, &position_buffer);
-
-	rnd_message(RND_MSG_ERROR, "opengl vao_init: vao rendering is WIP, expect broken render\n");
 	return 0;
 }
 
