@@ -46,7 +46,7 @@ static void error_flush(void) { }
 static void error_reset(void) { }
 static void error_push_matrix(int projection) { }
 static void error_pop_matrix(int projection) { }
-static long error_texture_import(unsigned char *pixels, int width, int height, int has_alpha) { }
+static long error_texture_import(unsigned char *pixels, int width, int height, int has_alpha) { return 0; }
 static void error_prim_set_marker(void) { }
 static void error_prim_rewind_to_marker(void) { }
 static void error_draw_points_pre(GLfloat *pts) { }
