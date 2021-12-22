@@ -231,6 +231,9 @@ static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 		return FALSE;
 	}
 
+ /* for consistency; gtk2 uses the direct draw backend where this is NOP */
+	hidgl_new_context();
+
 	port->render_priv->in_context = rnd_true;
 
 	return TRUE;
@@ -255,9 +258,7 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 /* This realize callback is used to work around a crash bug in some mesa
    versions (observed on a machine running the intel i965 driver. It isn't
    obvious why it helps, but somehow fiddling with the GL context here solves
-   the issue. The problem appears to have been fixed in recent mesa versions.
-   Plus it creates the new context in hidlg, althouth gtk2 uses the direct
-   draw backend where this is NOP */
+   the issue. The problem appears to have been fixed in recent mesa versions. */
 static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
@@ -265,8 +266,6 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 	if (!gdk_gl_drawable_gl_begin(gldrawable, glcontext))
 		return;
-
-	hidgl_new_context();
 
 	gdk_gl_drawable_gl_end(gldrawable);
 	return;
