@@ -110,35 +110,3 @@ RND_INLINE vertex_t *vertbuf_allocate(int size)
 
 	return p_vertex;
 }
-
-#if 0
-/* not yet clear if this is universal */
-RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
-{
-	vertex_t *p_vert = vertbuf_allocate(1);
-	if (p_vert) {
-		p_vert->x = x;
-		p_vert->y = y;
-		p_vert->r = red;
-		p_vert->g = green;
-		p_vert->b = blue;
-		p_vert->a = alpha;
-	}
-}
-
-RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
-{
-	vertex_t *p_vert = vertbuf_allocate(1);
-	if (p_vert) {
-		p_vert->x = x;
-		p_vert->y = y;
-		p_vert->u = u;
-		p_vert->v = v;
-		p_vert->r = 1.0;
-		p_vert->g = 1.0;
-		p_vert->b = 1.0;
-		p_vert->a = 1.0;
-	}
-}
-#endif
-
