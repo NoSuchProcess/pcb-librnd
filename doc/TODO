@@ -1,15 +1,15 @@
 - 3.1.1: ABI compatible, no extensions
 	- BUG: hidgl.c doesn't implement sparse grid; also check lesstif [report: Igor2]
-	- BUG: gtk4: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup
+	- BUG: gtk4: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
 	- gtk4 opengl rendering:
-		- implement prim based colors or vertex based colors
+		- implement prim based colors or vertex based colors [report: Igor2]
 	- gtk4 test afteropengl:
-		- top window drawign: scroll wheel zoom
-		- top window drawign: scroll wheel pan with shift and ctrl
-		- preview window drawign: scroll wheel zoom
-		- preview window drawign: scroll wheel pan with shift and ctrl
-		- pointer warp on X11 (ui_crosshair.c)
-		- benchmark
+		- top window drawign: scroll wheel zoom [report: Igor2]
+		- top window drawign: scroll wheel pan with shift and ctrl [report: Igor2]
+		- preview window drawign: scroll wheel zoom [report: Igor2]
+		- preview window drawign: scroll wheel pan with shift and ctrl [report: Igor2]
+		- pointer warp on X11 (ui_crosshair.c) [report: Igor2]
+		- benchmark [report: Igor2]
 
 - 3.2.0: ABI compatible, API extensions
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
