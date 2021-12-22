@@ -445,7 +445,7 @@ static int direct_init(void)
 	return 0;
 }
 
-static void direct_new_context(void)
+static int direct_new_context(void)
 {
 	return 0;
 }
