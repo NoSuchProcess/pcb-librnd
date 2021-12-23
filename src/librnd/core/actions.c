@@ -81,10 +81,46 @@ char *rnd_make_action_name(char *out, const char *inp, int inp_len)
 	return out;
 }
 
+TODO("REMOVE_4.0.0: suppress_duplicate_action(); assume it always returned SUP_DUP_NO")
+typedef enum {
+	SUP_DUP_NO = 0,
+	SUP_DUP_KEEP_NEW,
+	SUP_DUP_KEEP_OLD
+} sup_dup_act_t;
+
+/* Workaround for known duplicate actions.
+   Returns if error message on duplicate action should not be printed for
+   a given action name. */
+static int suppress_duplicate_action(const char *name, const char *current_cookie)
+{
+	const char **s;
+	static const char *list[] = { /* action_name, librnd_plugin_cookie pairs */
+
+		/* These were moved from pcb-rnd to librnd; old pcb still has these and
+		   can't work properly with librnd's new ones
+		   librnd >= 3.1.0, pcb-rnd < 3.0.3; */
+		"dumpconf",             "diag_rnd",
+		"EvalConf",             "diag_rnd", 
+		"dlg_confval_edit",     "lib_hid_common plugin",
+		"Preferences",          "lib_hid_common plugin",
+		NULL
+	};
+
+	for(s = list; *s != NULL; s+=2)
+		if (strcmp(*s, name) == 0) {
+			s++;
+			if (strcmp(*s, current_cookie) == 0)
+				return SUP_DUP_KEEP_NEW; /* currently registered is from librnd, keep app's new */
+			return SUP_DUP_KEEP_OLD;
+		}
+
+	return 0;
+}
+
 void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 {
 	int i;
-	hid_cookie_action_t *ca;
+	hid_cookie_action_t *ca, *old_ca;
 	fgw_func_t *f;
 
 	for (i = 0; i < n; i++) {
@@ -108,9 +144,25 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		rnd_make_action_name(fn, a[i].name, len);
 		f = fgw_func_reg(rnd_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
-			rnd_message(RND_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
-			free(ca);
-			continue;
+			sup_dup_act_t sd;
+
+			f = htsp_get(&rnd_fgw_obj->func_tbl, fn);
+			old_ca = f->reg_data;
+			sd = suppress_duplicate_action(a[i].name, old_ca->cookie);
+
+			switch(sd) {
+				case SUP_DUP_NO:
+					rnd_message(RND_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
+					/* intentional fall-thru */
+				case SUP_DUP_KEEP_OLD:
+					free(ca);
+					continue;
+				case SUP_DUP_KEEP_NEW:
+					fgw_func_unreg(rnd_fgw_obj, fn);
+					htsp_popentry(&rnd_fgw_obj->func_tbl, fn); /* workaround for fungw bug */
+					f = fgw_func_reg(rnd_fgw_obj, fn, a[i].trigger_cb);
+					break;
+			}
 		}
 		f->reg_data = ca;
 	}
