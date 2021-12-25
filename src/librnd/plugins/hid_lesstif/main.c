@@ -1889,55 +1889,65 @@ static void draw_grid()
 {
 	static XPoint *points = 0, *points3 = 0;
 	static int npoints = 0, npoints3 = 0;
-	rnd_coord_t x1, y1, x2, y2, prevx, prevx3;
+	rnd_coord_t grd, x1, y1, x2, y2, prevx, prevx3;
 	rnd_coord_t x, y;
 	int n, n3;
 	static GC grid_gc = 0;
+	static const int enable_sparse = 0, min_dist_px = 4;
 
 	if (!rnd_conf.editor.draw_grid)
 		return;
-	if (Vz(ltf_hidlib->grid) < RND_MIN_GRID_DISTANCE)
-		return;
+
+	grd = ltf_hidlib->grid;
+	if (grd <= 0)
+		grd = 1;
+
+	if (Vz(grd) < RND_MIN_GRID_DISTANCE) {
+		if (!/*rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse*/enable_sparse)
+			return;
+		grd *= (/*rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.min_dist_px*/ min_dist_px / Vz(grd));
+	}
+
 	if (!grid_gc) {
 		grid_gc = XCreateGC(display, window, 0, 0);
 		XSetFunction(display, grid_gc, GXxor);
 		XSetForeground(display, grid_gc, grid_color);
 	}
 	if (rnd_conf.editor.view.flip_x) {
-		x2 = rnd_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
-		x1 = rnd_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x2 = rnd_grid_fit(Px(0), grd, ltf_hidlib->grid_ox);
+		x1 = rnd_grid_fit(Px(view_width), grd, ltf_hidlib->grid_ox);
 		if (Vx(x2) < 0)
-			x2 -= ltf_hidlib->grid;
+			x2 -= grd;
 		if (Vx(x1) >= view_width)
-			x1 += ltf_hidlib->grid;
+			x1 += grd;
 	}
 	else {
-		x1 = rnd_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
-		x2 = rnd_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x1 = rnd_grid_fit(Px(0), grd, ltf_hidlib->grid_ox);
+		x2 = rnd_grid_fit(Px(view_width), grd, ltf_hidlib->grid_ox);
 		if (Vx(x1) < 0)
-			x1 += ltf_hidlib->grid;
+			x1 += grd;
 		if (Vx(x2) >= view_width)
-			x2 -= ltf_hidlib->grid;
+			x2 -= grd;
 	}
 	if (rnd_conf.editor.view.flip_y) {
-		y2 = rnd_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
-		y1 = rnd_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y2 = rnd_grid_fit(Py(0), grd, ltf_hidlib->grid_oy);
+		y1 = rnd_grid_fit(Py(view_height), grd, ltf_hidlib->grid_oy);
 		if (Vy(y2) < 0)
-			y2 -= ltf_hidlib->grid;
+			y2 -= grd;
 		if (Vy(y1) >= view_height)
-			y1 += ltf_hidlib->grid;
+			y1 += grd;
 	}
 	else {
-		y1 = rnd_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
-		y2 = rnd_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y1 = rnd_grid_fit(Py(0), grd, ltf_hidlib->grid_oy);
+		y2 = rnd_grid_fit(Py(view_height), grd, ltf_hidlib->grid_oy);
 		if (Vy(y1) < 0)
-			y1 += ltf_hidlib->grid;
+			y1 += grd;
 		if (Vy(y2) >= view_height)
-			y2 -= ltf_hidlib->grid;
+			y2 -= grd;
 	}
 
 	/* one point in the center of the crossing */
-	n = (x2 - x1) / ltf_hidlib->grid + 1;
+	n = (x2 - x1) / grd + 1;
 	if (n > npoints) {
 		npoints = n + 10;
 		points = (XPoint *) realloc(points, npoints * sizeof(XPoint));
@@ -1954,7 +1964,7 @@ static void draw_grid()
 
 	n3 = n = 0;
 	prevx = 0;
-	for (x = x1; x <= x2; x += ltf_hidlib->grid) {
+	for (x = x1; x <= x2; x += grd) {
 		int temp = Vx(x);
 		points[n].x = temp;
 		if (n) {
@@ -1978,7 +1988,7 @@ static void draw_grid()
 		prevx = temp;
 		n++;
 	}
-	for (y = y1; y <= y2; y += ltf_hidlib->grid) {
+	for (y = y1; y <= y2; y += grd) {
 		int vy = Vy(y);
 		points[0].y = vy;
 		XDrawPoints(display, pixmap, grid_gc, points, n, CoordModePrevious);
