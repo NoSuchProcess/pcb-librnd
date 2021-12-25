@@ -241,8 +241,6 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glEnable(GL_TEXTURE_2D);
 TODO("This will break as glAlphaFunc got removed");
-/*		glAlphaFunc(GL_GREATER, 0.5);
-		glEnable(GL_ALPHA_TEST);*/
 		vao_color_vertbuf(-3, 0, 0, 0); /* enable using texture instead of color */
 	}
 	else
@@ -251,10 +249,8 @@ TODO("This will break as glAlphaFunc got removed");
 
 	glDrawArrays(prim->type, prim->first, prim->count);
 
-	if (prim->texture_id > 0) {
+	if (prim->texture_id > 0)
 		glDisable(GL_TEXTURE_2D);
-/*		glDisable(GL_ALPHA_TEST);*/
-	}
 }
 
 
