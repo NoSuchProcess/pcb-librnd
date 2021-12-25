@@ -1,6 +1,5 @@
 - 3.1.1: ABI compatible, no extensions
 	- gtk4 (widgets):
-		- BUG: opengl: pixmaps and background image don't render
 		- BUG: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
 		- BUG: message window doesn't scroll to bottom on startup initial open [report: Igor2]
 		- BUG: window geometry is not loaded properly [report: Igor2]
