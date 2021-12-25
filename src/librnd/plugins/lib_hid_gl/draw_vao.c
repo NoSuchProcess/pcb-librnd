@@ -62,7 +62,7 @@ typedef struct {
 #include "primbuf.c"
 
 static GLfloat red = 0.0f, green = 0.0f, blue = 0.0f, alpha = 0.75f;
-static GLuint program, inputColor_location, xform_location, position_buffer;
+static GLuint program, inputColor_location, inputTexture_location, xform_location, position_buffer;
 static int vao_xor_mode;
 
 RND_INLINE void vertbuf_add(GLfloat x, GLfloat y)
@@ -162,7 +162,7 @@ static float vertbuf_last_r = -1, vertbuf_last_g = -1, vertbuf_last_b = -1, vert
 /* Upload vertex buffer buf; buf_size is the byte size of the whole buffer;
    the buffer is an array of elems of size elem_size. Each elem has an x,y
    coord pair at offset x_offs. */
-RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, size_t x_offs)
+RND_INLINE void vao_begin_vertbuf(void *buf, int comps, long buf_size, long elem_size, size_t x_offs)
 {
 	/* This is the buffer that holds the vertices */
 	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
@@ -172,7 +172,7 @@ RND_INLINE void vao_begin_vertbuf(void *buf, long buf_size, long elem_size, size
 	/* Use the vertices in our buffer */
 	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, elem_size, (void *)x_offs);
+	glVertexAttribPointer(0, comps, GL_FLOAT, GL_FALSE, elem_size, (void *)x_offs);
 }
 
 RND_INLINE void vao_end_vertbuf(void)
@@ -207,7 +207,7 @@ RND_INLINE void vao_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, G
 	points[2][0] = x2; points[2][1] = y2;
 	points[3][0] = x1; points[3][1] = y2;
 
-	vao_begin_vertbuf(points, sizeof(points), sizeof(float) * 2, 0);
+	vao_begin_vertbuf(points, 2, sizeof(points), sizeof(float) * 2, 0);
 	vao_color_vertbuf(red, green, blue, alpha);
 	glDrawArrays(mode, 0, 4);
 	vao_end_vertbuf();
@@ -233,6 +233,7 @@ static void vao_prim_reserve_triangles(int count)
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	if (prim->texture_id > 0) {
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -240,23 +241,19 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glEnable(GL_TEXTURE_2D);
 TODO("This will break as glAlphaFunc got removed");
-		glAlphaFunc(GL_GREATER, 0.5);
-		glEnable(GL_ALPHA_TEST);
+/*		glAlphaFunc(GL_GREATER, 0.5);
+		glEnable(GL_ALPHA_TEST);*/
+		vao_color_vertbuf(-3, 0, 0, 0); /* enable using texture instead of color */
 	}
-
-	vao_color_vertbuf(prim->r, prim->g, prim->b, prim->a);
+	else
+		vao_color_vertbuf(prim->r, prim->g, prim->b, prim->a);
 /*printf("prim color: %f %f %f %f\n", prim->r, prim->g, prim->b, prim->a);*/
-#ifdef DEBUG_PRINT_COORDS
-	printf("PRIM: %d %ld %ld (%f;%f) (%f;%f) %.10f %.10f\n",
-		prim->type, (long)prim->first, (long)prim->count,
-		first->x, first->y, first[1].x, first[1].y, vzx, vzy);
-#endif
 
 	glDrawArrays(prim->type, prim->first, prim->count);
 
 	if (prim->texture_id > 0) {
 		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+/*		glDisable(GL_ALPHA_TEST);*/
 	}
 }
 
@@ -264,7 +261,7 @@ TODO("This will break as glAlphaFunc got removed");
 
 RND_INLINE void vao_begin_prim_vertbuf(void)
 {
-	vao_begin_vertbuf(vertbuf.data, vertbuf.size * sizeof(vertex_t), sizeof(vertex_t),  offsetof(vertex_t, x));
+	vao_begin_vertbuf(vertbuf.data, 4, vertbuf.size * sizeof(vertex_t), sizeof(vertex_t),  offsetof(vertex_t, x));
 }
 
 RND_INLINE void vao_end_prim_vertbuf(void)
@@ -368,7 +365,7 @@ static void vao_draw_points_pre(GLfloat *pts)
 
 static void vao_draw_points(int npts)
 {
-	vao_begin_vertbuf(vao_draw_pts, sizeof(float) * npts * 2, sizeof(float) * 2, 0);
+	vao_begin_vertbuf(vao_draw_pts, 2, sizeof(float) * npts * 2, sizeof(float) * 2, 0);
 	vao_color_vertbuf(red, green, blue, alpha);
 	glDrawArrays(GL_POINTS, 0, npts);
 }
@@ -382,7 +379,7 @@ static void vao_draw_points_post(void)
 static void vao_draw_lines6(GLfloat *pts, int npts)
 {
 	TODO("change draw API so we don't have to work around colors like this");
-	vao_begin_vertbuf(pts, sizeof(float) * npts * 6, sizeof(float) * 6, 0);
+	vao_begin_vertbuf(pts, 2, sizeof(float) * npts * 6, sizeof(float) * 6, 0);
 	vao_color_vertbuf(pts[2], pts[3], pts[4], pts[5]);
 	glDrawArrays(GL_LINES, 0, npts);
 	vao_end_vertbuf();
@@ -515,11 +512,12 @@ RND_INLINE GLuint vao_create_shader(int type, const char *src)
 }
 
 /* Initialize the shaders and link them into a program */
-RND_INLINE int vao_init_shaders_(const char *vertex_sh, const char *fragment_sh, GLuint *program_out, GLuint *inputColor_out, GLuint *xform_out)
+RND_INLINE int vao_init_shaders_(const char *vertex_sh, const char *fragment_sh, GLuint *program_out, GLuint *inputColor_out, GLuint *inputTexture_out, GLuint *xform_out)
 {
 	GLuint vertex, fragment;
 	GLuint program = 0;
 	GLuint inputColor = 0;
+	GLuint inputTexture = 0;
 	GLuint xform = 0;
 	int status, res = -1;
 
@@ -558,6 +556,7 @@ RND_INLINE int vao_init_shaders_(const char *vertex_sh, const char *fragment_sh,
 	}
 
 	inputColor = glGetUniformLocation(program, "inputColor");
+	inputTexture = glGetUniformLocation(program, "inputTexture");
 	xform = glGetUniformLocation(program, "xform");
 
 	glDetachShader(program, vertex);
@@ -570,6 +569,7 @@ out:
 
 	*program_out = program;
 	*inputColor_out = inputColor;
+	*inputTexture_out = inputTexture;
 	*xform_out = xform;
 
 	return res;
@@ -621,10 +621,12 @@ RND_INLINE int vao_init_shaders(void)
 		rnd_message(RND_MSG_DEBUG, "opengl vao_init_shaders: opengl desktop\n");
 		vertex_sh = 
 			NL "#version 330"
-			NL "layout(location = 0) in vec4 position;"
+			NL "attribute vec4 position;"
+			NL "out vec2 TexCoord;"
 			NL "uniform vec4 xform;"
 			NL "void main() {"
-			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, position[2], position[3]);"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, 0, 1);"
+			NL "  TexCoord = vec2(position[2], position[3]);"
 			NL "}"
 			NL ";"
 			NL;
@@ -632,15 +634,21 @@ RND_INLINE int vao_init_shaders(void)
 		fragment_sh =
 			NL "#version 330"
 			NL "out vec4 outputColor;"
+			NL "in vec2 TexCoord;"
 			NL "uniform vec4 inputColor;"
+			NL "uniform sampler2D inputTexture;" /* we do not have to load this one, as 0 is default */
 			NL "void main() {"
-			NL "  outputColor = inputColor;"
+			NL "  if (inputColor[0] == -3) {"
+			NL "    outputColor = texture(inputTexture, TexCoord);"
+			NL "  } else {"
+			NL "    outputColor = inputColor;"
+			NL "  }"
 			NL "}"
 			NL;
 	}
 
 
-	return vao_init_shaders_(vertex_sh, fragment_sh, &program, &inputColor_location, &xform_location);
+	return vao_init_shaders_(vertex_sh, fragment_sh, &program, &inputColor_location, &inputTexture_location, &xform_location);
 }
 
 
