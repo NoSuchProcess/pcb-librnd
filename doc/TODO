@@ -1,5 +1,4 @@
 - 3.1.1: ABI compatible, no extensions
-	- BUG: hidgl.c doesn't implement sparse grid; also check lesstif [report: Igor2]
 	- gtk4 (widgets):
 		- BUG: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
 		- BUG: message window doesn't scroll to bottom on startup initial open [report: Igor2]
@@ -13,6 +12,7 @@
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 
 - 4.0.0: ABI incompatible (feature removal)
+	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- remove code marked with REMOVE_4.0.0
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
