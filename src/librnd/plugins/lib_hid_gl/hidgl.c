@@ -215,7 +215,7 @@ RND_INLINE void reserve_grid_points(int n, int n3)
 	}
 }
 
-void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid)
+void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid)
 {
 	int npoints = 0;
 	rnd_coord_t x, y;
@@ -259,17 +259,17 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy,
 	hidgl_draw.xor_end();
 }
 
-void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
+void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
 {
 	rnd_coord_t x1, y1, x2, y2, n, i, n3;
 	double x, y;
 
 	hidgl_draw.xor_start();
 
-	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
-	y1 = rnd_grid_fit(MAX(0, drawn_area->Y1), hidlib->grid, hidlib->grid_oy);
-	x2 = rnd_grid_fit(MIN(hidlib->size_x, drawn_area->X2), hidlib->grid, hidlib->grid_ox);
-	y2 = rnd_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), hidlib->grid, hidlib->grid_oy);
+	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), grd, hidlib->grid_ox);
+	y1 = rnd_grid_fit(MAX(0, drawn_area->Y1), grd, hidlib->grid_oy);
+	x2 = rnd_grid_fit(MIN(hidlib->size_x, drawn_area->X2), grd, hidlib->grid_ox);
+	y2 = rnd_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), grd, hidlib->grid_oy);
 
 	if (x1 > x2) {
 		rnd_coord_t tmp = x1;
@@ -283,17 +283,17 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 		y2 = tmp;
 	}
 
-	n = (int)((x2 - x1) / hidlib->grid + 0.5) + 1;
+	n = (int)((x2 - x1) / grd + 0.5) + 1;
 	reserve_grid_points(n, cross_grid ? n*2 : 0);
 
 	/* draw grid center points and y offset points */
 	hidgl_draw.draw_points_pre(grid_points);
 
 	n = 0;
-	for(x = x1; x <= x2; x += hidlib->grid, ++n)
+	for(x = x1; x <= x2; x += grd, ++n)
 		grid_points[2 * n + 0] = x;
 
-	for(y = y1; y <= y2; y += hidlib->grid) {
+	for(y = y1; y <= y2; y += grd) {
 		for(i = 0; i < n; i++)
 			grid_points[2 * i + 1] = y;
 		hidgl_draw.draw_points(n);
@@ -315,12 +315,12 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, 
 		hidgl_draw.draw_points_pre(grid_points3);
 
 		n3 = 0;
-		for(x = x1; x <= x2; x += hidlib->grid) {
+		for(x = x1; x <= x2; x += grd) {
 			grid_points3[2 * n3 + 0] = x - scale; n3++;
 			grid_points3[2 * n3 + 0] = x + scale; n3++;
 		}
 
-		for(y = y1; y <= y2; y += hidlib->grid) {
+		for(y = y1; y <= y2; y += grd) {
 			for(i = 0; i < n3; i++)
 				grid_points3[2 * i + 1] = y;
 			hidgl_draw.draw_points(n3);

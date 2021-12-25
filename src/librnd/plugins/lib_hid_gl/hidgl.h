@@ -33,8 +33,8 @@
 #include <librnd/core/hid.h>
 
 /*extern float global_depth;*/
-void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid);
-void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid);
+void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid);
+void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid);
 void hidgl_set_depth(float depth);
 void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, double scale);
 void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vrx, rnd_coord_t vry, rnd_angle_t start_angle, rnd_angle_t delta_angle, double scale);
