@@ -3,8 +3,6 @@
 		- BUG: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
 		- BUG: message window doesn't scroll to bottom on startup initial open [report: Igor2]
 		- BUG: window geometry is not loaded properly [report: Igor2]
-	- gtk4 test after opengl:
-		- benchmark [report: Igor2]
 
 - 3.2.0: ABI compatible, API extensions
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
