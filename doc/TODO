@@ -4,7 +4,6 @@
 		- BUG: message window doesn't scroll to bottom on startup initial open [report: Igor2]
 		- BUG: window geometry is not loaded properly [report: Igor2]
 	- gtk4 test after opengl:
-		- pointer warp on X11 (ui_crosshair.c) [report: Igor2]
 		- benchmark [report: Igor2]
 
 - 3.2.0: ABI compatible, API extensions
