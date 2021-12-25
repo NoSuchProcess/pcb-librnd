@@ -240,8 +240,7 @@ RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glEnable(GL_TEXTURE_2D);
-TODO("This will break as glAlphaFunc got removed");
-		vao_color_vertbuf(-3, 0, 0, 0); /* enable using texture instead of color */
+		vao_color_vertbuf(-3.3, 0, 0, 0); /* enable using texture instead of color */
 	}
 	else
 		vao_color_vertbuf(prim->r, prim->g, prim->b, prim->a);
@@ -613,7 +612,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL "uniform vec4 inputColor;"
 			NL "uniform sampler2D inputTexture;" /* we do not have to load this one, as 0 is default */
 			NL "void main() {"
-			NL "  if (inputColor[0] == -3) {"
+			NL "  if (inputColor[0] < -3) {"
 			NL "    gl_FragColor = texture(inputTexture, TexCoord);"
 			NL "  } else {"
 			NL "    gl_FragColor = inputColor;"
@@ -642,7 +641,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL "uniform vec4 inputColor;"
 			NL "uniform sampler2D inputTexture;" /* we do not have to load this one, as 0 is default */
 			NL "void main() {"
-			NL "  if (inputColor[0] == -3) {"
+			NL "  if (inputColor[0] < -3) {"
 			NL "    outputColor = texture(inputTexture, TexCoord);"
 			NL "  } else {"
 			NL "    outputColor = inputColor;"
