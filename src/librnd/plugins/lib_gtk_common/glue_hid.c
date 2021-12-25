@@ -264,7 +264,7 @@ static char *rnd_gtkg_fileselect(rnd_hid_t *hid, const char *title, const char *
 
 static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
-	return rnd_gtk_attr_dlg_new((rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return rnd_gtk_attr_dlg_new(hid, (rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
 static void rnd_gtkg_beep(rnd_hid_t *hid);

@@ -808,7 +808,7 @@ static void rnd_gtk_initial_wstates(attr_dlg_t *ctx)
 			rnd_gtk_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
@@ -859,12 +859,15 @@ void *rnd_gtk_attr_dlg_new(rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t 
 	rnd_gtk_attr_dlg_add(ctx, main_vbox, NULL, 0);
 
 	gtkc_widget_show_all(ctx->dialog);
+	gtk_widget_realize(ctx->dialog);
+	hid->iterate(hid); /* give the window a chance to realize */
 	gtk4c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 
 	rnd_gtk_initial_wstates(ctx);
 
 	if (rnd_gtk_conf_hid.plugins.hid_gtk.dialog.auto_present)
 		gtk_window_present(GTK_WINDOW(ctx->dialog));
+
 
 	return ctx;
 }
