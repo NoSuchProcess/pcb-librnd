@@ -66,6 +66,7 @@ typedef struct {
 	unsigned freeing_gui:1;
 	unsigned being_destroyed:1;
 	unsigned modal:1;
+	unsigned placed:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -697,6 +698,8 @@ static int rnd_gtk_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val
 static gint rnd_gtk_attr_dlg_configure_event_cb(GtkWidget *widget, long x, long y, long z, gpointer data)
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)data;
+	if (!ctx->placed)
+		return FALSE;
 	return rnd_gtk_winplace_cfg(ctx->gctx->hidlib, widget, ctx, ctx->id);
 }
 
@@ -808,6 +811,35 @@ static void rnd_gtk_initial_wstates(attr_dlg_t *ctx)
 			rnd_gtk_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
+RND_INLINE void rnd_gtk_attr_dlg_place(attr_dlg_t *ctx, int *plc, int defx, int defy)
+{
+	if (rnd_conf.editor.auto_place) {
+		if ((plc[2] > 0) && (plc[3] > 0))
+			gtkc_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
+		if ((plc[0] >= 0) && (plc[1] >= 0))
+			gtkc_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
+	}
+	else if ((defx > 0) && (defy > 0))
+		gtkc_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
+}
+
+typedef struct {
+	attr_dlg_t *ctx;
+	int plc[4];
+	int defx, defy;
+} attr_dlg_timed_place_t;
+
+
+static gboolean attr_dlg_timed_place(void *udata)
+{
+	attr_dlg_timed_place_t *tp = udata;
+
+	rnd_gtk_attr_dlg_place(tp->ctx, tp->plc, tp->defx, tp->defy);
+	tp->ctx->placed = 1;
+	free(tp);
+	return FALSE;
+}
+
 void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *main_vbox;
@@ -833,6 +865,23 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 
 	rnd_event(gctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
+	if (!GTKC_TIMED_WINDOW_PLACEMENT) {
+		/* do the placement immediately, gtk won't interfere (gtk2) */
+		rnd_gtk_attr_dlg_place(ctx, plc, defx, defy);
+		ctx->placed = 1;
+	}
+	else {
+		/* cheat: do the placement after a while because gtk interferes (gtk4) */
+		attr_dlg_timed_place_t *tp = malloc(sizeof(attr_dlg_timed_place_t));
+		tp->ctx = ctx;
+		memcpy(tp->plc, plc, sizeof(plc));
+		tp->defx = defx;
+		tp->defy = defy;
+		g_timeout_add(500, G_CALLBACK(attr_dlg_timed_place), tp);
+		ctx->placed = 0;
+	}
+
+
 	ctx->dialog = gtk_dialog_new();
 	if ((modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modal) || (!modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modeless))
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
@@ -841,14 +890,6 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	gtkc_window_set_role(GTK_WINDOW(ctx->dialog), id); /* optional hint for the window manager for figuring session placement/restore */
 	gtk_window_set_modal(GTK_WINDOW(ctx->dialog), modal);
 
-	if (rnd_conf.editor.auto_place) {
-		if ((plc[2] > 0) && (plc[3] > 0))
-			gtkc_window_resize(GTK_WINDOW(ctx->dialog), plc[2], plc[3]);
-		if ((plc[0] >= 0) && (plc[1] >= 0))
-			gtkc_window_move(GTK_WINDOW(ctx->dialog), plc[0], plc[1]);
-	}
-	else if ((defx > 0) && (defy > 0))
-		gtkc_window_resize(GTK_WINDOW(ctx->dialog), defx, defy);
 
 	gtk2c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 	ctx->destroy_handler = gtkc_bind_win_destroy(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_destroy, rnd_gtk_attr_dlg_destroy_event_cb, ctx));
