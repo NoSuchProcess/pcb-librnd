@@ -837,7 +837,7 @@ static gboolean attr_dlg_timed_place(void *udata)
 	rnd_gtk_attr_dlg_place(tp->ctx, tp->plc, tp->defx, tp->defy);
 	tp->ctx->placed = 1;
 	free(tp);
-	return FALSE;
+	return FALSE; /* remove */
 }
 
 void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)

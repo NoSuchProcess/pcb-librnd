@@ -201,7 +201,7 @@ static gboolean topwin_timed_place(void *udata)
 	rnd_gtk_t *gctx = udata;
 	rnd_gtk_topwinplace(gctx->hidlib, gctx->wtop_window, "top");
 	gctx->topwin.placed = 1;
-	return G_SOURCE_REMOVE;
+	return FALSE; /* remove */
 }
 
 static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
