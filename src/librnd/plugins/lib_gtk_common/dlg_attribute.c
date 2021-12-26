@@ -901,7 +901,6 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 
 	gtkc_widget_show_all(ctx->dialog);
 	gtk_widget_realize(ctx->dialog);
-	hid->iterate(hid); /* give the window a chance to realize */
 	gtk4c_bind_win_resize(ctx->dialog, rnd_gtkc_xy_ev(&ctx->ev_resize, rnd_gtk_attr_dlg_configure_event_cb, ctx));
 
 	rnd_gtk_initial_wstates(ctx);
