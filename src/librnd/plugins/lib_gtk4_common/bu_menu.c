@@ -37,7 +37,7 @@
 
 #include "bu_menu_model.c"
 
-static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked);
 static GtkWidget *gtkci_menu_open(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *nparent, lht_node_t *mnd, int is_main, int is_tearoff, int is_ctx_popup);
 static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd);
 static void gtkci_menu_build(rnd_gtk_menu_ctx_t *ctx, open_menu_t *om, lht_node_t *mnd);
@@ -271,7 +271,7 @@ static gboolean hover_timer_cb(void *user_data)
 {
 	rnd_gtk_menu_ctx_t *ctx = user_data;
 	ctx->hover_timer = 0;
-	gtkci_menu_activate(ctx, ctx->hover_row, ctx->hover_mnd, 0, 0);
+	gtkci_menu_activate(ctx, NULL, ctx->hover_row, ctx->hover_mnd, 0, 0);
 	return FALSE;  /* Turns timer off */
 }
 
@@ -452,7 +452,7 @@ static void menu_row_click_cb(GtkWidget *widget, gpointer data)
 	ctx = mnd->doc->root->user_data;
 /*	printf("Clicked menu %d: %s\n", idx, mnd->name);
 	fflush(stdout);*/
-	gtkci_menu_activate(ctx, GTK_WIDGET(row), mnd, 0, 1);
+	gtkci_menu_activate(ctx, om, GTK_WIDGET(row), mnd, 0, 1);
 }
 
 static gboolean menu_unparent_cb(void *user_data)
@@ -600,8 +600,8 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 	}
 }
 
-/* Execute actions for a menu or open a submenu */
-static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
+/* Execute actions for a menu or open a submenu; om is often NULL */
+static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx,open_menu_t *om, GtkWidget *widget, lht_node_t *mnd, int is_main, int clicked)
 {
 	if (!menu_is_sensitive(mnd)) {
 /*		printf("insensitive\n");*/
@@ -628,6 +628,18 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx, GtkWidget *widget, lht_
 
 	if (clicked) {
 		lht_node_t *n_action = rnd_hid_cfg_menu_field(mnd, RND_MF_ACTION, NULL);
+
+		if (om != NULL) {
+			/* gtk4 bug: the GUI may lock up if the popover is not popped down before
+			   executing the action; this was the case with pcb-rnd, right click on
+			   layer name, insert new layer before...
+			   (This will also call gtkc_open_menu_del() from unmap) */
+			if (om->floating)
+				gtk_window_destroy(GTK_WINDOW(om->popwin));
+			else
+				gtk_popover_popdown(GTK_POPOVER(om->popwin));
+		}
+
 		main_menu_popdown_all(ctx);
 		rnd_hid_cfg_action(ghidgui->hidlib, n_action);
 	}
@@ -642,7 +654,7 @@ static void enter_main_menu_cb(GtkEventController *controller, double x, double 
 	   button is hovered, switch to that menu (opening it without a click) */
 	if ((ctx->main_open_w != NULL) && (ctx->main_open_n != mm)) {
 		GtkWidget *widget = gtk_event_controller_get_widget(controller);
-		gtkci_menu_activate(ctx, widget, mm, 1, 1);
+		gtkci_menu_activate(ctx, NULL, widget, mm, 1, 1);
 	}
 }
 
@@ -651,7 +663,7 @@ static void open_main_menu_cb(GtkWidget *widget, gpointer data)
 	lht_node_t *mm = data;
 	rnd_gtk_menu_ctx_t *ctx = mm->doc->root->user_data;
 
-	gtkci_menu_activate(ctx, widget, mm, 1, 1);
+	gtkci_menu_activate(ctx, NULL, widget, mm, 1, 1);
 }
 
 static void rnd_gtk_main_menu_add_node(rnd_gtk_menu_ctx_t *ctx, GtkWidget *menu_bar, const lht_node_t *base)
