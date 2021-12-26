@@ -31,6 +31,9 @@
 
 #define RND_FOR_GTK4 1
 
+/* it doesn't work from realize or map, gtk4 overrides it later */
+#define GTKC_TIMED_WINDOW_PLACEMENT 1
+
 #define GTKC_LITERAL_COLOR(a,r,g,b) {.red=r/65536.0, .green=g/65536.0, .blue=b/65536.0, .alpha = a/65536.0}
 
 

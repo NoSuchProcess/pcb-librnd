@@ -182,7 +182,7 @@ static void rnd_gtkg_do_exit_(rnd_gtk_t *gctx)
 static void rnd_gtkg_do_exit(rnd_hid_t *hid);
 
 
-static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
+void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
 {
 	int plc[4] = {-1, -1, -1, -1};
 
@@ -196,6 +196,14 @@ static void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 	}
 }
 
+gboolean topwin_realize(void *udata)
+{
+	rnd_gtk_t *gctx = udata;
+	rnd_gtk_topwinplace(gctx->hidlib, gctx->wtop_window, "top");
+	gctx->topwin.placed = 1;
+	return G_SOURCE_REMOVE;
+}
+
 static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 {
 	GtkWidget *window;
@@ -207,9 +215,19 @@ static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 	gctx->impl.init_renderer(argc, argv, &gctx->port);
 	gctx->wtop_window = window = gctx->port.top_window = gtkc_topwin_new();
 
-	rnd_gtk_topwinplace(gctx->hidlib, window, "top");
-	gtk_window_set_title(GTK_WINDOW(window), rnd_app.package);
+	if (!GTKC_TIMED_WINDOW_PLACEMENT) {
+		/* do the placement immediately, gtk won't interfere (gtk2) */
+		rnd_gtk_topwinplace(gctx->hidlib, window, "top");
+		gctx->topwin.placed = 1;
+	}
+	else {
+		/* cheat: do the placement after a while because gtk interferes (gtk4) */
+		g_timeout_add(500, G_CALLBACK(topwin_realize), gctx);
+		gctx->topwin.placed = 0;
+	}
 
+
+	gtk_window_set_title(GTK_WINDOW(window), rnd_app.package);
 	gtkc_widget_show_all(gctx->port.top_window);
 }
 

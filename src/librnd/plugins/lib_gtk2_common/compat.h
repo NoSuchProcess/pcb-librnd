@@ -31,6 +31,8 @@
 
 #define RND_FOR_GTK2 1
 
+#define GTKC_TIMED_WINDOW_PLACEMENT 0
+
 #define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk2_common/bu_menu.h>
 
 #include <gtk/gtk.h>

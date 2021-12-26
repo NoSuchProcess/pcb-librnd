@@ -201,6 +201,10 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 /* Save size of top window changes so PCB can restart at its size at exit. */
 static gint top_window_configure_event_cb(GtkWidget *widget, long x, long y, long z, void *tw_)
 {
+	rnd_gtk_topwin_t *tw = tw_;
+	if (!tw->placed)
+		return FALSE;
+
 	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
 

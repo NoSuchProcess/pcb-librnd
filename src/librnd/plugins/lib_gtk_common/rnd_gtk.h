@@ -150,6 +150,7 @@ struct rnd_gtk_topwin_s {
 	gboolean adjustment_changed_holdoff;
 	gboolean small_label_markup;
 	int active; /* 0 before init finishes */
+	int placed;
 	gtkc_event_xyz_t dwg_rs, dwg_sc, dwg_enter, dwg_leave, dwg_motion;
 
 	/* docking */
