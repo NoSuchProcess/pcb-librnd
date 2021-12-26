@@ -42,10 +42,6 @@ struct _GtkcScrollbar {
 	double drag_offs;
 };
 
-/*typedef struct {
-	GtkWidgetClass parent_class;
-} GtkcScrollbarClass;*/
-
 G_DEFINE_TYPE(GtkcScrollbar, gtkc_scrollbar, GTK_TYPE_WIDGET)
 
 enum {
@@ -54,17 +50,6 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
-
-
-/*
-#warning TODO: remove this if there is no local fields to free
-static void gtkc_scrollbar_dispose(GObject *object)
-{
-	GtkcScrollbar *scb = GTKC_SCROLLBAR(object);
-
-	G_OBJECT_CLASS(gtkc_scrollbar_parent_class)->dispose(object);
-}
-*/
 
 /* Normalize min/max/val/win to between 0..1 and return 1 if values are valid */
 static int gtkc_scrollbar_normalize(GtkcScrollbar *scb)
@@ -173,7 +158,6 @@ static void gtkc_scrollbar_class_init(GtkcScrollbarClass *class)
 	GObjectClass *object_class = G_OBJECT_CLASS(class);
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(class);
 
-/*	object_class->dispose = gtkc_scrollbar_dispose;*/
 	widget_class->snapshot = gtkc_scrollbar_snapshot;
 	widget_class->measure = gtkc_scrollbar_measure;
 
