@@ -637,7 +637,7 @@ static void gtkci_menu_activate(rnd_gtk_menu_ctx_t *ctx,open_menu_t *om, GtkWidg
 			if (om->floating)
 				gtk_window_destroy(GTK_WINDOW(om->popwin));
 			else
-				gtk_popover_popdown(GTK_POPOVER(om->popwin));
+				gtk_popover_popdown(GTK_POPOVER(om->popwin)); /* This should be gtk_widget_unparent() but that locks up the GUI in the above case */
 		}
 
 		main_menu_popdown_all(ctx);
