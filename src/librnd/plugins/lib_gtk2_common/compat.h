@@ -148,9 +148,9 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled), child);
 }
 
-static inline GdkWindow * gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
+static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
-	return gdk_window_get_pointer(gtkc_widget_get_window(w), x, y, mask);
+	gdk_window_get_pointer(gtkc_widget_get_window(w), x, y, mask);
 }
 
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
