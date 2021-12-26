@@ -197,7 +197,6 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), child);
 }
 
-TODO("should be void in gtk2 too")
 static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
 	double dx, dy;
