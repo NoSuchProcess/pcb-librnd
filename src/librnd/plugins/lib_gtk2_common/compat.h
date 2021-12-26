@@ -213,6 +213,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtkc_window_set_role(win, id)     gtk_window_set_role(win, id)
 #define gtkc_window_resize(win, x, y)     gtk_window_resize(win, x, y)
 #define gtkc_window_move(win, x, y)       gtk_window_move(win, x, y)
+#define gtkc_window_get_position(w, x, y) gtk_window_get_position(w, x, y)
 #define gtkc_dialog_run(dlg, modal)       gtk_dialog_run(dlg)
 #define gtkc_widget_destroy(w)            gtk_widget_destroy(w)
 #define gtkc_main_quit()                  gtk_main_quit()

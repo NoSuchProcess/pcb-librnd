@@ -294,6 +294,7 @@ void gtkc_widget_modify_bg_(GtkWidget *w, rnd_gtk_color_t *color);
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);
 void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y);
+void gtkc_window_get_position(GtkWindow *win, int *x, int *y);
 #define gtkc_main_quit()                  g_main_loop_quit(NULL)
 #define gtkc_bgcolor_box_new()            gtkc_hbox_new(TRUE, 0)
 #define gtkc_bgcolor_box_set_child(b, ch) gtkc_box_pack_append(b, ch, TRUE, 0)

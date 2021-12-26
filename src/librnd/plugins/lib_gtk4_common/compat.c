@@ -333,6 +333,11 @@ void gtkc_widget_window_origin(GtkWidget *wdg, int *x, int *y)
 	*x = *y = 0;
 }
 
+void gtkc_window_get_position(GtkWindow *win, int *x, int *y)
+{
+	gtkc_widget_window_origin(GTK_WIDGET(win), x, y);
+}
+
 
 static void gtkci_stop_mainloop_cb(GtkWidget *widget, gpointer udata)
 {
