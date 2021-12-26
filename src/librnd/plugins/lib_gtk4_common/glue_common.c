@@ -16,7 +16,7 @@ static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollb, rnd_coord_t view
 	gtk_adjustment_set_step_increment(adj, ps / 100.0);
 	gtk_adjustment_set_page_increment(adj, ps / 10.0);
 
-TODO("This is probably not needed as all fields got written via calls");
+/* This is probably not needed as all fields got written via calls: */
 /*	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");*/
 }
 
