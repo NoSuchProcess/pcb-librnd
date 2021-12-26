@@ -107,7 +107,8 @@ void hidgl_stencil_init(void)
 
 void hidgl_uninit(void)
 {
-	hidgl_draw.uninit();
+	if (hidgl_draw.uninit != NULL)
+		hidgl_draw.uninit();
 }
 
 void hidgl_flush_drawing(void)
