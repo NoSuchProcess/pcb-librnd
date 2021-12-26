@@ -881,7 +881,7 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 		memcpy(tp->plc, plc, sizeof(plc));
 		tp->defx = defx;
 		tp->defy = defy;
-		g_timeout_add(500, G_CALLBACK(attr_dlg_timed_place), tp);
+		g_timeout_add(500, attr_dlg_timed_place, tp);
 		ctx->placed = 0;
 	}
 

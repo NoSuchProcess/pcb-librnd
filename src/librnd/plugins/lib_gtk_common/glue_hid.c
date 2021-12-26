@@ -222,7 +222,7 @@ static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 	}
 	else {
 		/* cheat: do the placement after a while because gtk interferes (gtk4) */
-		g_timeout_add(500, G_CALLBACK(topwin_timed_place), gctx);
+		g_timeout_add(500, topwin_timed_place, gctx);
 		gctx->topwin.placed = 0;
 	}
 
