@@ -196,7 +196,7 @@ void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id
 	}
 }
 
-gboolean topwin_realize(void *udata)
+static gboolean topwin_timed_place(void *udata)
 {
 	rnd_gtk_t *gctx = udata;
 	rnd_gtk_topwinplace(gctx->hidlib, gctx->wtop_window, "top");
@@ -222,7 +222,7 @@ static void rnd_gtk_topwin_create(rnd_gtk_t *gctx, int *argc, char ***argv)
 	}
 	else {
 		/* cheat: do the placement after a while because gtk interferes (gtk4) */
-		g_timeout_add(500, G_CALLBACK(topwin_realize), gctx);
+		g_timeout_add(500, G_CALLBACK(topwin_timed_place), gctx);
 		gctx->topwin.placed = 0;
 	}
 
