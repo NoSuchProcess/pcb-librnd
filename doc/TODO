@@ -1,6 +1,5 @@
 - 3.1.1: ABI compatible, no extensions
 	- gtk4 (widgets):
-		- BUG: right click context menu on mask layer, insert new layer after current, finish the dialog -> GUI lockup [report: Igor2]
 		- BUG: window geometry is not loaded properly [report: Igor2]
 
 - 3.2.0: ABI compatible, API extensions
