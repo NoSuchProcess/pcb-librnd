@@ -52,7 +52,7 @@ typedef enum {
 	RND_EVENT_CROSSHAIR_MOVE,         /* called when the crosshair changed coord; arg is an integer which is zero if more to come */
 
 	RND_EVENT_DAD_NEW_DIALOG,         /* called by the GUI after a new DAD dialog is open; args are pointer hid_ctx,  string dialog id and a pointer to int[4] for getting back preferre {x,y,w,h} (-1 means unknown) */
-	RND_EVENT_DAD_NEW_GEO,            /* called by the GUI after the window geometry got reconfigured; args are: void *hid_ctx, const char *dialog id, int x1, int y1, int width, int height */
+	RND_EVENT_DAD_NEW_GEO,            /* called by the GUI after the window geometry _may_ have changed; args are: void *hid_ctx, const char *dialog id, int x1, int y1, int width, int height */
 
 	RND_EVENT_EXPORT_SESSION_BEGIN,   /* called before an export session (e.g. CAM script execution) starts; should not be nested; there's no guarantee that options are parsed before or after this event */
 	RND_EVENT_EXPORT_SESSION_END,     /* called after an export session (e.g. CAM script execution) ends */
