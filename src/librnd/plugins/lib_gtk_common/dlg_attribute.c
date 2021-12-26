@@ -865,6 +865,10 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 
 	rnd_event(gctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
+	ctx->dialog = gtk_dialog_new();
+	if ((modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modal) || (!modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modeless))
+		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
+
 	if (!GTKC_TIMED_WINDOW_PLACEMENT) {
 		/* do the placement immediately, gtk won't interfere (gtk2) */
 		rnd_gtk_attr_dlg_place(ctx, plc, defx, defy);
@@ -881,10 +885,6 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 		ctx->placed = 0;
 	}
 
-
-	ctx->dialog = gtk_dialog_new();
-	if ((modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modal) || (!modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modeless))
-		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
 
 	gtk_window_set_title(GTK_WINDOW(ctx->dialog), title);
 	gtkc_window_set_role(GTK_WINDOW(ctx->dialog), id); /* optional hint for the window manager for figuring session placement/restore */
