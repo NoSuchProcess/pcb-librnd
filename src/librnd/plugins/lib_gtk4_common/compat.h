@@ -194,12 +194,10 @@ typedef struct {
 
 static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, GtkWidget *child)
 {
-	TODO("verify that this works; pcb-rnd layer binding is a good candidate");
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), child);
 }
 
 TODO("should be void in gtk2 too")
-TODO("test this, e.g. shift pressed")
 static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
 	double dx, dy;
