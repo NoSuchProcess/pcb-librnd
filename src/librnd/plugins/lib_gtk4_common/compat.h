@@ -112,29 +112,29 @@ static inline GtkWidget *gtkc_vbox_new(gboolean homogenous, gint spacing)
 static inline GtkWidget *gtkc_hpaned_new()
 {
 	GtkWidget *wp = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_paned_set_wide_handle(wp, 1);
+	gtk_paned_set_wide_handle(GTK_PANED(wp), 1);
 	return wp;
 }
 
 static inline GtkWidget *gtkc_vpaned_new()
 {
 	GtkWidget *wp = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
-	gtk_paned_set_wide_handle(wp, 1);
+	gtk_paned_set_wide_handle(GTK_PANED(wp), 1);
 	return wp;
 }
 
 static inline void gtkc_paned_pack1(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
 {
-	gtk_paned_set_start_child(pane, ch);
-	gtk_paned_set_shrink_start_child(pane, 0);
-	gtk_paned_set_resize_start_child(pane, resiz);
+	gtk_paned_set_start_child(GTK_PANED(pane), ch);
+	gtk_paned_set_shrink_start_child(GTK_PANED(pane), 0);
+	gtk_paned_set_resize_start_child(GTK_PANED(pane), resiz);
 }
 
 static inline void gtkc_paned_pack2(GtkWidget *pane, GtkWidget *ch, gboolean resiz)
 {
-	gtk_paned_set_end_child(pane, ch);
-	gtk_paned_set_shrink_end_child(pane, 0);
-	gtk_paned_set_resize_end_child(pane, resiz);
+	gtk_paned_set_end_child(GTK_PANED(pane), ch);
+	gtk_paned_set_shrink_end_child(GTK_PANED(pane), 0);
+	gtk_paned_set_resize_end_child(GTK_PANED(pane), resiz);
 }
 
 /* color button */
