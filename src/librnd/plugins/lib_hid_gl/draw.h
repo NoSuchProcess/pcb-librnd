@@ -94,7 +94,8 @@ struct hidgl_draw_s {
 	void (*draw_points_pre)(GLfloat *pts);   /* prepare for drawing points from x;y coord array pts */
 	void (*draw_points)(int npts);           /* draw the first npts points from pts set above; can be called multiple times */
 	void (*draw_points_post)(void);          /* stop drawing points */
-	void (*draw_lines6)(GLfloat *pts, int npts); /* draw lines from an array of x,y,r,g,b,a */
+	void (*draw_lines6)(GLfloat *pts, int npts, float red, float green,
+		float blue, float alpha);              /* draw lines from an array of x,y,r,g,b,a; only x;y needs to be filled in but r,g,b,a needs to be reserved in the array */
 
 	/*** admin ***/
 	hidgl_draw_t *next; /* linked list of all backends, except for the error backend */

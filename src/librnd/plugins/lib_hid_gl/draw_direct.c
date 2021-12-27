@@ -242,8 +242,18 @@ static void direct_draw_points_post(void)
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-static void direct_draw_lines6(GLfloat *pts, int npts)
+static void direct_draw_lines6(GLfloat *pts, int npts, float red, float green, float blue, float alpha)
 {
+	GLfloat *p;
+	int i;
+
+	for(i = 0, p = pts; i < npts; i++, p += 6) {
+		p[2] = red;
+		p[3] = green;
+		p[4] = blue;
+		p[5] = alpha;
+	}
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(2, GL_FLOAT, sizeof(float) * 6, pts);

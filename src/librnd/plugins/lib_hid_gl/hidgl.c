@@ -741,15 +741,7 @@ void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c)
 
 void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, float blue, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
-	int i;
 	GLfloat points[4][6];
-
-	for(i=0; i<4; ++i) {
-		points[i][2] = red;
-		points[i][3] = green;
-		points[i][4] = blue;
-		points[i][5] = 1.0f;
-	}
 
 	points[0][0] = x;
 	points[0][1] = miny;
@@ -761,7 +753,7 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	points[3][1] = y;
 
 	hidgl_draw.xor_start();
-	hidgl_draw.draw_lines6((GLfloat *)points, 4);
+	hidgl_draw.draw_lines6((GLfloat *)points, 4, red, green, blue, 1.0);
 	hidgl_draw.xor_end();
 }
 
