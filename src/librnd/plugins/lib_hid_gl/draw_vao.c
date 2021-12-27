@@ -331,7 +331,7 @@ static void vao_uninit(void)
 
 static int vao_init_checkver(void)
 {
-	GLint profmask, major = gl_get_ver_major();
+	GLint profmask = 0, major = gl_get_ver_major();
 
 	if (major < 0) {
 		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: failed to determine opengl version\n");

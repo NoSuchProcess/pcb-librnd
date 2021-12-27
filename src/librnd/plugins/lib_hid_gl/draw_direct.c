@@ -310,7 +310,7 @@ static void direct_uninit(void)
 
 static int direct_init(void)
 {
-	GLint profmask, major;
+	GLint profmask = 0, major;
 
 	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_direct) {
 		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: disabled from conf\n");
