@@ -1,5 +1,7 @@
 #include "compat.h"
 
+#define DLG_INCLUDES "librnd/plugins/lib_gtk4_common/dlg_includes.c"
+
 #include <librnd/core/hid_dad.h>
 #include "gtkc_trunc_label.h"
 

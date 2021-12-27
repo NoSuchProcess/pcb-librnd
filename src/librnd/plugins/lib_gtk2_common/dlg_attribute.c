@@ -2,6 +2,8 @@
 
 #include <librnd/core/hid_dad.h>
 
+#define DLG_INCLUDES "librnd/plugins/lib_gtk2_common/dlg_includes.c"
+
 static inline GtkWidget *gtkc_dad_label_new(rnd_hid_attribute_t *attr)
 {
 	GtkWidget *widget;

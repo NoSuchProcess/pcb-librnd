@@ -290,10 +290,7 @@ typedef struct {
 
 static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk_attr_tb_t *tb_st, int start_from);
 
-#include "dlg_attr_tree.c"
-#include "dlg_attr_misc.c"
-#include "dlg_attr_txt.c"
-#include "dlg_attr_box.c"
+#include DLG_INCLUDES
 
 static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk_attr_tb_t *tb_st, int start_from)
 {
