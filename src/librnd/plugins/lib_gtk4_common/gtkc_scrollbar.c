@@ -198,8 +198,12 @@ static gboolean scb_mouse_press_cb(GtkGestureClick *self, gint n_press, double x
 	GtkcScrollbar *scb = user_data;
 	double cval = gtkc_scrollbar_screen2normal(scb, x, y);
 
-	if ((cval < scb->nval) || (cval > scb->nval + scb->nwin))
-		return TRUE; /* not grabbing the slider */
+	if ((cval < scb->nval) || (cval > scb->nval + scb->nwin)) {
+		/* clicked background: not grabbing the slider */
+		gtkc_scrollbar_set_val_normal(scb, cval - scb->nwin/2);
+		g_signal_emit(scb, signals[VALUE_CHANGED], 0);
+		return TRUE;
+	}
 
 	scb->drag_offs = cval - scb->nval;
 	scb->dragging = 1;
