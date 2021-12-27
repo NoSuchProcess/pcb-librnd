@@ -377,7 +377,8 @@ int hook_detect_target()
 	if (want_stroke) {
 		require("libs/gui/libstroke/presents", 0, 0);
 		if (!istrue(get("libs/gui/libstroke/presents"))) {
-			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
+			if (plug_is_explicit("stroke"))
+				report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
 			hook_custom_arg("disable-stroke", NULL);
 		}
 	}
