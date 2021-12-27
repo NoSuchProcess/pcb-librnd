@@ -786,18 +786,31 @@ int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 	return 0;
 }
 
-int rnd_main_args_setup1(rnd_main_args_t *ga)
+static int apply_plugin_cli_conf(rnd_main_args_t *ga, int relax)
 {
 	int n;
-	/* Now that plugins are already initialized, apply plugin config items */
 	for(n = 0; n < vtp0_len(&ga->plugin_cli_conf); n++) {
 		const char *why, *arg = ga->plugin_cli_conf.array[n];
+
+		if (ga->plugin_cli_conf.array[n] == NULL) continue;
+
 		if (rnd_conf_set_from_cli(NULL, arg, NULL, &why) != 0) {
-			fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
-			return 1;
+			if (!relax) {
+				fprintf(stderr, "Error: failed to set config %s: %s\n", arg, why);
+				return 1;
+			}
 		}
+		else
+			ga->plugin_cli_conf.array[n] = NULL; /* remove if succesfully set so it won't be set again on multiple calls at different stages */
 	}
-	vtp0_uninit(&ga->plugin_cli_conf);
+	return 0;
+}
+
+int rnd_main_args_setup1(rnd_main_args_t *ga)
+{
+	/* Now that plugins are already initialized, apply plugin config items;
+	   non-existing ones are not fatal as the GUI plugin is not yet loaded */
+	apply_plugin_cli_conf(ga, 1);
 
 	/* Export pcb from command line if requested.  */
 	switch(ga->do_what) {
@@ -832,6 +845,13 @@ int rnd_main_args_setup1(rnd_main_args_t *ga)
 	/* Exit with error if GUI failed to start. */
 	if (!rnd_gui)
 		return 1;
+
+	/* Now that even the GUI plugin is initialized, apply remaining plugin config
+	   items; non-existing ones are fatal */
+	if (apply_plugin_cli_conf(ga, 0) != 0)
+		return 1;
+
+	vtp0_uninit(&ga->plugin_cli_conf);
 
 	return 0;
 }
