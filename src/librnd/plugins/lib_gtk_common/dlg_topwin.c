@@ -363,14 +363,14 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	/* This box will be made insensitive when the gui needs
 	   a modal button GetLocation button press. */
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
-	gtkc_paned_pack1(GTK_PANED(tw->hpaned_middle), tw->left_toolbar, FALSE);
+	gtkc_paned_pack1(tw->hpaned_middle, tw->left_toolbar, FALSE);
 
 	tw->dockbox[RND_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
 	gtkc_box_pack_append(tw->left_toolbar, tw->dockbox[RND_HID_DOCK_LEFT], TRUE, 0);
 
 	/* -- main content */
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
-	gtkc_paned_pack2(GTK_PANED(tw->hpaned_middle), tw->vbox_middle, TRUE);
+	gtkc_paned_pack2(tw->hpaned_middle, tw->vbox_middle, TRUE);
 
 
 	/* -- The PCB layout output drawing area */
