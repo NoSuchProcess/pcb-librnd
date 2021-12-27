@@ -9,7 +9,7 @@ static inline void rnd_gtk_preview_redraw_all(rnd_gtk_preview_t *preview)
 
 static gboolean rnd_gtk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev);
 
-static gboolean rnd_gtk_preview_render(GtkGLArea *area, GdkGLContext *context, void *udata)
+static gboolean rnd_gtk_preview_render(GtkGLArea *area, GdkGLContext *context)
 {
 	return rnd_gtk_preview_expose(GTK_WIDGET(area), NULL);
 }
