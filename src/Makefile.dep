@@ -1231,13 +1231,18 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk2_common/dlg_includes.c \
+ ../src/librnd/plugins/lib_gtk2_common/dlg_attr_tree.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_tree.c \
+ ../src/librnd/plugins/lib_gtk2_common/dlg_attr_misc.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_misc.c \
  ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/bu_pixbuf.h \
  ../src/librnd/plugins/lib_hid_common/dad_markup.h \
+ ../src/librnd/plugins/lib_gtk2_common/dlg_attr_txt.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_txt.c \
+ ../src/librnd/plugins/lib_gtk2_common/dlg_attr_box.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_box.c
 ../src/librnd/plugins/lib_gtk2_common/dlg_fileselect.o: \
  ../src/librnd/plugins/lib_gtk2_common/dlg_fileselect.c ../config.h \
@@ -1791,13 +1796,18 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src/librnd/plugins/lib_gtk_common/hid_gtk_conf.h \
+ ../src/librnd/plugins/lib_gtk4_common/dlg_includes.c \
+ ../src/librnd/plugins/lib_gtk4_common/dlg_attr_tree.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_tree.c \
+ ../src/librnd/plugins/lib_gtk4_common/dlg_attr_misc.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_misc.c \
  ../src/librnd/plugins/lib_gtk_common/wt_preview.h \
  ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/bu_pixbuf.h \
  ../src/librnd/plugins/lib_hid_common/dad_markup.h \
+ ../src/librnd/plugins/lib_gtk4_common/dlg_attr_txt.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_txt.c \
+ ../src/librnd/plugins/lib_gtk4_common/dlg_attr_box.c \
  ../src/librnd/plugins/lib_gtk_common/dlg_attr_box.c
 ../src/librnd/plugins/lib_gtk4_common/dlg_fileselect.o: \
  ../src/librnd/plugins/lib_gtk4_common/dlg_fileselect.c \
