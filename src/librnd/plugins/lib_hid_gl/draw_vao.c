@@ -93,10 +93,6 @@ static void vao_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 	alpha = a;
 }
 
-#ifdef DEBUG_PRINT_COORDS
-static float vtx, vty, vzx, vzy;
-#endif
-
 static void vao_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
 {
 	/* Debug Drawing */
@@ -113,16 +109,6 @@ static void vao_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2
 	vertbuf_add(x1, y1);
 	vertbuf_add(x2, y2);
 	vertbuf_add(x3, y3);
-
-#ifdef DEBUG_PRINT_COORDS
-	printf("add triangle: %.2f;%.2f  %.2f;%.2f  %.2f;%.2f  %.1f,%.1f,%.1f,%.1f\n",
-		x1, y1, x2, y2, x3, y3, red, green, blue, alpha);
-
-	printf("  %.4f;%.4f  %.4f;%.4f  %.4f;%.4f\n",
-		(x1 + vtx) * vzx, (y1 + vty) * vzy,
-		(x2 + vtx) * vzx, (y2 + vty) * vzy,
-		(x3 + vtx) * vzx, (y3 + vty) * vzy);
-#endif
 }
 
 static void vao_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
@@ -409,9 +395,6 @@ static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 {
 	zx /= (double)vao_view_w / 2.0;
 	zy /= -(double)vao_view_h / 2.0; /* invert: opengl's y+ is upward, librnd's is pointing down */
-#ifdef DEBUG_PRINT_COORDS
-	vtx = tx; vty = ty; vzx = zx; vzy = zy;
-#endif
 	glUniform4f(xform_location, tx, ty, zx, zy);
 }
 
