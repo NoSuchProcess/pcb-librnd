@@ -146,7 +146,7 @@ unsigned short int rnd_gtk_translate_key(const char *desc, int len)
 
 int rnd_gtk_key_name(unsigned short int key_char, char *out, int out_len)
 {
-	char *name = gdk_keyval_name(key_char);
+	const char *name = gdk_keyval_name(key_char);
 	if (name == NULL)
 		return -1;
 	strncpy(out, name, out_len);
