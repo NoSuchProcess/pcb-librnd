@@ -338,6 +338,7 @@ static gboolean rnd_gtk_tree_table_row_activated_cb(GtkTreeView *tv, GtkTreePath
 	return FALSE;
 }
 
+#ifdef RND_FOR_GTK2
 /* Return the x coord of the first non-arrow pixel or -1 if there's no arrow */
 static int rnd_gtk_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
 {
@@ -351,7 +352,6 @@ static int rnd_gtk_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
 	return rect.x;
 }
 
-#ifdef RND_FOR_GTK2
 /* Handle the double-click to be equivalent to "row-activated" signal */
 static gboolean rnd_gtk_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
