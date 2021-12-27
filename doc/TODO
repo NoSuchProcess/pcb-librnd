@@ -1,5 +1,7 @@
+*** Upcoming release ***
 - 3.1.1: ABI compatible, no extensions
 
+*** Later releases ***
 - 3.2.0: ABI compatible, API extensions
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- make a runtime vesion of RND_VER_STR and let apps print it
@@ -28,6 +30,6 @@
 		- core: RND_MF_ACTIVE, RND_MF_BACKGROUND, RND_MF_FOREGROUND, RND_MF_FONT
 		- check in all HIDs as well
 
-unsorted:
+*** Unsorted ***
 	- lesstif: vertical text, truncated text support
 	- DAD: on fsd dir change filelist scroll state is not reset [report: Wojciech]
