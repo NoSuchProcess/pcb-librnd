@@ -132,3 +132,40 @@ static void common_prim_rewind_to_marker(void)
 	primbuf_rewind();
 }
 
+
+/*** version query utils for init ***/
+RND_INLINE int gl_is_es(void)
+{
+	static const char es_prefix[] = "OpenGL ES";
+	const char *ver;
+
+	/* libepoxy says: some ES implementions (e.g. PowerVR) don't have the
+	   es_prefix in their version string. For now we ignore these as
+	   they need dlsym() to detect */
+
+	ver = (const char *)glGetString(GL_VERSION);
+	if (ver == NULL)
+		return 0;
+
+	return strncmp(ver, es_prefix, sizeof(es_prefix)-1) == 0;
+}
+
+RND_INLINE GLint gl_get_ver_major(void)
+{
+	GLint major;
+
+#ifdef GL_MAJOR_VERSION
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+#endif
+
+	if (major == 0)
+		glGetIntegerv(GL_VERSION, &major);
+
+	if (major == 0) {
+		const GLubyte *verstr = glGetString(GL_VERSION);
+		rnd_message(RND_MSG_DEBUG, "opengl gl_get_ver_major: you have a real ancient opengl version '%s'\n", verstr == NULL ? "<unknown>" : (const char *)verstr);
+		return -1;
+	}
+
+	return major;
+}

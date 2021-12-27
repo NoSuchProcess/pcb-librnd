@@ -331,18 +331,10 @@ static void vao_uninit(void)
 
 static int vao_init_checkver(void)
 {
-	GLint profmask, major = 0;
+	GLint profmask, major = gl_get_ver_major();
 
-#ifdef GL_MAJOR_VERSION
-	glGetIntegerv(GL_MAJOR_VERSION, &major);
-#endif
-
-	if (major == 0)
-		glGetIntegerv(GL_VERSION, &major);
-
-	if (major == 0) {
-		const GLubyte *verstr = glGetString(GL_VERSION);
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: you have a real ancient opengl version '%s'\n", verstr == NULL ? "<unknown>" : (const char *)verstr);
+	if (major < 0) {
+		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: failed to determine opengl version\n");
 		return -1;
 	}
 
@@ -457,23 +449,6 @@ out:
 	*xform_out = xform;
 
 	return res;
-}
-
-TODO("this should be in common")
-RND_INLINE int gl_is_es(void)
-{
-	static const char es_prefix[] = "OpenGL ES";
-	const char *ver;
-
-	/* libepoxy says: some ES implementions (e.g. PowerVR) don't have the
-	   es_prefix in their version string. For now we ignore these as
-	   they need dlsym() to detect */
-
-	ver = (const char *)glGetString(GL_VERSION);
-	if (ver == NULL)
-		return 0;
-
-	return strncmp(ver, es_prefix, sizeof(es_prefix)-1) == 0;
 }
 
 /* We need to set up our state when we realize the GtkGLArea widget */

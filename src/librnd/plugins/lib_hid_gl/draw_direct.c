@@ -310,23 +310,16 @@ static void direct_uninit(void)
 
 static int direct_init(void)
 {
-	GLint profmask, major = 0;
+	GLint profmask, major;
 
 	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_direct) {
 		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: disabled from conf\n");
 		return -1;
 	}
 
-#ifdef GL_MAJOR_VERSION
-	glGetIntegerv(GL_MAJOR_VERSION, &major);
-#endif
-
-	if (major == 0)
-		glGetIntegerv(GL_VERSION, &major);
-
-	if (major == 0) {
-		const GLubyte *verstr = glGetString(GL_VERSION);
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: you have a real ancient opengl version '%s'\n", verstr == NULL ? "<unknown>" : (const char *)verstr);
+	major = gl_get_ver_major();
+	if (major < 0) {
+		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: ancient opengl is probably compatible\n");
 		return 0;
 	}
 
