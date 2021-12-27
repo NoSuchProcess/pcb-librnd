@@ -95,6 +95,8 @@ void stencilgl_reset_stencil_usage(void)
 
 void stencilgl_init(void)
 {
+	stencil_bits = 0;
+
 	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
 
 	if (stencil_bits == 0) {
