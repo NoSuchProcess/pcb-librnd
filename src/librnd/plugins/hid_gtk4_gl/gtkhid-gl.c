@@ -1,5 +1,3 @@
-/*#include <librnd/plugins/hid_gtk2_gl/gtkhid-gl.c>*/
-
 #include <librnd/plugins/lib_gtk4_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <librnd/plugins/lib_gtk_common/wt_preview.h>
@@ -127,8 +125,7 @@ static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 
 	port->render_priv->in_context = rnd_false;
 
-	/* end drawing to current GL-context */
-	TODO("figure");
+	/* No need to explicitly end drawing in current GL-context */
 }
 
 static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
@@ -138,7 +135,6 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 
 static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
 {
-rnd_trace("gl expose 1");
 	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
 }
 
@@ -200,10 +196,6 @@ static gboolean render(GtkGLArea *area, GdkGLContext *context, rnd_gtk_port_t *p
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	/* Draw our object */
-/*	draw_triangle();*/
-TODO("this should call expose for main drawing area and/or maybe preview too");
-//rnd_trace("gl expose 2: render\n");
-
 	ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, NULL, port);
 
 	/* Flush the contents of the pipeline */
