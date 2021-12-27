@@ -109,7 +109,6 @@ static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 {
 /*	rnd_gtk_port_t *port = port_;*/
 	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(widget), 1);
-	
 }
 
 static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
@@ -118,8 +117,6 @@ static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 
 	port->render_priv->in_context = rnd_true;
 	gtk_gl_area_make_current(GTK_GL_AREA(widget));
-
-
 
 	return TRUE;
 }
