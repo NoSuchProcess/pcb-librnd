@@ -143,11 +143,14 @@ int hook_detect_host()
 
 static void rnd_hook_detect_hid()
 {
-	int need_gtklibs = 0, want_gtk, want_gtk2, has_gtk2 = 0, want_gtk4, has_gtk4 = 0, want_gl, want_glib = 0;
+	int want_gtk2, has_gtk2 = 0, expl_gtk2, want_gtk4, has_gtk4 = 0, expl_gtk4;
+	int need_gtklibs = 0, want_gtk, want_gl, want_glib = 0;
 
 	want_gtk2   = plug_is_enabled("hid_gtk2_gdk") || plug_is_enabled("hid_gtk2_gl");
 	want_gtk4   = plug_is_enabled("hid_gtk4_gl");
 	want_gtk    = want_gtk2 | want_gtk4;
+	expl_gtk2   = plug_is_explicit("hid_gtk2_gdk") || plug_is_explicit("hid_gtk2_gl");
+	expl_gtk4   = plug_is_explicit("hid_gtk4_gl");
 
 	if (want_gtk2) {
 		require("libs/gui/gtk2/presents", 0, 0);
@@ -202,15 +205,40 @@ static void rnd_hook_detect_hid()
 	}
 
 	if (has_gtk2 && has_gtk4 && (plug_is_buildin("lib_gtk2_common") || plug_is_buildin("lib_gtk4_common"))) {
-		if (plug_is_buildin("lib_gtk2_common")) {
+		if (expl_gtk2 && expl_gtk4) {
+			report_repeat("WARNING: you explicitly requested both gtk2 and gtk4 as builtin, which is impossible. Converting them both to plugin.\n");
+
+			if (plug_is_enabled("hid_gtk2_gdk"))
+				hook_custom_arg("plugin-hid_gtk2_gdk", NULL);
+
+			if (plug_is_enabled("hid_gtk2_gl"))
+				hook_custom_arg("plugin-hid_gtk2_gl", NULL);
+
+			if (plug_is_enabled("hid_gtk4_gl"))
+				hook_custom_arg("plugin-hid_gtk4_gl", NULL);
+
+			hook_custom_arg("plugin-lib_gtk2_common", NULL);
+			hook_custom_arg("plugin-lib_gtk4_common", NULL);
+		}
+		else if (!expl_gtk2 && expl_gtk4) {
+			report_repeat("WARNING: you explicitly requested gtk4 as builtin; gtk2 would be available, but if gtk4 is builtin, I have to disable gtk2. If you need both, request gtk4 to be plugin.\n");
+			goto choose_gtk4;
+		}
+		else if (expl_gtk2 && !expl_gtk4) {
+			report_repeat("WARNING: you explicitly requested gtk2 as builtin; gtk4 would be available, but if gtk2 is builtin, I have to disable gtk4. If you need both, request both gtk4 and gtk2 to be plugins.\n");
+			goto choose_gtk2;
+		}
+		else if (plug_is_buildin("lib_gtk2_common")) { /* implicit, prefer gtk2 */
+			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk2 is builtin, disabling gtk4.\n");
+			choose_gtk2:;
 			hook_custom_arg("disable-hid_gtk4_gl", NULL);
 			hook_custom_arg("disable-lib_gtk4_common", NULL);
-			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk2 is builtin, disabling gtk4.\n");
 		}
-		else if (plug_is_buildin("lib_gtk4_common")) {
+		else if (plug_is_buildin("lib_gtk4_common")) { /* implicit, prefer gtk4 */
+			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk4 is builtin, disabling gtk2.\n");
+			choose_gtk4:;
 			hook_custom_arg("disable-hid_gtk2_gl", NULL);
 			hook_custom_arg("disable-lib_gtk2_common", NULL);
-			report_repeat("WARNING: you have both gtk2 and gtk4 installed; you can't have any gtk built-in and use the other as well. Since gtk4 is builtin, disabling gtk2.\n");
 		}
 	}
 

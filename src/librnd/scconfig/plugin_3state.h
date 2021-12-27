@@ -15,7 +15,11 @@
 #define plug_eq(name, val) \
 	((get("/local/pcb/" name "/controls") != NULL) && (strcmp(get("/local/pcb/" name "/controls"), val) == 0))
 
+#define plug_eq_expl(name, val) \
+	((get("/local/pcb/" name "/explicit") != NULL) && (strcmp(get("/local/pcb/" name "/explicit"), val) == 0))
+
 #define plug_is_enabled(name)  (plug_eq(name, splugin) || plug_eq(name, sbuildin))
+#define plug_is_explicit(name) (plug_eq_expl(name, splugin) || plug_eq_expl(name, sbuildin))
 #define plug_is_disabled(name) (plug_eq(name, sdisabled))
 #define plug_is_buildin(name)  (plug_eq(name, sbuildin))
 #define plug_is_plugin(name)   (plug_eq(name, splugin))
