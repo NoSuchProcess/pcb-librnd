@@ -35,6 +35,8 @@
 
 #include "stencil_gl.h"
 
+#include <librnd/core/error.h>
+
 static GLint stencil_bits = 0;
 static int dirty_bits = 0;
 static int assigned_bits = 0;
@@ -96,11 +98,13 @@ void stencilgl_init(void)
 	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
 
 	if (stencil_bits == 0) {
-		printf("No stencil bits available.\n" "Cannot mask polygon holes or subcomposite layers\n");
+		rnd_message(RND_MSG_ERROR, "opengl: No stencil bits available.\n");
+		rnd_message(RND_MSG_ERROR, "opengl: Cannot mask polygon holes or subcomposite layers\n");
 		/* TODO: Flag this to the HID so it can revert to the dicer? */
 	}
 	else if (stencil_bits == 1) {
-		printf("Only one stencil bitplane avilable\n" "Cannot use stencil buffer to sub-composite layers.\n");
+		rnd_message(RND_MSG_ERROR, "opengl: Only one stencil bitplane avilable\n");
+		rnd_message(RND_MSG_ERROR, "opengl: Cannot use stencil buffer to sub-composite layers.\n");
 		/* Do we need to disable that somewhere? */
 	}
 
