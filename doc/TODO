@@ -2,6 +2,7 @@
 
 - 3.2.0: ABI compatible, API extensions
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
+	- make a runtime vesion of RND_VER_STR and let apps print it
 
 - 4.0.0: ABI incompatible (feature removal)
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
