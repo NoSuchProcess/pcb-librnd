@@ -181,7 +181,7 @@ static void realize(GtkWidget *widget)
 	/* check if we have a low level draw */
 	if (hidgl_init() != 0) {
 		rnd_message(RND_MSG_ERROR, "Error: hidgl_init(): failed to find a working opengl backend\n");
-		return FALSE;
+		return;
 	}
 
 	hidgl_new_context();
