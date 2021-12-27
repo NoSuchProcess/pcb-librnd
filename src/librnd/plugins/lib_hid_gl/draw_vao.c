@@ -62,6 +62,7 @@ typedef struct {
 #include "primbuf.c"
 
 static GLfloat red = 0.0f, green = 0.0f, blue = 0.0f, alpha = 0.75f;
+
 static GLuint program, inputColor_location, inputTexture_location, xform_location, position_buffer;
 static int vao_xor_mode;
 
@@ -85,63 +86,7 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 	}
 }
 
-static void vao_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	red = r;
-	green = g;
-	blue = b;
-	alpha = a;
-}
-
-static void vao_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
-{
-	/* Debug Drawing */
-#if 0
-	primbuf_add(GL_LINES, vertbuf.size, 6, red, green, blue, alpha);
-	vertbuf_reserve_extra(6);
-	vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
-	vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
-	vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
-#endif
-
-	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0, red, green, blue, alpha);
-	vertbuf_reserve_extra(3);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y2);
-	vertbuf_add(x3, y3);
-}
-
-static void vao_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
-	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
-	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
-	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
-	GLuint texture_id)
-{
-	primbuf_add(GL_TRIANGLE_FAN, vertbuf.size, 4, texture_id, red, green, blue, alpha);
-	vertbuf_reserve_extra(4);
-	vertbuf_add_xyuv(x1, y1, u1, v1);
-	vertbuf_add_xyuv(x2, y2, u2, v2);
-	vertbuf_add_xyuv(x3, y3, u3, v3);
-	vertbuf_add_xyuv(x4, y4, u4, v4);
-}
-
-static void vao_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
-{
-	primbuf_add(GL_LINES, vertbuf.size, 2, 0, red, green, blue, alpha);
-	vertbuf_reserve_extra(2);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y2);
-}
-
-static void vao_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
-{
-	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0, red, green, blue, alpha);
-	vertbuf_reserve_extra(4);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y1);
-	vertbuf_add(x2, y2);
-	vertbuf_add(x1, y2);
-}
+#include "draw_COMMON.c"
 
 static float vertbuf_last_r = -1, vertbuf_last_g = -1, vertbuf_last_b = -1, vertbuf_last_a = -1;
 
@@ -209,23 +154,13 @@ static void vao_prim_add_fillrect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2
 	vao_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
 
-static void vao_prim_reserve_triangles(int count)
-{
-	vertbuf_reserve_extra(count * 3);
-}
-
 /* This function will draw the specified primitive but it may also modify the state of
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	if (prim->texture_id > 0) {
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glEnable(GL_TEXTURE_2D);
+		draw_common_config_texture(prim->texture_id);
 		vao_color_vertbuf(-3.3, 0, 0, 0); /* enable using texture instead of color */
 	}
 	else
@@ -296,11 +231,6 @@ static void vao_prim_draw_all(int stencil_bits)
 	vao_end_prim_vertbuf();
 }
 
-static void vao_flush(void)
-{
-	glFlush();
-}
-
 static void vao_reset(void)
 {
 	vertbuf_clear();
@@ -313,30 +243,6 @@ static void vao_reset(void)
 /* We don't have matrix or stack for matrices, transformation is done from shader */
 static void vao_push_matrix(int projection) { }
 static void vao_pop_matrix(int projection) { }
-
-static long vao_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
-{
-	GLuint texture_id;
-
-	glGenTextures(1, &texture_id);
-	glBindTexture(GL_TEXTURE_2D, texture_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, has_alpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-	return texture_id;
-}
-
-
-static void vao_prim_set_marker(void)
-{
-	vertbuf_set_marker();
-	primbuf_set_marker();
-}
-
-static void vao_prim_rewind_to_marker(void)
-{
-	vertbuf_rewind();
-	primbuf_rewind();
-}
 
 static GLfloat *vao_draw_pts;
 static void vao_draw_points_pre(GLfloat *pts)
@@ -671,28 +577,28 @@ hidgl_draw_t hidgl_draw_vao = {
 	vao_init,
 	vao_uninit,
 	vao_new_context,
-	vao_set_color,
-	vao_flush,
+	common_set_color,
+	common_flush,
 	vao_reset,
 	vao_expose_init,
 	vao_set_view,
-	vao_texture_import,
+	common_texture_import,
 	vao_push_matrix,
 	vao_pop_matrix,
 	vao_xor_start,
 	vao_xor_end,
 
 	vao_prim_draw_all,
-	vao_prim_set_marker,
-	vao_prim_rewind_to_marker,
-	vao_prim_reserve_triangles,
+	common_prim_set_marker,
+	common_prim_rewind_to_marker,
+	common_prim_reserve_triangles,
 	vao_prim_flush,
 
-	vao_prim_add_triangle,
-	vao_prim_add_line,
-	vao_prim_add_rect,
+	common_prim_add_triangle,
+	common_prim_add_line,
+	common_prim_add_rect,
 	vao_prim_add_fillrect,
-	vao_prim_add_textrect,
+	common_prim_add_textrect,
 
 	vao_draw_points_pre,
 	vao_draw_points,

@@ -87,63 +87,7 @@ RND_INLINE void vertbuf_add_xyuv(GLfloat x, GLfloat y, GLfloat u, GLfloat v)
 	}
 }
 
-static void direct_set_color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	red = r;
-	green = g;
-	blue = b;
-	alpha = a;
-}
-
-static void direct_prim_add_triangle(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3)
-{
-	/* Debug Drawing */
-#if 0
-	primbuf_add(GL_LINES,vertbuf.size,6);
-	vertbuf_reserve_extra(6);
-	vertbuf_add(x1,y1);  vertbuf_add(x2,y2);
-	vertbuf_add(x2,y2);  vertbuf_add(x3,y3);
-	vertbuf_add(x3,y3);  vertbuf_add(x1,y1);
-#endif
-
-	primbuf_add(GL_TRIANGLES, vertbuf.size, 3, 0);
-	vertbuf_reserve_extra(3);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y2);
-	vertbuf_add(x3, y3);
-}
-
-static void direct_prim_add_textrect(GLfloat x1, GLfloat y1, GLfloat u1, GLfloat v1,
-	GLfloat x2, GLfloat y2, GLfloat u2, GLfloat v2,
-	GLfloat x3, GLfloat y3, GLfloat u3, GLfloat v3,
-	GLfloat x4, GLfloat y4, GLfloat u4, GLfloat v4,
-	GLuint texture_id)
-{
-	primbuf_add(GL_TRIANGLE_FAN, vertbuf.size, 4, texture_id);
-	vertbuf_reserve_extra(4);
-	vertbuf_add_xyuv(x1, y1, u1, v1);
-	vertbuf_add_xyuv(x2, y2, u2, v2);
-	vertbuf_add_xyuv(x3, y3, u3, v3);
-	vertbuf_add_xyuv(x4, y4, u4, v4);
-}
-
-static void direct_prim_add_line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
-{
-	primbuf_add(GL_LINES, vertbuf.size, 2, 0);
-	vertbuf_reserve_extra(2);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y2);
-}
-
-static void direct_prim_add_rect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
-{
-	primbuf_add(GL_LINE_LOOP, vertbuf.size, 4, 0);
-	vertbuf_reserve_extra(4);
-	vertbuf_add(x1, y1);
-	vertbuf_add(x2, y1);
-	vertbuf_add(x2, y2);
-	vertbuf_add(x1, y2);
-}
+#include "draw_COMMON.c"
 
 RND_INLINE void direct_draw_rect(GLenum mode, GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
 {
@@ -181,22 +125,12 @@ static void direct_prim_add_fillrect(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat
 	direct_draw_rect(GL_TRIANGLE_FAN, x1, y1, x2, y2);
 }
 
-static void direct_prim_reserve_triangles(int count)
-{
-	vertbuf_reserve_extra(count * 3);
-}
-
 /* This function will draw the specified primitive but it may also modify the state of
    the stencil buffer when MASK primitives exist. */
 RND_INLINE void drawgl_draw_primitive(primitive_t *prim)
 {
 	if (prim->texture_id > 0) {
-		glBindTexture(GL_TEXTURE_2D, prim->texture_id);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		glEnable(GL_TEXTURE_2D);
+		draw_common_config_texture(prim->texture_id);
 		glAlphaFunc(GL_GREATER, 0.5);
 		glEnable(GL_ALPHA_TEST);
 	}
@@ -269,11 +203,6 @@ static void direct_prim_draw_all(int stencil_bits)
 	direct_end_prim_vertbuf();
 }
 
-static void direct_flush(void)
-{
-	glFlush();
-}
-
 static void direct_reset(void)
 {
 	vertbuf_clear();
@@ -295,30 +224,6 @@ static void direct_pop_matrix(int projection)
 	if (projection)
 		glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
-}
-
-static long direct_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
-{
-	GLuint texture_id;
-
-	glGenTextures(1, &texture_id);
-	glBindTexture(GL_TEXTURE_2D, texture_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, has_alpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-	return texture_id;
-}
-
-
-static void direct_prim_set_marker(void)
-{
-	vertbuf_set_marker();
-	primbuf_set_marker();
-}
-
-static void direct_prim_rewind_to_marker(void)
-{
-	vertbuf_rewind();
-	primbuf_rewind();
 }
 
 static void direct_draw_points_pre(GLfloat *pts)
@@ -457,28 +362,28 @@ hidgl_draw_t hidgl_draw_direct = {
 	direct_init,
 	direct_uninit,
 	direct_new_context,
-	direct_set_color,
-	direct_flush,
+	common_set_color,
+	common_flush,
 	direct_reset,
 	direct_expose_init,
 	direct_set_view,
-	direct_texture_import,
+	common_texture_import,
 	direct_push_matrix,
 	direct_pop_matrix,
 	direct_xor_start,
 	direct_xor_end,
 
 	direct_prim_draw_all,
-	direct_prim_set_marker,
-	direct_prim_rewind_to_marker,
-	direct_prim_reserve_triangles,
+	common_prim_set_marker,
+	common_prim_rewind_to_marker,
+	common_prim_reserve_triangles,
 	direct_prim_flush,
 
-	direct_prim_add_triangle,
-	direct_prim_add_line,
-	direct_prim_add_rect,
+	common_prim_add_triangle,
+	common_prim_add_line,
+	common_prim_add_rect,
 	direct_prim_add_fillrect,
-	direct_prim_add_textrect,
+	common_prim_add_textrect,
 
 	direct_draw_points_pre,
 	direct_draw_points,

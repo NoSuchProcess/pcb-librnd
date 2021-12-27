@@ -127,14 +127,12 @@ RND_INLINE int primitive_dirty_count(void)
 }
 
 #ifdef PRIM_COLOR
-#	define MAYBE_COLOR , GLfloat r, GLfloat g, GLfloat b, GLfloat a
 #	define COLOR_MATCH ((r == last->r) && (g == last->g) && (b == last->b) && (a == last->a))
 #else
-#	define MAYBE_COLOR
 #	define COLOR_MATCH 1
 #endif
 
-RND_INLINE void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id MAYBE_COLOR)
+RND_INLINE void primbuf_add(int type, GLint first, GLsizei count, GLuint texture_id, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	primitive_t *last = primbuf_back();
 
