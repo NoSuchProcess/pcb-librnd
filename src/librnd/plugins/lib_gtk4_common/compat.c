@@ -378,7 +378,7 @@ void gtkci_widget_css_del(GtkWidget *widget, const char *namspc)
 }
 
 
-void gtkc_widget_modify_bg_(GtkWidget *w, rnd_gtk_color_t *color)
+void gtkc_widget_modify_bg_(GtkWidget *w, const rnd_gtk_color_t *color)
 {
 	char tmp[256];
 

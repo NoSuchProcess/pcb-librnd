@@ -278,7 +278,7 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 	} while(0)
 
 #define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
-void gtkc_widget_modify_bg_(GtkWidget *w, rnd_gtk_color_t *color);
+void gtkc_widget_modify_bg_(GtkWidget *w, const rnd_gtk_color_t *color);
 #define gtkc_widget_modify_bg(w, st, c)   gtkc_widget_modify_bg_(w, c)
 #define gtkc_frame_set_child(fr, ch)      gtk_frame_set_child(GTK_FRAME(fr), ch)
 #define gtkc_scrolled_window_new()        gtk_scrolled_window_new()
