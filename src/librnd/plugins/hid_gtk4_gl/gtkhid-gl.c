@@ -174,7 +174,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 
 
 /* We need to set up our state when we realize the top window GtkGLArea widget */
-static void realize(GtkWidget *widget)
+static void realize(GtkWidget *widget, void *udata)
 {
 	gtk_gl_area_make_current(GTK_GL_AREA(widget));
 
@@ -188,7 +188,7 @@ static void realize(GtkWidget *widget)
 }
 
 /* We should tear down the state when unrealizing */
-static void unrealize(GtkWidget *widget)
+static void unrealize(GtkWidget *widget, void *udata)
 {
 	gtk_gl_area_make_current(GTK_GL_AREA(widget));
 }
