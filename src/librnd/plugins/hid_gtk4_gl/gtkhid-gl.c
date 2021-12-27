@@ -107,7 +107,7 @@ static void ghid_gl_shutdown_renderer(void *p)
 
 static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 {
-	rnd_gtk_port_t *port = port_;
+/*	rnd_gtk_port_t *port = port_;*/
 	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(widget), 1);
 	
 }
@@ -126,8 +126,6 @@ static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
 
 static void ghid_gl_end_drawing(rnd_gtk_port_t *port)
 {
-	GtkWidget *widget = port->drawing_area;
-
 	hidgl_flush();
 
 	port->render_priv->in_context = rnd_false;
