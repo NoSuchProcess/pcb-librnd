@@ -1,5 +1,10 @@
 put /local/pcb/mod {lib_gtk2_common}
-put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
+if ?/local/pcb/gtk_common/hid_gtk_conf
+then
+else
+	put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
+	put /local/pcb/gtk_common/hid_gtk_conf {true}
+end
 
 put /local/pcb/mod/OBJS [@
   $(LIBRND_PLUGDIR)/lib_gtk2_common/lib_gtk2_common.o
