@@ -105,7 +105,7 @@ static rnd_hid_gc_t log_make_gc(rnd_hid_t *hid)
 {
 	SANITY(return NULL);
 	rnd_fprintf(out_, "make_gc()\n");
-	return delegatee_->make_gc(hid);
+	return delegatee_->make_gc(delegatee_);
 }
 
 static void log_destroy_gc(rnd_hid_gc_t gc)
