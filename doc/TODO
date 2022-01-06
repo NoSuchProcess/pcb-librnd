@@ -1,9 +1,13 @@
 *** Upcoming release ***
 - 3.1.1: ABI compatible, no extensions
+	- BUG: gtk4: separators in menu broke [report: Igor2]
 	- gtk4 bugs:
 		- press {del}: the crosshair jumps away and the action is executed on the new location! [report: Erich]
 
 *** Later releases ***
+- 3.1.2: ABI compatible, no extensions
+	- use libualloc for rtree stack instead of static allocation [report: Vuokko]
+
 - 3.2.0: ABI compatible, API extensions
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- make a runtime vesion of RND_VER_STR and let apps print it
