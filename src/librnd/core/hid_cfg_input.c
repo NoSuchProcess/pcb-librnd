@@ -186,7 +186,7 @@ void rnd_hid_cfg_mouse_action(rnd_hidlib_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_
 {
 	rnd_conf.temp.click_cmd_entry_active = cmd_entry_active;
 	rnd_hid_cfg_action(hl, find_best_action(mouse, button_and_mask));
-	rnd_event(NULL, RND_EVENT_USER_INPUT_POST, NULL);
+	rnd_event(hl, RND_EVENT_USER_INPUT_POST, NULL);
 	rnd_conf.temp.click_cmd_entry_active = 0;
 }
 
