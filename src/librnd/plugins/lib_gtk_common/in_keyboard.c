@@ -120,7 +120,7 @@ gboolean rnd_gtk_key_press_cb(GtkWidget *drawing_area, long mods, long key_raw, 
 
 	rnd_gtk_note_event_location(0, 0, 0);
 
-	slen = rnd_hid_cfg_keys_input(&rnd_gtk_keymap, mods, key_raw, kv);
+	slen = rnd_hid_cfg_keys_input2(gctx->hidlib, &rnd_gtk_keymap, mods, key_raw, kv);
 	if (slen > 0) {
 		rnd_hid_cfg_keys_action(gctx->hidlib, &rnd_gtk_keymap);
 		return TRUE;

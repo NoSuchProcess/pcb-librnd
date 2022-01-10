@@ -326,7 +326,7 @@ int lesstif_key_event(XKeyEvent * e)
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 TODO("TODO#3: pass on raw and translated keys")
-	slen = rnd_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym);
+	slen = rnd_hid_cfg_keys_input2(ltf_hidlib, &lesstif_keymap, mods, sym, sym);
 	if (slen <= 0)
 		return 1;
 
