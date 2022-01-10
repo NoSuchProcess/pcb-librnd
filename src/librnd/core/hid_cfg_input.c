@@ -588,7 +588,7 @@ char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_r
 }
 
 
-int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
+int rnd_hid_cfg_keys_input2_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
 {
 	rnd_hid_cfg_keyseq_t *ns;
 	rnd_hid_cfg_keyhash_t addr;
@@ -643,12 +643,17 @@ int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsi
 	if (ns->action_node != NULL) {
 		km->seq_len_action = *seq_len;
 		(*seq_len) = 0;
-		rnd_event(NULL, RND_EVENT_USER_INPUT_KEY, NULL);
+		rnd_event(hl, RND_EVENT_USER_INPUT_KEY, NULL);
 		return km->seq_len_action;
 	}
 
-	rnd_event(NULL, RND_EVENT_USER_INPUT_KEY, NULL);
+	rnd_event(hl, RND_EVENT_USER_INPUT_KEY, NULL);
 	return 0;
+}
+
+int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
+{
+	return rnd_hid_cfg_keys_input2_(NULL, km, mods, key_raw, key_tr, seq, seq_len);
 }
 
 
@@ -709,7 +714,7 @@ static void xlate_reload(rnd_hid_cfg_keys_t *km, rnd_conf_native_t *nat)
 	xlate_avail = 1;
 }
 
-int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+int rnd_hid_cfg_keys_input2(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
 {
 	rnd_hid_cfg_keyhash_t ck, *cv;
 
@@ -745,8 +750,15 @@ int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsig
 		}
 	}
 
-	return rnd_hid_cfg_keys_input_(km, mods, key_raw, key_tr, km->seq, &km->seq_len);
+	return rnd_hid_cfg_keys_input2_(hl, km, mods, key_raw, key_tr, km->seq, &km->seq_len);
 }
+
+int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+{
+	return rnd_hid_cfg_keys_input2(NULL, km, mods, key_raw, key_tr);
+}
+
+
 /*** key translation hash ends **/
 
 int rnd_hid_cfg_keys_action_(rnd_hidlib_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len)
