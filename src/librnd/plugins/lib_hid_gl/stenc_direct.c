@@ -34,71 +34,7 @@
 #include <librnd/core/error.h>
 
 #include "stenc.h"
-
-
-static void direct_clear_stencil_bits(int bits)
-{
-	glPushAttrib(GL_STENCIL_BUFFER_BIT);
-	glStencilMask(bits);
-	glClearStencil(0);
-	glClear(GL_STENCIL_BUFFER_BIT);
-	glPopAttrib();
-}
-
-static void direct_mode_write_clear(int bits)
-{
-	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
-}
-
-static void direct_mode_write_set(int bits)
-{
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
-}
-
-static void direct_mode_reset(void)
-{
-	glColorMask(0, 0, 0, 0); /* Disable color drawing */
-}
-
-static void direct_mode_positive(void)
-{
-	glEnable(GL_STENCIL_TEST);
-}
-
-static void direct_mode_positive_xor(void)
-{
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_STENCIL_TEST);
-}
-
-static void direct_mode_negative(void)
-{
-	glEnable(GL_STENCIL_TEST);
-}
-
-void direct_flush(int comp_stencil_bit)
-{
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	if (comp_stencil_bit) {
-		glEnable(GL_STENCIL_TEST);
-
-		/* Setup the stencil to allow writes to the color buffer if the
-		   comp_stencil_bit is set. After the operation, the comp_stencil_bit
-		   will be cleared so that any further writes to this pixel are disabled. */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-		glStencilMask(comp_stencil_bit);
-		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
-
-		/* Draw all primitives through the stencil to the color buffer. */
-		hidgl_draw.prim_draw_all(comp_stencil_bit);
-	}
-
-	glDisable(GL_STENCIL_TEST);
-}
+#include "stenc_COMMON.c"
 
 static int direct_init(int *stencil_bits_out)
 {
@@ -123,12 +59,12 @@ hidgl_stenc_t hidgl_stenc_direct = {
 	"direct",
 
 	direct_init,
-	direct_clear_stencil_bits,
-	direct_mode_write_clear,
-	direct_mode_write_set,
-	direct_mode_reset,
-	direct_mode_positive,
-	direct_mode_positive_xor,
-	direct_mode_negative,
-	direct_flush
+	common_clear_stencil_bits,
+	common_mode_write_clear,
+	common_mode_write_set,
+	common_mode_reset,
+	common_mode_positive,
+	common_mode_positive_xor,
+	common_mode_negative,
+	common_flush
 };
