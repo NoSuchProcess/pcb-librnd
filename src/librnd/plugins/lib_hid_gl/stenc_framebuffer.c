@@ -35,10 +35,18 @@
 
 #include "stenc.h"
 #include "stenc_COMMON.c"
+#include "lib_hid_gl_conf.h"
+extern conf_lib_hid_gl_t conf_lib_hid_gl;
 
 static int framebuffer_init(int *stencil_bits_out)
 {
 	int stencil_bits;
+
+
+	if (conf_lib_hid_gl.plugins.lib_hid_gl.stencil.disable_framebuffer) {
+		rnd_message(RND_MSG_DEBUG, "opengl stencil: framebuffer_init refuse: disabled from conf\n");
+		return -1;
+	}
 
 	stencil_bits = 0;
 
