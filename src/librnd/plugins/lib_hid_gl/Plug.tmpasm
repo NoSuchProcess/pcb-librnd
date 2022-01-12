@@ -16,6 +16,13 @@ append /local/pcb/mod/OBJS_C99 [@
 @]
 end
 
+if ?libs/gui/gl/fb_attachment/presents
+then
+append /local/pcb/mod/OBJS_C99 [@
+  $(LIBRND_PLUGDIR)/lib_hid_gl/stenc_framebuffer.o
+@]
+end
+
 append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/lib_hid_gl/opengl.h }
 put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl_conf.h}
 put /local/pcb/mod/CONFFILE {lib_hid_gl.conf}

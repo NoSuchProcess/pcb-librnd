@@ -57,6 +57,13 @@ extern hidgl_stenc_t hidgl_stenc_direct;
 
 @]
 
+if ?libs/gui/gl/fb_attachment/presents
+then
+print [@
+extern hidgl_stenc_t hidgl_stenc_framebuffer;
+@]
+end
+
 print [@
 static hidgl_stenc_t *hidgl_stencs;
 
@@ -75,7 +82,19 @@ RND_INLINE void hidgl_stenc_init_(void)
 		return;
 
 	STENC_INSERT(hidgl_stenc_direct);
+@]
 
+
+
+if ?libs/gui/gl/fb_attachment/presents
+then
+print [@
+	DRAW_INSERT(hidgl_stenc_framebuffer);
+@]
+end
+
+
+print [@
 	inited = 1;
 }
 

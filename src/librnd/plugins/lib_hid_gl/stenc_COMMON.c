@@ -80,7 +80,7 @@ static void common_mode_negative(void)
 	glEnable(GL_STENCIL_TEST);
 }
 
-void common_flush(int comp_stencil_bit)
+static void common_flush(int comp_stencil_bit)
 {
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	if (comp_stencil_bit) {
