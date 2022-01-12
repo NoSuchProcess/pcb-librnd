@@ -31,13 +31,8 @@
 #include "stenc.h"
 
 
-static void error_clear_stencil_bits(int bits)
-{
-}
-
-static void error_mode_write_clear(int bits)
-{
-}
+static void error_clear_stencil_bits(int bits) { }
+static void error_mode_write_clear(int bits) { }
 static void error_mode_write_set(int bits) { }
 static void error_mode_reset(void) { }
 static void error_mode_positive(void) { }
