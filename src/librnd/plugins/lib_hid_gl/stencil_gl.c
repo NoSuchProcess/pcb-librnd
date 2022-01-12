@@ -32,6 +32,7 @@
 #include "opengl_debug.h"
 
 #include "draw.h"
+#include "stenc.h"
 
 #include "stencil_gl.h"
 
@@ -43,11 +44,7 @@ static int assigned_bits = 0;
 
 static void stencilgl_clear_stencil_bits(int bits)
 {
-	glPushAttrib(GL_STENCIL_BUFFER_BIT);
-	glStencilMask(bits);
-	glClearStencil(0);
-	glClear(GL_STENCIL_BUFFER_BIT);
-	glPopAttrib();
+	hidgl_stenc.clear_stencil_bits(bits);
 
 	dirty_bits = (dirty_bits & ~bits) | assigned_bits;
 }
@@ -117,9 +114,7 @@ int stencilgl_init(int stencil_bits_as_inited)
 /* Setup the stencil buffer so that writes will clear stencil bits */
 RND_INLINE void stencilgl_mode_write_clear(int bits)
 {
-	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
+	hidgl_stenc.mode_write_clear(bits);
 }
 
 static int comp_stencil_bit = 0;
