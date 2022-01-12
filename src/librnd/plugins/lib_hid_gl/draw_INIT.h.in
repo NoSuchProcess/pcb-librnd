@@ -45,3 +45,38 @@ print [@
 	inited = 1;
 }
 @]
+
+print [@
+
+/*** stencil ***/
+
+#include <librnd/plugins/lib_hid_gl/stenc.h>
+
+extern hidgl_stenc_t hidgl_stenc_error;
+extern hidgl_stenc_t hidgl_stenc_direct;
+
+@]
+
+print [@
+static hidgl_stenc_t *hidgl_stencs;
+
+#define STENC_INSERT(stc) \
+	do { \
+		stc.next = hidgl_stencs; \
+		hidgl_stencs = &stc; \
+	} while(0)
+
+/* create a linked list of all stencil backends compiled */
+RND_INLINE void hidgl_stenc_init_(void)
+{
+	static int inited = 0;
+
+	if (inited)
+		return;
+
+	STENC_INSERT(hidgl_stenc_direct);
+
+	inited = 1;
+}
+
+@]

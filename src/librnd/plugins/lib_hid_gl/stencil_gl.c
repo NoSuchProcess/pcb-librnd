@@ -93,11 +93,9 @@ void stencilgl_reset_stencil_usage(void)
 	assigned_bits = 0;
 }
 
-void stencilgl_init(void)
+int stencilgl_init(int stencil_bits_as_inited)
 {
-	stencil_bits = 0;
-
-	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
+	stencil_bits = stencil_bits_as_inited;
 
 	if (stencil_bits == 0) {
 		rnd_message(RND_MSG_ERROR, "opengl: No stencil bits available.\n");
@@ -112,6 +110,7 @@ void stencilgl_init(void)
 
 	stencilgl_reset_stencil_usage();
 	stencilgl_clear_unassigned_stencil();
+	return 0;
 }
 
 

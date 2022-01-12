@@ -3,8 +3,8 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 2009-2017 PCB Contributers (See ChangeLog for details)
- *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2009-2011 PCB Contributers (See ChangeLog for details)
+ *  Copyright (C) 2021,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,31 +26,26 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef STENCIL_GL_H
-#define STENCIL_GL_H
+#ifndef HID_GL_STENC_GL_H
+#define HID_GL_STENC_GL_H
 
 /*** DO NOT INCLUDE THIS HEADER from outside of lib_hid_gl; use hidgl.h instead. ***/
 
-#include <librnd/core/global_typedefs.h>
-#include "opengl.h"
+typedef struct hidgl_stenc_s hidgl_stenc_t;
 
-int stencilgl_init(int stencil_bits_as_inited);
-void stencilgl_reset_stencil_usage(void);
+struct hidgl_stenc_s {
+	const char *name;
 
-#include "opengl_debug.h"
+ /* Returns 0 if the stencil backend is compatible with host opengl and loads stencil_bits_out */
+	int (*init)(int *stencil_bits_out);
 
-/* Setup the stencil buffer so that writes will set stencil bits */
-RND_INLINE void stencilgl_mode_write_set(int bits)
-{
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
-}
+	void (*clear_stencil_bits)(int bits);
+	void (*mode_write_clear)(int bits);
 
-void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen);
+	/*** admin ***/
+	hidgl_stenc_t *next; /* linked list of all backends, except for the error backend */
+};
 
-#endif /* !defined STENCIL_GL_H */
+extern hidgl_stenc_t hidgl_stenc; /* active drawing backend */
+
+#endif

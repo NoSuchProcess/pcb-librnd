@@ -41,6 +41,7 @@
 #include <librnd/core/hidlib.h>
 
 #include "draw.h"
+#include "stenc.h"
 #include "stencil_gl.h"
 #include "opengl.h"
 
@@ -81,6 +82,7 @@ RND_INLINE const hidgl_draw_t *hidgl_find_draw(const RND_CFT_LIST *pref)
 }
 
 hidgl_draw_t hidgl_draw;
+hidgl_stenc_t hidgl_stenc;
 
 int hidgl_init(void)
 {
@@ -100,9 +102,48 @@ int hidgl_new_context(void)
 	return hidgl_draw.new_context();
 }
 
-void hidgl_stencil_init(void)
+/* return the first stenc implementation that would work with current opengl */
+RND_INLINE const hidgl_stenc_t *hidgl_find_stenc(const RND_CFT_LIST *pref, int *stencil_bits)
 {
-	stencilgl_init();
+	hidgl_stenc_t *d;
+
+	hidgl_stenc_init_();
+
+	if ((pref != NULL) && (rnd_conflist_length(pref) > 0)) {
+		/* order is coming from preference */
+		gdl_iterator_t it;
+		rnd_conf_listitem_t *p;
+
+		rnd_conflist_foreach(pref, &it, p) {
+			for(d = hidgl_stencs; d != NULL; d = d->next)
+				if (strcmp(d->name, p->payload) == 0)
+					if (d->init(stencil_bits) == 0) return d;
+		}
+	}
+	else {
+		/* fallback: try them one by one, in order, if there was no preference */
+		for(d = hidgl_stencs; d != NULL; d = d->next)
+			if (d->init(stencil_bits) == 0) return d;
+	}
+
+	/* final fallback: did not find anything working  */
+	if (hidgl_stenc_error.init(stencil_bits) == 0) return &hidgl_stenc_error;
+	return NULL;
+}
+
+int hidgl_stencil_init(void)
+{
+	if (hidgl_stenc.name == NULL) {
+		int stencil_bits = 0;
+		const hidgl_stenc_t *stc = hidgl_find_stenc(&conf_lib_hid_gl.plugins.lib_hid_gl.stencil.preference, &stencil_bits);
+
+		if (stc == NULL)
+			return -1;
+
+		hidgl_stenc = *stc;
+		return stencilgl_init(stencil_bits);
+	}
+	return 0;
 }
 
 void hidgl_uninit(void)

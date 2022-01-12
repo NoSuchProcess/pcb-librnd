@@ -3,8 +3,8 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 2009-2017 PCB Contributers (See ChangeLog for details)
- *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2009-2011 PCB Contributers (See ChangeLog for details)
+ *  Copyright (C) 2021,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,31 +26,54 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef STENCIL_GL_H
-#define STENCIL_GL_H
+#include "config.h"
 
-/*** DO NOT INCLUDE THIS HEADER from outside of lib_hid_gl; use hidgl.h instead. ***/
-
-#include <librnd/core/global_typedefs.h>
 #include "opengl.h"
 
-int stencilgl_init(int stencil_bits_as_inited);
-void stencilgl_reset_stencil_usage(void);
+#include <librnd/core/error.h>
 
-#include "opengl_debug.h"
+#include "stenc.h"
 
-/* Setup the stencil buffer so that writes will set stencil bits */
-RND_INLINE void stencilgl_mode_write_set(int bits)
+
+static void direct_clear_stencil_bits(int bits)
 {
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glPushAttrib(GL_STENCIL_BUFFER_BIT);
+	glStencilMask(bits);
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
+	glPopAttrib();
+}
+
+static void direct_mode_write_clear(int bits)
+{
+	glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 	glStencilMask(bits);
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
-void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen);
-void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen);
+static int direct_init(int *stencil_bits_out)
+{
+	int stencil_bits;
 
-#endif /* !defined STENCIL_GL_H */
+	stencil_bits = 0;
+	glGetIntegerv(GL_STENCIL_BITS, &stencil_bits);
+
+	if (stencil_bits != 0) {
+		*stencil_bits_out = stencil_bits;
+		rnd_message(RND_MSG_DEBUG, "opengl stencil: direct_init accept\n");
+
+		return 0;
+	}
+
+	rnd_message(RND_MSG_DEBUG, "opengl stencil: direct_init refuse: 0 stencil bits\n");
+	return -1;
+}
+
+
+hidgl_stenc_t hidgl_stenc_direct = {
+	"direct",
+
+	direct_init,
+	direct_clear_stencil_bits,
+	direct_mode_write_clear
+};

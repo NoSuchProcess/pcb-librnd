@@ -47,7 +47,7 @@ void hidgl_fill_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t
 int hidgl_init(void);
 int hidgl_new_context(void);
 void hidgl_uninit(void);
-void hidgl_stencil_init(void);
+int hidgl_stencil_init(void);
 void hidgl_flush_drawing(void);  /* flush primitives from CPU memory to GPU memory - no glFlush(), so things are nto yet drawn */
 void hidgl_flush(void);          /* equivalent of glFlush() */
 void hidgl_reset(void);
