@@ -2554,7 +2554,8 @@
  ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
- ../src/librnd/plugins/lib_hid_gl/primbuf.c
+ ../src/librnd/plugins/lib_hid_gl/primbuf.c \
+ ../src/librnd/plugins/lib_hid_gl/draw_COMMON.c
 ../src/librnd/plugins/lib_hid_gl/draw_error.o: \
  ../src/librnd/plugins/lib_hid_gl/draw_error.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/error.h ../src/librnd/core/global_typedefs.h \
@@ -2581,7 +2582,8 @@
  ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src/librnd/plugins/lib_hid_gl/vertbuf.c \
- ../src/librnd/plugins/lib_hid_gl/primbuf.c
+ ../src/librnd/plugins/lib_hid_gl/primbuf.c \
+ ../src/librnd/plugins/lib_hid_gl/draw_COMMON.c
 ../src/librnd/plugins/lib_hid_gl/hidgl.o: \
  ../src/librnd/plugins/lib_hid_gl/hidgl.c ../config.h ../src/librnd/config.h \
  ../src/librnd/core/hidlib_conf.h ../src/librnd/core/conf.h \
@@ -2601,12 +2603,13 @@
  ../src_3rd/genrtree/genrtree_api.h ../src/librnd/core/hidlib.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
+ ../src/librnd/plugins/lib_hid_gl/stenc.h \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h \
  ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
  ../src/librnd/plugins/lib_hid_gl/hidgl.h \
  ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h \
  ../src/librnd/plugins/lib_hid_gl/draw_INIT.h \
- ../src/librnd/plugins/lib_hid_gl/draw.h
+ ../src/librnd/plugins/lib_hid_gl/draw.h ../src/librnd/plugins/lib_hid_gl/stenc.h
 ../src/librnd/plugins/lib_hid_gl/lib_hid_gl.o: \
  ../src/librnd/plugins/lib_hid_gl/lib_hid_gl.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -2625,13 +2628,52 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h \
  ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf_fields.h
+../src/librnd/plugins/lib_hid_gl/stenc_direct.o: \
+ ../src/librnd/plugins/lib_hid_gl/stenc_direct.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/plugins/lib_hid_gl/opengl.h \
+ ../src/librnd/plugins/lib_hid_gl/draw.h ../src/librnd/core/hidlib.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/error.h \
+ ../src/librnd/plugins/lib_hid_gl/stenc.h \
+ ../src/librnd/plugins/lib_hid_gl/stenc_COMMON.c \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
+../src/librnd/plugins/lib_hid_gl/stenc_error.o: \
+ ../src/librnd/plugins/lib_hid_gl/stenc_error.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/error.h ../src/librnd/core/global_typedefs.h \
+ ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/stenc.h
+../src/librnd/plugins/lib_hid_gl/stenc_framebuffer.o: \
+ ../src/librnd/plugins/lib_hid_gl/stenc_framebuffer.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/plugins/lib_hid_gl/opengl.h \
+ ../src/librnd/plugins/lib_hid_gl/draw.h ../src/librnd/core/hidlib.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/error.h \
+ ../src/librnd/plugins/lib_hid_gl/stenc.h \
+ ../src/librnd/plugins/lib_hid_gl/stenc_COMMON.c \
+ ../src/librnd/plugins/lib_hid_gl/lib_hid_gl_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
 ../src/librnd/plugins/lib_hid_gl/stencil_gl.o: \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.c \
  ../src/librnd/plugins/lib_hid_gl/opengl_debug.h \
  ../src/librnd/plugins/lib_hid_gl/opengl.h \
  ../src/librnd/plugins/lib_hid_gl/draw.h ../config.h ../src/librnd/config.h \
  ../src/librnd/core/hidlib.h ../src/librnd/core/global_typedefs.h \
- ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/stencil_gl.h
+ ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/stenc.h \
+ ../src/librnd/plugins/lib_hid_gl/stencil_gl.h ../src/librnd/core/error.h
 ../src/librnd/plugins/lib_portynet/lib_portynet.o: \
  ../src/librnd/plugins/lib_portynet/lib_portynet.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
