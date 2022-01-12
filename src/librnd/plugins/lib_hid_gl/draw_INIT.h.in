@@ -89,7 +89,7 @@ RND_INLINE void hidgl_stenc_init_(void)
 if ?libs/gui/gl/fb_attachment/presents
 then
 print [@
-	DRAW_INSERT(hidgl_stenc_framebuffer);
+	STENC_INSERT(hidgl_stenc_framebuffer);
 @]
 end
 
