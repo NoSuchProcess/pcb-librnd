@@ -38,6 +38,11 @@ static void error_clear_stencil_bits(int bits)
 static void error_mode_write_clear(int bits)
 {
 }
+static void error_mode_write_set(int bits) { }
+static void error_mode_reset(void) { }
+static void error_mode_positive(void) { }
+static void error_mode_positive_xor(void) { }
+static void error_mode_negative(void) { }
 
 static int error_init(int *stencil_bits_out)
 {
@@ -51,5 +56,10 @@ hidgl_stenc_t hidgl_stenc_error = {
 
 	error_init,
 	error_clear_stencil_bits,
-	error_mode_write_clear
+	error_mode_write_clear,
+	error_mode_write_set,
+	error_mode_reset,
+	error_mode_positive,
+	error_mode_positive_xor,
+	error_mode_negative
 };

@@ -39,14 +39,6 @@ void stencilgl_reset_stencil_usage(void);
 
 #include "opengl_debug.h"
 
-/* Setup the stencil buffer so that writes will set stencil bits */
-RND_INLINE void stencilgl_mode_write_set(int bits)
-{
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilMask(bits);
-	glStencilFunc(GL_ALWAYS, bits, bits);
-}
-
 void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen);
 void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen);
 void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen);

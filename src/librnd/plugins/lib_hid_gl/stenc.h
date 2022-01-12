@@ -41,6 +41,11 @@ struct hidgl_stenc_s {
 
 	void (*clear_stencil_bits)(int bits);
 	void (*mode_write_clear)(int bits);
+	void (*mode_write_set)(int bits);
+	void (*mode_reset)(void);
+	void (*mode_positive)(void);
+	void (*mode_positive_xor)(void);
+	void (*mode_negative)(void);
 
 	/*** admin ***/
 	hidgl_stenc_t *next; /* linked list of all backends, except for the error backend */

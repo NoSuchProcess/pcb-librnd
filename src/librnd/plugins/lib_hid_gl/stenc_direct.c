@@ -51,6 +51,34 @@ static void direct_mode_write_clear(int bits)
 	glStencilFunc(GL_ALWAYS, bits, bits);
 }
 
+static void direct_mode_write_set(int bits)
+{
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilMask(bits);
+	glStencilFunc(GL_ALWAYS, bits, bits);
+}
+
+static void direct_mode_reset(void)
+{
+	glColorMask(0, 0, 0, 0); /* Disable color drawing */
+}
+
+static void direct_mode_positive(void)
+{
+	glEnable(GL_STENCIL_TEST);
+}
+
+static void direct_mode_positive_xor(void)
+{
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+}
+
+static void direct_mode_negative(void)
+{
+	glEnable(GL_STENCIL_TEST);
+}
+
 static int direct_init(int *stencil_bits_out)
 {
 	int stencil_bits;
@@ -75,5 +103,10 @@ hidgl_stenc_t hidgl_stenc_direct = {
 
 	direct_init,
 	direct_clear_stencil_bits,
-	direct_mode_write_clear
+	direct_mode_write_clear,
+	direct_mode_write_set,
+	direct_mode_reset,
+	direct_mode_positive,
+	direct_mode_positive_xor,
+	direct_mode_negative
 };

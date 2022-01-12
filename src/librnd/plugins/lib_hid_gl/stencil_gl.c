@@ -123,7 +123,7 @@ void drawgl_mode_reset(rnd_bool direct, const rnd_box_t *screen)
 {
 	hidgl_draw.prim_flush();
 	hidgl_draw.reset();
-	glColorMask(0, 0, 0, 0); /* Disable color drawing */
+	hidgl_stenc.mode_reset();
 	stencilgl_reset_stencil_usage();
 	hidgl_draw.xor_end();
 	comp_stencil_bit = 0;
@@ -136,22 +136,21 @@ void drawgl_mode_positive(rnd_bool direct, const rnd_box_t *screen)
 	else
 		hidgl_draw.prim_flush();
 
-	glEnable(GL_STENCIL_TEST);
+	hidgl_stenc.mode_positive();
 	hidgl_draw.xor_end();
-	stencilgl_mode_write_set(comp_stencil_bit);
+	hidgl_stenc.mode_write_set(comp_stencil_bit);
 }
 
 void drawgl_mode_positive_xor(rnd_bool direct, const rnd_box_t *screen)
 {
 	hidgl_draw.prim_flush();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_STENCIL_TEST);
+	hidgl_stenc.mode_positive_xor();
 	hidgl_draw.xor_start();
 }
 
 void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 {
-	glEnable(GL_STENCIL_TEST);
+	hidgl_stenc.mode_negative();
 	hidgl_draw.xor_end();
 	
 	if (comp_stencil_bit == 0) {
@@ -160,7 +159,7 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 		   this is a negative mode and it's the first mode to be set, the stencil buffer
 		   will be set to all ones. */
 		comp_stencil_bit = stencilgl_allocate_clear_stencil_bit();
-		stencilgl_mode_write_set(comp_stencil_bit);
+		hidgl_stenc.mode_write_set(comp_stencil_bit);
 		hidgl_draw.prim_add_fillrect(screen->X1, screen->Y1, screen->X2, screen->Y2);
 	}
 	else
