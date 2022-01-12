@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include "opengl.h"
+#include "draw.h"
 
 #include <librnd/core/error.h>
 
@@ -79,6 +80,26 @@ static void direct_mode_negative(void)
 	glEnable(GL_STENCIL_TEST);
 }
 
+void direct_flush(int comp_stencil_bit)
+{
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	if (comp_stencil_bit) {
+		glEnable(GL_STENCIL_TEST);
+
+		/* Setup the stencil to allow writes to the color buffer if the
+		   comp_stencil_bit is set. After the operation, the comp_stencil_bit
+		   will be cleared so that any further writes to this pixel are disabled. */
+		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+		glStencilMask(comp_stencil_bit);
+		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
+
+		/* Draw all primitives through the stencil to the color buffer. */
+		hidgl_draw.prim_draw_all(comp_stencil_bit);
+	}
+
+	glDisable(GL_STENCIL_TEST);
+}
+
 static int direct_init(int *stencil_bits_out)
 {
 	int stencil_bits;
@@ -108,5 +129,6 @@ hidgl_stenc_t hidgl_stenc_direct = {
 	direct_mode_reset,
 	direct_mode_positive,
 	direct_mode_positive_xor,
-	direct_mode_negative
+	direct_mode_negative,
+	direct_flush
 };

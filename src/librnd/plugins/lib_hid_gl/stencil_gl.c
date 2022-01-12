@@ -169,27 +169,10 @@ void drawgl_mode_negative(rnd_bool direct, const rnd_box_t *screen)
 	hidgl_draw.prim_set_marker();
 }
 
-
 void drawgl_mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_box_t *screen)
 {
 	hidgl_draw.prim_flush();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-	if (comp_stencil_bit) {
-		glEnable(GL_STENCIL_TEST);
-
-		/* Setup the stencil to allow writes to the color buffer if the
-		   comp_stencil_bit is set. After the operation, the comp_stencil_bit
-		   will be cleared so that any further writes to this pixel are disabled. */
-		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-		glStencilMask(comp_stencil_bit);
-		glStencilFunc(GL_EQUAL, comp_stencil_bit, comp_stencil_bit);
-
-		/* Draw all primitives through the stencil to the color buffer. */
-		hidgl_draw.prim_draw_all(comp_stencil_bit);
-	}
-
-	glDisable(GL_STENCIL_TEST);
+	hidgl_stenc.flush(comp_stencil_bit);
 	stencilgl_reset_stencil_usage();
 	comp_stencil_bit = 0;
 }

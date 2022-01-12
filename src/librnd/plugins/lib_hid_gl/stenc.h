@@ -46,6 +46,7 @@ struct hidgl_stenc_s {
 	void (*mode_positive)(void);
 	void (*mode_positive_xor)(void);
 	void (*mode_negative)(void);
+	void (*flush)(int comp_stencil_bit);
 
 	/*** admin ***/
 	hidgl_stenc_t *next; /* linked list of all backends, except for the error backend */
