@@ -1,4 +1,4 @@
-33982	configure	opengl: stencil backends
+33990	configure	opengl: stencil backends
 33878	configure	internal API for supporting different opengl versions
 33700	configure	make install should install more src_3rd
 33613	configure	lib_gtk_common upgrade for gtk4

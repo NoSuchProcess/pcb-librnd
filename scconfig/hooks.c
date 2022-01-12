@@ -196,6 +196,7 @@ static void rnd_hook_detect_hid()
 		else
 			put("/local/pcb/has_glu", strue);
 		require("libs/gui/gl/vao/presents", 0, 0);
+		require("libs/gui/gl/fb_attachment/presents", 0, 0);
 	}
 	else {
 		disable_gl:;
