@@ -323,33 +323,33 @@ static int direct_init(void)
 	GLint profmask = 0, major;
 
 	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_direct) {
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: disabled from conf\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: disabled from conf\n");
 		return -1;
 	}
 
 	major = gl_get_ver_major();
 	if (major < 0) {
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: ancient opengl is probably compatible\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init accept: ancient opengl is probably compatible\n");
 		return 0;
 	}
 
 	if (major < 3) {
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init accept: major %d is below 3\n", major);
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init accept: major %d is below 3\n", major);
 		return 0;
 	}
 
 #ifdef GL_CONTEXT_PROFILE_MASK
 	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profmask);
 	if ((profmask != 0) && !(profmask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)) {
-		rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK (%d) lacks compatibility mode in major %d\n", profmask, major);
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: GL_CONTEXT_PROFILE_MASK (%d) lacks compatibility mode in major %d\n", profmask, major);
 		return -1;
 	}
 #else
-	rnd_message(RND_MSG_DEBUG, "opengl direct_init refuse: GL_CONTEXT_PROFILE_MASK missing with major %d\n", major);
+	rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: GL_CONTEXT_PROFILE_MASK missing with major %d\n", major);
 	return -1;
 #endif
 
-	rnd_message(RND_MSG_DEBUG, "opengl direct_init accept\n");
+	rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init accept\n");
 	return 0;
 }
 

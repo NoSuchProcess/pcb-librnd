@@ -333,27 +333,27 @@ static int vao_init_checkver(void)
 	GLint profmask = 0, major = gl_get_ver_major();
 
 	if (major < 0) {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: failed to determine opengl version\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: failed to determine opengl version\n");
 		return -1;
 	}
 
 	if (major < 3) {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: major %d is below 3\n", major);
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: major %d is below 3\n", major);
 		return -1;
 	}
 
 #ifdef GL_CONTEXT_PROFILE_MASK
 	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profmask);
 	if ((profmask != 0) && !(profmask & GL_CONTEXT_CORE_PROFILE_BIT)) {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: GL_CONTEXT_PROFILE_MASK (%d) lacks core mode in major %d\n", profmask, major);
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: GL_CONTEXT_PROFILE_MASK (%d) lacks core mode in major %d\n", profmask, major);
 		return -1;
 	}
 #else
-	rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: GL_CONTEXT_PROFILE_MASK missing with major %d\n", major);
+	rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: GL_CONTEXT_PROFILE_MASK missing with major %d\n", major);
 	return -1;
 #endif
 
-	rnd_message(RND_MSG_DEBUG, "opengl vao_init accept\n");
+	rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init accept\n");
 	return 0;
 }
 
@@ -376,7 +376,7 @@ RND_INLINE GLuint vao_create_shader(int type, const char *src)
 
 		buffer = malloc(log_len + 1);
 		glGetShaderInfoLog(shader, log_len, NULL, buffer);
-		rnd_message(RND_MSG_ERROR, "opengl vao_init: Compile failure in %s shader:\n%s\n", type == GL_VERTEX_SHADER ? "vertex" : "fragment", buffer);
+		rnd_message(RND_MSG_ERROR, "opengl draw: vao_init: Compile failure in %s shader:\n%s\n", type == GL_VERTEX_SHADER ? "vertex" : "fragment", buffer);
 		free(buffer);
 
 		glDeleteShader(shader);
@@ -421,7 +421,7 @@ RND_INLINE int vao_init_shaders_(const char *vertex_sh, const char *fragment_sh,
 
 		buffer = malloc(log_len + 1);
 		glGetProgramInfoLog(program, log_len, NULL, buffer);
-		rnd_message(RND_MSG_ERROR, "opengl vao_init: Linking failure:\n%s\n", buffer);
+		rnd_message(RND_MSG_ERROR, "opengl draw: vao_init: Linking failure:\n%s\n", buffer);
 		free(buffer);
 
 		glDeleteProgram(program);
@@ -458,7 +458,7 @@ RND_INLINE int vao_init_shaders(void)
 #define NL "\n"
 
 	if (gl_is_es()) {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init_shaders: opengl ES\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init_shaders: opengl ES\n");
 		vertex_sh = 
 			NL "attribute vec4 position;"
 			NL "out vec2 TexCoord;"
@@ -484,7 +484,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL;
 	}
 	else {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init_shaders: opengl desktop\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init_shaders: opengl desktop\n");
 		vertex_sh = 
 			NL "#version 330"
 			NL "attribute vec4 position;"
@@ -521,7 +521,7 @@ RND_INLINE int vao_init_shaders(void)
 static int vao_init(void)
 {
 	if (conf_lib_hid_gl.plugins.lib_hid_gl.backend.disable_vao) {
-		rnd_message(RND_MSG_DEBUG, "opengl vao_init refuse: disabled from conf\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: disabled from conf\n");
 		return -1;
 	}
 
@@ -533,7 +533,7 @@ static int vao_new_context(void)
 	GLuint vao;
 
 	if (vao_init_shaders() != 0) {
-		rnd_message(RND_MSG_ERROR, "opengl vao_init: failed to init shaders, no rendering is possible\n");
+		rnd_message(RND_MSG_ERROR, "opengl draw: vao_init: failed to init shaders, no rendering is possible\n");
 		return -1;
 	}
 
