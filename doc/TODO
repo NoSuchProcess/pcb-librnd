@@ -14,6 +14,7 @@
 	- make a runtime vesion of RND_VER_STR and let apps print it
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars
+	- generalize ps and png export into libs (do not make plugin name collision!), cschem badly needs them
 
 - 4.0.0: ABI incompatible (feature removal)
 	- cleanup: del pre/post callbacks from rnd_conf_hid_callbacks_t without hidlib
