@@ -9,12 +9,15 @@
 	- use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
 - 3.2.0: ABI compatible, API extensions
+	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- make a runtime vesion of RND_VER_STR and let apps print it
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars
 
 - 4.0.0: ABI incompatible (feature removal)
+	- cleanup: del pre/post callbacks from rnd_conf_hid_callbacks_t without hidlib
+	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- remove /local/pcb/* scconfig vars
 	- remove rnd_hid_cfg_keys_input_() and rnd_hid_cfg_keys_input(), rename rnd_hid_cfg_keys_input2_() and rnd_hid_cfg_keys_input2()
