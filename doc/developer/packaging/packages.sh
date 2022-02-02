@@ -161,6 +161,7 @@ print in_librnd, $1 > "L1"
 
 	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
 # no confdir in librnd
+disable_C = 1
 next
 		fn=$4
 		sub("[{][ \t]*", "", fn)
@@ -247,7 +248,8 @@ next
 		print "</table>"
 		print "<p>File prefixes:<ul>"
 		print "	<li> $P: plugin install dir (e.g. /usr/lib/librnd3/)"
-		print "	<li> $C: conf dir (e.g. /etc/librnd/)"
+		if (!disable_C)
+			print "	<li> $C: conf dir (e.g. /etc/librnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 
