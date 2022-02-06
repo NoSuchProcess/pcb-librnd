@@ -389,7 +389,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	w = dw / ghidgui->port.view.coord_per_px;
 	h = dh / ghidgui->port.view.coord_per_px;
 
-	if (gpm->w_scaled != w || gpm->h_scaled != h) {
+	if ((gpm->w_scaled != w) || (gpm->h_scaled != h)) {
 		if (gpm->cache.pb != NULL)
 			g_object_unref(G_OBJECT(gpm->cache.pb));
 
