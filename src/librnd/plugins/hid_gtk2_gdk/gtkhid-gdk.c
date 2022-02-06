@@ -420,7 +420,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	 	gpm->flip_y = rnd_conf.editor.view.flip_y;
 	}
 
-	/* in flip view start coords need to be flopped too to preserve original area on screen */
+	/* in flip view start coords need to be flipped too to preserve original area on screen */
 	if (rnd_conf.editor.view.flip_y)
 		dst_y -= h;
 	if (rnd_conf.editor.view.flip_x)
