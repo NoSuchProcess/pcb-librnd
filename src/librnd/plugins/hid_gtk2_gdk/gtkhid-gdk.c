@@ -405,6 +405,12 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 		gpm->h_scaled = h;
 	}
 
+	/* in flip view start coords need to be flopped too to preserve original area on screen */
+	if (rnd_conf.editor.view.flip_y)
+		dst_y -= h;
+	if (rnd_conf.editor.view.flip_x)
+		dst_x -= w;
+
 	if (gpm->cache.pb != NULL)
 		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
