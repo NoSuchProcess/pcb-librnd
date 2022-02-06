@@ -175,6 +175,7 @@ struct rnd_gtk_pixmap_s {
 		GdkPixbuf *pb;         /* for gdk */
 		unsigned long int lng; /* for opengl */
 	} cache;
+	unsigned flip_x:1, flip_y:1; /* current flip state of the cached image (for gdk) */
 };
 
 /* The output viewport */

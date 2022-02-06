@@ -389,7 +389,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	w = dw / ghidgui->port.view.coord_per_px;
 	h = dh / ghidgui->port.view.coord_per_px;
 
-	if ((gpm->w_scaled != w) || (gpm->h_scaled != h)) {
+	if ((gpm->w_scaled != w) || (gpm->h_scaled != h) || (gpm->flip_x != rnd_conf.editor.view.flip_x) || (gpm->flip_y != rnd_conf.editor.view.flip_y)) {
 		if (gpm->cache.pb != NULL)
 			g_object_unref(G_OBJECT(gpm->cache.pb));
 
@@ -401,8 +401,23 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 			interp_type = GDK_INTERP_BILINEAR;
 
 		gpm->cache.pb = gdk_pixbuf_scale_simple(gpm->image, w, h, interp_type);
+
+		/* flip content if needed */
+		if (rnd_conf.editor.view.flip_x) {
+			GdkPixbuf *tmp = gpm->cache.pb;
+			gpm->cache.pb = gdk_pixbuf_flip(tmp, 1);
+			g_object_unref(G_OBJECT(tmp));
+		}
+		if (rnd_conf.editor.view.flip_y) {
+			GdkPixbuf *tmp = gpm->cache.pb;
+			gpm->cache.pb = gdk_pixbuf_flip(tmp, 0);
+			g_object_unref(G_OBJECT(tmp));
+		}
+
 		gpm->w_scaled = w;
 		gpm->h_scaled = h;
+	 	gpm->flip_x = rnd_conf.editor.view.flip_x;
+	 	gpm->flip_y = rnd_conf.editor.view.flip_y;
 	}
 
 	/* in flip view start coords need to be flopped too to preserve original area on screen */
