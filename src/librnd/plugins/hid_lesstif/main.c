@@ -649,6 +649,8 @@ typedef struct {
 #endif
 	GC mask_gc, img_gc;
 	unsigned inited:1;
+	unsigned flip_x:1;
+	unsigned flip_y:1;
 } rnd_ltf_pixmap_t;
 
 static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
@@ -664,7 +666,7 @@ static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 	if (rnd_conf.editor.view.flip_x)
 		ox += dw;
 
-	if ((w != lpm->w_scaled) || (h != lpm->h_scaled)) {
+	if ((w != lpm->w_scaled) || (h != lpm->h_scaled) || (lpm->flip_x != rnd_conf.editor.view.flip_x) || (lpm->flip_y != rnd_conf.editor.view.flip_y)) {
 		int x, y, nret;
 		double xscale, yscale;
 		static int vis_inited = 0;
@@ -707,6 +709,8 @@ static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 		lpm->pm_scaled = XCreatePixmap(display, window, w, h, 24);
 		lpm->w_scaled = w;
 		lpm->h_scaled = h;
+		lpm->flip_x = rnd_conf.editor.view.flip_x;
+		lpm->flip_y = rnd_conf.editor.view.flip_y;
 
 		xscale = (double)lpm->pxm->sx / w;
 		yscale = (double)lpm->pxm->sy / h;
@@ -715,16 +719,25 @@ static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 		for (y = 0; y < h; y++) {
 			XColor pix;
 			unsigned char *row;
+			int ir;
 
-			int ir = y * yscale;
+			if (lpm->flip_y)
+				ir = (h-y-1) * yscale;
+			else
+				ir = y * yscale;
+
 			row = lpm->pxm->p + ir * sx3;
-
 			pix.flags = DoRed | DoGreen | DoBlue;
 
 			for (x = 0; x < w; x++) {
 				unsigned long pp;
-				int tr = 0, ic = x * xscale;
+				int tr = 0, ic;
 				unsigned int r, g, b;
+
+				if (lpm->flip_x)
+					ic = (w - x - 1) * xscale;
+				else
+					ic = x * xscale;
 
 				if ((ir < 0) || (ir >= lpm->pxm->sy) || (ic < 0) || (ic >= lpm->pxm->sx))
 					tr = 1;
