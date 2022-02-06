@@ -658,6 +658,12 @@ static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 	w = dw / view_zoom;
 	h = dh / view_zoom;
 
+	/* in flip view start coords need to be flopped too to preserve original area on screen */
+	if (rnd_conf.editor.view.flip_y)
+		oy += dh;
+	if (rnd_conf.editor.view.flip_x)
+		ox += dw;
+
 	if ((w != lpm->w_scaled) || (h != lpm->h_scaled)) {
 		int x, y, nret;
 		double xscale, yscale;
