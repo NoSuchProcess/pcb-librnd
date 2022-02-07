@@ -397,6 +397,17 @@ void copy_mask_pixmap(GdkPixmap *DST, GdkPixbuf *SRC, int sx, int sy, GdkGC *gc)
 	}
 }
 
+static void ghid_gdk_uninit_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm)
+{
+	if (gpm->cache.gdk.pb != NULL) {
+		g_object_unref(G_OBJECT(gpm->cache.gdk.pb));
+		gpm->cache.gdk.pb = NULL;
+	}
+	if (gpm->cache.gdk.pc != NULL) {
+		g_object_unref(G_OBJECT(gpm->cache.gdk.pc));
+		gpm->cache.gdk.pc = NULL;
+	}
+}
 
 static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
@@ -413,10 +424,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	h = dh / ghidgui->port.view.coord_per_px;
 
 	if ((gpm->w_scaled != w) || (gpm->h_scaled != h) || (gpm->flip_x != rnd_conf.editor.view.flip_x) || (gpm->flip_y != rnd_conf.editor.view.flip_y)) {
-		if (gpm->cache.gdk.pb != NULL)
-			g_object_unref(G_OBJECT(gpm->cache.gdk.pb));
-		if (gpm->cache.gdk.pc != NULL)
-			g_object_unref(G_OBJECT(gpm->cache.gdk.pc));
+		ghid_gdk_uninit_pixmap(hidlib, gpm);
 
 		w_src = gpm->pxm->sx;
 		h_src = gpm->pxm->sy;
@@ -1553,6 +1561,7 @@ void ghid_gdk_install(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 		impl->get_color_name = get_color_name;
 		impl->map_color = map_color;
 		impl->draw_pixmap = ghid_gdk_draw_pixmap;
+		impl->uninit_pixmap = ghid_gdk_uninit_pixmap;
 	}
 
 	if (hid != NULL) {
