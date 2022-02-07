@@ -146,6 +146,12 @@ static void rnd_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 	hidgl_draw_texture_rect(ox, oy, ox+bw, oy+bh, gpm->cache.lng);
 }
 
+static void ghid_gl_uninit_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm)
+{
+	if (gpm->cache.lng != 0)
+		hidgl_texture_free(gpm->cache.lng);
+}
+
 static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
 {
 	if (gpm->cache.lng == 0) {
@@ -553,6 +559,7 @@ int ghid_gl_install_common(rnd_gtk_impl_t *impl, rnd_hid_t *hid)
 		impl->drawing_area_configure_hook = ghid_gl_drawing_area_configure_hook;
 		impl->map_color = map_color;
 		impl->draw_pixmap = ghid_gl_draw_pixmap;
+		impl->uninit_pixmap = ghid_gl_uninit_pixmap;
 	}
 
 	if (hid != NULL) {
