@@ -557,6 +557,7 @@ hidgl_draw_t hidgl_draw_vao = {
 	vao_expose_init,
 	vao_set_view,
 	common_texture_import,
+	common_texture_free,
 	vao_push_matrix,
 	vao_pop_matrix,
 	vao_xor_start,

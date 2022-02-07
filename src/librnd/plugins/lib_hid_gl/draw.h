@@ -60,6 +60,7 @@ struct hidgl_draw_s {
 
 	/* Allocate a texture, load it from pixels and return texture gl-ID */
 	long (*texture_import)(unsigned char *pixels, int width, int height, int has_alpha);
+	void (*texture_free)(long id);
 
 	void (*push_matrix)(int projection);
 	void (*pop_matrix)(int projection);

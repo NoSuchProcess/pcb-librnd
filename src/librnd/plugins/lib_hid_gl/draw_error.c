@@ -47,6 +47,7 @@ static void error_reset(void) { }
 static void error_push_matrix(int projection) { }
 static void error_pop_matrix(int projection) { }
 static long error_texture_import(unsigned char *pixels, int width, int height, int has_alpha) { return 0; }
+static void error_texture_free(long id) { }
 static void error_prim_set_marker(void) { }
 static void error_prim_rewind_to_marker(void) { }
 static void error_draw_points_pre(GLfloat *pts) { }
@@ -78,6 +79,7 @@ hidgl_draw_t hidgl_draw_error = {
 	error_expose_init,
 	error_set_view,
 	error_texture_import,
+	error_texture_free,
 	error_push_matrix,
 	error_pop_matrix,
 	error_xor_start,

@@ -119,6 +119,11 @@ static long common_texture_import(unsigned char *pixels, int width, int height, 
 	return texture_id;
 }
 
+static void common_texture_free(long id)
+{
+	GLuint tmp = id;
+	glDeleteTextures(1, &tmp);
+}
 
 static void common_prim_set_marker(void)
 {

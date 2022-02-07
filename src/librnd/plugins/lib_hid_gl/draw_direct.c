@@ -371,6 +371,7 @@ hidgl_draw_t hidgl_draw_direct = {
 	direct_expose_init,
 	direct_set_view,
 	common_texture_import,
+	common_texture_free,
 	direct_push_matrix,
 	direct_pop_matrix,
 	direct_xor_start,

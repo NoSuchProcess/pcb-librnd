@@ -187,6 +187,11 @@ long hidgl_texture_import(unsigned char *pixels, int width, int height, int has_
 	return hidgl_draw.texture_import(pixels, width, height, has_alpha);
 }
 
+void hidgl_texture_free(long id)
+{
+	hidgl_draw.texture_free(id);
+}
+
 void hidgl_push_matrix(int projection)
 {
 	hidgl_draw.push_matrix(projection);
