@@ -172,7 +172,10 @@ struct rnd_gtk_pixmap_s {
 	/* backend/renderer cache */
 	int h_scaled, w_scaled;  /* current scale of the cached image (for gdk) */
 	union {
-		GdkPixbuf *pb;         /* for gdk */
+		struct {
+			GdkPixbuf *pb;         /* transformed (scaled+mirrored) image colormap */
+			GdkPixmap *pc;         /* clip map (mask) */
+		} gdk;                   /* for gdk */
 		unsigned long int lng; /* for opengl */
 	} cache;
 	unsigned flip_x:1, flip_y:1; /* current flip state of the cached image (for gdk) */

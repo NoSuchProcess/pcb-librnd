@@ -375,6 +375,29 @@ static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
 }
 
 /* ------------------------------------------------------------ */
+
+/* write 1 to dst for any pixel in SRC that is non-transparent */
+void copy_mask_pixmap(GdkPixmap *DST, GdkPixbuf *SRC, int sx, int sy, GdkGC *gc)
+{
+	int src_rowstd, dst_rowstd, nch, x, y, subp;
+	unsigned char *src_row, *src;
+
+	src_row = gdk_pixbuf_get_pixels(SRC);
+	src_rowstd = gdk_pixbuf_get_rowstride(SRC);
+	nch = gdk_pixbuf_get_n_channels(SRC);
+
+	assert((nch == 3) || (nch == 4));
+	for(y = 0; y < sy; y++,src_row += src_rowstd) {
+		src = src_row;
+		for(x = 0; x < sx; x++) {
+			if (src[3] == 255)
+				gdk_draw_point(DST, gc, x, y);
+			src += nch;
+		}
+	}
+}
+
+
 static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
 	GdkInterpType interp_type;
@@ -390,8 +413,10 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	h = dh / ghidgui->port.view.coord_per_px;
 
 	if ((gpm->w_scaled != w) || (gpm->h_scaled != h) || (gpm->flip_x != rnd_conf.editor.view.flip_x) || (gpm->flip_y != rnd_conf.editor.view.flip_y)) {
-		if (gpm->cache.pb != NULL)
-			g_object_unref(G_OBJECT(gpm->cache.pb));
+		if (gpm->cache.gdk.pb != NULL)
+			g_object_unref(G_OBJECT(gpm->cache.gdk.pb));
+		if (gpm->cache.gdk.pc != NULL)
+			g_object_unref(G_OBJECT(gpm->cache.gdk.pc));
 
 		w_src = gpm->pxm->sx;
 		h_src = gpm->pxm->sy;
@@ -400,17 +425,19 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 		else
 			interp_type = GDK_INTERP_BILINEAR;
 
-		gpm->cache.pb = gdk_pixbuf_scale_simple(gpm->image, w, h, interp_type);
+		gpm->cache.gdk.pb = gdk_pixbuf_scale_simple(gpm->image, w, h, interp_type);
+		if (priv->clip_gc != NULL)
+			gpm->cache.gdk.pc = gdk_pixmap_new(0, w, h, 1);
 
 		/* flip content if needed */
 		if (rnd_conf.editor.view.flip_x) {
-			GdkPixbuf *tmp = gpm->cache.pb;
-			gpm->cache.pb = gdk_pixbuf_flip(tmp, 1);
+			GdkPixbuf *tmp = gpm->cache.gdk.pb;
+			gpm->cache.gdk.pb = gdk_pixbuf_flip(tmp, 1);
 			g_object_unref(G_OBJECT(tmp));
 		}
 		if (rnd_conf.editor.view.flip_y) {
-			GdkPixbuf *tmp = gpm->cache.pb;
-			gpm->cache.pb = gdk_pixbuf_flip(tmp, 0);
+			GdkPixbuf *tmp = gpm->cache.gdk.pb;
+			gpm->cache.gdk.pb = gdk_pixbuf_flip(tmp, 0);
 			g_object_unref(G_OBJECT(tmp));
 		}
 
@@ -418,6 +445,9 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 		gpm->h_scaled = h;
 		gpm->flip_x = rnd_conf.editor.view.flip_x;
 		gpm->flip_y = rnd_conf.editor.view.flip_y;
+
+		if (priv->clip_gc != NULL)
+			copy_mask_pixmap(gpm->cache.gdk.pc, gpm->cache.gdk.pb, w, h, priv->clip_gc);
 	}
 
 	/* in flip view start coords need to be flipped too to preserve original area on screen */
@@ -426,8 +456,11 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	if (rnd_conf.editor.view.flip_x)
 		dst_x -= w;
 
-	if (gpm->cache.pb != NULL)
-		gdk_pixbuf_render_to_drawable(gpm->cache.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+	if (gpm->cache.gdk.pb != NULL) {
+		gdk_pixbuf_render_to_drawable(gpm->cache.gdk.pb, priv->out_pixel, priv->bg_gc, src_x, src_y, dst_x, dst_y, w - src_x, h - src_y, GDK_RGB_DITHER_NORMAL, 0, 0);
+		if ((priv->out_clip != NULL) && (priv->clip_gc != NULL))
+			gdk_draw_drawable(priv->out_clip, priv->clip_gc, gpm->cache.gdk.pc, src_x, src_y, dst_x, dst_y, (w - src_x), h - src_y);
+	}
 }
 
 static void ghid_gdk_draw_bg_image(rnd_hidlib_t *hidlib)
