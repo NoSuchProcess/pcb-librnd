@@ -174,7 +174,7 @@ struct rnd_gtk_pixmap_s {
 	union {
 		struct {
 			GdkPixbuf *pb;         /* transformed (scaled+mirrored) image colormap */
-			GdkPixmap *pc;         /* clip map (mask) */
+			void *pc;              /* (GdkPixmap *) really, but gtk4 doesn't have that; clip map (mask) */
 		} gdk;                   /* for gdk */
 		unsigned long int lng; /* for opengl */
 	} cache;
