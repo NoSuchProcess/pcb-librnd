@@ -8,11 +8,12 @@
 #define EVCTRL_WIDGET  gtk_event_controller_get_widget(GTK_EVENT_CONTROLLER(self))
 #define EVCTRL_STATE   gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(self))
 
-#ifdef GDK_WINDOWING_X11
-#include <dlfcn.h>
-
 GtkWidget *gtkc_event_widget;
 double gtkc_event_x, gtkc_event_y;
+
+
+#ifdef GDK_WINDOWING_X11
+#include <dlfcn.h>
 
 Bool (*gtkc_XQueryPointer)(Display*,Window,Window*,Window*,int*,int*,int*,int*,unsigned int*) = NULL;
 int (*gtkc_XWarpPointer)(Display*,Window,Window,int,int,unsigned int,unsigned int,int,int) = NULL;
