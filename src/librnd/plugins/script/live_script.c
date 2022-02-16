@@ -222,7 +222,7 @@ static live_script_t *rnd_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	if (lvs_list_langs(NULL, lvs) < 1) {
 		lvs_free_langs(lvs);
 		free(lvs);
-		rnd_message(RND_MSG_ERROR, "live_script: no scripting language engines found\nPlease compile and install fungw from source, then\nreconfigure and recompile pcb-rnd.\n");
+		rnd_message(RND_MSG_ERROR, "live_script: no scripting language engines found\nPlease system-install fungw (from fungw source or packages), then\nreconfigure and recompile librnd.\n");
 		return NULL;
 	}
 
