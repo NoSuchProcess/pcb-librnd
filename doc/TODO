@@ -9,6 +9,7 @@
 	- use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
 - 3.2.0: ABI compatible, API extensions
+	- FEATURE: sch-rnd critical: search for string pcb-rnd-conf-v1; this should be coming from rnd_app (or a global var)
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- make a runtime vesion of RND_VER_STR and let apps print it
