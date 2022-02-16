@@ -150,7 +150,7 @@ static int rnd_hook_detect_sys(void)
 
 	if (!istrue(get("libs/script/fungw/presents"))) {
 		if (plug_is_enabled("script"))
-			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure.\n");
+			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure librnd.\n");
 		put("/local/pcb/fungw_system", sfalse);
 	}
 	else
