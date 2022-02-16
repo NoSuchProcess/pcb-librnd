@@ -144,10 +144,12 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	static GdkPoint *points = NULL, *points3 = NULL;
 	static int npoints = 0, npoints3 = 0;
 
-	x1 = rnd_grid_fit(MAX(0, SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0)), hidlib->grid, hidlib->grid_ox);
-	y1 = rnd_grid_fit(MAX(0, SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0)), hidlib->grid, hidlib->grid_oy);
-	x2 = rnd_grid_fit(MIN(hidlib->size_x, SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0 + ghidgui->port.view.width - 1)), hidlib->grid, hidlib->grid_ox);
-	y2 = rnd_grid_fit(MIN(hidlib->size_y, SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0 + ghidgui->port.view.height - 1)), hidlib->grid, hidlib->grid_oy);
+	x1 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0), 0, hidlib->size_x), hidlib->grid, hidlib->grid_ox);
+	y1 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0), 0, hidlib->size_y), hidlib->grid, hidlib->grid_oy);
+	x2 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0 + ghidgui->port.view.width - 1), 0, hidlib->size_x), hidlib->grid, hidlib->grid_ox);
+	y2 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0 + ghidgui->port.view.height - 1), 0, hidlib->size_y), hidlib->grid, hidlib->grid_oy);
+
+rnd_trace("gridy: %mm %mm\n", y1, y2);
 
 	grd = hidlib->grid;
 	if (grd <= 0)
