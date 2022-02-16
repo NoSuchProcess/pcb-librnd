@@ -199,20 +199,24 @@ static inline void gtkc_scrolled_window_add_with_viewport(GtkWidget *scrolled, G
 
 static inline void gdkc_window_get_pointer(GtkWidget *w, gint *x, gint *y, GdkModifierType *mask)
 {
-	double dx, dy;
+	double dx, dy, wdx, wdy;
 	GdkDisplay *dsp = gtk_widget_get_display(w);
 	GdkSeat *seat = gdk_display_get_default_seat(dsp);
 	GdkDevice *dev = gdk_seat_get_pointer(seat);
 	GtkNative *nat = gtk_widget_get_native(w);
 	GdkSurface *surf = gtk_native_get_surface(nat);
+	GtkWidget *root = GTK_WIDGET(gtk_widget_get_root(w));
 
 	gdk_surface_get_device_position(surf, dev, &dx, &dy, mask);
 
+	/* device position is reported in surface coords but we need dx and dy in widget coords */
+	gtk_widget_translate_coordinates(root, w, dx, dy, &wdx, &wdy);
+
 	if (x != NULL)
-		*x = rnd_round(dx);
+		*x = rnd_round(wdx);
 
 	if (y != NULL)
-		*y = rnd_round(dy);
+		*y = rnd_round(wdy);
 }
 
 static inline void rnd_gtk_set_selected(GtkWidget *widget, int set)
