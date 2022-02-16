@@ -1,7 +1,6 @@
 *** Upcoming release ***
 - 3.1.1: ABI compatible, no extensions
-	- gtk4 bugs:
-		- press {del}: the crosshair jumps away and the action is executed on the new location! [report: Erich]
+	+ BUG: gtk4: press {del}: the crosshair jumps away and the action is executed on the new location! [report: Erich]
 
 *** Later releases ***
 - 3.1.2: ABI compatible, no extensions
