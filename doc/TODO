@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.1.1: ABI compatible, no extensions
-	- BUG: gtk4: separators in menu broke [report: Igor2]
 	- gtk4 bugs:
 		- press {del}: the crosshair jumps away and the action is executed on the new location! [report: Erich]
 
