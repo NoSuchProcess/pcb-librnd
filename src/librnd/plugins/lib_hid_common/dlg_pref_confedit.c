@@ -376,7 +376,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, modal, pref_conf_edit_close_cb);
+	RND_DAD_NEW("pref_confedit", ctx->dlg, "librnd conf item", ctx, modal, pref_conf_edit_close_cb);
 
 	if (is_read_only(ctx)) {
 		int n;

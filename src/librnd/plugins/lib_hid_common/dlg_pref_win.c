@@ -126,7 +126,7 @@ void rnd_dlg_pref_win_create(pref_ctx_t *ctx)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		RND_DAD_LABEL(ctx->dlg, "Load window geometry and enable window placement:");
 		RND_DAD_BOOL(ctx->dlg);
-			RND_DAD_HELP(ctx->dlg, "When enabled, pcb-rnd will load window geometry from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
+			RND_DAD_HELP(ctx->dlg, "When enabled, window geometry will be loaded from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
 			ctx->win.wmaster = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_win_master_cb);
 	RND_DAD_END(ctx->dlg);

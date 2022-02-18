@@ -186,7 +186,7 @@ static void pref_menu_export(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	free(fn);
 }
 
-#define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter pcb-rnd is restarted"
+#define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter the application is restarted"
 
 void rnd_dlg_pref_menu_create(pref_ctx_t *ctx)
 {
