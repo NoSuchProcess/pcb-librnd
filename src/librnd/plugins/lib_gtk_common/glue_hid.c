@@ -570,7 +570,8 @@ static void rnd_gtkg_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 static void rnd_gtkg_uninit_pixmap_(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	gctx->impl.uninit_pixmap(gctx->hidlib, (rnd_gtk_pixmap_t *)(pxm->hid_data));
+	if ((gctx != NULL) && (gctx->impl.uninit_pixmap != NULL))
+		gctx->impl.uninit_pixmap(gctx->hidlib, (rnd_gtk_pixmap_t *)(pxm->hid_data));
 	rnd_gtkg_uninit_pixmap_low((rnd_gtk_pixmap_t *)(pxm->hid_data));
 	free(pxm->hid_data);
 }
