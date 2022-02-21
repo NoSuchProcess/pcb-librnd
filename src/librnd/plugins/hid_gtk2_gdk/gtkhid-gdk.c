@@ -149,8 +149,6 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	x2 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0 + ghidgui->port.view.width - 1), 0, hidlib->size_x), hidlib->grid, hidlib->grid_ox);
 	y2 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0 + ghidgui->port.view.height - 1), 0, hidlib->size_y), hidlib->grid, hidlib->grid_oy);
 
-rnd_trace("gridy: %mm %mm\n", y1, y2);
-
 	grd = hidlib->grid;
 	if (grd <= 0)
 		grd = 1;
