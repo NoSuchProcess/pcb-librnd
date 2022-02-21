@@ -4,6 +4,7 @@
 *** Later releases ***
 - 3.1.2: ABI compatible, no extensions
 	- use libualloc for rtree stack instead of static allocation [report: Vuokko]
+	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
 
 - 3.2.0: ABI compatible, API extensions
 	- FEATURE: sch-rnd critical: search for string pcb-rnd-conf-v1; this should be coming from rnd_app (or a global var)
