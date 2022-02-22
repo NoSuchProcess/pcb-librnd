@@ -24,6 +24,8 @@
 #define plug_is_buildin(name)  (plug_eq(name, sbuildin))
 #define plug_is_plugin(name)   (plug_eq(name, splugin))
 
+#define plug_is_explicit_buildin(name)  (plug_eq_expl(name, sbuildin))
+
 /* auto-set tables to change control to the desired value */
 const arg_auto_set_node_t arg_disable[] = {
 	{"controls",    sdisable},
