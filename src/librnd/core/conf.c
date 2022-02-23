@@ -633,9 +633,9 @@ static void conf_insert_arr(rnd_conf_native_t *dest, int offs)
 			CASE_RND_MOVE(RND_CFN_HLIST, list);
 			case RND_CFN_max: break;
 		}
-	}
 #undef CASE_RND_MOVE
 	abort(); /* unhandled type */
+	}
 }
 
 int rnd_conf_merge_patch_array(rnd_conf_native_t *dest, lht_node_t *src_lst, int prio, rnd_conf_policy_t pol)
