@@ -178,7 +178,7 @@ RND_INLINE rnd_hid_row_t *rnd_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid
 	return nrow;
 }
 
-/* allocate a new row and append it under prn; if aft is NULL, the new row is appended at the
+/* allocate a new row and append it under prn; if prn is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
 RND_INLINE rnd_hid_row_t *rnd_dad_tree_append_under(rnd_hid_attribute_t *attr, rnd_hid_row_t *prn, char **cols)
 {
