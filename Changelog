@@ -1,3 +1,121 @@
+librnd 3.1.1 (r34033)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Fix: conf system shouldn't throw error on shifting 0-length array for prepend
+		-Fix: suppress error message on duplicate action and choose the app's action to keep for the actions that got moved from pcb-rnd to librnd at librnd 3.1.0; this is how librnd 3.1.1+ will work with old pcb-rnd executables
+		-Fix: comment description of the dialog box geo change event: it means geometry _may_ have changed (gtk4 for exmaple will flood with unchanged geo on leave/enter)
+		-Fix: set as many of the -c plugins/ before gui/export initialization as possible, but then try again the ones that didn't work after export/gui initialization: they may be export/gui conf nodes; for exmaple this allows setting opengl backend via -c even tho it is a hid_gtk_* plugin conf node
+		-Fix: input handler makes event with hidlib (when hidlib is known)
+		-Fix: provide a new set of key input handler calls to pass on hidlib to the event handler
+		-Fix: DAD: wrong parameter name in comment about "tree row append under"
+
+	[doc]
+		-Add: developer doc: drawing on DAD widget and rendering path through HIDs and libs
+		-Fix: packager's: remove $C from packages.html when not used
+		-Fix: packager's doc: remove duplicate $PREFIC/lib/librnd3/scconfig from file listing
+
+	[gtk]
+		-Fix: remove gtkx cflags and ldflags: gtk2 plugins should use gtk2 flags, gtk4 plugins should use gtk4 flags so it is possible to compile both as plugins
+		-Fix: hidgl_init() needs to be called on an existing gl context so it needs to wait until the widget is created
+		-Fix: force-realize the new dialog after creation and iterate so that it is really created before returning so that the caller can manipulate widget states
+		-Fix: dlg_attr* widget implementations should be dispatched to per-version gtk common instead of directly including global common - this gives the version dependent layer a chance to override or extend dad widget implementations without a maze of #ifdefs
+		-Fix: hid glue: call backend uninit on pixmap uninit to get bakcend caches free'd
+		-Fix: don't use gdk pixmap type directly in common code, gtk4 won't have it
+		-Fix: don't call implementation-specific pixmap uninit if it is not available
+		-Cleanup: use hidgl reset at the end of crosshair draw instead of low level gl xor mode setting
+		-Cleanup: do not include stencil and opengl headers directly, everyhting shall go through hidgl.h
+		-Cleanup: gtk2-gl shall not incldue opengl.h as no low level drawing is done
+		-Cleanup: top window placement function name reflects its timing nature
+		-Cleanup: gdkc_window_get_pointer() should have no return value (not used at caller)
+		-Cleanup: compat API: unify calling convention on paned: pass GtkWidget and cast in compat
+		-Cleanup: const correctness on gdk key query
+		-Cleanup: move gtk2-only tree table keyboard workaround to the gtk2 layer so common code doesn't need #ifdefs on gtk version
+		-Add: abstract drawing area type and class for the preview widget: in gtk2 it's a drawing area in gtk4 it's a GLarea
+		-Add: preview opengl rendering creates new context with low level draw before first draw
+		-Add: support for sparse grid in gtk2 and gtk4 opengl render
+		-Add: bind gl texture free
+
+	[gtk2]
+		-Del: remove top window resize grip widget: it's not a natural gtk thing, it never made into lesstif or the gtk4 port and poll shows nobody would miss it anyway
+		-Fix: missing include for preview context init
+		-Fix: wrong order of hidgl init and new context calls in top window drawing area
+		-Fix: correct "top-left" coords of pixmap rendering when flipped
+		-Fix: flip (mirror) content of pixmap if displayed on flipped board
+		-Fix: when rendering pixmap in composite rendering mode, also calculate and set clip
+		-Fix: don't let global grid extend beyond the drawing area even if board is flipped
+		-Add: uninit pixmap call that frees local transformed caches
+
+	[gtk4]
+		-Fix: do not scale color for transparency, it makes the output too light
+		-Fix: window placement: window x;y needs to be queried separately because allocation is in window-coordinates
+		-Fix: drawing area realized signal doesn't have a return value
+		-Fix: make sure lib_gtk_common conf file is specified only once to avoid redundant Makefile rules generating the C version of the file
+		-Fix: always declare gtkc_event_*
+		-Fix: when acquiring x;y from a widget for a non-mouse event, convert surface coords into widget coords (fixes pcb-rnd "del key jumps crosshair away" bug)
+		-Cleanup: remove xor color tuning from high level: in the vao backend we do not have real xor, only some blending cheat so color needs to be tuned locally
+		-Cleanup: compiler warnings: missing cast on paned
+		-Cleanup: remove scrollbar dead code
+		-Cleanup: const correctness in css bg color set
+		-Cleanup: realize/unrealize singals do have void * user data even if the code doesn't use it at the moment
+		-Cleanup: rnd_gtk_tree_table_arrow_width() is gtk2-only
+		-Cleanup: missing casts for top window custom scrollbar
+		-Cleanup: wrong number of arguments for wt_preview singal callback
+		-Workaround: gtk4 bug: GUI locks up if popup menu is not hidden before executing actions, e.g. in case of context menu inserting new layer
+		-Add: call gl render
+		-Add: port wt_preview compat to gtk_gl_area
+		-Add: comment about popdown memleak and gui lockup
+		-Add: top window and attribute dialog delayed placement because gtk4 is fighting it
+		-Add: top win scrollbar widget: "jump here" when clicked outside of the slider
+
+	[lesstif]
+		-Fix: correct "top-left" coords of pixmap rendering when flipped
+		-Fix: flip (mirror) content of pixmap if displayed on flipped board
+		-Add: prepare the code for sparse grid (disable it for now as it's a gtk-only config node)
+
+	[lib_hid_common]
+		-Fix: preferences dialog: remove references to pcb-rnd from text printed on GUI
+
+	[lib_hid_gl]
+		-Cleanup: remove PRIM_MASK_* code from direct draw: all users got deleted between pcb-rnd 2.1.2 and 2.1.3 back in 2019
+		-Split: original drawing backend into draw_direct and the API to draw.h to make room for alternate implementations
+		-Cleanup: stencil calls to stencil_gl.[ch]
+		-Cleanup: remove low level gl calls from anywhere else but backend code
+		-Cleanup: rename colour to color - the codebase follows US English
+		-Cleanup: functions with no arguments should be (void) in the low level draw API
+		-Cleanup: do not use "static inline", it's not c89; use portable RND_INLINE instead
+		-Cleanup: rename solid_rectangle to fillrect: shorter and more consistent with the codebase
+		-Cleanup: rename texture_quad to textrect for consistency with other rect calls
+		-Cleanup: rename "circular" cap drawing internals to be consistent with the rest of the code base: round cap
+		-Cleanup: move stencil op reset from gtk gl to draw low level
+		-Clenaup: view (translate+zoom) low level gl setup from gtk side to draw backend (new opengl does not have matrix transformations)
+		-Cleanup: abstract push/pop matrix so that gtk doesn't need to do these with gl low level
+		-Cleanup: disable a large chunk of dead code - seemingly some old stencil/mask draw code from before layer compositing
+		-Cleanup: report error into the message log, not to stdout, when stencil bits are not available
+		-Add: support for sparse grid
+		-Add: hidgl_set_color() so that hids won't need to use low level draw .h directly
+		-Add: error backend: in case no backend is available for rendering, print an error message and provide nop for all calls (better than a segf on NULL function ptr calls)
+		-Add: vao backend for non-compat-mode opengl (gtk4), with ES and desktop shaders
+		-Add: infrastructure for tracing opengl calls
+		-Add: plugin configuration for backend selection logics
+		-Add: stencil backends; config bools for disabling each stencil backend
+		-Add: support for texture free (releases opengl texture name)
+
+	[lohgid]
+		-Fix: make_gc call-through should pass on delegatee hid instead of loghid's own hid - most GUI HIDs will store this pointer and make a check on USE_GC() to make sure no foreign gc is used and loghid would be considered foreign
+
+	[scconfig]
+		-Fix: lib_gtk_common is not compiled anymore, disable or depend on lib_gtk2_common and lib_gtk4_common
+		-Fix: warn about missing lesstif only if the user explicitly requested it
+		-Fix: warn about missing libstroke only if the stroke plugin is explicitly requested by the user
+		-Fix: refine no-system-installed-fungw warning to tell it's librnd that needs to be reconfigured
+		-Add: refine the gtk2+gl disable warning - opengl is much less generic than it seemed when that message was originally written: every version of gtk and probably every single HID using opengl will have different dependencies
+		-Add: more accurate gtk2 vs. gtk4 warnings and notes for all combination of explicit and implicit requests
+		-Add: more sophisticated gtk2 vs. gtk4 conflict resolvement: if the user expressed explicit interest in either version on the command line, prefer that one instead of the standard gtk2-over-gtk4 preference
+		-Change: switch gtk4 from disable-all to disable so --all=plugin picks it up
+
+	[script]
+		-Fix: live script error message: request the user to system-install fungw (not necessarily from source) and reconfigure librnd, not pcb-rnd
+
 librnd 3.1.0 (r33720)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]

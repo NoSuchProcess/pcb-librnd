@@ -1,20 +1,12 @@
-librnd 3.1.0
+librnd 3.1.1
 ~~~~~~~~~~~~
 
-3.1.0 implements all new API that was pending since 3.0.0:
- - install more src_3rd minilibs (gensexpr, all headers for genht)
- - more efficient safe_fs stat() call
- - DAD subdialog widget
- - DAD string region selection (used by the file selection dialog)
- - conf diagnostic actions
- - generalize preferences dialog; last 4 tabs of the pcb-rnd preferences dialog
-   moved to librnd among with an app-tab extensible preference dialog framework
+3.1.1 implements hid_gtk4_gl, which is a fully working GUI HID with
+gtk4.4 or newer, using VAO based opengl rendering. The new HID does not
+change library API so it does not warrant a new minor version number.
+All applications using librnd can automatically use gtk4 now (even
+without the app recompiled).
 
-Besides the new API, there are a lot of invisible, internal change
-for a gtk refactoring to enable gtk4 within a few releases:
- - lib_gtk_common is split to gtk2 and gtk4 variant
- - some of the gtk opengl rendering is refactored for reuse with gtk4
- - opengl rendering code changes to widen the range of suitable opengl versions
+Besides the new opengl and gtk4 code and related refactoring of gtk and
+gl plugins, this release also features a lot of minor bugfixes.
 
-A new, gtk HID config node is introduced to make it possible to scale icons up
-(useful on high resolution screen).
