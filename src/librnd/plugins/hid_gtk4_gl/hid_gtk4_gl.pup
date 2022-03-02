@@ -1,7 +1,7 @@
 $class hid
 $short GTK4 GUI, opengl render
 $long GUI: GTK4 with opengl rendering
-$state WIP
+$state works
 $NO_package hid-gtk4-gl
 $hidlib 1
 default disable
