@@ -15,6 +15,13 @@ B. changes that probably DO need action
    Requires gtk4 4.4.x. Does _not_ replace the gtk2 plugin, at the
    moment gtk4 is only an option.
 
+2. system-installed fungw scripting is ready for packaging
+   If your distribution has packages for fungw and genht, please add
+   these two packages to librnd-dev deps and build-deps:
+    - libgenht1-dev,
+    - libfungw-dev
+
+
 Packaging changes between 3.1.0 and 3.0.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
