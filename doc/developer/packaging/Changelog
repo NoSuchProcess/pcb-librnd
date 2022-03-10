@@ -1,9 +1,19 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.1.0
+  ver=3.1.1
   cd /tmp
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
+
+Packaging changes between 3.1.1 and 3.1.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+B. changes that probably DO need action
+
+1. new plugin: librnd3-hid-gtk4-gl
+   Requires gtk4 4.4.x. Does _not_ replace the gtk2 plugin, at the
+   moment gtk4 is only an option.
 
 Packaging changes between 3.1.0 and 3.0.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

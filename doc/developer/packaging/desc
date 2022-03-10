@@ -31,6 +31,11 @@
 
 	Hardware accelerated (opengl) rendering on gtk2.
 
+@librnd3-hid-gtk4-gl
+	GUI: gtk4, opengl
+
+	Hardware accelerated (opengl) rendering on gtk4.
+
 @librnd3-lib-gl
 	Support library for rendering with opengl.
 
