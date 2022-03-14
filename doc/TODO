@@ -10,7 +10,8 @@
 	- BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
 
 - 3.2.0: ABI compatible, API extensions
-	- FEATURE: sch-rnd critical: search for string pcb-rnd-conf-v1; this should be coming from rnd_app (or a global var)
+	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that don't have external deps (ps, eps, svg)
+	- *FEATURE: sch-rnd critical: search for string pcb-rnd-conf-v1; this should be coming from rnd_app (or a global var)
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- make a runtime vesion of RND_VER_STR and let apps print it
@@ -19,6 +20,7 @@
 	- generalize ps and png export into libs (do not make plugin name collision!), cschem badly needs them
 
 - 4.0.0: ABI incompatible (feature removal)
+	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that have external deps (png) 
 	- cleanup: del pre/post callbacks from rnd_conf_hid_callbacks_t without hidlib
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
