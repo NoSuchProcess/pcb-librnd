@@ -1,15 +1,12 @@
 *** Upcoming release ***
-- 3.1.1: ABI compatible, no extensions
-
-*** Later releases ***
 - 3.1.2: ABI compatible, no extensions
-	- use libualloc for rtree stack instead of static allocation [report: Vuokko]
-	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
 	- BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- BUG: irc: btn_savelog_cb() file name hardwires pcb-rnd prefix, use app's name so sch-rnd saves differently [report: Erich]
 	- BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
 
+*** Later releases ***
 - 3.2.0: ABI compatible, API extensions
+	- use libualloc for rtree stack instead of static allocation; offering libualloc is a new API feature [report: Vuokko]
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that don't have external deps (ps, eps, svg)
 	- *FEATURE: sch-rnd critical: search for string pcb-rnd-conf-v1; this should be coming from rnd_app (or a global var)
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
@@ -18,6 +15,7 @@
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars
 	- generalize ps and png export into libs (do not make plugin name collision!), cschem badly needs them
+	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
 
 - 4.0.0: ABI incompatible (feature removal)
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that have external deps (png) 
