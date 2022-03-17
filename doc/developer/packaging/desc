@@ -8,7 +8,7 @@
 @librnd3-dev
 	Ringdove 2D cad library, files for development.
 
-	Headers, templates, scripts for compiling Ringdove appliactions.
+	Headers, templates, scripts for compiling Ringdove applications.
 
 @librnd3-doc
 	Documentation for librnd.
