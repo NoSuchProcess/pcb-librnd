@@ -1,5 +1,6 @@
 *** Upcoming release ***
 - 3.1.2: ABI compatible, no extensions
+	- BUG: DAD: sch-rnd attr dialog new/del: vbox/hbox+frame/widget-spring-widget; spring fails because of frame in hbox
 	- BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- BUG: irc: btn_savelog_cb() file name hardwires pcb-rnd prefix, use app's name so sch-rnd saves differently [report: Erich]
 	- BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
