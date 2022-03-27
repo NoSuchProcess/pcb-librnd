@@ -222,10 +222,7 @@ char *rnd_tempfile_name_new(const char *name)
 	free(mytmpdir);
 #undef TEMPLATE
 #else
-	/*
-	 * tmpnam() uses a static buffer so rnd_strdup() the result right away
-	 * in case someone decides to create multiple temp names.
-	 */
+	/* tmpnam() uses a static buffer so rnd_strdup() to have an allocation (API requirement) */
 	tmpfile = rnd_strdup(tmpnam(NULL));
 #endif
 	return tmpfile;
