@@ -19,6 +19,7 @@
 	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
 
 - 4.0.0: ABI incompatible (feature removal)
+	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this!
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that have external deps (png) 
 	- cleanup: del pre/post callbacks from rnd_conf_hid_callbacks_t without hidlib
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
