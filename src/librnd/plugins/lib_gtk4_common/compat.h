@@ -290,7 +290,12 @@ void gtkc_widget_modify_bg_(GtkWidget *w, const rnd_gtk_color_t *color);
 #define gtkc_window_set_child(sw, ch)     gtk_window_set_child(GTK_WINDOW(sw), GTK_WIDGET(ch))
 #define gtkc_button_set_child(btn, ch)    gtk_button_set_child(GTK_BUTTON(btn), ch)
 #define gtkc_button_set_image(btn, img)   gtk_button_set_child(btn, img)
-#define gtkc_window_destroy(win)          gtk_window_destroy(GTK_WINDOW(win))
+#define gtkc_window_destroy(win) \
+	do { \
+		g_signal_emit_by_name(G_OBJECT(win), "destroy"); \
+		gtk_window_destroy(GTK_WINDOW(win)); \
+	} while(0)
+
 #define gtkc_window_set_role(win, id)
 void gtkc_window_resize(GtkWindow *win, int x, int y);
 void gtkc_window_move(GtkWindow *win, int x, int y);

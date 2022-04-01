@@ -159,7 +159,12 @@ gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
 gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	return rs->cb(widget, 0, 0, 0, rs->user_data);
+	gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *user_data) = rs->cb;
+
+	rs->cb = NULL; /* make sure we don't call cb twice */
+	if (cb != NULL)
+		return cb(widget, 0, 0, 0, rs->user_data);
+	return 1;
 }
 
 gint gtkc_win_delete_cb(GtkWindow *window, void *rs_)
