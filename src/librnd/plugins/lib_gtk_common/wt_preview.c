@@ -73,6 +73,8 @@ void rnd_gtk_preview_zoomto(rnd_gtk_preview_t *preview, const rnd_box_t *data_vi
 	int orig = preview->view.inhibit_pan_common;
 	preview->view.inhibit_pan_common = 1; /* avoid pan logic for the main window */
 
+	preview->view.x0 = data_view->X1;
+	preview->view.y0 = data_view->Y1;
 	preview->view.width = data_view->X2 - data_view->X1;
 	preview->view.height = data_view->Y2 - data_view->Y1;
 
@@ -303,9 +305,10 @@ static gboolean preview_resize_event_cb(GtkWidget *w, long sx, long sy, long z, 
 
 	if (need_rezoom) {
 		rnd_box_t b;
-		b.X1 = b.Y1 = 0;
-		b.X2 = preview->view.width;
-		b.Y2 = preview->view.height;
+		b.X1 = preview->view.x0;
+		b.Y1 = preview->view.y0;
+		b.X2 = b.X1 + preview->view.width;
+		b.Y2 = b.Y1 + preview->view.height;
 		rnd_gtk_preview_zoomto(preview, &b);
 	}
 	perview_update_offs(preview);
