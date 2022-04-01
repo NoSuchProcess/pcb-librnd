@@ -500,6 +500,7 @@ static void rnd_gtk_tree_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, in
 
 	/* make sure the model filter functions are not called back in an async call
 	   when we already free'd attr */
+	ctx->inhibit_valchg = 1; /* do not trigger user code cursor set callback */
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tt), NULL);
 }
 
