@@ -281,6 +281,9 @@ static inline void gtkc_entry_set_text(GtkEntry *entry, const char *str)
 		g_signal_handler_unblock(fwd, tp->kpsig); \
 	} while(0)
 
+
+#define RND_GTK4_WIN_DESTROY_DATA "gtk4_win_destroy_data"
+
 #define gtkc_entry_set_width_chars(e, w)  gtk_editable_set_width_chars(GTK_EDITABLE(e), w)
 void gtkc_widget_modify_bg_(GtkWidget *w, const rnd_gtk_color_t *color);
 #define gtkc_widget_modify_bg(w, st, c)   gtkc_widget_modify_bg_(w, c)
@@ -292,7 +295,8 @@ void gtkc_widget_modify_bg_(GtkWidget *w, const rnd_gtk_color_t *color);
 #define gtkc_button_set_image(btn, img)   gtk_button_set_child(btn, img)
 #define gtkc_window_destroy(win) \
 	do { \
-		g_signal_emit_by_name(G_OBJECT(win), "destroy"); \
+		void *cookie = g_object_get_data(G_OBJECT(win), RND_GTK4_WIN_DESTROY_DATA); \
+		gtkc_win_destroy_cb(win, cookie); \
 		gtk_window_destroy(GTK_WINDOW(win)); \
 	} while(0)
 
@@ -405,8 +409,11 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtk4c_bind_win_resize(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_win_surface(GTK_WIDGET(widget))), "layout", G_CALLBACK(gtkc_win_resize_cb), ev)
 
-#define gtkc_bind_win_destroy(widget, ev) \
-	g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev)
+static inline gint gtkc_bind_win_destroy(GtkWidget *widget, void *ev)
+{
+	g_object_set_data(G_OBJECT(widget), RND_GTK4_WIN_DESTROY_DATA, ev);
+	return g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev);
+}
 
 #define gtkc_unbind_win_destroy(w, sig) g_signal_handler_disconnect(G_OBJECT(w), sig)
 

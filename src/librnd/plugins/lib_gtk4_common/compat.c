@@ -159,11 +159,18 @@ gint gtkc_win_resize_cb(GdkSurface *surf, gint width, gint height, void *rs_)
 gint gtkc_win_destroy_cb(GtkWidget *widget, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *user_data) = rs->cb;
+	void *cookie = g_object_get_data(G_OBJECT(widget), RND_GTK4_WIN_DESTROY_DATA);
 
-	rs->cb = NULL; /* make sure we don't call cb twice */
-	if (cb != NULL)
-		return cb(widget, 0, 0, 0, rs->user_data);
+	/* avoid double call async */
+	g_object_set_data(G_OBJECT(widget), RND_GTK4_WIN_DESTROY_DATA, NULL);
+	if (cookie != NULL) {
+		gboolean (*cb)(GtkWidget *widget, long x, long y, long z, void *user_data) = rs->cb;
+
+		rs->cb = NULL; /* make sure we don't call cb twice */
+		if (cb != NULL)
+			return cb(widget, 0, 0, 0, rs->user_data);
+	}
+
 	return 1;
 }
 
