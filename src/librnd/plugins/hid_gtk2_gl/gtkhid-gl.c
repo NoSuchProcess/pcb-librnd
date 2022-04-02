@@ -211,8 +211,17 @@ static void ghid_gl_init_drawing_widget(GtkWidget *widget, void *port_)
 {
 	rnd_gtk_port_t *port = port_;
 	render_priv_t *priv = port->render_priv;
+	GdkGLContext *share = NULL;
 
-	gtk_widget_set_gl_capability(widget, priv->glconfig, NULL, TRUE, GDK_GL_RGBA_TYPE);
+	if (port->drawing_area != NULL) {
+		/* Share preview contexts with top window drawing area context;
+		   this is required for sharing textures of pixmaps, which is
+		   important if the preview widget displays the same content (with
+		   the same cached texture IDs) the main drawing area does. */
+		share = gtk_widget_get_gl_context(port->drawing_area);
+	}
+
+	gtk_widget_set_gl_capability(widget, priv->glconfig, share, TRUE, GDK_GL_RGBA_TYPE);
 }
 
 static gboolean ghid_gl_start_drawing(rnd_gtk_port_t *port)
