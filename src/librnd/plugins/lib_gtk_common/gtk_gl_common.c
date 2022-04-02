@@ -243,9 +243,14 @@ void ghid_gl_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 	   low level line draw function has to build the ap from triangles */
 }
 
+
+/* gc width in coords */
+#define GCWC(gc) ((gc->width < 0) ?  (-gc->width * ghidgui->port.view.coord_per_px) : gc->width)
+
+
 void ghid_gl_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
-	gc->width = width < 0 ? (-width) * ghidgui->port.view.coord_per_px : width;
+	gc->width = width;
 }
 
 
@@ -278,14 +283,14 @@ static void ghid_gl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 {
 	USE_GC(gc);
 
-	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, ghidgui->port.view.coord_per_px);
+	hidgl_draw_line(gc->core_gc.cap, GCWC(gc), x1, y1, x2, y2, ghidgui->port.view.coord_per_px);
 }
 
 static void ghid_gl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	USE_GC(gc);
 
-	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, ghidgui->port.view.coord_per_px);
+	hidgl_draw_arc(GCWC(gc), cx, cy, xradius, yradius, start_angle, delta_angle, ghidgui->port.view.coord_per_px);
 }
 
 static void ghid_gl_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
