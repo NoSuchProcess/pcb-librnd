@@ -157,7 +157,7 @@ RND_INLINE int gl_is_es(void)
 
 RND_INLINE GLint gl_get_ver_major(void)
 {
-	GLint major;
+	GLint major = 0;
 
 #ifdef GL_MAJOR_VERSION
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
