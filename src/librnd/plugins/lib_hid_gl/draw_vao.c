@@ -461,22 +461,22 @@ RND_INLINE int vao_init_shaders(void)
 		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init_shaders: opengl ES\n");
 		vertex_sh = 
 			NL "attribute vec4 position;"
-			NL "out vec2 TexCoord;"
+			NL "varying vec2 TexCoord;"
 			NL "uniform vec4 xform;"
 			NL "void main() {"
-			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, 0, 1);"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0, (position[1] + xform[1]) * xform[3] + 1.0, 0, 1);"
 			NL "  TexCoord = vec2(position[2], position[3]);"
 			NL "}"
 			NL;
 
 		fragment_sh =
 			NL "precision highp float;"
-			NL "in vec2 TexCoord;"
+			NL "varying vec2 TexCoord;"
 			NL "uniform vec4 inputColor;"
 			NL "uniform sampler2D inputTexture;" /* we do not have to load this one, as 0 is default */
 			NL "void main() {"
-			NL "  if (inputColor[0] < -3) {"
-			NL "    gl_FragColor = texture(inputTexture, TexCoord);"
+			NL "  if ((inputColor[0] < -3.0)) {"
+			NL "    gl_FragColor = texture2D(inputTexture, TexCoord);"
 			NL "  } else {"
 			NL "    gl_FragColor = inputColor;"
 			NL "  }"
@@ -491,7 +491,7 @@ RND_INLINE int vao_init_shaders(void)
 			NL "out vec2 TexCoord;"
 			NL "uniform vec4 xform;"
 			NL "void main() {"
-			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0f, (position[1] + xform[1]) * xform[3] + 1.0f, 0, 1);"
+			NL "  gl_Position = vec4((position[0] + xform[0]) * xform[2] - 1.0, (position[1] + xform[1]) * xform[3] + 1.0, 0, 1);"
 			NL "  TexCoord = vec2(position[2], position[3]);"
 			NL "}"
 			NL ";"
