@@ -327,6 +327,11 @@ static int direct_init(void)
 		return -1;
 	}
 
+	if (gl_is_es()) {
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: won't use on ES\n");
+		return -1;
+	}
+
 	major = gl_get_ver_major();
 	if (major < 0) {
 		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init accept: ancient opengl is probably compatible\n");
