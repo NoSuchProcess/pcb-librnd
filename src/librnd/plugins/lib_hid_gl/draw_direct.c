@@ -328,7 +328,7 @@ static int direct_init(void)
 	}
 
 	if (gl_is_es()) {
-		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: won't use on ES\n");
+		rnd_message(RND_MSG_DEBUG, "opengl draw: direct_init refuse: won't use direct on ES\n");
 		return -1;
 	}
 
