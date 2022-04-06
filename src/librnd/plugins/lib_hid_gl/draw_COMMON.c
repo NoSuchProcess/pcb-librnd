@@ -168,6 +168,16 @@ RND_INLINE GLint gl_get_ver_major(void)
 
 	if (major == 0) {
 		const GLubyte *verstr = glGetString(GL_VERSION);
+		if ((verstr != NULL) && (strncmp(verstr, "OpenGL ES", 9) == 0)) {
+			char *end;
+			long tmp = strtol(verstr+10, &end, 10);
+			if (*end == '.') {
+				rnd_message(RND_MSG_DEBUG, "opengl gl_get_ver_major: had to extract verison from string: %d from '%s'\n", tmp, (const char *)verstr);
+				return tmp;
+			}
+			else
+				rnd_message(RND_MSG_DEBUG, "opengl gl_get_ver_major: tried to extract verison from string '%s' but failed the conversion; end='%s'\n", tmp, (const char *)verstr, end);
+		}
 		rnd_message(RND_MSG_DEBUG, "opengl gl_get_ver_major: you have a real ancient opengl version '%s'\n", verstr == NULL ? "<unknown>" : (const char *)verstr);
 		return -1;
 	}
