@@ -337,6 +337,13 @@ static int vao_init_checkver(void)
 		return -1;
 	}
 
+	if (gl_is_es()) {
+		if (major >= 1) {
+			rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init accept (ES with major %d)\n", major);
+			return 0;
+		}
+	}
+
 	if (major < 3) {
 		rnd_message(RND_MSG_DEBUG, "opengl draw: vao_init refuse: major %d is below 3\n", major);
 		return -1;
