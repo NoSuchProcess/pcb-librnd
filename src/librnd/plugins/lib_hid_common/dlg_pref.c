@@ -441,6 +441,9 @@ void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pref_confitem_t *i;
 
+	if (!pref_ctx.active)
+		return;
+
 	for(i = rnd_conf_hid_get_data(cfg, pref_hid); i != NULL; i = i->cnext)
 		if (i != pref_ctx.rnd_conf_lock)
 			rnd_pref_conf2dlg_item(cfg, i);
