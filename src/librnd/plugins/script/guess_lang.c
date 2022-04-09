@@ -151,6 +151,9 @@ static void rnd_script_guess_lang_init(void)
 		paths[1] = NULL;
 		pup_list_parse_pups(&ctx, paths);
 
+		if (paths[0] == NULL)
+			rnd_message(RND_MSG_INFO, "Fungw scripting: FGW_CFG_PUPDIR is NULL (only builtin scripting languages will be found)\n");
+
 		guess_lang_inited = 1;
 	}
 }
