@@ -372,7 +372,7 @@ static const char rnd_acts_Oneliner[] = "Oneliner(lang, script)";
 /* DOC: onliner.html */
 static fgw_error_t rnd_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *first = NULL, *lang = argv[0].val.func->name, *scr = NULL;
+	const char *first = NULL, *lang = argv[0].val.func->name, *olang, *scr = NULL;
 
 	if (strcmp(lang, "oneliner") == 0) {
 		/* call to oneliner(lang, script) */
@@ -400,7 +400,14 @@ static fgw_error_t rnd_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
+	olang = lang;
 	lang = rnd_script_guess_lang(NULL, lang, 0);
+
+	if (lang == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to load scripting engine for %s\n", olang);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
 
 	if (scr == NULL) {
 		RND_ACT_IRES(rnd_cli_enter(lang, lang));
