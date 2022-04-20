@@ -393,7 +393,7 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 
 	for(; s != NULL; s = next) {
 #		ifdef __WIN32__
-			while((*s == '/') || (*s == '\\'))) s++;
+			while((*s == '/') || (*s == '\\')) s++;
 			next = strpbrk(s, "/\\");
 #		else
 			while(*s == '/') s++;
