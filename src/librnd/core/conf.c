@@ -1184,6 +1184,7 @@ lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t
 	return conf_lht_get_first_(rnd_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
 }
 
+static const char empty_list_or_str[] = "";
 static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
 {
 	lht_node_t *n, *r = NULL;
@@ -1194,7 +1195,7 @@ static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_pat
 
 	r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	if ((r == NULL) && (create)) {
-		rnd_conf_set_dry(target, conf_path, -1, "", RND_POL_OVERWRITE, 0);
+		rnd_conf_set_dry(target, conf_path, -1, empty_list_or_str, RND_POL_OVERWRITE, 0);
 		r = lht_tree_path_(n->doc, n, lht_path, 1, 0, NULL);
 	}
 
@@ -1531,7 +1532,7 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 	if (ty == LHT_LIST) {
 		lht_err_t err = 0;
 
-		if (new_val != NULL)
+		if ((new_val != NULL) && (new_val != empty_list_or_str))
 			nn = lht_dom_node_alloc(LHT_TEXT, "");
 
 		if (pol == RND_POL_OVERWRITE) {
@@ -1539,14 +1540,14 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 				/* empty the list so that we insert to an empty list which is overwriting the list */
 				while(cwd->data.list.first != NULL)
 					lht_tree_del(cwd->data.list.first);
-				if (new_val != NULL)
+				if ((new_val != NULL) && (new_val != empty_list_or_str))
 					lht_dom_list_append(cwd, nn);
 			}
 			else {
 				lht_node_t *old = lht_tree_list_nth(cwd, idx);
 				if (old != NULL) {
 					/* the list is large enough already: overwrite the element at idx */
-					if (new_val == NULL) {
+					if ((new_val == NULL) || (new_val == empty_list_or_str)) {
 						err = lht_tree_del(old);
 						free(path);
 						return 0;
@@ -1554,7 +1555,7 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 					else
 						err = lht_tree_list_replace_child(cwd, old, nn);
 				}
-				else if (new_val == NULL) {
+				else if ((new_val == NULL) || (new_val == empty_list_or_str)) {
 					free(path);
 					return 0;
 				}
