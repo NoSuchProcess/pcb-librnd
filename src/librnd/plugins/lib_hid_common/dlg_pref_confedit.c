@@ -177,7 +177,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 				rnd_conf_makedirty(ctx->role);
 				rnd_conf_update(ctx->nat->hash_path, ctx->idx);
 			}
-			return;
+			goto save;
 		case RND_CFN_HLIST:
 		case RND_CFN_max:
 			return;
@@ -187,6 +187,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		val = "";
 	rnd_conf_set(ctx->role, ctx->nat->hash_path, ctx->idx,  val, RND_POL_OVERWRITE);
 
+	save:;
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
