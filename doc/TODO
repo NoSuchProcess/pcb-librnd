@@ -1,12 +1,12 @@
 *** Upcoming release ***
 - 3.1.2: ABI compatible, no extensions
 	- BUG: DAD: sch-rnd attr dialog new/del: vbox/hbox+frame/widget-spring-widget; spring fails because of frame in hbox
-	- BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- BUG: irc: btn_savelog_cb() file name hardwires pcb-rnd prefix, use app's name so sch-rnd saves differently [report: Erich]
 	+ BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
 
 *** Later releases ***
 - 3.2.0: ABI compatible, API extensions
+	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- use libualloc for rtree stack instead of static allocation; offering libualloc is a new API feature [report: Vuokko]
 	- *FEATURE: sch-rnd critical: add alternative rnd_message() calls so that io_geda and io_lihata error handling macros can be ported without vararg
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that don't have external deps (ps, eps, svg, png)
