@@ -6,6 +6,7 @@
 
 *** Later releases ***
 - 3.2.0: ABI compatible, API extensions
+	- *BUG: sch-rnd critical: conf.c hardwires pcb-rnd-conf-v1 subtree for project file
 	- *FEATURE/BUG: sch-rnd critical: provide a DAD preview refresh call that doesn't change zoom box just redraws, revise sch-rnd tree dialog select/unselect/del refreshes
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- use libualloc for rtree stack instead of static allocation; offering libualloc is a new API feature [report: Vuokko]
