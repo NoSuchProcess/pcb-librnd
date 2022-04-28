@@ -224,7 +224,10 @@ static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_hidlib_t *hidlib = rnd_gui->get_dad_hidlib(hid_ctx);
-	char *fn = rnd_hid_fileselect(rnd_gui, "Export IRC log", NULL, "pcb-rnd.irc-log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	char *fn, *fn_in = rnd_concat(rnd_app.package, ".irc-log.txt", NULL);
+	
+	fn = rnd_hid_fileselect(rnd_gui, "Export IRC log", NULL, fn_in, NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	free(fn_in);
 	if (fn != NULL) {
 		FILE *f = rnd_fopen(hidlib, fn, "w");
 		if (f != NULL) {
