@@ -1884,7 +1884,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 	int fail = 1;
 	lht_node_t *r = rnd_conf_lht_get_first(role, 0);
 	const char *try;
-	char *efn;
+	char *efn = NULL;
 
 	/* do not save if there's no change */
 	if (rnd_conf_lht_dirty[role] == 0)
