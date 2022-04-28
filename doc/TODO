@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.1.2: ABI compatible, no extensions
-	- BUG: DAD: sch-rnd attr dialog new/del: vbox/hbox+frame/widget-spring-widget; spring fails because of frame in hbox
 
 *** Later releases ***
 - 3.2.0: ABI compatible, API extensions
