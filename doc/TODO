@@ -1,7 +1,7 @@
 *** Upcoming release ***
 - 3.1.2: ABI compatible, no extensions
 	- BUG: DAD: sch-rnd attr dialog new/del: vbox/hbox+frame/widget-spring-widget; spring fails because of frame in hbox
-	- BUG: irc: btn_savelog_cb() file name hardwires pcb-rnd prefix, use app's name so sch-rnd saves differently [report: Erich]
+	+ BUG: irc: btn_savelog_cb() file name hardwires pcb-rnd prefix, use app's name so sch-rnd saves differently [report: Erich]
 	+ BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
 
 *** Later releases ***
@@ -25,7 +25,7 @@
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this!
 	- *BUG: sch-rnd critical: hid export API doesn't pass hidlib when needed
-	- cleanup: del pre/post callbacks from rnd_conf_hid_callbacks_t without hidlib
+	- cleanup: pass on current hidlib to all callbacks in rnd_conf_hid_callbacks_t without hidlib
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
