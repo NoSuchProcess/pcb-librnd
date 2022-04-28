@@ -1,7 +1,6 @@
 *** Upcoming release ***
 - 3.1.2: ABI compatible, no extensions
 	- BUG: DAD: sch-rnd attr dialog new/del: vbox/hbox+frame/widget-spring-widget; spring fails because of frame in hbox
-	+ BUG: make uninstall may throw errors on genht, see priv mail from SnakesAndStuff 10 mar 2022 [report: SnakesAndStuff]
 
 *** Later releases ***
 - 3.2.0: ABI compatible, API extensions
