@@ -217,7 +217,7 @@ typedef struct {
    directly in the scrolled window without adding an extra box. Useful
    when scrolled content wants to interact with the scroll, e.g. tree table
    wants to scroll where the selection is */
-static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop, GtkWidget *inner)
+static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop, GtkWidget *inner, int horiz)
 {
 	GtkWidget *fr;
 	int expfill = (flags & RND_HATF_EXPFILL);
@@ -227,7 +227,10 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 		fr = gtk_frame_new(NULL);
 		gtkc_box_pack_append(parent, fr, expfill, 0);
 
-		parent = gtkc_hbox_new(FALSE, 0);
+		if (horiz)
+			parent = gtkc_hbox_new(FALSE, 0);
+		else
+			parent = gtkc_vbox_new(FALSE, 0);
 		gtkc_frame_set_child(fr, parent);
 		if (wltop != NULL) {
 			*wltop = fr;
@@ -264,7 +267,12 @@ static GtkWidget *frame_scroll_(GtkWidget *parent, rnd_hatt_compflags_t flags, G
 
 static GtkWidget *frame_scroll(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop)
 {
-	return frame_scroll_(parent, flags, wltop, NULL);
+	return frame_scroll_(parent, flags, wltop, NULL, 1);
+}
+
+static GtkWidget *frame_scrollhv(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop, int horiz)
+{
+	return frame_scroll_(parent, flags, wltop, NULL, horiz);
 }
 
 
@@ -337,7 +345,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 		/* create the actual widget from attrs */
 		switch (ctx->attrs[j].type) {
 			case RND_HATT_BEGIN_HBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
+				bparent = frame_scrollhv(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j], 0);
 				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 				gtkc_box_pack_append(bparent, hbox, expfill, 0);
 				ctx->wl[j] = hbox;
@@ -345,7 +353,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 				break;
 
 			case RND_HATT_BEGIN_VBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
+				bparent = frame_scrollhv(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j], 1);
 				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 				expfill = (ctx->attrs[j].rnd_hatt_flags & RND_HATF_EXPFILL);
 				gtkc_box_pack_append(bparent, vbox1, expfill, 0);

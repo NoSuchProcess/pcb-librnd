@@ -477,7 +477,7 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	frame_scroll_(parent, attr->rnd_hatt_flags, &ctx->wltop[j], view);
+	frame_scroll_(parent, attr->rnd_hatt_flags, &ctx->wltop[j], view, 1);
 	g_object_set_data(G_OBJECT(view), RND_OBJ_PROP, ctx);
 
 	{
