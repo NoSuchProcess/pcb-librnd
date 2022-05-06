@@ -1,3 +1,48 @@
+librnd 3.1.2 (r34089)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: do not uninstall genht headers twice when libgenht is system installed (causes error)
+
+	[core]
+		-Fix: wrong comment on temp file name creation fallback
+		-Fix: conf: when creating a new empty list, do not create an empty item in it
+		-Fix: uninitialized local var caused segfault on error branch while creating project file
+
+	[doc]
+		-Fix: typo in -dev package desc in packaging doc
+
+	[gtk]
+		-Fix: opengl rendering: line/arc gc width needs to be determined at draw time, not at gc set time; the gc may be configured once, then subsequent zooming would change coords-per-pixel
+		-Fix: framed hbox/vbox expand/fill in the right direction
+
+	[gtk2]
+		-Fix: make opengl preview widget contexts share textures with top window drawing area gl context - needed for preview showing the same pixmaps work correctly with the same cached texture IDs
+
+	[gtk4]
+		-Fix: make sure window destroy callback runs when window is closed from code
+		-Fix: tree view: while destroying a tree widget, avoid triggering set cursor to NULL (there's no real cursor change)
+		-Fix: more advanced setup to avoid double close callbacks caused by glib async signal mess
+		-Fix: when setting initial preview zoom/pan to zoom_win, do not assume x1;y1 being 0;0
+
+	[irc]
+		-Fix: use app name instead of hardwiring pcb-rnd when saving the log
+
+	[lib_hid_common]
+		-Fix: when the preferences dialog is not active, do not attempt to refresh it from conf change callbacks
+		-Fix: typo in win32-specific path handling of the new fileselect dialog
+		-Fix: preferences config tree: save user config file or mark design changed if array type value changed
+
+	[lib_hid_gl]
+		-Fix: uninitialized gl version (on missing call)
+		-Fix: refuse direct render backend on ES (where probably only vao would work)
+		-Fix: opengl ES shader bugs: wrong name for texture2D() call, have to use "varying" instead of in/out for vertex->fragment communication, there's no f suffix for floats, use 3.0 for float comparison (thanks to Majenko)
+		-Fix: vao init version check: accept anything >= 1.0 on ES , only desktop requires >=3.0
+		-Add: on some ES versions there's no way to get the major version as an integer; try to parse it out from the version string
+
+	[script]
+		-Fix: one-liner shouldn't segfault if language engine is not found
+		-Add: print info line to log if no installed scripting language would be found (no puplug dir set in fungw)
+
 librnd 3.1.1 (r34045)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]

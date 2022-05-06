@@ -1,12 +1,7 @@
-librnd 3.1.1
+librnd 3.1.2
 ~~~~~~~~~~~~
 
-3.1.1 implements hid_gtk4_gl, which is a fully working GUI HID with
-gtk4.4 or newer, using VAO based opengl rendering. The new HID does not
-change library API so it does not warrant a new minor version number.
-All applications using librnd can automatically use gtk4 now (even
-without the app recompiled).
-
-Besides the new opengl and gtk4 code and related refactoring of gtk and
-gl plugins, this release also features a lot of minor bugfixes.
-
+This release contains only minor bugfixes. Bugfix highlight:
+ - proper opengl detection on opengl ES
+ - opengl renders thin objects (specifid in pixels) properly; this affects
+   the "red" "xor drawn" overlays, e.g. when things are being moved
