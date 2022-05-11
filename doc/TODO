@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
-	- *FEATURE/BUG: sch-rnd critical: provide a DAD preview refresh call that doesn't change zoom box just redraws, revise sch-rnd tree dialog select/unselect/del refreshes
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- use libualloc for rtree stack instead of static allocation; offering libualloc is a new API feature [report: Vuokko]
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that don't have external deps (ps, eps, svg, png)
