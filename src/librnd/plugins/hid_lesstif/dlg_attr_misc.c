@@ -99,10 +99,12 @@ static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const r
 	rnd_hid_preview_t *prv = attr->wdata;
 	rnd_ltf_preview_t *pd = prv->hid_wdata;
 
-	pd->x1 = view->X1;
-	pd->y1 = view->Y1;
-	pd->x2 = view->X2;
-	pd->y2 = view->Y2;
+	if (view != NULL) {
+		pd->x1 = view->X1;
+		pd->y1 = view->Y1;
+		pd->x2 = view->X2;
+		pd->y2 = view->Y2;
+	}
 
 	rnd_ltf_preview_zoom_update(pd);
 	rnd_ltf_preview_redraw(pd);

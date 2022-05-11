@@ -86,7 +86,8 @@ void rnd_gtka_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const r
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
 	GtkWidget *prv = ctx->wl[idx];
-	rnd_gtk_preview_zoomto(RND_GTK_PREVIEW(prv), view);
+	if (view != NULL)
+		rnd_gtk_preview_zoomto(RND_GTK_PREVIEW(prv), view);
 	gtk_widget_queue_draw(prv);
 }
 

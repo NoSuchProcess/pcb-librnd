@@ -128,7 +128,7 @@ struct rnd_hid_preview_s {
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_box_t *view);
+	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_box_t *view); /* redraw only if view == NULL */
 	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 };
 
