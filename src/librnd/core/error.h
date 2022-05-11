@@ -30,6 +30,7 @@
 #define RND_ERROR_H
 
 #include <time.h>
+#include <stdarg.h>
 #include <librnd/core/global_typedefs.h>
 
 /* rnd_printf()-like call to print temporary trace messages to stderr;
@@ -47,6 +48,8 @@ typedef enum rnd_message_level_s {
 
 /* printf-like logger to the log dialog and stderr */
 void rnd_message(rnd_message_level_t level, const char *Format, ...);
+void rnd_vmessage(rnd_message_level_t level, const char *Format, va_list args);
+
 
 /* shorthands for indicating common errors using rnd_message() */
 #define rnd_FS_error_message(filename, func) rnd_message(RND_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))

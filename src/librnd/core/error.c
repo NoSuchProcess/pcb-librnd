@@ -90,17 +90,29 @@ RND_INLINE void rnd_message_(rnd_message_level_t level, gds_t *buf)
 	rnd_event(NULL, RND_EVENT_LOG_APPEND, "p", line);
 }
 
+RND_INLINE void rnd_vmessage_(rnd_message_level_t level, const char *Format, va_list args)
+{
+	gds_t tmp = {0};
+	RND_MSG_PREPARE_BUF(&tmp);
+
+	rnd_safe_append_vprintf(&tmp, 0, Format, args);
+	rnd_message_(level, &tmp);
+}
+
 void rnd_message(rnd_message_level_t level, const char *Format, ...)
 {
 	va_list args;
-	gds_t tmp = {0};
 
-	RND_MSG_PREPARE_BUF(&tmp);
 	va_start(args, Format);
-	rnd_safe_append_vprintf(&tmp, 0, Format, args);
+	rnd_vmessage_(level, Format, args);
 	va_end(args);
-	rnd_message_(level, &tmp);
 }
+
+void rnd_vmessage(rnd_message_level_t level, const char *Format, va_list args)
+{
+	rnd_vmessage_(level, Format, args);
+}
+
 
 rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID)
 {
