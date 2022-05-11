@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 	rnd_main_args_t ga;
 
 	rnd_app.default_embedded_menu = "";
+	rnd_app.package = "rnd-test";
 
 	rnd_fix_locale_and_env();
 
