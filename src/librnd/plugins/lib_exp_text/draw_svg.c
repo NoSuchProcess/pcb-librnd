@@ -432,7 +432,7 @@ void rnd_svg_fill_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 	draw_fill_rect(pctx, gc, x1, y1, x2-x1, y2-y1);
 }
 
-static void pcb_line_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void round_cap_line_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(pctx, gc);
 	if (pctx->photo_mode) {
@@ -464,10 +464,10 @@ void rnd_svg_draw_line(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 {
 	pctx->drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	pcb_line_draw(pctx, gc, x1, y1, x2, y2);
+	round_cap_line_draw(pctx, gc, x1, y1, x2, y2);
 }
 
-static void pcb_arc_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
+static void round_cap_arc_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
 {
 	const char *clip_color = svg_clip_color(pctx, gc);
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
@@ -504,7 +504,7 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 
  /* degenerate case: r=0 means a single dot */
 	if ((width == 0) && (height == 0)) {
-		pcb_line_draw(pctx, gc, cx, cy, cx, cy);
+		round_cap_line_draw(pctx, gc, cx, cy, cx, cy);
 		return;
 	}
 
@@ -551,7 +551,7 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 	x1 = rnd_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
 	y1 = rnd_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
 
-	pcb_arc_draw(pctx, gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
+	round_cap_arc_draw(pctx, gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
 
 static void draw_fill_circle(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
