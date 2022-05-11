@@ -3,7 +3,6 @@
 	- *FEATURE/BUG: sch-rnd critical: provide a DAD preview refresh call that doesn't change zoom box just redraws, revise sch-rnd tree dialog select/unselect/del refreshes
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- use libualloc for rtree stack instead of static allocation; offering libualloc is a new API feature [report: Vuokko]
-	- *FEATURE: sch-rnd critical: add alternative rnd_message() calls so that io_geda and io_lihata error handling macros can be ported without vararg
 	- *FEATURE: sch-rnd critical: move out generic export parts from pcb-rnd into plugins in librnd that don't have external deps (ps, eps, svg, png)
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
