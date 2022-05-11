@@ -50,6 +50,9 @@ extern int rnd_hid_in_main_loop;
 /* Count of entries in the above.  */
 extern int rnd_hid_num_hids;
 
+/* RND_VER_STR compiled into the binary so apps can print it */
+extern const char *rnd_ver_str;
+
 /* Call this as soon as possible from main().  No other HID calls are
    valid until this is called.  */
 void rnd_hid_init(void);

@@ -68,6 +68,7 @@
 
 int rnd_coord_t_size = sizeof(rnd_coord_t);
 
+const char *rnd_ver_str = RND_VER_STR;
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
