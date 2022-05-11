@@ -1,3 +1,4 @@
+34121	configure	new plugin: lib_exp_text
 33992	configure	opengl: stencil backends
 33878	configure	internal API for supporting different opengl versions
 33700	configure	make install should install more src_3rd

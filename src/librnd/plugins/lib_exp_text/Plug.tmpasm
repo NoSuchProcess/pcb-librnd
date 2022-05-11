@@ -1,6 +1,10 @@
 put /local/pcb/mod {lib_exp_text}
 put /local/pcb/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/lib_exp_text/lib_exp_text.o
+	$(LIBRND_PLUGDIR)/lib_exp_text/draw_ps.o
+	$(LIBRND_PLUGDIR)/lib_exp_text/draw_eps.o
+	$(LIBRND_PLUGDIR)/lib_exp_text/draw_svg.o
+	$(LIBRND_PLUGDIR)/lib_exp_text/media.o
 @]
 
 switch /local/pcb/lib_exp_text/controls
