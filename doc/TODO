@@ -1,7 +1,4 @@
 *** Upcoming release ***
-- 3.1.2: ABI compatible, no extensions
-
-*** Later releases ***
 - 3.2.0: ABI compatible, API extensions
 	- *BUG: sch-rnd critical: conf.c hardwires pcb-rnd-conf-v1 subtree for project file
 	- *FEATURE/BUG: sch-rnd critical: provide a DAD preview refresh call that doesn't change zoom box just redraws, revise sch-rnd tree dialog select/unselect/del refreshes
@@ -16,6 +13,8 @@
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars
 	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
+
+*** Later releases ***
 
 - 4.0.0: ABI incompatible (feature removal)
 	- *FEATURE: sch-rnd critical: hid->draw_pixmap should pass the original object as void, so that the high level export plugin can embed hints in the output (e.g. sch-rnd embedding text to make the drawing searchable)
