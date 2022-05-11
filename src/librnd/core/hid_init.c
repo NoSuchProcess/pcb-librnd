@@ -106,11 +106,11 @@ void rnd_hid_init()
 
 	/* host app's */
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
-	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, rnd_app.package, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, rnd_app.package, RND_DIR_SEPARATOR_S, "plugins", NULL);
 	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
@@ -667,7 +667,7 @@ void rnd_fix_locale_and_env_()
 		wchar_t *w, wexedir[MAX_PATH];
 
 		if (!GetModuleFileNameW(NULL, wexedir, MAX_PATH)) {
-			fprintf(stderr, "pcb-rnd: GetModuleFileNameW(): failed to determine executable full path\n");
+			fprintf(stderr, "%s: GetModuleFileNameW(): failed to determine executable full path\n", rnd_app.package);
 			exit(1);
 		}
 
