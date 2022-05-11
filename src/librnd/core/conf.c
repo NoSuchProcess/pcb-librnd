@@ -476,7 +476,12 @@ void rnd_conf_extract_poliprio(lht_node_t *root, rnd_conf_policy_t *gpolicy, lon
 int rnd_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long *gprio)
 {
 	for(;;node = node->parent) {
-		if (node->parent == node->doc->root) {
+		int is_ppnode = 0;
+		if ((node->parent->parent == node->doc->root) || (node->parent == node->doc->root)) {
+			if (rnd_conf_list_match(node->parent->name))
+				is_ppnode = 1;
+		}
+		if (is_ppnode) {
 			rnd_conf_extract_poliprio(node, gpolicy, gprio);
 			return 0;
 		}
