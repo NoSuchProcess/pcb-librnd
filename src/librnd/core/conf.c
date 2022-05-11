@@ -49,8 +49,6 @@
 #include <librnd/core/fptr_cast.h>
 #include <librnd/core/safe_fs_dir.h>
 
-/* conf list node's name */
-const char *rnd_conf_list_name = "pcb-rnd-conf-v1";
 static const char *flcat = "conf";
 
 static const char conf_cookie_al[] = "core/conf/anyload";
@@ -62,6 +60,30 @@ static int conf_files_inited = 0;
 extern void rnd_pcbhl_conf_postproc(void);
 
 int rnd_conf_in_production = 0;
+
+/* conf list node's name */
+static const char *rnd_conf_list_name(void)
+{
+	static char tmp[80];
+	static int inited = 0;
+
+	if (!inited) {
+		int len = strlen(rnd_app.package);
+		if (len > sizeof(tmp)-10) {
+			fprintf(stderr, "librnd internal error: rnd_app.package '%s' is too long\n", rnd_app.package);
+			exit(1);
+		}
+		memcpy(tmp, rnd_app.package, len);
+		strcpy(tmp+len, "-conf-v1");
+		inited = 1;
+	}
+	return tmp;
+}
+
+static int rnd_conf_list_match(const char *str)
+{
+	return (strcmp(str, rnd_conf_list_name()) == 0) || (strcmp(str, "pcb-rnd-conf-v1") == 0);
+}
 
 /* The main conf: monolithic config files affecting all parts of the conf tree;
    By default every operation is done on these trees. */
@@ -97,21 +119,21 @@ static lht_node_t *conf_lht_get_confroot(lht_node_t *cwd)
 		return NULL;
 
 	/* if it's a list with a matching name, we found it */
-	if ((cwd->type == LHT_LIST) && (strcmp(cwd->name, rnd_conf_list_name) == 0))
+	if ((cwd->type == LHT_LIST) && rnd_conf_list_match(cwd->name))
 		return cwd;
 
 	/* else it may be the parent-hash of the list */
 	if (cwd->type != LHT_HASH)
 		return NULL;
 
-	return lht_dom_hash_get(cwd, rnd_conf_list_name);
+	return lht_dom_hash_get(cwd, rnd_conf_list_name());
 }
 
 int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
 {
 	lht_doc_t *d;
 
-	if ((root->type != LHT_LIST) || (strcmp(root->name, "pcb-rnd-conf-v1") != 0))
+	if ((root->type != LHT_LIST) || !rnd_conf_list_match(root->name))
 		return -1;
 
 	if (rnd_conf_main_root[role] != NULL) {
@@ -120,7 +142,7 @@ int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root)
 	}
 
 	d = lht_dom_init();
-	d->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+	d->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
 	d->root->doc = d;
 	lht_tree_merge(d->root, root);
 	rnd_conf_main_root[role] = d;
@@ -153,8 +175,8 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 		return NULL;
 	}
 
-	if ((d->root->type != LHT_LIST) || (strcmp(d->root->name, "pcb-rnd-conf-v1") != 0)) {
-		rnd_message(RND_MSG_ERROR, "error: failed to load lht plugin config: %s (not a pcb-rnd-conf-v1)\n", ifn);
+	if ((d->root->type != LHT_LIST) || !rnd_conf_list_match(d->root->name)) {
+		rnd_message(RND_MSG_ERROR, "error: failed to load lht plugin config: %s (not a %s)\n", ifn, rnd_conf_list_name());
 		lht_dom_uninit(d);
 		return NULL;
 	}
@@ -200,7 +222,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 	if (d->root == NULL) {
 		lht_node_t *prjroot, *confroot;
 		prjroot = lht_dom_node_alloc(LHT_HASH, "coraleda-project-v1");
-		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		confroot = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
 		lht_dom_hash_put(prjroot, confroot);
 		prjroot->doc = d;
 		confroot->doc = d;
@@ -211,7 +233,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		return 0;
 	}
 
-	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
+	if ((d->root->type == LHT_LIST) && rnd_conf_list_match(d->root->name)) {
 		rnd_conf_main_root[role] = d;
 		if (role_name != NULL)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "conf");
@@ -220,24 +242,24 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 
 	if ((d->root->type == LHT_HASH) && ((strcmp(d->root->name, "geda-project-v1") == 0) || (strcmp(d->root->name, "coraleda-project-v1") == 0))) {
 		lht_node_t *confroot;
-		confroot = lht_tree_path_(d, d->root, "pcb-rnd-conf-v1", 1, 0, NULL);
+		confroot = lht_tree_path_(d, d->root, rnd_conf_list_name(), 1, 0, NULL);
 
 		if (role_name != NULL)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 
-		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
+		if ((confroot != NULL) && (confroot->type == LHT_LIST) && (strncmp(confroot->name, "li:", 3) == 0) && rnd_conf_list_match(confroot->name+3)) {
 			rnd_conf_main_root[role] = d;
 			return 0;
 		}
 
 		/* project file with no config root */
-		confroot = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		confroot = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
 		lht_dom_hash_put(d->root, confroot);
 		rnd_conf_main_root[role] = d;
 		return 0;
 	}
 
-	rnd_hid_cfg_error(d->root, "Root node must be one of li:pcb-rnd-conf-v1, ha:coraleda-project-v1 or ha:geda-project-v1\n");
+	rnd_hid_cfg_error(d->root, "Root node must be one of li:%s-conf-v1, ha:coraleda-project-v1 or ha:geda-project-v1\n", rnd_app.package);
 
 	if (d != NULL)
 		lht_dom_uninit(d);
@@ -251,7 +273,7 @@ static int conf_merge_plug(lht_doc_t *d, rnd_conf_role_t role, const char *path)
 
 	if (rnd_conf_plug_root[role] == NULL) {
 		rnd_conf_plug_root[role] = lht_dom_init();
-		rnd_conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
+		rnd_conf_plug_root[role]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
 		rnd_conf_plug_root[role]->root->doc = rnd_conf_plug_root[role];
 	}
 	err = lht_tree_merge(rnd_conf_plug_root[role]->root, d->root);
@@ -2073,7 +2095,7 @@ void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn)
 	rnd_conf_main_root[target] = lht_dom_init();
 	if (source_fn != NULL)
 		lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
-	rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name);
+	rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
 	rnd_conf_main_root[target]->root->doc = rnd_conf_main_root[target];
 	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
 	lht_dom_list_insert(rnd_conf_main_root[target]->root, n);
@@ -2236,7 +2258,7 @@ void rnd_conf_uninit(void)
 
 	rnd_conf_fields_foreach(e) {
 		if (strncmp(e->key, "plugins/", 8) == 0)
-			fprintf(stderr, "pcb-rnd conf ERROR: conf node '%s' is not unregistered\n", e->key);
+			fprintf(stderr, "%s conf ERROR: conf node '%s' is not unregistered\n", rnd_app.package, e->key);
 	}
 
 	rnd_conf_hid_uninit();

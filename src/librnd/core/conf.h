@@ -171,7 +171,7 @@ extern int rnd_conf_in_production;
 /* Load a file or a string as a role */
 int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
 
-/* copy root to be the new config of role; root must be a li:pcb-rnd-conf-v1
+/* copy root to be the new config of role; root must be a li:APPNAME-conf-v1
    return 0 on success and removes/invalidates root */
 int rnd_conf_insert_tree_as(rnd_conf_role_t role, lht_node_t *root);
 
