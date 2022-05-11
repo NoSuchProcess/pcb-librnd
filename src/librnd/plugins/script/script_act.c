@@ -254,7 +254,7 @@ static void script_dlg_open(void)
 	/* set up the context */
 	script_dlg.active = 1;
 
-	RND_DAD_NEW("scripts", script_dlg.dlg, "pcb-rnd Scripts", &script_dlg, rnd_false, script_dlg_close_cb);
+	RND_DAD_NEW("scripts", script_dlg.dlg, "librnd Scripts", &script_dlg, rnd_false, script_dlg_close_cb);
 	script_dlg_s2d(&script_dlg);
 }
 
