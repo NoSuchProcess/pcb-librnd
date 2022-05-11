@@ -113,6 +113,24 @@ void rnd_vmessage(rnd_message_level_t level, const char *Format, va_list args)
 	rnd_vmessage_(level, Format, args);
 }
 
+void rnd_msg_error(const char *Format, ...)
+{
+	va_list args;
+
+	va_start(args, Format);
+	rnd_vmessage_(RND_MSG_ERROR, Format, args);
+	va_end(args);
+}
+
+void rnd_msg_warning(const char *Format, ...)
+{
+	va_list args;
+
+	va_start(args, Format);
+	rnd_vmessage_(RND_MSG_WARNING, Format, args);
+	va_end(args);
+}
+
 
 rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID)
 {

@@ -50,6 +50,10 @@ typedef enum rnd_message_level_s {
 void rnd_message(rnd_message_level_t level, const char *Format, ...);
 void rnd_vmessage(rnd_message_level_t level, const char *Format, va_list args);
 
+/* Shorthands without level in arg - some app macros rely on these */
+void rnd_msg_error(const char *Format, ...);
+void rnd_msg_warning(const char *Format, ...);
+
 
 /* shorthands for indicating common errors using rnd_message() */
 #define rnd_FS_error_message(filename, func) rnd_message(RND_MSG_ERROR, "Can't open file\n   '%s'\n" func "() returned: '%s'\n", filename, strerror(errno))
