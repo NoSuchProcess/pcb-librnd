@@ -96,10 +96,10 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 	   Substitute 0 or "" for N/A.  Width and height are in points (1/72").
 	   Media sizes are in PCB units */
 	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
-		pcb_media_data[pctx->media_idx].name,
-		72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].width),
-		72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].height));
-	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[pctx->media_idx].name);
+		rnd_media_data[pctx->media_idx].name,
+		72 * RND_COORD_TO_INCH(rnd_media_data[pctx->media_idx].width),
+		72 * RND_COORD_TO_INCH(rnd_media_data[pctx->media_idx].height));
+	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", rnd_media_data[pctx->media_idx].name);
 
 	/* End General Header Comments. */
 
@@ -144,10 +144,10 @@ void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, i
 	pctx->outf = f;
 
 	pctx->media_idx = media_idx;
-	pctx->media_width = pcb_media_data[media_idx].width;
-	pctx->media_height = pcb_media_data[media_idx].height;
-	pctx->ps_width = pctx->media_width - 2.0 * pcb_media_data[media_idx].margin_x;
-	pctx->ps_height = pctx->media_height - 2.0 * pcb_media_data[media_idx].margin_y;
+	pctx->media_width = rnd_media_data[media_idx].width;
+	pctx->media_height = rnd_media_data[media_idx].height;
+	pctx->ps_width = pctx->media_width - 2.0 * rnd_media_data[media_idx].margin_x;
+	pctx->ps_height = pctx->media_height - 2.0 * rnd_media_data[media_idx].margin_y;
 
 	pctx->fillpage = fillpage;
 	pctx->scale_factor = scale_factor;

@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
+ *  Copyright (C) 2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,7 +72,7 @@
 #define MARGINX RND_MIL_TO_COORD(500)
 #define MARGINY RND_MIL_TO_COORD(500)
 
-pcb_media_t pcb_media_data[] = {
+rnd_media_t rnd_media_data[] = {
 	{"A0", RND_MM_TO_COORD(841), RND_MM_TO_COORD(1189), MARGINX, MARGINY},
 	{"A1", RND_MM_TO_COORD(594), RND_MM_TO_COORD(841), MARGINX, MARGINY},
 	{"A2", RND_MM_TO_COORD(420), RND_MM_TO_COORD(594), MARGINX, MARGINY},
@@ -111,7 +112,7 @@ pcb_media_t pcb_media_data[] = {
 };
 
 /* MUST BE IN SYNC with the above table */
-const char *pcb_medias[] = {
+const char *rnd_medias[] = {
 	"A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10",
 	"B0", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10",
 	"Letter", "USLetter", "11x17", "Ledger", "Legal", "Executive",
