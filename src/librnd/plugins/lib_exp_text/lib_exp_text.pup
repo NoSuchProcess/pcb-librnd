@@ -1,0 +1,7 @@
+$class lib
+$short text formats export lib
+$long export to text formats that don't require 3rd party libs
+$state works
+$package (core)
+$hidlib 1
+default buildin

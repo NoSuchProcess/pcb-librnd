@@ -1,0 +1,10 @@
+put /local/pcb/mod {lib_exp_text}
+put /local/pcb/mod/OBJS [@
+	$(LIBRND_PLUGDIR)/lib_exp_text/lib_exp_text.o
+@]
+
+switch /local/pcb/lib_exp_text/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
