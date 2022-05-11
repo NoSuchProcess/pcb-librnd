@@ -12,7 +12,7 @@
 	- make a runtime vesion of RND_VER_STR and let apps print it
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars
-	- consider -I include/librnd/3/ and changing installation path so librnd4 transition would be easier
+	- consider -I include/librnd3/librnd and changing installation path so librnd4 transition would be easier
 
 *** Later releases ***
 
