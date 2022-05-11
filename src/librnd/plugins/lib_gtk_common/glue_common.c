@@ -64,7 +64,7 @@ static void rnd_gtkg_win32_init(void)
 	if (!rnd_file_readable_(cache)) {
 		fprintf(stderr, "setenv: GDK_PIXBUF_MODULE_FILE: '%s'\n", cache);
 		cmd = rnd_concat(rnd_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
-		fprintf(stderr, "pcb-rnd: updating gdk loader cache: '%s'...\n", cache);
+		fprintf(stderr, "librnd: updating gdk loader cache: '%s'...\n", cache);
 		rnd_system(NULL, cmd);
 		free(cmd);
 	}
