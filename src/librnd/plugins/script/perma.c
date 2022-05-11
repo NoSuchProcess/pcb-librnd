@@ -70,8 +70,8 @@ static void perma_script_load_conf(rnd_hidlib_t *hl, const char *dir)
 	}
 
 	n = doc->root;
-	if ((n->type != LHT_LIST) || (strcmp(n->name, "pcb-rnd-perma-script-v1") != 0)) {
-		rnd_message(RND_MSG_ERROR, "Failed to load script config '%s':\nroot node is not li:pcb-rnd-perma-script-v1\n", path);
+	if ((n->type != LHT_LIST) || (strcmp(n->name, "pcb-rnd-perma-script-v1") != 0) || (strcmp(n->name, "librnd-perma-script-v1") != 0)) {
+		rnd_message(RND_MSG_ERROR, "Failed to load script config '%s':\nroot node is not li:librnd-perma-script-v1\n", path);
 		goto end;
 	}
 
