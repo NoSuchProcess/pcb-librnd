@@ -1029,7 +1029,7 @@ int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
 
 void rnd_actions_init(void)
 {
-	fgw_init(&rnd_fgw, "pcb-rnd");
+	fgw_init(&rnd_fgw, rnd_app.package);
 	rnd_fgw.async_error = rnd_action_err;
 	rnd_fgw_obj = fgw_obj_reg(&rnd_fgw, "core");
 	if (fgw_reg_custom_type(&rnd_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
