@@ -50,35 +50,30 @@ void rnd_trace(const char *Format, ...)
 unsigned long rnd_log_next_ID = 0;
 rnd_logline_t *rnd_log_first, *rnd_log_last;
 
-void rnd_message(rnd_message_level_t level, const char *Format, ...)
+
+	/* allocate a new log line; for efficiency pretend it is a string during
+	   the allocation */
+#define RND_MSG_PREPARE_BUF(buf) \
+	do { \
+		gds_enlarge(buf, sizeof(rnd_logline_t)); \
+		tmp.used = offsetof(rnd_logline_t, str); \
+	} while(0)
+
+RND_INLINE void rnd_message_(rnd_message_level_t level, gds_t *buf)
 {
-	va_list args;
 	rnd_message_level_t min_level = RND_MSG_INFO;
-	gds_t tmp;
 	rnd_logline_t *line;
 
 	if ((rnd_gui == NULL) || (rnd_conf.rc.dup_log_to_stderr)) {
 		if (rnd_conf.rc.quiet)
 			min_level = RND_MSG_ERROR;
 
-		if ((level >= min_level) || (rnd_conf.rc.verbose)) {
-			va_start(args, Format);
-			rnd_vfprintf(stderr, Format, args);
-			va_end(args);
-		}
+		if ((level >= min_level) || (rnd_conf.rc.verbose))
+			rnd_fprintf(stderr, "%s", buf->array + offsetof(rnd_logline_t, str));
 	}
 
-	/* allocate a new log line; for efficiency pretend it is a string during
-	   the allocation */
-	gds_init(&tmp);
-	gds_enlarge(&tmp, sizeof(rnd_logline_t));
-	tmp.used = offsetof(rnd_logline_t, str);
-	va_start(args, Format);
-	rnd_safe_append_vprintf(&tmp, 0, Format, args);
-	va_end(args);
-
 	/* add the header and link in */
-	line = (rnd_logline_t *)tmp.array;
+	line = (rnd_logline_t *)buf->array;
 	line->stamp = time(NULL);
 	line->ID = rnd_log_next_ID++;
 	line->level = level;
@@ -90,9 +85,21 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 	if (rnd_log_last != NULL)
 		rnd_log_last->next = line;
 	rnd_log_last = line;
-	line->len = tmp.used - offsetof(rnd_logline_t, str);
+	line->len = buf->used - offsetof(rnd_logline_t, str);
 
 	rnd_event(NULL, RND_EVENT_LOG_APPEND, "p", line);
+}
+
+void rnd_message(rnd_message_level_t level, const char *Format, ...)
+{
+	va_list args;
+	gds_t tmp = {0};
+
+	RND_MSG_PREPARE_BUF(&tmp);
+	va_start(args, Format);
+	rnd_safe_append_vprintf(&tmp, 0, Format, args);
+	va_end(args);
+	rnd_message_(level, &tmp);
 }
 
 rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID)
