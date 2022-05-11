@@ -10,11 +10,11 @@
 	- make a runtime vesion of RND_VER_STR and let apps print it
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars (mark /local/pcb obsolete)
-	- consider -I include/librnd3/librnd and changing installation path so librnd4 transition would be easier
 
 *** Later releases ***
 
 - 4.0.0: ABI incompatible (feature removal)
+	- bug_files/TODO/L4.patch: -I include/librnd4/librnd and changing installation path to avoid collision with librnd3; also requires apps to change -I
 	- *FEATURE: sch-rnd critical: hid->draw_pixmap should pass the original object as void, so that the high level export plugin can embed hints in the output (e.g. sch-rnd embedding text to make the drawing searchable)
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this!
