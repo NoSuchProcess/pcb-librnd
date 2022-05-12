@@ -22,6 +22,10 @@ plugin_def("loghid",           "diagnostics: log HID calls",      sdisable, 1)
 plugin_def("script",           "fungw turing complete scripting", sbuildin, 1)
 plugin_def("stroke",           "mouse gestures",                  sbuildin, 1)
 
+plugin_header("\nImport plugins:\n")
+plugin_def("import_pixmap_gd", "import pixmaps from png/gif/jpg", sbuildin, 1)
+plugin_def("import_pixmap_pnm","import pixmaps from pnm ",        sbuildin, 1)
+
 plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",        "batch process (no-gui HID)",      sbuildin, 1)
 plugin_def("hid_gtk2_gdk",     "GTK2 GUI, software render",       sbuildin, 1)

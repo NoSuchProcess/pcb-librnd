@@ -1,4 +1,5 @@
-34131	configure	new plugins for helping image export: lib_exp_text, lib_exp_pixmap
+34135	configure	new plugins for pixmap import: import_pixmap_gd, import_pixmap_pnm (moved from pcb-rnd)
+34131	configure	new plugins for helping image export: lib_exp_text, lib_exp_pixmap (moved from pcb-rnd)
 33992	configure	opengl: stencil backends
 33878	configure	internal API for supporting different opengl versions
 33700	configure	make install should install more src_3rd
