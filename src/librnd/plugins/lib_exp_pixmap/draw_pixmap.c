@@ -50,12 +50,12 @@ TODO("^ replace this with librnd config.h, but that needs PCB_HAVE_GDIMAGE* ther
 #define RND_PNG_FMT_jpg "JPEG"
 #define RND_PNG_FMT_png "PNG"
 
-#define FROM_DRAW_PNG_C
-#include "draw_png.h"
+#define FROM_DRAW_PIXMAP_C
+#include "draw_pixmap.h"
 
-void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
+void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_hidlib_t *hidlib)
 {
-	memset(pctx, 0, sizeof(rnd_png_t));
+	memset(pctx, 0, sizeof(rnd_drwpx_t));
 	pctx->hidlib = hidlib;
 	pctx->scale = 1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
@@ -78,13 +78,13 @@ typedef struct rnd_hid_gc_s {
 	void *me_pointer;
 	rnd_cap_style_t cap;
 	int width, r, g, b;
-	rnd_png_color_struct_t *color;
+	rnd_drwpx_color_struct_t *color;
 	gdImagePtr brush;
 	int is_erase;
 } hid_gc_t;
 
 
-void rnd_png_parse_bloat(rnd_png_t *pctx, const char *str)
+void rnd_drwpx_parse_bloat(rnd_drwpx_t *pctx, const char *str)
 {
 	int n;
 	rnd_unit_list_t extra_units = {
@@ -99,7 +99,7 @@ void rnd_png_parse_bloat(rnd_png_t *pctx, const char *str)
 	pctx->bloat = rnd_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
-void rnd_png_start(rnd_png_t *pctx)
+void rnd_drwpx_start(rnd_drwpx_t *pctx)
 {
 	pctx->linewidth = -1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
@@ -109,7 +109,7 @@ void rnd_png_start(rnd_png_t *pctx)
 }
 
 #undef HAVE_SOME_FORMAT
-const char *rnd_png_filetypes[] = {
+const char *rnd_drwpx_filetypes[] = {
 #ifdef PCB_HAVE_GDIMAGEPNG
 	RND_PNG_FMT_png,
 #define HAVE_SOME_FORMAT 1
@@ -130,12 +130,12 @@ const char *rnd_png_filetypes[] = {
 
 static const char *get_file_type(int filetype_idx)
 {
-	if ((filetype_idx >= 0) && (filetype_idx < (sizeof(rnd_png_filetypes)/sizeof(rnd_png_filetypes[0]))))
-		return rnd_png_filetypes[filetype_idx];
+	if ((filetype_idx >= 0) && (filetype_idx < (sizeof(rnd_drwpx_filetypes)/sizeof(rnd_drwpx_filetypes[0]))))
+		return rnd_drwpx_filetypes[filetype_idx];
 	return NULL;
 }
 
-void rnd_png_finish(rnd_png_t *pctx, FILE *f, int filetype_idx)
+void rnd_drwpx_finish(rnd_drwpx_t *pctx, FILE *f, int filetype_idx)
 {
 	rnd_bool format_error = rnd_false;
 	const char *fmt = get_file_type(filetype_idx);
@@ -166,11 +166,11 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, int filetype_idx)
 		format_error = rnd_true;
 
 	if (format_error)
-		rnd_message(RND_MSG_ERROR, "rnd_png_finish(): Invalid graphic file format. This is a bug. Please report it.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_finish(): Invalid graphic file format. This is a bug. Please report it.\n");
 }
 
 
-int rnd_png_has_any_format(void)
+int rnd_drwpx_has_any_format(void)
 {
 #ifdef HAVE_SOME_FORMAT
 	return 1;
@@ -179,7 +179,7 @@ int rnd_png_has_any_format(void)
 #endif
 }
 
-const char *rnd_png_get_file_suffix(int filetype_idx)
+const char *rnd_drwpx_get_file_suffix(int filetype_idx)
 {
 	const char *result = NULL;
 	const char *fmt = get_file_type(filetype_idx);
@@ -200,7 +200,7 @@ const char *rnd_png_get_file_suffix(int filetype_idx)
 }
 
 
-void rnd_png_uninit(rnd_png_t *pctx)
+void rnd_drwpx_uninit(rnd_drwpx_t *pctx)
 {
 	if (pctx->color_cache_inited) {
 		rnd_clrcache_uninit(&pctx->color_cache);
@@ -231,7 +231,7 @@ void rnd_png_uninit(rnd_png_t *pctx)
 	}
 }
 
-int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, int ymax_in, int xymax_in)
+int rnd_drwpx_set_size(rnd_drwpx_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, int ymax_in, int xymax_in)
 {
 	if (bbox != NULL) {
 		pctx->x_shift = bbox->X1;
@@ -250,7 +250,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	if (dpi_in != 0) {
 		pctx->dpi = dpi_in;
 		if (pctx->dpi < 0) {
-			rnd_message(RND_MSG_ERROR, "rnd_png_set_size(): dpi may not be < 0\n");
+			rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_size(): dpi may not be < 0\n");
 			return -1;
 		}
 	}
@@ -274,14 +274,14 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	}
 
 	if (pctx->xmax < 0 || pctx->ymax < 0) {
-		rnd_message(RND_MSG_ERROR, "rnd_png_set_size(): xmax and ymax may not be < 0\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_size(): xmax and ymax may not be < 0\n");
 		return -1;
 	}
 
 	return 0;
 }
 
-int rnd_png_create(rnd_png_t *pctx, int use_alpha)
+int rnd_drwpx_create(rnd_drwpx_t *pctx, int use_alpha)
 {
 	if (pctx->dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
@@ -291,7 +291,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->h = rnd_round(pctx->h / pctx->scale);
 	}
 	else if (pctx->xmax == 0 && pctx->ymax == 0) {
-		rnd_message(RND_MSG_ERROR, "rnd_png_create(): you may not set both xmax, ymax, and xy-max to zero\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_create(): you may not set both xmax, ymax, and xy-max to zero\n");
 		return -1;
 	}
 	else {
@@ -316,7 +316,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	pctx->master_im = pctx->im;
 
 	/* Allocate white and black; the first color allocated becomes the background color */
-	pctx->white = (rnd_png_color_struct_t *)malloc(sizeof(rnd_png_color_struct_t));
+	pctx->white = (rnd_drwpx_color_struct_t *)malloc(sizeof(rnd_drwpx_color_struct_t));
 	pctx->white->r = pctx->white->g = pctx->white->b = 255;
 	if (use_alpha)
 		pctx->white->a = 127;
@@ -324,42 +324,42 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->white->a = 0;
 	pctx->white->c = gdImageColorAllocateAlpha(pctx->im, pctx->white->r, pctx->white->g, pctx->white->b, pctx->white->a);
 	if (pctx->white->c == RND_PNG_BADC) {
-		rnd_message(RND_MSG_ERROR, "rnd_png_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
 		return -1;
 	}
 
 
-	pctx->black = (rnd_png_color_struct_t *)malloc(sizeof(rnd_png_color_struct_t));
+	pctx->black = (rnd_drwpx_color_struct_t *)malloc(sizeof(rnd_drwpx_color_struct_t));
 	pctx->black->r = pctx->black->g = pctx->black->b = pctx->black->a = 0;
 	pctx->black->c = gdImageColorAllocate(pctx->im, pctx->black->r, pctx->black->g, pctx->black->b);
 	if (pctx->black->c == RND_PNG_BADC) {
-		rnd_message(RND_MSG_ERROR, "rnd_png_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
 		return -1;
 	}
 
 	return 0;
 }
 
-static int rnd_png_me; /* placeholder for recongnizing a gc */
-rnd_hid_gc_t rnd_png_make_gc(rnd_hid_t *hid)
+static int rnd_drwpx_me; /* placeholder for recongnizing a gc */
+rnd_hid_gc_t rnd_drwpx_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t)calloc(sizeof(hid_gc_t), 1);
-	rv->me_pointer = &rnd_png_me;
+	rv->me_pointer = &rnd_drwpx_me;
 	rv->cap = rnd_cap_round;
 	rv->width = 1;
-	rv->color = (rnd_png_color_struct_t *) malloc(sizeof(rnd_png_color_struct_t));
+	rv->color = (rnd_drwpx_color_struct_t *) malloc(sizeof(rnd_drwpx_color_struct_t));
 	rv->color->r = rv->color->g = rv->color->b = rv->color->a = 0;
 	rv->color->c = 0;
 	rv->is_erase = 0;
 	return rv;
 }
 
-void rnd_png_destroy_gc(rnd_hid_gc_t gc)
+void rnd_drwpx_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+void rnd_drwpx_set_drawing_mode(rnd_drwpx_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	if ((direct) || (pctx->is_photo_drill)) /* photo drill is a special layer, no copositing on that */
@@ -371,7 +371,7 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 			if (pctx->comp_im == NULL) {
 				pctx->comp_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->comp_im) {
-					rnd_message(RND_MSG_ERROR, "rnd_png_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->comp_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
+					rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->comp_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
@@ -382,7 +382,7 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 			if (pctx->erase_im == NULL) {
 				pctx->erase_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->erase_im) {
-					rnd_message(RND_MSG_ERROR, "rnd_png_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->erase_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
+					rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->erase_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
@@ -420,9 +420,9 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 	}
 }
 
-void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
+void rnd_drwpx_set_color(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	rnd_png_color_struct_t *cc;
+	rnd_drwpx_color_struct_t *cc;
 
 	if (pctx->im == NULL)
 		return;
@@ -443,7 +443,7 @@ void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 	}
 
 	if (!pctx->color_cache_inited) {
-		rnd_clrcache_init(&pctx->color_cache, sizeof(rnd_png_color_struct_t), NULL);
+		rnd_clrcache_init(&pctx->color_cache, sizeof(rnd_drwpx_color_struct_t), NULL);
 		pctx->color_cache_inited = 1;
 	}
 
@@ -458,27 +458,27 @@ void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 		gc->color->b = color->b;
 		gc->color->c = gdImageColorAllocate(pctx->im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == RND_PNG_BADC) {
-			rnd_message(RND_MSG_ERROR, "rnd_png_set_color(): gdImageColorAllocate() returned NULL. Aborting export.\n");
+			rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_color(): gdImageColorAllocate() returned NULL. Aborting export.\n");
 			return;
 		}
 	}
 	else {
-		rnd_message(RND_MSG_ERROR, "rnd_png_set_color(): WE SHOULD NOT BE HERE!!!\n");
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx_set_color(): WE SHOULD NOT BE HERE!!!\n");
 		gc->color = pctx->black;
 	}
 }
 
-void rnd_png_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
+void rnd_drwpx_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-void rnd_png_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
+void rnd_drwpx_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-void rnd_png_set_draw_xor(rnd_hid_gc_t gc, int xor_)
+void rnd_drwpx_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -500,7 +500,7 @@ static int brush_keyeq(const void *av, const void *bv)
 	return 1;
 }
 
-static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
+static void use_gc(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 {
 	int need_brush = 0;
 	rnd_hid_gc_t agc;
@@ -520,8 +520,8 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 		agc->b = gc->color->b;
 	}
 
-	if (agc->me_pointer != &rnd_png_me) {
-		rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): GC from another HID passed to draw_png\n");
+	if (agc->me_pointer != &rnd_drwpx_me) {
+		rnd_message(RND_MSG_ERROR, "rnd_drwpx use_gc(): GC from another HID passed to draw_png\n");
 		abort();
 	}
 
@@ -566,7 +566,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 			int bg, fg;
 			agc->brush = gdImageCreate(r, r);
 			if (agc->brush == NULL) {
-				rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): gdImageCreate(%d, %d) returned NULL. Aborting export.\n", r, r);
+				rnd_message(RND_MSG_ERROR, "rnd_drwpx use_gc(): gdImageCreate(%d, %d) returned NULL. Aborting export.\n", r, r);
 				return;
 			}
 
@@ -580,7 +580,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 			else
 				fg = gdImageColorAllocateAlpha(agc->brush, agc->r, agc->g, agc->b, 0);
 			if (fg == RND_PNG_BADC) {
-				rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): gdImageColorAllocate() returned NULL. Aborting export.\n");
+				rnd_message(RND_MSG_ERROR, "rnd_drwpx use_gc(): gdImageColorAllocate() returned NULL. Aborting export.\n");
 				return;
 			}
 			gdImageColorTransparent(agc->brush, bg);
@@ -611,7 +611,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 }
 
 
-static void png_fill_rect_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_fill_rect_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(pctx, im, gc);
 	gdImageSetThickness(im, 0);
@@ -635,7 +635,7 @@ static void png_fill_rect_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_
 	pctx->have_outline |= pctx->doing_outline;
 }
 
-void rnd_png_fill_rect(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_drwpx_fill_rect(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_fill_rect_(pctx, pctx->im, gc, x1, y1, x2, y2);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
@@ -645,15 +645,15 @@ void rnd_png_fill_rect(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 	}
 }
 
-static void png_draw_line_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_draw_line_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int x1o = 0, y1o = 0, x2o = 0, y2o = 0;
 	if (x1 == x2 && y1 == y2 && !pctx->photo_mode) {
 		rnd_coord_t w = gc->width / 2;
 		if (gc->cap != rnd_cap_square)
-			rnd_png_fill_circle(pctx, gc, x1, y1, w);
+			rnd_drwpx_fill_circle(pctx, gc, x1, y1, w);
 		else
-			rnd_png_fill_rect(pctx, gc, x1 - w, y1 - w, x1 + w, y1 + w);
+			rnd_drwpx_fill_rect(pctx, gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
 	use_gc(pctx, im, gc);
@@ -707,7 +707,7 @@ static void png_draw_line_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_
 	}
 }
 
-void rnd_png_draw_line(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_drwpx_draw_line(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line_(pctx, pctx->im, gc, x1, y1, x2, y2);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
@@ -717,7 +717,7 @@ void rnd_png_draw_line(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 	}
 }
 
-static void png_draw_arc_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void png_draw_arc_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 
@@ -732,7 +732,7 @@ static void png_draw_arc_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_c
 		rnd_coord_t y = (width * sin(start_angle * M_PI / 180));
 		x = cx - x;
 		y = cy + y;
-		rnd_png_fill_circle(pctx, gc, x, y, gc->width / 2);
+		rnd_drwpx_fill_circle(pctx, gc, x, y, gc->width / 2);
 		return;
 	}
 
@@ -775,7 +775,7 @@ static void png_draw_arc_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_c
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-void rnd_png_draw_arc(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+void rnd_drwpx_draw_arc(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	png_draw_arc_(pctx, pctx->im, gc, cx, cy, width, height, start_angle, delta_angle);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
@@ -786,7 +786,7 @@ void rnd_png_draw_arc(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 }
 
 
-static void png_fill_circle_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void png_fill_circle_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	rnd_coord_t my_bloat;
 
@@ -804,7 +804,7 @@ static void png_fill_circle_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rn
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), pctx->unerase_override ? pctx->white->c : gc->color->c);
 }
 
-void rnd_png_fill_circle(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+void rnd_drwpx_fill_circle(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	png_fill_circle_(pctx, pctx->im, gc, cx, cy, radius);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
@@ -815,7 +815,7 @@ void rnd_png_fill_circle(rnd_png_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_c
 }
 
 
-static void png_fill_polygon_offs_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void png_fill_polygon_offs_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -839,7 +839,7 @@ static void png_fill_polygon_offs_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t 
 	free(points);
 }
 
-void rnd_png_fill_polygon_offs(rnd_png_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+void rnd_drwpx_fill_polygon_offs(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	png_fill_polygon_offs_(pctx, pctx->im, gc, n_coords, x, y, dx, dy);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
