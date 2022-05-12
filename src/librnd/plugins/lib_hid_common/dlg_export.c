@@ -140,7 +140,7 @@ static void rnd_dlg_export(const char *title, int exporters, int printers)
 	}
 
 	if (export_ctx.len == 0) {
-		rnd_message(RND_MSG_ERROR, "Can not export: there are no export plugins available\n");
+		rnd_message(RND_MSG_ERROR, "Can not export: there are no export plugins available for that task\n");
 		return;
 	}
 
