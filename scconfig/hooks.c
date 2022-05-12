@@ -376,7 +376,7 @@ int hook_detect_target()
 {
 	int want_gd, want_stroke;
 
-	want_gd     = plug_is_enabled("lib_exp_pixmap") || plug_is_enabled("import_pxm_gd");
+	want_gd     = plug_is_enabled("lib_exp_pixmap") || plug_is_enabled("import_pixmap_gd");
 	want_stroke = plug_is_enabled("stroke");
 
 	rnd_hook_detect_cc();
@@ -403,9 +403,7 @@ int hook_detect_target()
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
 			hook_custom_arg("disable-lib_exp_pixmap", NULL);
-#ifdef PNG
-			hook_custom_arg("disable-import_pxm_gd", NULL);
-#endif
+			hook_custom_arg("disable-import_pixmap_gd", NULL);
 			want_gd = 0;
 			goto disable_gd_formats;
 		}
