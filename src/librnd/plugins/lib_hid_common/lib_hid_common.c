@@ -40,6 +40,7 @@
 #include "lib_hid_common.h"
 #include "dialogs_conf.h"
 #include "dlg_comm_m.h"
+#include "dlg_export.h"
 #include "dlg_log.h"
 #include "dlg_fileselect.h"
 #include "dlg_plugins.h"
@@ -93,6 +94,8 @@ rnd_action_t hid_common_action_list[] = {
 	{"FsdTest", rnd_act_FsdTest, rnd_acth_FsdTest, rnd_acts_FsdTest},
 	{"Command", rnd_act_Command, rnd_acth_Command, rnd_acts_Command},
 	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
+	{"ExportDialog", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},
+	{"PrintDialog", rnd_act_PrintDialog, rnd_acth_PrintDialog, rnd_acts_PrintDialog},
 	{"gui_PromptFor", rnd_act_gui_PromptFor, rnd_acth_gui, NULL},
 	{"gui_MessageBox", rnd_act_gui_MessageBox, rnd_acth_gui, NULL},
 	{"gui_FallbackColorPick", rnd_act_gui_FallbackColorPick, rnd_acth_gui, NULL},

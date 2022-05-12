@@ -8,6 +8,7 @@ put /local/pcb/mod/OBJS [@
   $(LIBRND_PLUGDIR)/lib_hid_common/menu_helper.o
   $(LIBRND_PLUGDIR)/lib_hid_common/act_dad.o
   $(LIBRND_PLUGDIR)/lib_hid_common/dlg_comm_m.o
+  $(LIBRND_PLUGDIR)/lib_hid_common/dlg_export.o
   $(LIBRND_PLUGDIR)/lib_hid_common/dlg_log.o
   $(LIBRND_PLUGDIR)/lib_hid_common/dlg_plugins.o
   $(LIBRND_PLUGDIR)/lib_hid_common/dlg_fileselect.o

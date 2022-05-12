@@ -1,3 +1,4 @@
+34144	configure	import export and print dialog from pcb-rnd
 34140	configure	add libualloc in the API
 34135	configure	new plugins for pixmap import: import_pixmap_gd, import_pixmap_pnm (moved from pcb-rnd)
 34131	configure	new plugins for helping image export: lib_exp_text, lib_exp_pixmap (moved from pcb-rnd)
