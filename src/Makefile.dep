@@ -1092,6 +1092,96 @@
  ../src_3rd/libporty_net/os_includes.h \
  ../src_3rd/libporty_net/pnet_config.h \
  ../src_3rd/libporty_net/phost_types.h
+../src/librnd/plugins/lib_exp_pixmap/draw_pixmap.o: \
+ ../src/librnd/plugins/lib_exp_pixmap/draw_pixmap.c ../config.h \
+ ../src/librnd/config.h ../src_3rd/genht/htpp.h ../src_3rd/genht/ht.h \
+ ../src/librnd/core/hidlib.h ../src/librnd/core/global_typedefs.h \
+ ../src/librnd/core/rnd_bool.h ../src/librnd/core/color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/color_cache.h \
+ ../src_3rd/genht/htip.h ../src_3rd/genht/hash.h ../src/librnd/core/error.h \
+ ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/libfungw/fungw.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/compat_misc.h \
+ ../src/librnd/plugins/lib_exp_pixmap/draw_pixmap.h
+../src/librnd/plugins/lib_exp_pixmap/lib_exp_pixmap.o: \
+ ../src/librnd/plugins/lib_exp_pixmap/lib_exp_pixmap.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
+../src/librnd/plugins/lib_exp_text/draw_eps.o: \
+ ../src/librnd/plugins/lib_exp_text/draw_eps.c ../src/librnd/config.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/color.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src/librnd/core/unit.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/core/error.h ../src/librnd/core/box.h \
+ ../src/librnd/core/misc_util.h ../src/librnd/core/hid_nogui.h ../src/librnd/core/hid_init.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
+ ../src/librnd/plugins/lib_exp_text/draw_eps.h
+../src/librnd/plugins/lib_exp_text/draw_ps.o: \
+ ../src/librnd/plugins/lib_exp_text/draw_ps.c ../src/librnd/config.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h ../src/librnd/core/box.h \
+ ../src/librnd/core/misc_util.h ../src/librnd/core/hid_init.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/color.h \
+ ../src/librnd/plugins/lib_exp_text/media.h \
+ ../src/librnd/plugins/lib_exp_text/draw_ps.h ../src/librnd/core/hidlib.h
+../src/librnd/plugins/lib_exp_text/draw_svg.o: \
+ ../src/librnd/plugins/lib_exp_text/draw_svg.c ../src/librnd/config.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/hidlib_conf.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/rnd_printf.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/color.h ../src/librnd/core/error.h \
+ ../src/librnd/core/misc_util.h ../src/librnd/core/compat_misc.h ../src/librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h ../src/librnd/core/safe_fs.h \
+ ../src/librnd/core/hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ ../src/librnd/core/box.h ../src/librnd/core/hid_init.h ../src/librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h \
+ ../src/librnd/plugins/lib_exp_text/draw_svg.h ../src/librnd/core/hidlib.h
+../src/librnd/plugins/lib_exp_text/lib_exp_text.o: \
+ ../src/librnd/plugins/lib_exp_text/lib_exp_text.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
+../src/librnd/plugins/lib_exp_text/media.o: \
+ ../src/librnd/plugins/lib_exp_text/media.c ../config.h ../src/librnd/config.h \
+ ../src/librnd/core/unit.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/plugins/lib_exp_text/media.h
 ../src/librnd/plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src/librnd/plugins/lib_gensexpr/lib_gensexpr.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -2751,6 +2841,39 @@
  ../src/librnd/plugins/stroke/conf_internal.c \
  ../src/librnd/plugins/stroke/stroke_conf.h \
  ../src/librnd/plugins/stroke/stroke_conf_fields.h
+../src/librnd/plugins/import_pixmap_gd/import_pixmap_gd.o: \
+ ../src/librnd/plugins/import_pixmap_gd/import_pixmap_gd.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/pixmap.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/safe_fs.h ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
+../src/librnd/plugins/import_pixmap_pnm/import_pixmap_pnm.o: \
+ ../src/librnd/plugins/import_pixmap_pnm/import_pixmap_pnm.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/pixmap.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/safe_fs.h ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/error.h \
+ ../src/librnd/core/compat_misc.h
 ../src/librnd/plugins/script/live_script.o: \
  ../src/librnd/plugins/script/live_script.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src_3rd/genvector/vtp0.h \
