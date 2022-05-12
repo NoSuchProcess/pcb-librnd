@@ -29,7 +29,7 @@
 /* Heavily based on the geda/pcb ps HID written by DJ Delorie */
 
 #include "config.h"
-TODO("^ replace this with librnd config.h, but that needs PCB_HAVE_GDIMAGE* there")
+TODO("^ replace this with librnd config.h, but that needs RND_HAVE_GDIMAGE* there")
 
 #include <genht/htpp.h>
 #include <stdlib.h>
@@ -110,17 +110,17 @@ void rnd_drwpx_start(rnd_drwpx_t *pctx)
 
 #undef HAVE_SOME_FORMAT
 const char *rnd_drwpx_filetypes[] = {
-#ifdef PCB_HAVE_GDIMAGEPNG
+#ifdef RND_HAVE_GDIMAGEPNG
 	RND_PNG_FMT_png,
 #define HAVE_SOME_FORMAT 1
 #endif
 
-#ifdef PCB_HAVE_GDIMAGEGIF
+#ifdef RND_HAVE_GDIMAGEGIF
 	RND_PNG_FMT_gif,
 #define HAVE_SOME_FORMAT 1
 #endif
 
-#ifdef PCB_HAVE_GDIMAGEJPEG
+#ifdef RND_HAVE_GDIMAGEJPEG
 	RND_PNG_FMT_jpg,
 #define HAVE_SOME_FORMAT 1
 #endif
@@ -145,19 +145,19 @@ void rnd_drwpx_finish(rnd_drwpx_t *pctx, FILE *f, int filetype_idx)
 	if (fmt == NULL)
 		format_error = rnd_true;
 	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)
-#ifdef PCB_HAVE_GDIMAGEGIF
+#ifdef RND_HAVE_GDIMAGEGIF
 		gdImageGif(pctx->im, f);
 #else
 		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, RND_PNG_FMT_jpg) == 0)
-#ifdef PCB_HAVE_GDIMAGEJPEG
+#ifdef RND_HAVE_GDIMAGEJPEG
 		gdImageJpeg(pctx->im, f, -1);
 #else
 		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, RND_PNG_FMT_png) == 0)
-#ifdef PCB_HAVE_GDIMAGEPNG
+#ifdef RND_HAVE_GDIMAGEPNG
 		gdImagePng(pctx->im, f);
 #else
 		format_error = rnd_true;
@@ -309,7 +309,7 @@ int rnd_drwpx_create(rnd_drwpx_t *pctx, int use_alpha)
 
 	pctx->im = gdImageCreate(pctx->w, pctx->h);
 
-#ifdef PCB_HAVE_GD_RESOLUTION
+#ifdef RND_HAVE_GD_RESOLUTION
 	gdImageSetResolution(pctx->im, pctx->dpi, pctx->dpi);
 #endif
 
