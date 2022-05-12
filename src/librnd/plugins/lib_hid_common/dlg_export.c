@@ -124,7 +124,7 @@ static void export_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static void pcb_dlg_export(const char *title, int exporters, int printers)
+static void rnd_dlg_export(const char *title, int exporters, int printers)
 {
 	rnd_hid_t **hids;
 	int n, i, *exp_attr;
@@ -242,19 +242,19 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	RND_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, rnd_false, export_close_cb);
 }
 
-const char pcb_acts_ExportGUI[] = "ExportGUI()\n";
-const char pcb_acth_ExportGUI[] = "Open the export dialog.";
-fgw_error_t pcb_act_ExportGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+const char rnd_acts_ExportDialog[] = "ExportDialog()\n";
+const char rnd_acth_ExportDialog[] = "Open the export dialog.";
+fgw_error_t rnd_act_ExportDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	pcb_dlg_export("Export to file", 1, 0);
+	rnd_dlg_export("Export to file", 1, 0);
 	return 0;
 }
 
-const char pcb_acts_PrintGUI[] = "PrintGUI()\n";
-const char pcb_acth_PrintGUI[] = "Open the print dialog.";
-fgw_error_t pcb_act_PrintGUI(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+const char rnd_acts_PrintDialog[] = "PrintDialog()\n";
+const char rnd_acth_PrintDialog[] = "Open the print dialog.";
+fgw_error_t rnd_act_PrintDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	pcb_dlg_export("Print", 0, 1);
+	rnd_dlg_export("Print", 0, 1);
 	return 0;
 }
 
