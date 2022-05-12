@@ -5,6 +5,7 @@
 ******************************************************************************/
 
 plugin_header("\nLibrary plugins:\n")
+plugin_def("lib_exp_pixmap",   "pixmap formats export lib",       sbuildin, 1)
 plugin_def("lib_exp_text",     "text formats export lib",         sbuildin, 1)
 plugin_def("lib_gensexpr",     "#s-expression library",           sbuildin, 1)
 plugin_def("lib_gtk2_common",  "all-hid_gtk2 common code",        sdisable, 0)
