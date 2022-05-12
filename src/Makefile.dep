@@ -2372,6 +2372,27 @@
  ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h
+../src/librnd/plugins/lib_hid_common/dlg_export.o: \
+ ../src/librnd/plugins/lib_hid_common/dlg_export.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src/librnd/core/actions.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/config.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/event.h ../src/librnd/core/hidlib.h ../src/librnd/core/hid_dad.h \
+ ../src/librnd/core/compat_misc.h ../src/librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/hid_cfg.h \
+ ../src/librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src/librnd/core/hid_dad_spin.h ../src/librnd/core/hid_dad_unit.h \
+ ../src/librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_export.h
 ../src/librnd/plugins/lib_hid_common/dlg_fileselect.o: \
  ../src/librnd/plugins/lib_hid_common/dlg_fileselect.c ../config.h \
  ../src/librnd/config.h ../src_3rd/genht/hash.h ../src_3rd/genvector/vti0.h \
@@ -2530,6 +2551,7 @@
  ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
  ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
  ../src/librnd/plugins/lib_hid_common/dlg_comm_m.h \
+ ../src/librnd/plugins/lib_hid_common/dlg_export.h \
  ../src/librnd/plugins/lib_hid_common/dlg_log.h \
  ../src/librnd/plugins/lib_hid_common/dlg_fileselect.h \
  ../src/librnd/plugins/lib_hid_common/dlg_plugins.h \
@@ -3098,6 +3120,35 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/liblihata/dom_internal.h \
  ../src_3rd/liblihata/tree.h ../src_3rd/liblihata/dom.h
+../src_3rd/libualloc/acache_impl.o: ../src_3rd/libualloc/acache_impl.c \
+ ../src_3rd/libualloc/acache_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/acache_impl.h
+../src_3rd/libualloc/buddy_debug.o: ../src_3rd/libualloc/buddy_debug.c \
+ ../src_3rd/libualloc/buddy_debug.h ../src_3rd/libualloc/buddy_api.h \
+ ../src_3rd/libualloc/libualloc.h
+../src_3rd/libualloc/buddy_impl.o: ../src_3rd/libualloc/buddy_impl.c \
+ ../src_3rd/libualloc/buddy_impl.h ../src_3rd/libualloc/buddy_api.h \
+ ../src_3rd/libualloc/libualloc.h
+../src_3rd/libualloc/libualloc.o: ../src_3rd/libualloc/libualloc.c \
+ ../src_3rd/libualloc/libualloc.h ../src_3rd/libualloc/libualloc_impl.h
+../src_3rd/libualloc/mcache_impl.o: ../src_3rd/libualloc/mcache_impl.c \
+ ../src_3rd/libualloc/mcache_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/mcache_impl.h
+../src_3rd/libualloc/slab_impl.o: ../src_3rd/libualloc/slab_impl.c \
+ ../src_3rd/libualloc/slab_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/slab_impl.h
+../src_3rd/libualloc/slabap_impl.o: ../src_3rd/libualloc/slabap_impl.c \
+ ../src_3rd/libualloc/slabap_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/slabap_impl.h
+../src_3rd/libualloc/stackd_impl.o: ../src_3rd/libualloc/stackd_impl.c \
+ ../src_3rd/libualloc/stackd_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/stackd_impl.h
+../src_3rd/libualloc/stackdnp_impl.o: \
+ ../src_3rd/libualloc/stackdnp_impl.c ../src_3rd/libualloc/stackdnp_api.h \
+ ../src_3rd/libualloc/libualloc.h ../src_3rd/libualloc/stackdnp_impl.h
+../src_3rd/libualloc/stacks_impl.o: ../src_3rd/libualloc/stacks_impl.c \
+ ../src_3rd/libualloc/stacks_api.h ../src_3rd/libualloc/libualloc.h \
+ ../src_3rd/libualloc/stacks_impl.h
 ../src_3rd/libulzw/libulzw_comp.o: ../src_3rd/libulzw/libulzw_comp.c
 ../src_3rd/libulzw/libulzw_decomp.o: ../src_3rd/libulzw/libulzw_decomp.c
 ../src_3rd/ureglex/exec.o: ../src_3rd/ureglex/exec.c \
