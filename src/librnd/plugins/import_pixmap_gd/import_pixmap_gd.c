@@ -37,7 +37,7 @@
 #include <librnd/core/pixmap.h>
 #include <librnd/core/safe_fs.h>
 
-static const char *import_pxm_gd_cookie = "import_pxm_gd";
+static const char *import_pixmap_gd_cookie = "import_pixmap_gd";
 
 static int gd_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn, gdImagePtr (*loader)(FILE *f))
 {
@@ -123,25 +123,25 @@ static const rnd_pixmap_import_t pxm_gd_gif_imp = {
 };
 #endif
 
-int pplg_check_ver_import_pxm_gd(int ver_needed) { return 0; }
+int pplg_check_ver_import_pixmap_gd(int ver_needed) { return 0; }
 
-void pplg_uninit_import_pxm_gd(void)
+void pplg_uninit_import_pixmap_gd(void)
 {
-	rnd_pixmap_unreg_import_all(import_pxm_gd_cookie);
+	rnd_pixmap_unreg_import_all(import_pixmap_gd_cookie);
 }
 
-int pplg_init_import_pxm_gd(void)
+int pplg_init_import_pixmap_gd(void)
 {
 	RND_API_CHK_VER;
 
 #ifdef RND_HAVE_GDIMAGEPNG
-	rnd_pixmap_reg_import(&pxm_gd_png_imp, import_pxm_gd_cookie);
+	rnd_pixmap_reg_import(&pxm_gd_png_imp, import_pixmap_gd_cookie);
 #endif
 #ifdef RND_HAVE_GDIMAGEJPEG
-	rnd_pixmap_reg_import(&pxm_gd_jpg_imp, import_pxm_gd_cookie);
+	rnd_pixmap_reg_import(&pxm_gd_jpg_imp, import_pixmap_gd_cookie);
 #endif
 #ifdef RND_HAVE_GDIMAGEGIF
-	rnd_pixmap_reg_import(&pxm_gd_gif_imp, import_pxm_gd_cookie);
+	rnd_pixmap_reg_import(&pxm_gd_gif_imp, import_pixmap_gd_cookie);
 #endif
 	return 0;
 }

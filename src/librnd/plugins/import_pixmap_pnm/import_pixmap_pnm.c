@@ -39,7 +39,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
 
-static const char *import_pxm_pnm_cookie = "import_pxm_pnm";
+static const char *import_pixmap_pnm_cookie = "import_pixmap_pnm";
 
 #define ADDPX(pxm, r_, g_, b_, not_transparent) \
 do { \
@@ -168,16 +168,16 @@ static const rnd_pixmap_import_t pxm_pnm_imp = {
 	pnm_load
 };
 
-int pplg_check_ver_import_pxm_pnm(int ver_needed) { return 0; }
+int pplg_check_ver_import_pixmap_pnm(int ver_needed) { return 0; }
 
-void pplg_uninit_import_pxm_pnm(void)
+void pplg_uninit_import_pixmap_pnm(void)
 {
-	rnd_pixmap_unreg_import_all(import_pxm_pnm_cookie);
+	rnd_pixmap_unreg_import_all(import_pixmap_pnm_cookie);
 }
 
-int pplg_init_import_pxm_pnm(void)
+int pplg_init_import_pixmap_pnm(void)
 {
 	RND_API_CHK_VER;
-	rnd_pixmap_reg_import(&pxm_pnm_imp, import_pxm_pnm_cookie);
+	rnd_pixmap_reg_import(&pxm_pnm_imp, import_pixmap_pnm_cookie);
 	return 0;
 }
