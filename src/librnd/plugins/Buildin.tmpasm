@@ -9,8 +9,8 @@ append /local/librnd/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pc
 
 append /local/librnd/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 
-append /local/pcb/OBJS            ?/local/pcb/mod/OBJS
-append /local/pcb/OBJS_C99        ?/local/pcb/mod/OBJS_C99
+append /local/librnd/OBJS            ?/local/pcb/mod/OBJS
+append /local/librnd/OBJS_C99        ?/local/pcb/mod/OBJS_C99
 append /local/pcb/LDFLAGS         /local/pcb/mod/LDFLAGS
 append /local/pcb/CFLAGS          /local/pcb/mod/CFLAGS
 append /local/pcb/RULES [@
@@ -21,8 +21,7 @@ mod_@/local/pcb/mod@: all
 
 # plugins are part of the hidlib system, also append the objects
 # to the hidlib object lists
-append /local/pcb/HIDLIB_PLG              /local/pcb/mod
-append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
+append /local/librnd/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
 append /local/librnd/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
 append /local/librnd/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 

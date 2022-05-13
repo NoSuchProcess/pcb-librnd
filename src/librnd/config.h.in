@@ -218,7 +218,7 @@ typedef @/local/librnd/long64@    rnd_long64_t;
 
 
 /* ./configure --workaround requests: */
-@?/local/pcb/workaround_defs@
+@?/local/librnd/workaround_defs@
 
 /* Make sure to catch usage of non-portable functions in debug mode
    This is in here only because config.h should be included from every source

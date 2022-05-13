@@ -3,10 +3,10 @@ append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
-put /local/pcb/OBJS_3RDLIB {}
-put /local/pcb/OBJS_HIDLIB {}
+put /local/librnd/OBJS_3RDLIB {}
+put /local/librnd/OBJS_HIDLIB {}
 put /local/librnd/OBJS_C99_HIDLIB_PLG {}
-put /local/pcb/OBJS_HIDLIB_PLG {}
+put /local/librnd/OBJS_HIDLIB_PLG {}
 
 if ?libs/script/fungw/presents
 then
@@ -32,7 +32,7 @@ then
 	@]
 else
 # no system installed fungw means we need to use local genht
-	append /local/pcb/OBJS_3RDLIB [@
+	append /local/librnd/OBJS_3RDLIB [@
 	../src_3rd/genht/hash.o
 	../src_3rd/genht/htsp.o
 	../src_3rd/genht/htss.o
@@ -51,7 +51,7 @@ else
 	../src_3rd/genht/version.h
 	@]
 # local compilation of fungw objects
-	append /local/pcb/OBJS_3RDLIB [@
+	append /local/librnd/OBJS_3RDLIB [@
 	../src_3rd/libfungw/fungw.o
 	../src_3rd/libfungw/fungw_conv.o
 	../src_3rd/libfungw/fungw_ptr.o
@@ -88,7 +88,7 @@ put /local/librnd/OBJS_C99_HIDLIB [@
 	$(LIBRND)/core/fptr_cast.o
 @]
 
-append /local/pcb/OBJS_HIDLIB [@
+append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/actions.o
 	$(LIBRND)/core/anyload.o
 	$(LIBRND)/core/base64.o
@@ -138,7 +138,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	buildin.hidlib.o
 @]
 
-put /local/pcb/OBJS_POLYLIB [@
+put /local/librnd/OBJS_POLYLIB [@
 	$(LIBRND)/poly/polyarea.o
 	$(LIBRND)/poly/polygon1_gen.o
 	$(LIBRND)/poly/offset.o
@@ -146,7 +146,7 @@ put /local/pcb/OBJS_POLYLIB [@
 	$(LIBRND)/poly/rtree.o
 @]
 
-append /local/pcb/OBJS_3RDLIB [@
+append /local/librnd/OBJS_3RDLIB [@
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o
 	../src_3rd/liblihata/dom_list.o
@@ -189,14 +189,14 @@ append /local/pcb/OBJS_3RDLIB [@
 @]
 
 # these need special rules for compilation
-append /local/pcb/OBJS_3RDLIB_NOAUTO [@
+append /local/librnd/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
 @]
 
-put /local/pcb/OBJS_C99 /local/librnd/OBJS_C99_HIDLIB
-put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
-append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
-append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
+put /local/librnd/OBJS_C99 /local/librnd/OBJS_C99_HIDLIB
+put /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
+append /local/librnd/OBJS /local/librnd/OBJS_3RDLIB
+append /local/librnd/OBJS /local/librnd/OBJS_POLYLIB
 
 
 #---- modules ----#
@@ -239,16 +239,16 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 
 
 # Clean up variables
-uniq /local/pcb/OBJS
-uniq /local/pcb/OBJS_C99
-uniq /local/pcb/OBJS_3RDLIB
-uniq /local/pcb/OBJS_3RDLIB_NOAUTO
-uniq /local/pcb/OBJS_POLYLIB
-uniq /local/pcb/OBJS_HIDLIB
+uniq /local/librnd/OBJS
+uniq /local/librnd/OBJS_C99
+uniq /local/librnd/OBJS_3RDLIB
+uniq /local/librnd/OBJS_3RDLIB_NOAUTO
+uniq /local/librnd/OBJS_POLYLIB
+uniq /local/librnd/OBJS_HIDLIB
 uniq /local/librnd/OBJS_C99_HIDLIB
-uniq /local/pcb/OBJS_HIDLIB_PLG
+uniq /local/librnd/OBJS_HIDLIB_PLG
 uniq /local/librnd/OBJS_C99_HIDLIB_PLG
-uniq /local/pcb/OBJS_UTIL
+uniq /local/librnd/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
 uniq /local/pcb/LIBS
@@ -259,11 +259,11 @@ uniq /local/pcb/CLEANFILES
 uniq /local/pcb/DISTCLEANFILES
 uniq /local/pcb/CLEANRULES
 uniq /local/pcb/all
-put /local/pcb/SRCS /local/pcb/OBJS 
-append /local/pcb/SRCS ?/local/pcb/OBJS_C99
-append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_POLYLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
+put /local/pcb/SRCS /local/librnd/OBJS 
+append /local/pcb/SRCS ?/local/librnd/OBJS_C99
+append /local/pcb/SRCS ?/local/librnd/OBJS_3RDLIB
+append /local/pcb/SRCS ?/local/librnd/OBJS_POLYLIB
+append /local/pcb/SRCS ?/local/librnd/OBJS_HIDLIB
 gsub /local/pcb/SRCS {.o } {.c }
 
 # apple requires multiple "-framework something" instead of -lsomething
@@ -306,15 +306,15 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 INST_DUMMY=/tmp/librnd-dummy
 
 @?/local/pcb/TOPVARS@
-OBJS=@/local/pcb/OBJS@ @/local/pcb/OBJS_3RDLIB_NOAUTO@
-OBJS_C99=@/local/pcb/OBJS_C99@
-OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
-OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
-OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
+OBJS=@/local/librnd/OBJS@ @/local/librnd/OBJS_3RDLIB_NOAUTO@
+OBJS_C99=@/local/librnd/OBJS_C99@
+OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
+OBJS_3RDLIB=@/local/librnd/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
+OBJS_HIDLIB=@/local/librnd/OBJS_HIDLIB@
 OBJS_C99_HIDLIB=@/local/librnd/OBJS_C99_HIDLIB@
-OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
+OBJS_HIDLIB_PLG=@/local/librnd/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/librnd/OBJS_C99_HIDLIB_PLG@
-OBJS_UTIL=@/local/pcb/OBJS_UTIL@
+OBJS_UTIL=@/local/librnd/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
@@ -556,9 +556,9 @@ else
 end
 
 # rndlib: build a list of header files to be installed with the hidlib
-put /local/pcb/HDRS_3RDLIB /local/pcb/OBJS_3RDLIB
-put /local/librnd/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
-append /local/librnd/HDRS_HIDLIB /local/pcb/OBJS_POLYLIB
+put /local/pcb/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
+put /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_HIDLIB
+append /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_POLYLIB
 uniq /local/pcb/HDRS_3RDLIB
 uniq /local/librnd/HDRS_HIDLIB
 gsub /local/librnd/HDRS_HIDLIB {.o } {.h }
@@ -683,14 +683,14 @@ map_plugins:
 @]
 
 # generate explicit rules for .c -> .o
-put /local/comp/OBJS /local/pcb/OBJS
-put /local/comp/OBJS_C99 ?/local/pcb/OBJS_C99
+put /local/comp/OBJS /local/librnd/OBJS
+put /local/comp/OBJS_C99 ?/local/librnd/OBJS_C99
 include {librnd/scconfig/template/compile.tmpasm}
 
 print [@
 # for extern utils:@]
 
-put /local/comp/OBJS /local/pcb/OBJS_UTIL
+put /local/comp/OBJS /local/librnd/OBJS_UTIL
 include {librnd/scconfig/template/compile.tmpasm}
 
 # generate deps
