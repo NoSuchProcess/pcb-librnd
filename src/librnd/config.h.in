@@ -145,7 +145,7 @@ print_ternary ?signal/names/SIGQUIT/presents    {#define RND_HAVE_SIGQUIT 1} {/*
 print {\n}
 
 print {\n\n/* Wether fungw is system installed */\n}
-print_ternary /local/pcb/fungw_system {#define RND_HAVE_SYS_FUNGW 1} {/* #undef RND_HAVE_SYS_FUNGW */}
+print_ternary /local/librnd/fungw_system {#define RND_HAVE_SYS_FUNGW 1} {/* #undef RND_HAVE_SYS_FUNGW */}
 
 print {\n/* Code warnings for TODO, portable (unlike #warning) */}
 if ?/local/librnd/debug

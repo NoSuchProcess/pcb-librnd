@@ -1,3 +1,11 @@
+#ifndef LIBRND_SCCONFIG_APP_TREE
+/* for compatibility */
+/* TODO:pcb1 - make this an #error in librnd4 */
+#define APP "pcb"
+#else
+#define APP LIBRND_SCCONFIG_APP_TREE
+#endif
+
 static void rnd_hook_detect_cc(void)
 {
 	int need_inl = 0;
@@ -25,7 +33,7 @@ static void rnd_hook_detect_cc(void)
 
 	/* for --debug mode, use -ansi -pedantic for all detection */
 	put("/local/cc_flags_save", get("/target/cc/cflags"));
-	if (istrue(get("/local/pcb/debug"))) {
+	if (istrue(get("/local/" APP "/debug"))) {
 		if (target_ansi != NULL) {
 			append("/target/cc/cflags", " ");
 			append("/target/cc/cflags", target_ansi);
@@ -35,7 +43,7 @@ static void rnd_hook_detect_cc(void)
 			append("/target/cc/cflags", target_ped);
 		}
 	}
-	if (istrue(get("/local/pcb/profile"))) {
+	if (istrue(get("/local/" APP "/profile"))) {
 		append("/target/cc/cflags", " ");
 		append("/target/cc/cflags", target_pg);
 		append("/target/cc/cflags", " ");
@@ -43,26 +51,26 @@ static void rnd_hook_detect_cc(void)
 	}
 
 	/* set cflags for C89 */
-	put("/local/pcb/c89flags", "");
-	if (istrue(get("/local/pcb/debug"))) {
+	put("/local/" APP "/c89flags", "");
+	if (istrue(get("/local/" APP "/debug"))) {
 
 		if ((target_ansi != NULL) && (*target_ansi != '\0')) {
-			append("/local/pcb/c89flags", " ");
-			append("/local/pcb/c89flags", target_ansi);
+			append("/local/" APP "/c89flags", " ");
+			append("/local/" APP "/c89flags", target_ansi);
 			need_inl = 1;
 		}
 		if ((target_ped != NULL) && (*target_ped != '\0')) {
-			append("/local/pcb/c89flags", " ");
-			append("/local/pcb/c89flags", target_ped);
+			append("/local/" APP "/c89flags", " ");
+			append("/local/" APP "/c89flags", target_ped);
 			need_inl = 1;
 		}
 	}
 
-	if (istrue(get("/local/pcb/profile"))) {
-		append("/local/pcb/cflags_profile", " ");
-		append("/local/pcb/cflags_profile", target_pg);
-		append("/local/pcb/cflags_profile", " ");
-		append("/local/pcb/cflags_profile", target_no_pie);
+	if (istrue(get("/local/" APP "/profile"))) {
+		append("/local/" APP "/cflags_profile", " ");
+		append("/local/" APP "/cflags_profile", target_pg);
+		append("/local/" APP "/cflags_profile", " ");
+		append("/local/" APP "/cflags_profile", target_no_pie);
 	}
 
 	if (!istrue(get("cc/inline")))
@@ -70,14 +78,14 @@ static void rnd_hook_detect_cc(void)
 
 	if (need_inl) {
 		/* disable inline for C89 */
-		append("/local/pcb/c89flags", " ");
-		append("/local/pcb/c89flags", "-Dinline= ");
+		append("/local/" APP "/c89flags", " ");
+		append("/local/" APP "/c89flags", "-Dinline= ");
 	}
 }
 
 static int rnd_hook_detect_sys(void)
 {
-	if (istrue(get("/local/pcb/disable_so")))
+	if (istrue(get("/local/" APP "/disable_so")))
 		put("/local/pup/disable_dynlib", strue);
 
 	pup_hook_detect_target();
@@ -118,7 +126,7 @@ static int rnd_hook_detect_sys(void)
 
 	require("libs/time/gettimeofday/*",  0, 1);
 
-	if (istrue(get("/local/pcb/disable_so"))) {
+	if (istrue(get("/local/" APP "/disable_so"))) {
 		if (require("libs/ldl",  0, 0) != 0) {
 			if (require("libs/LoadLibrary",  0, 0) != 0)
 				report_repeat("\nWARNING: no dynamic linking found on your system. Dynamic plugin loading is disabled.\n\n");
@@ -151,10 +159,13 @@ static int rnd_hook_detect_sys(void)
 	if (!istrue(get("libs/script/fungw/presents"))) {
 		if (plug_is_enabled("script"))
 			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure librnd.\n");
-		put("/local/pcb/fungw_system", sfalse);
+		put("/local/librnd/fungw_system", sfalse); /* don't use APP here, only librnd should detect fungw */
+		put("/local/pcb/fungw_system", sfalse); /* compatibility */
 	}
-	else
-		put("/local/pcb/fungw_system", strue);
+	else {
+		put("/local/librnd/fungw_system", strue); /* don't use APP here, only librnd should detect fungw */
+		put("/local/pcb/fungw_system", strue); /* compatibility */
+	}
 
 	/* generic utils for Makefiles */
 	require("sys/ext_exe", 0, 1);
@@ -228,3 +239,4 @@ static int rnd_hook_detect_host(void)
 }
 
 
+#undef APP

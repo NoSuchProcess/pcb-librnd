@@ -7,7 +7,7 @@ put /local/pcb/mod/MENUFILE {script-menu.lht}
 put /local/pcb/mod/MENUVAR {script_menu}
 
 # Fallback scripting: if no system installed fungw is available, static link libfawk
-if /local/pcb/fungw_system
+if /local/librnd/fungw_system
 then
 else
 	append /local/pcb/mod/OBJS [@

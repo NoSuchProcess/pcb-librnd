@@ -29,7 +29,7 @@ PCB_RND_VER=@/local/version@
 PCB_RND_VER_MAJOR=@/local/version_major@
 
 PCB_RND_CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
-PCB_RND_C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
+PCB_RND_C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@

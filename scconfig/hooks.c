@@ -24,6 +24,9 @@
 /* this turns off some code that is required for applications only */
 #define LIBRNDS_SCCONFIG 1
 
+/* we are doing /local/librnd/ */
+#define LIBRND_SCCONFIG_APP_TREE "librnd"
+
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
 #include "librnd/scconfig/rnd_hook_detect.h"
