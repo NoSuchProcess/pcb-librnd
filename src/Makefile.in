@@ -203,8 +203,7 @@ append /local/librnd/OBJS /local/librnd/OBJS_POLYLIB
 # extra rules for modules
 put /local/pcb/RULES {}
 put /local/pcb/CLEANFILES {test-rnd$(EXE)}
-put /local/pcb/CLEANRULES {}
-put /local/pcb/EXEDEPS {}
+put /local/librnd/CLEANRULES {}
 put /local/librnd/all {}
 put /local/librnd/buildin_init {}
 put /local/pcb/rules/install_ {}
@@ -250,21 +249,20 @@ uniq /local/librnd/OBJS_HIDLIB_PLG
 uniq /local/librnd/OBJS_C99_HIDLIB_PLG
 uniq /local/librnd/OBJS_UTIL
 uniq /local/pcb/CFLAGS
-uniq /local/pcb/CFLAGS_GENERIC
+uniq /local/librnd/CFLAGS_GENERIC
 uniq /local/librnd/LIBS
 uniq /local/librnd/LIBS_PRE
 uniq /local/librnd/LIBS_3RD
-uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
 uniq /local/pcb/DISTCLEANFILES
-uniq /local/pcb/CLEANRULES
+uniq /local/librnd/CLEANRULES
 uniq /local/librnd/all
-put /local/pcb/SRCS /local/librnd/OBJS 
-append /local/pcb/SRCS ?/local/librnd/OBJS_C99
-append /local/pcb/SRCS ?/local/librnd/OBJS_3RDLIB
-append /local/pcb/SRCS ?/local/librnd/OBJS_POLYLIB
-append /local/pcb/SRCS ?/local/librnd/OBJS_HIDLIB
-gsub /local/pcb/SRCS {.o } {.c }
+put /local/librnd/SRCS /local/librnd/OBJS 
+append /local/librnd/SRCS ?/local/librnd/OBJS_C99
+append /local/librnd/SRCS ?/local/librnd/OBJS_3RDLIB
+append /local/librnd/SRCS ?/local/librnd/OBJS_POLYLIB
+append /local/librnd/SRCS ?/local/librnd/OBJS_HIDLIB
+gsub /local/librnd/SRCS {.o } {.c }
 
 # apple requires multiple "-framework something" instead of -lsomething
 # we need to keep all -frameworks but uniq would keep only the first if it
@@ -314,16 +312,15 @@ OBJS_C99_HIDLIB=@/local/librnd/OBJS_C99_HIDLIB@
 OBJS_HIDLIB_PLG=@/local/librnd/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/librnd/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/librnd/OBJS_UTIL@
-SRCS=@/local/pcb/SRCS@
+SRCS=@/local/librnd/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS_PRE=@/local/librnd/LIBS_PRE@
 LIBS=@/local/librnd/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/librnd/LIBS_3RD@
-EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
-CLEANRULES=@/local/pcb/CLEANRULES@
+CLEANRULES=@/local/librnd/CLEANRULES@
 CC=@/target/cc/cc@
 AR=@/target/fstools/ar@
 RANLIB=@/local/librnd/ranlib@
@@ -332,7 +329,7 @@ CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
-GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
+GENLIST_CFLAGS=@/local/librnd/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
 LIBRND=../src/librnd
 LIBRND_LIBDIR=../src/librnd
@@ -351,13 +348,13 @@ all_exe: $(SPHASH) test-rnd$(EXE) @/local/librnd/all@
 
 test-rnd.o: $(LIBRND)/core/buildin.hidlib.h
 
-test-rnd$(EXE): $(OBJS) test-rnd.o $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
+test-rnd$(EXE): $(OBJS) test-rnd.o $(OBJS_C99) $(LIBS_3RD)
 	$(CC) test-rnd.o $(OBJS) $(OBJS_C99) -o test-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 ### librnd, hidlib ####
 
 OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB)
-DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
+DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
 @]
 
 switch cc/soname
@@ -694,7 +691,7 @@ include {librnd/scconfig/template/compile.tmpasm}
 
 # generate deps
 put /local/dep/CFLAGS /local/pcb/CFLAGS
-put /local/dep/SRCS /local/pcb/SRCS
+put /local/dep/SRCS /local/librnd/SRCS
 
 gsub /local/librnd/DEPSRCS {.o } {.c }
 append /local/dep/SRCS /local/librnd/DEPSRCS

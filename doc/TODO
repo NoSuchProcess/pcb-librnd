@@ -4,7 +4,6 @@
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
-	- cleanup: add /local/librnd/* copies of /local/pcb/* scconfig vars (mark /local/pcb obsolete)
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
 *** Later releases ***
@@ -46,9 +45,10 @@
 	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
 		- remove /local/pcb from librnd central scconfig
 		- for plugin control rename /local/pcb to /local/plugin/
-		- search for TODO:pcb1 in *: replace with /local/app/ (and make sure in librnd we also set /local/app/ for these few, besides /local/librnd)
-		- either: equire a #define that can replace /pcb/ in rnd_hook_detect.h because each app needs it differently
+		- search for TODO:pcb1 in *: replace with /local/rnd/ (and make sure in librnd we also set /local/rnd/ for these few, besides /local/librnd)
+		- either: require a #define that can replace /pcb/ in rnd_hook_detect.h because each app needs it differently
 		- switch over hooks_common.c to use the app define too instead of /pcb/ and /librnd/
+		- switch over templates, see TODO.template
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
