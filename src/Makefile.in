@@ -12,7 +12,7 @@ if ?libs/script/fungw/presents
 then
 	append /local/pcb/CFLAGS libs/script/fungw/cflags
 	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
-	append /local/pcb/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
+	append /local/librnd/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
 	put /local/librnd/HDRS_GENHT {}
 # TODO#GENHT temporary workaround for camv-rnd bug: Makefile.dep uses these
 	put /local/librnd/HDRS_GENHT [@
@@ -59,7 +59,7 @@ else
 	../src_3rd/libfungw/fungw_call.o
 	../src_3rd/libfungwbind/c/fungw_c.o
 	@]
-	put /local/pcb/LIBRND_3RD_LDFLAGS {}
+	put /local/librnd/LIBRND_3RD_LDFLAGS {}
 end
 
 # always install this one, pcb-rnd depends on it
@@ -251,9 +251,9 @@ uniq /local/librnd/OBJS_C99_HIDLIB_PLG
 uniq /local/librnd/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
-uniq /local/pcb/LIBS
-uniq /local/pcb/LIBS_PRE
-uniq /local/pcb/LIBS_3RD
+uniq /local/librnd/LIBS
+uniq /local/librnd/LIBS_PRE
+uniq /local/librnd/LIBS_3RD
 uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
 uniq /local/pcb/DISTCLEANFILES
@@ -318,9 +318,9 @@ SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
-LIBS_PRE=@/local/pcb/LIBS_PRE@
-LIBS=@/local/pcb/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
-LIBS_3RD=@/local/pcb/LIBS_3RD@
+LIBS_PRE=@/local/librnd/LIBS_PRE@
+LIBS=@/local/librnd/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
+LIBS_3RD=@/local/librnd/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
 CLEANRULES=@/local/pcb/CLEANRULES@
@@ -393,7 +393,7 @@ librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) $(LDFLAGS) @/local/pcb/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) $(LDFLAGS) @/local/librnd/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) $(LDFLAGS) -lm

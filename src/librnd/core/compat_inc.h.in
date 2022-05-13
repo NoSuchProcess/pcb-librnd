@@ -1,4 +1,4 @@
-put /local/pcb/compat_inc [@
+put /local/librnd/compat_inc [@
 
 @?/host/libs/fs/realpath/includes@
 @?libs/ldl/includes@
@@ -26,11 +26,11 @@ put /local/pcb/compat_inc [@
 put /tmpasm/IFS {\n}
 put /local/OFS_save /tmpasm/OFS
 put /tmpasm/OFS {\n}
-gsub /local/pcb/compat_inc {\\\\n *} {\n}
-uniq /local/pcb/compat_inc /local/pcb/compat_inc {#define} {#include}
+gsub /local/librnd/compat_inc {\\\\n *} {\n}
+uniq /local/librnd/compat_inc /local/librnd/compat_inc {#define} {#include}
 
 # do not redefine _XOPEN_SOURCE, which is hardwired in this template
-gsub /local/pcb/compat_inc {#define *_XOPEN_SOURCE} {}
+gsub /local/librnd/compat_inc {#define *_XOPEN_SOURCE} {}
 
 put /tmpasm/OFS /local/OFS_save
 
@@ -49,7 +49,7 @@ print [@
 
 /* system-dependent includes, as detected in ./configure */
 
-@/local/pcb/compat_inc@
+@/local/librnd/compat_inc@
 
 /* These are required for stat() but are C89. Keeping them here, just in case. */
 #include <sys/types.h>

@@ -10,7 +10,7 @@ switch /local/pcb/mod/YACC
 			put /local/dn /local/n
 			sub {/local/dn} {/[^/]*$} {}
 
-			if /local/pcb/want_parsgen
+			if /local/librnd/want_parsgen
 			then
 				append /local/pcb/RULES [@
 # yacc for @/local/pcb/mod@
@@ -35,7 +35,7 @@ switch /local/pcb/mod/LEX
 	case {^$} end
 	default
 		foreach /local/n in /local/pcb/mod/LEX
-			if /local/pcb/want_parsgen
+			if /local/librnd/want_parsgen
 			then
 				put /local/bn /local/n
 				sub {/local/bn} {^.*/} {}
@@ -70,7 +70,7 @@ switch /local/pcb/mod/BYACCIC
 			put /local/dn /local/n
 			sub {/local/dn} {/[^/]*$} {}
 
-			if /local/pcb/want_parsgen_byaccic
+			if /local/librnd/want_parsgen_byaccic
 			then
 				append /local/pcb/RULES [@
 # byaccic for @/local/pcb/mod@
@@ -93,7 +93,7 @@ switch /local/pcb/mod/UREGLEX
 	case {^$} end
 	default
 		foreach /local/n in /local/pcb/mod/UREGLEX
-			if /local/pcb/want_parsgen_byaccic
+			if /local/librnd/want_parsgen_byaccic
 			then
 				put /local/bn /local/n
 				sub {/local/bn} {^.*/} {}
