@@ -148,7 +148,7 @@ print {\n\n/* Wether fungw is system installed */\n}
 print_ternary /local/pcb/fungw_system {#define RND_HAVE_SYS_FUNGW 1} {/* #undef RND_HAVE_SYS_FUNGW */}
 
 print {\n/* Code warnings for TODO, portable (unlike #warning) */}
-if ?/local/pcb/debug
+if ?/local/librnd/debug
 then
 if ?cc/pragma_message
 then
@@ -203,15 +203,15 @@ print [@
    code. */
 #define RND_VER_STR "@/local/version@"
 
-@?/local/pcb/include_stdint@
+@?/local/librnd/include_stdint@
 
 /* Coordinate type and properties, as detected by scconfig */
-typedef @/local/pcb/coord_type@ rnd_coord_t;
-#define RND_COORD_MAX @/local/pcb/coord_max@
+typedef @/local/librnd/coord_type@ rnd_coord_t;
+#define RND_COORD_MAX @/local/librnd/coord_max@
 #define coord_abs rnd_coord_abs
 
 /* Other autodetected types */
-typedef @/local/pcb/long64@    rnd_long64_t;
+typedef @/local/librnd/long64@    rnd_long64_t;
 
 /* gtk */
 #define RND_GTK2_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)

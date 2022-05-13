@@ -71,13 +71,20 @@ int hook_custom_arg(const char *key, const char *value)
 			exit(1);
 		}
 		put("/local/pcb/coord_bits", value);
+		put("/local/librnd/coord_bits", value);
 		want_coord_bits = v;
 		return 1;
 	}
 	if (strncmp(key, "workaround-", 11) == 0) {
 		const char *what = key+11;
-		if (strcmp(what, "gtk-ctrl") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
-		else if (strcmp(what, "gtk-shift") == 0) append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
+		if (strcmp(what, "gtk-ctrl") == 0) {
+			append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
+			append("/local/librnd/workaround_defs", "\n#define RND_WORKAROUND_GTK_CTRL 1");
+		}
+		else if (strcmp(what, "gtk-shift") == 0) {
+			append("/local/pcb/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
+			append("/local/librnd/workaround_defs", "\n#define RND_WORKAROUND_GTK_SHIFT 1");
+		}
 		else {
 			report("ERROR: unknown workaround '%s'\n", what);
 			exit(1);
@@ -86,12 +93,15 @@ int hook_custom_arg(const char *key, const char *value)
 	}
 	if (strcmp(key, "disable-so") == 0) {
 		put("/local/pcb/disable_so", strue);
+		put("/local/librnd/disable_so", strue);
 		put("/local/pcb/want_static_librnd", strue);
+		put("/local/librnd/want_static_librnd", strue);
 		pup_set_debug(strue);
 		return 1;
 	}
 	if (strcmp(key, "static-librnd") == 0) {
 		put("/local/pcb/want_static_librnd", strue);
+		put("/local/librnd/want_static_librnd", strue);
 		pup_set_debug(strue);
 		return 1;
 	}
@@ -116,10 +126,12 @@ int hook_postinit()
 {
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
+	db_mkdir("/local/librnd");
 
 	rnd_hook_postinit();
 
 	put("/local/pcb/coord_bits", "32");
+	put("/local/librnd/coord_bits", "32");
 	want_coord_bits = 32;
 
 	put("/local/librnd/no_confdir", strue);
@@ -195,8 +207,10 @@ static void rnd_hook_detect_hid()
 			report_repeat("WARNING: Since there's no GLU found, disabling the hid_gtk*_gl plugin...\n");
 			goto disable_gl;
 		}
-		else
+		else {
 			put("/local/pcb/has_glu", strue);
+			put("/local/librnd/has_glu", strue);
+		}
 		require("libs/gui/gl/vao/presents", 0, 0);
 		require("libs/gui/gl/fb_attachment/presents", 0, 0);
 	}
@@ -316,10 +330,12 @@ static void rnd_hook_detect_coord_bits(void)
 
 	sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
 	put("/local/pcb/coord_type", chosen);
+	put("/local/librnd/coord_type", chosen);
 	put("/local/pcb/coord_max", tmp);
+	put("/local/librnd/coord_max", tmp);
 
 	chosen = NULL;
-	if (istrue(get("/local/pcb/debug"))) { /* debug: c89 */
+	if (istrue(get("/local/librnd/debug"))) { /* debug: c89 */
 		if (int64_bits >= 64) {
 			/* to suppress warnings on systems that support c99 but are forced to compile in c89 mode */
 			chosen = "int64_t";
@@ -333,8 +349,11 @@ static void rnd_hook_detect_coord_bits(void)
 		else chosen = "double";
 	}
 	put("/local/pcb/long64", chosen);
-	if (need_stdint)
+	put("/local/librnd/long64", chosen);
+	if (need_stdint) {
 		put("/local/pcb/include_stdint", "#include <stdint.h>");
+		put("/local/librnd/include_stdint", "#include <stdint.h>");
+	}
 }
 
 
@@ -528,9 +547,9 @@ int hook_generate()
 	printf("Configuration summary\n");
 	printf("=====================\n");
 
-	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
-	print_sum_setting_or("/local/pcb/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
-	print_sum_cfg_val("/local/pcb/coord_bits",     "Coordinate type bits");
+	print_sum_setting("/local/librnd/debug",          "Compilation for debugging");
+	print_sum_setting_or("/local/librnd/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
+	print_sum_cfg_val("/local/librnd/coord_bits",     "Coordinate type bits");
 
 #undef plugin_def
 #undef plugin_header

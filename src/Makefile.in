@@ -418,7 +418,7 @@ librnd-poly.so: librnd-poly.so.$(PCB_RND_VER)
 @]
 
 
-if /local/pcb/disable_so
+if /local/librnd/disable_so
 then
 	print [@
 # .so files are disabled
@@ -543,7 +543,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd3/plugins/map_plugins.sh"
 	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"@/local/pcb/rules/install_@@]
 
-if /local/pcb/disable_so
+if /local/librnd/disable_so
 then
 	print [@
 @]
@@ -635,7 +635,7 @@ foreach /local/h in /local/pcb/HDRS_3RDLIB
 	end
 end
 
-if /local/pcb/disable_so
+if /local/librnd/disable_so
 then
 print [@
 install_librnd_sy:

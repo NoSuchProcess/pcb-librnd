@@ -26,7 +26,7 @@ print [@/*
 
 @]
 
-if ?/local/pcb/has_glu
+if ?/local/librnd/has_glu
 then
 
 print [@
