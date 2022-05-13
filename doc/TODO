@@ -43,6 +43,12 @@
 	- simplify menu code, remove unused features:
 		- core: RND_MF_ACTIVE, RND_MF_BACKGROUND, RND_MF_FOREGROUND, RND_MF_FONT
 		- check in all HIDs as well
+	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
+		- remove /local/pcb from librnd central scconfig
+		- for plugin control rename /local/pcb to /local/plugin/
+		- search for TODO:pcb1 in *: replace with /local/app/ (and make sure in librnd we also set /local/app/ for these few, besides /local/librnd)
+		- either: equire a #define that can replace /pcb/ in rnd_hook_detect.h because each app needs it differently
+		- switch over hooks_common.c to use the app define too instead of /pcb/ and /librnd/
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
