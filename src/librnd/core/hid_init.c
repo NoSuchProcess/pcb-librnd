@@ -438,7 +438,7 @@ void rnd_pcbhl_conf_postproc(void)
 	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
-char *rnd_exec_prefix(char *argv0, const char *bin_dir)
+char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
 {
 	size_t l;
 	int haspath;
@@ -520,12 +520,12 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir)
 	}
 
 	/* now find the path to exec_prefix */
-	l = strlen(bindir) + 1 + strlen(RND_BINDIR_TO_EXECPREFIX) + 1;
+	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;
 	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
 		fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
 		exit(1);
 	}
-	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, RND_BINDIR_TO_EXECPREFIX);
+	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, bin_dir_to_execprefix);
 	free(bindir);
 	return exec_prefix;
 }
