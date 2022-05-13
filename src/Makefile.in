@@ -577,6 +577,7 @@ append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_eps.h }
 append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_ps.h }
 append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_svg.h }
 append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/media.h }
+append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
 append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
 
 # extra core headers to install

@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/lib_exp_text/draw_ps.o
 	$(LIBRND_PLUGDIR)/lib_exp_text/draw_eps.o
 	$(LIBRND_PLUGDIR)/lib_exp_text/draw_svg.o
+	$(LIBRND_PLUGDIR)/lib_exp_text/lpr_hid.o
 	$(LIBRND_PLUGDIR)/lib_exp_text/media.o
 @]
 
