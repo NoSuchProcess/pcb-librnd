@@ -1,7 +1,7 @@
 append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
-append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
+append /local/pcb/LDFLAGS ?/local/librnd/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/librnd/OBJS_3RDLIB {}
 put /local/librnd/OBJS_HIDLIB {}
@@ -13,9 +13,9 @@ then
 	append /local/pcb/CFLAGS libs/script/fungw/cflags
 	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
 	append /local/pcb/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
-	put /local/pcb/HDRS_GENHT {}
+	put /local/librnd/HDRS_GENHT {}
 # TODO#GENHT temporary workaround for camv-rnd bug: Makefile.dep uses these
-	put /local/pcb/HDRS_GENHT [@
+	put /local/librnd/HDRS_GENHT [@
 	../src_3rd/genht/ht.h
 	../src_3rd/genht/ht.c
 	../src_3rd/genht/ht_inlines.h
@@ -42,7 +42,7 @@ else
 	../src_3rd/genht/htpp.o
 	@]
 # also install all the other headers
-	put /local/pcb/HDRS_GENHT [@
+	put /local/librnd/HDRS_GENHT [@
 	../src_3rd/genht/ht.h
 	../src_3rd/genht/ht.c
 	../src_3rd/genht/ht_inlines.h
@@ -63,7 +63,7 @@ else
 end
 
 # always install this one, pcb-rnd depends on it
-append /local/pcb/HDRS_GENHT [@
+append /local/librnd/HDRS_GENHT [@
 	../src_3rd/libfungw/scconfig_hooks.h
 @]
 
@@ -205,7 +205,7 @@ put /local/pcb/RULES {}
 put /local/pcb/CLEANFILES {test-rnd$(EXE)}
 put /local/pcb/CLEANRULES {}
 put /local/pcb/EXEDEPS {}
-put /local/pcb/all {}
+put /local/librnd/all {}
 put /local/librnd/buildin_init {}
 put /local/pcb/rules/install_ {}
 put /local/pcb/rules/install {}
@@ -258,7 +258,7 @@ uniq /local/pcb/EXEDEPS
 uniq /local/pcb/CLEANFILES
 uniq /local/pcb/DISTCLEANFILES
 uniq /local/pcb/CLEANRULES
-uniq /local/pcb/all
+uniq /local/librnd/all
 put /local/pcb/SRCS /local/librnd/OBJS 
 append /local/pcb/SRCS ?/local/librnd/OBJS_C99
 append /local/pcb/SRCS ?/local/librnd/OBJS_3RDLIB
@@ -305,7 +305,6 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 # where to install src_3rd files that are diverted
 INST_DUMMY=/tmp/librnd-dummy
 
-@?/local/pcb/TOPVARS@
 OBJS=@/local/librnd/OBJS@ @/local/librnd/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/librnd/OBJS_C99@
 OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
@@ -348,7 +347,7 @@ include $(ROOT)/Makefile.conf
 revcheck:
 	cd $(ROOT)/scconfig && ./revtest Rev.stamp < Rev.tab
 
-all_exe: $(SPHASH) test-rnd$(EXE) @/local/pcb/all@
+all_exe: $(SPHASH) test-rnd$(EXE) @/local/librnd/all@
 
 test-rnd.o: $(LIBRND)/core/buildin.hidlib.h
 
@@ -556,14 +555,14 @@ else
 end
 
 # rndlib: build a list of header files to be installed with the hidlib
-put /local/pcb/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
+put /local/librnd/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
 put /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_HIDLIB
 append /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_POLYLIB
-uniq /local/pcb/HDRS_3RDLIB
+uniq /local/librnd/HDRS_3RDLIB
 uniq /local/librnd/HDRS_HIDLIB
 gsub /local/librnd/HDRS_HIDLIB {.o } {.h }
-gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
-append /local/pcb/HDRS_3RDLIB /local/pcb/HDRS_GENHT
+gsub /local/librnd/HDRS_3RDLIB {.o } {.h }
+append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_GENHT
 
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
@@ -583,17 +582,17 @@ append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h
 # extra core headers to install
 append /local/librnd/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
 
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/ureglex/strtree_exec.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/[^ ]*.h } {}
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/ }
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/ureglex/strtree_exec.h } {}
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
+gsub /local/librnd/HDRS_3RDLIB {../src_3rd/genlist/[^ ]*.h } {}
+append /local/librnd/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
+append /local/librnd/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
+append /local/librnd/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
+append /local/librnd/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
+append /local/librnd/HDRS_3RDLIB {../src_3rd/genlist/ }
 
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/buildin.hidlib.h } {}
 sub /local/librnd/HDRS_HIDLIB {buildin.hidlib.h } {}
@@ -616,7 +615,7 @@ foreach /local/h in /local/librnd/HDRS_HIDLIB
 end
 
 # dynamic part of install_pcbrnd: 3rdlib headers
-foreach /local/h in /local/pcb/HDRS_3RDLIB
+foreach /local/h in /local/librnd/HDRS_3RDLIB
 	put /local/hd /local/h
 	switch /local/h
 		case {^../}
@@ -697,8 +696,8 @@ include {librnd/scconfig/template/compile.tmpasm}
 put /local/dep/CFLAGS /local/pcb/CFLAGS
 put /local/dep/SRCS /local/pcb/SRCS
 
-gsub /local/pcb/DEPSRCS {.o } {.c }
-append /local/dep/SRCS /local/pcb/DEPSRCS
+gsub /local/librnd/DEPSRCS {.o } {.c }
+append /local/dep/SRCS /local/librnd/DEPSRCS
 include {librnd/scconfig/template/cdep.tmpasm}
 
 redir {../src/librnd/plugins/.builtin.pups}
