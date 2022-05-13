@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
-	- new export libs: add some way to configure behavior (e.g. not exporting pixmaps)
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
