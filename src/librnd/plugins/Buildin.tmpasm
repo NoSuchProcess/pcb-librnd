@@ -5,7 +5,7 @@
 #  /local/pcb/mod/OBJS_C99  full path of all object files for non-c89
 #  /local/pcb/mod/CONF  config file name
 
-append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
+append /local/librnd/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
 
 append /local/pcb/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 
@@ -24,7 +24,7 @@ mod_@/local/pcb/mod@: all
 append /local/pcb/HIDLIB_PLG              /local/pcb/mod
 append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
 append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
-append /local/pcb/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
+append /local/librnd/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 
 append /local/pcb/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS
 append /local/pcb/CFLAGS_HIDLIB_STATIC    /local/pcb/mod/CFLAGS
