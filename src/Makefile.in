@@ -221,14 +221,14 @@ put /local/pcb/mod/LEX {}
 put /local/pcb/mod/BYACCIC {}
 put /local/pcb/mod/UREGLEX {}
 
-put /local/pcb/tmpasm/buildin         {../src/librnd/plugins/Buildin.tmpasm}
-put /local/pcb/tmpasm/plugin          {../src/librnd/plugins/Plugin.tmpasm}
-put /local/pcb/tmpasm/disable         {../src/librnd/plugins/Disable.tmpasm}
-put /local/pcb/tmpasm/common_enabled  {../src/librnd/plugins/Common_enabled.tmpasm}
-put /local/pcb/tmpasm/plugin_sphash   {librnd/scconfig/template/plugin_sphash.tmpasm}
-put /local/pcb/tmpasm/plugin_conf     {librnd/scconfig/template/plugin_conf.tmpasm}
-put /local/pcb/tmpasm/plugin_intconf  {librnd/scconfig/template/plugin_intconf.tmpasm}
-put /local/pcb/tmpasm/plugin_intmenu  {librnd/scconfig/template/plugin_intmenu.tmpasm}
+put /local/librnd/tmpasm/buildin         {../src/librnd/plugins/Buildin.tmpasm}
+put /local/librnd/tmpasm/plugin          {../src/librnd/plugins/Plugin.tmpasm}
+put /local/librnd/tmpasm/disable         {../src/librnd/plugins/Disable.tmpasm}
+put /local/librnd/tmpasm/common_enabled  {../src/librnd/plugins/Common_enabled.tmpasm}
+put /local/librnd/tmpasm/plugin_sphash   {librnd/scconfig/template/plugin_sphash.tmpasm}
+put /local/librnd/tmpasm/plugin_conf     {librnd/scconfig/template/plugin_conf.tmpasm}
+put /local/librnd/tmpasm/plugin_intconf  {librnd/scconfig/template/plugin_intconf.tmpasm}
+put /local/librnd/tmpasm/plugin_intmenu  {librnd/scconfig/template/plugin_intmenu.tmpasm}
 
 include {../src/librnd/plugins/plugins_ALL.tmpasm}
 

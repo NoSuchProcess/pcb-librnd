@@ -46,7 +46,7 @@ switch /local/pcb/lib_gtk4_common/controls
 end
 
 switch /local/pcb/lib_gtk4_common/controls
-	case {buildin}   include /local/pcb/tmpasm/buildin; end;
-	case {plugin}    include /local/pcb/tmpasm/plugin; end;
-	case {disable}   include /local/pcb/tmpasm/disable; end;
+	case {buildin}   include /local/librnd/tmpasm/buildin; end;
+	case {plugin}    include /local/librnd/tmpasm/plugin; end;
+	case {disable}   include /local/librnd/tmpasm/disable; end;
 end

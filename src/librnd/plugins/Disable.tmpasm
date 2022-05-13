@@ -9,9 +9,9 @@ append /local/librnd/DEPSRCS            ?/local/pcb/mod/OBJS_C99
 
 put /local/pcb/mod/enabled {0}
 
-include  /local/pcb/tmpasm/plugin_conf
-include  /local/pcb/tmpasm/plugin_sphash
-include  /local/pcb/tmpasm/plugin_intconf
+include  /local/librnd/tmpasm/plugin_conf
+include  /local/librnd/tmpasm/plugin_sphash
+include  /local/librnd/tmpasm/plugin_intconf
 
 put /local/pcb/mod/enabled {}
 put /local/pcb/mod/OBJS {}

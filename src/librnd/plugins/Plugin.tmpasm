@@ -50,4 +50,4 @@ $(PLUGIDIR)/@/local/pcb/mod@.so: $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/
 ### Module @/local/pcb/mod@ end ###
 @]
 
-include /local/pcb/tmpasm/common_enabled
+include /local/librnd/tmpasm/common_enabled

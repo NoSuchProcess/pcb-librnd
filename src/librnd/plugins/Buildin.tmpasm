@@ -28,4 +28,4 @@ append /local/librnd/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@
 append /local/librnd/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS
 append /local/librnd/CFLAGS_HIDLIB_STATIC    /local/pcb/mod/CFLAGS
 
-include /local/pcb/tmpasm/common_enabled
+include /local/librnd/tmpasm/common_enabled
