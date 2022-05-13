@@ -134,6 +134,12 @@ typedef struct {
 /* This is called by the macro, do not call this directly */
 void rnd_fix_locale_and_env_();
 
+/* Figure out the canonical name of the executed program
+   and return malloc'ed exec prefix that should be saved in the config
+   bin_dir is the full installation path of the bin dir, e.g. "/usr/local/bin"
+   */
+char *rnd_exec_prefix(char *argv0, const char *bin_dir);
+
 void rnd_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
 void rnd_hidlib_init3_auto(void);
