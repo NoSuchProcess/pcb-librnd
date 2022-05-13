@@ -12,10 +12,11 @@
 *** Later releases ***
 
 - 4.0.0: ABI incompatible (feature removal)
+	- hidlib_init1() should rnd_conf_set() "rc/path/exec_prefix" at the end so the host app doesn't need to
 	- bug_files/TODO/L4.patch: -I include/librnd4/librnd and changing installation path to avoid collision with librnd3; also requires apps to change -I
 	- *FEATURE: sch-rnd critical: hid->draw_pixmap should pass the original object as void, so that the high level export plugin can embed hints in the output (e.g. sch-rnd embedding text to make the drawing searchable)
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
-	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this!
+	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this! (sch-rnd has scconfig template dups because of this)
 	- *BUG: sch-rnd critical: hid export API doesn't pass hidlib when needed
 	- cleanup: remove old callbacks in rnd_conf_hid_callbacks_t without hidlib passing
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
