@@ -5,7 +5,7 @@ append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 put /local/pcb/OBJS_HIDLIB {}
-put /local/pcb/OBJS_C99_HIDLIB_PLG {}
+put /local/librnd/OBJS_C99_HIDLIB_PLG {}
 put /local/pcb/OBJS_HIDLIB_PLG {}
 
 if ?libs/script/fungw/presents
@@ -84,7 +84,7 @@ include {librnd/scconfig/template/debug.tmpasm}
 # These have constructs that are not c89 strictly speaking but are
 # effectively c89; typical example is casting a function pointer to a
 # data pointer for dlsym().
-put /local/pcb/OBJS_C99_HIDLIB [@
+put /local/librnd/OBJS_C99_HIDLIB [@
 	$(LIBRND)/core/fptr_cast.o
 @]
 
@@ -193,7 +193,7 @@ append /local/pcb/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
 @]
 
-put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
+put /local/pcb/OBJS_C99 /local/librnd/OBJS_C99_HIDLIB
 put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
@@ -245,9 +245,9 @@ uniq /local/pcb/OBJS_3RDLIB
 uniq /local/pcb/OBJS_3RDLIB_NOAUTO
 uniq /local/pcb/OBJS_POLYLIB
 uniq /local/pcb/OBJS_HIDLIB
-uniq /local/pcb/OBJS_C99_HIDLIB
+uniq /local/librnd/OBJS_C99_HIDLIB
 uniq /local/pcb/OBJS_HIDLIB_PLG
-uniq /local/pcb/OBJS_C99_HIDLIB_PLG
+uniq /local/librnd/OBJS_C99_HIDLIB_PLG
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
@@ -311,9 +311,9 @@ OBJS_C99=@/local/pcb/OBJS_C99@
 OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
 OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
 OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
-OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
+OBJS_C99_HIDLIB=@/local/librnd/OBJS_C99_HIDLIB@
 OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
-OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
+OBJS_C99_HIDLIB_PLG=@/local/librnd/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -557,31 +557,31 @@ end
 
 # rndlib: build a list of header files to be installed with the hidlib
 put /local/pcb/HDRS_3RDLIB /local/pcb/OBJS_3RDLIB
-put /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
-append /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_POLYLIB
+put /local/librnd/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
+append /local/librnd/HDRS_HIDLIB /local/pcb/OBJS_POLYLIB
 uniq /local/pcb/HDRS_3RDLIB
-uniq /local/pcb/HDRS_HIDLIB
-gsub /local/pcb/HDRS_HIDLIB {.o } {.h }
+uniq /local/librnd/HDRS_HIDLIB
+gsub /local/librnd/HDRS_HIDLIB {.o } {.h }
 gsub /local/pcb/HDRS_3RDLIB {.o } {.h }
 append /local/pcb/HDRS_3RDLIB /local/pcb/HDRS_GENHT
 
 # rndlib: corner case: some headers are not derived from the objects
-sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
-sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
-sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
-sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/dlg_pref.h $(LIBRND)/plugins/lib_hid_common/zoompan.h $(LIBRND)/plugins/lib_hid_common/dlg_export.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_eps.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_ps.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_svg.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/media.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
-append /local/pcb/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/dlg_pref.h $(LIBRND)/plugins/lib_hid_common/zoompan.h $(LIBRND)/plugins/lib_hid_common/dlg_export.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_eps.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_ps.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_svg.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/media.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
+append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
 
 # extra core headers to install
-append /local/pcb/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
+append /local/librnd/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
 
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
@@ -595,11 +595,11 @@ append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/ }
 
-sub /local/pcb/HDRS_HIDLIB {$(LIBRND)/core/buildin.hidlib.h } {}
-sub /local/pcb/HDRS_HIDLIB {buildin.hidlib.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/buildin.hidlib.h } {}
+sub /local/librnd/HDRS_HIDLIB {buildin.hidlib.h } {}
 
 # dynamic part of install_pcbrnd: hidlib headers
-foreach /local/h in /local/pcb/HDRS_HIDLIB
+foreach /local/h in /local/librnd/HDRS_HIDLIB
 	put /local/hd /local/h
 	switch /local/h
 		case {^$(LIBRND)/}

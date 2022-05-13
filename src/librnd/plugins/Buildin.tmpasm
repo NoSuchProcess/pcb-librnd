@@ -23,7 +23,7 @@ mod_@/local/pcb/mod@: all
 # to the hidlib object lists
 append /local/pcb/HIDLIB_PLG              /local/pcb/mod
 append /local/pcb/OBJS_HIDLIB_PLG         ?/local/pcb/mod/OBJS
-append /local/pcb/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
+append /local/librnd/OBJS_C99_HIDLIB_PLG     ?/local/pcb/mod/OBJS_C99
 append /local/librnd/buildin_hidlib_pups     [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 
 append /local/librnd/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS

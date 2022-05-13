@@ -1,4 +1,4 @@
-put /local/objs /local/pcb/HDRS_HIDLIB
+put /local/objs /local/librnd/HDRS_HIDLIB
 gsub /local/objs { } {\n}
 
 foreach /local/h in /local/objs
