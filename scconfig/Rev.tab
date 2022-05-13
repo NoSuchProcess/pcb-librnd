@@ -1,4 +1,4 @@
-34152	configure	import export_lpr code from pcb-rnd
+34154	configure	import export_lpr code from pcb-rnd
 34144	configure	import export and print dialog from pcb-rnd
 34140	configure	add libualloc in the API
 34135	configure	new plugins for pixmap import: import_pixmap_gd, import_pixmap_pnm (moved from pcb-rnd)
