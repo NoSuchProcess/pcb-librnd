@@ -46,9 +46,9 @@
 		- remove /local/pcb from librnd central scconfig
 		- for plugin control rename /local/pcb to /local/plugin/
 		- search for TODO:pcb1 in *: replace with /local/rnd/ (and make sure in librnd we also set /local/rnd/ for these few, besides /local/librnd)
-		- either: require a #define that can replace /pcb/ in rnd_hook_detect.h because each app needs it differently
-		- switch over hooks_common.c to use the app define too instead of /pcb/ and /librnd/
 		- switch over templates, see TODO.template
+			- use /local/mod/ for module temps instead of /local/pcb/mod
+			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
