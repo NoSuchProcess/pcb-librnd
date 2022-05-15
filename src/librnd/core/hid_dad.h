@@ -402,6 +402,16 @@ do { \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
+/* [3.2.0] pane name is used when saving pane position in window geometry;
+   name is a const char *, not strdup'd or free'd (should be constant in the
+   caller) */
+#define RND_DAD_SET_PANE_NAME(table, pname) \
+do { \
+	assert((table[table ## _len - 1].type = RND_HATT_BEGIN_HPANE) || (table[table ## _len - 1].type = RND_HATT_BEGIN_VPANE)); \
+	table[table ## _len - 1].name = pname; \
+} while(0)
+
+
 #define RND_DAD_TREE(table, cols, first_col_is_tree, opt_header) \
 do { \
 	rnd_hid_tree_t *tree = calloc(sizeof(rnd_hid_tree_t), 1); \
