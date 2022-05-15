@@ -49,7 +49,7 @@
 		- remove /local/pcb from librnd central scconfig
 		- for plugin control rename /local/pcb to /local/plugin/
 		- search for TODO:pcb1 in *: replace with /local/rnd/ (and make sure in librnd we also set /local/rnd/ for these few, besides /local/librnd)
-		- switch over templates, see TODO.template
+		- switch over librnd published templates, see TODO.template
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 
