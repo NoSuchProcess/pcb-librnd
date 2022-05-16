@@ -27,6 +27,7 @@
 #include <librnd/rnd_config.h>
 
 #include <genht/htsi.h>
+#include <liblihata/tree.h>
 
 #include <librnd/core/event.h>
 #include <librnd/core/compat_misc.h>
@@ -244,18 +245,26 @@ void rnd_wplc_load(rnd_conf_role_t role)
 	}
 }
 
+lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role);
 
 static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int force)
 {
 	htsw_entry_t *e;
 	char path[128 + sizeof(BASEPATH)];
 	char *end, *end2;
+	lht_node_t *nroot;
 
 	switch(role) {
 		case RND_CFR_USER:    if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_user) return; break;
 		case RND_CFR_DESIGN:  if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_design) return; break;
 		case RND_CFR_PROJECT: if (!force && !dialogs_conf.plugins.dialogs.auto_save_window_geometry.to_project) return; break;
 		default: return;
+	}
+
+	nroot = rnd_pref_ensure_conf_root(hidlib, role);
+	if (nroot == NULL) {
+		rnd_message(RND_MSG_ERROR, "Internal error: failed to create conf root lht\n");
+		return;
 	}
 
 	strcpy(path, BASEPATH);
@@ -272,6 +281,59 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 		strcpy(end2, "y"); place_conf_set(role, path, e->value.y);
 		strcpy(end2, "width"); place_conf_set(role, path, e->value.w);
 		strcpy(end2, "height"); place_conf_set(role, path, e->value.h);
+
+		if (e->value.panes_inited) {
+			htsi_entry_t *i;
+			lht_node_t *wnd, *pnd;
+			lht_err_t err;
+
+
+			end2[-1] = '\0';
+			wnd = lht_tree_path_(nroot->doc, nroot, path, 1, 1, &err);
+			if (wnd == NULL) {
+				TODO("if *path is not in the project file already, it the lihata node will not exist");
+				rnd_message(RND_MSG_ERROR, "Failed to write conf subtree '%s'\n", path);
+				continue;
+			}
+			end2[-1] = '/';
+
+			strcpy(end2, "panes");
+
+			pnd = rnd_conf_lht_get_at(role, path, 0);
+			if (pnd == NULL) {
+				pnd = lht_dom_node_alloc(LHT_LIST, "panes");
+				lht_dom_hash_put(wnd, pnd);
+			}
+
+			/* save each know pane pos */
+			for(i = htsi_first(&e->value.panes); i != NULL; i = htsi_next(&e->value.panes, i)) {
+				lht_node_t *nd, *pos;
+				lht_dom_iterator_t it;
+				int found = 0;
+
+				for(nd = lht_dom_first(&it, pnd); nd != NULL; nd = lht_dom_next(&it)) {
+					if ((nd->name != NULL) && (strcmp(nd->name, i->key) == 0)) {
+						found = 1;
+						break;
+					}
+				}
+
+				if (!found) {
+					nd = lht_dom_node_alloc(LHT_HASH, i->key);
+					lht_dom_list_append(pnd, nd);
+				}
+
+				pos = lht_dom_hash_get(nd, "pos");
+				if (pos == NULL) {
+					pos = lht_dom_node_alloc(LHT_TEXT, "pos");
+					lht_dom_hash_put(nd, pos);
+				}
+
+				pos->data.text.value = rnd_strdup_printf("%.05f", (double)i->value / PANE_INT2DBL+0.01);
+
+rnd_trace("PANE SAVE: '%s' %f rol=%d nd=%p pos=%p\n", path, (double)i->value / PANE_INT2DBL+0.01, role, nd, pos);
+			}
+		}
 	}
 
 
