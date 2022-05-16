@@ -78,38 +78,6 @@ pref_ctx_t *rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
 	return &pref_ctx;
 }
 
-lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
-{
-	lht_node_t *m;
-
-	m = rnd_conf_lht_get_first(role, 0);
-	if (m == NULL) {
-		if (role == RND_CFR_PROJECT) {
-			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->filename);
-			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
-			if (fn == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
-				return NULL;
-			}
-			rnd_conf_reset(role, fn);
-			rnd_conf_makedirty(role);
-			rnd_conf_save_file(hidlib, fn, pcb_fn, role, NULL);
-			m = rnd_conf_lht_get_first(role, 0);
-			if (m == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file %s\n", fn);
-				return NULL;
-			}
-				rnd_message(RND_MSG_INFO, "Created the project file\n");
-		}
-		else {
-			rnd_message(RND_MSG_ERROR, "Failed to create config file for role %s\n", rnd_conf_role_name(role));
-			return NULL;
-		}
-	}
-
-	return m;
-}
-
 lht_node_t *rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
 {
 	return rnd_pref_ensure_conf_root(hidlib, ctx->role);

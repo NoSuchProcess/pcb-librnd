@@ -1211,6 +1211,39 @@ lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t
 	return conf_lht_get_first_(rnd_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
 }
 
+lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
+{
+	lht_node_t *m;
+
+	m = rnd_conf_lht_get_first(role, 0);
+	if (m == NULL) {
+		if (role == RND_CFR_PROJECT) {
+			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->filename);
+			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
+			if (fn == NULL) {
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
+				return NULL;
+			}
+			rnd_conf_reset(role, fn);
+			rnd_conf_makedirty(role);
+			rnd_conf_save_file(hidlib, fn, pcb_fn, role, NULL);
+			m = rnd_conf_lht_get_first(role, 0);
+			if (m == NULL) {
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file %s\n", fn);
+				return NULL;
+			}
+				rnd_message(RND_MSG_INFO, "Created the project file\n");
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "Failed to create config file for role %s\n", rnd_conf_role_name(role));
+			return NULL;
+		}
+	}
+
+	return m;
+}
+
+
 static const char empty_list_or_str[] = "";
 static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)
 {
