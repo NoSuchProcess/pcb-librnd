@@ -65,6 +65,8 @@ static const char *rnd_evnames_lib[] = {
 	"pcbev_menu_changed",
 	"pcbev_gui_batch_timer",
 	"pcbev_mainloop_change",
+	"pcbev_dad_new_pane",
+	"pcbev_dad_new_pane_geo",
 	"pcbev_event_design_meta_changed_lib"
 };
 
