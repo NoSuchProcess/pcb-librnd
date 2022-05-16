@@ -25,10 +25,14 @@
  */
 
 #include <librnd/rnd_config.h>
+
+#include <genht/htsi.h>
+
 #include <librnd/core/event.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
 #include <librnd/core/safe_fs.h>
 
 static const char *place_cookie = "dialogs/place";
@@ -39,9 +43,15 @@ extern conf_dialogs_t dialogs_conf;
 
 typedef struct {
 	int x, y, w, h;
+	htsi_t panes;
+	unsigned panes_inited:1;
 } wingeo_t;
 
-wingeo_t wingeo_invalid = {0, 0, 0, 0};
+/* We store pane positions in memory as integers but as floating point decimals
+   in the file; this is the conversion factor */
+#define PANE_INT2DBL 10000
+
+wingeo_t wingeo_invalid = {0, 0, 0, 0, {0}, 0};
 
 typedef const char *htsw_key_t;
 typedef wingeo_t htsw_value_t;
@@ -70,6 +80,7 @@ static void rnd_dialog_store(const char *id, int x, int y, int w, int h)
 		return;
 	}
 
+	memset(&wg, 0, sizeof(wg));
 	wg.x = x;
 	wg.y = y;
 	wg.w = w;
@@ -77,6 +88,30 @@ static void rnd_dialog_store(const char *id, int x, int y, int w, int h)
 	htsw_set(&wingeo, rnd_strdup(id), wg);
 }
 
+
+static void rnd_pane_store(const char *dlg_id, const char *pane_id, double val)
+{
+	htsw_entry_t *e;
+	htsi_entry_t *i;
+	int new_val = val * PANE_INT2DBL;
+
+	e = htsw_getentry(&wingeo, (char *)dlg_id);
+	if (e == NULL) {
+		wingeo_t wg = {0};
+		htsw_set(&wingeo, rnd_strdup(dlg_id), wg);
+	}
+
+	if (!e->value.panes_inited) {
+		htsi_init(&e->value.panes, strhash, strkeyeq);
+		e->value.panes_inited = 1;
+	}
+
+	i = htsi_getentry(&e->value.panes, (char *)pane_id);
+	if (i != NULL)
+		i->value = new_val;
+	else
+		htsi_set(&e->value.panes, rnd_strdup(pane_id), new_val);
+}
 
 void rnd_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
@@ -158,6 +193,19 @@ static void place_conf_load(rnd_conf_role_t role, const char *path, int *val)
 	*val = atoi(nat->prop->src->data.text.value);
 }
 
+
+/* Since this conf subtree is dynamic, we need to create the hlist for each
+   dialog; this, after the merge, will trigger callbacks from the conf system
+   to wplc_new_hlist_item() where the actual load happens */
+static void place_conf_trigger_load_panes(rnd_conf_role_t role, const char *path)
+{
+	if (rnd_conf_get_field(path) == NULL) {
+		static lht_node_t dummy;
+		rnd_conf_reg_field_(&dummy, 1, RND_CFN_HLIST, str_cleanup_later(path), "", 0);
+		rnd_conf_update(path, -1);
+	}
+}
+
 #define BASEPATH "plugins/dialogs/window_geometry/"
 void rnd_wplc_load(rnd_conf_role_t role)
 {
@@ -191,6 +239,8 @@ void rnd_wplc_load(rnd_conf_role_t role)
 		strcpy(end2, "width"); place_conf_load(role, path, &w);
 		strcpy(end2, "height"); place_conf_load(role, path, &h);
 		rnd_dialog_store(nd->name, x, y, w, h);
+		strcpy(end2, "panes");
+		place_conf_trigger_load_panes(role, path);
 	}
 }
 
@@ -274,6 +324,13 @@ int rnd_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
 		fprintf(f, "      y=%d\n", e->value.x);
 		fprintf(f, "      width=%d\n", e->value.w);
 		fprintf(f, "      height=%d\n", e->value.h);
+		if (e->value.panes_inited && (e->value.panes.used > 0)) {
+			htsi_entry_t *i;
+			fprintf(f, "      li:%s {\n", e->key);
+			for(i = htsi_first(&e->value.panes); i != NULL; i = htsi_next(&e->value.panes, i))
+				rnd_fprintf(f, "       ha:%s={pos=%.05f}\n", i->key, ((double)i->value / PANE_INT2DBL));
+			fprintf(f, "      }\n");
+		}
 		fprintf(f, "     }\n");
 	}
 
@@ -286,6 +343,36 @@ int rnd_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
 	return 0;
 }
 
+
+#define WIN_GEO_HPATH "plugins/dialogs/window_geometry/"
+static void wplc_new_hlist_item(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
+{
+	lht_node_t *n = i->prop.src, *vn;
+	double val;
+	char *end;
+
+	if (strncmp(cfg->hash_path, WIN_GEO_HPATH, strlen(WIN_GEO_HPATH)) != 0)
+		return;
+
+	if (n->type != LHT_HASH)
+		return;
+
+	vn = lht_dom_hash_get(n, "pos");
+	if ((vn == NULL) || (vn->type != LHT_TEXT))
+		return;
+	val = strtod(vn->data.text.value, &end);
+	if (*end != '\0') {
+		rnd_message(RND_MSG_ERROR, "window placement: invalid pane position '%s'\n(not a decimal number; in %s)\n", vn->data.text.value, cfg->hash_path);
+		return;
+	}
+
+/*	rnd_trace("wplc hlist!! '%s' in '%s' '%f'\n", n->name, n->parent->parent->name, val);*/
+	rnd_pane_store(n->parent->parent->name, n->name, val);
+}
+
+
+static rnd_conf_hid_callbacks_t cbs;
+
 void rnd_dialog_place_uninit(void)
 {
 	htsw_entry_t *e;
@@ -295,14 +382,23 @@ void rnd_dialog_place_uninit(void)
 
 	place_maybe_save(NULL, RND_CFR_USER, 0);
 
-	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
+	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e)) {
+		htsi_entry_t *i;
+		if (e->value.panes_inited) {
+			for(i = htsi_first(&e->value.panes); i != NULL; i = htsi_next(&e->value.panes, i))
+				free((char *)i->key);
+			htsi_uninit(&e->value.panes);
+		}
 		free((char *)e->key);
+	}
 	htsw_uninit(&wingeo);
 	rnd_event_unbind_allcookie(place_cookie);
 
 	for(n = 0; n < cleanup_later.used; n++)
 		free(cleanup_later.array[n]);
 	vtp0_uninit(&cleanup_later);
+
+	rnd_conf_hid_unreg(place_cookie);
 }
 
 void rnd_dialog_place_init(void)
@@ -310,6 +406,11 @@ void rnd_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	rnd_event_bind(RND_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+
+	cbs.new_hlist_item_post = wplc_new_hlist_item;
+	/*cfgid =*/ rnd_conf_hid_reg(place_cookie, &cbs);
+
+
 	rnd_wplc_load(RND_CFR_INTERNAL);
 	rnd_wplc_load(RND_CFR_ENV);
 	rnd_wplc_load(RND_CFR_SYSTEM);
