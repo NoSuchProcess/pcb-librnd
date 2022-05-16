@@ -90,12 +90,12 @@ static void pref_win_user_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 static void pref_win_board_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
+	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_DESIGN);
 }
 
 static void pref_win_project_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
+	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_PROJECT);
 }
 
 static void pref_win_user_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
