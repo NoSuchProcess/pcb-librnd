@@ -404,7 +404,8 @@ do { \
 
 /* [3.2.0] pane name is used when saving pane position in window geometry;
    name is a const char *, not strdup'd or free'd (should be constant in the
-   caller) */
+   caller). Name must contain only alphanumerical characters, dashes and
+   underscores  */
 #define RND_DAD_SET_PANE_NAME(table, pname) \
 do { \
 	assert((table[table ## _len - 1].type = RND_HATT_BEGIN_HPANE) || (table[table ## _len - 1].type = RND_HATT_BEGIN_VPANE)); \
