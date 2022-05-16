@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,11 +26,23 @@
 
 /* Boxes and group widgets */
 
+#define RND_OBJ_PROP_PANE_PRIV "librnd_pane_priv"
+
 typedef struct {
 	attr_dlg_t *ctx;
 	int idx;
 	rnd_hid_attr_val_t val;
 } paned_timer_t;
+
+typedef struct {
+	attr_dlg_t *ctx;
+	int idx;
+
+	rnd_hid_attr_val_t set_timer;
+	rnd_hid_attr_val_t get_timer;
+	unsigned set_timer_running:1;
+	unsigned get_timer_running:1;
+} paned_wdata_t;
 
 static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int allow_timer);
 
@@ -101,18 +113,51 @@ static GtkWidget *rnd_gtk_pane_append(attr_dlg_t *ctx, rnd_gtk_attr_tb_t *ts, Gt
 	return page;
 }
 
+void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
+{
+	paned_wdata_t *pctx = g_object_get_data(self, RND_OBJ_PROP_PANE_PRIV);
+
+	if (pctx->ctx->attrs[pctx->idx].name == NULL)
+		return; /* do not remember unnamed panes, they are not saved */
+
+/*	rnd_trace("pane moved #%d!\n", pctx->idx);*/
+}
+
+
+
+static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
+{
+	GtkWidget *widget = ctx->wl[j];
+	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_PANE_PRIV);
+
+	free(pctx);
+	g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_PANE_PRIV, NULL);
+}
+
+
 static int rnd_gtk_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor)
 {
 	GtkWidget *bparent, *widget;
 	rnd_gtk_attr_tb_t ts;
+	paned_wdata_t *pctx;
+
+	pctx = calloc(sizeof(paned_wdata_t), 1);
+	pctx->ctx = ctx;
+	pctx->idx = j;
+	ctx->attrs[j].wdata = pctx;
 
 	ts.type = TB_PANE;
 	ts.val.pane.next = 1;
 	ctx->wl[j] = widget = ishor ? gtkc_hpaned_new() : gtkc_vpaned_new();
 
+	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV, pctx);
+
 	bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 	gtkc_box_pack_append(bparent, widget, TRUE, 0);
 	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 	j = rnd_gtk_attr_dlg_add(ctx, widget, &ts, j+1);
+
+	g_signal_connect(widget, "notify::position", G_CALLBACK(rnd_gtk_pane_move_cb), &ctx->attrs[j]);
+
 	return j;
 }

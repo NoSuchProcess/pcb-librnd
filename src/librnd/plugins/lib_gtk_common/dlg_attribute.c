@@ -724,6 +724,8 @@ static void rnd_gtk_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
+			case RND_HATT_BEGIN_HPANE: /* fall through */
+			case RND_HATT_BEGIN_VPANE: rnd_gtk_pane_pre_free(ctx, &ctx->attrs[i], i); break;
 			case RND_HATT_TREE: rnd_gtk_tree_pre_free(ctx, &ctx->attrs[i], i); break;
 			case RND_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
 			case RND_HATT_PREVIEW: rnd_gtk_preview_del(ctx->gctx, RND_GTK_PREVIEW(ctx->wl[i]));
