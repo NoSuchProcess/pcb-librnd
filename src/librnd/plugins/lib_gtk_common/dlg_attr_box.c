@@ -161,8 +161,14 @@ static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, in
 {
 	GtkWidget *widget = ctx->wl[j];
 	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV);
+	int was_getting = pctx->get_timer_running;
 
 	paned_stop_timer(pctx, 0xff); /* stop all timers */
+
+	/* force-execute pending get timer so final geometry is saved */
+	if (was_getting)
+		paned_getpos_cb(pctx);
+
 	free(pctx);
 	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV, NULL);
 }
