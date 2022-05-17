@@ -61,6 +61,15 @@ static gboolean paned_setpos_cb(paned_wdata_t *pctx)
 	return FALSE;  /* Turns timer off */
 }
 
+static gboolean paned_getpos_cb(paned_wdata_t *pctx)
+{
+	GtkWidget *pane = pctx->ctx->wl[pctx->idx];
+	int px = gtk_paned_get_position(GTK_PANED(pane));
+	rnd_trace("paned resize event %d!\n", px);
+	pctx->get_timer_running = 0;
+	return FALSE;  /* Turns timer off */
+}
+
 
 static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow_timer)
 {
@@ -87,6 +96,7 @@ TODO("gtk4 #48: not yet created; temporary workaround: timer; final fix should b
 			paned_stop_timer(pctx, 1);
 			pctx->set_pos = ratio;
 			pctx->set_timer = g_timeout_add(50, (GSourceFunc)paned_setpos_cb, pctx);
+			pctx->set_timer_running = 1;
 		}
 		return 0; /* do not set before widget is created */
 	}
@@ -125,7 +135,11 @@ void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
 	if (pctx->ctx->attrs[pctx->idx].name == NULL)
 		return; /* do not remember unnamed panes, they are not saved */
 
-/*	rnd_trace("pane moved #%d!\n", pctx->idx);*/
+	/* generate an event only once in every 500 ms */
+	if (!pctx->get_timer_running) {
+		pctx->get_timer = g_timeout_add(500, (GSourceFunc)paned_getpos_cb, pctx);
+		pctx->get_timer_running = 1;
+	}
 }
 
 
