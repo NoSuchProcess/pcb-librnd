@@ -128,10 +128,10 @@ void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
 static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
 {
 	GtkWidget *widget = ctx->wl[j];
-	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_PANE_PRIV);
+	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV);
 
 	free(pctx);
-	g_object_set_data(G_OBJECT(ctx->wltop[j]), RND_OBJ_PROP_PANE_PRIV, NULL);
+	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV, NULL);
 }
 
 
