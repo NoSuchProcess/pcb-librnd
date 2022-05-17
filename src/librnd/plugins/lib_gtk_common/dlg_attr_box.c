@@ -31,34 +31,43 @@
 typedef struct {
 	attr_dlg_t *ctx;
 	int idx;
-	rnd_hid_attr_val_t val;
-} paned_timer_t;
 
-typedef struct {
-	attr_dlg_t *ctx;
-	int idx;
+	double set_pos; /* target for the ongoing set position call */
 
-	rnd_hid_attr_val_t set_timer;
-	rnd_hid_attr_val_t get_timer;
+	guint set_timer; /* timer 1 */
+	guint get_timer; /* timer 2 */
 	unsigned set_timer_running:1;
 	unsigned get_timer_running:1;
 } paned_wdata_t;
 
-static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int allow_timer);
+static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow_timer);
 
-static gboolean paned_timer_cb(paned_timer_t *pt)
+static void paned_stop_timer(paned_wdata_t *pctx, int id)
 {
-	rnd_gtk_pane_set_(pt->ctx, pt->idx, &pt->val, 0);
-	free(pt);
+	if ((id & 1) && pctx->set_timer_running) {
+		g_source_remove(pctx->set_timer);
+		pctx->set_timer_running = 0;
+	}
+	if ((id & 2) && pctx->get_timer_running) {
+		g_source_remove(pctx->get_timer);
+		pctx->get_timer_running = 0;
+	}
+}
+
+static gboolean paned_setpos_cb(paned_wdata_t *pctx)
+{
+	rnd_gtk_pane_set_(pctx->ctx, pctx->idx, pctx->set_pos, 0);
+	pctx->set_timer_running = 0;
 	return FALSE;  /* Turns timer off */
 }
 
 
-static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int allow_timer)
+static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow_timer)
 {
 	GtkWidget *pane = ctx->wl[idx];
+	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(pane), RND_OBJ_PROP_PANE_PRIV);
 	GtkAllocation a;
-	double ratio = val->dbl;
+	double ratio = new_pos;
 	gint p, minp, maxp;
 
 	if (ratio < 0.0) ratio = 0.0;
@@ -75,13 +84,9 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 	if (p <= 0) {
 TODO("gtk4 #48: not yet created; temporary workaround: timer; final fix should be related to the remember-pane-setting (like window geometry)");
 		if (allow_timer) {
-			paned_timer_t *pt = malloc(sizeof(paned_timer_t));
-
-			rnd_message(RND_MSG_WARNING, "GTK4 TODO: delayed paned setup");
-			pt->ctx = ctx;
-			pt->idx = idx;
-			pt->val = *val;
-			g_timeout_add(50, (GSourceFunc)paned_timer_cb, pt);
+			paned_stop_timer(pctx, 1);
+			pctx->set_pos = ratio;
+			pctx->set_timer = g_timeout_add(50, (GSourceFunc)paned_setpos_cb, pctx);
 		}
 		return 0; /* do not set before widget is created */
 	}
@@ -96,7 +101,7 @@ TODO("gtk4 #48: not yet created; temporary workaround: timer; final fix should b
 
 static int rnd_gtk_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
-	return rnd_gtk_pane_set_(ctx, idx, val, 1);
+	return rnd_gtk_pane_set_(ctx, idx, val->dbl, 1);
 }
 
 
@@ -130,6 +135,7 @@ static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, in
 	GtkWidget *widget = ctx->wl[j];
 	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV);
 
+	paned_stop_timer(pctx, 0xff); /* stop all timers */
 	free(pctx);
 	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP_PANE_PRIV, NULL);
 }
