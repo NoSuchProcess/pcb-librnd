@@ -359,6 +359,14 @@ static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	rnd_wplc_load(RND_CFR_DESIGN);
 }
 
+static void place_pane_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if ((argv[1].type != RND_EVARG_STR) || (argv[2].type != RND_EVARG_STR) || (argv[3].type != RND_EVARG_DOUBLE))
+		return;
+
+	rnd_pane_store(argv[1].d.s, argv[2].d.s, argv[3].d.d);
+}
+
 void rnd_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
@@ -468,6 +476,7 @@ void rnd_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	rnd_event_bind(RND_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+	rnd_event_bind(RND_EVENT_DAD_PANE_GEO_CHG, place_pane_changed, NULL, place_cookie);
 
 	cbs.new_hlist_item_post = wplc_new_hlist_item;
 	/*cfgid =*/ rnd_conf_hid_reg(place_cookie, &cbs);
