@@ -367,6 +367,28 @@ static void place_pane_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, 
 	rnd_pane_store(argv[1].d.s, argv[2].d.s, argv[3].d.d);
 }
 
+static void place_new_pane(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	htsw_entry_t *e;
+	htsi_entry_t *i;
+	double *pos;
+
+	if ((argv[1].type != RND_EVARG_STR) || (argv[2].type != RND_EVARG_STR) || (argv[3].type != RND_EVARG_PTR))
+		return;
+
+	e = htsw_getentry(&wingeo, (char *)argv[1].d.s);
+	if (e == NULL)
+		return;
+
+	i = htsi_getentry(&e->value.panes, (char *)argv[2].d.s);
+	if (i == NULL)
+		return;
+
+	pos = (double *)argv[3].d.p;
+	*pos = (double)i->value / (double)PANE_INT2DBL;
+rnd_trace("PANE load pos: %s %s: %f\n", argv[1].d.s, argv[2].d.s, *pos);
+}
+
 void rnd_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
@@ -476,6 +498,7 @@ void rnd_dialog_place_init(void)
 	htsw_init(&wingeo, strhash, strkeyeq);
 	rnd_event_bind(RND_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
 	rnd_event_bind(RND_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+	rnd_event_bind(RND_EVENT_DAD_NEW_PANE, place_new_pane, NULL, place_cookie);
 	rnd_event_bind(RND_EVENT_DAD_PANE_GEO_CHG, place_pane_changed, NULL, place_cookie);
 
 	cbs.new_hlist_item_post = wplc_new_hlist_item;
