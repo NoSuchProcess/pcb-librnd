@@ -38,6 +38,7 @@ typedef struct {
 	guint get_timer; /* timer 2 */
 	unsigned set_timer_running:1;
 	unsigned get_timer_running:1;
+	unsigned realized:1;
 } paned_wdata_t;
 
 static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow_timer);
@@ -45,7 +46,7 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow
 static gint paned_get_size(paned_wdata_t *pctx)
 {
 	GtkWidget *pane = pctx->ctx->wl[pctx->idx];
-	GtkAllocation a;
+	GtkAllocation a = {0};
 
 	gtkc_widget_get_allocation(pane, &a);
 
@@ -95,16 +96,17 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow
 	GtkWidget *pane = ctx->wl[idx];
 	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(pane), RND_OBJ_PROP_PANE_PRIV);
 	double ratio = new_pos;
-	gint p, minp, maxp;
+	gint p = 0, minp, maxp;
 
 	if (ratio < 0.0) ratio = 0.0;
 	else if (ratio > 1.0) ratio = 1.0;
 
-	g_object_get(G_OBJECT(pane), "min-position", &minp, "max-position", &maxp, NULL);
-	p = paned_get_size(pctx);
+	if (pctx->realized) {
+		g_object_get(G_OBJECT(pane), "min-position", &minp, "max-position", &maxp, NULL);
+		p = paned_get_size(pctx);
+	}
 
-	if (p <= 0) {
-TODO("gtk4 #48: not yet created; temporary workaround: timer; final fix should be related to the remember-pane-setting (like window geometry)");
+	if (!pctx->realized || (p <= 0)) {
 		if (allow_timer) {
 			paned_stop_timer(pctx, 1);
 			pctx->set_pos = ratio;
@@ -155,6 +157,11 @@ void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
 	}
 }
 
+void rnd_gtk_pane_realize_cb(GObject *self, void *pspec, gpointer user_data)
+{
+	paned_wdata_t *pctx = g_object_get_data(self, RND_OBJ_PROP_PANE_PRIV);
+	pctx->realized = 1;
+}
 
 
 static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
@@ -196,7 +203,16 @@ static int rnd_gtk_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int is
 	g_object_set_data(G_OBJECT(widget), RND_OBJ_PROP, ctx);
 	j = rnd_gtk_attr_dlg_add(ctx, widget, &ts, j+1);
 
+	/* figure initial position, e.g. load from window placement config */
+	if (ctx->attrs[pctx->idx].name != NULL) {
+		double pos = -1;
+		rnd_event(ctx->gctx->hidlib, RND_EVENT_DAD_NEW_PANE, "ssp", ctx->id, ctx->attrs[pctx->idx].name, &pos);
+		if ((pos >= 0.0) && (pos <= 1.0))
+			rnd_gtk_pane_set_(ctx, pctx->idx, pos, 1);
+	}
+
 	g_signal_connect(widget, "notify::position", G_CALLBACK(rnd_gtk_pane_move_cb), &ctx->attrs[j]);
+	g_signal_connect(widget, "notify::realized", G_CALLBACK(rnd_gtk_pane_realize_cb), &ctx->attrs[j]);
 
 	return j;
 }
