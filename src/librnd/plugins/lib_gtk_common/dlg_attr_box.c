@@ -71,6 +71,8 @@ static void paned_stop_timer(paned_wdata_t *pctx, int id)
 
 static gboolean paned_setpos_cb(paned_wdata_t *pctx)
 {
+	if (!pctx->ctx->placed)
+		return TRUE; /* check back when host dialog is already sized */
 	rnd_gtk_pane_set_(pctx->ctx, pctx->idx, pctx->set_pos, 0);
 	pctx->set_timer_running = 0;
 	return FALSE;  /* Turns timer off */
@@ -79,9 +81,16 @@ static gboolean paned_setpos_cb(paned_wdata_t *pctx)
 static gboolean paned_getpos_cb(paned_wdata_t *pctx)
 {
 	GtkWidget *pane = pctx->ctx->wl[pctx->idx];
-	gint sz = paned_get_size(pctx);
-	int px = gtk_paned_get_position(GTK_PANED(pane));
-	double pos = (double)px / (double)sz;
+	gint sz;
+	int px;
+	double pos;
+
+	if (!pctx->ctx->placed)
+		return TRUE; /* check back when host dialog is already sized */
+
+	sz = paned_get_size(pctx);
+	px = gtk_paned_get_position(GTK_PANED(pane));
+	pos = (double)px / (double)sz;
 
 	rnd_trace("paned resize event %s %s %f!\n", pctx->ctx->id, pctx->ctx->attrs[pctx->idx].name, pos);
 	rnd_event(pctx->ctx->gctx->hidlib, RND_EVENT_DAD_PANE_GEO_CHG, "ssd", pctx->ctx->id, pctx->ctx->attrs[pctx->idx].name, pos);
@@ -110,7 +119,7 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow
 		if (allow_timer) {
 			paned_stop_timer(pctx, 1);
 			pctx->set_pos = ratio;
-			pctx->set_timer = g_timeout_add(50, (GSourceFunc)paned_setpos_cb, pctx);
+			pctx->set_timer = g_timeout_add(20, (GSourceFunc)paned_setpos_cb, pctx);
 			pctx->set_timer_running = 1;
 		}
 		return 0; /* do not set before widget is created */
