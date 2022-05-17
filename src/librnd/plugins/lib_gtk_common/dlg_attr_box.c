@@ -71,8 +71,8 @@ static void paned_stop_timer(paned_wdata_t *pctx, int id)
 
 static gboolean paned_setpos_cb(paned_wdata_t *pctx)
 {
-	if (!pctx->ctx->placed)
-		return TRUE; /* check back when host dialog is already sized */
+	if (!pctx->ctx->placed || !pctx->realized)
+		return TRUE; /* check back when host dialog and pane are already sized */
 	rnd_gtk_pane_set_(pctx->ctx, pctx->idx, pctx->set_pos, 0);
 	pctx->set_timer_running = 0;
 	return FALSE;  /* Turns timer off */
@@ -85,8 +85,8 @@ static gboolean paned_getpos_cb(paned_wdata_t *pctx)
 	int px;
 	double pos;
 
-	if (!pctx->ctx->placed)
-		return TRUE; /* check back when host dialog is already sized */
+	if (!pctx->ctx->placed || !pctx->realized)
+		return TRUE; /* check back when host dialog and pane are already sized */
 
 	sz = paned_get_size(pctx);
 	px = gtk_paned_get_position(GTK_PANED(pane));
@@ -156,6 +156,8 @@ void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
 {
 	paned_wdata_t *pctx = g_object_get_data(self, RND_OBJ_PROP_PANE_PRIV);
 
+	pctx->realized = 1;
+
 	if (pctx->ctx->attrs[pctx->idx].name == NULL)
 		return; /* do not remember unnamed panes, they are not saved */
 
@@ -165,13 +167,6 @@ void rnd_gtk_pane_move_cb(GObject *self, void *pspec, gpointer user_data)
 		pctx->get_timer_running = 1;
 	}
 }
-
-void rnd_gtk_pane_realize_cb(GObject *self, void *pspec, gpointer user_data)
-{
-	paned_wdata_t *pctx = g_object_get_data(self, RND_OBJ_PROP_PANE_PRIV);
-	pctx->realized = 1;
-}
-
 
 static void rnd_gtk_pane_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
 {
@@ -221,7 +216,6 @@ static int rnd_gtk_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int is
 	}
 
 	g_signal_connect(widget, "notify::position", G_CALLBACK(rnd_gtk_pane_move_cb), &ctx->attrs[j]);
-	g_signal_connect(widget, "realize", G_CALLBACK(rnd_gtk_pane_realize_cb), &ctx->attrs[j]);
 
 	return j;
 }
