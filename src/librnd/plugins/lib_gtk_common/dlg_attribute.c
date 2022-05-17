@@ -67,6 +67,7 @@ typedef struct {
 	unsigned being_destroyed:1;
 	unsigned modal:1;
 	unsigned placed:1;
+	unsigned mapped:1;
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -841,10 +842,19 @@ static gboolean attr_dlg_timed_place(void *udata)
 {
 	attr_dlg_timed_place_t *tp = udata;
 
+	if (!tp->ctx->mapped)
+		return TRUE; /* try again later */
+
 	rnd_gtk_attr_dlg_place(tp->ctx, tp->plc, tp->defx, tp->defy);
 	tp->ctx->placed = 1;
 	free(tp);
 	return FALSE; /* remove */
+}
+
+void rnd_gtk_attr_dlg_mapped_cb(GObject *self, gpointer user_data)
+{
+	attr_dlg_t *ctx = user_data;
+	ctx->mapped = 1;
 }
 
 void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
@@ -876,6 +886,8 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	if ((modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modal) || (!modal && rnd_gtk_conf_hid.plugins.hid_gtk.dialog.transient_modeless))
 		gtk_window_set_transient_for(GTK_WINDOW(ctx->dialog), GTK_WINDOW(gctx->wtop_window));
 
+	g_signal_connect(ctx->dialog, "map", G_CALLBACK(rnd_gtk_attr_dlg_mapped_cb), ctx);
+
 	if (!GTKC_TIMED_WINDOW_PLACEMENT) {
 		/* do the placement immediately, gtk won't interfere (gtk2) */
 		rnd_gtk_attr_dlg_place(ctx, plc, defx, defy);
@@ -888,7 +900,7 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 		memcpy(tp->plc, plc, sizeof(plc));
 		tp->defx = defx;
 		tp->defy = defy;
-		g_timeout_add(500, attr_dlg_timed_place, tp);
+		g_timeout_add(20, attr_dlg_timed_place, tp);
 		ctx->placed = 0;
 	}
 
