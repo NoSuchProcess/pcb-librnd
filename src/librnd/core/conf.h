@@ -364,7 +364,7 @@ do { \
 lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
 lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
-/* Get first config subtree for role, create the file if doesn't exist */
+/* [3.2.0] Get first config subtree for role, create the file if doesn't exist */
 lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role);
 
 /* loop helper */
