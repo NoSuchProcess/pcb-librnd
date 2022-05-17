@@ -212,7 +212,7 @@ static int rnd_gtk_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int is
 	}
 
 	g_signal_connect(widget, "notify::position", G_CALLBACK(rnd_gtk_pane_move_cb), &ctx->attrs[j]);
-	g_signal_connect(widget, "notify::realized", G_CALLBACK(rnd_gtk_pane_realize_cb), &ctx->attrs[j]);
+	g_signal_connect(widget, "realize", G_CALLBACK(rnd_gtk_pane_realize_cb), &ctx->attrs[j]);
 
 	return j;
 }
