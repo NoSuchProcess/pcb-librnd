@@ -42,6 +42,20 @@ typedef struct {
 
 static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow_timer);
 
+static gint paned_get_size(paned_wdata_t *pctx)
+{
+	GtkWidget *pane = pctx->ctx->wl[pctx->idx];
+	GtkAllocation a;
+
+	gtkc_widget_get_allocation(pane, &a);
+
+	switch(pctx->ctx->attrs[pctx->idx].type) {
+		case RND_HATT_BEGIN_HPANE: return a.width;
+		case RND_HATT_BEGIN_VPANE: return a.height;
+		default: abort();
+	}
+}
+
 static void paned_stop_timer(paned_wdata_t *pctx, int id)
 {
 	if ((id & 1) && pctx->set_timer_running) {
@@ -75,7 +89,6 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow
 {
 	GtkWidget *pane = ctx->wl[idx];
 	paned_wdata_t *pctx = g_object_get_data(G_OBJECT(pane), RND_OBJ_PROP_PANE_PRIV);
-	GtkAllocation a;
 	double ratio = new_pos;
 	gint p, minp, maxp;
 
@@ -83,12 +96,7 @@ static int rnd_gtk_pane_set_(attr_dlg_t *ctx, int idx, double new_pos, int allow
 	else if (ratio > 1.0) ratio = 1.0;
 
 	g_object_get(G_OBJECT(pane), "min-position", &minp, "max-position", &maxp, NULL);
-	gtkc_widget_get_allocation(pane, &a);
-	switch(ctx->attrs[idx].type) {
-		case RND_HATT_BEGIN_HPANE: p = a.width; break;
-		case RND_HATT_BEGIN_VPANE: p = a.height; break;
-		default: abort();
-	}
+	p = paned_get_size(pctx);
 
 	if (p <= 0) {
 TODO("gtk4 #48: not yet created; temporary workaround: timer; final fix should be related to the remember-pane-setting (like window geometry)");
