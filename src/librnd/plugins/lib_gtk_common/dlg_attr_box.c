@@ -78,8 +78,13 @@ static gboolean paned_setpos_cb(paned_wdata_t *pctx)
 static gboolean paned_getpos_cb(paned_wdata_t *pctx)
 {
 	GtkWidget *pane = pctx->ctx->wl[pctx->idx];
+	gint sz = paned_get_size(pctx);
 	int px = gtk_paned_get_position(GTK_PANED(pane));
-	rnd_trace("paned resize event %d!\n", px);
+	double pos = (double)px / (double)sz;
+
+	rnd_trace("paned resize event %s %s %f!\n", pctx->ctx->id, pctx->ctx->attrs[pctx->idx].name, pos);
+	rnd_event(pctx->ctx->gctx->hidlib, RND_EVENT_DAD_NEW_PANE_GEO, "ssd", pctx->ctx->id, pctx->ctx->attrs[pctx->idx].name, pos);
+
 	pctx->get_timer_running = 0;
 	return FALSE;  /* Turns timer off */
 }
