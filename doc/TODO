@@ -1,7 +1,10 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
-	- beside window positions, also remember paned ratios (reported with fsd); needs named paneds on DAD, maybe more generic RND_DAD_SET_ID? [report: Wojciech]
+	- beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
+		- add in lesstif
+		- name every pane in librnd (including fsd)
+		- name every pane in sch-rnd
 	- move pcb-rnd dialogs/dlg_undo and sch-rnd's sch_dialogs/dlg_undo to librnd, rename action to UndoHistory but keep an UndoDialog wrapper in pcb-rnd for compatibility
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
