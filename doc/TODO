@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
-	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	+ beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
@@ -17,7 +16,6 @@
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this! (sch-rnd has scconfig template dups because of this)
 	- *BUG: sch-rnd critical: hid export API doesn't pass hidlib when needed
-	- cleanup: remove old callbacks in rnd_conf_hid_callbacks_t without hidlib passing
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
@@ -52,6 +50,21 @@
 		- switch over librnd published templates, see TODO.template
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
+	- multi design (multides.html):
+		- event name cleanup: do not use BOARD to design (or to something better)
+		- mark each event [local] or [global]
+		- rename rnd_hidlib_t to rnd_design_t (or to something better)
+		- cleanup: extned callbacks in rnd_conf_hid_callbacks_t to pass hidlib (multiple callbacks with different designs if multiple open designs are changed!)
+		- rnd_hidlib_t must contain:
+			- real file name (realpath'd)
+			- original file name (short name, as the user called it)
+		- switch over from rnd_conf and conf_core to per design conf
+		- implement user file name and realpath file name
+		- implement project list and pointing back
+		- conf: implement a way to make sure design file list is coming from the project file only
+		- implement every little detail of the new project file handling as specified
+		- rnd_app.single_design setting for single design mode
+		- make sure the batch HID maintains set/get_hidlib()
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
