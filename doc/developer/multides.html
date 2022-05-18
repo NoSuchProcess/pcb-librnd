@@ -18,7 +18,7 @@ by one or more of the design files.
 Globally there is no "current design" or "current project", but only locally
 saved design/project reference in subsystems.
 <p>
-Note: a design (rnd_hildib_t *) represents a board file in pcb-rnd, a sheet
+Note: a design (rnd_hidlib_t *) represents a board file in pcb-rnd, a sheet
 in sch-rnd.
 
 <h3> What's in a design </h3>
@@ -77,7 +77,7 @@ When an individual design file is open via UI:
 	     such project file is loaded, and the design is put into that project
 	     in memory (without altering the project's design file listing)
 	<li> if there's no such project file, a <i>dummy</i> project file is created in
-	     memory; a summy project file is not saved until the user makes explicit
+	     memory; a dummy project file is not saved until the user makes explicit
 	     UI commands (e.g. changing config settings on project file level)
 </ol>
 <p>
@@ -122,7 +122,7 @@ if:
 UI needs to be provided for the user to indicate this situation and
 shortcuts should be provided so that a design file already associated
 to a project structure in memory can be made an explicit listed design
-fuile in the project config tree, or a design file part of the config tree
+file in the project config tree, or a design file part of the config tree
 can be removed from there.
 
 <h2> Local vs. global access </h2>
@@ -184,10 +184,10 @@ In such case librnd delivers a separate config change callback for each
 design affected.
 
 
-<h2> Special use case: signle-design app </h2>
+<h2> Special use case: single-design app </h2>
 <p>
 An application may decide not to use multiple designs. This simplifies the
-code because there's always one active design, in all repsects, and it
+code because there's always one active design, in all respects, and it
 can be achieved from the HID struct if nothing else offers it.
 <p>
 This is indicated in rnd_app.single_design. Librnd internals are still
