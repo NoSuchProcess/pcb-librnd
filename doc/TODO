@@ -22,6 +22,7 @@
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
+	- cleanup: remove separate RND_DAD_SET_PANE_NAME() and require every pane named in RND_DAD_BEGIN_[HV]PANE
 	- remove /local/pcb/* scconfig vars
 	- remove rnd_hid_cfg_keys_input_() and rnd_hid_cfg_keys_input(), rename rnd_hid_cfg_keys_input2_() and rnd_hid_cfg_keys_input2()
 	- remove code marked with REMOVE_4.0.0
