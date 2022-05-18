@@ -377,7 +377,7 @@ static void place_new_pane(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 		return;
 
 	e = htsw_getentry(&wingeo, (char *)argv[1].d.s);
-	if (e == NULL)
+	if ((e == NULL) || !e->value.panes_inited)
 		return;
 
 	i = htsi_getentry(&e->value.panes, (char *)argv[2].d.s);

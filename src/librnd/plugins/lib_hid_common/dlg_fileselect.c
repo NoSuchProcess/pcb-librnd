@@ -838,6 +838,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 		/* lists */
 		RND_DAD_BEGIN_HPANE(ctx->dlg);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_SET_PANE_NAME(ctx->dlg, "left-right");
 
 			RND_DAD_BEGIN_VBOX(ctx->dlg); /* shortcuts */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);

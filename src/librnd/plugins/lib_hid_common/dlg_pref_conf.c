@@ -426,6 +426,7 @@ void rnd_dlg_pref_conf_create(pref_ctx_t *ctx)
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	RND_DAD_BEGIN_HPANE(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_SET_PANE_NAME(ctx->dlg, "conf_left-right");
 		ctx->conf.wmainp = RND_DAD_CURRENT(ctx->dlg);
 
 		/* left: tree */
@@ -445,7 +446,8 @@ void rnd_dlg_pref_conf_create(pref_ctx_t *ctx)
 		/* right: details */
 		RND_DAD_BEGIN_VPANE(ctx->dlg);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			
+			RND_DAD_SET_PANE_NAME(ctx->dlg, "conf_right_top-bottom");
+
 			/* right/top: conf file */
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
