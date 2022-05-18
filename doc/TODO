@@ -1,4 +1,8 @@
 *** Upcoming release ***
+- sch-rnd temporary multisheet support:
+	- collect conf internal structs together
+	- provide temporary conf API to allocate and copy these
+	- make sure the batch HID
 - 3.2.0: ABI compatible, API extensions
 	+ beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
