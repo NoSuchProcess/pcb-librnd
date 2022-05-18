@@ -408,7 +408,7 @@ do { \
    underscores  */
 #define RND_DAD_SET_PANE_NAME(table, pname) \
 do { \
-	assert((table[table ## _len - 1].type = RND_HATT_BEGIN_HPANE) || (table[table ## _len - 1].type = RND_HATT_BEGIN_VPANE)); \
+	assert((table[table ## _len - 1].type == RND_HATT_BEGIN_HPANE) || (table[table ## _len - 1].type == RND_HATT_BEGIN_VPANE)); \
 	table[table ## _len - 1].name = pname; \
 } while(0)
 
