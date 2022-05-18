@@ -27,3 +27,18 @@
 /* Temporary API for pre-4.0.0 multi-sheet support in sch-rnd */
 
 #include "conf_multi_temp.h"
+
+typedef struct rnd_conf_state_s {
+	htsi_t conf_interns;
+	int conf_files_inited;
+	int rnd_conf_in_production;
+	lht_doc_t *rnd_conf_main_root[RND_CFR_max_alloc];
+	long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc];
+	int rnd_conf_main_root_lock[RND_CFR_max_alloc];
+	int rnd_conf_lht_dirty[RND_CFR_max_alloc];
+	lht_doc_t *rnd_conf_plug_root[RND_CFR_max_alloc];
+	htsp_t *rnd_conf_fields;
+	vmst_t merge_subtree;
+	int rnd_conf_rev;
+} rnd_conf_state_t;
+
