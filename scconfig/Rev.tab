@@ -1,3 +1,4 @@
+34216	configure	install temporary solution to sch-rnd multisheet support
 34155	configure	import export_lpr code from pcb-rnd
 34144	configure	import export and print dialog from pcb-rnd
 34140	configure	add libualloc in the API
