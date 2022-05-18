@@ -1,0 +1,194 @@
+<html>
+<body>
+
+<h1> Multiple design support </h1>
+
+<h2> Architecture </h2>
+<p>
+There is a global variable in librnd, called rnd_designs . This is a
+doubly linked list holding all designs currently open, each an
+rnd_hidlib_t *. There is a hash of project files (key is realpath):
+each project file opened and cached in memory only once, referenced
+by one or more of the design files.
+<p>
+Globally there is no "current design" or "current project", but only locally
+saved design/project reference in subsystems.
+<p>
+Note: a design (rnd_hildib_t *) represents a board file in pcb-rnd, a sheet
+in sch-rnd.
+
+<h3> What's in a design </h3>
+<p>
+All actual design data is on the app's side, where rnd_hidlib_t MUST be the
+first field of the design structure. On librnd side rnd_hidlib_t contains:
+<ul>
+	<li> public fields:
+	<ul>
+		<li> original file name (as the user specified)
+		<li> realpath file name
+		<li> reference to the parent <i>project</i> (a dummy is generated if there's none)
+		<li> app config tree pointer (was conf_core before 4.0.0)
+		<li> librnd config tree pointer (was rnd_conf before 4.0.0)
+		<li> grid state
+		<li> crosshair & tool state
+	</ul>
+	<li> private fields:
+		<ul>
+			<li> conf backing data
+		</ul>
+</ul>
+<p>
+Starting from 4.0.0 there are no global config structures, config is always
+picked up from the relevant design struct. This is because configuration
+may differ 
+
+<h3> What's in a project </h3>
+<p>
+A project structure reflects a project file. A project file contains configuration
+(and design file list) for multiple tools. Librnd will handle the subtree for
+related to the current application only. For example a typical ringdove project
+file will contain a subtree for sch-rnd and another for pcb-rnd. When librnd
+linked in pcb-rnd is dealing with the project file, it will read only
+the pcb-rnd subtree but will preserve the sch-rnd and other subtrees.
+<p>
+For applications implemented using librnd, the app-specific subtree of the
+project file is a config tree. Thus the (optional) design file list of
+the project is a config list (which can be specified only at project role).
+<p>
+When a project file is open via UI, what really happens is:
+<ol>
+	<li> creating a project structure
+	<li> loading the application specific config tree of the project file
+	<li> loading all designs listed in that config tree
+	<li> if there's no design listed, the operation fails and the project
+	     structure is discarded
+</ol>
+<p>
+When an individual design file is open via UI:
+<ol>
+	<li> the design is loaded
+	<li> if a project file is present in the same directory as the design file,
+	     it is assumed to be the project file for the given design, independently
+	     of whether it lists the design file on its file listing;
+	     such project file is loaded, and the design is put into that project
+	     in memory (without altering the project's design file listing)
+	<li> if there's no such project file, a <i>dummy</i> project file is created in
+	     memory; a summy project file is not saved until the user makes explicit
+	     UI commands (e.g. changing config settings on project file level)
+</ol>
+<p>
+Each project file (as per realpath) is stored only once in memory, and has
+only one project structure. Every design file references to one of the
+project file structures in memory. Every project file in memory has
+an internal, only-in-memory list of design structures that references it.
+<p>
+If, due to design unloading, a project structure's internal design list
+becomes empty, the project structure is unloaded too.
+<p>
+Thus the project structure contains:
+<ul>
+	<li> the realpath of the file (also key of the hash table)
+	<li> the list of design structures that consider this project file as parent
+	     (not necessarily the same as the list of explicitly referenced design files
+	     from the conf tree of the project file!)
+	<li> the lihata document or at least the app-specific conf subtree
+	<li> a bit to indicate whether the project file is <i>dummy</i>
+</ul>
+<p>
+Since the project file may be used by multiple applications in parallel,
+any change to the project config (of non-dummy project files) is saved
+to disk as soon as possible.
+<p>
+A design that is part of a project in-memory is not always explicitly
+part of a project as per configured design file list. This can happen
+if:
+<ul>
+	<li> there was no project file in a directory and one or more design file
+	     is created/loaded from that dir and a dummy project structure is made
+	     in memory then a project role conf change is made; in this case the
+	     new project file is created, its settings affect the design file(s)
+	     loaded from that dir, but it's design file list is empty
+	<li> a project is loaded, it listed a.lht and b.lht, but the directory
+	     also contained c.lht, unlisted; the user loads c.lht. Because it's
+	     in the same dir, c.lht design struct will reference the same project
+	     file as its parent, even tho the project file config tree doesn't
+	     explicitly list c.lht as being part of the project.
+</ul>
+<p>
+UI needs to be provided for the user to indicate this situation and
+shortcuts should be provided so that a design file already associated
+to a project structure in memory can be made an explicit listed design
+fuile in the project config tree, or a design file part of the config tree
+can be removed from there.
+
+<h2> Local vs. global access </h2>
+
+<H3> UI </H3>
+<p>
+For example the UI is dealing with one design at a time: the UI state,
+accessed with ->set_hidlib() and ->get_hidlib(), stored by the HID. In
+any GUI event, such as dialog box callbacks on user input events, the
+related (rnd_hidlib_t *) is delivered. This means dialog boxes are always
+bound to a specific design and they remember their (rnd_hidlib_t *) and pass
+that on in one way or another to any of their callbacks.
+<p>
+There is a global event for switching the current design shown on the GUI.
+In this document this event is called SCD.
+If a dialog box is global:
+<p>
+<ul>
+	<li> only one instance can be open per process (the dialog is not per design)
+	<li> it still has it's (rnd_hidlib_t *), but that field is changed to the new
+	     current GUI design when the SCD event is received
+	<li> the necessary GUI updates are also done on the SCD event
+</ul>
+<p>
+A typical example of a "multiple instance local dialog" is pcb-rnd's propedit
+dialog: there can be multiple propedits open, but each is bound to a specific
+board, listing and manipulating objects of only that one board.
+<p>
+A typical example of "single instance global dialog" is the preferences dialog.
+Only one instance can be open, and it changes its contents when the current
+design is switched.
+
+<h3> events (rnd_event()) </h3>
+<p>
+Local events are per design. A typical examples are RND_EVENT_SAVE_*,
+RND_EVENT_LOAD_*, RND_EVENT_BOARD_CHANGED, RND_EVENT_BOARD_*_CHANGED.
+These events are delivered only once, with the (hidlib_t *) set to the
+design that is affected (which is not necessarily the currently active
+design in any context, including GUI context.)
+<p>
+Global events affect all open design. They are called with (hidlib_t *) set
+to NULL. The callee may have to iterate over all open design using the global
+design list.
+<p>
+Each event must be marked as [local] or [global] in the documentation (comment).
+
+<h3> config change callbacks </h3>
+<p>
+These are always local, always delivering a (hidlib_t *) that is affected.
+There are cases when a config change affects multiple open designs:
+<ul>
+	<li> change in system config (may affect all open design)
+	<li> change in user config (may affect all open design)
+	<li> change in project config (may affect all open design associated with the project)
+	<li> change in CLI config (may affect all open design)
+</ul>
+<p>
+In such case librnd delivers a separate config change callback for each
+design affected.
+
+
+<h2> Special use case: signle-design app </h2>
+<p>
+An application may decide not to use multiple designs. This simplifies the
+code because there's always one active design, in all repsects, and it
+can be achieved from the HID struct if nothing else offers it.
+<p>
+This is indicated in rnd_app.single_design. Librnd internals are still
+all prepared for multiple designs and related project administration, but
+when a new design is registered, it is not appended to the list of designs
+but replaces the previous design there. So the list of designs is always
+of size 1.
+
