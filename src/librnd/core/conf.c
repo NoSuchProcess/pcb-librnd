@@ -2362,3 +2362,4 @@ void rnd_conf_ro(const char *path)
 }
 
 #include "conf_regfile.c"
+#include "conf_multi_temp.c"
