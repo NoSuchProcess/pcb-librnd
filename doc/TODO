@@ -2,7 +2,6 @@
 - 3.2.0: ABI compatible, API extensions
 	- cleanup: add new pre/post callbacks in rnd_conf_hid_callbacks_t with hidlib passed
 	- beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
-		- add in lesstif
 		- name every pane in librnd (including fsd)
 		- name every pane in sch-rnd
 		- name every pane in camv-rnd and test
