@@ -1,7 +1,5 @@
 *** Upcoming release ***
 - sch-rnd temporary multisheet support:
-	- collect conf internal structs together
-	- provide temporary conf API to allocate and copy these
 	- make sure the batch HID
 - 3.2.0: ABI compatible, API extensions
 	+ beside window positions, also remember paned ratios (reported with fsd) [report: Wojciech]
@@ -69,6 +67,7 @@
 		- implement every little detail of the new project file handling as specified
 		- rnd_app.single_design setting for single design mode
 		- make sure the batch HID maintains set/get_hidlib()
+		- rnd_hid_parse_command_line() doesn't allow multiple filenames
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
