@@ -164,6 +164,7 @@ int rnd_ltf_wait_for_dialog(Widget w)
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
+	rnd_hidlib_t *hidlib; /* the hidlib that was active at the moment the dialog was created */
 	rnd_hid_attribute_t *attrs;
 	int n_attrs;
 	Widget *wl;   /* content widget */
@@ -691,6 +692,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	ctx->hidlib = ltf_hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
@@ -765,6 +767,7 @@ void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	ctx->hidlib = ltf_hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
@@ -942,6 +945,8 @@ TODO("layer: call a redraw on the edit group")
 
 rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 {
+	if (rnd_hid_enable_per_dialog_hidlib)
+		return ltf_hidlib;
 	return ltf_hidlib;
 }
 
