@@ -152,17 +152,32 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 					case RND_HATT_LABEL:
 						break;
 					case RND_HATT_INTEGER:
-						backup[i].lng = strtol((*argv)[1], 0, 0);
+						if ((*argv)[1] == NULL) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a parameter\n", (*argv)[0]);
+							return -1;
+						}
+						else
+							backup[i].lng = strtol((*argv)[1], 0, 0);
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_COORD:
-						backup[i].crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
+						if ((*argv)[1] == NULL) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a parameter\n", (*argv)[0]);
+							return -1;
+						}
+						else
+							backup[i].crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
 						(*argc)--;
 						(*argv)++;
 						break;
 					case RND_HATT_REAL:
-						backup[i].dbl = strtod((*argv)[1], 0);
+						if ((*argv)[1] == NULL) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a parameter\n", (*argv)[0]);
+							return -1;
+						}
+						else
+							backup[i].dbl = strtod((*argv)[1], 0);
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -175,7 +190,12 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						backup[i].lng = bool_val;
 						break;
 					case RND_HATT_ENUM:
-						ep = (*argv)[1];
+						if ((*argv)[1] == NULL) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a parameter\n", (*argv)[0]);
+							return -1;
+						}
+						else
+							ep = (*argv)[1];
 						ok = 0;
 						for (e = 0; a->enumerations[e]; e++)
 							if (strcmp(a->enumerations[e], ep) == 0) {
@@ -192,7 +212,12 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						(*argv)++;
 						break;
 					case RND_HATT_UNIT:
-						unit = rnd_get_unit_struct((*argv)[1]);
+						if ((*argv)[1] == NULL) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a parameter\n", (*argv)[0]);
+							return -1;
+						}
+						else
+							unit = rnd_get_unit_struct((*argv)[1]);
 						if (unit == NULL) {
 							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
 							exit(1);
