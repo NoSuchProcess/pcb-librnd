@@ -1,6 +1,4 @@
 *** Upcoming release ***
-- sch-rnd temporary multisheet support:
-	- make sure the batch HID
 - 3.2.0: ABI compatible, API extensions
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
@@ -28,6 +26,7 @@
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
 	- rename textual event names from pcbev_* in event.c
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
+	- hid_t spares: some function ptrs are spent, move them, refill spares
 	- rnd_app_t spares: conf_ignore lists (two void *)
 	- remove unused flags from rnd_hid_fsd_flags_t
 		- remove RND_HID_FSD_IS_TEMPLATE
@@ -67,6 +66,8 @@
 		- rnd_app.single_design setting for single design mode
 		- make sure the batch HID maintains set/get_hidlib()
 		- rnd_hid_parse_command_line() doesn't allow multiple filenames
+		- remove rnd_hid_enable_per_dialog_hidlib, assuming it is always 1
+
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
