@@ -538,8 +538,8 @@ struct rnd_hid_s {
 	   arguments is widgets-specific. */
 	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
-	/* Return the hidlib the given GUI HID is currently showing (not implemented
-	   in export HIDs) */
+	/* [3.2.0] Return the hidlib the given GUI HID is currently showing
+	   (not implemented in export HIDs) */
 	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
 
 	/* Spare: see doc/developer/spare.txt */
