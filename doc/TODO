@@ -5,6 +5,7 @@
 *** Later releases ***
 
 - 4.0.0: ABI incompatible (feature removal)
+	- *BUG: sch-rnd critical: rnd_app.expose_main needs to get the rnd_hidlib_t to draw (multisheet GUI needs this, as a dialog may draw non-current-GUI)
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 		- apply librnd core patch TODO.hid_dad_tree
 		- make sure all callers strdup() all cells
@@ -65,8 +66,9 @@
 		- implement every little detail of the new project file handling as specified
 		- rnd_app.single_design setting for single design mode
 		- make sure the batch HID maintains set/get_hidlib()
-		- rnd_hid_parse_command_line() doesn't allow multiple filenames
+		- rnd_hid_parse_command_line() doesn't allow multiple filenames (but somehow it still works in sch-rnd!)
 		- remove rnd_hid_enable_per_dialog_hidlib, assuming it is always 1
+		- rnd_main_loop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main)
 
 
 *** Unsorted ***
