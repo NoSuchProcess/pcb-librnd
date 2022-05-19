@@ -330,8 +330,6 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 				}
 
 				pos->data.text.value = rnd_strdup_printf("%.05f", (double)i->value / PANE_INT2DBL+0.01);
-
-rnd_trace("PANE SAVE: '%s' %f rol=%d nd=%p pos=%p\n", path, (double)i->value / PANE_INT2DBL+0.01, role, nd, pos);
 			}
 		}
 	}
@@ -386,7 +384,6 @@ static void place_new_pane(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 	pos = (double *)argv[3].d.p;
 	*pos = (double)i->value / (double)PANE_INT2DBL;
-rnd_trace("PANE load pos: %s %s: %f\n", argv[1].d.s, argv[2].d.s, *pos);
 }
 
 void rnd_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
