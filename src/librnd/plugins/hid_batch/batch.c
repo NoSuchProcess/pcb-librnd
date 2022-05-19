@@ -293,6 +293,11 @@ static void batch_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	hid->hid_data = hidlib;
 }
 
+static rnd_hidlib_t *batch_get_hidlib(rnd_hid_t *hid)
+{
+	return hid->hid_data;
+}
+
 
 static void batch_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
@@ -337,6 +342,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.gui = 1;
 
 	batch_hid.set_hidlib = batch_set_hidlib;
+	batch_hid.get_hidlib = batch_get_hidlib;
 	batch_hid.get_export_options = batch_get_export_options;
 	batch_hid.do_export = batch_do_export;
 	batch_hid.do_exit = batch_do_exit;
