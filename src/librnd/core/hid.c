@@ -32,6 +32,8 @@
 #include <librnd/core/hid_menu.h>
 #include <librnd/core/event.h>
 
+int rnd_hid_enable_per_dialog_hidlib = 0;
+
 void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete)
 {
 	if (rnd_gui->notify_crosshair_change)
