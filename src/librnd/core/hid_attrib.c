@@ -116,7 +116,8 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 {
 	rnd_hid_attr_node_t *ha;
 	int i, e, ok;
-	char *filename = NULL;
+	char *filename = NULL, *end;
+	rnd_bool succ;
 
 	/* set defaults */
 	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next) {
@@ -157,7 +158,11 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 							return -1;
 						}
 						else
-							backup[i].lng = strtol((*argv)[1], 0, 0);
+							backup[i].lng = strtol((*argv)[1], &end, 0);
+						if (*end != '\0') {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires an integer but got '%s'\n", (*argv)[0], (*argv)[1]);
+							return -1;
+						}
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -167,7 +172,11 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 							return -1;
 						}
 						else
-							backup[i].crd = rnd_get_value((*argv)[1], NULL, NULL, NULL);
+							backup[i].crd = rnd_get_value((*argv)[1], NULL, NULL, &succ);
+						if (!succ) {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a coord value but got '%s'\n", (*argv)[0], (*argv)[1]);
+							return -1;
+						}
 						(*argc)--;
 						(*argv)++;
 						break;
@@ -177,7 +186,11 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 							return -1;
 						}
 						else
-							backup[i].dbl = strtod((*argv)[1], 0);
+							backup[i].dbl = strtod((*argv)[1], &end);
+						if (*end != '\0') {
+							rnd_message(RND_MSG_ERROR, "export parameter error: %s requires a number but got '%s'\n", (*argv)[0], (*argv)[1]);
+							return -1;
+						}
 						(*argc)--;
 						(*argv)++;
 						break;
