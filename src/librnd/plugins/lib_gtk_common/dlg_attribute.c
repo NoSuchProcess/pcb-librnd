@@ -51,6 +51,7 @@
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	rnd_gtk_t *gctx;
+	rnd_hidlib_t *hidlib; /* active hidlib at the moment the dialog box was created */
 	rnd_hid_attribute_t *attrs;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
@@ -870,6 +871,7 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
 	ctx->gctx = gctx;
+	ctx->hidlib = gctx->hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
@@ -938,6 +940,7 @@ void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attri
 	ctx = calloc(sizeof(attr_dlg_t), 1);
 
 	ctx->gctx = gctx;
+	ctx->hidlib = gctx->hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
 	ctx->wl = calloc(sizeof(GtkWidget *), n_attrs);
@@ -1132,5 +1135,8 @@ int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+
+	if (rnd_hid_enable_per_dialog_hidlib)
+		return ctx->hidlib;
 	return ctx->gctx->hidlib;
 }
