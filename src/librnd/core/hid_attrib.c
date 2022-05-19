@@ -125,7 +125,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 			backup = ha->hid->argument_array;
 
 		if (backup == NULL) {
-			fprintf(stderr, "rnd_hid_parse_command_line(): no backup storage. Direct ->value field is not supported anymore. Your hid/export plugin (%s, %s) needs to be fixed.\n", ha->hid->name, ha->cookie);
+			rnd_message(RND_MSG_ERROR, "rnd_hid_parse_command_line(): no backup storage. Direct ->value field is not supported anymore. Your hid/export plugin (%s, %s) needs to be fixed.\n", ha->hid->name, ha->cookie);
 			return -1;
 		}
 		rnd_hid_load_defaults(ha->hid, ha->opts, ha->n);
@@ -205,8 +205,8 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 								break;
 							}
 						if (!ok) {
-							fprintf(stderr, "ERROR:  \"%s\" is an unknown value for the --%s option\n", (*argv)[1], a->name);
-							exit(1);
+							rnd_message(RND_MSG_ERROR, "ERROR:  \"%s\" is an unknown value for the --%s option\n", (*argv)[1], a->name);
+							return -1;
 						}
 						(*argc)--;
 						(*argv)++;
@@ -219,8 +219,8 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						else
 							unit = rnd_get_unit_struct((*argv)[1]);
 						if (unit == NULL) {
-							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
-							exit(1);
+							rnd_message(RND_MSG_ERROR, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
+							return -1;
 						}
 						backup[i].lng = unit->index;
 						backup[i].str = unit->suffix;
@@ -241,7 +241,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 			arg_ofs = 5;
 			goto try_no_arg;
 		}
-		fprintf(stderr, "unrecognized option: %s\n", (*argv)[0]);
+		rnd_message(RND_MSG_ERROR, "unrecognized option: %s\n", (*argv)[0]);
 		return -1;
 	got_match:;
 	}
