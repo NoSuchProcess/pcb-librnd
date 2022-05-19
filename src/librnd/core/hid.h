@@ -518,7 +518,10 @@ struct rnd_hid_s {
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
 
-	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback */
+	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback. This
+	   is different from ->get_hidlib because this returns the hidlib associated
+	   with the dialog, which (for multi-instance local dialogs) may be different
+	   from the hidlib what's currently show by the GUI */
 	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 
 	/*** these should be upper, but the struct has to be extended on the bottom
@@ -535,8 +538,12 @@ struct rnd_hid_s {
 	   arguments is widgets-specific. */
 	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
+	/* Return the hidlib the given GUI HID is currently showing (not implemented
+	   in export HIDs) */
+	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
+
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	void (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4, spare_l5, spare_l6, spare_l7, spare_l8;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4, *spare_p5, *spare_p6;
 	double spare_d1, spare_d2, spare_d3, spare_d4, spare_d5, spare_d6;
