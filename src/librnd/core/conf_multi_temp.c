@@ -44,9 +44,24 @@ struct rnd_conf_state_s {
 	int valid;
 };
 
+static void rnd_conf_state_copy_nat(htsp_t *dst, const htsp_t *src)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(src); e != NULL; e = htsp_next(src, e)) {
+		rnd_conf_native_t *nat_src = e->value, *nat_dst;
+		nat_dst = rnd_conf_alloc_field_(nat_src->val.any, nat_src->array_size,
+			nat_src->type, nat_src->hash_path, nat_src->description, nat_src->flags);
+		htsp_set(dst, (char *)nat_dst->hash_path, nat_dst);
+	}
+}
+
 rnd_conf_state_t *rnd_conf_state_alloc(void)
 {
-	return calloc(sizeof(rnd_conf_state_t), 1);
+	rnd_conf_state_t *res = calloc(sizeof(rnd_conf_state_t), 1);
+
+	res->rnd_conf_fields = htsp_alloc(strhash, strkeyeq);
+	rnd_conf_state_copy_nat(res->rnd_conf_fields, rnd_conf_fields);
+	return res;
 }
 
 void rnd_conf_state_free(rnd_conf_state_t *cs)
@@ -56,25 +71,25 @@ void rnd_conf_state_free(rnd_conf_state_t *cs)
 }
 
 
-#define SAVE(field) \
+#define SAVE(field, reset) \
 	memcpy(&dst->field, &field, sizeof(field)); \
-	memset(&field, 0, sizeof(field));
+	if (reset) memset(&field, 0, sizeof(field));
 
 void rnd_conf_state_save(rnd_conf_state_t *dst)
 {
 	assert(!dst->valid);
 
-	SAVE(conf_interns);
-	SAVE(conf_files_inited);
-	SAVE(rnd_conf_in_production);
-	SAVE(rnd_conf_main_root);
-	SAVE(rnd_conf_main_root_replace_cnt);
-	SAVE(rnd_conf_main_root_lock);
-	SAVE(rnd_conf_lht_dirty);
-	SAVE(rnd_conf_plug_root);
-	SAVE(rnd_conf_fields);
-	SAVE(merge_subtree);
-	SAVE(rnd_conf_rev);
+	SAVE(conf_interns, 1);
+	SAVE(conf_files_inited, 1);
+	SAVE(rnd_conf_in_production, 1);
+	SAVE(rnd_conf_main_root, 1);
+	SAVE(rnd_conf_main_root_replace_cnt, 1);
+	SAVE(rnd_conf_main_root_lock, 1);
+	SAVE(rnd_conf_lht_dirty, 1);
+	SAVE(rnd_conf_plug_root, 1);
+	SAVE(rnd_conf_fields, 0);
+	SAVE(merge_subtree, 1);
+	SAVE(rnd_conf_rev, 1);
 
 	dst->valid = 1;
 }
