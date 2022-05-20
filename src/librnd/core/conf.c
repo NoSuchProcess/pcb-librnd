@@ -1353,6 +1353,24 @@ void rnd_conf_load_project(const char *project_fn, const char *design_fn)
 	rnd_conf_update(NULL, -1);
 }
 
+
+static rnd_conf_native_t *rnd_conf_alloc_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
+{
+	rnd_conf_native_t *node = calloc(sizeof(rnd_conf_native_t), 1);
+
+	node->array_size  = array_size;
+	node->type        = type;
+	node->val.any     = value;
+	node->prop        = calloc(sizeof(rnd_confprop_t), array_size);
+	node->description = desc;
+	node->hash_path   = path;
+	node->flags       = flags;
+	vtp0_init(&(node->hid_data));
+	vtp0_init(&(node->hid_callbacks));
+
+	return node;
+}
+
 rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
 {
 	rnd_conf_native_t *node;
@@ -1364,17 +1382,7 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	assert(array_size >= 1);
 
 	assert(htsp_get(rnd_conf_fields, path) == NULL);
-
-	node = calloc(sizeof(rnd_conf_native_t), 1);
-	node->array_size  = array_size;
-	node->type        = type;
-	node->val.any     = value;
-	node->prop        = calloc(sizeof(rnd_confprop_t), array_size);
-	node->description = desc;
-	node->hash_path   = path;
-	node->flags       = flags;
-	vtp0_init(&(node->hid_data));
-	vtp0_init(&(node->hid_callbacks));
+	node = rnd_conf_alloc_field_(value, array_size, type, path, desc, flags);
 
 	htsp_set(rnd_conf_fields, (char *)path, node);
 	rnd_conf_hid_global_cb(node, -1, new_item_post);
