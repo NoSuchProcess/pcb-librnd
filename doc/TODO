@@ -52,6 +52,10 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
+		- problem: rnd_conf_fields
+			- it hosts native (merged) config data
+			- thus it needs to be per design
+			- but if a new plugin registers a new field, that needs to be done in every existing design!
 		- event name cleanup: do not use BOARD to design (or to something better)
 		- mark each event [local] or [global]
 		- rename rnd_hidlib_t to rnd_design_t (or to something better)
