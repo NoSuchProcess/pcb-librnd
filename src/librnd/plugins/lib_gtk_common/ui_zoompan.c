@@ -68,8 +68,8 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	v->y0 = MAX(-v->height, v->y0);
 
 	if (v->use_max_hidlib) {
-		v->x0 = MIN(v->x0, v->ctx->hidlib->size_x);
-		v->y0 = MIN(v->y0, v->ctx->hidlib->size_y);
+		v->x0 = MIN(v->x0, VIEW_HIDLIB(v)->size_x);
+		v->y0 = MIN(v->y0, VIEW_HIDLIB(v)->size_y);
 	}
 	else {
 		assert(v->max_width > 0);
@@ -175,7 +175,7 @@ void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
 	if (setch) {
 		v->design_x = (x1+x2)/2;
 		v->design_y = (y1+y2)/2;
-		rnd_hidcore_crosshair_move_to(v->ctx->hidlib, v->design_x, v->design_y, 0);
+		rnd_hidcore_crosshair_move_to(VIEW_HIDLIB(v), v->design_x, v->design_y, 0);
 	}
 
 	rnd_gtk_tw_ranges_scale(ghidgui);

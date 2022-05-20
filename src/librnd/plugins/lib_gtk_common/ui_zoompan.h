@@ -31,13 +31,16 @@
 #define RND_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
 #include <librnd/core/rnd_bool.h>
+#include <librnd/core/global_typedefs.h>
+
+#define VIEW_HIDLIB(v) ((v)->local_hidlib ? ((v)->hidlib) : ((v)->ctx->hidlib))
 
 #define LOCALFLIPX(v) ((v)->local_flip ? (v)->flip_x : rnd_conf.editor.view.flip_x)
 #define LOCALFLIPY(v) ((v)->local_flip ? (v)->flip_y : rnd_conf.editor.view.flip_y)
 #define SIDE_X_(flip, hidlib, x)      ((flip ? hidlib->size_x - (x) : (x)))
 #define SIDE_Y_(flip, hidlib, y)      ((flip ? hidlib->size_y - (y) : (y)))
-#define SIDE_X(v, x)            SIDE_X_(LOCALFLIPX(v), (v)->ctx->hidlib, (x))
-#define SIDE_Y(v, y)            SIDE_Y_(LOCALFLIPY(v), (v)->ctx->hidlib, (y))
+#define SIDE_X(v, x)            SIDE_X_(LOCALFLIPX(v), VIEW_HIDLIB(v), (x))
+#define SIDE_Y(v, y)            SIDE_Y_(LOCALFLIPY(v), VIEW_HIDLIB(v), (y))
 
 #define DRAW_X(view, x)         (gint)((SIDE_X((view), x) - (view)->x0) / (view)->coord_per_px)
 #define DRAW_Y(view, y)         (gint)((SIDE_Y((view), y) - (view)->y0) / (view)->coord_per_px)
@@ -45,8 +48,8 @@
 #define EVENT_TO_DESIGN_X_(hidlib, view, x) (rnd_coord_t)rnd_round(SIDE_X_(LOCALFLIPX(view), (hidlib), (double)(x) * (view)->coord_per_px + (double)(view)->x0))
 #define EVENT_TO_DESIGN_Y_(hidlib, view, y) (rnd_coord_t)rnd_round(SIDE_Y_(LOCALFLIPY(view), (hidlib), (double)(y) * (view)->coord_per_px + (double)(view)->y0))
 
-#define EVENT_TO_DESIGN_X(view, x)  EVENT_TO_DESIGN_X_((view)->ctx->hidlib, view, (x))
-#define EVENT_TO_DESIGN_Y(view, y)  EVENT_TO_DESIGN_Y_((view)->ctx->hidlib, view, (y))
+#define EVENT_TO_DESIGN_X(view, x)  EVENT_TO_DESIGN_X_(VIEW_HIDLIB(view), view, (x))
+#define EVENT_TO_DESIGN_Y(view, y)  EVENT_TO_DESIGN_Y_(VIEW_HIDLIB(view), view, (y))
 
 typedef struct {
 	double coord_per_px;     /* Zoom level described as PCB units per screen pixel */
@@ -71,6 +74,9 @@ typedef struct {
 	rnd_coord_t crosshair_x, crosshair_y;  /* design_space coordinates of the crosshair     */
 
 	struct rnd_gtk_s *ctx;
+
+	unsigned local_hidlib:1; /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
+	rnd_hidlib_t *hidlib;    /* remember the hidlib the dialog was opened for */
 } rnd_gtk_view_t;
 
 #include "in_mouse.h"

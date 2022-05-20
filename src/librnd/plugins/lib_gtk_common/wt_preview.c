@@ -488,7 +488,7 @@ static gboolean preview_key_any_cb(GtkWidget *w, long mods, long key_raw, long k
 
 			box.X1 = preview->view.x0;
 			if (preview->view.flip_y)
-				box.Y1 = preview->view.ctx->hidlib->size_y - (preview->view.y0 + preview->view.height);
+				box.Y1 = VIEW_HIDLIB(&preview->view)->size_y - (preview->view.y0 + preview->view.height);
 			else
 				box.Y1 = preview->view.y0;
 			box.X2 = box.X1 + preview->view.width;
@@ -577,6 +577,10 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.coord_per_px = RND_MM_TO_COORD(0.25);
 	prv->view.ctx = ctx;
 
+TODO("multi: at the moment every preview is global, later there should be an option for this through the hidlib API");
+	prv->view.local_hidlib = 0;
+	prv->view.hidlib = ctx->hidlib;
+
 	update_expose_data(prv);
 
 	prv->init_drawing_widget(GTK_WIDGET(prv), prv->gport);
@@ -656,7 +660,7 @@ void rnd_gtk_previews_flip(rnd_gtk_t *ctx)
 
 			box.X1 = prv->view.x0;
 			if (!rnd_conf.editor.view.flip_y)
-				box.Y1 = prv->view.ctx->hidlib->size_y - (prv->view.y0 + prv->view.height);
+				box.Y1 = VIEW_HIDLIB(&prv->view)->size_y - (prv->view.y0 + prv->view.height);
 			else
 				box.Y1 = prv->view.y0;
 			box.X2 = box.X1 + prv->view.width;
