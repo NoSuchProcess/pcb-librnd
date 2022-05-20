@@ -81,6 +81,7 @@
 			- gtk preview widget locality: add a HID API to set local bit (see r34242, TODO "multi:")
 			- bind unload event and invalidate local previews' hidlib (see r34242) so they don't crash if the caller doesn't do that
 			- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
+		- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
