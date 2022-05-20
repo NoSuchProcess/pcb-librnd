@@ -77,6 +77,7 @@
 		- rnd_main_loop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main)
 		- RND_EVENT_BOARD_CHANGED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
 			- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
+		- gtk preview widget locality: add a HID API to set local bit (see r34242, TODO "multi:")
 		- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
 
 *** Unsorted ***
