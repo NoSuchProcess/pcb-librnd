@@ -207,6 +207,66 @@ static void all_plugin_select(const char *state, int force)
 #include "plugins.h"
 }
 
+
+static int plugin_dep_set_recurse(const char *parent_plugin, const char *target_state, int depth);
+
+/* core of plugin_dep_set_recurse() */
+static int plugin_dep_set_rec1(const char *plg, const char *on, const char *parent_plugin, const char *target_state, int depth)
+{
+	int chg = 0;
+	char buff[1024], *st_child;
+
+	if (strcmp(on, parent_plugin) == 0) {
+		sprintf(buff, "/local/pcb/%s/controls", plg);
+		st_child = get(buff);
+
+		if ((strcmp(target_state, "disable") == 0) && (strcmp(st_child, "disable") != 0)) {
+			sprintf(buff, "Note:   disabling %s recursively because of %s...\n", plg, parent_plugin);
+			report_repeat(buff);
+			sprintf(buff, "disable-%s", plg);
+			hook_custom_arg(buff, NULL);
+			chg++;
+		}
+		else if ((strcmp(target_state, "plugin") == 0) && (strcmp(st_child, "disable") != 0) && (strcmp(st_child, "plugin") != 0)) {
+			sprintf(buff, "Note:   changing %s to plugin recursively because of %s...\n", plg, parent_plugin);
+			report_repeat(buff);
+			sprintf(buff, "plugin-%s", plg);
+			hook_custom_arg(buff, NULL);
+			chg++;
+		}
+
+		plugin_dep_set_recurse(plg, target_state, depth+1);
+	}
+
+	return chg;
+}
+
+
+/* Go and find all plugins depending on parent_plugin, recursively, and bump
+   their state to target_state unless they are on lower state already. This
+   is used only to make a module (and its dep subtree) into plugin or disable
+   because of external (librnd) dep is also plugin (or disabled) */
+static int plugin_dep_set_recurse(const char *parent_plugin, const char *target_state, int depth)
+{
+	int chg = 0;
+
+	if (depth > 256) {
+		report_repeat("ERROR: plugin_dep_set_recurse() went too deep.\nYou probably have circular plugin dependencies\nPlugin state is probably BROKEN.\n");
+		abort();
+	}
+
+#undef plugin_def
+#undef plugin_header
+#undef plugin_dep
+#define plugin_def(name, desc, default_, all_)
+#define plugin_header(sect)
+#define plugin_dep(plg, on) \
+	chg += plugin_dep_set_rec1(plg, on, parent_plugin, target_state, depth);
+#include "plugins.h"
+
+	return chg;
+}
+
 #ifndef LIBRNDS_SCCONFIG
 /* external plugins should force local plugins that depend on them; e.g.
    in pcb-rnd fp_wget plugin depends on librnd's lib_wget, so if lib_wget
@@ -246,6 +306,10 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 		}
 		sprintf(buff, "disable-%s", plugin);
 		hook_custom_arg(buff, NULL);
+
+		/* anything that depends on this plugin needs to be disabled too */
+		plugin_dep_set_recurse(plugin, "disable", 0);
+
 		dep_chg++;
 	}
 
@@ -262,6 +326,10 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 		}
 		sprintf(buff, "plugin-%s", plugin);
 		hook_custom_arg(buff, NULL);
+
+		/* anything that depends on this plugin needs to be set to plugin too */
+		plugin_dep_set_recurse(plugin, "plugin", 0);
+
 		dep_chg++;
 	}
 
