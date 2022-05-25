@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
-	- FEATURE: sch-rnd critical: more flexible config node ignore mechanism based on callbacks or events
 	- DAD: on fsd dir change filelist scroll state is not reset [report: Wojciech]
 
 *** Later releases ***
