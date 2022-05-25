@@ -864,6 +864,11 @@ int rnd_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t r
 	rnd_conf_native_t *target = rnd_conf_get_field(path);
 	int res = 0;
 
+	if (rnd_app.conf_dont_merge_node != NULL) {
+		if (rnd_app.conf_dont_merge_node(path, n, role, default_prio, default_policy, target))
+			return 0;
+	}
+
 	if ((role == RND_CFR_DESIGN) || (role == RND_CFR_PROJECT)) {
 		if (conf_board_ignore(path, n))
 			return 0;

@@ -145,8 +145,14 @@ typedef struct rnd_app_s {
 	   widgets */
 	void (*expose_preview)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
+	/* [3.2.0] Optional: if not NULL, and returns non-zero, the given
+	   conf value from the given source is ignored (not merged). Role
+	   is really rnd_conf_role_t and policy is rnd_conf_policy_t, lhtn is
+	   (lht_node_t *). */
+	int (*conf_dont_merge_node)(const char *path, void *lhtn, int role, int default_prio, int default_policy, rnd_conf_native_t *target);
+
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 
 	/* Optional: a NULL terminated array of config paths that shall not be

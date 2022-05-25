@@ -94,7 +94,7 @@ typedef struct {
 	lht_node_t *src;
 } rnd_confprop_t;
 
-typedef struct {
+struct rnd_conf_native_s {
 	/* static fields defined by the macros */
 	const char *description;
 	const char *hash_path;     /* points to the hash key once its added in the hash (else: NULL) */
@@ -120,8 +120,7 @@ typedef struct {
 	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *) */
 
 	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
-} rnd_conf_native_t;
-
+};
 
 struct conf_listitem_s {
 	rnd_conf_native_type_t type;
