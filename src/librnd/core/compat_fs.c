@@ -47,6 +47,7 @@
 #include <assert.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hid_init.h>
@@ -360,3 +361,35 @@ int rnd_is_path_abs(const char *fn)
 	return (*fn == '/');
 #endif
 }
+
+char *rnd_dirname(const char *path)
+{
+	long len = strlen(path);
+	char *s, *res = malloc(len+1);
+
+
+	if (res == NULL)
+		return NULL;
+
+	memcpy(res, path, len+1);
+	for(s = res + len - 1; s >= res; s--) {
+		if ((*s == '/') || (*s == RND_DIR_SEPARATOR_C)) {
+			*s = '\0';
+			return res;
+		}
+	}
+
+	free(res);
+	return NULL;
+}
+
+char *rnd_dirname_real(const char *path)
+{
+	char *dn = rnd_dirname(path);
+
+	if (dn == NULL)
+		return NULL;
+
+	return rnd_lrealpath(dn);;
+}
+
