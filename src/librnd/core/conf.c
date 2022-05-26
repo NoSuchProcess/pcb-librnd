@@ -202,7 +202,10 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		ifn = "<string>";
 	}
 	else {
-		d = rnd_hid_cfg_load_lht(NULL, fn);
+		if (fn != NULL)
+			d = rnd_hid_cfg_load_lht(NULL, fn);
+		else
+			d = lht_dom_init();
 		ifn = fn;
 	}
 

@@ -167,7 +167,8 @@ void rnd_conf_load_all(const char *project_fn, const char *design_fn);
    trigger a refresh */
 extern int rnd_conf_in_production;
 
-/* Load a file or a string as a role */
+/* Load a file or a string as a role
+   [3.2.0]: if fn is NULL, create an empty lihata document for the role */
 int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
 
 /* copy root to be the new config of role; root must be a li:APPNAME-conf-v1
