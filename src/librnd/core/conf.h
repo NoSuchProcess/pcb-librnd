@@ -409,7 +409,10 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 /* Returns the user configuration file name */
 const char *rnd_conf_get_user_conf_name();
 
-/* Determine the file name of the project file - project_fn and design_fn can be NULL */
+/* Determine the file name of the project file - project_fn and design_fn
+   can be NULL. Design_fn should be the "load name" of the file: if it is
+   a symlink, using the realname() would assume project file at symlink target
+   but project file should be next to the symlink. */
 const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *design_fn, const char **out_project_fn);
 
 /* Get the first subtree that matches pol within target; allocate new
