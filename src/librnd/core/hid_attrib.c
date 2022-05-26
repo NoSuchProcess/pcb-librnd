@@ -32,6 +32,7 @@
 #include <string.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/hidlib.h>
 
 rnd_hid_attr_node_t *rnd_hid_attr_nodes = 0;
 
@@ -112,11 +113,12 @@ void rnd_hid_load_defaults(rnd_hid_t *hid, const rnd_export_opt_t *opts, int len
 }
 
 
+#define MAX_FILENAMES 1024
 int rnd_hid_parse_command_line(int *argc, char ***argv)
 {
 	rnd_hid_attr_node_t *ha;
-	int i, e, ok;
-	char *filename = NULL, *end;
+	int i, e, ok, filenames = 0;
+	char *filename[MAX_FILENAMES+2], *end;
 	rnd_bool succ;
 
 	/* set defaults */
@@ -261,22 +263,26 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 	else {
 		/* Any argument without the "--" is considered a filename. Take only
 		   one filename for now */
-		if (filename == NULL) {
-			filename = (*argv)[0];
-			(*argc)--;
-			(*argv)++;
-		}
-		else {
-			rnd_message(RND_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename, (*argv)[0]);
+
+		if (filenames > MAX_FILENAMES) {
+			rnd_message(RND_MSG_ERROR, "Too manu filenames specified. Overflow at filename: %s\n", (*argv)[0]);
 			return -1;
 		}
+		if (!rnd_app.multi_design && (filenames > 0)) {
+			rnd_message(RND_MSG_ERROR, "Multiple filenames not supported. First filename was: %s; offending second filename: %s\n", filename[0], (*argv)[0]);
+			return -1;
+		}
+		
+		filename[filenames++] = (*argv)[0];
+		(*argc)--;
+		(*argv)++;
 	}
 
 	/* restore filename to the first argument */
-	if (filename != NULL) {
-		(*argv)[0] = filename;
-		(*argc) = 1;
-	}
+	for(i = 0; i < filenames; i++)
+		(*argv)[i] = filename[i];
+	(*argc) = filenames;
+
 	return 0;
 }
 

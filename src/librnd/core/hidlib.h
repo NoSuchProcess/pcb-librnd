@@ -153,7 +153,11 @@ typedef struct rnd_app_s {
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
-	long spare_l1, spare_l2, spare_l3, spare_l4;
+
+	/* [3.2.0] when non-zero, allow multiple design files to be open at once */
+	long multi_design;
+
+	long spare_l2, spare_l3, spare_l4;
 
 	/* Optional: a NULL terminated array of config paths that shall not be
 	   loaded from desing or project files. This is for security reasons:
