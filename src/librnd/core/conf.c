@@ -48,6 +48,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/fptr_cast.h>
 #include <librnd/core/safe_fs_dir.h>
+#include <librnd/core/event.h>
 
 static const char *flcat = "conf";
 
@@ -1959,7 +1960,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 {
 	int fail = 1;
 	lht_node_t *r = rnd_conf_lht_get_first(role, 0);
-	const char *try;
+	const char *try, *event_fn = NULL;
 	char *efn = NULL;
 
 	/* do not save if there's no change */
@@ -1986,6 +1987,8 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 		FILE *f;
 
 		f = rnd_fopen_fn(hidlib, fn, "w", &efn);
+		if (f != NULL)
+			event_fn = fn;
 		if ((f == NULL) && (role == RND_CFR_USER)) {
 			/* create the directory and try again */
 			char *path = NULL, *end;
@@ -2008,6 +2011,8 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 					rnd_message(RND_MSG_INFO, "Created directory %s for saving %s\n", path, fn);
 					*end = '/';
 					f = rnd_fopen(hidlib, path, "w");
+					if (f != NULL)
+						event_fn = path;
 				}
 				else
 					rnd_message(RND_MSG_ERROR, "Error: failed to create directory %s for saving %s\n", path, efn);
@@ -2025,6 +2030,8 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 			rnd_message(RND_MSG_ERROR, "Error: can't save config to %s - can't open the file for write\n", fn);
 	}
 
+	if (!fail)
+		rnd_event(hidlib, RND_EVENT_CONF_FILE_SAVE_POST, "si", event_fn, role);
 	free(efn);
 	return fail;
 }
