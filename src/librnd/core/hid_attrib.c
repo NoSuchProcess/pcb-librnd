@@ -140,7 +140,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 
 		bool_val = 1;
 		arg_ofs = 2;
-	try_no_arg:
+		try_no_arg:;
 		for (ha = rnd_hid_attr_nodes; ha; ha = ha->next) {
 			rnd_hid_attr_val_t *backup = ha->hid->argument_array;
 
