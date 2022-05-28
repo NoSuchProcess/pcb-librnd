@@ -1533,7 +1533,7 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 		return -1;
 	}
 
-	if (idx >= nat->array_size) {
+	if (((nat->type != RND_CFN_LIST) && (nat->type != RND_CFN_HLIST)) && (idx >= nat->array_size)) {
 		rnd_message(RND_MSG_ERROR, "Error: can't rnd_conf_set() %s[%d]: %d is beyond the end of the array (%d)\n", path, idx, idx, nat->array_size);
 		free(path);
 		return -1;
