@@ -50,7 +50,11 @@ static GtkWidget *rnd_gtk_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *
 	GtkWidget *bparent, *prg;
 
 	prg = gtk_progress_bar_new();
-	gtk_widget_set_size_request(prg, -1, 16);
+
+	if (attr->rnd_hatt_flags & RND_HATF_PRG_SMALL)
+		gtk_widget_set_size_request(prg, 4, 4);
+	else
+		gtk_widget_set_size_request(prg, -1, 16);
 
 	gtk_widget_set_tooltip_text(prg, attr->help_text);
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
