@@ -448,7 +448,7 @@ TODO("The wrapper box would allow the table to shrink but then the dialog is alw
 			break;
 
 		case RND_HATT_PROGRESS:
-			ctx->wl[i] = ltf_progress_create(ctx, parent);
+			ctx->wl[i] = ltf_progress_create(ctx, parent, ctx->attrs[i].hatt_flags);
 			break;
 		case RND_HATT_ENUM:
 			{

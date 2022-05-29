@@ -50,7 +50,7 @@ static void ltf_progress_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 	}
 }
 
-static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
+static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hatt_compflags_t flags)
 {
 	Widget bar;
 
@@ -63,7 +63,11 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 	stdarg(XmNshowArrows, rnd_false);
 	stdarg_do_color_str("#000099", XmNforeground);
 	stdarg(XmNsliderVisual, XmFOREGROUND_COLOR);
-	
+	if (flags & RND_HATF_PRG_SMALL) {
+		stdarg(PxmNfillBoxMinSize, 4);
+		stdarg(PxmNfillBoxFill, 1);
+	}
+
 	bar = XmCreateScrollBar(parent, XmStrCast("scale"), stdarg_args, stdarg_n);
 	XtManageChild(bar);
 	return bar;
