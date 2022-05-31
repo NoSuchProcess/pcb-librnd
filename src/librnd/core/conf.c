@@ -185,6 +185,18 @@ static lht_doc_t *conf_load_plug_file(const char *fn, int fn_is_text)
 	return d;
 }
 
+static lht_node_t *init_project_conf(lht_doc_t *d)
+{
+	lht_node_t *prjroot, *confroot;
+	prjroot = lht_dom_node_alloc(LHT_HASH, "coraleda-project-v1");
+	confroot = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
+	lht_dom_hash_put(prjroot, confroot);
+	prjroot->doc = d;
+	confroot->doc = d;
+	d->root = prjroot;
+	return confroot;
+}
+
 int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 {
 	lht_doc_t *d;
@@ -224,13 +236,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 	}
 
 	if (d->root == NULL) {
-		lht_node_t *prjroot, *confroot;
-		prjroot = lht_dom_node_alloc(LHT_HASH, "coraleda-project-v1");
-		confroot = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
-		lht_dom_hash_put(prjroot, confroot);
-		prjroot->doc = d;
-		confroot->doc = d;
-		d->root = prjroot;
+		init_project_conf(d);
 		rnd_conf_main_root[role] = d;
 		if (role_name != NULL)
 			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
@@ -2148,18 +2154,27 @@ rnd_conf_role_t rnd_conf_lookup_role(const lht_node_t *nd)
 
 void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn)
 {
-	lht_node_t *n;
+	lht_node_t *n, *cfr;
 
 	if (rnd_conf_main_root[target] != NULL)
 		lht_dom_uninit(rnd_conf_main_root[target]);
 
 	rnd_conf_main_root[target] = lht_dom_init();
+
+
 	if (source_fn != NULL)
 		lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
-	rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
-	rnd_conf_main_root[target]->root->doc = rnd_conf_main_root[target];
+
+	if (target != RND_CFR_PROJECT) {
+		rnd_conf_main_root[target]->root = lht_dom_node_alloc(LHT_LIST, rnd_conf_list_name());
+		rnd_conf_main_root[target]->root->doc = rnd_conf_main_root[target];
+		cfr = rnd_conf_main_root[target]->root;
+	}
+	else
+		cfr = init_project_conf(rnd_conf_main_root[target]);
+
 	n = lht_dom_node_alloc(LHT_HASH, "overwrite");
-	lht_dom_list_insert(rnd_conf_main_root[target]->root, n);
+	lht_dom_list_insert(cfr, n);
 }
 
 /*****************/
