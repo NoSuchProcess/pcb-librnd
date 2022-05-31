@@ -120,3 +120,22 @@ void rnd_conf_state_load(rnd_conf_state_t *src)
 }
 
 #undef LOAD
+
+void rnd_conf_state_init_from(rnd_conf_state_t *src)
+{
+	rnd_conf_role_t r;
+
+	conf_interns = src->conf_interns;
+	conf_files_inited = src->conf_files_inited;
+	rnd_conf_in_production = src->rnd_conf_in_production;
+
+	for(r = 0; r < RND_CFR_max_real; r++) {
+		if ((r == RND_CFR_DESIGN) || (r == RND_CFR_PROJECT))
+			continue;
+		rnd_conf_main_root[r] = src->rnd_conf_main_root[r];
+		rnd_conf_main_root_replace_cnt[r] = src->rnd_conf_main_root_replace_cnt[r];
+		rnd_conf_main_root_lock[r] = src->rnd_conf_main_root_lock[r];
+		rnd_conf_lht_dirty[r] = src->rnd_conf_lht_dirty[r];
+		rnd_conf_plug_root[r] = src->rnd_conf_plug_root[r];
+	}
+}
