@@ -388,8 +388,8 @@ char *rnd_dirname_real(const char *path)
 	char *dn = rnd_dirname(path);
 
 	if (dn == NULL)
-		return NULL;
+		return rnd_lrealpath(".");
 
-	return rnd_lrealpath(dn);;
+	return rnd_lrealpath(dn);
 }
 
