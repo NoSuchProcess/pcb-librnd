@@ -370,7 +370,13 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 			if (e == NULL)
 				return;
 			if (e == lt->cursor) { /* second click */
-				ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
+				lesstif_attr_dlg_t *ctx;
+				int widx = attr_get_idx(lt->w, &ctx);
+				if (widx < 0)
+					return;
+
+				if (!(ctx->attrs[widx].hatt_flags & RND_HATF_TREE_NO_AUTOEXP))
+					ltf_tree_expcoll(lt, lt->cursor, !lt->cursor->flags.is_unfolded);
 				REDRAW();
 				rnd_trace("tree dbl click {enter}\n");
 				valchg(lt->w, lt->w, lt->w);

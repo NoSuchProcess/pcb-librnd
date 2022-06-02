@@ -218,7 +218,7 @@ static gboolean tree_table_filter_visible_func(GtkTreeModel *model, GtkTreeIter 
 /* Activation (e.g. double-clicking) of a footprint row. As a convenience
 to the user, GTK provides Shift-Arrow Left, Right to expand or
 contract any node with children. */
-static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr, int call_changed)
+static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr, int call_changed, int auto_exp)
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -226,10 +226,12 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 	model = gtk_tree_view_get_model(tree_view);
 	gtk_tree_model_get_iter(model, &iter, path);
 
-	if (gtk_tree_view_row_expanded(tree_view, path))
-		gtk_tree_view_collapse_row(tree_view, path);
-	else
-		gtk_tree_view_expand_row(tree_view, path, FALSE);
+	if (auto_exp) {
+		if (gtk_tree_view_row_expanded(tree_view, path))
+			gtk_tree_view_collapse_row(tree_view, path);
+		else
+			gtk_tree_view_expand_row(tree_view, path, FALSE);
+	}
 
 	if (call_changed) {
 		attr_dlg_t *ctx = g_object_get_data(G_OBJECT(tree_view), RND_OBJ_PROP);
@@ -321,7 +323,7 @@ static gboolean rnd_gtk_tree_table_key_press_cb(GtkWidget *wdg, long mods, long 
 	if (enter_key || force_activate) {
 		path = gtk_tree_model_get_path(model, &iter);
 		if (path != NULL) {
-			tree_row_activated(tree_view, path, NULL, attr, !!enter_key);
+			tree_row_activated(tree_view, path, NULL, attr, !!enter_key, enter_key || !(attr->hatt_flags & RND_HATF_TREE_NO_AUTOEXP));
 		}
 		gtk_tree_path_free(path);
 	}

@@ -1,4 +1,4 @@
-static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr, int call_changed);
+static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr, int call_changed, int auto_exp);
 
 /* Return the x coord of the first non-arrow pixel or -1 if there's no arrow */
 static int rnd_gtk_tree_table_arrow_width(GtkTreeView *tv, GtkTreePath *tp)
@@ -30,7 +30,7 @@ static gboolean rnd_gtk_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *
 				return FALSE; /* do not activate whenclicked on the arrow (interferes with gtk auto expand) */
 
 			gtk_tree_model_get_iter(model, &iter, path);
-			tree_row_activated(tv, path, NULL, attr, 0);
+			tree_row_activated(tv, path, NULL, attr, 0, !(attr->hatt_flags & RND_HATF_TREE_NO_AUTOEXP));
 		}
 	}
 
@@ -54,7 +54,7 @@ static gboolean rnd_gtk_tree_table_button_release_cb(GtkWidget *widget, GdkEvent
 		gtk_tree_model_get_iter(model, &iter, path);
 		/* Do not activate the row if LEFT-click on a "parent category" row. */
 		if (ev->button.button != 1 || !gtk_tree_model_iter_has_child(model, &iter))
-			tree_row_activated(tv, path, NULL, attr, 0);
+			tree_row_activated(tv, path, NULL, attr, 0, !(attr->hatt_flags & RND_HATF_TREE_NO_AUTOEXP));
 	}
 
 	return FALSE;
