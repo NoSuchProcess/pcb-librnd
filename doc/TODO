@@ -31,6 +31,7 @@
 	- rename conf_board_ignore - it also ignores project
 	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
+	- revise events: move anything not used by librnd to apps
 	- rename textual event names from pcbev_* in event.c
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- hid_t spares: some function ptrs are spent, move them, refill spares
@@ -63,7 +64,6 @@
 			- thus it needs to be per design
 			- but if a new plugin registers a new field, that needs to be done in every existing design!
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
-		- event name cleanup: do not use BOARD to design (or to something better)
 		- mark each event [local] or [global]
 		- rename rnd_hidlib_t to rnd_design_t (or to something better)
 		- cleanup: extned callbacks in rnd_conf_hid_callbacks_t to pass hidlib (multiple callbacks with different designs if multiple open designs are changed!)
