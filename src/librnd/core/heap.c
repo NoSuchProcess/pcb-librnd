@@ -60,10 +60,10 @@ static rnd_heap_cost_t MIN_COST = 0;
 static int __heap_is_good_slow(rnd_heap_t * heap)
 {
 	int i;
-	/* heap condition: key in each node should be smaller than in its children */
-	/* alternatively (and this is what we check): key in each node should be
-	 * larger than (or equal to) key of its parent. */
-	/* note that array element[0] is not used (except as a sentinel) */
+	/* heap condition: key in each node should be smaller than in its children.
+	   Alternatively (and this is what we check): key in each node should be
+	   larger than (or equal to) key of its parent.
+	   Note that array element[0] is not used (except as a sentinel) */
 	for (i = 2; i < heap->size; i++)
 		if (heap->element[i].cost < heap->element[i / 2].cost)
 			return 0;
@@ -142,22 +142,21 @@ void rnd_heap_insert(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data)
 	if (heap->size + 1 >= heap->max) {
 		heap->max *= 2;
 		if (heap->max == 0)
-			heap->max = 256;					/* default initial heap size */
+			heap->max = 256; /* default initial heap size */
 		heap->element = (struct heap_element *) realloc(heap->element, heap->max * sizeof(*heap->element));
 	}
 	heap->size++;
 	assert(heap->size < heap->max);
 	heap->element[heap->size].cost = cost;
 	heap->element[heap->size].data = data;
-	__upheap(heap, heap->size);		/* fix heap condition violation */
+	__upheap(heap, heap->size); /* fix heap condition violation */
 	assert(__heap_is_good(heap));
 	return;
 }
 
 /* this procedure moves down the heap, exchanging the node at position
- * k with the smaller of its two children as necessary and stopping when
- * the node at k is smaller than both children or the bottom is reached.
- */
+   k with the smaller of its two children as necessary and stopping when
+   the node at k is smaller than both children or the bottom is reached. */
 static void __downheap(rnd_heap_t * heap, int k)
 {
 	struct heap_element v;
@@ -206,7 +205,7 @@ void *rnd_heap_replace(rnd_heap_t * heap, rnd_heap_cost_t cost, void *data)
 
 	heap->element[0].cost = cost;
 	heap->element[0].data = data;
-	__downheap(heap, 0);					/* ooh, tricky! */
+	__downheap(heap, 0); /* ooh, tricky! */
 
 	assert(__heap_is_good(heap));
 	return heap->element[0].data;
