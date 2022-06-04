@@ -51,8 +51,8 @@ unsigned long rnd_log_next_ID = 0;
 rnd_logline_t *rnd_log_first, *rnd_log_last;
 
 
-	/* allocate a new log line; for efficiency pretend it is a string during
-	   the allocation */
+/* allocate a new log line; for efficiency pretend it is a string during
+   the allocation */
 #define RND_MSG_PREPARE_BUF(buf) \
 	do { \
 		gds_enlarge(buf, sizeof(rnd_logline_t)); \
