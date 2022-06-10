@@ -210,8 +210,7 @@ void rnd_hid_remove_hid(rnd_hid_t *hid)
 
 static void rnd_hid_load_gui_plugin(const char *plugname);
 
-/* Load all hid_* plugins from all puplug search paths */
-static void rnd_hid_load_all_gui_plugins(void)
+void rnd_hid_do_all_gui_plugins(void *ctx, int (*cb)(void *ctx, const char *name, const char *dir, const char *fn))
 {
 	char **dir;
 	gds_t tmp = {0};
@@ -238,10 +237,8 @@ static void rnd_hid_load_all_gui_plugins(void)
 				if (strcmp(s, ".pup") != 0)
 					continue;
 				*s = '\0';
-
-				if (rnd_conf.rc.verbose >= RND_MSG_INFO)
-					fprintf(stderr, "-- all-hid-load: '%s' ('%s' from %s)\n", tmp.array, fn, *dir);
-				rnd_hid_load_gui_plugin(tmp.array);
+				if (cb(ctx, tmp.array, *dir, fn) != 0)
+					break;
 			}
 		}
 
@@ -249,6 +246,21 @@ static void rnd_hid_load_all_gui_plugins(void)
 	}
 	gds_uninit(&tmp);
 }
+
+static int load_all_gui_plugins_cb(void *ctx, const char *name, const char *dir, const char *fn)
+{
+	if (rnd_conf.rc.verbose >= RND_MSG_INFO)
+		fprintf(stderr, "-- all-hid-load: '%s' ('%s' from %s)\n", name, fn, dir);
+	rnd_hid_load_gui_plugin(name);
+	return 0;
+}
+
+/* Load all hid_* plugins from all puplug search paths */
+static void rnd_hid_load_all_gui_plugins(void)
+{
+	rnd_hid_do_all_gui_plugins(NULL, load_all_gui_plugins_cb);
+}
+
 
 /* low level (pup) load a plugin if it is not already loaded; if plugname is
    NULL, try to load all plugins */
