@@ -1,6 +1,7 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
 	- DAD: on fsd dir change filelist scroll state is not reset [report: Wojciech]
+	- BUG: gtk4+gl doesn't react on grid color conf changes [report: Alain]
 
 *** Later releases ***
 
