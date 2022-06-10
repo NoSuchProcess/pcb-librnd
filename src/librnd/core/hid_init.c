@@ -367,6 +367,10 @@ rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
 		if (gui != NULL)
 			return gui;
 
+		gui = rnd_hid_find_gui(hidlib, "gtk4_gl");
+		if (gui != NULL)
+			return gui;
+
 		return NULL;
 	}
 
