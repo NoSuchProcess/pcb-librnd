@@ -32,6 +32,7 @@
 
 #include <stdlib.h>
 #include <locale.h>
+#include <ctype.h>
 
 #ifdef __WIN32__
 #include <wchar.h>
@@ -65,6 +66,7 @@
 #include <librnd/core/funchash.h>
 #include <librnd/core/hid_menu.h>
 #include <librnd/core/compat_lrealpath.h>
+#include <librnd/core/safe_fs.h>
 #include "../../../config.h"
 
 int rnd_coord_t_size = sizeof(rnd_coord_t);
@@ -259,6 +261,44 @@ static int load_all_gui_plugins_cb(void *ctx, const char *name, const char *dir,
 static void rnd_hid_load_all_gui_plugins(void)
 {
 	rnd_hid_do_all_gui_plugins(NULL, load_all_gui_plugins_cb);
+}
+
+static int list_gui_cb(void *ctx, const char *name, const char *dir, const char *fn)
+{
+	gds_t *tmp = ctx;
+	char *end, *line, buff[1024], *desc = "<description not available>";
+	FILE *f;
+
+	tmp->used = 0;
+	gds_append_str(tmp, dir);
+	gds_append(tmp, RND_DIR_SEPARATOR_C);
+	gds_append_str(tmp, fn);
+
+	f = rnd_fopen(NULL, tmp->array, "r");
+	if (f != NULL) {
+		while((line = fgets(buff, sizeof(buff), f)) != NULL) {
+			while(isspace(*line)) line++;
+			if (strncmp(line, "$short", 6) == 0) {
+				desc = line + 6;
+				while(isspace(*desc)) desc++;
+				end = strpbrk(desc, "\r\n");
+				if (end != NULL)
+					*end = '\0';
+				break;
+			}
+		}
+		fclose(f);
+	}
+
+	fprintf(stderr, "\t%-16s %s\n", name, desc);
+	return 0;
+}
+
+void rnd_hid_print_all_gui_plugins(void)
+{
+	gds_t tmp = {0};
+	rnd_hid_do_all_gui_plugins(&tmp, list_gui_cb);
+	gds_uninit(&tmp);
 }
 
 
