@@ -2,6 +2,7 @@
 - 3.2.0: ABI compatible, API extensions
 	- DAD: on fsd dir change filelist scroll state is not reset [report: Wojciech]
 	- BUG: gtk4+gl doesn't react on grid color conf changes [report: Alain]
+	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 
 *** Later releases ***
 
