@@ -62,6 +62,7 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
+	- allow no-drawing-area mode for camv-rnd for negative coordinate gerbers
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
 			- it hosts native (merged) config data
