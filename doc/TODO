@@ -60,6 +60,8 @@
 		- switch over librnd published templates, see TODO.template
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
+	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
+		- apps may refer to it through preferences dialog
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
 			- it hosts native (merged) config data
