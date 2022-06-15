@@ -351,7 +351,8 @@ static int rnd_gtk_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_v
 	const char *s = val->str;
 
 	if ((s == NULL) || (*s == '\0')) {
-TODO("DAD: remove cursor - is it possible with gtk?")
+		GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tt));
+		gtk_tree_selection_unselect_all(sel);
 		return 0;
 	}
 
