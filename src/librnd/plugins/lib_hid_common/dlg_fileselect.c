@@ -271,11 +271,12 @@ static void fsd_sort(fsd_ctx_t *ctx)
 	}
 }
 
-static void fsd_load(fsd_ctx_t *ctx)
+static void fsd_load(fsd_ctx_t *ctx, int reset_scroll)
 {
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wfilelist];
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
+	const char *first_path = NULL;
 	long n;
 
 	rnd_dad_tree_clear(tree);
@@ -284,6 +285,7 @@ static void fsd_load(fsd_ctx_t *ctx)
 		char ssize[64], smtime[64];
 		struct tm *tm;
 		time_t t;
+		rnd_hid_row_t *r;
 
 /*		printf("list: %s dir=%d %ld %f\n", ctx->des.array[n].name, ctx->des.array[n].is_dir, ctx->des.array[n].size, ctx->des.array[n].mtime);*/
 
@@ -303,7 +305,17 @@ static void fsd_load(fsd_ctx_t *ctx)
 		cell[1] = rnd_strdup(ssize);
 		cell[2] = rnd_strdup(smtime);
 		cell[3] = NULL;
-		rnd_dad_tree_append(attr, NULL, cell);
+		r = rnd_dad_tree_append(attr, NULL, cell);
+		if (first_path == NULL)
+			first_path = r->path;
+	}
+
+	if (reset_scroll && (first_path != NULL)) {
+		rnd_hid_attr_val_t hv;
+		hv.str = first_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilelist, &hv);
+		hv.str = NULL;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilelist, &hv);
 	}
 }
 
@@ -436,7 +448,7 @@ static void fsd_cd(fsd_ctx_t *ctx, const char *rel)
 	fsd_clear(ctx);
 	fsd_list(ctx);
 	fsd_sort(ctx);
-	fsd_load(ctx);
+	fsd_load(ctx, 1);
 }
 
 #undef load_dir_btn
@@ -462,7 +474,7 @@ static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 {
 	fsd_ctx_t *ctx = caller_data;
 	fsd_sort(ctx);
-	fsd_load(ctx);
+	fsd_load(ctx, 0);
 }
 
 /* Handle new text entered in the path field */
