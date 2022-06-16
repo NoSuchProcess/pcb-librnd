@@ -675,8 +675,13 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rv = -1;
 		}
 		else {
-			RND_DAD_NEW(dlgname, dad->dlg, txt, dad, (cmd[3] == '_'), dad_close_cb);
-			rv = RND_DAD_CURRENT(dad->dlg);
+			int modal = (cmd[3] == '_');
+			RND_DAD_NEW(dlgname, dad->dlg, txt, dad, modal, dad_close_cb);
+			if (modal) {
+				rv = RND_DAD_RUN(dad->dlg);
+			}
+			else
+				rv = RND_DAD_CURRENT(dad->dlg);
 		}
 	}
 	else {
