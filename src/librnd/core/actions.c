@@ -219,17 +219,24 @@ const rnd_action_t *rnd_find_action(const char *name, fgw_func_t **f_out)
 	fgw_func_t *f;
 	hid_cookie_action_t *ca;
 
-	if (name == NULL)
+	if (name == NULL) {
+		if (f_out != NULL)
+			*f_out = NULL;
 		return NULL;
+	}
 
 	f = rnd_act_lookup(name);
 	if (f == NULL) {
+		if (f_out != NULL)
+			*f_out = NULL;
 		rnd_message(RND_MSG_ERROR, "unknown action `%s'\n", name);
 		return NULL;
 	}
 	ca = f->reg_data;
 	if (f_out != NULL)
 		*f_out = f;
+	if (ca == NULL)
+		return NULL;
 	return ca->action;
 }
 
