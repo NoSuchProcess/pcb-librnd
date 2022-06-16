@@ -553,7 +553,7 @@ static int vao_new_context(void)
 
 
 hidgl_draw_t hidgl_draw_vao = {
-	"vao",
+	"vao", 1,
 
 	vao_init,
 	vao_uninit,

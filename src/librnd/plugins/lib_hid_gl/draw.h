@@ -41,6 +41,8 @@ typedef struct hidgl_draw_s hidgl_draw_t;
 struct hidgl_draw_s {
 	const char *name;
 
+	unsigned xor_inverts_clr:1;  /* if color in xor is 1-r;1-g;1-b */
+
  /* Returns 0 if the drawing backend is compatible with host opengl */
 	int (*init)(void);
 

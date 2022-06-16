@@ -174,7 +174,10 @@ void hidgl_set_color(float r, float g, float b, float a)
 
 void hidgl_set_grid_color(float r, float g, float b)
 {
-	hidgl_draw.set_color(1.0-r, 1.0-g, 1.0-b, 1);
+	if (hidgl_draw.xor_inverts_clr)
+		hidgl_draw.set_color(1.0-r, 1.0-g, 1.0-b, 1);
+	else
+		hidgl_draw.set_color(r, g, b, 1);
 }
 
 void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)

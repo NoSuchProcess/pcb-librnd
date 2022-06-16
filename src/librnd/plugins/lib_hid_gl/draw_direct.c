@@ -228,6 +228,7 @@ static void direct_pop_matrix(int projection)
 
 static void direct_draw_points_pre(GLfloat *pts)
 {
+	glColor3f(red, green, blue);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, 0, pts);
 }
@@ -365,7 +366,7 @@ static int direct_new_context(void)
 
 
 hidgl_draw_t hidgl_draw_direct = {
-	"direct",
+	"direct", 0,
 
 	direct_init,
 	direct_uninit,

@@ -68,7 +68,7 @@ static int error_init(void)
 }
 
 hidgl_draw_t hidgl_draw_error = {
-	"error",
+	"error", 0,
 
 	error_init,
 	error_uninit,
