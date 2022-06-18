@@ -52,7 +52,7 @@ static GtkWidget *rnd_gtk_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *
 	prg = gtk_progress_bar_new();
 
 	if (attr->rnd_hatt_flags & RND_HATF_PRG_SMALL)
-		gtk_widget_set_size_request(prg, 4, 4);
+		gtk_widget_set_size_request(prg, 16, 6);
 	else
 		gtk_widget_set_size_request(prg, -1, 16);
 
