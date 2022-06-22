@@ -59,6 +59,9 @@ rnd_unit_t rnd_units[] = {
 	{"MHz",  'M', 0.000001,    RND_UNIT_FREQ,  RND_UNIT_ALLOW_MHZ, 6},
 	{"GHz",  'G', 0.000000001, RND_UNIT_FREQ,  RND_UNIT_ALLOW_GHZ, 6},
 
+	/* temporary, for sch-rnd - should be removed in librnd4 */
+	{"k",    'K', 1.0/1024000.0, RND_UNIT_CSCHEM,  RND_UNIT_ALLOW_K, 3},
+
 	/* aliases - must be a block at the end */
 	{"inch",  0,  0.001,    RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5},
 	{"pcb",   0,  100,      RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0} /* old io_pcb unit */
@@ -96,12 +99,11 @@ const rnd_unit_t *rnd_get_unit_struct_(const char *suffix, int strict)
 	if (s_len <= 0)
 		return NULL;
 
-	if (strict) {
-		for (i = 0; i < N_UNITS; ++i)
-			if (strcmp(suffix, rnd_units[i].suffix) == 0)
-				return &rnd_units[i];
-	}
-	else {
+	for (i = 0; i < N_UNITS; ++i)
+		if (strcmp(suffix, rnd_units[i].suffix) == 0)
+			return &rnd_units[i];
+
+	if (!strict) {
 		for (i = 0; i < N_UNITS; ++i)
 			if (strncmp(suffix, rnd_units[i].suffix, s_len) == 0)
 				return &rnd_units[i];
@@ -176,6 +178,7 @@ rnd_coord_t rnd_unit_to_coord(const rnd_unit_t *unit, double x)
 		case RND_UNIT_METRIC:   base = RND_MM_TO_COORD(x); break;
 		case RND_UNIT_IMPERIAL: base = RND_MIL_TO_COORD(x); break;
 		case RND_UNIT_FREQ:     base = x; break;
+		case RND_UNIT_CSCHEM:   base = x; break;
 	}
 	res = rnd_round(base/unit->scale_factor);
 
@@ -189,6 +192,7 @@ rnd_coord_t rnd_unit_to_coord(const rnd_unit_t *unit, double x)
 				return -RND_COORD_MAX;
 			break;
 		case RND_UNIT_FREQ:
+		case RND_UNIT_CSCHEM:
 			break;
 	}
 	return res;
