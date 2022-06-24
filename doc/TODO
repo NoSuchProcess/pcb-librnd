@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.0: ABI compatible, API extensions
-	- BUG: gtk4+gl doesn't react on grid color conf changes [report: Alain]
 	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 
 *** Later releases ***
