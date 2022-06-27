@@ -1,10 +1,10 @@
 Selects the tool or changes tool related global states.
 <p>
 <table border=1 cellspacing=0>
-	<tr><th> Arc <br> Arrow <br> Copy <br> InsertPoint <br> Line <br> Lock
-	         <br> Move <br> None <br> PasteBuffer <br> Poly <br> PolyHole <br> Rectangle
-	         <br> Remove <br> Rotate <br> Text <br> Thermal <br> Via <br> ...
-	<td> Select the indicated tool.
+	<tr><th> &lt;app-specific-tool-name&gt;
+	<td> Select the indicated tool. Tool names depend on the application and
+	     plugins loaded. For example in pcb-rnd one of the valid tool names
+	     is <b>Line</b>.
 
 	<tr><th> Press
 	<td> Called when you press the mouse button, or move the mouse.
@@ -22,7 +22,7 @@ Selects the tool or changes tool related global states.
 	     to the Arrow tool.
 
 	<tr><th> Stroke
-	<td> If pcb-rnd was built with libstroke, this invokes the stroke
+	<td> If librnd was built with libstroke, this invokes the stroke
 	     input method.  If not, this will restart a drawing mode if you were
 	     drawing, else it will select objects.
 
