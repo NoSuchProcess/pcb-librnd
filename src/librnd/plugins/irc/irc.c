@@ -190,6 +190,7 @@ static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	}
 	uirc_disconnect(&ctx->irc);
 
+	ctx->state = IRC_OFF; /* irc_poll() may have overwritten this */
 	free(ctx->server); ctx->server = NULL;
 	free(ctx->chan); ctx->chan = NULL;
 
