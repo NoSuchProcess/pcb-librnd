@@ -1,7 +1,10 @@
-librnd 3.1.2
+librnd 3.2.0
 ~~~~~~~~~~~~
 
-This release contains only minor bugfixes. Bugfix highlight:
- - proper opengl detection on opengl ES
- - opengl renders thin objects (specifid in pixels) properly; this affects
-   the "red" "xor drawn" overlays, e.g. when things are being moved
+Major API extension release for supporting sch-rnd. New API includes:
+ - extensions to the pane widget so positions can be saved/restored
+ - conf and DAD upgrades for supporting multiple designs in parallel
+ - DAD support for small progress bar
+ - import the generic part of pixmap, ps and svg plugins (both import
+   and export) from pcb-rnd so other ringdove apps can reuse them
+
