@@ -1,3 +1,153 @@
+librnd 3.2.0 (r34311)
+~~~~~~~~~~~~~~~~~~~~~
+	[API]
+		-Add: libualloc is now part of the librnd API
+
+	[conf]
+		-Fix: conf_set: check array index only if target is not a list
+		-Fix: conf_reset() should create valid project file root hash on project role
+		-Add: optional hook for letting apps ignore config nodes
+		-Add: comment explaining which design file name to pass to the function that calculates the project file name
+		-Add: rnd_conf_load_as() accepts fn==NULL and creates a new empty lihata doc for the role
+		-Add: event to indicate if a stand-alone config file has been written (useful for catching project file writes)
+		-Add: helper function for copying shared confs/states (when creating a new design)
+		-Add: temporary API for sch-rnd for multi-sheet support
+		-Add: collect all the conf internal states in a struct for multi-support
+		-Add: alloc/free/load/save config states (temporary multi-sheet support)
+		-Split: conf field allocation from registration so it can be reused in temporary multisheet support
+
+	[core]
+		-Fix: don't hardwire pcb-rnd when setting up paths for app-specific plugin dirs and exec dir
+		-Fix: main fungw context name is the app's name, not hardwire pcb-rnd
+		-Fix: don't hardwire pcb-rnd in generic progress bar name
+		-Fix: conf subsystem uses app's name instead of hardwired pcb-rnd for lihata node names ("file headers"), with an occassional fallback to the old pcb-rnd for backward compatibility
+		-Fix: when searching for the policy-prio node upward, do not assume file starts with the config subtree; in a project file there is one more level
+		-Fix: export attribute parsing: don't segfault on missing arg, report error
+		-Fix: export parameter parser always reports error using rnd_message() and doesn't exit() but return -1 (just in case it's called from the GUI or an action)
+		-Fix: export arg conversion: always check the result of numeric conversion and throw an error when failed
+		-Fix: accept hid_ prefixed full plugin names for --gui/--hid
+		-Fix: rnd_find_action() shouldn't crash but return NULL on non-action fungw functions (still fills in f_out)
+		-Move: "ensure conf root" call from preferences dialog code to core - will be used by the window placement code as well
+		-Add: rnd_ver_str, a compiled-in version for printing runtime ver
+		-Split: rnd_message() into reusable parts so a more macro-friendly API variant can be provided later
+		-Add: rnd_vmessage(): same as rnd_message() but gets vararg as va_list
+		-Add: rnd_message(): error/warning shorthand functions without level in first arg (makes it easier for sch-rnd error reporting mechanism)
+		-Add: helper function to determine exec prefix
+		-Add: DAD API: macro to name panes - pane name will be used to remember pane position and restore (by window placement)
+		-Add: events for saving/loading pane positions
+		-Add: rnd_dirname() and rnd_dirname_real()
+		-Add: if new rnd_app.multi_design is 1, allow multiple design file names on the command line
+		-Add: generalize "find all gui plugins" code
+		-Add: helper function to print all GUI hids available, to stderr (useful for --help invocation)
+		-Add: gtk4_gl is somewhat safe by now, so --gui gtk should fall back on it if gtk2 is not available
+		-Add: temporarily add 'k' as unit (1024*1000) for cschem until librnd 4.0.0 offers a more dynamic unit system for apps
+
+	[dad]
+		-Add: rnd_dad_preview_zoomto() corner case: if view is NULL, do not change zoom/pan, only redraw
+		-Add: define pane name syntax
+		-Add: name panes in librnd provided dialog boxes so their positions can be remembered
+		-Add: RND_HATF_PRG_SMALL for getting progress bars small where needed
+		-Add: tree widget: RND_HATF_TREE_NO_AUTOEXP to make "auto-expand/auto-collapse on row activation" optional
+
+	[dialogs]
+		-Fix: export dialog: set rnd_render to the exporter before calling do_export() - most exporters will depend on rnd_render when using GCs
+
+	[doc]
+		-Fix: action ref: Tool(): shouldn't list pcb-rnd-specific tool names
+		-Fix: action ref: Tool(): stroke plugin is librnd's, not pcb-rnd's
+		-Fix: remove pcb-rnd references and use generic language instead in action doc
+		-Add: developer doc on multiple design capability
+
+	[gtk]
+		-Fix: pane is really realized only after the first resize is finished; delay size sets until that
+		-Fix: when freeing pane widget data, use the right gtk widget for getting and setting the private pointer
+		-Cleanup: remove "pcb-rnd" from windows-only gtk cache update message
+		-Change: pane set while create: switch over from dynamic allocated timers to the central widget private data timer so that widget destroy can remove it
+		-Add: prepare gtk panes to have a widget context struct to maintain timer states for reporting resizes
+		-Add: paned: implement get pos timer
+		-Add: generate event on pane geo change timer so the new pane position can be saved
+		-Add: when a paned widget is destroyed while a get-timer is still running, force-emit the event after stopping the timer so the last known position is saved
+		-Add: initial pane position setting, only when the widget is already realized, using the event query desired position (from the placement code at the moment)
+		-Add: tighter window placement on gtk4: catch dialog map event and run the resizer there
+		-Add: implement get_hidlib()
+		-Add: respect rnd_hid_enable_per_dialog_hidlib in ->get_dad_hidlib()
+		-Add: unexposed option for tracking original hidlib for local preview widgets
+		-Add: implement RND_HATF_PRG_SMALL
+		-Add: null set on tree table should remove cursor
+
+
+	[hid]
+		-Add: API: a call to query current hidlib from the GUI
+		-Add: temporary multi-design support: rnd_hid_enable_per_dialog_hidlib for sch-rnd before 4.0.0
+
+	[hid_batch]
+		-Add: ->get_hidlib
+
+	[import_pixmap_gd]
+		-Import: plugin from pcb-rnd
+		-Fix: disable the plugin if no gd is available
+		-Update: use librnd gd config defines
+
+	[import_pixmap_gnm]
+		-Import: plugin from pcb-rnd
+
+	[import_pixmap_pnm]
+		-Add: enable the plugin
+
+	[irc]
+		-Fix: leave irc in OFF state after the window is close, even if the connection is closed in the process (so that a new window can be opened later)
+
+	[lesstif]
+		-Add: ->get_hidlib() implementation
+		-Add: respect rnd_hid_enable_per_dialog_hidlib in ->get_dad_hidlib()
+		-Add: implement RND_HATF_PRG_SMALL
+
+	[lib_exp_pixmap]
+		-Import: pcb-rnd's draw_png
+		-Rename: png to pixmap - we are exporting to various formats
+		-Add: save gd detection results in config.h and compile/install draw_pixmap
+
+	[lib_exp_text]
+		-Import: draw and media code from pcb-rnd
+		-Cleanup: misleading internal API name: "pcb" really means "round cap" in librnd context
+		-Add: spare fields in public structs
+		-Add: install headers
+		-Add: generic lpr hid lib for easy export_lpr implementation per app
+
+	[lib_hid_common]
+		-Import: export dialog from pcb-rnd
+		-Fix: export dialog: refine the no-plugin-available message to better fit the printing case
+		-Fix: typo caused direct saving window geometry to design or project didn't work (triggered save in user file)
+		-Fix: fsd: remove cursor after dir change
+		-Fix: dad() action: run_modal waits for the dialog to finish before returning
+		-Split: preference's dialog "ensure conf root exists" call to a reusable, pref-dialog-independent call (will be needed by window placement code too)
+		-Add: window placement code attemtps to load, store and save pane positions
+		-Add: save known pane positions in window placement conf lihata subtrees
+		-Add: react on pane pos set query event from the hash
+
+	[lib_hid_gl]
+		-Fix: grid color set function shall use the low level "draw" layer's set color instead of direct opengl call so it's portable (fixes gtk4 grid color problem)
+		-Fix: restore grid color on compatibility mode gl (gtk2+gl)
+
+	[scconfig]
+		-Cleanup: switch over to /local/librnd where it's easy
+		-Cleanup: rename more /pcb/ to /librnd/ in internals
+		-Cleanup: remove old buildin init tab generation
+		-Add: make rnd_hook_detect.h app subtree configurable
+		-Fix: common args, like --debug or --symbols should use app's defined APP name instead of hardwired librnd
+		-Fix: when an app plugin depends on an external (librnd) plugin and has to be changed to disable or plugin due to librnd plugin state, don't do it only on the plugin, but do it recursively to all other app plugins that depends on this app plugin as well for plugin state/dep consistency
+
+	[script]
+		-Fix: script dialog name should be librnd scripting, not pcb-rnd scripting, as all other ringdove apps have it too
+		-Add: permanent scripts: accept librnd-perma-script-v1 as header (not only pcb-rnd can be scripted); prefer this header when creating the file; still accept pcb-rnd-perma-script-v1 for compatibility
+
+	[tests]
+		-Fix: librnd test program needs to set app package name, the conf subsystem relies on it
+
+	[util]
+		-Fix: replace \ with [] for more portable regex on "." for awk pkg format parser
+
+
 librnd 3.1.2 (r34089)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
