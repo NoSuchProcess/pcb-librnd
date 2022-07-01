@@ -59,3 +59,9 @@
 	Support library plugin for 'cloud' footprint/symbol access plugin
 	that integrates remote, web access resources like edakrill or
 	gedasymbols.org.
+
+@librnd3-pixmap
+	Import and export pixmap images.
+
+	Low level support for png/jpeg/gif export plugins, low level import
+	pixmap objects using libgd.
