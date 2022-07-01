@@ -11,6 +11,7 @@
 		- test: sch-rnd, open two sheets from two paths, {i c p} library window, look at tree tab rc.path.design, switch sheets -> preferences window keeps showing the original sheet
 
 - 4.0.0: ABI incompatible (feature removal)
+	- DEL: remove hidlib->name - only pcb-rnd should use it and only as legacy feature
 	- *FEATURE: sch-rnd critical: more flexilble unit system where apps can register new units - remove k from librnd, revise sch-rnd grid menu
 		- split the unit table in two, one librnd, one app
 		- families should be registered
