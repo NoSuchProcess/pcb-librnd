@@ -13,7 +13,11 @@ A. changes that probably don't need action
 
 B. changes that probably DO need action
 
-TODO: new package, librnd-pixmap
+1. new package: librnd-pixmap
+   Contains plguins with new dependencies (libgd and its subpackages for
+   png, jpeg and gif). Contains plugins import_pixmap_gd lib_exp_pixmap.
+
+2. the ./configure line has changed accordingly
 
 
 Packaging changes between 3.1.2 and 3.1.1

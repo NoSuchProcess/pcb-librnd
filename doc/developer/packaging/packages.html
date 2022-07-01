@@ -10,6 +10,7 @@
 <tr><th>librnd3-hid-gtk2-gl<td> librnd3 librnd3-lib-gtk librnd3-lib-gl<td> hid_gtk2_gl
 <tr><th>librnd3-cloud<td> librnd3<td> lib_wget
 <tr><th>librnd3-lib-gui<td> librnd3<td> irc lib_hid_common
+<tr><th>librnd3-pixmap<td> librnd3<td> import_pixmap_gd lib_exp_pixmap
 <tr><th>librnd3-hid-gtk2-gdk<td> librnd3 librnd3-lib-gtk<td> hid_gtk2_gdk
 <tr><th>librnd3-lib-gtk<td> librnd3 librnd3-lib-gui<td> lib_gtk2_common
 <tr><th>librnd3-hid-lesstif<td> librnd3 librnd3-lib-gui<td> hid_lesstif
@@ -25,6 +26,7 @@
 <tr><th>librnd3-hid-gtk2-gl<td> $P/hid_gtk2_gl.pup $P/hid_gtk2_gl.so <i></i><td>	GUI: gtk2, opengl<td> 	Hardware accelerated (opengl) rendering on gtk2.  
 <tr><th>librnd3-cloud<td> $P/lib_wget.pup $P/lib_wget.so <i></i><td>	Networking plugins for accessing remote resources.<td> 	Support library plugin for 'cloud' footprint/symbol access plugin 	that integrates remote, web access resources like edakrill or 	gedasymbols.org. 
 <tr><th>librnd3-lib-gui<td> $P/irc.pup $P/irc.so $P/lib_hid_common.pup $P/lib_hid_common.so <i></i><td>	Support library for building the GUI.<td> 	Provides librnd specific dialog boxes (e.g. fontsel) and top 	window GUI elements.  
+<tr><th>librnd3-pixmap<td> $P/import_pixmap_gd.pup $P/import_pixmap_gd.so $P/lib_exp_pixmap.pup $P/lib_exp_pixmap.so <i></i><td>&nbsp;<td>&nbsp;
 <tr><th>librnd3-hid-gtk2-gdk<td> $P/hid_gtk2_gdk.pup $P/hid_gtk2_gdk.so <i></i><td>	GUI: gtk2, software render<td> 	Software rendering on gtk2, using the gdk API.  
 <tr><th>librnd3-lib-gtk<td> $P/lib_gtk2_common.pup $P/lib_gtk2_common.so <i></i><td>	Support library for building the GUI with gtk.<td> 	Provides the common gtk code (e.g. dialog box engine, input handling) 	for any gtk based HID plugin.  
 <tr><th>librnd3-hid-lesstif<td> $P/hid_lesstif.pup $P/hid_lesstif.so <i></i><td>	GUI: motif/lesstif, software render<td> 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.  
@@ -43,6 +45,8 @@
 --buildin-lib_gensexpr
 --buildin-hid_batch
 --buildin-lib_portynet
+--buildin-lib_exp_text
+--buildin-import_pixmap_pnm
 --plugin-lib_hid_gl
 --plugin-hid_gtk2_gdk
 --plugin-lib_wget
@@ -50,9 +54,11 @@
 --plugin-lib_hid_common
 --plugin-hid_gtk2_gl
 --plugin-lib_gtk2_common
+--plugin-import_pixmap_gd
 --plugin-hid_lesstif
 --plugin-hid_gtk4_gl
 --plugin-irc
+--plugin-lib_exp_pixmap
 
 </body>
 </html>
