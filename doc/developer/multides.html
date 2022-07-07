@@ -139,7 +139,7 @@ that on in one way or another to any of their callbacks.
 <p>
 There is a global event for switching the current design shown on the GUI.
 In this document this event is called SCD.
-If a dialog box is global:
+If a dialog box is <b>global</b>:
 <p>
 <ul>
 	<li> only one instance can be open per process (the dialog is not per design)
@@ -148,13 +148,16 @@ If a dialog box is global:
 	<li> the necessary GUI updates are also done on the SCD event
 </ul>
 <p>
+A typical example of "single instance <b>global</b> dialog" is the preferences dialog.
+Only one instance can be open, and it changes its contents when the current
+design is switched.
+<p>
+The other type of dialog box is <b>local</b>, which presnets states/data of
+a given design and is not affected by SCD.
+<p>
 A typical example of a "multiple instance local dialog" is pcb-rnd's propedit
 dialog: there can be multiple propedits open, but each is bound to a specific
 board, listing and manipulating objects of only that one board.
-<p>
-A typical example of "single instance global dialog" is the preferences dialog.
-Only one instance can be open, and it changes its contents when the current
-design is switched.
 
 <h3> events (rnd_event()) </h3>
 <p>
