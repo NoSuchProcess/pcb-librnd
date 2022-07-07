@@ -329,7 +329,7 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 					lht_dom_hash_put(nd, pos);
 				}
 
-				pos->data.text.value = rnd_strdup_printf("%.05f", (double)i->value / PANE_INT2DBL+0.01);
+				pos->data.text.value = rnd_strdup_printf("%.05f", (double)i->value / PANE_INT2DBL);
 			}
 		}
 	}
