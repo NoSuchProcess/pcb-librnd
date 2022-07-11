@@ -4,6 +4,7 @@
 *** Later releases ***
 
 - 3.2.1: ABI compatible, no new API
+	- gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
 	- gui HID unload vs. open dialog boxes [report: Wojciech]
 		- compile gui as plugin; run sch-rnd + gtk, open library window, exit -> segf
 		- it is because the gtk plugin is unloaded and later dlg_library uninit tries to close the dialog it still thinks is open
