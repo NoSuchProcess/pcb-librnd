@@ -1,4 +1,4 @@
-librnd 3.2.0 (r34311)
+librnd 3.2.0 (r34329)
 ~~~~~~~~~~~~~~~~~~~~~
 	[API]
 		-Add: libualloc is now part of the librnd API
