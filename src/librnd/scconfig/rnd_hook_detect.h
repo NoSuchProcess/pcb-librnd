@@ -218,6 +218,8 @@ static void rnd_hook_detect_glib(int want_glib)
 
 static int rnd_hook_detect_host(void)
 {
+	require("cc/cc",  0, 1); /* don't do anything if there's no c compiler (also triggers when --LDFLAGS=invalid) */
+
 	pup_hook_detect_host();
 	fungw_hook_detect_host();
 
