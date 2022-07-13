@@ -1,7 +1,4 @@
 *** Upcoming release ***
-- 3.2.0: ABI compatible, API extensions
-
-*** Later releases ***
 
 - 3.2.1: ABI compatible, no new API
 	- gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
@@ -15,6 +12,8 @@
 	- bitmap object export in png, ps, eps, svg
 	- BUG: need to refresh preferences dialog tabs on board_changed_ev
 		- test: sch-rnd, open two sheets from two paths, {i c p} library window, look at tree tab rc.path.design, switch sheets -> preferences window keeps showing the original sheet
+
+*** Later releases ***
 
 - 3.2.2: ABI compatible, no new API
 	- BUG: pcb-rnd make test fails on conf test on musl [report: Aron]
