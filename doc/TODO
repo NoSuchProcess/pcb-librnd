@@ -1,6 +1,7 @@
 *** Upcoming release ***
 
 - 3.2.1: ABI compatible, no new API
+	- bug: error.c: pcb-rnd-log-v1 should use app's prefix instead [report: Igor2]
 	- gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
 	- gui HID unload vs. open dialog boxes [report: Wojciech]
 		- compile gui as plugin; run sch-rnd + gtk, open library window, exit -> segf
