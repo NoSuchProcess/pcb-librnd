@@ -15,6 +15,7 @@
 		- test: sch-rnd, open two sheets from two paths, {i c p} library window, look at tree tab rc.path.design, switch sheets -> preferences window keeps showing the original sheet
 	- BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
+	- FEATURE: packager's doc: list external deps for packages (vaguely)
 
 *** Later releases ***
 
