@@ -101,6 +101,7 @@ void rnd_drwpx_draw_line(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd
 void rnd_drwpx_draw_arc(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle);
 void rnd_drwpx_fill_circle(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 void rnd_drwpx_fill_polygon_offs(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
+void rnd_drwpx_draw_pixmap(rnd_drwpx_t *pctx, rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap);
 
 /*** for pcb-rnd only (for historical reasons...) ***/
 /* The result of a failed gdImageColorAllocate() call */

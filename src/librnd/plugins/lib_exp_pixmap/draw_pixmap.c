@@ -43,6 +43,7 @@ TODO("^ replace this with librnd config.h, but that needs RND_HAVE_GDIMAGE* ther
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/pixmap.h>
 
 #include <gd.h>
 
@@ -846,6 +847,65 @@ void rnd_drwpx_fill_polygon_offs(rnd_drwpx_t *pctx, rnd_hid_gc_t gc, int n_coord
 		pctx->unerase_override = 1;
 		png_fill_polygon_offs_(pctx, pctx->erase_im, gc, n_coords, x, y, dx, dy);
 		pctx->unerase_override = 0;
+	}
+}
+
+
+void rnd_drwpx_draw_pixmap(rnd_drwpx_t *pctx, rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
+{
+	double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG), w, h;
+	double xscale, yscale;
+	int ox, oy, x, y, sx3 = pixmap->sx * 3;
+
+	rsx = (double)sx * ca + (double)sy * sa;
+	rsy = (double)sy * ca + (double)sx * sa;
+	ox = cx - rsx/2;
+	oy = cy - rsy/2;
+	w = rsx / pctx->scale;
+	h = rsy / pctx->scale;
+
+	xscale = (double)pixmap->sx / w;
+	yscale = (double)pixmap->sy / h;
+
+	/* in flip view start coords need to be flipped too to preserve original area on screen */
+	if (pctx->ymirror)
+		oy += rsy;
+/*	if (pctx->xmirror)
+		ox += rsx;*/
+
+	for (y = 0; y < h; y++) {
+		unsigned char *row;
+		int ir, clr;
+
+		if (pctx->ymirror)
+			ir = (h-y-1) * yscale;
+		else
+			ir = y * yscale;
+
+		row = pixmap->p + ir * sx3;
+
+		for (x = 0; x < w; x++) {
+			unsigned long pp;
+			int tr = 0, ic;
+			unsigned int r, g, b;
+
+/*			if (pctx->xmirror)
+				ic = (w - x - 1) * xscale;
+			else*/
+				ic = x * xscale;
+
+			if ((ir < 0) || (ir >= pixmap->sy) || (ic < 0) || (ic >= pixmap->sx))
+				continue;
+			ic = ic * 3;
+			r = row[ic]; g = row[ic+1]; b = row[ic+2];
+			if (pixmap->has_transp && (r == pixmap->tr) && (g == pixmap->tg) && (b == pixmap->tb))
+				continue;
+
+			clr = gdImageColorAllocate(pctx->im, r, g, b);
+			gdImageSetPixel(pctx->im, SCALE_X(ox)+x, SCALE_Y(oy)+y, clr);
+			if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL))
+				gdImageSetPixel(pctx->erase_im, ox+x, oy+y, pctx->white->c);
+		}
 	}
 }
 
