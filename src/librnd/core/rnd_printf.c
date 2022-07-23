@@ -89,8 +89,7 @@ static inline void make_printf_spec(char *printf_spec_new, const char *printf_sp
 
 	*trunc0 = 0;
 
-	while (printf_spec[i] == '%' || isdigit(printf_spec[i]) ||
-				 printf_spec[i] == '-' || printf_spec[i] == '+' || printf_spec[i] == '#' || printf_spec[i] == '0')
+	while((printf_spec[i] == '%') || isdigit(printf_spec[i]) || (printf_spec[i] == '-') || (printf_spec[i] == '+') || (printf_spec[i] == '#') || (printf_spec[i] == '0'))
 		++i;
 
 	if (printf_spec[i] == '.') {
