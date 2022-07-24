@@ -100,6 +100,7 @@ static void rnd_pane_store(const char *dlg_id, const char *pane_id, double val)
 	if (e == NULL) {
 		wingeo_t wg = {0};
 		htsw_set(&wingeo, rnd_strdup(dlg_id), wg);
+		e = htsw_getentry(&wingeo, (char *)dlg_id);
 	}
 
 	if (!e->value.panes_inited) {
