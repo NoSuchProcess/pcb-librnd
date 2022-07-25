@@ -496,3 +496,7 @@ void rnd_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 }
 
 
+void rnd_dlg_pref_conf_board_changed(pref_ctx_t *ctx)
+{
+	dlg_conf_select_node(ctx, NULL, ctx->conf.selected_nat, ctx->conf.selected_idx);
+}

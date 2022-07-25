@@ -391,6 +391,10 @@ static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int arg
 
 	call_hook(ctx, board_changed_cb);
 	pref_win_brd2dlg(ctx);
+
+	/* builtin tabs */
+	rnd_dlg_pref_conf_board_changed(ctx);
+	rnd_dlg_pref_win_board_changed(ctx);
 }
 
 static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])

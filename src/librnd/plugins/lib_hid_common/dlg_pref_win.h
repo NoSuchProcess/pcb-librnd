@@ -3,4 +3,6 @@
 
 void rnd_dlg_pref_win_create(pref_ctx_t *ctx);
 
+void rnd_dlg_pref_win_board_changed(pref_ctx_t *ctx);
+
 #endif
