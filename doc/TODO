@@ -1,18 +1,14 @@
 *** Upcoming release ***
 
 - 3.2.1: ABI compatible, no new API
-	- bug: error.c: pcb-rnd-log-v1 should use app's prefix instead [report: Igor2]
 	- gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
-	- gui HID unload vs. open dialog boxes [report: Wojciech]
-		- compile gui as plugin; run sch-rnd + gtk, open library window, exit -> segf
-		- it is because the gtk plugin is unloaded and later dlg_library uninit tries to close the dialog it still thinks is open
-		- BUG: gtk common should go and close all dialog boxes as first step of uninit
-		- BUG: test if lesstif should go and close all dialog boxes as first step of uninit
+	+ gui HID unload vs. open dialog boxes [report: Wojciech]
+		+ compile gui as plugin; run sch-rnd + gtk, open library window, exit -> segf
+		+ it is because the gtk plugin is unloaded and later dlg_library uninit tries to close the dialog it still thinks is open
+		+ BUG: gtk common should go and close all dialog boxes as first step of uninit
+		- BUG: lesstif should do the same
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
-	- bitmap object export in png, ps, eps, svg
-	- BUG: need to refresh preferences dialog tabs on board_changed_ev
-		- test: sch-rnd, open two sheets from two paths, {i c p} library window, look at tree tab rc.path.design, switch sheets -> preferences window keeps showing the original sheet
 	- BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
 	- FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
@@ -113,6 +109,10 @@
 			- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
 		- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
+
+*** Low prio ***
+	- bitmap object export in png, ps, eps, svg
+
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
