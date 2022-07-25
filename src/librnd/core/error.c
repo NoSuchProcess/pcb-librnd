@@ -208,7 +208,7 @@ int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
 		return -1;
 
 	if (fmt_lihata) {
-		fprintf(f, "ha:pcb-rnd-log-v1 {\n");
+		fprintf(f, "ha:%s-log-v1 {\n", rnd_app.package);
 		fprintf(f, " li:entries {\n");
 	}
 
