@@ -237,6 +237,8 @@ static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *dat
 {
 	rnd_gtk_t *gctx = data;
 
+	rnd_gtk_attr_dlg_free_all(gctx);
+
 	rnd_action(gctx->hidlib, "Quit");
 
 	/* Return TRUE to keep our app running.  A FALSE here would let the
@@ -247,6 +249,7 @@ static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *dat
 static gint destroy_chart_cb(GtkWidget *widget, long x, long y, long z, void *data)
 {
 	rnd_gtk_t *ctx = data;
+
 	ctx->impl.shutdown_renderer(ctx->impl.gport);
 	gtkc_main_quit();
 	return FALSE;

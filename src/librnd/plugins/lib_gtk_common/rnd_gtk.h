@@ -217,6 +217,7 @@ struct rnd_gtk_s {
 	rnd_gtk_mouse_t mouse;
 
 	gdl_list_t previews; /* all widget lists */
+	gdl_list_t dad_dialogs; /* all open DAD dialogs */
 };
 
 #endif /* RND_GTK_H */

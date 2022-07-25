@@ -29,3 +29,6 @@ int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 
 rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx);
 
+/* Close and free all open DAD dialogs */
+void rnd_gtk_attr_dlg_free_all(rnd_gtk_t *gctx);
+

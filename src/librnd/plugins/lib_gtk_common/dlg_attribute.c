@@ -48,7 +48,7 @@
 #define RND_OBJ_PROP "librnd_context"
 #define RND_OBJ_PROP_CLICK "librnd_click"
 
-typedef struct {
+typedef struct attr_dlg_s {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	rnd_gtk_t *gctx;
 	rnd_hidlib_t *hidlib; /* active hidlib at the moment the dialog box was created */
@@ -69,6 +69,7 @@ typedef struct {
 	unsigned modal:1;
 	unsigned placed:1;
 	unsigned mapped:1;
+	gdl_elem_t link; /* in gctx->dad_dialogs  */
 } attr_dlg_t;
 
 #define change_cb(ctx, dst) \
@@ -869,7 +870,6 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	plc[3] = defy;
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
-
 	ctx->gctx = gctx;
 	ctx->hidlib = gctx->hidlib;
 	ctx->attrs = attrs;
@@ -881,6 +881,7 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	ctx->close_cb = button_cb;
 	ctx->id = rnd_strdup(id);
 	ctx->modal = modal;
+	gdl_append(&gctx->dad_dialogs, ctx, link);
 
 	rnd_event(gctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
@@ -947,6 +948,7 @@ void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attri
 	ctx->wltop = calloc(sizeof(GtkWidget *), n_attrs);
 	ctx->caller_data = caller_data;
 	ctx->modal = 0;
+	gdl_append(&gctx->dad_dialogs, ctx, link);
 
 	rnd_gtk_attr_dlg_add(ctx, parent_box, NULL, 0);
 
@@ -1000,6 +1002,7 @@ void rnd_gtk_attr_dlg_close(void *hid_ctx)
 void rnd_gtk_attr_dlg_free(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
+	rnd_gtk_t *gctx = ctx->gctx;
 
 	if (ctx->being_destroyed)
 		return;
@@ -1014,7 +1017,20 @@ void rnd_gtk_attr_dlg_free(void *hid_ctx)
 	free(ctx->id);
 	free(ctx->wl);
 	free(ctx->wltop);
+	gdl_remove(&gctx->dad_dialogs, ctx, link);
 	free(ctx);
+}
+
+void rnd_gtk_attr_dlg_free_all(rnd_gtk_t *gctx)
+{
+	attr_dlg_t *curr, *next;
+
+	/* don't rely on closing always the first, just in case it fails to unlink */
+	for(curr = gdl_first(&gctx->dad_dialogs); curr != NULL; curr = next) {
+		next = curr->link.next;
+		rnd_gtk_attr_dlg_free(curr);
+	}
+	
 }
 
 void rnd_gtk_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)

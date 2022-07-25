@@ -172,6 +172,8 @@ static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
 
 static void rnd_gtkg_do_exit_(rnd_gtk_t *gctx)
 {
+	rnd_gtk_attr_dlg_free_all(gctx);
+
 	/* Need to force-close the command entry first because it has its own main
 	   loop that'd block the exit until the user closes the entry */
 	rnd_gtk_cmd_close(&gctx->topwin.cmd);
