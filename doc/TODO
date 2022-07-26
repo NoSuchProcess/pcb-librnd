@@ -12,6 +12,7 @@
 	- BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
 	- FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
+	- BUG: rnd_hid_do_all_gui_plugins() doesn't list buildins; pcb-rnd --help invocation [report: Igor2]
 
 *** Later releases ***
 
