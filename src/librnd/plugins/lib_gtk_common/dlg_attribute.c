@@ -57,7 +57,7 @@ typedef struct attr_dlg_s {
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
 	GtkWidget *dialog;
-	int close_cb_called;
+	int close_cb_called, gui_closed;
 	rnd_hid_attr_val_t property[RND_HATP_max];
 	void (*close_cb)(void *caller_data, rnd_hid_attr_ev_t ev);
 	char *id;
@@ -748,7 +748,10 @@ static void rnd_gtk_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 static gint rnd_gtk_attr_dlg_destroy_event_cb(GtkWidget *widget, long x, long y, long z, gpointer data)
 {
-	rnd_gtk_attr_dlg_free_gui(data);
+	attr_dlg_t *ctx = data;
+
+	ctx->gui_closed = 1;
+	rnd_gtk_attr_dlg_free_gui(ctx);
 	return 0;
 }
 
@@ -995,7 +998,8 @@ void rnd_gtk_attr_dlg_close(void *hid_ctx)
 	if (ctx->dialog != NULL) {
 		GtkWidget *dlg = ctx->dialog; /* the destroy callback may free ctx */
 		ctx->dialog = NULL;
-		gtkc_window_destroy(dlg);
+		if (!ctx->gui_closed)
+			gtkc_window_destroy(dlg);
 	}
 }
 
