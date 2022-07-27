@@ -67,6 +67,7 @@
 #include <librnd/core/hid_menu.h>
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/buildin.hidlib.h>
 #include "../../../config.h"
 
 int rnd_coord_t_size = sizeof(rnd_coord_t);
@@ -297,7 +298,15 @@ static int list_gui_cb(void *ctx, const char *name, const char *dir, const char 
 void rnd_hid_print_all_gui_plugins(void)
 {
 	gds_t tmp = {0};
+	const pup_buildin_t *b;
+
 	rnd_hid_do_all_gui_plugins(&tmp, list_gui_cb);
+
+	/* print buildins */
+	for(b = pup_buildins; b->name != NULL; b++)
+		if (strncmp(b->name, "hid_", 4) == 0)
+			fprintf(stderr, "\t%-16s\n", b->name);
+
 	gds_uninit(&tmp);
 }
 
