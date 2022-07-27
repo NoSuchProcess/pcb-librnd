@@ -237,7 +237,8 @@ static gint delete_chart_cb(GtkWidget *widget, long x, long y, long z, void *dat
 {
 	rnd_gtk_t *gctx = data;
 
-	rnd_gtk_attr_dlg_free_all(gctx);
+	/* do not call rnd_gtk_attr_dlg_free_all(gctx) here because Quit may cancel
+	   and keep the app running */
 
 	rnd_action(gctx->hidlib, "Quit");
 
