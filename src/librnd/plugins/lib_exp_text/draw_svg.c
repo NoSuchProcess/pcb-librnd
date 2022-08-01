@@ -528,11 +528,12 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 	/* calculate start and end angles considering flip */
 	start_angle = 180 - start_angle;
 	delta_angle = -delta_angle;
-	if (pctx->flip) {
-		start_angle = -start_angle;
-		delta_angle = -delta_angle;
-	}
 
+	if (pctx->flip) {
+		start_angle = RND_SWAP_ANGLE(start_angle);
+		delta_angle = RND_SWAP_DELTA(delta_angle);
+	}
+	
 	/* workaround for near-360 deg rendering bugs */
 	if ((delta_angle >= +360.0) || (delta_angle <= -360.0)) {
 		rnd_svg_draw_arc(pctx, gc, cx, cy, width, height, 0, 180);
@@ -550,6 +551,9 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 	y2 = rnd_round((double)cy + ((double)width * sin(sa * M_PI / 180)));
 	x1 = rnd_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
 	y1 = rnd_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
+
+	TRX(x1); TRY(y1);
+	TRX(x2); TRY(y2);
 
 	round_cap_arc_draw(pctx, gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
