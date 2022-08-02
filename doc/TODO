@@ -115,6 +115,7 @@
 	- bitmap object export in png, ps, eps, svg
 	- FEATURE: font -v2 support:
 		- baseline?
+		- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
 		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
 
 
