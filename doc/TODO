@@ -117,7 +117,7 @@
 		- baseline?
 		- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
 		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
-
+		- unicode translation table so that the upper 127 chars can be used for mu, degree and similar
 
 *** Unsorted ***
 	- lesstif: vertical text, truncated text support
