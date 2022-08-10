@@ -523,8 +523,6 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 		return;
 	}
 
-	TRX(cx); TRY(cy);
-
 	/* calculate start and end angles considering flip */
 	start_angle = 180 - start_angle;
 	delta_angle = -delta_angle;
@@ -540,6 +538,8 @@ void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coor
 		rnd_svg_draw_arc(pctx, gc, cx, cy, width, height, 180, 180);
 		return;
 	}
+
+	TRX(cx); TRY(cy);
 
 	if (fabs(delta_angle) <= 0.001) { delta_angle = 0.001; diff=1; }
 
