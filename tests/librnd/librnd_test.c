@@ -22,15 +22,6 @@ static void poly_test()
 	rnd_poly_valid(&pa);
 }
 
-/* workaround for symbols missing out because of the static linking done with
-   the test app. Won't ever happen to real apps as they don't static link */
-#include <librnd/core/pixmap.h>
-static void (*workaround_fn)();
-static void librnd_test_symbol_workaround(void)
-{
-	workaround_fn = rnd_pixmap_reg_import;
-}
-
 int main(int argc, char *argv[])
 {
 	int n;
@@ -38,8 +29,6 @@ int main(int argc, char *argv[])
 
 	rnd_app.default_embedded_menu = "";
 	rnd_app.package = "rnd-test";
-
-	librnd_test_symbol_workaround();
 
 	rnd_fix_locale_and_env();
 
