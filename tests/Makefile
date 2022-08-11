@@ -13,3 +13,5 @@ clean:
 	cd remote && $(MAKE) clean
 	cd librnd && $(MAKE) clean
 
+distclean:
+	cd librnd && $(MAKE) distclean
