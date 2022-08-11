@@ -326,6 +326,7 @@ AR=@/target/fstools/ar@
 RANLIB=@/local/librnd/ranlib@
 HOSTCC=@/host/cc/cc@
 CQUOTE=$(ROOT)/scconfig/cquote
+ARU=$(ROOT)/scconfig/aru
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
@@ -375,24 +376,27 @@ end
 print [@
 
 librnd-hid.a: $(DEPS_HIDLIB_ALL)
-	$(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
+	$(ARU) $(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
 	$(RANLIB) librnd-hid.a
 
 librnd-3rd.a: $(OBJS_3RDLIB)
-	$(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
+	$(ARU) $(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
 	$(RANLIB) librnd-3rd.a
 
 librnd-poly.a: $(OBJS_POLYLIB)
-	$(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
+	$(ARU) $(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
 	$(RANLIB) librnd-poly.a
 
-librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
+# Note: .so depends on .a because $(ARU) renames some object files temporarily
+# so building the .so and the .a shouldn't be done in parallel
+
+librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL) librnd-hid.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS)
 
-librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
+librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB) librnd-3rd.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) $(LDFLAGS) @/local/librnd/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
 
-librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
+librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB) librnd-poly.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) $(LDFLAGS) -lm
 
 
