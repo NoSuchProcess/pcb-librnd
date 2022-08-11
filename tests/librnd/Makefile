@@ -1,5 +1,6 @@
 TRUNK = ../..
 LIBRND_ROOT=include/$(HL_LIBDIR)/..
+SCCBX=$(TRUNK)/scconfig/sccbox
 
 include $(TRUNK)/Makefile.conf
 include $(TRUNK)/src/librnd/core/librnd.mak
@@ -16,8 +17,8 @@ test: librnd_test librnd_includes
 	./librnd_includes
 
 librnd_objs: $(LIBRND_A)
-	-mkdir obj obj/poly obj/hid obj/3rd
-	-rm obj/poly/*.o obj/hid/*.o obj/3rd/*.o
+	$(SCCBX) mkdir -p obj obj/poly obj/hid obj/3rd
+	$(SCCBX) rm -f obj/poly/*.o obj/hid/*.o obj/3rd/*.o
 	cd obj/hid &&  ar x ../../include/$(HL_LIBDIR)/librnd-hid.a
 	cd obj/poly && ar x ../../include/$(HL_LIBDIR)/librnd-poly.a
 	cd obj/3rd &&  ar x ../../include/$(HL_LIBDIR)/librnd-3rd.a  
@@ -39,9 +40,9 @@ $(LIBRND) includes: ../../src/Makefile
 	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 clean:
-	-rm librnd_test librnd_test.o librnd_includes librnd_includes.o
+	$(SCCBX) rm -f librnd_test librnd_test.o librnd_includes librnd_includes.o
 	-TDIR=`pwd` && cd ../../src && $(MAKE) uninstall HOW="uninstall -f" DESTDIR=$$TDIR/include PREFIX=
 	-rm -rf include/usr obj
 
 distclean:
-	-rm inc_all.h
+	$(SCCBX) rm -f inc_all.h
