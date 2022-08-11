@@ -64,7 +64,7 @@ OBJS = $(USER_OBJS) hooks.o $(DEFAULT_NOMAIN_OBJS) $(SCRIPT_OBJS) $(PARSER_OBJS)
 CFLAGS = $(USER_CFLAGS) $(DEFAULT_CFLAGS) $(SCRIPT_CFLAGS) $(PARSER_CFLAGS) $(GENERATOR_CFLAGS) $(TMPASM_CFLAGS) $(C99_CFLAGS) $(PARSGEN_CFLAGS) $(MATH_CFLAGS) $(SOCKET_CFLAGS) $(USERPASS_CFLAGS) $(GUI_CFLAGS)  $(SUL_CFLAGS) $(MENULIB_CFLAGS) -Isrc/default -I.
 LDFLAGS = $(USER_LDFLAGS) $(DEFAULT_LDFLAGS) $(SCRIPT_LDFLAGS) $(PARSER_LDFLAGS) $(GENERATOR_LDFLAGS) $(TMPASM_LDFLAGS) $(C99_LDFLAGS) $(PARSGEN_LDFLAGS) $(MATH_LDFLAGS) $(SOCKET_LDFLAGS) $(USERPASS_LDFLAGS) $(GUI_LDFLAGS) $(SUL_LDFLAGS) $(MENULIB_LDFLAGS)
 
-all: configure revtest sccbox
+all: configure revtest sccbox aru
 
 revtest: revtest.o
 	$(CC) -o revtest revtest.o
@@ -100,6 +100,14 @@ sccbox: src/util/sccbox.o
 
 cquote: src/util/cquote.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o cquote src/util/cquote.c
+
+
+ARU_OBJS=aru.o src/default/ht.o src/default/str.o
+aru: $(ARU_OBJS)
+	$(CC) $(LDFLAGS) -o aru $(ARU_OBJS)
+
+aru.o: aru.c
+	$(CC) -c $(CFLAGS) -o aru.o  aru.c
 
 clean:
 	-rm $(OBJS) $(DEFAULT_MAIN_OBJS) configure revtest revtest.o cquote core src/util/sccbox.o
