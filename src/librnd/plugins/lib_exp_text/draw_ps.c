@@ -154,12 +154,12 @@ void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, i
 	if (pctx->fillpage) {
 		double zx, zy;
 		if (hidlib->size_x > hidlib->size_y) {
-			zx = pctx->ps_height / hidlib->size_x;
-			zy = pctx->ps_width / hidlib->size_y;
+			zx = (double)pctx->ps_height / (double)hidlib->size_x;
+			zy = (double)pctx->ps_width / (double)hidlib->size_y;
 		}
 		else {
-			zx = pctx->ps_height / hidlib->size_y;
-			zy = pctx->ps_width / hidlib->size_x;
+			zx = (double)pctx->ps_height / (double)hidlib->size_y;
+			zy = (double)pctx->ps_width / (double)hidlib->size_x;
 		}
 		pctx->scale_factor *= MIN(zx, zy);
 	}
