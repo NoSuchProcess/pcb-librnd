@@ -80,11 +80,12 @@ static void command_entry_activate_cb(GtkWidget *widget, gpointer data)
 	gchar *command;
 	const gchar *cmd = gtkc_entry_get_text(GTK_ENTRY(ctx->command_entry));
 
-	if (cmd != NULL) {
-		while ((*cmd == ' ') || (*cmd == '\t'))
-			cmd++;
-		command = g_strdup(cmd);
-	}
+	if (cmd == NULL)
+		cmd = "";
+	
+	while((*cmd == ' ') || (*cmd == '\t'))
+		cmd++;
+	command = g_strdup(cmd);
 	gtkc_entry_set_text(ctx->command_entry, "");
 
 	if (*command)
