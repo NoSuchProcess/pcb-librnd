@@ -129,7 +129,7 @@ size_t rnd_base64_bin2str(char *dst, size_t dst_len, const unsigned char *src, s
 
 size_t rnd_base64_str2bin(unsigned char *dst, size_t dst_len, const char *src, size_t src_len)
 {
-	unsigned int val, tmp;
+	unsigned int val = 0, tmp;
 	int bits = 0;
 	size_t olen = 0;
 
