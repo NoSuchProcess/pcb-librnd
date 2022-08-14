@@ -13,7 +13,7 @@ gboolean gtkc_resize_dwg_cb(GtkWidget *widget, GdkEventConfigure *ev, void *rs_)
 gint gtkc_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *rs_)
 {
 	gtkc_event_xyz_t *rs = rs_;
-	long x, y;
+	long x = 0, y = 0;
 	ModifierKeysState mk;
 	GdkModifierType state;
 
