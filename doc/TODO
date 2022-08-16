@@ -11,6 +11,10 @@
 	+ BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
 	- FEATURE: packager's doc: list external deps for packages (vaguely) [report: fuz]
+	- BUG: src/librnd/plugins/irc/irc.c: irc_printf(2, ("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port)); generates error message with raw hex:
+*** ERROR: failed to connect the server at irc.repo.hu:0x1a0b. *** [report: Erich]
+
+ 
 
 *** Later releases ***
 
