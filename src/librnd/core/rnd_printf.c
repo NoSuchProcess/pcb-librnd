@@ -36,6 +36,7 @@
  * For details of all supported specifiers, see the comment at the
  * top of rnd_printf.h */
 
+#include <stdio.h>
 #include <locale.h>
 #include <ctype.h>
 #include <math.h>
