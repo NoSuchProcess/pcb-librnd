@@ -7,5 +7,6 @@
 @appendfiles librnd3-dev $PREFIX/lib/*.so
 @appendfiles librnd3-dev $PREFIX/lib/librnd3/puplug $PREFIX/lib/librnd3/sphash
 @appendfiles librnd3-dev $PREFIX/lib/librnd3/plugins/map_plugins.sh
-
+@appendextdeps librnd3 libfungw
+@appendextdeps librnd3-dev libgenht1-dev libfgunw-dev
 
