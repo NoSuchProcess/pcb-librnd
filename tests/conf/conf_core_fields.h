@@ -1,0 +1,3 @@
+conf_reg(rc.library_search_paths,             scalar, RND_CFN_LIST,    "rc",                     "library_search_paths",   "<library_search_paths>", 0)
+conf_reg(rc.backup_name,                      scalar, RND_CFN_STRING,  "rc",                     "backup_name",            "file name template for periodic backup of board files; optional fields (the usual % substitutions work)", 0)
+conf_reg(appearance.color.layer,              array,  RND_CFN_COLOR,   "appearance/color",       "layer",                  "default layer colors; when a new layer is created, a color from this list is assigned initially", 0)
