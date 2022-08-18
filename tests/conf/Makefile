@@ -35,4 +35,4 @@ test:
 	cd tests && $(MAKE) all
 
 clean:
-	-$(SCCBOX) rm -f conftest tests/*.out ../../src_plugins/diag/diag_conf.o $(OBJS)
+	-$(SCCBOX) rm -f conftest tests/*.out $(OBJS) $(HELPER_OBJS)
