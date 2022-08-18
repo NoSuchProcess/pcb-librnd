@@ -3,6 +3,7 @@ $short GTK4 GUI, opengl render
 $long GUI: GTK4 with opengl rendering
 $state works
 $package hid-gtk4-gl
+$extdeps libgtk4 libepoxy0
 $hidlib 1
 default disable
 dep lib_gtk4_common

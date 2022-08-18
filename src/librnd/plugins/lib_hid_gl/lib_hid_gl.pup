@@ -3,5 +3,6 @@ $short openGL rendering
 $long generic openGL renderer shared among GUI HIDs
 $state works
 $package lib-gl
+$extdeps libglu1 libgl1
 $hidlib 1
 default disable-all

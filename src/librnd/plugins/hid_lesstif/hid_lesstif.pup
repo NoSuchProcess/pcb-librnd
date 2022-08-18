@@ -4,6 +4,7 @@ $long GUI: the lesstif HID.
 $state works
 $package hid-lesstif
 $hidlib 1
+$extdeps optional(libxinerama1) optional(libxrender1) libxm4|lesstif|motif
 default buildin
 dep lib_hid_common
 

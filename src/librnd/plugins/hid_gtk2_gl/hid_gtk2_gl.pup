@@ -3,6 +3,7 @@ $short GTK2 GUI, opengl render
 $long GUI: GTK2 with opengl rendering
 $state works
 $package hid-gtk2-gl
+$extdeps libgtk2 libgdk-pixbuf-2 libgtkglext1
 $hidlib 1
 default buildin
 dep lib_gtk2_common

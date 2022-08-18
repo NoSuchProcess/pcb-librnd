@@ -3,6 +3,7 @@ $short all-hid_gtk2 common code
 $long hid_gtk2* common code (regardless of rendering mechanism: for both gdk sw rendering and gl)
 $state works
 $package lib-gtk
+$extdeps libgtk2 libgdk-pixbuf-2
 $hidlib 1
 dep lib_hid_common
 conflict lib_gtk4_common
