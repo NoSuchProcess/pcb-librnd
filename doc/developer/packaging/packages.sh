@@ -108,6 +108,13 @@ cat extra.digest
 		IFILES[pkg] = IFILES[pkg] " " files
 	}
 
+	($1 ~ "@appendextdeps") {
+		pkg=$2
+		files=$0
+		sub("@appendextdeps[ \t]*[^ \t]*[ \t]", "", files)
+		EXTDEPS[pkg] = EXTDEPS[pkg] " " files
+	}
+
 	($1 ~ "@appenddeps") {
 		pkg=$2
 		deps=$0
@@ -158,6 +165,13 @@ print in_librnd, $1 > "L1"
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "dep") { PLUGIN_DEP[pkg] = PLUGIN_DEP[pkg] " " val }
+
+	($1 ~ "[.]pup$") && ($2 == "$extdeps") {
+		tmp=$0
+		sub("^[^ \t]*[ \t]*[$]extdeps[ \t]*", "", tmp)
+		PUPEXTDEPS[pkg] = PUPEXTDEPS[pkg] " " tmp
+		print "extd", pkg, PUPEXTDEPS[pkg] > "/dev/stderr"
+	}
 
 	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
 # no confdir in librnd
@@ -246,12 +260,27 @@ next
 			print strip(LONG[pkg]) > "auto/" pkg ".long"
 		}
 		print "</table>"
+
+		print "<h3> External dependencies of Ppackages </h3>"
+		print "<p>Note: package names differ from distro to distro, this table only approximates the packahge names external dependencies have on your target."
+		print "<p>Note: fungw+genht is an optional dependency for full user scripting. If partial user scripting is enough, you can skip both."
+		print "<p>"
+		print "<table border=1>"
+		print "<tr><th> package <th> extneral dependencies"
+		for(plg in PLUGIN)
+			EXTDEPS[PLUGIN[plg]] = EXTDEPS[PLUGIN[plg]] " " PUPEXTDEPS[plg]
+		for(pkg in PKG)
+			print "<tr><th>" pkg "<td>" EXTDEPS[pkg]
+		print "</table>"
+
+
 		print "<p>File prefixes:<ul>"
 		print "	<li> $P: plugin install dir (e.g. /usr/lib/librnd3/)"
 		if (!disable_C)
 			print "	<li> $C: conf dir (e.g. /etc/librnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
+
 
 		print "<h3> ./configure arguments </h3>"
 		print "--all=disable"
