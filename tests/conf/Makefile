@@ -1,14 +1,13 @@
 ROOT=../..
 include $(ROOT)/Makefile.conf
-
-include $(LIBRND_MAK)
+include $(ROOT)/src/librnd/core/librnd.mak
 
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(ROOT)/src -I$(ROOT)/src_3rd $(CFLAGS_LIBRND_FUNGW) $(CFLAGS_LIBRND)
 LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 
-LIB_HIDLIB=-lrnd-hid -lrnd-3rd
-
-HELPER_OBJS= conf_core.o
+HELPER_OBJS=conf_core.o
+LIBRND_OBJS= \
+ $(ROOT)/src/librnd-hid.a $(ROOT)/src/librnd-3rd.a
 
 DEPH = \
 	$(ROOT)/src/librnd/core/conf.h \
@@ -20,15 +19,15 @@ OBJS = conftest.o help.o
 
 all: conftest
 
-conftest: $(OBJS) $(HELPER_OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) $(HELPER_OBJS) $(LIB_HIDLIB) $(LDLIBS) -o conftest
+conftest: $(OBJS) $(HELPER_OBJS) $(LIBRND_OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(HELPER_OBJS) $(LIBRND_OBJS) $(LDLIBS) -o conftest
 
 conftest.o: conftest.c $(DEPH)
 	$(CC) $(CFLAGS) -c conftest.c -o conftest.o
 
 help.o: help.c
 
-$(LIB_HIDLIB):
+$(LIBRND_OBJS):
 	cd ../../src && make
 
 test:
