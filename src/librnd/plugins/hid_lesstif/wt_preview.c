@@ -25,6 +25,7 @@
  */
 
 #include "wt_preview.h"
+#include "dialogs.h"
 #include <librnd/core/hid_attrib.h>
 
 static gdl_list_t ltf_previews;
@@ -172,6 +173,10 @@ void rnd_ltf_preview_redraw(rnd_ltf_preview_t *pd)
 void rnd_ltf_preview_callback(Widget da, rnd_ltf_preview_t *pd, XmDrawingAreaCallbackStruct *cbs)
 {
 	int reason = cbs != NULL ? cbs->reason : 0;
+	lesstif_attr_dlg_t *ctx = pd->hid_ctx;
+
+	if (ctx->creating)
+		return;
 
 	if ((reason == XmCR_RESIZE) || (pd->resized == 0))
 		rnd_ltf_preview_zoom_update(pd);

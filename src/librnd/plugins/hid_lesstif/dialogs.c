@@ -22,6 +22,8 @@
 #include <librnd/core/hid_init.h>
 #include "ltf_stdarg.h"
 #include <librnd/core/misc_util.h>
+#include "dialogs.h"
+
 
 int rnd_ltf_ok;
 extern rnd_hidlib_t *ltf_hidlib;
@@ -162,27 +164,6 @@ int rnd_ltf_wait_for_dialog(Widget w)
 }
 
 /* ------------------------------------------------------------ */
-
-typedef struct {
-	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
-	rnd_hidlib_t *hidlib; /* the hidlib that was active at the moment the dialog was created */
-	rnd_hid_attribute_t *attrs;
-	int n_attrs;
-	Widget *wl;   /* content widget */
-	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
-	Widget **btn; /* enum value buttons */
-	Widget dialog;
-	rnd_hid_attr_val_t property[RND_HATP_max];
-	Dimension minw, minh;
-	void (*close_cb)(void *caller_data, rnd_hid_attr_ev_t ev);
-	char *id;
-	unsigned close_cb_called:1;
-	unsigned already_closing:1;
-	unsigned inhibit_valchg:1;
-	unsigned widget_destroyed:1;
-	unsigned set_ok:1;
-	gdl_elem_t link; /* in ltf_dad_dialogs  */
-} lesstif_attr_dlg_t;
 
 static gdl_list_t ltf_dad_dialogs; /* all open DAD dialogs */
 
@@ -696,6 +677,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	ctx->creating = 1;
 	ctx->hidlib = ltf_hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
@@ -765,6 +747,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 
 	ltf_initial_wstates(ctx);
 
+	ctx->creating = 0;
 	return ctx;
 }
 
@@ -773,6 +756,7 @@ void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	ctx->creating = 1;
 	ctx->hidlib = ltf_hidlib;
 	ctx->attrs = attrs;
 	ctx->n_attrs = n_attrs;
@@ -787,6 +771,7 @@ void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_
 	attribute_dialog_add(ctx, parent_box, 0);
 	ltf_initial_wstates(ctx);
 
+	ctx->creating = 0;
 	return ctx;
 }
 
