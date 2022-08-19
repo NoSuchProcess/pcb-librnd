@@ -890,9 +890,10 @@
  ../src/librnd/plugins/hid_lesstif/pxm_helper.h
 ../src/librnd/plugins/hid_lesstif/dialogs.o: \
  ../src/librnd/plugins/hid_lesstif/dialogs.c \
- ../src/librnd/plugins/hid_lesstif/xincludes.h ../src/librnd/rnd_config.h \
- ../src/librnd/config.h ../src/librnd/core/hidlib_conf.h ../src/librnd/core/conf.h \
- ../src/librnd/config.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/plugins/hid_lesstif/xincludes.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/rnd_config.h ../src/librnd/config.h \
+ ../src/librnd/core/hidlib_conf.h ../src/librnd/core/conf.h ../src/librnd/config.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
  ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
@@ -908,11 +909,11 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/plugins/hid_lesstif/lesstif.h ../src/librnd/core/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/hid_menu.h \
- ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
- ../src/librnd/core/actions.h ../src/librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
+ ../src/librnd/core/hid_attrib.h ../src/librnd/core/actions.h ../src/librnd/core/hid_init.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
+ ../src/librnd/plugins/hid_lesstif/dialogs.h \
  ../src/librnd/plugins/hid_lesstif/dlg_attr_misc.c \
  ../src/librnd/plugins/hid_lesstif/wt_xpm.h \
  ../src/librnd/plugins/hid_lesstif/wt_colorbtn.h ../src/librnd/core/hid_dad.h \
@@ -995,7 +996,8 @@
  ../src/librnd/plugins/lib_hid_common/cli_history.h \
  ../src/librnd/plugins/hid_lesstif/mouse.c \
  ../src_3rd/genvector/genvector_impl.c \
- ../src/librnd/plugins/hid_lesstif/wt_preview.c
+ ../src/librnd/plugins/hid_lesstif/wt_preview.c \
+ ../src/librnd/plugins/hid_lesstif/dialogs.h
 ../src/librnd/plugins/hid_lesstif/menu.o: \
  ../src/librnd/plugins/hid_lesstif/menu.c \
  ../src/librnd/plugins/hid_lesstif/xincludes.h ../src/librnd/rnd_config.h \
