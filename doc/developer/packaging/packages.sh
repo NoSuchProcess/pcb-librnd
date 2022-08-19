@@ -261,7 +261,7 @@ next
 		}
 		print "</table>"
 
-		print "<h3> External dependencies of Ppackages </h3>"
+		print "<h3> External dependencies of packages </h3>"
 		print "<p>Note: package names differ from distro to distro, this table only approximates the packahge names external dependencies have on your target."
 		print "<p>Note: fungw+genht is an optional dependency for full user scripting. If partial user scripting is enough, you can skip both."
 		print "<p>"
