@@ -3,5 +3,6 @@ $short wget(1) wrapper
 $long retrieve files from the web using wget(1)
 $state works
 $package cloud
+$extdeps wget
 $hidlib 1
 default buildin
