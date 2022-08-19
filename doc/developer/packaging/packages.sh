@@ -170,7 +170,6 @@ print in_librnd, $1 > "L1"
 		tmp=$0
 		sub("^[^ \t]*[ \t]*[$]extdeps[ \t]*", "", tmp)
 		PUPEXTDEPS[pkg] = PUPEXTDEPS[pkg] " " tmp
-		print "extd", pkg, PUPEXTDEPS[pkg] > "/dev/stderr"
 	}
 
 	($1 ~ "[.]tmpasm$") && ($3 == "/local/pcb/mod/CONFFILE") {
