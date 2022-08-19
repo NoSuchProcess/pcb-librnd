@@ -171,7 +171,7 @@ static void irc_connect(int open_dlg)
 		irc_printf(0, ("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
 	}
 	else
-		irc_printf(2, ("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port));
+		irc_printf(2, ("*** ERROR: failed to connect the server at %s:%d. ***\n", irc_ctx.server, irc_ctx.port));
 }
 
 static void on_me_part(uirc_t *ctx, int query, char *chan)
