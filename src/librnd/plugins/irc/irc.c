@@ -70,8 +70,14 @@ static void maybe_scroll_to_bottom()
 
 static void irc_append(irc_ctx_t *ctx, const char *str, int may_hilight)
 {
-	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
-	rnd_hid_text_t *txt = atxt->wdata;
+	rnd_hid_attribute_t *atxt;
+	rnd_hid_text_t *txt;
+
+	if (ctx->dlg == NULL)
+		return;
+
+	atxt = &ctx->dlg[ctx->wtxt];
+	txt = atxt->wdata;
 
 	txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND, str);
 
