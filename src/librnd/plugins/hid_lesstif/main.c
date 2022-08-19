@@ -1641,6 +1641,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static void lesstif_do_exit(rnd_hid_t *hid)
 {
+	lesstif_attr_dlg_free_all();
 	XtAppSetExitFlag(app_context);
 	lft_dock_uninit();
 }
@@ -1695,6 +1696,8 @@ rnd_cvt_string_to_coord(Display * d, XrmValue * args, Cardinal * num_args, XrmVa
 
 static void mainwind_delete_cb()
 {
+	/* do not call lesstif_attr_dlg_free_all(gctx) here because Quit may cancel
+	   and keep the app running */
 	rnd_action(ltf_hidlib, "Quit");
 }
 

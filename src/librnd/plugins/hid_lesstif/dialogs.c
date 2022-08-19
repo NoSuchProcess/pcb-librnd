@@ -1,5 +1,6 @@
 #include "xincludes.h"
 
+#include <genlist/gendlist.h>
 #include <librnd/rnd_config.h>
 #include <librnd/core/hidlib_conf.h>
 
@@ -180,7 +181,10 @@ typedef struct {
 	unsigned inhibit_valchg:1;
 	unsigned widget_destroyed:1;
 	unsigned set_ok:1;
+	gdl_elem_t link; /* in ltf_dad_dialogs  */
 } lesstif_attr_dlg_t;
+
+static gdl_list_t ltf_dad_dialogs; /* all open DAD dialogs */
 
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
@@ -702,6 +706,8 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 	ctx->widget_destroyed = 0;
 	ctx->id = rnd_strdup(id);
 
+	gdl_append(&ltf_dad_dialogs, ctx, link);
+
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
@@ -772,6 +778,8 @@ void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_
 	ctx->n_attrs = n_attrs;
 	ctx->caller_data = caller_data;
 
+	gdl_append(&ltf_dad_dialogs, ctx, link);
+
 	ctx->wl = (Widget *) calloc(n_attrs, sizeof(Widget));
 	ctx->wltop = (Widget *)calloc(n_attrs, sizeof(Widget));
 	ctx->btn = (Widget **) calloc(n_attrs, sizeof(Widget *));
@@ -801,8 +809,10 @@ void lesstif_attr_dlg_close(void *hid_ctx)
 
 	if (!ctx->widget_destroyed) {
 		ctx->widget_destroyed = 1;
-		XtDestroyWidget(ctx->dialog);
-		ltf_attr_destroy_cb(ctx->dialog, ctx, NULL);
+		if (ctx->dialog != NULL) {
+			XtDestroyWidget(ctx->dialog);
+			ltf_attr_destroy_cb(ctx->dialog, ctx, NULL);
+		}
 	}
 }
 
@@ -817,10 +827,24 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 
 	lesstif_attr_dlg_close(ctx);
 
+	gdl_remove(&ltf_dad_dialogs, ctx, link);
+
 	free(ctx->wl);
 	free(ctx->wltop);
 	free(ctx->id);
 	free(ctx);
+}
+
+/* Close and free all open DAD dialogs */
+void lesstif_attr_dlg_free_all(void)
+{
+	lesstif_attr_dlg_t *curr, *next;
+
+	/* don't rely on closing always the first, just in case it fails to unlink */
+	for(curr = gdl_first(&ltf_dad_dialogs); curr != NULL; curr = next) {
+		next = curr->link.next;
+		lesstif_attr_dlg_free(curr);
+	}
 }
 
 void lesstif_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
