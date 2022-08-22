@@ -7,6 +7,7 @@ LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 
 HELPER_OBJS=conf_core.o
 LIBRND_OBJS= \
+ $(ROOT)/src/librnd/plugins/diag_rnd/diag_rnd.o \
  $(ROOT)/src/librnd-hid.a $(ROOT)/src/librnd-3rd.a
 
 DEPH = \
@@ -26,6 +27,8 @@ conftest.o: conftest.c $(DEPH)
 	$(CC) $(CFLAGS) -c conftest.c -o conftest.o
 
 help.o: help.c
+
+$(ROOT)/src/librnd/plugins/diag_rnd/diag_rnd.o:  $(ROOT)/src/librnd/plugins/diag_rnd/diag_rnd.c
 
 $(LIBRND_OBJS):
 	cd ../../src && make
