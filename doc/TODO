@@ -16,7 +16,8 @@
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
 - 4.0.0: ABI incompatible (feature removal)
-	- DEL?: rething hid api beep() - sounds like a real bad idea - gabor's idea: configurable external command
+	- DEL?: HID API: clipboard format is always text; remove format and length (SDL and glfw don't support non-text anyway)
+	- DEL?: rethink hid api beep() - sounds like a real bad idea - gabor's idea: configurable external command
 	- DEL: remove hidlib->name - only pcb-rnd should use it and only as legacy feature
 	- move over pcb-rnd's rnd_inclib/font
 	- *FEATURE: sch-rnd critical: more flexilble unit system where apps can register new units - remove k from librnd, revise sch-rnd grid menu
