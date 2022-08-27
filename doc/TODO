@@ -17,6 +17,8 @@
 
 - 4.0.0: ABI incompatible (feature removal)
 	- DEL?: HID API: clipboard format is always text; remove format and length (SDL and glfw don't support non-text anyway)
+		- get() should return an allocated string
+		- there should be a free() to be used by the caller after get()
 	- DEL?: rethink hid api beep() - sounds like a real bad idea - gabor's idea: configurable external command
 	- DEL: remove hidlib->name - only pcb-rnd should use it and only as legacy feature
 	- move over pcb-rnd's rnd_inclib/font
