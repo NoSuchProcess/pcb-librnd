@@ -7,8 +7,8 @@
 		- BUG: debian, mageia, fedora: run make test!
 	+ BUG: src/librnd/plugins/irc/irc.c: irc_printf(2, ("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port)); generates error message with raw hex:
 		*** ERROR: failed to connect the server at irc.repo.hu:0x1a0b. ***, needs to be "%s:%d" [report: Erich]
-	- BUG: fresh checkout of librnd from svn does not complete configure if librnd is not installed. This makes it hard to install from svn for the first time. [report: Erich]
-
+	/ BUG: fresh checkout of librnd from svn does not complete configure if librnd is not installed. This makes it hard to install from svn for the first time. [report: Erich]
+		-> can't reproduce; will need command line and full logs
 
 *** Later releases ***
 
