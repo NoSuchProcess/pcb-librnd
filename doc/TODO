@@ -5,8 +5,8 @@
 	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 	+ BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
-	- BUG: IRC client window fails to open if network is down when Online Help button pressed and connect dialogue used to connect. If network comes back up, Online Help button remains unresponsive. No error in log. [report: Erich]
- 
+	- BUG: IRC client window fails to open if DNS resolve fails (try server name foobar). If network comes back up, Online Help button remains unresponsive. No error in log. [report: Erich]
+
 *** Later releases ***
 
 - 3.2.2: ABI compatible, no new API
