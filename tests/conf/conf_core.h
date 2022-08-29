@@ -18,4 +18,7 @@ typedef struct {
 
 extern conf_core_t conf_core;
 
+void conf_core_init(void);
+void conf_core_uninit_pre(void);
+
 #endif
