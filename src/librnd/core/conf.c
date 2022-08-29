@@ -385,12 +385,14 @@ rnd_conf_native_type_t rnd_conf_native_type_parse(const char *s)
 }
 
 
+#define ISSEP(chr)  (((chr) == '-') || ((chr) == '\0'))
 rnd_conf_policy_t rnd_conf_policy_parse(const char *s)
 {
-	if (rnd_strcasecmp(s, "overwrite") == 0)  return  RND_POL_OVERWRITE;
-	if (rnd_strcasecmp(s, "prepend") == 0)    return  RND_POL_PREPEND;
-	if (rnd_strcasecmp(s, "append") == 0)     return  RND_POL_APPEND;
-	if (rnd_strcasecmp(s, "disable") == 0)    return  RND_POL_DISABLE;
+	/* need to strncasecmp() because it may go on as -prio */
+	if ((rnd_strncasecmp(s, "overwrite", 9) == 0) && ISSEP(s[9]))  return  RND_POL_OVERWRITE;
+	if ((rnd_strncasecmp(s, "prepend", 7) == 0) && ISSEP(s[7]))    return  RND_POL_PREPEND;
+	if ((rnd_strncasecmp(s, "append", 6) == 0) && ISSEP(s[6]))     return  RND_POL_APPEND;
+	if ((rnd_strncasecmp(s, "disable", 7) == 0) && ISSEP(s[7]))    return  RND_POL_DISABLE;
 	return RND_POL_invalid;
 }
 
