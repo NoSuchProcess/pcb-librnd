@@ -14,24 +14,24 @@
  I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=4
 === overwrite item ===
  I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
- I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
+ I appearance/color/layer[1] = #000005 <<prio=710 from=<cmd_reset *>:0>> conf_rev=6
  I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
  I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=6
  I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[1] = #000005 <<prio=710 from=<cmd_reset *>:0>> conf_rev=7
  I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
  I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
- I appearance/color/layer[4] = #000006 <<prio=700 from=<cmd_reset *>:0>> conf_rev=7
+ I appearance/color/layer[4] = #000006 <<prio=710 from=<cmd_reset *>:0>> conf_rev=7
  I appearance/color/layer[0] = #000004 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[1] = #000005 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[1] = #000005 <<prio=710 from=<cmd_reset *>:0>> conf_rev=8
  I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
  I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
- I appearance/color/layer[4] = #000006 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[4] = #000006 <<prio=710 from=<cmd_reset *>:0>> conf_rev=8
  I appearance/color/layer[5] =  <<prio=0>> conf_rev=8
  I appearance/color/layer[6] =  <<prio=0>> conf_rev=8
- I appearance/color/layer[7] = #000007 <<prio=700 from=<cmd_reset *>:0>> conf_rev=8
+ I appearance/color/layer[7] = #000007 <<prio=710 from=<cmd_reset *>:0>> conf_rev=8
 === overwrite array ===
- I appearance/color/layer[0] = #000008 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
+ I appearance/color/layer[0] = #000008 <<prio=720 from=<cmd_reset *>:0>> conf_rev=10
  I appearance/color/layer[1] = #000003 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
  I appearance/color/layer[2] = #000001 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
  I appearance/color/layer[3] = #000002 <<prio=700 from=<cmd_reset *>:0>> conf_rev=10
