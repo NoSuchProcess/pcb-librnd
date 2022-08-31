@@ -171,11 +171,11 @@ static void irc_disconnect(const char *reason)
 
 static void irc_connect(int open_dlg)
 {
-	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "librnd irc action") == 0) {
-		if (open_dlg)
-			rnd_dlg_irc();
+	if (open_dlg)
+		rnd_dlg_irc();
+
+	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "librnd irc action") == 0)
 		irc_printf(0, ("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
-	}
 	else
 		irc_printf(2, ("*** ERROR: failed to connect the server at %s:%d. ***\n", irc_ctx.server, irc_ctx.port));
 }
