@@ -2,13 +2,13 @@
 
 - 3.2.1: ABI compatible, no new API
 	- gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
-	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 	+ BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
 		- BUG: debian, mageia, fedora: run make test!
 
 *** Later releases ***
 
 - 3.2.2: ABI compatible, no new API
+	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 	- BUG: pcb-rnd make test fails on conf test on musl [report: Aron]
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 
