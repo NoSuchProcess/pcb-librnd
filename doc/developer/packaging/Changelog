@@ -5,6 +5,19 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
 
+Packaging changes between 3.2.1 and 3.2.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+(none)
+
+B. changes that probably DO need action
+
+1. There's been a fix to make test, which should work reliably now. Please
+   check if your build runs make test. If it doesn't, please make it run
+   make test after make.
+
+
 Packaging changes between 3.2.0 and 3.1.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
