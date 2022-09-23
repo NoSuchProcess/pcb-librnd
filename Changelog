@@ -1,3 +1,64 @@
+librnd 3.2.1 (r34427)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: ./configure: fail early and cleanly if detection of cc fails
+		-Add: use aru to create static link lib that can be extracted (no redundant file names)
+		-Add: aru utility: wrapper around ar(1) to make object file names unique by temporary renames; this way "ar x" works on the resulting archive without overwriting output files
+
+	[conf]
+		-Fix: policy parsing bug: accept policy name even when followed by -prio so that subtree lookup for config merge doesn't fail with explicit prios (e.g. from conftest)
+
+	[core]
+		-Fix: exporting log: don't hardwire "ha:pcb-rnd-log-v1" for root node, use the app's package name
+		-Fix: when listing GUI modules, also print builtins
+		-Fix: potentially uninitialized memory in base64 encoder (may matter when encoding 0 bytes?)
+		-Fix: missing stdio include for rnd_printf implementation (uses sprintf)
+
+	[doc]
+		-Add: custom pup field to indicate external dependencies of plugins
+		-Add: packager's doc digest: inject external deps of core packages
+		-Add: packager's doc: write a table of external dependencies per package
+
+	[gtk]
+		-Fix: make a list of all DAD dialogs open and close them on quit before closing down the GUI so they have a chance to uninit/free things
+		-Fix: uninitialized scroll deltas in orthogonal direction of actual scroll in gtk2 mouse compat handler
+		-Fix: safer empty command handler - just in case gtk entry query returns NULL (shouldn't)
+
+	[irc]
+		-Fix: don't print irc port number in hex in conn error message
+		-Fix: don't crash when appending to non-existing GUI
+		-Fix: always open the irc window after the connect button, even if the connection has failed - that's how the error message can be printed
+
+	[lesstif]
+		-Add: close all dialogs before exiting to give backing user code a chance to clean up
+		-Fix: do not call the user's render callback from wt_preview while the dialog is being created because there's no dlg_hid_ctx yet
+
+	[lib_exp_pixmap]
+		-Add: standard draw pixmap call
+
+	[lib_exp_text]
+		-Fix: svg arc angles and endpoint transformations for y-flipped setup
+		-Fix: svg arc center coord transformation should not be done before the 360 degree workaround because the workaround recurses and we need to pass untransformed coords
+		-Fix: ps export: fill page option rounding error (calculate scale ratios with double division, not int division)
+
+	[lib_gtk_common]
+		-Fix: don't close a dialog after the wm has already closed it
+		-Fix: do not close all dialogs before calling Quit() - Quit() may ask the user and decide to keep running
+
+	[lib_hid_common]
+		-Fix: uninitialized hash search result on pan auto placement
+		-Fix: refresn preferences dialog conf tree and window tabs on board change (design change) so in a multi-design setup they always show the right config values
+
+	[tests]
+		-Fix: conf test make clean should remove all objects
+		-Fix: conf test uses static linking, not assuming installation; do not link static .a files, extract them and link the .o files directly; this is a portable way to bypass the optimization that omitted symbols while linking the test executable making subsequent dlopen() fail when a plugin needed those symbols
+		-Fix: missing stdio include in rnd_printf test
+		-Fix: only make distclean should remove ./configure generated inc_all header in librnd test
+		-Fix: use sccbox for creating the temporayr object unpack dir and most of the rm's as well for portability
+		-Import: port pcb-rnd's conf test
+		-Add: make test and make all for base64; run base64 test by default make test
+
+
 librnd 3.2.0 (r34329)
 ~~~~~~~~~~~~~~~~~~~~~
 	[API]
