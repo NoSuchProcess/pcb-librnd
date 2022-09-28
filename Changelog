@@ -1,4 +1,4 @@
-librnd 3.2.1 (r34427)
+librnd 3.2.1 (r34435)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
 		-Fix: ./configure: fail early and cleanly if detection of cc fails
