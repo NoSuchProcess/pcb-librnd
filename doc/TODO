@@ -109,6 +109,7 @@
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
 
 *** Low prio ***
+	- BUG: hid_lesstif potential bug: bug_files/TODO/lesstif.txt [report: Fuz]
 	- bitmap object export in png, ps, eps, svg
 	- FEATURE: font -v2 support:
 		- baseline?
