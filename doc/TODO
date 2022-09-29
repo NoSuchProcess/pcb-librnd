@@ -1,8 +1,6 @@
 *** Upcoming release ***
 
 - 3.2.1: ABI compatible, no new API
-	+ BUG: librnd test app static linking won't work with dynamic plugins without workarounds (see librnd_test_symbol_workaround()) [report: fuz]
-		- BUG: debian, mageia, fedora: run make test!
 
 *** Later releases ***
 
