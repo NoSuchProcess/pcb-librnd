@@ -4,6 +4,7 @@
 	- BUG: gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
 
 *** Later releases ***
+- BUG: libualloc *_api.h are not installed
 - 4.0.0: ABI incompatible (feature removal)
 	- DEL?: HID API: clipboard format is always text; remove format and length (SDL and glfw don't support non-text anyway)
 		- get() should return an allocated string
