@@ -16,7 +16,7 @@ warnings, librnd can be compiled, even if some dependencies were missing.
 Summary of dependencies:
 For users:
  - mandatory: C compiler
- - mandatory: make
+ - mandatory: make (BSD make won't work)
  - optional: glib and gtk2 if you are using the GTK GUI
  - optional: gtkglext if you need opengl rendering
  - optional: motif or lesstif if you are using the lesstif frontend
