@@ -10,6 +10,7 @@
 		- check how pcb-rnd layersel would work with this
 		- canvas:
 			- opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
+	- move rnd_long64_t into the poly lib; nothing else should depend on this
 	- DEL?: HID API: clipboard format is always text; remove format and length (SDL and glfw don't support non-text anyway)
 		- get() should return an allocated string
 		- there should be a free() to be used by the caller after get()
