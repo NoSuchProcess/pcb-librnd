@@ -392,7 +392,7 @@ static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_loca
 	if (ghidgui->topwin.active && ghidgui->port.view.has_entered) {
 		hidgl_draw_crosshair(
 			ghidgui->port.view.crosshair_x, ghidgui->port.view.crosshair_y,
-			cross_color.red / 65535.0f, cross_color.green / 65535.0f, cross_color.blue / 65535.0f,
+			GTKC_COLOR_CMP_TO_01(cross_color.red), GTKC_COLOR_CMP_TO_01(cross_color.green), GTKC_COLOR_CMP_TO_01(cross_color.blue),
 			minx, miny, maxx, maxy);
 	}
 
