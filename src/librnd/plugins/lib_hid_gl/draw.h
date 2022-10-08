@@ -67,7 +67,7 @@ struct hidgl_draw_s {
 	void (*push_matrix)(int projection);
 	void (*pop_matrix)(int projection);
 
-	void (*xor_start)(void);
+	int (*xor_start)(void); /* returns 1 if real xor is available, 0 if "emulated" via color blending */
 	void (*xor_end)(void);
 
 

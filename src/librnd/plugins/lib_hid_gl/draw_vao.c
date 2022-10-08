@@ -303,12 +303,13 @@ static void vao_set_view(double tx, double ty, double zx, double zy, double zz)
 	glUniform4f(xform_location, tx, ty, zx, zy);
 }
 
-static void vao_xor_start(void)
+static int vao_xor_start(void)
 {
 	vao_xor_mode = 1;
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_COLOR, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
 	glBlendEquationSeparate(GL_FUNC_REVERSE_SUBTRACT, GL_MIN);
+	return 0;
 }
 
 static void vao_xor_end(void)

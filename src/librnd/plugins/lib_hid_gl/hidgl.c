@@ -801,7 +801,11 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 	points[3][0] = maxx;
 	points[3][1] = y;
 
-	hidgl_draw.xor_start();
+	if (hidgl_draw.xor_start() == 0) {
+		red = 1.0 - red;
+		green = 1.0 - green;
+		blue = 1.0 - blue;
+	}
 	hidgl_draw.draw_lines6((GLfloat *)points, 4, red, green, blue, 1.0);
 	hidgl_draw.xor_end();
 }

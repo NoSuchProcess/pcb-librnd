@@ -301,10 +301,11 @@ static void direct_set_view(double tx, double ty, double zx, double zy, double z
 	glTranslatef(tx, ty, 0);
 }
 
-static void direct_xor_start(void)
+static int direct_xor_start(void)
 {
 	glEnable(GL_COLOR_LOGIC_OP);
 	glLogicOp(GL_XOR);
+	return 1;
 }
 
 static void direct_xor_end(void)
