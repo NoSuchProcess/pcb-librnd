@@ -35,6 +35,7 @@
 #define GTKC_TIMED_WINDOW_PLACEMENT 1
 
 #define GTKC_LITERAL_COLOR(a,r,g,b) {.red=r/65536.0, .green=g/65536.0, .blue=b/65536.0, .alpha = a/65536.0}
+#define GTKC_COLOR_CMP_TO_01(component)  ((float)component)
 
 
 #define RND_GTK_BU_MENU_H_FN <librnd/plugins/lib_gtk4_common/bu_menu.h>
