@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.2: ABI compatible, no new API
-	- try to enable gtk4_gl by default and see if it conflicts with gtk2 with no configure arg and --all=buildin [report: Majenko]
 	- BUG: gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
 
 *** Later releases ***
