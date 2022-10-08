@@ -5,7 +5,7 @@ $state works
 $package hid-gtk4-gl
 $extdeps libgtk4 libepoxy0
 $hidlib 1
-default disable
+default buildin
 dep lib_gtk4_common
 dep lib_hid_gl
 

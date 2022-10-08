@@ -30,7 +30,7 @@ plugin_header("\nHID plugins:\n")
 plugin_def("hid_batch",        "batch process (no-gui HID)",      sbuildin, 1)
 plugin_def("hid_gtk2_gdk",     "GTK2 GUI, software render",       sbuildin, 1)
 plugin_def("hid_gtk2_gl",      "GTK2 GUI, opengl render",         sbuildin, 1)
-plugin_def("hid_gtk4_gl",      "GTK4 GUI, opengl render",         sdisable, 1)
+plugin_def("hid_gtk4_gl",      "GTK4 GUI, opengl render",         sbuildin, 1)
 plugin_def("hid_lesstif",      "the lesstif gui",                 sbuildin, 1)
 plugin_def("hid_remote",       "remote HID server",               sdisable, 0)
 
