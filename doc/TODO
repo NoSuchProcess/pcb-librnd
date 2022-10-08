@@ -1,6 +1,5 @@
 *** Upcoming release ***
 - 3.2.2: ABI compatible, no new API
-	- BUG: gtk4: can't change crosshair color, it's always dark grey [report: Igor2]
 
 *** Later releases ***
 - BUG: libualloc *_api.h are not installed
