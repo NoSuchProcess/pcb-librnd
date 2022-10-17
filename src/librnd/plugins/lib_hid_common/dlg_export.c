@@ -243,6 +243,8 @@ static void rnd_dlg_export(const char *title, int exporters, int printers)
 	/* set up the context */
 	export_ctx.active = 1;
 
+	RND_DAD_DEFSIZE(export_ctx.dlg, 400, 400);
+
 	RND_DAD_NEW("export", export_ctx.dlg, title, &export_ctx, rnd_false, export_close_cb);
 }
 
