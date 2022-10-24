@@ -1,0 +1,25 @@
+put /local/pcb/mod {lib_mbtk_common}
+put /local/pcb/mod/OBJS [@
+  $(LIBRND_PLUGDIR)/lib_mbtk_common/glue_hid.o
+  $(LIBRND_PLUGDIR)/lib_mbtk_common/attr_dlg.o
+  $(LIBRND_PLUGDIR)/lib_mbtk_common/lib_mbtk_common.o
+@]
+
+
+###TODO### remove this
+put /target/libs/gui/mbtk/cflags {}
+put /target/libs/gui/mbtk/ldflags {-lmbtk}
+
+switch /local/pcb/lib_mbtk_common/controls
+	case {disable} end;
+	default
+		put /local/pcb/mod/CFLAGS   /target/libs/gui/mbtk/cflags
+		put /local/pcb/mod/LDFLAGS  /target/libs/gui/mbtk/ldflags
+	end
+end
+
+switch /local/pcb/lib_mbtk_common/controls
+	case {buildin}   include /local/librnd/tmpasm/buildin; end;
+	case {plugin}    include /local/librnd/tmpasm/plugin; end;
+	case {disable}   include /local/librnd/tmpasm/disable; end;
+end

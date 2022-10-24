@@ -1,0 +1,10 @@
+put /local/pcb/mod {hid_mbtk_xlib}
+put /local/pcb/mod/OBJS [@
+	$(LIBRND_PLUGDIR)/hid_mbtk_xlib/hid_mbtk_xlib.o
+@]
+
+switch /local/pcb/hid_mbtk_xlib/controls
+	case {buildin}   include /local/librnd/tmpasm/buildin; end;
+	case {plugin}    include /local/librnd/tmpasm/plugin; end;
+	case {disable}   include /local/librnd/tmpasm/disable; end;
+end
