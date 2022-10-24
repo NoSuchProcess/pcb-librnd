@@ -3,6 +3,6 @@ $short miniboxtk common code
 $long miniboxtk support common: widgets, menus
 $extdeps libmbtk
 $state WIP
-$package lib-mbtk
+#$package lib-mbtk
 $hidlib 1
 default disable-all

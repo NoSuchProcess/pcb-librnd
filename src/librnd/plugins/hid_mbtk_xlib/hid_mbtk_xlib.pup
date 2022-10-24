@@ -2,7 +2,7 @@ $class hid
 $short miniboxtk+xlib
 $long GUI: miniboxtk on xlib (X1)
 $state WIP
-$package mbtk-xlib
+#$package mbtk-xlib
 $hidlib 1
 $extdeps optional(libxinerama1) optional(libxrender1) libmbtk-xlib libmbtk
 default disable-all
