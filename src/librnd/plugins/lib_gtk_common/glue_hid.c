@@ -334,6 +334,7 @@ static int rnd_gtkg_usage(rnd_hid_t *hid, const char *topic)
 	fprintf(stderr, "\nInvocation:\n");
 	fprintf(stderr, "  %s --gui gtk2_gdk [options]\n", rnd_app.package);
 	fprintf(stderr, "  %s --gui gtk2_gl [options]\n", rnd_app.package);
+	fprintf(stderr, "  %s --gui gtk4_gl [options]\n", rnd_app.package);
 	fprintf(stderr, "  (depending on which gtk plugin(s) are compiled and installed)\n");
 	return 0;
 }
