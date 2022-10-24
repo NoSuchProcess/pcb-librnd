@@ -1,4 +1,8 @@
+#ifndef RND_MBTK_COMMON_H
+#define RND_MBTK_COMMON_H
+
 #include <libmbtk/libmbtk.h>
+#include <libmbtk/backend.h>
 #include <libmbtk/display.h>
 #include <librnd/core/rnd_bool.h>
 #include <librnd/core/hidlib.h>
@@ -32,6 +36,7 @@ typedef struct rnd_mbtk_topwin_s rnd_mbtk_topwin_t; /* opaque so that libmbtk/wi
 
 /* Global context for an active HID */
 typedef struct rnd_mbtk_s {
+	mbtk_backend_t be;
 	mbtk_display_t disp;
 	rnd_bool drawing_allowed;     /* track if a drawing area is available for rendering */
 	rnd_mbtk_view_t view;         /* top window's ddrawing area */
@@ -40,3 +45,5 @@ typedef struct rnd_mbtk_s {
 	unsigned gui_is_up:1;
 	rnd_mbtk_topwin_t *topwin;
 } rnd_mbtk_t;
+
+#endif

@@ -48,6 +48,8 @@
 #include "topwin.c"
 #include "io.c"
 
+static int (*init_display_cb)(rnd_mbtk_t *mctx, int *argc, char **argv[]);
+
 static void rnd_mbtk_gui_inited(rnd_mbtk_t *mctx, int main, int resized)
 {
 	static int im = 0, ic = 0, first = 1;
@@ -130,8 +132,6 @@ static void rnd_mbtk_main_export_uninit(rnd_mbtk_t *mctx, rnd_hid_t *hid)
 	hid->hid_data = NULL;
 }
 
-static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
-
 static void rnd_mbtk_do_exit_(rnd_mbtk_t *mctx)
 {
 #if 0
@@ -184,7 +184,8 @@ int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 	rnd_conf_parse_arguments("plugins/hid_mbtk/", argc, argv);
-	return 0;
+
+	return init_display_cb(mctx, argc, argv);
 }
 
 static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
@@ -511,6 +512,7 @@ static double rnd_mbtk_benchmark(rnd_hid_t *hid)
 
 static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
+	rnd_mbtk_t *mctx = hid->hid_data;
 }
 
 static void rnd_mbtk_do_exit(rnd_hid_t *hid)
@@ -519,9 +521,11 @@ static void rnd_mbtk_do_exit(rnd_hid_t *hid)
 
 static rnd_mbtk_t mbtk_global;
 
-void rnd_mbtk_glue_hid_init(rnd_hid_t *dst)
+void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_display)(rnd_mbtk_t *mctx, int *argc, char **argv[]))
 {
 	memset(dst, 0, sizeof(rnd_hid_t));
+
+	init_display_cb = init_display;
 
 	rnd_hid_nogui_init(dst);
 
