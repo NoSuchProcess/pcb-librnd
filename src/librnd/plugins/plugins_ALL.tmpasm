@@ -5,6 +5,7 @@ include {../src/librnd/plugins/hid_gtk2_gdk/Plug.tmpasm}
 include {../src/librnd/plugins/hid_gtk2_gl/Plug.tmpasm}
 include {../src/librnd/plugins/hid_gtk4_gl/Plug.tmpasm}
 include {../src/librnd/plugins/hid_lesstif/Plug.tmpasm}
+include {../src/librnd/plugins/hid_mbtk_xlib/Plug.tmpasm}
 include {../src/librnd/plugins/hid_remote/Plug.tmpasm}
 include {../src/librnd/plugins/import_pixmap_gd/Plug.tmpasm}
 include {../src/librnd/plugins/import_pixmap_pnm/Plug.tmpasm}
@@ -16,6 +17,7 @@ include {../src/librnd/plugins/lib_gtk2_common/Plug.tmpasm}
 include {../src/librnd/plugins/lib_gtk4_common/Plug.tmpasm}
 include {../src/librnd/plugins/lib_hid_common/Plug.tmpasm}
 include {../src/librnd/plugins/lib_hid_gl/Plug.tmpasm}
+include {../src/librnd/plugins/lib_mbtk_common/Plug.tmpasm}
 include {../src/librnd/plugins/lib_portynet/Plug.tmpasm}
 include {../src/librnd/plugins/lib_wget/Plug.tmpasm}
 include {../src/librnd/plugins/loghid/Plug.tmpasm}
