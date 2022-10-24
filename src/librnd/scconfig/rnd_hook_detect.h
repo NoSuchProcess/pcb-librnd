@@ -73,6 +73,7 @@ static void rnd_hook_detect_cc(void)
 		append("/local/" APP "/cflags_profile", target_no_pie);
 	}
 
+	require("cc/inline", 0, 0);
 	if (!istrue(get("cc/inline")))
 		need_inl = 1;
 
@@ -235,7 +236,6 @@ static int rnd_hook_detect_host(void)
 	require("cc/argstd/*", 0, 0);
 
 	require("cc/func_attr/unused/*", 0, 0);
-	require("cc/inline", 0, 0);
 
 	return 0;
 }
