@@ -2,6 +2,7 @@ $class lib
 $short pixmap formats export lib
 $long export to pixmap formats (e.g. png, jpeg, gif)
 $state works
+$extdeps libgd
 $package pixmap
 $hidlib 1
 default buildin
