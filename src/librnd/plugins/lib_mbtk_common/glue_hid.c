@@ -200,7 +200,7 @@ int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	/* Set default style and font ID for the display */
 	mbtk_f3d_style(&mctx->disp);
-	mctx->disp.default_fid = mbtk_resolve_font(&mctx->disp, 1, mctx->default_font);
+	mctx->disp.default_fid = mbtk_resolve_font(&mctx->disp, 1, &mctx->default_font);
 	if (mctx->disp.default_fid.l == -1) {
 		fprintf(stderr, "Unable to initialize mbtk display with the %s font: '%s'\n", mctx->be.name, mctx->default_font);
 		return -1;
