@@ -40,20 +40,10 @@ const char *mbtkx_cookie = "miniboxtk hid, xlib backend";
 
 rnd_hid_t mbtkx_hid;
 
-static int rnd_mbtk_xlib_init_display(rnd_mbtk_t *mctx, int *argc, char **argv[])
+static int rnd_mbtk_xlib_init_backend(rnd_mbtk_t *mctx, int *argc, char **argv[])
 {
 	if (mbtk_xlib_backend(&mctx->be) != 0) {
 		fprintf(stderr, "Unable to set up the xlib backend\n");
-		return -1;
-	}
-
-	if (mbtk_be_init(&mctx->be) != 0) {
-		fprintf(stderr, "Unable to initialize the xlib backend\n");
-		return -1;
-	}
-
-	if (mbtk_display_init(&mctx->be, &mctx->disp, argc, argv) != 0) {
-		fprintf(stderr, "Unable to initialize mbtk display with the xlib backend\n");
 		return -1;
 	}
 
@@ -77,7 +67,7 @@ int pplg_init_hid_mbtk_xlib(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_mbtk_glue_hid_init(&mbtkx_hid, rnd_mbtk_xlib_init_display);
+	rnd_mbtk_glue_hid_init(&mbtkx_hid, rnd_mbtk_xlib_init_backend);
 
 	mbtkx_hid.parse_arguments = mbtk_xlib_parse_arguments;
 

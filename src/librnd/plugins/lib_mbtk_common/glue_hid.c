@@ -48,7 +48,7 @@
 #include "topwin.c"
 #include "io.c"
 
-static int (*init_display_cb)(rnd_mbtk_t *mctx, int *argc, char **argv[]);
+static int (*init_backend_cb)(rnd_mbtk_t *mctx, int *argc, char **argv[]);
 
 static void rnd_mbtk_gui_inited(rnd_mbtk_t *mctx, int main, int resized)
 {
@@ -186,11 +186,25 @@ int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	rnd_mbtk_t *mctx = hid->hid_data;
 	rnd_conf_parse_arguments("plugins/hid_mbtk/", argc, argv);
 
-	res = init_display_cb(mctx, argc, argv);
+	res = init_backend_cb(mctx, argc, argv);
+
+	if (mbtk_be_init(&mctx->be) != 0) {
+		fprintf(stderr, "Unable to initialize the %s backend\n", mctx->be.name);
+		return -1;
+	}
+
+	if (mbtk_display_init(&mctx->be, &mctx->disp, argc, argv) != 0) {
+		fprintf(stderr, "Unable to initialize mbtk display with the %s backend\n", mctx->be.name);
+		return -1;
+	}
 
 	/* Set default style and font ID for the display */
 	mbtk_f3d_style(&mctx->disp);
 	mctx->disp.default_fid = mbtk_resolve_font(&mctx->disp, 1, mctx->default_font);
+	if (mctx->disp.default_fid.l == -1) {
+		fprintf(stderr, "Unable to initialize mbtk display with the %s font: '%s'\n", mctx->be.name, mctx->default_font);
+		return -1;
+	}
 }
 
 static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
@@ -526,11 +540,11 @@ static void rnd_mbtk_do_exit(rnd_hid_t *hid)
 
 static rnd_mbtk_t mbtk_global;
 
-void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_display)(rnd_mbtk_t *mctx, int *argc, char **argv[]))
+void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx, int *argc, char **argv[]))
 {
 	memset(dst, 0, sizeof(rnd_hid_t));
 
-	init_display_cb = init_display;
+	init_backend_cb = init_backend;
 
 	rnd_hid_nogui_init(dst);
 
