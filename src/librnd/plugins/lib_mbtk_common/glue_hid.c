@@ -182,10 +182,15 @@ TODO("draw");
 
 int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
+	int res;
 	rnd_mbtk_t *mctx = hid->hid_data;
 	rnd_conf_parse_arguments("plugins/hid_mbtk/", argc, argv);
 
-	return init_display_cb(mctx, argc, argv);
+	res = init_display_cb(mctx, argc, argv);
+
+	/* Set default style and font ID for the display */
+	mbtk_f3d_style(&mctx->disp);
+	mctx->disp.default_fid = mbtk_resolve_font(&mctx->disp, 1, mctx->default_font);
 }
 
 static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)

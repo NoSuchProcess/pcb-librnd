@@ -57,6 +57,8 @@ static int rnd_mbtk_xlib_init_display(rnd_mbtk_t *mctx, int *argc, char **argv[]
 		return -1;
 	}
 
+	mctx->default_font = "-*-helvetica-*-*-*-*-*-*-*-*-*-*-*-*";
+
 	return 0;
 }
 

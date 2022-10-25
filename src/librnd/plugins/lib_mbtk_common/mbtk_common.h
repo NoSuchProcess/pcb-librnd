@@ -38,6 +38,8 @@ typedef struct rnd_mbtk_topwin_s rnd_mbtk_topwin_t; /* opaque so that libmbtk/wi
 typedef struct rnd_mbtk_s {
 	mbtk_backend_t be;
 	mbtk_display_t disp;
+	const char *default_font;
+
 	rnd_bool drawing_allowed;     /* track if a drawing area is available for rendering */
 	rnd_mbtk_view_t view;         /* top window's ddrawing area */
 	rnd_hidlib_t *hidlib;
