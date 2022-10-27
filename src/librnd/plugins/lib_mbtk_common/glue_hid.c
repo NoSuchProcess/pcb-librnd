@@ -172,7 +172,7 @@ TODO("draw");
 	if (rnd_conf.editor.auto_place)
 		rnd_event(mctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, "top", plc);
 
-	rnd_mbtk_alloc_topwin(mctx);
+	rnd_mbtk_topwin_alloc(mctx);
 	mctx->topwin->win = window = mbtk_window_new(&mctx->disp, MBTK_WNTY_NORMAL, "TODO: title", plc[0], plc[1], plc[2], plc[3]);
 
 	TODO("return title so it can be set above");
@@ -540,6 +540,7 @@ static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	rnd_mbtk_main_export_widgets(mctx);
 	mbtk_run_window(mctx->topwin->win);
+	rnd_mbtk_topwin_free(mctx);
 }
 
 static void rnd_mbtk_do_exit(rnd_hid_t *hid)
