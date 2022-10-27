@@ -1048,6 +1048,22 @@
  ../src/librnd/config.h ../src/librnd/plugins/hid_lesstif/xm_tree_table_priv.h \
  ../src/librnd/plugins/hid_lesstif/xm_tree_table_widget.h \
  ../src_3rd/genlist/gendlist.h
+../src/librnd/plugins/hid_mbtk_xlib/hid_mbtk_xlib.o: \
+ ../src/librnd/plugins/hid_mbtk_xlib/hid_mbtk_xlib.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/hid_init.h \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h \
+ ../src/librnd/plugins/lib_mbtk_common/glue_hid.h \
+ ../src/librnd/plugins/lib_mbtk_common/mbtk_common.h ../src/librnd/core/hidlib.h
 ../src/librnd/plugins/hid_remote/proto.o: \
  ../src/librnd/plugins/hid_remote/proto.c ../src/librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
@@ -2823,6 +2839,58 @@
  ../src/librnd/core/hidlib.h ../src/librnd/core/global_typedefs.h \
  ../src/librnd/core/rnd_bool.h ../src/librnd/plugins/lib_hid_gl/stenc.h \
  ../src/librnd/plugins/lib_hid_gl/stencil_gl.h ../src/librnd/core/error.h
+../src/librnd/plugins/lib_mbtk_common/attr_dlg.o: \
+ ../src/librnd/plugins/lib_mbtk_common/attr_dlg.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src/librnd/plugins/lib_mbtk_common/mbtk_common.h \
+ ../src/librnd/core/rnd_bool.h ../src/librnd/core/hidlib.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/config.h \
+ ../src/librnd/plugins/lib_mbtk_common/attr_dlg.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/core/error.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h
+../src/librnd/plugins/lib_mbtk_common/glue_hid.o: \
+ ../src/librnd/plugins/lib_mbtk_common/glue_hid.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src/librnd/plugins/lib_mbtk_common/glue_hid.h \
+ ../src/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h ../src/librnd/config.h \
+ ../src/librnd/core/error.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
+ ../src/librnd/core/unit.h ../src/librnd/plugins/lib_mbtk_common/mbtk_common.h \
+ ../src/librnd/core/hidlib.h ../src/librnd/plugins/lib_mbtk_common/mbtk_common.h \
+ ../src/librnd/plugins/lib_mbtk_common/attr_dlg.h ../src/librnd/core/actions.h \
+ ../src/librnd/core/hid_nogui.h ../src/librnd/core/hid_menu.h ../src/librnd/core/hid_cfg.h \
+ ../src/librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/core/hid_cfg_input.h ../src_3rd/genht/htip.h \
+ ../src/librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
+ ../src/librnd/core/color.h ../src/librnd/core/pixmap.h ../src/librnd/core/event.h \
+ ../src/librnd/core/hidlib_conf.h ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
+ ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
+ ../src/librnd/plugins/lib_hid_common/menu_helper.h \
+ ../src/librnd/plugins/lib_mbtk_common/keyboard.c \
+ ../src/librnd/plugins/lib_mbtk_common/topwin.c \
+ ../src/librnd/plugins/lib_mbtk_common/io.c
+../src/librnd/plugins/lib_mbtk_common/lib_mbtk_common.o: \
+ ../src/librnd/plugins/lib_mbtk_common/lib_mbtk_common.c ../config.h \
+ ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src/librnd/core/hid_init.h \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src/librnd/core/error.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h ../src/librnd/core/box.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h
 ../src/librnd/plugins/lib_portynet/lib_portynet.o: \
  ../src/librnd/plugins/lib_portynet/lib_portynet.c ../config.h \
  ../src/librnd/config.h ../src/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
