@@ -154,7 +154,7 @@ void rnd_mbtk_topwinplace(rnd_hidlib_t *hidlib, *dialog, const char *id)
 }
 #endif
 
-static void rnd_mbtk_topwin_create(rnd_mbtk_t *mctx, int *argc, char ***argv)
+static int rnd_mbtk_topwin_create(rnd_mbtk_t *mctx, int *argc, char ***argv)
 {
 	mbtk_window_t *window;
 	int plc[4] = {-1, -1, -1, -1};
@@ -172,12 +172,15 @@ TODO("draw");
 	if (rnd_conf.editor.auto_place)
 		rnd_event(mctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, "top", plc);
 
-	mctx->topwin = window = mbtk_window_new(&mctx->disp, MBTK_WNTY_NORMAL, "TODO: title", plc[0], plc[1], plc[2], plc[3]);
+	rnd_mbtk_alloc_topwin(mctx);
+	mctx->topwin->win = window = mbtk_window_new(&mctx->disp, MBTK_WNTY_NORMAL, "TODO: title", plc[0], plc[1], plc[2], plc[3]);
 
 	TODO("return title so it can be set above");
 #if 0
 	mbtk_window_set_title(GTK_WINDOW(window), rnd_app.package);
 #endif
+
+	return 0;
 }
 
 int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
@@ -205,6 +208,8 @@ int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 		fprintf(stderr, "Unable to initialize mbtk display with the %s font: '%s'\n", mctx->be.name, mctx->default_font);
 		return -1;
 	}
+
+	return rnd_mbtk_topwin_create(mctx, argc, argv);
 }
 
 static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
@@ -532,6 +537,9 @@ static double rnd_mbtk_benchmark(rnd_hid_t *hid)
 static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
+
+	rnd_mbtk_main_export_widgets(mctx);
+	mbtk_run_window(mctx->topwin->win);
 }
 
 static void rnd_mbtk_do_exit(rnd_hid_t *hid)
