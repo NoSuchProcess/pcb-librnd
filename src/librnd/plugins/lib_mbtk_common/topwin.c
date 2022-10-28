@@ -1,6 +1,8 @@
 struct rnd_mbtk_topwin_s {
 	mbtk_window_t *win;
 
+	unsigned active:1;
+
 	/*** widgets (local allocation) ***/
 
 	/* top hbox with menu, toolbar and readouts */
@@ -13,6 +15,9 @@ struct rnd_mbtk_topwin_s {
 	mbtk_box_t left_toolbar, vbox_middle, info_hbox, drw_hbox1, drw_hbox2;
 	mbtk_canvas_native_t drawing_area;
 	mbtk_scrollbar_t vscroll, hscroll;
+
+	mbtk_box_t bottom_hbox;
+	mbtk_label_t cmd_prompt, cmd;
 
 	/* docking */
 	mbtk_box_t dockbox[RND_HID_DOCK_max];
@@ -128,6 +133,38 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 		mbtk_button_t *btn = mbtk_button_new_with_label("FS");
 		mbtk_box_add_widget(&tw->drw_hbox2, &btn->w, 0);
 	}
+
+	/*** bottom status bar ***/
+	mbtk_hbox_new(&tw->bottom_hbox);
+	mbtk_box_add_widget(&tw->vbox_middle, &tw->bottom_hbox.w, 0);
+
+	mbtk_hbox_new(&tw->dockbox[RND_HID_DOCK_BOTTOM]);
+	mbtk_box_add_widget(&tw->bottom_hbox, &tw->dockbox[RND_HID_DOCK_BOTTOM].w, 0);
+
+	mbtk_label_new(&tw->cmd_prompt, "action:");
+	mbtk_box_add_widget(&tw->bottom_hbox, &tw->cmd_prompt.w, 0);
+
+/*	rnd_gtk_command_combo_box_entry_create(&tw->cmd, rnd_gtk_topwin_hide_status, tw);*/
+	mbtk_label_new(&tw->cmd, "cmd....");
+	mbtk_label_set_span(&tw->cmd, HVBOX_FILL);
+	mbtk_box_add_widget(&tw->bottom_hbox, &tw->cmd.w, 0);
+
+	mbtk_widget_hide(&tw->cmd_prompt.w, 1);
+	mbtk_widget_hide(&tw->cmd.w, 1);
+
+	TODO("implement these:");
+/*
+	gtkc_bind_mouse_enter(tw->drawing_area, rnd_gtkc_xy_ev(&ghidgui->wtop_enter, drawing_area_enter_cb, tw));
+	gtk2c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
+	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
+	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_destr, destroy_chart_cb, ctx));
+
+	gtk4c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
+
+	rnd_gtk_fullscreen_apply(tw);
+*/
+
+	tw->active = 1;
 }
 
 static void rnd_mbtk_topwin_free(rnd_mbtk_t *mctx)
