@@ -71,6 +71,7 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 	/*** middle section ***/
 	mbtk_pane_new(&tw->hpaned_middle, 1);
 	mbtk_pane_set_span(&tw->hpaned_middle, HVBOX_FILL);
+	mbtk_pane_set_pixel(&tw->hpaned_middle, 150); /* convenient default */
 	mbtk_box_add_widget(&tw->vbox_main, &tw->hpaned_middle.w, 0);
 
 	/* the left toolbar box will be disabled in get_coords */
@@ -116,7 +117,6 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 
 	/* horizontal scrollbar and fullscreen button in another hbox */
 	mbtk_hbox_new(&tw->drw_hbox2);
-mbtk_box_set_span(&tw->drw_hbox1, HVBOX_FILL);
 	mbtk_box_add_widget(&tw->vbox_middle, &tw->drw_hbox2.w, 0);
 
 	mbtk_scrollbar_new(&tw->hscroll, 1);
@@ -128,8 +128,6 @@ mbtk_box_set_span(&tw->drw_hbox1, HVBOX_FILL);
 		mbtk_button_t *btn = mbtk_button_new_with_label("FS");
 		mbtk_box_add_widget(&tw->drw_hbox2, &btn->w, 0);
 	}
-
-
 }
 
 static void rnd_mbtk_topwin_free(rnd_mbtk_t *mctx)
