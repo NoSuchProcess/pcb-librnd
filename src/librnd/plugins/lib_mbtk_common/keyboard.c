@@ -6,6 +6,9 @@ static unsigned short int rnd_mbtk_translate_key(const char *desc, int len)
 {
 	unsigned int key = 0;
 
+printf("TRK '%s'\n", desc);
+
+
 	if (rnd_strcasecmp(desc, "Return") == 0)
 		desc = "Enter";
 
@@ -21,6 +24,8 @@ static unsigned short int rnd_mbtk_translate_key(const char *desc, int len)
 static int rnd_mbtk_key_name(unsigned short int key_char, char *out, int out_len)
 {
 	const char *name = mbtk_keysym2name(key_char);
+printf("KSM %d\n", key_char);
+
 	if (name == NULL)
 		return -1;
 	strncpy(out, name, out_len);
@@ -41,27 +46,21 @@ static int xlate_mods(mbtk_keymod_t km)
 
 static mbtk_event_handled_t rnd_mbtk_key_press_cb(rnd_mbtk_t *mctx, mbtk_event_t *ev)
 {
-	int slen;
-
-	if (mbtk_ks_is_modifier(ev->data.key.sym))
-		return MBTK_EVENT_NOT_HANDLED;
-
-	rnd_mbtk_note_event_location(0, 0, 0);
-
-	slen = rnd_hid_cfg_keys_input2(mctx->hidlib, &rnd_mbtk_keymap, xlate_mods(ev->data.key.mods), ev->data.key.edit, ev->data.key.sym);
-	if (slen > 0) {
-		rnd_hid_cfg_keys_action(mctx->hidlib, &rnd_mbtk_keymap);
-		return MBTK_EVENT_HANDLED;
-	}
-
 	return MBTK_EVENT_NOT_HANDLED;
 }
 
 
 static mbtk_event_handled_t rnd_mbtk_key_release_cb(rnd_mbtk_t *mctx, mbtk_event_t *ev)
 {
+	int slen, mods;
+
 	if (mbtk_ks_is_modifier(ev->data.key.sym))
 		rnd_mbtk_note_event_location(0, 0, 0);
+
+	mods = xlate_mods(ev->data.key.mods);
+	slen = rnd_hid_cfg_keys_input2(mctx->hidlib, &rnd_mbtk_keymap, mods, ev->data.key.sym, ev->data.key.edit);
+	if (slen > 0)
+		rnd_hid_cfg_keys_action(mctx->hidlib, &rnd_mbtk_keymap);
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(mctx->hidlib);
