@@ -44,6 +44,7 @@
 #include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 #include <librnd/plugins/lib_hid_common/menu_helper.h>
 
+#include "todo.c"
 #include "keyboard.c"
 #include "topwin.c"
 #include "io.c"
@@ -538,6 +539,7 @@ static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 
+	rnd_mbtk_main_export_init(mctx);
 	rnd_mbtk_main_export_widgets(mctx);
 	mbtk_run_window(mctx->topwin->win);
 	rnd_mbtk_topwin_free(mctx);

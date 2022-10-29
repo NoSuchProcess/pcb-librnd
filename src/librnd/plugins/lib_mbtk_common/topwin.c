@@ -31,6 +31,17 @@ static void rnd_mbtk_topwin_alloc(rnd_mbtk_t *mctx)
 
 static const unsigned long rnd_dock_color[RND_HID_DOCK_max] = {0, 0, 0xffaa33ffUL, 0, 0, 0}; /* force change color when docked */
 
+static mbtk_event_handled_t topwin_event(mbtk_widget_t *w, mbtk_kw_t id, mbtk_event_t *ev, void *user_data)
+{
+	rnd_mbtk_t *mctx = user_data;
+	switch(ev->type) {
+		case MBTK_EV_KEY_PRESS: return rnd_mbtk_key_press_cb(mctx, ev);
+		case MBTK_EV_KEY_RELEASE: return rnd_mbtk_key_release_cb(mctx, ev);
+	}
+	return MBTK_EVENT_NOT_HANDLED;
+}
+
+
 static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 {
 	rnd_mbtk_topwin_t *tw = mctx->topwin;
@@ -38,6 +49,8 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 
 	mbtk_vbox_new(&tw->vbox_main);
 	mbtk_window_set_root_widget(tw->win, &tw->vbox_main.w);
+	mbtk_handler_ev2cb_install(&tw->vbox_main.w);
+	mbtk_callback_set_event(&tw->vbox_main.w, mbtk_kw("event"), topwin_event, mctx);
 
 	/*** top control bar ***/
 	mbtk_hbox_new(&tw->top_bar_background);
