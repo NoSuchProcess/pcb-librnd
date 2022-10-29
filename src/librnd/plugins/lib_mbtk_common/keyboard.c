@@ -60,11 +60,8 @@ static mbtk_event_handled_t rnd_mbtk_key_press_cb(rnd_mbtk_t *mctx, mbtk_event_t
 
 static mbtk_event_handled_t rnd_mbtk_key_release_cb(rnd_mbtk_t *mctx, mbtk_event_t *ev)
 {
-TODO("shift release:");
-/*
-	if (rnd_mbtk_is_modifier_key_sym(ksym))
+	if (mbtk_ks_is_modifier(ev->data.key.sym))
 		rnd_mbtk_note_event_location(0, 0, 0);
-*/
 
 	if (rnd_app.adjust_attached_objects != NULL)
 		rnd_app.adjust_attached_objects(mctx->hidlib);
