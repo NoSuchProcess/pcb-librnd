@@ -6,8 +6,8 @@ static unsigned short int rnd_mbtk_translate_key(const char *desc, int len)
 {
 	unsigned int key = 0;
 
-printf("TRK '%s'\n", desc);
-
+	if ((desc[0] > 32) && (desc[0] < 127) && (desc[1] == '\0'))
+		return tolower(desc[0]);
 
 	if (rnd_strcasecmp(desc, "Return") == 0)
 		desc = "Enter";
