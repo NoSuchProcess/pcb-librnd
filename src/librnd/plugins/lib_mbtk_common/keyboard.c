@@ -23,11 +23,19 @@ printf("TRK '%s'\n", desc);
 
 static int rnd_mbtk_key_name(unsigned short int key_char, char *out, int out_len)
 {
-	const char *name = mbtk_keysym2name(key_char);
-printf("KSM %d\n", key_char);
+	char tmp[16];
+	const char *name;
 
-	if (name == NULL)
-		return -1;
+	if ((key_char > 32) && (key_char < 127)) {
+		tmp[0] = tolower(key_char);
+		tmp[1] = '\0';
+		name = tmp;
+	}
+	else {
+		name = mbtk_keysym2name(key_char);
+		if (name == NULL)
+			return -1;
+	}
 	strncpy(out, name, out_len);
 	out[out_len - 1] = '\0';
 	return 0;
