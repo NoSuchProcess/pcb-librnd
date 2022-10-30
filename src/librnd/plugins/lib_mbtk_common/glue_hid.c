@@ -46,6 +46,7 @@
 
 #include "todo.c"
 #include "keyboard.c"
+#include "menu.c"
 #include "topwin.c"
 #include "io.c"
 
