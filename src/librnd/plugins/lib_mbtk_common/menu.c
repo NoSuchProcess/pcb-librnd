@@ -17,6 +17,32 @@ TODO("what do we need this for?");
 	return m;
 }
 
+static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_hidlib_t *hidlib)
+{
+TODO("Update checkbox states");
+#if 0
+	for(list = menu->actions; list; list = list->next) {
+		lht_node_t *res = g_object_get_data(G_OBJECT(list->data), "resource");
+		lht_node_t *act = rnd_hid_cfg_menu_field(res, RND_MF_ACTION, NULL);
+		const char *tf = g_object_get_data(G_OBJECT(list->data), "checked-flag");
+		const char *af = g_object_get_data(G_OBJECT(list->data), "active-flag");
+		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
+		menu_toggle_update_cb(hidlib, GTK_ACTION(list->data), tf, af);
+		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
+	}
+#endif
+}
+
+
+TODO("librnd4: once we get rnd_conf_hid_callbacks_t mbtk_glboal can come from its user_data");
+static rnd_mbtk_t mbtk_global;
+static void rnd_mbtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
+{
+	if ((mbtk_global.hid_active) && (mbtk_global.hidlib != NULL))
+		rnd_mbtk_menu_update_checkboxes(&mbtk_global, mbtk_global.hidlib);
+}
+
+
 /* Add a menu row in the menu system; if ins_after is not NULL, insert after that,
    else append at the end of parent */
 static void menu_row_add(mbtk_box_t *row, mbtk_widget_t *parent, mbtk_widget_t *ins_after)
@@ -41,7 +67,7 @@ static mbtk_widget_t *ins_submenu(rnd_mbtk_t *mctx, const char *menu_label, mbtk
 		if (ins_after == rnd_hid_menu_ins_as_first)
 			ins_after = (mbtk_widget_t *)parent->hvbox.ch_first; /* first child is always the tear-off */
 
-		item = mbtk_menu_build_label_submenu_stfrow(menu_label);
+		item = mbtk_menu_build_label_submenu_stdrow(menu_label);
 		menu_row_add(item, parent, ins_after_w);
 		mbtk_menu_item_attach_submenu(&item->w, submenu);
 		return &item->w;
@@ -126,10 +152,13 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 				static int cbs_inited = 0;
 				if (!cbs_inited) {
 					memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
-					cbs.val_change_post = mctx->confchg_checkbox;
+					cbs.val_change_post = rnd_mbtk_confchg_checkbox;
 					cbs_inited = 1;
 				}
+TODO("checkbox need rnd_mbtk_menuconf_id:");
+#if 0
 				rnd_conf_hid_set_cb(nat, mctx->rnd_mbtk_menuconf_id, &cbs);
+#endif
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))
