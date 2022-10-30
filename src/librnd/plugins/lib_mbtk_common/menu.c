@@ -72,8 +72,11 @@ static mbtk_widget_t *ins_submenu(rnd_mbtk_t *mctx, const char *menu_label, mbtk
 		mbtk_menu_item_attach_submenu(&item->w, submenu);
 		return &item->w;
 	}
-	else
-		return mbtk_menu_bar_add_at_label(ins_after_w, menu_label, submenu, 0);
+	else {
+		if (ins_after_w != NULL)
+			return mbtk_menu_bar_add_at_label(ins_after_w, menu_label, submenu, 0);
+		return mbtk_menu_bar_append_label(&mctx->topwin->menu_bar, menu_label, submenu);
+	}
 }
 
 static void rnd_mbtk_main_menu_real_add_node(rnd_mbtk_t *mctx, mbtk_widget_t *parent, lht_node_t *ins_after, lht_node_t *base);
@@ -112,7 +115,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 
 
 		TODO("make tear-off work");
-		mbtk_menu_append_label((mbtk_menu_t *)parent, " > > > ");
+		mbtk_menu_append_label(submenu, " > > > ");
 
 		/* recurse on the newly-added submenu; rnd_hid_cfg_has_submenus() makes sure
 		   the node format is correct; iterate over the list of submenus and create
