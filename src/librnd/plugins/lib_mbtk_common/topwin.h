@@ -30,6 +30,7 @@ struct rnd_mbtk_topwin_s {
 
 	/* menu system */
 	gdl_list_t menu_chk;  /* list of menu_handle_t that need to be updated for checkbox changes */
+	rnd_conf_hid_id_t menuconf_id;
 };
 
 #endif

@@ -1,17 +1,22 @@
 #include <librnd/core/conf_hid.h>
 #include "topwin.h"
 
+static const char *cookie_menu = "mbtk hid menu";
+
 typedef struct {
 	mbtk_widget_t *widget;
 	lht_node_t *node;
+	const char *checked, *active; /* cached menu field str lookups */
 	gdl_elem_t link; /* in the list of topwin->menu_chk */
 } menu_handle_t;
 
 static menu_handle_t *handle_alloc(mbtk_widget_t *widget, lht_node_t *node)
 {
-	menu_handle_t *m = malloc(sizeof(menu_handle_t));
+	menu_handle_t *m = calloc(sizeof(menu_handle_t), 1);
 	m->widget = widget;
 	m->node = node;
+	m->checked = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
+	m->active = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
 
 	widget->user_data = m;
 	node->user_data = m;
@@ -19,20 +24,34 @@ static menu_handle_t *handle_alloc(mbtk_widget_t *widget, lht_node_t *node)
 	return m;
 }
 
+/* update the checkbox of a menu item */
+static void menu_chkbox_update(rnd_mbtk_t *mctx, menu_handle_t *m)
+{
+	rnd_hidlib_t *hidlib = mctx->hidlib;
+
+	if (m->checked != NULL) {
+		int v = rnd_hid_get_flag(hidlib, m->checked);
+		if (v < 0) {
+			mbtk_menu_stdrow_checkbox_set((mbtk_box_t *)m->widget, 0);
+TODO("set inactive");
+/*			gtk_action_set_sensitive(act, 0);*/
+		}
+		else
+			mbtk_menu_stdrow_checkbox_set((mbtk_box_t *)m->widget, !!v);
+	}
+	if (m->active != NULL) {
+		int v = rnd_hid_get_flag(hidlib, m->active);
+TODO("set active");
+/*		gtk_action_set_sensitive(act, !!v);*/
+	}
+}
+
+
 static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_hidlib_t *hidlib)
 {
-TODO("Update checkbox states");
-#if 0
-	for(list = menu->actions; list; list = list->next) {
-		lht_node_t *res = g_object_get_data(G_OBJECT(list->data), "resource");
-		lht_node_t *act = rnd_hid_cfg_menu_field(res, RND_MF_ACTION, NULL);
-		const char *tf = g_object_get_data(G_OBJECT(list->data), "checked-flag");
-		const char *af = g_object_get_data(G_OBJECT(list->data), "active-flag");
-		g_signal_handlers_block_by_func(G_OBJECT(list->data), menu->action_cb, act);
-		menu_toggle_update_cb(hidlib, GTK_ACTION(list->data), tf, af);
-		g_signal_handlers_unblock_by_func(G_OBJECT(list->data), menu->action_cb, act);
-	}
-#endif
+	menu_handle_t *m;
+	for(m = gdl_first(&mctx->topwin->menu_chk); m != NULL; m = gdl_next(&mctx->topwin->menu_chk, m))
+		menu_chkbox_update(mctx, m);
 }
 
 
@@ -136,6 +155,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 		if (checked) {
 			/* TOGGLE ITEM */
 			rnd_conf_native_t *nat = NULL;
+			menu_handle_t *hand;
 
 			TODO("we are not drawing radio: strchr(checked, '=')");
 			/* checked=foo       is a binary flag (checkbox)
@@ -143,7 +163,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 
 			item = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
 			menu_row_add(item, parent, ins_after_w);
-			handle_alloc(&item->w, sub_res);
+			hand = handle_alloc(&item->w, sub_res);
 
 			TODO("tooltip: attach tip");
 
@@ -160,10 +180,8 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 					cbs.val_change_post = rnd_mbtk_confchg_checkbox;
 					cbs_inited = 1;
 				}
-TODO("checkbox need rnd_mbtk_menuconf_id:");
-#if 0
-				rnd_conf_hid_set_cb(nat, mctx->rnd_mbtk_menuconf_id, &cbs);
-#endif
+				rnd_conf_hid_set_cb(nat, mctx->topwin->menuconf_id, &cbs);
+				gdl_append(&mctx->topwin->menu_chk, hand, link);
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))
@@ -201,22 +219,6 @@ TODO("checkbox need rnd_mbtk_menuconf_id:");
 			handle_alloc(item, sub_res);
 		}
 	}
-
-TODO("do this for CHECKED only");
-#if 0
-	/* By now this runs only for toggle items. */
-	if (action) {
-		mbtk_widget_t *item = rnd_gtk_menu_item_new(menu_label, accel, TRUE);
-
-		g_signal_connect(G_OBJECT(action), "activate", menu->action_cb, (gpointer)n_action);
-		g_object_set_data(G_OBJECT(action), "resource", (gpointer)sub_res);
-		g_object_set(item, "use-action-appearance", FALSE, NULL);
-		g_object_set(item, "related-action", action, NULL);
-		ins_menu(item, shell, ins_after);
-		menu->actions = g_list_append(menu->actions, action);
-		handle_alloc(&item->w, sub_res);
-	}
-#endif
 
 	free(accel);
 	return item;
@@ -292,6 +294,8 @@ int rnd_mbtk_load_menus(rnd_mbtk_t *mctx)
 	const lht_node_t *mr;
 
 	rnd_hid_menu_gui_ready_to_create(rnd_gui);
+
+	mctx->topwin->menuconf_id = rnd_conf_hid_reg(cookie_menu, NULL);
 
 	mr = rnd_hid_cfg_get_menu(rnd_gui->menu, "/main_menu");
 	if (mr != NULL) {
