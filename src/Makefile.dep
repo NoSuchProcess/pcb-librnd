@@ -2874,7 +2874,11 @@
  ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
  ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
  ../src/librnd/plugins/lib_hid_common/menu_helper.h \
+ ../src/librnd/plugins/lib_mbtk_common/todo.c \
  ../src/librnd/plugins/lib_mbtk_common/keyboard.c \
+ ../src/librnd/core/compat_misc.h ../src/librnd/plugins/lib_mbtk_common/mouse.c \
+ ../src/librnd/plugins/lib_mbtk_common/menu.c ../src/librnd/core/conf_hid.h \
+ ../src/librnd/plugins/lib_mbtk_common/topwin.h \
  ../src/librnd/plugins/lib_mbtk_common/topwin.c \
  ../src/librnd/plugins/lib_mbtk_common/io.c
 ../src/librnd/plugins/lib_mbtk_common/lib_mbtk_common.o: \
