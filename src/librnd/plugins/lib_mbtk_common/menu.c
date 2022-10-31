@@ -4,21 +4,21 @@
 static const char *cookie_menu = "mbtk hid menu";
 
 typedef struct {
-	mbtk_widget_t *widget;
+	mbtk_box_t *row;    /* menu row */
 	lht_node_t *node;
 	const char *checked, *active; /* cached menu field str lookups */
 	gdl_elem_t link; /* in the list of topwin->menu_chk */
 } menu_handle_t;
 
-static menu_handle_t *handle_alloc(mbtk_widget_t *widget, lht_node_t *node)
+static menu_handle_t *handle_alloc(mbtk_box_t *row, lht_node_t *node)
 {
 	menu_handle_t *m = calloc(sizeof(menu_handle_t), 1);
-	m->widget = widget;
+	m->row = row;
 	m->node = node;
 	m->checked = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
 	m->active = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
 
-	widget->user_data = m;
+	row->w.user_data = m;
 	node->user_data = m;
 
 	return m;
@@ -32,12 +32,12 @@ static void menu_chkbox_update(rnd_mbtk_t *mctx, menu_handle_t *m)
 	if (m->checked != NULL) {
 		int v = rnd_hid_get_flag(hidlib, m->checked);
 		if (v < 0) {
-			mbtk_menu_stdrow_checkbox_set((mbtk_box_t *)m->widget, 0);
+			mbtk_menu_stdrow_checkbox_set(m->row, 0);
 TODO("set inactive");
 /*			gtk_action_set_sensitive(act, 0);*/
 		}
 		else
-			mbtk_menu_stdrow_checkbox_set((mbtk_box_t *)m->widget, !!v);
+			mbtk_menu_stdrow_checkbox_set(m->row, !!v);
 	}
 	if (m->active != NULL) {
 		int v = rnd_hid_get_flag(hidlib, m->active);
@@ -132,7 +132,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 		lht_node_t *n;
 
 		item = ins_submenu(mctx, menu_label, submenu, parent, ins_after);
-		handle_alloc(&item->w, sub_res);
+		handle_alloc(item, sub_res);
 
 
 		TODO("make tear-off work");
@@ -163,7 +163,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 
 			item = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
 			menu_row_add(item, parent, ins_after_w);
-			hand = handle_alloc(&item->w, sub_res);
+			hand = handle_alloc(item, sub_res);
 
 			TODO("tooltip: attach tip");
 
@@ -197,7 +197,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 			TODO("set insensitive");
 /*			gtk_widget_set_sensitive(item, FALSE);*/
 
-			handle_alloc(&item->w, sub_res);
+			handle_alloc(item, sub_res);
 		}
 		else {
 			/* NORMAL ITEM */
@@ -275,7 +275,7 @@ static void rnd_mbtk_main_menu_add_popup_node(rnd_mbtk_t *mctx, lht_node_t *base
 TODO("Figure how to do popups with mbtk");
 #if 0
 	lht_node_t *submenu, *i;
-	mbtk_widget_t *new_menu;
+	mbtk_box_t *new_menu;
 
 	submenu = rnd_hid_cfg_menu_field_path(base, "submenu");
 	if (submenu == NULL) {
