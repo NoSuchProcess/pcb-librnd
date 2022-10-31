@@ -107,7 +107,7 @@ static void rnd_mbtk_main_menu_real_add_node(rnd_mbtk_t *mctx, mbtk_widget_t *pa
 static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent, lht_node_t *ins_after, lht_node_t *sub_res)
 {
 	const char *menu_label;
-	mbtk_box_t *item;
+	mbtk_box_t *row;
 	char *accel = NULL;
 	mbtk_widget_t *ins_after_w = (ins_after == NULL) ? NULL : ins_after->user_data;
 	lht_node_t *n_action = rnd_hid_cfg_menu_field(sub_res, RND_MF_ACTION, NULL);
@@ -161,9 +161,9 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 			/* checked=foo       is a binary flag (checkbox)
 			 * checked=foo=bar   is a flag compared to a value (radio) */
 
-			item = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
-			menu_row_add(item, parent, ins_after_w);
-			hand = handle_alloc(item, sub_res);
+			row = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
+			menu_row_add(row, parent, ins_after_w);
+			hand = handle_alloc(row, sub_res);
 
 			TODO("tooltip: attach tip");
 
@@ -185,24 +185,24 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 			}
 			else {
 				if ((update_on == NULL) || (*update_on != '\0'))
-					rnd_message(RND_MSG_WARNING, "Checkbox menu item %s not updated on any conf change - try to use the update_on field\n", checked);
+					rnd_message(RND_MSG_WARNING, "Checkbox menu row %s not updated on any conf change - try to use the update_on field\n", checked);
 			}
 		}
 		else if (label && strcmp(label, "false") == 0) {
 			/* INSENSITIVE ITEM */
-			item = mbtk_menu_build_label_full_stdrow(1, menu_label, NULL);
-			menu_row_add(item, parent, ins_after_w);
+			row = mbtk_menu_build_label_full_stdrow(1, menu_label, NULL);
+			menu_row_add(row, parent, ins_after_w);
 			TODO("tooltip: attach tip");
 
 			TODO("set insensitive");
-/*			gtk_widget_set_sensitive(item, FALSE);*/
+/*			gtk_widget_set_sensitive(row, FALSE);*/
 
-			handle_alloc(item, sub_res);
+			handle_alloc(row, sub_res);
 		}
 		else {
 			/* NORMAL ITEM */
-			item = mbtk_menu_build_label_full_stdrow(0, menu_label, accel);
-			menu_row_add(item, parent, ins_after_w);
+			row = mbtk_menu_build_label_full_stdrow(0, menu_label, accel);
+			menu_row_add(row, parent, ins_after_w);
 			TODO("tooltip: attach tip");
 #if 0
 			if ((tip != NULL) || (n_keydesc != NULL)) {
@@ -210,18 +210,18 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 				if (n_keydesc != NULL)
 					acc = rnd_hid_cfg_keys_gen_accel(&rnd_mbtk_keymap, n_keydesc, -1, "\nhotkey: ");
 				s = rnd_concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
-				gtk_widget_set_tooltip_text(item, s);
+				gtk_widget_set_tooltip_text(row, s);
 				free(s);
 				free(acc);
 			}
 #endif
 
-			handle_alloc(item, sub_res);
+			handle_alloc(row, sub_res);
 		}
 	}
 
 	free(accel);
-	return item;
+	return row;
 }
 
 
