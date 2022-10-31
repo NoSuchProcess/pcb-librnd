@@ -27,6 +27,7 @@
 #include <librnd/rnd_config.h>
 #include <libmbtk/libmbtk.h>
 #include <libmbtk/widget.h>
+#include <libmbtk/style_f3d.h>
 
 #include "glue_hid.h"
 #include "mbtk_common.h"

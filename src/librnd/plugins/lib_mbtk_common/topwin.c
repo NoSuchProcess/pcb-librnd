@@ -1,3 +1,5 @@
+#include <libmbtk/callback.h>
+#include <libmbtk/callback_imp.h>
 #include "topwin.h"
 
 static void rnd_mbtk_topwin_alloc(rnd_mbtk_t *mctx)

@@ -1,4 +1,6 @@
+#include <ctype.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/tool.h>
 
 static rnd_hid_cfg_keys_t rnd_mbtk_keymap;
 
