@@ -228,6 +228,8 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 /* Translate a lihata tree into an mbtk menu structure */
 static void rnd_mbtk_main_menu_real_add_node(rnd_mbtk_t *mctx, mbtk_widget_t *parent, lht_node_t *ins_after, lht_node_t *base)
 {
+	mbtk_widget_t *ins_after_w = (ins_after == NULL) ? NULL : ins_after->user_data;
+
 	switch (base->type) {
 		case LHT_HASH:                /* leaf submenu */
 			rnd_mbtk_menu_create_(mctx, parent, ins_after, base);
@@ -235,19 +237,21 @@ static void rnd_mbtk_main_menu_real_add_node(rnd_mbtk_t *mctx, mbtk_widget_t *pa
 
 		case LHT_TEXT:                /* separator or anchor */
 		{
-TODO("implement sep");
-#if 0
 			if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
-				mbtk_widget_t *item = gtk_separator_menu_item_new();
-				ins_menu(item, shell, ins_after);
-				handle_alloc(&item->w, sub_res);
+				mbtk_box_t *row = mbtk_hbox_new(NULL);
+				mbtk_separator_t *sep = mbtk_hsep_new(NULL);
+
+				mbtk_separator_set_span(sep, HVBOX_FILL);
+				mbtk_box_add_widget(row, &sep->w, 0);
+				menu_row_add(row, parent, ins_after_w);
+				
+				/* Not allocating a menu_handle for this */
 			}
 			else if (base->data.text.value[0] == '@') {
 				/* anchor; ignore */
 			}
 			else
 				rnd_hid_cfg_error(base, "Unexpected text node; the only text accepted here is sep, -, or @\n");
-#endif
 		}
 		break;
 		default:
