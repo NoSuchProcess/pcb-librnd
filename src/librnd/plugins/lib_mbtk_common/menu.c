@@ -181,7 +181,7 @@ TODO("checkbox need rnd_mbtk_menuconf_id:");
 		}
 		else {
 			/* NORMAL ITEM */
-			item = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
+			item = mbtk_menu_build_label_full_stdrow(0, menu_label, accel);
 			menu_row_add(item, parent, ins_after_w);
 			TODO("tooltip: attach tip");
 #if 0
