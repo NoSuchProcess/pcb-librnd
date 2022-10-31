@@ -74,7 +74,7 @@ static void menu_row_add(mbtk_box_t *row, mbtk_widget_t *parent, mbtk_widget_t *
 		mbtk_menu_append((mbtk_menu_t *)parent, &row->w);
 }
 
-static mbtk_widget_t *ins_submenu(rnd_mbtk_t *mctx, const char *menu_label, mbtk_menu_t *submenu, mbtk_widget_t *parent, lht_node_t *ins_after)
+static mbtk_widget_t *ins_submenu(rnd_mbtk_t *mctx, const char *menu_label, mbtk_menu_t *submenu, mbtk_widget_t *parent, lht_node_t *ins_after, lht_node_t *node)
 {
 	mbtk_widget_t *ins_after_w = (ins_after == NULL) ? NULL : ins_after->user_data;
 	lht_dom_iterator_t it;
@@ -86,10 +86,11 @@ static mbtk_widget_t *ins_submenu(rnd_mbtk_t *mctx, const char *menu_label, mbtk
 		mbtk_box_t *item;
 
 		if (ins_after == rnd_hid_menu_ins_as_first)
-			ins_after = (mbtk_widget_t *)parent->hvbox.ch_first; /* first child is always the tear-off */
+			ins_after_w = (mbtk_widget_t *)parent->hvbox.ch_first; /* first child is always the tear-off */
 
 		item = mbtk_menu_build_label_submenu_stdrow(menu_label);
 		menu_row_add(item, parent, ins_after_w);
+		handle_alloc(item, node);
 		mbtk_menu_item_attach_submenu(&item->w, submenu);
 		return &item->w;
 	}
@@ -131,8 +132,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 		mbtk_menu_t *submenu = mbtk_menu_new(NULL);
 		lht_node_t *n;
 
-		item = ins_submenu(mctx, menu_label, submenu, parent, ins_after);
-		handle_alloc(item, sub_res);
+		ins_submenu(mctx, menu_label, submenu, parent, ins_after, sub_res);
 
 
 		TODO("make tear-off work");
@@ -143,7 +143,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 		   them recursively. */
 		n = rnd_hid_cfg_menu_field(sub_res, RND_MF_SUBMENU, NULL);
 		for (n = n->data.list.first; n != NULL; n = n->next)
-			rnd_mbtk_main_menu_real_add_node(mctx, submenu, NULL, n);
+			rnd_mbtk_main_menu_real_add_node(mctx, &submenu->w, NULL, n);
 	}
 	else {
 		/* NON-SUBMENU: MENU ITEM */
@@ -267,7 +267,7 @@ static void rnd_mbtk_main_menu_add_node(rnd_mbtk_t *mctx, const lht_node_t *base
 		abort();
 	}
 	for(n = base->data.list.first; n != NULL; n = n->next)
-		rnd_mbtk_main_menu_real_add_node(mctx, &mctx->topwin->menu_bar, NULL, n);
+		rnd_mbtk_main_menu_real_add_node(mctx, &mctx->topwin->menu_bar.w, NULL, n);
 }
 
 static void rnd_mbtk_main_menu_add_popup_node(rnd_mbtk_t *mctx, lht_node_t *base)
