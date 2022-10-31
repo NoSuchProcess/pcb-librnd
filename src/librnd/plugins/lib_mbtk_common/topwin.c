@@ -76,7 +76,7 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 
 	mbtk_vbox_new(&tw->dockbox[RND_HID_DOCK_LEFT]);
 	mbtk_box_set_span(&tw->dockbox[RND_HID_DOCK_LEFT], HVBOX_FILL);
-	mbtk_box_add_widget(&tw->left_toolbar, &tw->dockbox[RND_HID_DOCK_LEFT], 0);
+	mbtk_box_add_widget(&tw->left_toolbar, &tw->dockbox[RND_HID_DOCK_LEFT].w, 0);
 
 	/*** right side is our main content: drawing area with scroll bars ***/
 	mbtk_vbox_new(&tw->vbox_middle);
@@ -85,7 +85,7 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 
 	/* first the info box */
 	mbtk_hbox_new(&tw->info_hbox);
-	mbtk_box_add_widget(&tw->vbox_middle, &tw->info_hbox, 0);
+	mbtk_box_add_widget(&tw->vbox_middle, &tw->info_hbox.w, 0);
 
 	if (rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR] != 0)
 		mbtk_box_style_set_prop(&tw->info_hbox, mbtk_kw("bg.color"), mbtk_arg_long(rnd_dock_color[RND_HID_DOCK_TOP_INFOBAR]));
@@ -96,7 +96,7 @@ static void rnd_mbtk_populate_topwin(rnd_mbtk_t *mctx)
 	mbtk_box_add_widget(&tw->info_hbox, &tw->dockbox[RND_HID_DOCK_TOP_INFOBAR], 0);
 #else
 	TODO("remove this");
-	mbtk_box_add_widget(&tw->info_hbox, mbtk_label_new(NULL, "info-box!"),0);
+	mbtk_box_add_widget(&tw->info_hbox, (mbtk_widget_t *)mbtk_label_new(NULL, "info-box!"),0);
 #endif
 
 	/* the drawing area is in a hbox with a vertical scrollbar */
