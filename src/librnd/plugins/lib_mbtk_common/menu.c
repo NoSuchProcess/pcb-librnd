@@ -2,18 +2,20 @@
 #include "topwin.h"
 
 typedef struct {
-	mbtk_widget_t *widget;    /* for most uses */
-	mbtk_widget_t *destroy;   /* destroy this */
-/*	GtkAction *action;        for removing from the central lists */
+	mbtk_widget_t *widget;
+	lht_node_t *node;
+	gdl_elem_t link; /* in the list of topwin->menu_chk */
 } menu_handle_t;
 
-static menu_handle_t *handle_alloc(mbtk_widget_t *widget, mbtk_widget_t *destroy, void *action)
+static menu_handle_t *handle_alloc(mbtk_widget_t *widget, lht_node_t *node)
 {
 	menu_handle_t *m = malloc(sizeof(menu_handle_t));
 	m->widget = widget;
-	m->destroy = destroy;
-TODO("what do we need this for?");
-/*	m->action = action;*/
+	m->node = node;
+
+	widget->user_data = m;
+	node->user_data = m;
+
 	return m;
 }
 
@@ -111,7 +113,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 		lht_node_t *n;
 
 		item = ins_submenu(mctx, menu_label, submenu, parent, ins_after);
-		sub_res->user_data = handle_alloc(item, item, NULL);
+		handle_alloc(&item->w, sub_res);
 
 
 		TODO("make tear-off work");
@@ -141,7 +143,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 
 			item = mbtk_menu_build_label_full_stdrow(1, menu_label, accel);
 			menu_row_add(item, parent, ins_after_w);
-			sub_res->user_data = handle_alloc(item, item, NULL);
+			handle_alloc(&item->w, sub_res);
 
 			TODO("tooltip: attach tip");
 
@@ -177,7 +179,7 @@ TODO("checkbox need rnd_mbtk_menuconf_id:");
 			TODO("set insensitive");
 /*			gtk_widget_set_sensitive(item, FALSE);*/
 
-			sub_res->user_data = handle_alloc(item, item, NULL);
+			handle_alloc(&item->w, sub_res);
 		}
 		else {
 			/* NORMAL ITEM */
@@ -196,7 +198,7 @@ TODO("checkbox need rnd_mbtk_menuconf_id:");
 			}
 #endif
 
-			sub_res->user_data = handle_alloc(item, item, NULL);
+			handle_alloc(item, sub_res);
 		}
 	}
 
@@ -212,7 +214,7 @@ TODO("do this for CHECKED only");
 		g_object_set(item, "related-action", action, NULL);
 		ins_menu(item, shell, ins_after);
 		menu->actions = g_list_append(menu->actions, action);
-		sub_res->user_data = handle_alloc(item, item, action);
+		handle_alloc(&item->w, sub_res);
 	}
 #endif
 
@@ -236,7 +238,7 @@ TODO("implement sep");
 			if ((strcmp(base->data.text.value, "sep") == 0) || (strcmp(base->data.text.value, "-") == 0)) {
 				mbtk_widget_t *item = gtk_separator_menu_item_new();
 				ins_menu(item, shell, ins_after);
-				base->user_data = handle_alloc(item, item, NULL);
+				handle_alloc(&item->w, sub_res);
 			}
 			else if (base->data.text.value[0] == '@') {
 				/* anchor; ignore */
@@ -277,7 +279,7 @@ TODO("Figure how to do popups with mbtk");
 
 	new_menu = mbtk_submenu_new();
 	g_object_ref_sink(new_menu);
-	base->user_data = handle_alloc(new_menu, new_menu, NULL);
+	handle_alloc(new_menu, base);
 
 	for (i = submenu->data.list.first; i != NULL; i = i->next)
 		rnd_mbtk_main_menu_real_add_node(ctx, new_menu, NULL, i);

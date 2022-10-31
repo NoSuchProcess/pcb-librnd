@@ -27,6 +27,9 @@ struct rnd_mbtk_topwin_s {
 	/* docking */
 	mbtk_box_t dockbox[RND_HID_DOCK_max];
 	gdl_list_t dock[RND_HID_DOCK_max];
+
+	/* menu system */
+	gdl_list_t menu_chk;  /* list of menu_handle_t that need to be updated for checkbox changes */
 };
 
 #endif
