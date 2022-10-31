@@ -7,8 +7,30 @@ typedef struct {
 	mbtk_box_t *row;    /* menu row */
 	lht_node_t *node;
 	const char *checked, *active; /* cached menu field str lookups */
+	lht_node_t *action;           /* cached menu action node */
 	gdl_elem_t link; /* in the list of topwin->menu_chk */
 } menu_handle_t;
+
+
+static mbtk_event_handled_t rnd_mbtk_menu_cb(mbtk_widget_t *w, mbtk_kw_t id, void *user_data)
+{
+	menu_handle_t *hand = user_data;
+
+	if (hand->action != NULL) {
+		rnd_hidlib_t *hidlib = rnd_gui->get_hidlib(rnd_gui);
+		rnd_hid_cfg_action(hidlib, hand->action);
+
+		/* GUI updates to reflect the result of the above action */
+		if (rnd_app.adjust_attached_objects != NULL)
+			rnd_app.adjust_attached_objects(hidlib);
+		else
+			rnd_tool_adjust_attached(hidlib);
+
+		rnd_gui->invalidate_all(rnd_gui);
+	}
+
+	return MBTK_EVENT_HANDLED;
+}
 
 static menu_handle_t *handle_alloc(mbtk_box_t *row, lht_node_t *node)
 {
@@ -17,6 +39,9 @@ static menu_handle_t *handle_alloc(mbtk_box_t *row, lht_node_t *node)
 	m->node = node;
 	m->checked = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
 	m->active = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
+	m->action = rnd_hid_cfg_menu_field(node, RND_MF_ACTION, NULL);
+
+	mbtk_menu_stdrow_callback_invoked(row, rnd_mbtk_menu_cb, m);
 
 	row->w.user_data = m;
 	node->user_data = m;
