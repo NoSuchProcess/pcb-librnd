@@ -47,7 +47,7 @@ static int rnd_mbtk_xlib_init_backend(rnd_mbtk_t *mctx, int *argc, char **argv[]
 		return -1;
 	}
 
-	mctx->default_font = "-*-helvetica-*-*-*-*-*-*-*-*-*-*-*-*";
+	mctx->default_font = "-*-fixed-medium-*-*-*-15-*-*-*-*-*-*-*";
 
 	return 0;
 }
