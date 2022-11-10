@@ -5,6 +5,7 @@ librnd_pkgs="librnd3-dev librnd3-doc librnd3-hid-gtk2-gl librnd3-cloud librnd3-l
 
 # plugin=package mapping
 librnd_plugins="
+hid_mbtk_xlib=<NOT PACKAGED IN LIBRND>
 hid_gtk2_gl=librnd3-hid-gtk2-gl
 hid_batch=librnd3
 lib_hid_common=librnd3-lib-gui
