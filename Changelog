@@ -1,3 +1,33 @@
+librnd 3.2.2 (r34502)
+~~~~~~~~~~~~~~~~~~~~~
+	[doc]
+		-Add: comment on BSD make in INSTALL
+
+	[gtk]
+		-Fix: use compatibility color component conversion for determining crosshair color because component type and scaling differs between gtk2 and gtk4
+
+	[gtk2]
+		-Add: compatibility macro for converting color component to 0..1
+
+	[gtk4]
+		-Change: enable gtk4 plugin by default (but still prefer gtk2 if both gtk4 and gtk2 are available)
+		-Add: compatibility macro for converting color component to 0..1
+
+	[lib_exp_pixmap]
+		-Add: extdep on libgd
+
+	[lib_gtk_common]
+		-Fix: missing gtk4_gl from the help text
+
+	[lib_hid_common]
+		-Fix: sensible default size for the export dialog
+
+	[lib_hid_gl]
+		-Fix: when real xor is not available (e.g. on VAO), use 1-clr for all r;g;b so that the base color is "inverted" like when xor is available
+
+	[scconfig]
+		-Fix: detect inline before making decisions based on it
+
 librnd 3.2.1 (r34435)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
