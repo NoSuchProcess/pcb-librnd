@@ -3,6 +3,7 @@
 
 *** Later releases ***
 - BUG: libualloc *_api.h are not installed
+- BUG: make sure tests compile with -DNDEBUG in production, else it fails in alpine packaging (-fomit-frame-pointer brings in fortify headers for some reason which fail with use-librnd #defines in config.h) [report: aron]
 - 4.0.0: ABI incompatible (feature removal)
 	- HID API for mbtk: pixmaps require a one-time registration and an unique ID
 		- check how pcb-rnd layersel would work with this
