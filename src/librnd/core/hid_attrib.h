@@ -77,7 +77,7 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_spare_layout2,
 	RND_HATT_spare_layout3,
 	RND_HATT_spare_layout4,
-	RND_HATT_END,                 /* close one level of RND_HATT_* */
+	RND_HATT_END                  /* close one level of RND_HATT_* */
 } rnd_hid_attr_type_t;
 
 #define RND_HATT_IS_COMPOSITE(type) \
