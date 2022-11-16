@@ -60,24 +60,17 @@ typedef enum rnd_hid_attr_type_e {
 	RND_HATT_COLOR,               /* color pick (user input: select a color) */
 	RND_HATT_TEXT,                /* plain text editor; data is in 'wdata' as rnd_hid_text_t */
 	RND_HATT_SUBDIALOG,           /* caller operated subdialog (docked dialog); available from librnd 3.1.0 */
-	RND_HATT_spare_atom1,
-	RND_HATT_spare_atom2,
-	RND_HATT_spare_atom3,
-	RND_HATT_spare_atom4,
 
 	/* groups (e.g. boxes) */
-	RND_HATT_BEGIN_HBOX,          /* NOTE: RND_HATT_IS_COMPOSITE() depends on it */
+	RND_HATT_BEGIN_HBOX = 100,    /* NOTE: RND_HATT_IS_COMPOSITE() depends on it */
 	RND_HATT_BEGIN_VBOX,
 	RND_HATT_BEGIN_HPANE,         /* horizontal split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
 	RND_HATT_BEGIN_VPANE,         /* vertical split and offer two vboxes; the split ratio is dbl between 0 and 1, that describes the left side's size */
 	RND_HATT_BEGIN_TABLE,         /* wdata_aux1 is the number of columns */
 	RND_HATT_BEGIN_TABBED,        /* tabbed view (e.g. notebook); ->wdata stores the tab names and a NULL; default_val's integer value is the index of the current tab */
 	RND_HATT_BEGIN_COMPOUND,      /* subtree emulating a single widget; (rnd_hid_compound_t *) stored in END's wdata */
-	RND_HATT_spare_layout1,
-	RND_HATT_spare_layout2,
-	RND_HATT_spare_layout3,
-	RND_HATT_spare_layout4,
-	RND_HATT_END                  /* close one level of RND_HATT_* */
+
+	RND_HATT_END = 200            /* close one level of RND_HATT_* */
 } rnd_hid_attr_type_t;
 
 #define RND_HATT_IS_COMPOSITE(type) \
