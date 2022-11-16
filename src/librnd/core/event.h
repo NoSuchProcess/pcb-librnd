@@ -61,9 +61,9 @@ typedef enum {
 	RND_EVENT_STROKE_RECORD,          /* parameters: rnd_coord_t x, rnd_coord_t y */
 	RND_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
-	RND_EVENT_BOARD_REPLACED,         /* called after the current board on display got _replaced_; should be emitted when the board data got replaced in memory or GUI switched between boards loaded (in case of multiple boards) */
-	RND_EVENT_BOARD_META_CHANGED,     /* called if the metadata of the board has changed */
-	RND_EVENT_BOARD_FN_CHANGED,       /* called after the file name of the board has changed */
+	RND_EVENT_DESIGN_REPLACED,        /* called after the current design on display got _replaced_; should be emitted when the board data got replaced in memory or GUI switched between boards loaded (in case of multiple boards) */
+	RND_EVENT_DESIGN_META_CHANGED,    /* called if the metadata of the design has changed */
+	RND_EVENT_DESIGN_FN_CHANGED,      /* called after the file name of the design has changed */
 
 	RND_EVENT_SAVE_PRE,               /* called before saving the design (required for window placement) */
 	RND_EVENT_SAVE_POST,              /* called after saving the design (required for window placement) */

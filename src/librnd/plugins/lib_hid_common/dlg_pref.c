@@ -435,8 +435,8 @@ void rnd_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab
 	int i, t;
 
 	pref_conf_cb.val_change_post = pref_conf_changed;
-	rnd_event_bind(RND_EVENT_BOARD_REPLACED, pref_ev_board_changed, &pref_ctx, pref_cookie);
-	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_REPLACED, pref_ev_board_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	if (first_init != NULL) {
