@@ -42,7 +42,6 @@
 #include <librnd/core/globalconst.h>
 
 #include "wt_preview.h"
-#include "dlg_fileselect.h"
 
 #include "FillBox.h"
 
@@ -3062,7 +3061,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.unwatch_file = lesstif_unwatch_file;
 	lesstif_hid.benchmark = ltf_benchmark;
 
-	lesstif_hid.fileselect = rnd_ltf_fileselect;
 	lesstif_hid.attr_dlg_new = lesstif_attr_dlg_new;
 	lesstif_hid.attr_dlg_run = lesstif_attr_dlg_run;
 	lesstif_hid.attr_dlg_raise = lesstif_attr_dlg_raise;

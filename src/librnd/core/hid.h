@@ -364,8 +364,6 @@ struct rnd_hid_s {
 	void (*unwatch_file)(rnd_hid_t *hid, rnd_hidval_t watch);
 
 
-	/* Use rnd_hid_fileselect() instead */
-	char *(*fileselect)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
@@ -681,5 +679,11 @@ char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
    ->get_dad_hidlib() returns the same hid-global "currently displayed"
    value as ->get_hidlib(); 0 is the default, old, pre-4.0.0 behavior */
 extern int rnd_hid_enable_per_dialog_hidlib;
+
+/* Actual implementation of rnd_hid_fileselect(); registered by the plugin
+   that implements file selection (typically lib_hid_common). The reason
+   for this abstraction is that we do not need to compile the code for
+   the file select dialog into core, useful in non-GUI cases. */
+extern char *(*rnd_hid_fileselect_imp)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 #endif

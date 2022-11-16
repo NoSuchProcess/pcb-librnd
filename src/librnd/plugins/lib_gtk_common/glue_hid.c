@@ -14,7 +14,6 @@
 #include "in_keyboard.h"
 #include "bu_dwg_tooltip.h"
 #include "ui_crosshair.h"
-#include "dlg_fileselect.h"
 #include "dlg_attribute.h"
 #include "util_listener.h"
 #include "util_timer.h"
@@ -275,11 +274,6 @@ static rnd_hidval_t rnd_gtkg_watch_file(rnd_hid_t *hid, int fd, unsigned int con
 	rnd_bool (*func)(rnd_hidval_t, int, unsigned int, rnd_hidval_t), rnd_hidval_t user_data)
 {
 	return rnd_gtk_watch_file((rnd_gtk_t *)hid->hid_data, fd, condition, func, user_data);
-}
-
-static char *rnd_gtkg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
-{
-	return rnd_gtk_fileselect(hid, (rnd_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
@@ -638,7 +632,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->watch_file = rnd_gtkg_watch_file;
 	dst->unwatch_file = rnd_gtk_unwatch_file;
 
-	dst->fileselect = rnd_gtkg_fileselect;
 	dst->attr_dlg_new = rnd_gtk_attr_dlg_new_;
 	dst->attr_dlg_run = rnd_gtk_attr_dlg_run;
 	dst->attr_dlg_raise = rnd_gtk_attr_dlg_raise;

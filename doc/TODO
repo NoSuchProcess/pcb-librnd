@@ -41,7 +41,6 @@
 	- revise events: move anything not used by librnd to apps
 	- hid_t spares: some function ptrs are spent, move them, refill spares
 	- rnd_app_t spares: conf_ignore lists (two void *), new func conf_dont_merge_node(), new long multi_design
-	- remove rnd_hid_t->fileselect (code should use rnd_hid_fileselect() instead, which should call lib_hid_common's fileselect through a global pointer hook, plug_ style)
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- make HID_SC_ an enum

@@ -41,12 +41,14 @@ void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete
 	rnd_event(hl, RND_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
+char *(*rnd_hid_fileselect_imp)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub) = NULL;
+
 char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
-	if ((hid == NULL) || (hid->fileselect == NULL))
+	if ((hid == NULL) || (rnd_hid_fileselect_imp == NULL))
 		return NULL;
 
-	return hid->fileselect(hid, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
+	return rnd_hid_fileselect_imp(hid, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
 

@@ -238,11 +238,6 @@ static int rnd_mbtk_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, 
 	TODO("implemet");
 }
 
-static char *rnd_mbtk_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
-{
-	TODO("don't implemet: librnd4 removes this anyway");
-}
-
 static void *rnd_mbtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	TODO("implemet");
@@ -582,7 +577,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->watch_file = rnd_mbtk_watch_file;
 	dst->unwatch_file = rnd_mbtk_unwatch_file;
 
-	dst->fileselect = rnd_mbtk_fileselect;
 	dst->attr_dlg_new = rnd_mbtk_attr_dlg_new_;
 	dst->attr_dlg_run = rnd_mbtk_attr_dlg_run;
 	dst->attr_dlg_raise = rnd_mbtk_attr_dlg_raise;

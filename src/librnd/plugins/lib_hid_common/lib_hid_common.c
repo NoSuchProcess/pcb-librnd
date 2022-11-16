@@ -173,5 +173,7 @@ int pplg_init_lib_hid_common(void)
 	if (nat != NULL)
 		rnd_conf_hid_set_cb(nat, conf_id, &ccbu);
 
+	rnd_hid_fileselect_imp = rnd_dlg_fileselect;
+
 	return 0;
 }

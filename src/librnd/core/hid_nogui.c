@@ -217,12 +217,9 @@ static void nogui_unwatch_file(rnd_hid_t *hid, rnd_hidval_t watch)
 	CRASH("unwatch_file");
 }
 
-/* Return a line of user input text, stripped of any newline characters.
- * Returns NULL if the user simply presses enter, or otherwise gives no input.
- */
 #define MAX_LINE_LENGTH 1024
 static const char *CANCEL = "CANCEL";
-static char *read_stdin_line(void)
+char *rnd_nogui_read_stdin_line(void)
 {
 	static char buf[MAX_LINE_LENGTH];
 	char *s;
@@ -266,7 +263,7 @@ static fgw_error_t rnd_act_cli_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		else
 			printf("%s : ", label);
 
-		tmp = read_stdin_line();
+		tmp = rnd_nogui_read_stdin_line();
 		if (tmp == NULL)
 			answer = rnd_strdup((default_str != NULL) ? default_str : "");
 		else
@@ -308,7 +305,7 @@ static fgw_error_t rnd_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	}
 	printf("\nChose a number from above: ");
 	fflush(stdout);
-	answer = read_stdin_line();
+	answer = rnd_nogui_read_stdin_line();
 	if ((answer == CANCEL) || (strcmp(answer, "cancel") == 0))
 		goto cancel;
 	if (answer == NULL)
@@ -321,28 +318,6 @@ static fgw_error_t rnd_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 	n = (ret-1)*2+5;
 	RND_ACT_CONVARG(n, FGW_INT, cli_MessageBox, res->val.nat_int = argv[n].val.nat_int);
 	return 0;
-}
-
-/* FIXME - this could use some enhancement to actually use the other
-   args */
-static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *descr,
-															const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
-{
-	char *answer;
-
-	if (rnd_conf.rc.quiet)
-		return rnd_strdup("");
-
-	if (default_file)
-		printf("%s [%s] : ", title, default_file);
-	else
-		printf("%s : ", title);
-
-	answer = read_stdin_line();
-	if (answer == NULL)
-		return (default_file != NULL) ? rnd_strdup(default_file) : NULL;
-	else
-		return rnd_strdup(answer);
 }
 
 void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
@@ -504,7 +479,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->stop_timer = nogui_stop_timer;
 	hid->watch_file = nogui_watch_file;
 	hid->unwatch_file = nogui_unwatch_file;
-	hid->fileselect = nogui_fileselect;
 	hid->attr_dlg_new = rnd_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;
 	hid->attr_dlg_raise = nogui_attr_dlg_raise;

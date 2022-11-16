@@ -18,7 +18,6 @@ put /local/pcb/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_menu.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_command.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/dlg_attribute.o
-  $(LIBRND_PLUGDIR)/lib_gtk2_common/dlg_fileselect.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/dlg_topwin.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/in_keyboard.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/in_mouse.o

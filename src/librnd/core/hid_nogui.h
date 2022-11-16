@@ -9,4 +9,8 @@ void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t
 
 int rnd_nogui_progress(long so_far, long total, const char *message);
 
+/* Return a line of user input text, stripped of any newline characters.
+   Returns NULL if the user simply presses enter, or otherwise gives no input. */
+char *rnd_nogui_read_stdin_line(void);
+
 #endif

@@ -109,12 +109,36 @@ static void log_import(void)
 
 extern int isatty();
 
+/* TODO - this could use some enhancement to actually use the other
+   args */
+static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+{
+	char *answer;
+
+	if (rnd_conf.rc.quiet)
+		return rnd_strdup("");
+
+	if (default_file)
+		printf("%s [%s] : ", title, default_file);
+	else
+		printf("%s : ", title);
+
+	answer = rnd_nogui_read_stdin_line();
+	if (answer == NULL)
+		return (default_file != NULL) ? rnd_strdup(default_file) : NULL;
+	else
+		return rnd_strdup(answer);
+}
+
+
 /* ----------------------------------------------------------------------------- */
 static int batch_stay;
 static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int interactive;
 	char line[1000];
+
+	rnd_hid_fileselect_imp = nogui_fileselect;
 
 	batch_begin();
 
