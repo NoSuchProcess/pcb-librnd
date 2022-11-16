@@ -22,7 +22,7 @@ typedef struct rnd_ltf_preview_s {
 	unsigned resized:1;
 	unsigned pan:1;
 	unsigned expose_lock:1;
-	unsigned redraw_with_board:1;
+	unsigned redraw_with_design:1;
 	unsigned flip_local:1;
 	unsigned flip_global:1;
 	unsigned flip_x:1; /* local flip, when flip_local is enabled */

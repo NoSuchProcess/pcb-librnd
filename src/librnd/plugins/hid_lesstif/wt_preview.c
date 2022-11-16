@@ -188,7 +188,7 @@ void rnd_ltf_preview_invalidate(const rnd_box_t *screen)
 	rnd_ltf_preview_t *prv;
 
 	for(prv = gdl_first(&ltf_previews); prv != NULL; prv = prv->link.next) {
-		if (!prv->redraw_with_board) continue;
+		if (!prv->redraw_with_design) continue;
 		if (screen != NULL) {
 			rnd_box_t pb;
 			pb.X1 = prv->x1;

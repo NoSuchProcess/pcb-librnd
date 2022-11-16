@@ -629,7 +629,7 @@ void rnd_gtk_preview_invalidate(rnd_gtk_t *ctx, const rnd_box_t *screen)
 	rnd_gtk_preview_t *prv;
 
 	for(prv = gdl_first(&ctx->previews); prv != NULL; prv = prv->link.next) {
-		if (!prv->redraw_with_board || prv->redrawing) continue;
+		if (!prv->redraw_with_design || prv->redrawing) continue;
 		if (screen != NULL) {
 			rnd_box_t pb;
 			pb.X1 = prv->view.x0;

@@ -139,7 +139,7 @@ TODO("TODO make these configurable:")
 	p->y_max = RND_MM_TO_COORD(100);
 	p->w_pixels = RND_MM_TO_COORD(10);
 	p->h_pixels = RND_MM_TO_COORD(10);
-	p->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
+	p->redraw_with_design = !!(attr->hatt_flags & RND_HATF_PRV_DESIGN);
 
 	gtk_widget_set_size_request(prv, hp->min_sizex_px, hp->min_sizey_px);
 	return prv;

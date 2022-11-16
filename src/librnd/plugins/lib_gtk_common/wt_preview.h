@@ -88,7 +88,7 @@ struct rnd_gtk_preview_s {
 	rnd_gtk_t *ctx;
 	gtkc_event_xyz_t rs, sc, motion, mpress, mrelease, kpress, krelease, ev_destroy;
 	gdl_elem_t link; /* in the list of all previews in ->ctx->previews */
-	unsigned redraw_with_board:1;
+	unsigned redraw_with_design:1;
 	unsigned redrawing:1;
 	unsigned draw_inited:1; /* used to track new_context() state for opengl backends */
 

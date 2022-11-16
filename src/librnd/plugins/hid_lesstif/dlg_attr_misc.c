@@ -247,7 +247,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 
 	pd->window = XtWindow(pw);
 	pd->pw = pw;
-	pd->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
+	pd->redraw_with_design = !!(attr->hatt_flags & RND_HATF_PRV_DESIGN);
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)rnd_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)rnd_ltf_preview_callback, (XtPointer)pd);
