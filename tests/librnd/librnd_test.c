@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
 	rnd_fix_locale_and_env();
 
-	rnd_plugin_add_dir("include/usr/lib/librnd3/plugins");
+	rnd_plugin_add_dir("include/usr/lib/librnd4/plugins");
 	rnd_conf_force_set_bool(rnd_conf.rc.dup_log_to_stderr, 1);
 
 	rnd_main_args_init(&ga, argc, action_args);

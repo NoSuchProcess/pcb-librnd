@@ -1,66 +1,66 @@
-@librnd3
+@librnd4
 	Ringdove 2D CAD library framework
 
 	The Ringdove library (shared objects) contains the basic
 	infrastructure for 2D interactive+batch CAD applications: config,
 	HID, polygon, menu, plugin system.
 
-@librnd3-dev
+@librnd4-dev
 	Ringdove 2D cad library, files for development.
 
 	Headers, templates, scripts for compiling Ringdove applications.
 
-@librnd3-doc
+@librnd4-doc
 	Documentation for librnd.
 	
 	Developer documentation for using librnd.
 
-@librnd3-lib-gtk
+@librnd4-lib-gtk
 	Support library for building the GUI with gtk.
 
 	Provides the common gtk code (e.g. dialog box engine, input handling)
 	for any gtk based HID plugin.
 
-@librnd3-hid-gtk2-gdk
+@librnd4-hid-gtk2-gdk
 	GUI: gtk2, software render
 
 	Software rendering on gtk2, using the gdk API.
 
-@librnd3-hid-gtk2-gl
+@librnd4-hid-gtk2-gl
 	GUI: gtk2, opengl
 
 	Hardware accelerated (opengl) rendering on gtk2.
 
-@librnd3-hid-gtk4-gl
+@librnd4-hid-gtk4-gl
 	GUI: gtk4, opengl
 
 	Hardware accelerated (opengl) rendering on gtk4.
 
-@librnd3-lib-gl
+@librnd4-lib-gl
 	Support library for rendering with opengl.
 
 	Provides plugins for driving an opengl output, rendering the drawing
 	on opengl.
 
-@librnd3-hid-lesstif
+@librnd4-hid-lesstif
 	GUI: motif/lesstif, software render
 
 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.
 
-@librnd3-lib-gui
+@librnd4-lib-gui
 	Support library for building the GUI.
 
 	Provides librnd specific dialog boxes (e.g. fontsel) and top
 	window GUI elements.
 
-@librnd3-cloud
+@librnd4-cloud
 	Networking plugins for accessing remote resources.
 
 	Support library plugin for 'cloud' footprint/symbol access plugin
 	that integrates remote, web access resources like edakrill or
 	gedasymbols.org.
 
-@librnd3-pixmap
+@librnd4-pixmap
 	Import and export pixmap images.
 
 	Low level support for png/jpeg/gif export plugins, low level import

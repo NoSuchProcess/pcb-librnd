@@ -1,12 +1,12 @@
-@files librnd3-dev $PREFIX/include/librnd/*
-@files librnd3 $PREFIX/lib/*.so.*
-@appendfiles librnd3-dev $PREFIX/share/librnd3/librnd.mak
-@appendfiles librnd3-dev $PREFIX/share/librnd3/plugin.state
-@appendfiles librnd3-dev $PREFIX/share/librnd3/librnd_packages.sh
-@appendfiles librnd3-dev $PREFIX/lib/librnd3/scconfig
-@appendfiles librnd3-dev $PREFIX/lib/*.so
-@appendfiles librnd3-dev $PREFIX/lib/librnd3/puplug $PREFIX/lib/librnd3/sphash
-@appendfiles librnd3-dev $PREFIX/lib/librnd3/plugins/map_plugins.sh
-@appendextdeps librnd3 libfungw
-@appendextdeps librnd3-dev libgenht1-dev libfgunw-dev
+@files librnd4-dev $PREFIX/include/librnd/*
+@files librnd4 $PREFIX/lib/*.so.*
+@appendfiles librnd4-dev $PREFIX/share/librnd4/librnd.mak
+@appendfiles librnd4-dev $PREFIX/share/librnd4/plugin.state
+@appendfiles librnd4-dev $PREFIX/share/librnd4/librnd_packages.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/scconfig
+@appendfiles librnd4-dev $PREFIX/lib/*.so
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/puplug $PREFIX/lib/librnd4/sphash
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/plugins/map_plugins.sh
+@appendextdeps librnd4 libfungw
+@appendextdeps librnd4-dev libgenht1-dev libfgunw-dev
 

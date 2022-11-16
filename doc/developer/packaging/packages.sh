@@ -70,8 +70,8 @@ cat extra.digest
 ) | awk -v "meta_deps=$meta_deps"  '
 	BEGIN {
 		q = "\""
-		gsub(" ", " librnd3-", meta_deps)
-		sub("^", "librnd3-", meta_deps)
+		gsub(" ", " librnd4-", meta_deps)
+		sub("^", "librnd4-", meta_deps)
 		while((getline < "desc") == 1) {
 			if ($0 ~ "^@") {
 				pkg=$0
@@ -138,19 +138,19 @@ cat extra.digest
 	($1 ~ "[.]pup$") {
 		val=$3
 		cfg = pkg
-		if (val == "(core)") val="librnd3"
-		else if (val == "core") val="librnd3"
-		else val = "librnd3-" val
+		if (val == "(core)") val="librnd4"
+		else if (val == "core") val="librnd4"
+		else val = "librnd4-" val
 	}
 
 	{
-		pkg = "librnd3-" pkg
+		pkg = "librnd4-" pkg
 	}
 
 	($1 ~ "[.]pup$") && ($2 == "$package") {
 		PKG[val] = PKG[val] " " cfg;
 		PLUGIN[pkg] = val;
-		if (val == "librnd3") {
+		if (val == "librnd4") {
 			CFG_BUILDIN[cfg]++
 		}
 		else {
@@ -210,7 +210,7 @@ next
 	
 		# everything depends on core
 		for(pkg in PKG)
-			add_dep(pkg, "librnd3")
+			add_dep(pkg, "librnd4")
 
 		# calculate dependencies
 		for(plg in PLUGIN_DEP) {
@@ -230,15 +230,15 @@ next
 		PKG_DEP["doc"] = ""
 		PKG_DEP["librnd"] = meta_deps
 #		PKG["librnd"] = "&lt;metapackage&gt;"
-		PKG["librnd3-doc"] = "&nbsp;"
-		IFILES["librnd3-doc"] = "/usr/share/doc/*"
+		PKG["librnd4-doc"] = "&nbsp;"
+		IFILES["librnd4-doc"] = "/usr/share/doc/*"
 
 		print "<h3> Package summary and dependencies </h3>"
 		print "<table border=1>"
 		print "<tr><th> package <th> depends on (packages) <th> consists of (plugins)"
 
 		for(pkg in PKG) {
-			if (pkg == "librnd3")
+			if (pkg == "librnd4")
 				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>(builtin: " PKG[pkg] ")"
 			else
 				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>" PKG[pkg]
@@ -274,7 +274,7 @@ next
 
 
 		print "<p>File prefixes:<ul>"
-		print "	<li> $P: plugin install dir (e.g. /usr/lib/librnd3/)"
+		print "	<li> $P: plugin install dir (e.g. /usr/lib/librnd4/)"
 		if (!disable_C)
 			print "	<li> $C: conf dir (e.g. /etc/librnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"

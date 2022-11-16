@@ -436,7 +436,7 @@ int rnd_hook_postarg(const char *librnd_prefix, const char *app_name)
 
 #ifndef LIBRNDS_SCCONFIG
 	{
-		char *pfn = str_concat("", librnd_prefix, "/share/librnd3/plugin.state", NULL);
+		char *pfn = str_concat("", librnd_prefix, "/share/librnd4/plugin.state", NULL);
 
 		if (import(pfn) < 1) {
 			fprintf(stderr, "Failed to import librnd plugin state file from '%s'\n", pfn);
