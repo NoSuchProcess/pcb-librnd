@@ -40,7 +40,6 @@
 	- remove rnd_hid_cfg_keys_input_() and rnd_hid_cfg_keys_input(), rename rnd_hid_cfg_keys_input2_() and rnd_hid_cfg_keys_input2()
 	- remove code marked with REMOVE_4.0.0
 	- rename conf_board_ignore - it also ignores project
-	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
 	- revise events: move anything not used by librnd to apps
 	- rename textual event names from pcbev_* in event.c
 	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
@@ -95,7 +94,7 @@
 		- rnd_hid_parse_command_line() doesn't allow multiple filenames (but somehow it still works in sch-rnd!)
 		- remove rnd_hid_enable_per_dialog_hidlib, assuming it is always 1
 		- rnd_main_loop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main)
-		- RND_EVENT_BOARD_CHANGED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
+		- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
 			- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
 		- multi preview widget:
 			- gtk preview widget locality: add a HID API to set local bit (see r34242, TODO "multi:")
