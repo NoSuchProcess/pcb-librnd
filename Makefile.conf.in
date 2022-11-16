@@ -34,7 +34,7 @@ PCB_RND_C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@
 HL_SHAREDIR=$(Install_root)@/local/prefix@/share/librnd4
-HL_INCDIR=$(Install_root)@/local/prefix@/include/librnd
+HL_INCDIR=$(Install_root)@/local/prefix@/include/librnd4/librnd
 
 # used for tests
 LIBRND_RDYNAMIC=@cc/rdynamic@

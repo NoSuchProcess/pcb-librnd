@@ -1,4 +1,4 @@
-@files librnd4-dev $PREFIX/include/librnd/*
+@files librnd4-dev $PREFIX/include/librnd4/librnd/*
 @files librnd4 $PREFIX/lib/*.so.*
 @appendfiles librnd4-dev $PREFIX/share/librnd4/librnd.mak
 @appendfiles librnd4-dev $PREFIX/share/librnd4/plugin.state

@@ -6,7 +6,7 @@ include $(TRUNK)/Makefile.conf
 include $(TRUNK)/src/librnd/core/librnd.mak
 
 
-CFLAGS =  -I$(LIBRND_ROOT)/include -I$(LIBRND_ROOT)/include/librnd/src_3rd $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
+CFLAGS =  -I$(LIBRND_ROOT)/include/librnd4 -I$(LIBRND_ROOT)/include/librnd4/librnd/src_3rd $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
 LDFLAGS = $(LIBRND_RDYNAMIC) $(LDFLAGS_LIBRND)
 LIBRND_A = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
 
