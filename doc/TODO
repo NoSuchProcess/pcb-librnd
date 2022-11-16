@@ -11,7 +11,6 @@
 		- get() should return an allocated string
 		- there should be a free() to be used by the caller after get()
 	- DEL?: rethink hid api beep() - sounds like a real bad idea - gabor's idea: configurable external command
-	- DEL: remove hidlib->name - only pcb-rnd should use it and only as legacy feature
 	- centralize hid API's ->busy - just set the cursor
 	- move over pcb-rnd's rnd_inclib/font
 	- *FEATURE: sch-rnd critical: more flexilble unit system where apps can register new units - remove k from librnd, revise sch-rnd grid menu
