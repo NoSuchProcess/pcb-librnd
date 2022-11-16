@@ -72,7 +72,7 @@ static void ev_design_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 			prompt = rnd_strdup(prompt);
 	}
 	else
-		prompt = rnd_strdup("no-board");
+		prompt = rnd_strdup("no-design");
 }
 
 static void log_append(rnd_logline_t *line)

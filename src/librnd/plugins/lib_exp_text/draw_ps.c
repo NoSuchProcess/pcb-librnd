@@ -212,7 +212,7 @@ static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 	   Postscript's "device thin" line - i.e. zero width means one
 	   device pixel.  The code remains in case you want to make them
 	   thicker - it needs to offset everything so that the *edge* of the
-	   thick line lines up with the edge of the board, not the *center*
+	   thick line lines up with the edge of the design, not the *center*
 	   of the thick line. */
 
 	rnd_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %d %d scale\n", thick * 2, x, y, dx, dy);

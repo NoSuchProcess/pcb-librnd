@@ -139,7 +139,7 @@ void rnd_dlg_pref_win_create(pref_ctx_t *ctx)
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_END(ctx->dlg);
-				RND_DAD_LABEL(ctx->dlg, "... in the design (board) file");
+				RND_DAD_LABEL(ctx->dlg, "... in the design file");
 			RND_DAD_END(ctx->dlg);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_BUTTON(ctx->dlg, "now");

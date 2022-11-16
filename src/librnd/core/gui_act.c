@@ -78,12 +78,14 @@ static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		{"grid", 0, 0},
 		{"view", 0, RND_UNIT_PERCENT},
 		{"board", 0, RND_UNIT_PERCENT},
+		{"design", 0, RND_UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	rnd_unit_list_t extra_units_y = {
 		{"grid", 0, 0},
 		{"view", 0, RND_UNIT_PERCENT},
 		{"board", 0, RND_UNIT_PERCENT},
+		{"design", 0, RND_UNIT_PERCENT},
 		{"", 0, 0}
 	};
 	int pan_warp = HID_SC_DO_NOTHING;

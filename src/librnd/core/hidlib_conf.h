@@ -93,8 +93,8 @@ typedef struct {
 		RND_CFT_LIST translate_key;
 
 		const struct {
-			RND_CFT_BOOLEAN flip_x;              /* view: flip the board along the X (horizontal) axis */
-			RND_CFT_BOOLEAN flip_y;              /* view: flip the board along the Y (vertical) axis */
+			RND_CFT_BOOLEAN flip_x;              /* view: flip the design along the X (horizontal) axis */
+			RND_CFT_BOOLEAN flip_y;              /* view: flip the design along the Y (vertical) axis */
 		} view;
 
 	} editor;

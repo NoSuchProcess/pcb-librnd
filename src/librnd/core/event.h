@@ -44,8 +44,8 @@ typedef enum {
 	RND_EVENT_LOG_APPEND,             /* called after a new log line is appended; arg is a pointer to the log line */
 	RND_EVENT_LOG_CLEAR,              /* called after a clear; args: two pointers; unsigned long "from" and "to" */
 
-	RND_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the board in the main drawing area; args: (coord x, coord y, int enabled) */
-	RND_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in board draw after finished drawing the xor marks, still in xor draw mode; argument is a pointer to the GC to use for drawing */
+	RND_EVENT_GUI_LEAD_USER,          /* GUI aid to lead the user attention to a specific location on the design in the main drawing area; args: (coord x, coord y, int enabled) */
+	RND_EVENT_GUI_DRAW_OVERLAY_XOR,   /* called in design draw after finished drawing the xor marks, still in xor draw mode; argument is a pointer to the GC to use for drawing */
 	RND_EVENT_USER_INPUT_POST,        /* generated any time any user input reaches core, after processing it */
 	RND_EVENT_USER_INPUT_KEY,         /* generated any time a keypress is registered by the hid_cfg_key code (may be one key stroke of a multi-stroke sequence) */
 
@@ -61,7 +61,7 @@ typedef enum {
 	RND_EVENT_STROKE_RECORD,          /* parameters: rnd_coord_t x, rnd_coord_t y */
 	RND_EVENT_STROKE_FINISH,          /* parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
-	RND_EVENT_DESIGN_REPLACED,        /* called after the current design on display got _replaced_; should be emitted when the board data got replaced in memory or GUI switched between boards loaded (in case of multiple boards) */
+	RND_EVENT_DESIGN_REPLACED,        /* called after the current design on display got _replaced_; should be emitted when the design data got replaced in memory or GUI switched between designs loaded (in case of multiple designs) */
 	RND_EVENT_DESIGN_META_CHANGED,    /* called if the metadata of the design has changed */
 	RND_EVENT_DESIGN_FN_CHANGED,      /* called after the file name of the design has changed */
 
@@ -74,7 +74,7 @@ typedef enum {
 	RND_EVENT_GUI_BATCH_TIMER,        /* */
 	RND_EVENT_MAINLOOP_CHANGE,        /* called after the mainloop variable has changed */
 
-	RND_EVENT_DESIGN_META_CHANGED_LIB,/* called by librnd as the earliest event when it changes the config of the board */
+	RND_EVENT_DESIGN_META_CHANGED_LIB,/* called by librnd as the earliest event when it changes the config of the design */
 
 	RND_EVENT_DAD_NEW_PANE,           /* called by the GUI after a new paned widget is created; args are pointer hid_ctx, string dialog, string paned id and a (double *) for getting back preferred ratio (-1 means unknown) */
 	RND_EVENT_DAD_PANE_GEO_CHG,       /* called by the GUI after the pane geometry _may_ have changed; args are: void *hid_ctx, const char *dialog id, const char *pane id, double ratio */

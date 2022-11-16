@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 
 	foobar_main_init();
 
-	/* flipping the "board" means getting a coord system where y increases upward */
+	/* flipping the "design" means getting a coord system where y increases upward */
 	rnd_conf_set(RND_CFR_CLI, "editor/view/flip_y", 0, "1", RND_POL_OVERWRITE);
 
 	if (rnd_main_args_setup1(&ga) != 0) {

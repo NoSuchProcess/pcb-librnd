@@ -343,8 +343,8 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 	}
 }
 
-/* event handlers that run before the current pcb is saved to save win geo
-   in the board conf and after loading a new board to fetch window placement
+/* event handlers that run before the current design is saved to save win geo
+   in the design conf and after loading a new board to fetch window placement
    info. */
 static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {

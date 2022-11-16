@@ -149,7 +149,7 @@ static void rnd_gtk_conf_regs(const char *cookie)
 /*** drawing widget - output ***/
 
 /* Do scrollbar scaling based on current port drawing area size and
-   overall PCB board size. */
+   overall design size. */
 void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 {
 	rnd_gtk_topwin_t *tw = &gctx->topwin;

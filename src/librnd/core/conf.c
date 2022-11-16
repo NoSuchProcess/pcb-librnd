@@ -861,7 +861,7 @@ static int conf_board_ignore(const char *path, lht_node_t *n)
 			if (strncmp(path, i->name, i->len) == 0) {
 				if (!i->warned) {
 					i->warned = 1;
-					rnd_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from board or project file\nis ignored (probably due to security considerations)\n", path);
+					rnd_hid_cfg_error(n, "conf error: lht->bin conversion: path '%s' from design or project file\nis ignored (probably due to security considerations)\n", path);
 				}
 				return 1;
 			}
@@ -2007,7 +2007,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 				path = rnd_build_fn(hidlib, fn);
 
 			if (path == NULL) {
-				rnd_message(RND_MSG_ERROR, "Error: failed to calculate the project file name (board file name or allocation error)\n");
+				rnd_message(RND_MSG_ERROR, "Error: failed to calculate the project file name (design file name or allocation error)\n");
 				fclose(f);
 				return -1;
 			}

@@ -32,7 +32,7 @@ The way the HID layer works is that you instantiate a HID device
 structure, and invoke functions through its members.  Code in the
 pcb-rnd core may *not* rely on HID internals (*anything* other than what's
 defined in this file).  Code in the HID layers *may* rely on data and
-functions in hidlib (like, board size and such), but not on anything
+functions in hidlib (like, design size and such), but not on anything
 in application core.
 
 Coordinates are ALWAYS in pcb's internal units rnd_coord_t. Positive X is
@@ -200,7 +200,7 @@ struct rnd_hid_s {
 	unsigned hide_from_gui:1;
 
 	/* If set, draw the mask layer inverted. Normally the mask is a filled
-	   rectangle over the board with cutouts at pins/pads. The HIDs
+	   rectangle over the design with cutouts at pins/pads. The HIDs
 	   use render in normal mode, gerber renders in inverse mode. */
 	unsigned mask_invert:1;
 
@@ -220,7 +220,7 @@ struct rnd_hid_s {
  /* when 1 and this hid is rnd_render, do not change rnd_render even if an export plugin or GUI is calling the render code */
 	unsigned override_render:1;
 
-	/* called by core when the global hidlib context changes (e.g. board changed)
+	/* called by core when the global hidlib context changes (e.g. design changed)
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
 	void (*set_hidlib)(rnd_hid_t *hid, rnd_hidlib_t *hidlib);
 
@@ -477,7 +477,7 @@ struct rnd_hid_s {
 
 	/*** zoom/pan calls ***/
 
-	/* side-correct zoom to show a window of the board. If set_crosshair
+	/* side-correct zoom to show a window of the design. If set_crosshair
 	   is true, also update the crosshair to be on the center of the window */
 	void (*zoom_win)(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair);
 
@@ -492,7 +492,7 @@ struct rnd_hid_s {
 	/* Start or stop panning at x;y - stop is mode=0, start is mode=1 */
 	void (*pan_mode)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
 
-	/* Load viewbox with the extents of visible pixels translated to board coords */
+	/* Load viewbox with the extents of visible pixels translated to design coords */
 	void (*view_get)(rnd_hid_t *hid, rnd_box_t *viewbox);
 
 	/*** misc GUI ***/

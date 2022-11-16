@@ -92,7 +92,7 @@ struct rnd_gtk_preview_s {
 	unsigned redrawing:1;
 	unsigned draw_inited:1; /* used to track new_context() state for opengl backends */
 
-	unsigned flip_global:1;  /* flip status is tied to board's flip; ignored if flip_local is set */
+	unsigned flip_global:1;  /* flip status is tied to design's flip; ignored if flip_local is set */
 	unsigned flip_local:1;   /* local flip enabled on tab; if both local and global flips are off, the preview is permanently on no-flip mode */
 };
 

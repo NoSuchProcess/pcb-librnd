@@ -58,9 +58,9 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 
 	switch (action) {
 	case HID_SC_PAN_VIEWPORT:
-		/* Pan the board in the viewport so that the crosshair (who's location
-		 * relative on the board was set above) lands where the pointer is.
-		 * We pass the request to pan a particular point on the board to a
+		/* Pan the design in the viewport so that the crosshair (who's location
+		 * relative on the design was set above) lands where the pointer is.
+		 * We pass the request to pan a particular point on the design to a
 		 * given widget coordinate of the viewport into the rendering code
 		 */
 
@@ -73,7 +73,7 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		rnd_gtk_coords_event2design(view, widget_x, widget_y, &design_x, &design_y);
 		rnd_gtk_pan_view_abs(view, design_x, design_y, widget_x, widget_y);
 
-		/* Just in case we couldn't pan the board the whole way,
+		/* Just in case we couldn't pan the design the whole way,
 		 * we warp the pointer to where the crosshair DID land.
 		 */
 		/* Fall through */

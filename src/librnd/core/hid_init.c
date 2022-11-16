@@ -1051,7 +1051,7 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_emp
 		return 0;
 
 	if (is_empty)
-		rnd_message(RND_MSG_WARNING, "Exporting empty board (nothing loaded or drawn).\n");
+		rnd_message(RND_MSG_WARNING, "Exporting empty design (nothing loaded or drawn).\n");
 	if (rnd_gui->set_hidlib != NULL)
 		rnd_gui->set_hidlib(rnd_gui, hidlib);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);

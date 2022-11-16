@@ -166,7 +166,7 @@ static void nogui_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd
 
 static int nogui_shift_is_pressed(rnd_hid_t *hid)
 {
-	/* This is called from rnd_crosshair_grid_fit() when the board is loaded.  */
+	/* This is called from rnd_crosshair_grid_fit() when the design is loaded.  */
 	return 0;
 }
 

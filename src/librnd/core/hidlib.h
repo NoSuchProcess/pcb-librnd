@@ -45,7 +45,7 @@ typedef struct rnd_mark_s {
 struct rnd_hidlib_s {
 	rnd_coord_t grid;                  /* grid resolution */
 	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
-	rnd_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
+	rnd_coord_t size_x, size_y;        /* drawing area extents (or design dimensions) */
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
 
@@ -115,7 +115,7 @@ typedef struct rnd_app_s {
 	void *(*crosshair_suspend)(rnd_hidlib_t *hl);
 	void (*crosshair_restore)(rnd_hidlib_t *hl, void *susp_data);
 
-/* Optional: move the crosshair to an absolute x;y coord on the board and
+/* Optional: move the crosshair to an absolute x;y coord on the design and
    update the GUI; if mouse_mot is non-zero, the request is a direct result
    of a mouse motion event */
 	void (*crosshair_move_to)(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
@@ -129,7 +129,7 @@ typedef struct rnd_app_s {
 	void (*draw_attached)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 	/*** One of these two functions will be called whenever (parts of) the screen
-     needs redrawing (on screen, print or export, board or preview). The expose
+     needs redrawing (on screen, print or export, design or preview). The expose
      function does the following:
       - allocate any GCs needed
       - set drawing mode

@@ -63,7 +63,7 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	 * event so convert it back to event coordinates temporarily. */
 	rnd_gtk_coords_design2event(v, v->design_x, v->design_y, &event_x, &event_y);
 
-	/* Don't pan so far the board is completely off the screen */
+	/* Don't pan so far the design is completely off the screen */
 	v->x0 = MAX(-v->width, v->x0);
 	v->y0 = MAX(-v->height, v->y0);
 
@@ -112,9 +112,9 @@ void rnd_gtk_zoom_post(rnd_gtk_view_t *v)
 
 /* gport->view.coord_per_px:
  * zoom value is PCB units per screen pixel.  Larger numbers mean zooming
- * out - the largest value means you are looking at the whole board.
+ * out - the largest value means you are looking at the whole design.
  *
- * gport->view_width and gport->view_height are in PCB coordinates
+ * gport->view_width and gport->view_height are in librnd coordinates
  */
 void rnd_gtk_zoom_view_abs(rnd_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t center_y, double new_zoom)
 {

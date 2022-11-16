@@ -35,7 +35,7 @@ typedef enum rnd_hatt_compflags_e {
 	RND_HATF_WIDTH_CHR   = 4096,   /* ->geo_width is specified in charactes */
 	RND_HATF_HEIGHT_CHR  = 8192,   /* ->geo_width is specified in charactes */
 	RND_HATF_INIT_FOCUS  = 16384,  /* this widget has (keyboard) focus on widget creation */
-	RND_HATF_PRV_GFLIP   = 32768,  /* global board flip determines preview flip */
+	RND_HATF_PRV_GFLIP   = 32768,  /* global design flip determines preview flip */
 	RND_HATF_PRV_LFLIP   = 65536,  /* local flip determines preview flip; when set RND_HATF_PRV_GFLIP is ignored */
 	RND_HATF_PRG_SMALL   = 131072, /* allow progress bar to be as small as possible */
 	RND_HATF_TREE_NO_AUTOEXP = 262144 /* do not auto-expand or auto-colleps on tree row activation */

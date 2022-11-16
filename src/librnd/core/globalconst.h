@@ -31,7 +31,7 @@
 
 #include <librnd/config.h>
 
-#define RND_LARGE_VALUE      (RND_COORD_MAX / 2 - 1) /* maximum extent of board and elements */
+#define RND_LARGE_VALUE      (RND_COORD_MAX / 2 - 1) /* maximum extent of design */
 
 #define RND_MAX_COORD        ((rnd_coord_t)RND_LARGE_VALUE) /* coordinate limits */
 #define RND_MIN_SIZE         0
