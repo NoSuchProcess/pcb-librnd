@@ -84,7 +84,7 @@ char *rnd_make_action_name(char *out, const char *inp, int inp_len)
 void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 {
 	int i;
-	hid_cookie_action_t *ca, *old_ca;
+	hid_cookie_action_t *ca;
 	fgw_func_t *f;
 
 	for (i = 0; i < n; i++) {
