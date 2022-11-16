@@ -195,7 +195,7 @@ void rnd_dlg_pref_win_create(pref_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 }
 
-void rnd_dlg_pref_win_board_changed(pref_ctx_t *ctx)
+void rnd_dlg_pref_win_design_replaced(pref_ctx_t *ctx)
 {
 	pref_win_brd2dlg(ctx);
 }

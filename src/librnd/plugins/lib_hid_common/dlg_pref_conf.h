@@ -9,7 +9,7 @@ void rnd_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg);
 
 void rnd_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, rnd_conf_native_t *cfg, int arr_idx); /* global conf change */
 
-void rnd_dlg_pref_conf_board_changed(pref_ctx_t *ctx);
+void rnd_dlg_pref_conf_design_replaced(pref_ctx_t *ctx);
 
 
 #endif

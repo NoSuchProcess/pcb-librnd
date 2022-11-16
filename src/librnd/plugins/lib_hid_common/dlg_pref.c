@@ -383,18 +383,18 @@ static void rnd_dlg_pref(const char *target_tab_str, const char *tabarg)
 		pref_tab_chosen(&pref_ctx, 0);
 }
 
-static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pref_ev_design_replaced(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
 		return;
 
-	call_hook(ctx, board_changed_cb);
+	call_hook(ctx, design_replaced_cb);
 	pref_win_brd2dlg(ctx);
 
 	/* builtin tabs */
-	rnd_dlg_pref_conf_board_changed(ctx);
-	rnd_dlg_pref_win_board_changed(ctx);
+	rnd_dlg_pref_conf_design_replaced(ctx);
+	rnd_dlg_pref_win_design_replaced(ctx);
 }
 
 static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -435,7 +435,7 @@ void rnd_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab
 	int i, t;
 
 	pref_conf_cb.val_change_post = pref_conf_changed;
-	rnd_event_bind(RND_EVENT_DESIGN_REPLACED, pref_ev_board_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_REPLACED, pref_ev_design_replaced, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
