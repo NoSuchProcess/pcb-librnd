@@ -58,7 +58,7 @@ enum rnd_allow_e {
 	RND_UNIT_ALLOW_MHZ = 65536,
 	RND_UNIT_ALLOW_GHZ = 131072,
 
-	RND_UNIT_ALLOW_K = 262144, /* [3.2.0] sch-rnd's, temporary, should be removed in librnd 4.0.0 */
+	RND_UNIT_ALLOW_K = 262144, /* sch-rnd's, temporary, should be removed in librnd 4.0.0 */
 
 	RND_UNIT_ALLOW_METRIC = RND_UNIT_ALLOW_NM  | RND_UNIT_ALLOW_UM | RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_CM | RND_UNIT_ALLOW_M | RND_UNIT_ALLOW_KM,
 	RND_UNIT_ALLOW_IMPERIAL = RND_UNIT_ALLOW_DMIL | RND_UNIT_ALLOW_CMIL | RND_UNIT_ALLOW_MIL | RND_UNIT_ALLOW_IN,
@@ -81,7 +81,7 @@ typedef enum rnd_family_e {
 	RND_UNIT_METRIC   = 1,
 	RND_UNIT_IMPERIAL = 2,
 	RND_UNIT_FREQ     = 4,
-	RND_UNIT_CSCHEM   = 8   /* [3.2.0] temporary: should be removed in librnd 4.0.0 */
+	RND_UNIT_CSCHEM   = 8   /* temporary: should be removed in librnd 4.0.0 */
 } rnd_family_t;
 
 enum rnd_suffix_e { RND_UNIT_NO_SUFFIX, RND_UNIT_SUFFIX, RND_UNIT_FILE_MODE };

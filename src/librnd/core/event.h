@@ -76,10 +76,10 @@ typedef enum {
 
 	RND_EVENT_DESIGN_META_CHANGED_LIB,/* called by librnd as the earliest event when it changes the config of the board */
 
-	RND_EVENT_DAD_NEW_PANE,           /* [3.2.0] called by the GUI after a new paned widget is created; args are pointer hid_ctx, string dialog, string paned id and a (double *) for getting back preferred ratio (-1 means unknown) */
-	RND_EVENT_DAD_PANE_GEO_CHG,       /* [3.2.0] called by the GUI after the pane geometry _may_ have changed; args are: void *hid_ctx, const char *dialog id, const char *pane id, double ratio */
+	RND_EVENT_DAD_NEW_PANE,           /* called by the GUI after a new paned widget is created; args are pointer hid_ctx, string dialog, string paned id and a (double *) for getting back preferred ratio (-1 means unknown) */
+	RND_EVENT_DAD_PANE_GEO_CHG,       /* called by the GUI after the pane geometry _may_ have changed; args are: void *hid_ctx, const char *dialog id, const char *pane id, double ratio */
 
-	RND_EVENT_CONF_FILE_SAVE_POST,    /* [3.2.0] called after a stand-alone config/project file has been saved. Args: (const char *) file name, int role */
+	RND_EVENT_CONF_FILE_SAVE_POST,    /* called after a stand-alone config/project file has been saved. Args: (const char *) file name, int role */
 
 	RND_EVENT_last                    /* not a real event */
 } rnd_event_id_t;

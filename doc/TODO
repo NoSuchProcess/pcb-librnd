@@ -40,7 +40,6 @@
 	- remove rnd_hid_cfg_keys_input_() and rnd_hid_cfg_keys_input(), rename rnd_hid_cfg_keys_input2_() and rnd_hid_cfg_keys_input2()
 	- remove code marked with REMOVE_4.0.0
 	- rename conf_board_ignore - it also ignores project
-	- rename RND_EVENT_BOARD_CHANGED to _REPLACED
 	- rename events RND_EVENT_BOARD_* to RND_EVENT_DESIGN_*
 	- revise events: move anything not used by librnd to apps
 	- rename textual event names from pcbev_* in event.c

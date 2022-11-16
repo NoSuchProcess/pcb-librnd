@@ -168,7 +168,7 @@ void rnd_conf_load_all(const char *project_fn, const char *design_fn);
 extern int rnd_conf_in_production;
 
 /* Load a file or a string as a role
-   [3.2.0]: if fn is NULL, create an empty lihata document for the role */
+   if fn is NULL, create an empty lihata document for the role */
 int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text);
 
 /* copy root to be the new config of role; root must be a li:APPNAME-conf-v1
@@ -364,7 +364,7 @@ do { \
 lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
 lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
-/* [3.2.0] Get first config subtree for role, create the file if doesn't exist */
+/* Get first config subtree for role, create the file if doesn't exist */
 lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role);
 
 /* loop helper */

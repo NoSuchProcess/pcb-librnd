@@ -538,7 +538,7 @@ struct rnd_hid_s {
 	   arguments is widgets-specific. */
 	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
-	/* [3.2.0] Return the hidlib the given GUI HID is currently showing
+	/* Return the hidlib the given GUI HID is currently showing
 	   (not implemented in export HIDs) */
 	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
 
@@ -678,7 +678,7 @@ void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib);
 char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 
-/* [3.2.0] temporary, will be removed in 4.0.0 where it will become hardwired 1:
+/* temporary, will be removed in 4.0.0 where it will become hardwired 1:
    if set to 1, enable each DAD dialog remembering their own hid; when 0,
    ->get_dad_hidlib() returns the same hid-global "currently displayed"
    value as ->get_hidlib(); 0 is the default, old, pre-4.0.0 behavior */

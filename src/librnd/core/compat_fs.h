@@ -17,11 +17,11 @@ int rnd_tempfile_unlink(char *name);
 /* Return non-zero if fn is an absolute path */
 int rnd_is_path_abs(const char *fn);
 
-/* [3.2.0] Return dirname(1) of path in a newly allocated string */
+/* Return dirname(1) of path in a newly allocated string */
 char *rnd_dirname(const char *path);
 
 
-/* [3.2.0] same as rnd_dirname(), but returns the real-path of the parent
+/* same as rnd_dirname(), but returns the real-path of the parent
    directory of path; that is, if path points to a symlink, it's the real
    path of the symlink's parent dir (so path is never resolved) */
 char *rnd_dirname_real(const char *path);

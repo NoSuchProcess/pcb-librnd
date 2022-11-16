@@ -145,7 +145,7 @@ typedef struct rnd_app_s {
 	   widgets */
 	void (*expose_preview)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
-	/* [3.2.0] Optional: if not NULL, and returns non-zero, the given
+	/* Optional: if not NULL, and returns non-zero, the given
 	   conf value from the given source is ignored (not merged). Role
 	   is really rnd_conf_role_t and policy is rnd_conf_policy_t, lhtn is
 	   (lht_node_t *). */
@@ -154,7 +154,7 @@ typedef struct rnd_app_s {
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 
-	/* [3.2.0] when non-zero, allow multiple design files to be open at once */
+	/* when non-zero, allow multiple design files to be open at once */
 	long multi_design;
 
 	long spare_l2, spare_l3, spare_l4;

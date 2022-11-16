@@ -194,11 +194,11 @@ extern int rnd_coord_t_size;
 
 void rnd_pcbhl_conf_postproc(void);
 
-/* [3.2.0] Search all GUI plugins (even if they are not loaded) and call cb()
+/* Search all GUI plugins (even if they are not loaded) and call cb()
    on them. If cb returns non-zero, cancel the search. */
 void rnd_hid_do_all_gui_plugins(void *ctx, int (*cb)(void *ctx, const char *name, const char *dir, const char *fn));
 
-/* [3.2.0] Print all GUI plugins available (not necessarily loaded) to stderr */
+/* Print all GUI plugins available (not necessarily loaded) to stderr */
 void rnd_hid_print_all_gui_plugins(void);
 
 

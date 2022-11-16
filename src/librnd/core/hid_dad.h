@@ -402,7 +402,7 @@ do { \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
-/* [3.2.0] pane name is used when saving pane position in window geometry;
+/* pane name is used when saving pane position in window geometry;
    name is a const char *, not strdup'd or free'd (should be constant in the
    caller). Name must contain only alphanumerical characters, dashes and
    underscores  */
