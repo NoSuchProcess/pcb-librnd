@@ -1,7 +1,4 @@
 *** Upcoming release ***
-- 3.2.2: ABI compatible, no new API
-
-*** Later releases ***
 - BUG: libualloc *_api.h are not installed
 - BUG: make sure tests compile with -DNDEBUG in production, else it fails in alpine packaging (-fomit-frame-pointer brings in fortify headers for some reason which fail with use-librnd #defines in config.h) [report: aron]
 - 4.0.0: ABI incompatible (feature removal)
@@ -108,6 +105,8 @@
 			- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
 		- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
+
+*** Later releases ***
 
 *** Low prio ***
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
