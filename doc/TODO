@@ -41,8 +41,6 @@
 	- remove code marked with REMOVE_4.0.0
 	- rename conf_board_ignore - it also ignores project
 	- revise events: move anything not used by librnd to apps
-	- rename textual event names from pcbev_* in event.c
-	- move RND_HATT_SUBDIALOG within the enum to under RND_HATT_TEXT
 	- hid_t spares: some function ptrs are spent, move them, refill spares
 	- rnd_app_t spares: conf_ignore lists (two void *), new func conf_dont_merge_node(), new long multi_design
 	- remove unused flags from rnd_hid_fsd_flags_t
