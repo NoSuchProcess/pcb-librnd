@@ -176,7 +176,7 @@ static void pref_menu_export(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	char *fn;
 	GET_ROW_AND_MENU(caller_data);
 
-	fn = rnd_hid_fileselect(rnd_gui, "menu patch export", "Export a menu patch to file for debugging", "menu_patch.lht", "lht", NULL, "menu_patch_export", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	fn = rnd_hid_fileselect(rnd_gui, "menu patch export", "Export a menu patch to file for debugging", "menu_patch.lht", "lht", NULL, "menu_patch_export", 0, NULL);
 	if (fn == NULL)
 		return;
 

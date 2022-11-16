@@ -107,9 +107,7 @@ typedef enum rnd_hid_attr_ev_e {
 } rnd_hid_attr_ev_t;
 
 typedef enum rnd_hid_fsd_flags_e { /* bitwise OR, used by file selection dialog (fsd) */
-	RND_HID_FSD_READ = 1,            /* when set let the user pick existing files only ("load"); if unset, both esiting and non-existing files are accepted */
-	RND_HID_FSD_MAY_NOT_EXIST = 2,   /* deprecated, has no effect */
-	RND_HID_FSD_IS_TEMPLATE = 4      /* deprecated, has no effect */
+	RND_HID_FSD_READ = 1             /* when set let the user pick existing files only ("load"); if unset, both esiting and non-existing files are accepted */
 } rnd_hid_fsd_flags_t;
 
 typedef struct {
