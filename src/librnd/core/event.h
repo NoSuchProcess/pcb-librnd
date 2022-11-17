@@ -71,7 +71,7 @@ typedef enum {
 	RND_EVENT_LOAD_POST,              /* called after loading a new design, whether it was successful or not (required for window placement) */
 
 	RND_EVENT_MENU_CHANGED,           /* called after a menu merging (which means actual menu system change) */
-	RND_EVENT_GUI_BATCH_TIMER,        /* */
+	RND_EVENT_GUI_BATCH_TIMER,        /* request timed batch GUI update, see rnd_hid_gui_batch_timer() */
 	RND_EVENT_MAINLOOP_CHANGE,        /* called after the mainloop variable has changed */
 
 	RND_EVENT_DESIGN_META_CHANGED_LIB,/* called by librnd as the earliest event when it changes the config of the design */
