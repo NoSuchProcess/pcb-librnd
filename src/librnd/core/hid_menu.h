@@ -70,8 +70,6 @@ typedef enum {
 	RND_MF_SENSITIVE,
 	RND_MF_TIP,
 	RND_MF_ACTION,
-	RND_MF_FOREGROUND,     /* obsolete, do not use (will be removed in 4.0.0) */
-	RND_MF_BACKGROUND,     /* obsolete, do not use (will be removed in 4.0.0) */
 	RND_MF_FONT            /* obsolete, do not use (will be removed in 4.0.0) */
 } rnd_hid_cfg_menufield_t;
 

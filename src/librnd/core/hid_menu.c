@@ -991,8 +991,6 @@ lht_node_t *rnd_hid_cfg_menu_field(const lht_node_t *submenu, rnd_hid_cfg_menufi
 		case RND_MF_SENSITIVE:    fieldstr = "sensitive"; break;
 		case RND_MF_TIP:          fieldstr = "tip"; break;
 		case RND_MF_ACTION:       fieldstr = "action"; break;
-		case RND_MF_FOREGROUND:   fieldstr = "foreground"; break;
-		case RND_MF_BACKGROUND:   fieldstr = "background"; break;
 		case RND_MF_FONT:         fieldstr = "font"; break;
 	}
 	if (field_name != NULL)
