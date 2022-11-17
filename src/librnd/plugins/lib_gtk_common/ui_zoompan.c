@@ -64,12 +64,12 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	rnd_gtk_coords_design2event(v, v->design_x, v->design_y, &event_x, &event_y);
 
 	/* Don't pan so far the design is completely off the screen */
-	v->x0 = MAX(-v->width, v->x0);
-	v->y0 = MAX(-v->height, v->y0);
+	v->x0 = MAX(VIEW_HIDLIB(v)->dwg.X1 - v->width, v->x0);
+	v->y0 = MAX(VIEW_HIDLIB(v)->dwg.Y1 - v->height, v->y0);
 
 	if (v->use_max_hidlib) {
-		v->x0 = MIN(v->x0, VIEW_HIDLIB(v)->dwg.X2);
-		v->y0 = MIN(v->y0, VIEW_HIDLIB(v)->dwg.Y2);
+		v->x0 = MIN(v->x0, VIEW_HIDLIB(v)->dwg.X2 + (VIEW_HIDLIB(v)->dwg.X2 - VIEW_HIDLIB(v)->dwg.X1));
+		v->y0 = MIN(v->y0, VIEW_HIDLIB(v)->dwg.Y2 + (VIEW_HIDLIB(v)->dwg.Y2 - VIEW_HIDLIB(v)->dwg.Y1));
 	}
 	else {
 		assert(v->max_width > 0);
