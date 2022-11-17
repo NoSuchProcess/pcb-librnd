@@ -242,7 +242,7 @@ int rnd_drwpx_set_size(rnd_drwpx_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_
 	}
 	else {
 		pctx->x_shift = pctx->hidlib->dwg.X1;
-		pctx->y_shift = pctx->hidlib->dwg.Y1;
+		pctx->y_shift = 0; /* because everything is subtracted from X2 */
 		pctx->h = rnd_dwg_get_size_y(pctx->hidlib);
 		pctx->w = rnd_dwg_get_size_x(pctx->hidlib);
 	}
