@@ -130,10 +130,6 @@ char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_r
 int rnd_hid_cfg_keys_input2(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
 int rnd_hid_cfg_keys_input2_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len);
 
-/* old version of the same call, with no hidlibb pass-on; DO NOT USE */
-int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
-int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len);
-
 /* Run the action for a key sequence looked up by rnd_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
 int rnd_hid_cfg_keys_action(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km);

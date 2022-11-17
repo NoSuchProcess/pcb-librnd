@@ -651,11 +651,6 @@ int rnd_hid_cfg_keys_input2_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_c
 	return 0;
 }
 
-int rnd_hid_cfg_keys_input_(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
-{
-	return rnd_hid_cfg_keys_input2_(NULL, km, mods, key_raw, key_tr, seq, seq_len);
-}
-
 
 /*** key translation hash ***/
 static int xlate_conf_rev = -1; /* last conf rev the translation table got checked on */
@@ -751,11 +746,6 @@ int rnd_hid_cfg_keys_input2(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cf
 	}
 
 	return rnd_hid_cfg_keys_input2_(hl, km, mods, key_raw, key_tr, km->seq, &km->seq_len);
-}
-
-int rnd_hid_cfg_keys_input(rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
-{
-	return rnd_hid_cfg_keys_input2(NULL, km, mods, key_raw, key_tr);
 }
 
 
