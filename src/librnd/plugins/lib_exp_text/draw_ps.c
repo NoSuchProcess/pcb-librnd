@@ -337,8 +337,8 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 		fprintf(pctx->outf, "1 -1 scale\n");
 
 
-	midx = (pctx->hidlib->dwg.X2 - pctx->hidlib->dwg.X1) / 2;
-	midy = (pctx->hidlib->dwg.Y2 - pctx->hidlib->dwg.Y1) / 2;
+	midx = (pctx->hidlib->dwg.X1 + pctx->hidlib->dwg.X2) / 2;
+	midy = (pctx->hidlib->dwg.Y1 + pctx->hidlib->dwg.Y2) / 2;
 	fprintf(pctx->outf, "%g dup neg scale\n", noscale ? 1.0 : pctx->scale_factor);
 	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -midx, -midy);
 
