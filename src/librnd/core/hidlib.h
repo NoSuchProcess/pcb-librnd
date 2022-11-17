@@ -79,6 +79,8 @@ typedef struct rnd_app_s {
 	const char *revision; /* VCS revision info, e.g. svn rev number */
 	const char *url;
 
+	/* when non-zero, allow multiple design files to be open at once */
+	unsigned multi_design:1;
 
 	/* menu file */
 	const char **menu_file_paths;      /* optional: NULL terminated list of search paths for the menu file */
@@ -103,6 +105,21 @@ typedef struct rnd_app_s {
 	/* Optional: if not NULL, called after conf updates to give conf_core a chance to update dynamic entries */
 	void (*conf_core_postproc)(void);
 
+	/* Optional: if not NULL, and returns non-zero, the given
+	   conf value from the given source is ignored (not merged). Role
+	   is really rnd_conf_role_t and policy is rnd_conf_policy_t, lhtn is
+	   (lht_node_t *). */
+	int (*conf_dont_merge_node)(const char *path, void *lhtn, int role, int default_prio, int default_policy, rnd_conf_native_t *target);
+
+	/* Optional: a NULL terminated array of config paths that shall not be
+	   loaded from desing or project files. This is for security reasons:
+	   any node that may execute code or scripts should be listed here */
+	rnd_conf_ignore_t *conf_board_ignores;
+
+	/* Optional: a NULL terminated array of config paths that should not
+	   generate an error message when found in a file; should list old nodes
+	   that got removed from the conf system but old files could still have them */
+	rnd_conf_ignore_t *conf_ignores;
 
 	/*** callbacks ***/
 	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
@@ -124,7 +141,6 @@ typedef struct rnd_app_s {
    true, do not call ->set_drawing_mode */
 	void (*draw_marks)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
-
 	/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
 	void (*draw_attached)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
@@ -145,31 +161,10 @@ typedef struct rnd_app_s {
 	   widgets */
 	void (*expose_preview)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
-	/* Optional: if not NULL, and returns non-zero, the given
-	   conf value from the given source is ignored (not merged). Role
-	   is really rnd_conf_role_t and policy is rnd_conf_policy_t, lhtn is
-	   (lht_node_t *). */
-	int (*conf_dont_merge_node)(const char *path, void *lhtn, int role, int default_prio, int default_policy, rnd_conf_native_t *target);
-
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
-
-	/* when non-zero, allow multiple design files to be open at once */
-	long multi_design;
-
-	long spare_l2, spare_l3, spare_l4;
-
-	/* Optional: a NULL terminated array of config paths that shall not be
-	   loaded from desing or project files. This is for security reasons:
-	   any node that may execute code or scripts should be listed here */
-	rnd_conf_ignore_t *conf_board_ignores;
-
-	/* Optional: a NULL terminated array of config paths that should not
-	   generate an error message when found in a file; should list old nodes
-	   that got removed from the conf system but old files could still have them */
-	rnd_conf_ignore_t *conf_ignores;
-
-	void *spare_p3, *spare_p4;
+	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_app_t;
 
