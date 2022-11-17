@@ -43,7 +43,7 @@ int rnd_hid_cfg_has_submenus(const lht_node_t *submenu);
    just a wrapper around lht_tree_path_ */
 lht_node_t *rnd_hid_cfg_menu_field_path(const lht_node_t *parent, const char *path);
 
-/* Return a text field of a submenu; return NULL and generate a rnd_message(RND_MSG_ERROR, ) if
+/* Return a text field of a submenu; return NULL and generate an error message if
    the given field is not text */
 const char *rnd_hid_cfg_menu_field_str(const lht_node_t *submenu, rnd_hid_cfg_menufield_t field);
 
