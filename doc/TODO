@@ -38,13 +38,15 @@
 	- remove /local/pcb/* scconfig vars
 	- remove rnd_hid_cfg_keys_input_() and rnd_hid_cfg_keys_input(), rename rnd_hid_cfg_keys_input2_() and rnd_hid_cfg_keys_input2()
 	- rename conf_board_ignore - it also ignores project
-	- revise events: move anything not used by librnd to apps
+	- missing event emits in apps:
+		- RND_EVENT_SAVE_*: copy this from pcb-rnd to sch-rnd and camv-rnd
+		- RND_EVENT_LOAD_*: copy this from pcb-rnd to sch-rnd and camv-rnd
 	- hid_t spares: some function ptrs are spent, move them, refill spares
 	- rnd_app_t spares: conf_ignore lists (two void *), new func conf_dont_merge_node(), new long multi_design
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- make HID_SC_ an enum
-	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor
+	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
 	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
 	- there are no spare fields in:
 		- rnd_hid_tree_t (calloced from macro so calloc is on app side!)
