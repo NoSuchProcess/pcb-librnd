@@ -11,7 +11,7 @@ static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollb, rnd_coord_t view
 
 	gtk_adjustment_set_page_size(adj, ps);
 	gtk_adjustment_set_lower(adj, -view_size);
-	gtk_adjustment_set_upper(adj, board_size + ps);
+	gtk_adjustment_set_upper(adj, dsg_max - dsg_min + ps);
 
 	gtk_adjustment_set_step_increment(adj, ps / 100.0);
 	gtk_adjustment_set_page_increment(adj, ps / 10.0);

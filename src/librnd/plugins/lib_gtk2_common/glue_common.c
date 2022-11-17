@@ -8,7 +8,7 @@ static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollbar, rnd_coord_t vi
 
 	adj->page_size = MIN(view_size, dsg_max - dsg_min);
 	adj->lower = dsg_min - view_size;
-	adj->upper = dsg_max + adj->page_size;
+	adj->upper = dsg_max + adj->page_size - dsg_min;
 	adj->step_increment = adj->page_size / 100.0;
 	adj->page_increment = adj->page_size / 10.0;
 	gtk_signal_emit_by_name (GTK_OBJECT(adj), "changed");
