@@ -68,7 +68,7 @@ static mbtk_event_handled_t rnd_mbtk_key_release_cb(rnd_mbtk_t *mctx, mbtk_event
 		rnd_mbtk_note_event_location(0, 0, 0);
 
 	mods = xlate_mods(ev->data.key.mods);
-	slen = rnd_hid_cfg_keys_input2(mctx->hidlib, &rnd_mbtk_keymap, mods, ev->data.key.sym, ev->data.key.edit);
+	slen = rnd_hid_cfg_keys_input(mctx->hidlib, &rnd_mbtk_keymap, mods, ev->data.key.sym, ev->data.key.edit);
 	if (slen > 0)
 		rnd_hid_cfg_keys_action(mctx->hidlib, &rnd_mbtk_keymap);
 

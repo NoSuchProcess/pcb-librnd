@@ -588,7 +588,7 @@ char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_r
 }
 
 
-int rnd_hid_cfg_keys_input2_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
+int rnd_hid_cfg_keys_input_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
 {
 	rnd_hid_cfg_keyseq_t *ns;
 	rnd_hid_cfg_keyhash_t addr;
@@ -709,7 +709,7 @@ static void xlate_reload(rnd_hid_cfg_keys_t *km, rnd_conf_native_t *nat)
 	xlate_avail = 1;
 }
 
-int rnd_hid_cfg_keys_input2(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+int rnd_hid_cfg_keys_input(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
 {
 	rnd_hid_cfg_keyhash_t ck, *cv;
 
@@ -745,7 +745,7 @@ int rnd_hid_cfg_keys_input2(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cf
 		}
 	}
 
-	return rnd_hid_cfg_keys_input2_(hl, km, mods, key_raw, key_tr, km->seq, &km->seq_len);
+	return rnd_hid_cfg_keys_input_(hl, km, mods, key_raw, key_tr, km->seq, &km->seq_len);
 }
 
 
