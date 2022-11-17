@@ -55,19 +55,15 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
-	- allow no-drawing-area mode for camv-rnd for negative coordinate gerbers
+	- define drawing area with bbox, not width/height
 		- extension to negative coords
-			- gtk2_* + sch-rnd K.gbr -> y scroll limits off when zoomed in on negative
-			- gtk2_* + camv-rnd A.rs -> y scroll limits off
-			- lesstif + sch-rnd A.rs -> y scrolls the wrong direction
-			- lesstif + sch-rnd A.rs -> scrolling limits
 			- png export + sch-rnd A.rs -> wrong bbox
 			- svg export + sch-rnd A.rs -> wrong bbox
 			- ps export + sch-rnd A.rs -> wrong bbox
 			- eps export + sch-rnd A.rs -> wrong bbox
 			- pcb-rnd negative coord:
 				- import sch placement around frame
-			- test on gtk4
+			- sch-rnd: drawing area auto-grow
 	- rename hidlib_conf.[ch] to librnd_conf.[ch]
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
