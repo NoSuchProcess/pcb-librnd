@@ -114,7 +114,7 @@ typedef struct rnd_app_s {
 	/* Optional: a NULL terminated array of config paths that shall not be
 	   loaded from desing or project files. This is for security reasons:
 	   any node that may execute code or scripts should be listed here */
-	rnd_conf_ignore_t *conf_board_ignores;
+	rnd_conf_ignore_t *conf_prj_dsg_ignores;
 
 	/* Optional: a NULL terminated array of config paths that should not
 	   generate an error message when found in a file; should list old nodes

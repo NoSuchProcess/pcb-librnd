@@ -852,12 +852,12 @@ static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
 }
 
 /* returns 1 if the config node should be ignored */
-static int conf_board_ignore(const char *path, lht_node_t *n)
+static int conf_prj_dsg_ignore(const char *path, lht_node_t *n)
 {
 	rnd_conf_ignore_t *i;
 
-	if (rnd_app.conf_board_ignores != NULL) {
-		for(i = rnd_app.conf_board_ignores; i->name != NULL; i++) {
+	if (rnd_app.conf_prj_dsg_ignores != NULL) {
+		for(i = rnd_app.conf_prj_dsg_ignores; i->name != NULL; i++) {
 			if (strncmp(path, i->name, i->len) == 0) {
 				if (!i->warned) {
 					i->warned = 1;
@@ -882,7 +882,7 @@ int rnd_conf_merge_patch_item(const char *path, lht_node_t *n, rnd_conf_role_t r
 	}
 
 	if ((role == RND_CFR_DESIGN) || (role == RND_CFR_PROJECT)) {
-		if (conf_board_ignore(path, n))
+		if (conf_prj_dsg_ignore(path, n))
 			return 0;
 	}
 
