@@ -450,14 +450,6 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 	menu_data_t *md;
 
 	stdarg_n = 0;
-	v = rnd_hid_cfg_menu_field_str(node, RND_MF_FONT);
-	if (v != NULL) {
-		XFontStruct *fs = XLoadQueryFont(display, v);
-		if (fs) {
-			XmFontList fl = XmFontListCreate(fs, XmSTRING_DEFAULT_CHARSET);
-			stdarg(XmNfontList, fl);
-		}
-	}
 
 	kacc = rnd_hid_cfg_menu_field(node, RND_MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
