@@ -11,7 +11,6 @@
 		- get() should return an allocated string
 		- there should be a free() to be used by the caller after get()
 	- DEL?: rethink hid api beep() - sounds like a real bad idea - gabor's idea: configurable external command
-	- centralize hid API's ->busy - just set the cursor
 	- move over pcb-rnd's rnd_inclib/font
 	- *FEATURE: sch-rnd critical: more flexilble unit system where apps can register new units - remove k from librnd, revise sch-rnd grid menu
 		- split the unit table in two, one librnd, one app
@@ -44,7 +43,9 @@
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- make HID_SC_ an enum
-	- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
+	- centralize mouse cursor temporary set:
+		- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
+		- centralize hid API's ->busy - just set the cursor
 	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
 	- there are no spare fields in:
 		- rnd_hid_tree_t (calloced from macro so calloc is on app side!)
