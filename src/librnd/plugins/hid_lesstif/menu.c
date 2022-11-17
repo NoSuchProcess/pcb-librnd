@@ -558,10 +558,6 @@ TODO(": remove this call")
 			}
 		}
 
-		v = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
-		if (v != NULL)
-			note_widget_flag(md->btn, XmNsensitive, v);
-
 		XtManageChild(md->btn);
 		node->user_data = md;
 	}

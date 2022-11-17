@@ -279,10 +279,6 @@ static void rnd_gtk_main_menu_real_add_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMainM
 				val = rnd_hid_cfg_menu_field_str(base, RND_MF_CHECKED);
 				if (val != NULL)
 					g_object_set_data(G_OBJECT(action), "checked-flag", (gpointer *) val);
-
-				val = rnd_hid_cfg_menu_field_str(base, RND_MF_ACTIVE);
-				if (val != NULL)
-					g_object_set_data(G_OBJECT(action), "active-flag", (gpointer *) val);
 			}
 		}
 		break;

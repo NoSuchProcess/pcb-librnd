@@ -38,7 +38,6 @@ static menu_handle_t *handle_alloc(mbtk_box_t *row, lht_node_t *node)
 	m->row = row;
 	m->node = node;
 	m->checked = rnd_hid_cfg_menu_field_str(node, RND_MF_CHECKED);
-	m->active = rnd_hid_cfg_menu_field_str(node, RND_MF_ACTIVE);
 	m->action = rnd_hid_cfg_menu_field(node, RND_MF_ACTION, NULL);
 
 	mbtk_menu_stdrow_callback_invoked(row, rnd_mbtk_menu_cb, m);

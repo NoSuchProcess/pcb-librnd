@@ -69,7 +69,6 @@ typedef enum {
 	RND_MF_UPDATE_ON,
 	RND_MF_SENSITIVE,
 	RND_MF_TIP,
-	RND_MF_ACTIVE,         /* obsolete, do not use (will be removed in 4.0.0) */
 	RND_MF_ACTION,
 	RND_MF_FOREGROUND,     /* obsolete, do not use (will be removed in 4.0.0) */
 	RND_MF_BACKGROUND,     /* obsolete, do not use (will be removed in 4.0.0) */
