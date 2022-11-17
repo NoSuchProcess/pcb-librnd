@@ -70,8 +70,8 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 	render_priv_t *priv = ghidgui->port.render_priv;
 	double tx, ty, zx, zy, zz;
 
-	tx = rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0;
-	ty = rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0;
+	tx = rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->dwg.X2 : -ghidgui->port.view.x0;
+	ty = rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->dwg.Y2 : -ghidgui->port.view.y0;
 	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px;
 	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px;
 	zz = ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / ghidgui->port.view.coord_per_px;
@@ -178,7 +178,7 @@ static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
-		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
+		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->dwg.X2, hidlib->dwg.Y2);
 }
 
 /* Config helper functions for when the user changes color preferences.
@@ -452,12 +452,12 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px;
 	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px;
 	zz = ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px;
-	tx = rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0;
-	ty = rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0;
+	tx = rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->dwg.X2 : -port->view.x0;
+	ty = rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->dwg.Y2 : -port->view.y0;
 	hidgl_set_view(tx, ty, zx, zy, zz);
 
 	/* Draw PCB background, before PCB primitives */
-	hidgl_draw_initial_fill(0, 0, hidlib->size_x, hidlib->size_y, priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
+	hidgl_draw_initial_fill(hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
 	ghid_gl_draw_bg_image(hidlib);
 
 	ghid_gl_invalidate_current_gc();
@@ -532,8 +532,8 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, 
 	zx = (rnd_conf.editor.view.flip_x ? -1. : 1.) / ghidgui->port.view.coord_per_px;
 	zy = (rnd_conf.editor.view.flip_y ? -1. : 1.) / ghidgui->port.view.coord_per_px;
 	zz = 1;
-	tx = rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->size_x : -ghidgui->port.view.x0;
-	ty = rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->size_y : -ghidgui->port.view.y0;
+	tx = rnd_conf.editor.view.flip_x ? ghidgui->port.view.x0 - hidlib->dwg.X2 : -ghidgui->port.view.x0;
+	ty = rnd_conf.editor.view.flip_y ? ghidgui->port.view.y0 - hidlib->dwg.Y2 : -ghidgui->port.view.y0;
 	hidgl_set_view(tx, ty, zx, zy, zz);
 
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;

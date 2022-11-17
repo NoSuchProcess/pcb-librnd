@@ -66,12 +66,12 @@ void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_hidlib_t *hidlib)
 
 #define SCALE(w)   ((int)rnd_round((w)/pctx->scale))
 #define SCALE_X(x) ((int)rnd_round(((x) - pctx->x_shift)/pctx->scale))
-#define SCALE_Y(y) ((int)rnd_round(((pctx->ymirror ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
+#define SCALE_Y(y) ((int)rnd_round(((pctx->ymirror ? (pctx->hidlib->dwg.Y2-(y)) : (y)) - pctx->y_shift)/pctx->scale))
 #define SWAP_IF_SOLDER(a,b) do { int c; if (pctx->ymirror) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
-#define NOT_EDGE_X(x) ((x) != 0 && (x) != pctx->hidlib->size_x)
-#define NOT_EDGE_Y(y) ((y) != 0 && (y) != pctx->hidlib->size_y)
+#define NOT_EDGE_X(x) ((x) != pctx->hidlib->dwg.X1 && (x) != pctx->hidlib->dwg.X2)
+#define NOT_EDGE_Y(y) ((y) != pctx->hidlib->dwg.Y1 && (y) != pctx->hidlib->dwg.Y2)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
 typedef struct rnd_hid_gc_s {
@@ -241,10 +241,10 @@ int rnd_drwpx_set_size(rnd_drwpx_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_
 		pctx->w = bbox->X2 - bbox->X1;
 	}
 	else {
-		pctx->x_shift = 0;
-		pctx->y_shift = 0;
-		pctx->h = pctx->hidlib->size_y;
-		pctx->w = pctx->hidlib->size_x;
+		pctx->x_shift = pctx->hidlib->dwg.X1;
+		pctx->y_shift = pctx->hidlib->dwg.Y1;
+		pctx->h = rnd_dwg_get_size_y(pctx->hidlib);
+		pctx->w = rnd_dwg_get_size_x(pctx->hidlib);
 	}
 
 	/* figure out the scale factor to fit in the specified PNG file size */
@@ -666,11 +666,11 @@ static void png_draw_line_(rnd_drwpx_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rn
 		   need to be brought in by a pixel to make sure they are not clipped
 		   by libgd - even tho they should be visible because of thickness, they
 		   would not be because the center line is off the image */
-	if (x1 == pctx->hidlib->size_x && x2 == pctx->hidlib->size_x) {
+	if (x1 == pctx->hidlib->dwg.X2 && x2 == pctx->hidlib->dwg.X2) {
 		x1o = -1;
 		x2o = -1;
 	}
-	if (y1 == pctx->hidlib->size_y && y2 == pctx->hidlib->size_y) {
+	if (y1 == pctx->hidlib->dwg.Y2 && y2 == pctx->hidlib->dwg.Y2) {
 		y1o = -1;
 		y2o = -1;
 	}

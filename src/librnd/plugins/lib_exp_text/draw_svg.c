@@ -101,7 +101,7 @@ static struct {
 #define TRY(y) \
 do { \
 	if (pctx->flip) \
-		y = pctx->hidlib->size_y - y; \
+		y = pctx->hidlib->dwg.Y2 - y; \
 } while(0)
 
 void rnd_svg_init(rnd_svg_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int opacity, int flip, int true_size)
@@ -152,21 +152,23 @@ void rnd_svg_header(rnd_svg_t *pctx)
 	rnd_coord_t w, h, x1, y1, x2, y2;
 
 	fprintf(pctx->outf, "<?xml version=\"1.0\"?>\n");
-	w = pctx->hidlib->size_x;
-	h = pctx->hidlib->size_y;
+	w = rnd_dwg_get_size_x(pctx->hidlib);
+	h = rnd_dwg_get_size_y(pctx->hidlib);
 	while((w < RND_MM_TO_COORD(1024)) && (h < RND_MM_TO_COORD(1024))) {
 		w *= 2;
 		h *= 2;
 	}
 
-	x2 = pctx->hidlib->size_x;
-	y2 = pctx->hidlib->size_y;
+	x1 = pctx->hidlib->dwg.X1;
+	y1 = pctx->hidlib->dwg.Y1;
+	x2 = pctx->hidlib->dwg.X2;
+	y2 = pctx->hidlib->dwg.Y2;
 	if (pctx->true_size) {
 		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
 	}
 	else {
-		x1 = RND_MM_TO_COORD(2);
-		y1 = RND_MM_TO_COORD(2);
+		x1 += RND_MM_TO_COORD(2);
+		y1 += RND_MM_TO_COORD(2);
 		x2 += RND_MM_TO_COORD(5);
 		y2 += RND_MM_TO_COORD(5);
 		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
@@ -187,7 +189,7 @@ void rnd_svg_footer(rnd_svg_t *pctx)
 		fprintf(pctx->outf, "</filter>\n");
 		fprintf(pctx->outf, "<g opacity=\"0.25\">\n");
 		rnd_fprintf(pctx->outf, "	<rect filter=\"url(#noise)\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"none\" stroke=\"none\"/>\n",
-			0, 0, pctx->hidlib->size_x, pctx->hidlib->size_y);
+			pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y1, pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y2);
 		fprintf(pctx->outf, "</g>\n");
 	}
 
@@ -217,7 +219,7 @@ void rnd_svg_background(rnd_svg_t *pctx)
 {
 	if (pctx->photo_mode) {
 		rnd_fprintf(pctx->outf, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-			0, 0, pctx->hidlib->size_x, pctx->hidlib->size_y, rnd_svg_board_color);
+			pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y1, pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y2, rnd_svg_board_color);
 	}
 }
 
@@ -271,7 +273,7 @@ void rnd_svg_set_drawing_mode(rnd_svg_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 			rnd_append_printf(&pctx->snormal, "<!-- Composite: reset -->\n");
 			rnd_append_printf(&pctx->snormal, "<defs>\n");
 			rnd_append_printf(&pctx->snormal, "<g id=\"comp_pixel_%d\">\n", pctx->comp_cnt);
-			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", pctx->comp_cnt, pctx->hidlib->size_x, pctx->hidlib->size_y);
+			rnd_append_printf(&pctx->sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\">\n", pctx->comp_cnt, pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y1, pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y2);
 			break;
 
 		case RND_HID_COMP_POSITIVE:

@@ -326,10 +326,10 @@ static rnd_hidlib_t *batch_get_hidlib(rnd_hid_t *hid)
 static void batch_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	rnd_hidlib_t *hidlib = hid->hid_data;
-	viewbox->X1 = 0;
-	viewbox->Y1 = 0;
-	viewbox->X2 = hidlib->size_x;
-	viewbox->Y2 = hidlib->size_y;
+	viewbox->X1 = hidlib->dwg.X1;
+	viewbox->Y1 = hidlib->dwg.Y1;
+	viewbox->X2 = hidlib->dwg.X2;
+	viewbox->Y2 = hidlib->dwg.Y2;
 }
 
 static void batch_open_command(rnd_hid_t *hid)

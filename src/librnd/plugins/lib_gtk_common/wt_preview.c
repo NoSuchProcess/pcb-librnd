@@ -488,7 +488,7 @@ static gboolean preview_key_any_cb(GtkWidget *w, long mods, long key_raw, long k
 
 			box.X1 = preview->view.x0;
 			if (preview->view.flip_y)
-				box.Y1 = VIEW_HIDLIB(&preview->view)->size_y - (preview->view.y0 + preview->view.height);
+				box.Y1 = VIEW_HIDLIB(&preview->view)->dwg.Y2 - (preview->view.y0 + preview->view.height);
 			else
 				box.Y1 = preview->view.y0;
 			box.X2 = box.X1 + preview->view.width;
@@ -660,7 +660,7 @@ void rnd_gtk_previews_flip(rnd_gtk_t *ctx)
 
 			box.X1 = prv->view.x0;
 			if (!rnd_conf.editor.view.flip_y)
-				box.Y1 = VIEW_HIDLIB(&prv->view)->size_y - (prv->view.y0 + prv->view.height);
+				box.Y1 = VIEW_HIDLIB(&prv->view)->dwg.Y2 - (prv->view.y0 + prv->view.height);
 			else
 				box.Y1 = prv->view.y0;
 			box.X2 = box.X1 + prv->view.width;

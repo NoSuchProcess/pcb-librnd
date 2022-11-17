@@ -422,21 +422,25 @@ extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int arg
 
 static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 {
+	rnd_coord_t siz;
 	ltf_hidlib = hidlib;
 	if ((work_area == 0) || (hidlib == NULL))
 		return;
-	/*rnd_printf("PCB Changed! %$mD\n", ltf_hidlib->size_x, ltf_hidlib->size_y); */
+	/*rnd_printf("PCB Changed! %$mD\n", rnd_dwg_get_size_x(ltf_hidlib), rnd_dwg_get_size_y(ltf_hidlib)); */
+	siz = rnd_dwg_get_size_x(ltf_hidlib);
 	stdarg_n = 0;
-	stdarg(XmNminimum, 0);
-	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
-	stdarg(XmNmaximum, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
+	stdarg(XmNminimum, ltf_hidlib->dwg.X1);
+	stdarg(XmNvalue, ltf_hidlib->dwg.X1);
+	stdarg(XmNsliderSize, siz > 0 ? siz : 1);
+	stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
 	XtSetValues(hscroll, stdarg_args, stdarg_n);
+
+	siz = rnd_dwg_get_size_y(ltf_hidlib);
 	stdarg_n = 0;
-	stdarg(XmNminimum, 0);
-	stdarg(XmNvalue, 0);
-	stdarg(XmNsliderSize, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
-	stdarg(XmNmaximum, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
+	stdarg(XmNminimum, ltf_hidlib->dwg.Y1);
+	stdarg(XmNvalue, ltf_hidlib->dwg.Y1);
+	stdarg(XmNsliderSize, siz > 0 ? siz : 1);
+	stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
@@ -612,10 +616,10 @@ static double ltf_benchmark(rnd_hid_t *hid)
 	save_main = main_pixmap;
 	main_pixmap = window;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = ltf_hidlib->size_x;
-	ctx.view.Y2 = ltf_hidlib->size_y;
+	ctx.view.X1 = ltf_hidlib->dwg.X1;
+	ctx.view.Y1 = ltf_hidlib->dwg.Y1;
+	ctx.view.X2 = ltf_hidlib->dwg.X2;
+	ctx.view.Y2 = ltf_hidlib->dwg.X2;
 
 	pixmap = window;
 	XSync(display, 0);
@@ -867,7 +871,7 @@ static void DrawBackgroundImage()
 
 	if (lpm.pxm == NULL)
 		lpm.pxm = &ltf_bg_img;
-	rnd_ltf_draw_pixmap_(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->size_x, ltf_hidlib->size_y);
+	rnd_ltf_draw_pixmap_(ltf_hidlib, &lpm, 0, 0, ltf_hidlib->dwg.X2, ltf_hidlib->dwg.Y2);
 }
 
 static void LoadBackgroundImage(const char *fn)
@@ -885,21 +889,22 @@ static const rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n
 	return lesstif_attribute_list;
 }
 
-static void set_scroll(Widget s, int pos, int view, int pcb)
+static void set_scroll(Widget s, int pos, int view, int min, int max)
 {
 	unsigned int sz = view * view_zoom;
-	if (sz > pcb)
-		sz = pcb;
-	if (pos > pcb - sz)
-		pos = pcb - sz;
-	if (pos < 0)
-		pos = 0;
+	if (sz > max)
+		sz = max;
+	if (pos > max - sz)
+		pos = max - sz;
+	if (pos < min)
+		pos = min;
 	stdarg_n = 0;
 	stdarg(XmNvalue, pos);
 	stdarg(XmNsliderSize, sz);
 	stdarg(XmNincrement, view_zoom);
 	stdarg(XmNpageIncrement, sz);
-	stdarg(XmNmaximum, pcb);
+	stdarg(XmNminimum, min);
+	stdarg(XmNmaximum, max);
 	XtSetValues(s, stdarg_args, stdarg_n);
 }
 
@@ -907,29 +912,29 @@ void lesstif_pan_fixup()
 {
 	if (ltf_hidlib == NULL)
 		return;
-	if (view_left_x > ltf_hidlib->size_x + (view_width * view_zoom))
-		view_left_x = ltf_hidlib->size_x + (view_width * view_zoom);
-	if (view_top_y > ltf_hidlib->size_y + (view_height * view_zoom))
-		view_top_y = ltf_hidlib->size_y + (view_height * view_zoom);
-	if (view_left_x < -(view_width * view_zoom))
-		view_left_x = -(view_width * view_zoom);
-	if (view_top_y < -(view_height * view_zoom))
-		view_top_y = -(view_height * view_zoom);
+	if (view_left_x > ltf_hidlib->dwg.X2 + (view_width * view_zoom))
+		view_left_x = ltf_hidlib->dwg.X2 + (view_width * view_zoom);
+	if (view_top_y > ltf_hidlib->dwg.Y2 + (view_height * view_zoom))
+		view_top_y = ltf_hidlib->dwg.Y2 + (view_height * view_zoom);
+	if (view_left_x < ltf_hidlib->dwg.X1 - (view_width * view_zoom))
+		view_left_x = ltf_hidlib->dwg.X1 - (view_width * view_zoom);
+	if (view_top_y < ltf_hidlib->dwg.Y1 - (view_height * view_zoom))
+		view_top_y = ltf_hidlib->dwg.Y1 - (view_height * view_zoom);
 
-	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->size_x);
-	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->size_y);
+	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2);
+	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
 
 	lesstif_invalidate_all(rnd_gui);
 }
 
 static void zoom_max()
 {
-	double new_zoom = ltf_hidlib->size_x / view_width;
-	if (new_zoom < ltf_hidlib->size_y / view_height)
-		new_zoom = ltf_hidlib->size_y / view_height;
+	double new_zoom = rnd_dwg_get_size_x(ltf_hidlib) / view_width;
+	if (new_zoom < rnd_dwg_get_size_y(ltf_hidlib) / view_height)
+		new_zoom = rnd_dwg_get_size_y(ltf_hidlib) / view_height;
 
-	view_left_x = -(view_width * new_zoom - ltf_hidlib->size_x) / 2;
-	view_top_y = -(view_height * new_zoom - ltf_hidlib->size_y) / 2;
+	view_left_x = ltf_hidlib->dwg.X1 - (view_width * new_zoom - rnd_dwg_get_size_x(ltf_hidlib)) / 2;
+	view_top_y = ltf_hidlib->dwg.Y1 - (view_height * new_zoom - rnd_dwg_get_size_y(ltf_hidlib)) / 2;
 	view_zoom = new_zoom;
 	rnd_pixel_slop = view_zoom;
 	lesstif_pan_fixup();
@@ -952,9 +957,9 @@ static void zoom_to(double new_zoom, rnd_coord_t x, rnd_coord_t y)
 	if (rnd_conf.editor.view.flip_y)
 		yfrac = 1 - yfrac;
 
-	max_zoom = ltf_hidlib->size_x / view_width;
-	if (max_zoom < ltf_hidlib->size_y / view_height)
-		max_zoom = ltf_hidlib->size_y / view_height;
+	max_zoom = rnd_dwg_get_size_x(ltf_hidlib) / view_width;
+	if (max_zoom < rnd_dwg_get_size_y(ltf_hidlib) / view_height)
+		max_zoom = rnd_dwg_get_size_y(ltf_hidlib) / view_height;
 
 	max_zoom *= MAX_ZOOM_SCALE;
 
@@ -1014,7 +1019,7 @@ static void Pan(int mode, rnd_coord_t x, rnd_coord_t y)
 	/* This is for ctrl-pan, where the viewport's position is directly
 	   proportional to the cursor position in the window (like the Xaw
 	   thumb panner) */
-TODO("remove this if there is no bugreport for a long time");
+TODO("4.0.0: remove this if there is no bugreport for a long time");
 #if 0
 	if (pan_thumb_mode) {
 		opx = x * ltf_hidlib->size_x / view_width;
@@ -1493,7 +1498,8 @@ TODO("dock: layersel depends on vertical text");
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmVERTICAL);
 	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	stdarg(XmNmaximum, ltf_hidlib->size_y ? ltf_hidlib->size_y : 1);
+	stdarg(XmNminimum, ltf_hidlib->dwg.Y1 ? ltf_hidlib->dwg.Y1 : 1);
+	stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
 	vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
 	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
@@ -1501,7 +1507,8 @@ TODO("dock: layersel depends on vertical text");
 
 	stdarg_n = 0;
 	stdarg(XmNorientation, XmHORIZONTAL);
-	stdarg(XmNmaximum, ltf_hidlib->size_x ? ltf_hidlib->size_x : 1);
+	stdarg(XmNminimum, ltf_hidlib->dwg.X1 ? ltf_hidlib->dwg.X1 : 1);
+	stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
 	hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
 	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
 	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
@@ -2056,13 +2063,13 @@ static Boolean idle_proc(XtPointer dummy)
 		XSetForeground(display, bg_gc, bgcolor);
 		XFillRectangle(display, main_pixmap, bg_gc, 0, 0, mx, my);
 
-		if (ctx.view.X1 < 0 || ctx.view.Y1 < 0 || ctx.view.X2 > ltf_hidlib->size_x || ctx.view.Y2 > ltf_hidlib->size_y) {
+		if (ctx.view.X1 < ltf_hidlib->dwg.X1 || ctx.view.Y1 < ltf_hidlib->dwg.Y1 || ctx.view.X2 > ltf_hidlib->dwg.X2 || ctx.view.Y2 > ltf_hidlib->dwg.Y2) {
 			int leftmost, rightmost, topmost, bottommost;
 
-			leftmost = Vx(0);
-			rightmost = Vx(ltf_hidlib->size_x);
-			topmost = Vy(0);
-			bottommost = Vy(ltf_hidlib->size_y);
+			leftmost = Vx(ltf_hidlib->dwg.X1);
+			rightmost = Vx(ltf_hidlib->dwg.X2);
+			topmost = Vy(ltf_hidlib->dwg.Y1);
+			bottommost = Vy(ltf_hidlib->dwg.Y2);
 			if (leftmost > rightmost) {
 				int t = leftmost;
 				leftmost = rightmost;
@@ -2149,7 +2156,7 @@ static void lesstif_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, 
 void lesstif_invalidate_all(rnd_hid_t *hid)
 {
 	if (ltf_hidlib != NULL)
-		lesstif_invalidate_lr(hid, 0, ltf_hidlib->size_x, 0, ltf_hidlib->size_y);
+		lesstif_invalidate_lr(hid, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
 }
 
 static void lesstif_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_complete)

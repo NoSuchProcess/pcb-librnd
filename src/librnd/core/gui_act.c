@@ -95,10 +95,12 @@ static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_box_t vbx;
 
 	extra_units_x[0].scale = RND_ACT_HIDLIB->grid;
-	extra_units_x[2].scale = RND_ACT_HIDLIB->size_x;
+	extra_units_x[2].scale = rnd_dwg_get_size_x(RND_ACT_HIDLIB);
+	extra_units_x[3].scale = rnd_dwg_get_size_x(RND_ACT_HIDLIB);
 
 	extra_units_y[0].scale = RND_ACT_HIDLIB->grid;
-	extra_units_y[2].scale = RND_ACT_HIDLIB->size_y;
+	extra_units_y[2].scale = rnd_dwg_get_size_y(RND_ACT_HIDLIB);
+	extra_units_y[3].scale = rnd_dwg_get_size_y(RND_ACT_HIDLIB);
 
 	rnd_gui->view_get(rnd_gui, &vbx);
 	view_width = vbx.X2 - vbx.X1;

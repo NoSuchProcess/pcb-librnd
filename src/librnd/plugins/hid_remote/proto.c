@@ -57,12 +57,14 @@ void remote_proto_send_unit()
 	send_end(&pctx);
 }
 
-void remote_proto_send_brddim(rnd_coord_t w, rnd_coord_t h)
+void remote_proto_send_brddim(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	send_begin(&pctx, "brddim");
 	send_open(&pctx, 0, 1);
-	sendf(&pctx, cfmt, w);
-	sendf(&pctx, cfmt, h);
+	sendf(&pctx, cfmt, x1);
+	sendf(&pctx, cfmt, y1);
+	sendf(&pctx, cfmt, x2);
+	sendf(&pctx, cfmt, y2);
 	send_close(&pctx);
 	send_end(&pctx);
 }

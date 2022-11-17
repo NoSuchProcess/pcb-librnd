@@ -37,8 +37,8 @@
 
 #define LOCALFLIPX(v) ((v)->local_flip ? (v)->flip_x : rnd_conf.editor.view.flip_x)
 #define LOCALFLIPY(v) ((v)->local_flip ? (v)->flip_y : rnd_conf.editor.view.flip_y)
-#define SIDE_X_(flip, hidlib, x)      ((flip ? hidlib->size_x - (x) : (x)))
-#define SIDE_Y_(flip, hidlib, y)      ((flip ? hidlib->size_y - (y) : (y)))
+#define SIDE_X_(flip, hidlib, x)      ((flip ? hidlib->dwg.X2 - (x) : (x)))
+#define SIDE_Y_(flip, hidlib, y)      ((flip ? hidlib->dwg.Y2 - (y) : (y)))
 #define SIDE_X(v, x)            SIDE_X_(LOCALFLIPX(v), VIEW_HIDLIB(v), (x))
 #define SIDE_Y(v, y)            SIDE_Y_(LOCALFLIPY(v), VIEW_HIDLIB(v), (y))
 

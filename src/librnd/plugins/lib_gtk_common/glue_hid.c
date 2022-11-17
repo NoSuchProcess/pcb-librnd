@@ -95,10 +95,12 @@ static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 	if (conf) ic = 1;
 
 	if (im && ic && first) {
+		rnd_coord_t midx = (gctx->hidlib->dwg.X1 + gctx->hidlib->dwg.X2) / 2;
+		rnd_coord_t midy = (gctx->hidlib->dwg.Y1 + gctx->hidlib->dwg.Y2) / 2;
 		first = 0;
 		rnd_hid_announce_gui_init(gctx->hidlib);
-		rnd_gtk_zoom_view_win(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
-		rnd_gtk_pan_view_abs(&gctx->port.view, gctx->hidlib->size_x/2, gctx->hidlib->size_y/2, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
+		rnd_gtk_zoom_view_win(&gctx->port.view, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.X2, gctx->hidlib->dwg.Y2, 0);
+		rnd_gtk_pan_view_abs(&gctx->port.view, midx, midy, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
 	}
 }
 
@@ -473,7 +475,7 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 		return;
 
 	rnd_gtk_tw_ranges_scale(gctx);
-	rnd_gtk_zoom_view_win(&gctx->port.view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
 }
 
 static rnd_hidlib_t *rnd_gtkg_get_hidlib(rnd_hid_t *hid)

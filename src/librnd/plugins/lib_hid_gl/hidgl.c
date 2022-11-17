@@ -316,10 +316,10 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_are
 
 	hidgl_draw.xor_start();
 
-	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), grd, hidlib->grid_ox);
-	y1 = rnd_grid_fit(MAX(0, drawn_area->Y1), grd, hidlib->grid_oy);
-	x2 = rnd_grid_fit(MIN(hidlib->size_x, drawn_area->X2), grd, hidlib->grid_ox);
-	y2 = rnd_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), grd, hidlib->grid_oy);
+	x1 = rnd_grid_fit(MAX(hidlib->dwg.X1, drawn_area->X1), grd, hidlib->grid_ox);
+	y1 = rnd_grid_fit(MAX(hidlib->dwg.Y1, drawn_area->Y1), grd, hidlib->grid_oy);
+	x2 = rnd_grid_fit(MIN(hidlib->dwg.X2, drawn_area->X2), grd, hidlib->grid_ox);
+	y2 = rnd_grid_fit(MIN(hidlib->dwg.Y2, drawn_area->Y2), grd, hidlib->grid_oy);
 
 	if (x1 > x2) {
 		rnd_coord_t tmp = x1;

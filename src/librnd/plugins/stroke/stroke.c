@@ -43,8 +43,8 @@
 
 conf_stroke_t conf_stroke;
 
-#define SIDE_X(hl, x)  ((rnd_conf.editor.view.flip_x ? hl->size_x - (x) : (x)))
-#define SIDE_Y(hl, y)  ((rnd_conf.editor.view.flip_y ? hl->size_y - (y) : (y)))
+#define SIDE_X(hl, x)  ((rnd_conf.editor.view.flip_x ? hl->dwg.X2 - (x) : (x)))
+#define SIDE_Y(hl, y)  ((rnd_conf.editor.view.flip_y ? hl->dwg.Y2 - (y) : (y)))
 
 static const char *rnd_stroke_cookie = "stroke plugin";
 

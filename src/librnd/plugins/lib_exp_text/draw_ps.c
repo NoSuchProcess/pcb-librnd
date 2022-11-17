@@ -153,13 +153,13 @@ void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, i
 	pctx->scale_factor = scale_factor;
 	if (pctx->fillpage) {
 		double zx, zy;
-		if (hidlib->size_x > hidlib->size_y) {
-			zx = (double)pctx->ps_height / (double)hidlib->size_x;
-			zy = (double)pctx->ps_width / (double)hidlib->size_y;
+		if (rnd_dwg_get_size_x(hidlib) > rnd_dwg_get_size_y(hidlib)) {
+			zx = (double)pctx->ps_height / (double)rnd_dwg_get_size_x(hidlib);
+			zy = (double)pctx->ps_width / (double)rnd_dwg_get_size_y(hidlib);
 		}
 		else {
-			zx = (double)pctx->ps_height / (double)hidlib->size_y;
-			zy = (double)pctx->ps_width / (double)hidlib->size_x;
+			zx = (double)pctx->ps_height / (double)rnd_dwg_get_size_y(hidlib);
+			zy = (double)pctx->ps_width / (double)rnd_dwg_get_size_x(hidlib);
 		}
 		pctx->scale_factor *= MIN(zx, zy);
 	}
@@ -283,6 +283,7 @@ int rnd_ps_new_file(rnd_ps_t *pctx, FILE *new_f, const char *fn)
 double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, int noscale)
 {
 	double boffset;
+	rnd_coord_t midx, midy;
 
 	/* %%Page DSC comment marks the beginning of the PostScript
 	   language instructions that describe a particular
@@ -322,7 +323,8 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 	rnd_fprintf(pctx->outf, "72 72 scale %mi %mi translate\n", pctx->media_width / 2, pctx->media_height / 2);
 
 	boffset = pctx->media_height / 2;
-	if (pctx->hidlib->size_x > pctx->hidlib->size_y) {
+	TODO("make this optional: this is auto-portrait");
+	if (rnd_dwg_get_size_x(pctx->hidlib) > rnd_dwg_get_size_y(pctx->hidlib)) {
 		fprintf(pctx->outf, "90 rotate\n");
 		boffset = pctx->media_width / 2;
 		if ((pctx->calibration_y != 0) && (pctx->calibration_x != 0))
@@ -335,8 +337,10 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 		fprintf(pctx->outf, "1 -1 scale\n");
 
 
+	midx = (pctx->hidlib->dwg.X2 - pctx->hidlib->dwg.X1) / 2;
+	midy = (pctx->hidlib->dwg.Y2 - pctx->hidlib->dwg.Y1) / 2;
 	fprintf(pctx->outf, "%g dup neg scale\n", noscale ? 1.0 : pctx->scale_factor);
-	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -pctx->hidlib->size_x / 2, -pctx->hidlib->size_y / 2);
+	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -midx, -midy);
 
 	return boffset;
 }
@@ -354,19 +358,20 @@ void rnd_ps_page_background(rnd_ps_t *pctx, int has_outline, int page_is_route, 
 
 	if (!has_outline || pctx->invert) {
 		if (page_is_route) {
-			rnd_fprintf(pctx->outf,
-								"0 setgray %mi setlinewidth 0 0 moveto 0 "
-								"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
-								min_wid,
-								pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->invert ? "fill" : "stroke");
+			rnd_fprintf(pctx->outf, "0 setgray %mi setlinewidth", min_wid);
+			rnd_fprintf(pctx->outf, " %mi %mi moveto ", pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y1);
+			rnd_fprintf(pctx->outf, " %mi %mi moveto ", pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y2);
+			rnd_fprintf(pctx->outf, " %mi %mi moveto ", pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y2);
+			rnd_fprintf(pctx->outf, " %mi %mi moveto ", pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y1);
+			rnd_fprintf(pctx->outf, " closepath %s\n", pctx->invert ? "fill" : "stroke");
 		}
 	}
 
 	if (pctx->align_marks) {
-		corner(pctx->outf, 0, 0, -1, -1);
-		corner(pctx->outf, pctx->hidlib->size_x, 0, 1, -1);
-		corner(pctx->outf, pctx->hidlib->size_x, pctx->hidlib->size_y, 1, 1);
-		corner(pctx->outf, 0, pctx->hidlib->size_y, -1, 1);
+		corner(pctx->outf, pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y1, -1, -1);
+		corner(pctx->outf, pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y1, 1, -1);
+		corner(pctx->outf, pctx->hidlib->dwg.X2, pctx->hidlib->dwg.Y2, 1, 1);
+		corner(pctx->outf, pctx->hidlib->dwg.X1, pctx->hidlib->dwg.Y2, -1, 1);
 	}
 
 	pctx->linewidth = -1;

@@ -27,7 +27,7 @@
 
 void remote_proto_send_ver();
 void remote_proto_send_unit();
-void remote_proto_send_brddim(rnd_coord_t w, rnd_coord_t h);
+void remote_proto_send_brddim(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 int remote_proto_send_ready();
 void proto_send_invalidate(int l, int r, int t, int b);
 void proto_send_invalidate_all(void);

@@ -68,8 +68,8 @@ static void uiz_pan_common(rnd_gtk_view_t *v)
 	v->y0 = MAX(-v->height, v->y0);
 
 	if (v->use_max_hidlib) {
-		v->x0 = MIN(v->x0, VIEW_HIDLIB(v)->size_x);
-		v->y0 = MIN(v->y0, VIEW_HIDLIB(v)->size_y);
+		v->x0 = MIN(v->x0, VIEW_HIDLIB(v)->dwg.X2);
+		v->y0 = MIN(v->y0, VIEW_HIDLIB(v)->dwg.Y2);
 	}
 	else {
 		assert(v->max_width > 0);

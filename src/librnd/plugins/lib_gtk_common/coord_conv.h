@@ -10,7 +10,7 @@ static inline int Vx(rnd_coord_t x)
 {
 	double rv;
 	if (rnd_conf.editor.view.flip_x)
-		rv = (ghidgui->port.view.ctx->hidlib->size_x - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
+		rv = (ghidgui->port.view.ctx->hidlib->dwg.X2 - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px + 0.5;
 	return rnd_round(rv);
@@ -20,7 +20,7 @@ static inline int Vy(rnd_coord_t y)
 {
 	double rv;
 	if (rnd_conf.editor.view.flip_y)
-		rv = (ghidgui->port.view.ctx->hidlib->size_y - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
+		rv = (ghidgui->port.view.ctx->hidlib->dwg.Y2 - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
 	else
 		rv = (y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px + 0.5;
 	return rnd_round(rv);
@@ -35,7 +35,7 @@ static inline double Vxd(rnd_coord_t x)
 {
 	double rv;
 	if (rnd_conf.editor.view.flip_x)
-		rv = (ghidgui->port.view.ctx->hidlib->size_x - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px;
+		rv = (ghidgui->port.view.ctx->hidlib->dwg.X2 - x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px;
 	else
 		rv = (x - ghidgui->port.view.x0) / ghidgui->port.view.coord_per_px;
 	return rv;
@@ -45,7 +45,7 @@ static inline double Vyd(rnd_coord_t y)
 {
 	double rv;
 	if (rnd_conf.editor.view.flip_y)
-		rv = (ghidgui->port.view.ctx->hidlib->size_y - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px;
+		rv = (ghidgui->port.view.ctx->hidlib->dwg.Y2 - y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px;
 	else
 		rv = (y - ghidgui->port.view.y0) / ghidgui->port.view.coord_per_px;
 	return rv;
@@ -60,7 +60,7 @@ static inline rnd_coord_t Px(int x)
 {
 	rnd_coord_t rv = x * ghidgui->port.view.coord_per_px + ghidgui->port.view.x0;
 	if (rnd_conf.editor.view.flip_x)
-		rv = ghidgui->port.view.ctx->hidlib->size_x - (x * ghidgui->port.view.coord_per_px + ghidgui->port.view.x0);
+		rv = ghidgui->port.view.ctx->hidlib->dwg.X2 - (x * ghidgui->port.view.coord_per_px + ghidgui->port.view.x0);
 	return rv;
 }
 
@@ -68,7 +68,7 @@ static inline rnd_coord_t Py(int y)
 {
 	rnd_coord_t rv = y * ghidgui->port.view.coord_per_px + ghidgui->port.view.y0;
 	if (rnd_conf.editor.view.flip_y)
-		rv = ghidgui->port.view.ctx->hidlib->size_y - (y * ghidgui->port.view.coord_per_px + ghidgui->port.view.y0);
+		rv = ghidgui->port.view.ctx->hidlib->dwg.Y2 - (y * ghidgui->port.view.coord_per_px + ghidgui->port.view.y0);
 	return rv;
 }
 

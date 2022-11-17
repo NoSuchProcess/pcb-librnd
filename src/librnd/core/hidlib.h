@@ -45,7 +45,7 @@ typedef struct rnd_mark_s {
 struct rnd_hidlib_s {
 	rnd_coord_t grid;                  /* grid resolution */
 	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
-	rnd_coord_t size_x, size_y;        /* drawing area extents (or design dimensions) */
+	rnd_box_t dwg;                     /* drawing area extents (or design dimensions) */
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
 
@@ -66,6 +66,9 @@ struct rnd_hidlib_s {
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
+
+#define rnd_dwg_get_size_x(dsg) ((dsg)->dwg.X2 - (dsg)->dwg.X1)
+#define rnd_dwg_get_size_y(dsg) ((dsg)->dwg.Y2 - (dsg)->dwg.Y1)
 
 /* Global application callbacks and configuration: these do not depend on
    the designbeing edited, but on the application implementation. The

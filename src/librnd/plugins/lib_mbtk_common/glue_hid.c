@@ -61,11 +61,13 @@ static void rnd_mbtk_gui_inited(rnd_mbtk_t *mctx, int main, int resized)
 	if (resized) ic = 1;
 
 	if (im && ic && first) {
+		rnd_coord_t midx = (mctx->hidlib->dwg.X1 + mctx->hidlib->dwg.X2) / 2;
+		rnd_coord_t midy = (mctx->hidlib->dwg.Y1 + mctx->hidlib->dwg.Y2) / 2;
 		first = 0;
 		rnd_hid_announce_gui_init(mctx->hidlib);
 TODO(
-		"zoom_view_win(ctx, 0, 0, mctx->hidlib->size_x, mctx->hidlib->size_y, 0);"
-		"pan_view_abs(ctx, mctx->hidlib->size_x/2, mctx->hidlib->size_y/2, mctx->port.view.canvas_width/2.0, mctx->port.view.canvas_height/2.0);"
+		"zoom_view_win(ctx, mctx->hidlib->dwg.X1, mctx->hidlib->dwg.Y1, mctx->hidlib->dwg.X2, mctx->hidlib->dwg.Y2, 0);"
+		"pan_view_abs(ctx, midx, midy, mctx->port.view.canvas_width/2.0, mctx->port.view.canvas_height/2.0);"
 );
 	}
 }
@@ -439,7 +441,7 @@ static void rnd_mbtk_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 TODO("implemet");
 #if 0
 	rnd_mbtk_tw_ranges_scale(mctx);
-	rnd_mbtk_zoom_view_win(&mctx->view, 0, 0, hidlib->size_x, hidlib->size_y, 0);
+	rnd_mbtk_zoom_view_win(&mctx->view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
 #endif
 }
 

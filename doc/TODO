@@ -56,6 +56,18 @@
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
 	- allow no-drawing-area mode for camv-rnd for negative coordinate gerbers
+		- extension to negative coords
+			- gtk2_* + sch-rnd K.gbr -> y scroll limits off when zoomed in on negative
+			- gtk2_* + camv-rnd A.rs -> y scroll limits off
+			- lesstif + sch-rnd A.rs -> y scrolls the wrong direction
+			- lesstif + sch-rnd A.rs -> scrolling limits
+			- png export + sch-rnd A.rs -> wrong bbox
+			- svg export + sch-rnd A.rs -> wrong bbox
+			- ps export + sch-rnd A.rs -> wrong bbox
+			- eps export + sch-rnd A.rs -> wrong bbox
+			- pcb-rnd negative coord:
+				- import sch placement around frame
+			- test on gtk4
 	- rename hidlib_conf.[ch] to librnd_conf.[ch]
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
@@ -88,6 +100,7 @@
 			- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
 		- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
+	- grep the code for 4.0.0 for more (don't remove this until all items resolved as more 4.0.0 may be added)
 
 *** Later releases ***
 

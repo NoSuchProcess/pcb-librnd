@@ -144,10 +144,10 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	static GdkPoint *points = NULL, *points3 = NULL;
 	static int npoints = 0, npoints3 = 0;
 
-	x1 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0), 0, hidlib->size_x), hidlib->grid, hidlib->grid_ox);
-	y1 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0), 0, hidlib->size_y), hidlib->grid, hidlib->grid_oy);
-	x2 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0 + ghidgui->port.view.width - 1), 0, hidlib->size_x), hidlib->grid, hidlib->grid_ox);
-	y2 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0 + ghidgui->port.view.height - 1), 0, hidlib->size_y), hidlib->grid, hidlib->grid_oy);
+	x1 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0), hidlib->dwg.X1, hidlib->dwg.X2), hidlib->grid, hidlib->grid_ox);
+	y1 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0), hidlib->dwg.Y1, hidlib->dwg.Y2), hidlib->grid, hidlib->grid_oy);
+	x2 = rnd_grid_fit(RND_CLAMP(SIDE_X(&ghidgui->port.view, ghidgui->port.view.x0 + ghidgui->port.view.width - 1), hidlib->dwg.X1, hidlib->dwg.X2), hidlib->grid, hidlib->grid_ox);
+	y2 = rnd_grid_fit(RND_CLAMP(SIDE_Y(&ghidgui->port.view, ghidgui->port.view.y0 + ghidgui->port.view.height - 1), hidlib->dwg.Y1, hidlib->dwg.Y2), hidlib->grid, hidlib->grid_oy);
 
 	grd = hidlib->grid;
 	if (grd <= 0)
@@ -474,7 +474,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 static void ghid_gdk_draw_bg_image(rnd_hidlib_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
-		ghid_gdk_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->size_x, hidlib->size_y);
+		ghid_gdk_draw_pixmap(hidlib, &ghidgui->bg_pixmap, hidlib->dwg.X1, hidlib->dwg.Y2, hidlib->dwg.X2, hidlib->dwg.Y2);
 }
 
 
@@ -1167,10 +1167,10 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 	ctx.view.Y1 = ctx.view.Y1;
 	ctx.view.Y2 = ctx.view.Y2;
 
-	eleft = Vx(0);
-	eright = Vx(hidlib->size_x);
-	etop = Vy(0);
-	ebottom = Vy(hidlib->size_y);
+	eleft   = Vx(hidlib->dwg.X1);
+	eright  = Vx(hidlib->dwg.X2);
+	etop    = Vy(hidlib->dwg.Y1);
+	ebottom = Vy(hidlib->dwg.Y2);
 	if (eleft > eright) {
 		int tmp = eleft;
 		eleft = eright;

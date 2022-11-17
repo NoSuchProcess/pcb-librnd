@@ -60,15 +60,15 @@ static void remote_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	rnd_hid_expose_ctx_t ctx;
 	rnd_hidlib_t *hidlib = remote_hidlib;
 
-	ctx.view.X1 = 0;
-	ctx.view.Y1 = 0;
-	ctx.view.X2 = hidlib->size_x;
-	ctx.view.Y2 = hidlib->size_y;
+	ctx.view.X1 = hidlib->dwg.X1;
+	ctx.view.Y1 = hidlib->dwg.Y1;
+	ctx.view.X2 = hidlib->dwg.X2;
+	ctx.view.Y2 = hidlib->dwg.Y2;
 
 TODO(": wait for a connection?")
 	remote_proto_send_ver();
 	remote_proto_send_unit();
-	remote_proto_send_brddim(hidlib->size_x, hidlib->size_y);
+	remote_proto_send_brddim(hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2);
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
