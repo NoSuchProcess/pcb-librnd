@@ -69,7 +69,7 @@ typedef enum {
 	RND_MF_UPDATE_ON,
 	RND_MF_SENSITIVE,
 	RND_MF_TIP,
-	RND_MF_ACTION,
+	RND_MF_ACTION
 } rnd_hid_cfg_menufield_t;
 
 /* Return a field of a submenu and optionally fill in field_name with the
