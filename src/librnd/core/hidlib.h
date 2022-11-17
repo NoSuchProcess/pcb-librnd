@@ -123,7 +123,7 @@ typedef struct rnd_app_s {
 
 	/*** callbacks ***/
 	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
-	void (*adjust_attached_objects)(rnd_hidlib_t *hl); 
+	void (*adjust_attached_objects)(rnd_hidlib_t *hl);
 
 /* Optional: Suspend the crosshair: save all crosshair states in a newly
    allocated and returned temp buffer, then reset the crosshair to initial
