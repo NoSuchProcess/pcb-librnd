@@ -222,6 +222,10 @@ struct rnd_hid_s {
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
 	void (*set_hidlib)(rnd_hid_t *hid, rnd_hidlib_t *hidlib);
 
+	/* Return the hidlib the given GUI HID is currently showing
+	   (not implemented in export HIDs) */
+	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
+
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
@@ -235,6 +239,10 @@ struct rnd_hid_s {
 	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
 	void (*do_export)(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
+
+	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
+	   value backing memory from this array */
+	rnd_hid_attr_val_t *argument_array;
 
 	/* uninit a GUI hid */
 	void (*uninit)(rnd_hid_t *hid);
@@ -394,6 +402,10 @@ struct rnd_hid_s {
 	/* hide or show a widget of an active attribute dialog */
 	int (*attr_dlg_widget_hide)(void *hid_ctx, int idx, rnd_bool hide);
 
+	/* Changes state of widget at idx. Returns 0 on success. Meaning of
+	   arguments is widgets-specific. */
+	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
+
 	/* Change the current value of a widget; same as if the user chaged it,
 	   except the value-changed callback is inhibited */
 	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
@@ -423,6 +435,9 @@ struct rnd_hid_s {
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
 	   is NULL) */
 	void (*update_menu_checkbox)(rnd_hid_t *hid, const char *cookie);
+
+	/* Creates a new menu or submenu from an existing (already merged) lihata node */
+	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
 	rnd_hid_cfg_t *menu;
@@ -520,26 +535,11 @@ struct rnd_hid_s {
 	   from the hidlib what's currently show by the GUI */
 	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 
-	/*** these should be upper, but the struct has to be extended on the bottom
-	     for binary compatibility ***/
-
-	/* Creates a new menu or submenu from an existing (already merged) lihata node */
-	int (*create_menu_by_node)(rnd_hid_t *hid, int is_popup, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-
-	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
-	   value backing memory from this array */
-	rnd_hid_attr_val_t *argument_array;
-
-	/* Changes state of widget at idx. Returns 0 on success. Meaning of
-	   arguments is widgets-specific. */
-	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
-
-	/* Return the hidlib the given GUI HID is currently showing
-	   (not implemented in export HIDs) */
-	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
+	/*** (these should be upper, but the struct has to be extended at spares
+	     for binary compatibility) ***/
 
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4, spare_l5, spare_l6, spare_l7, spare_l8;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4, *spare_p5, *spare_p6;
 	double spare_d1, spare_d2, spare_d3, spare_d4, spare_d5, spare_d6;
