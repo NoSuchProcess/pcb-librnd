@@ -159,6 +159,12 @@ typedef enum {
 extern int rnd_dock_is_vert[RND_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
 extern int rnd_dock_has_frame[RND_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
 
+typedef enum rnd_set_crosshair_e {
+	RND_SC_DO_NOTHING = 0,
+	RND_SC_WARP_POINTER,
+	RND_SC_PAN_VIEWPORT
+} rnd_set_crosshair_t;
+
 /* This is the main HID structure.  */
 struct rnd_hid_s {
 	/* The size of this structure.  We use this as a compatibility
@@ -347,10 +353,7 @@ struct rnd_hid_s {
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
-	void (*set_crosshair)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int cursor_action);
-#define HID_SC_DO_NOTHING    0
-#define HID_SC_WARP_POINTER  1
-#define HID_SC_PAN_VIEWPORT  2
+	void (*set_crosshair)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t cursor_action);
 
 	/* Causes func to be called at some point in the future.  Timers are
 	   only good for *one* call; if you want it to repeat, add another

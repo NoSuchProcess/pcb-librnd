@@ -42,7 +42,6 @@
 		- RND_EVENT_LOAD_*: copy this from pcb-rnd to sch-rnd and camv-rnd
 	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
-	- make HID_SC_ an enum
 	- centralize mouse cursor temporary set:
 		- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
 		- centralize hid API's ->busy - just set the cursor

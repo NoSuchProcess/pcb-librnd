@@ -2663,7 +2663,7 @@ static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, 
 
 	}
 
-	if (action == HID_SC_PAN_VIEWPORT) {
+	if (action == RND_SC_PAN_VIEWPORT) {
 		Window root, child;
 		unsigned int keys_buttons;
 		int pos_x, pos_y, root_x, root_y;
@@ -2677,9 +2677,9 @@ static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, 
 		else
 			view_top_y = y - pos_y * view_zoom;
 		lesstif_pan_fixup();
-		action = HID_SC_WARP_POINTER;
+		action = RND_SC_WARP_POINTER;
 	}
-	if (action == HID_SC_WARP_POINTER) {
+	if (action == RND_SC_WARP_POINTER) {
 		in_move_event++;
 		XWarpPointer(display, None, window, 0, 0, 0, 0, Vx(x), Vy(y));
 		in_move_event--;

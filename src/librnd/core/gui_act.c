@@ -88,7 +88,7 @@ static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		{"design", 0, RND_UNIT_PERCENT},
 		{"", 0, 0}
 	};
-	int pan_warp = HID_SC_DO_NOTHING;
+	int pan_warp = RND_SC_DO_NOTHING;
 	double dx, dy;
 	rnd_coord_t view_width, view_height;
 	const char *a1, *a2, *a3, *op;
@@ -114,10 +114,10 @@ static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(*op) {
 		case 'p': case 'P': /* Pan */
-			pan_warp = HID_SC_PAN_VIEWPORT;
+			pan_warp = RND_SC_PAN_VIEWPORT;
 			break;
 		case 'w': case 'W': /* Warp */
-			pan_warp = HID_SC_WARP_POINTER;
+			pan_warp = RND_SC_WARP_POINTER;
 			break;
 		default:
 			RND_ACT_FAIL(Cursor);
@@ -183,7 +183,7 @@ static fgw_error_t rnd_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	RND_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
 	rnd_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
-	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
+	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, RND_SC_PAN_VIEWPORT);
 
 	RND_ACT_IRES(0);
 	return 0;

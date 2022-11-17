@@ -47,7 +47,7 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		view->crosshair_y = y;
 	}
 
-	if (action != HID_SC_PAN_VIEWPORT && action != HID_SC_WARP_POINTER)
+	if (action != RND_SC_PAN_VIEWPORT && action != RND_SC_WARP_POINTER)
 		return;
 
 	/* Find out where the drawing area is on the screen. gdk_display_get_pointer
@@ -57,7 +57,7 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 	display = gdk_display_get_default();
 
 	switch (action) {
-	case HID_SC_PAN_VIEWPORT:
+	case RND_SC_PAN_VIEWPORT:
 		/* Pan the design in the viewport so that the crosshair (who's location
 		 * relative on the design was set above) lands where the pointer is.
 		 * We pass the request to pan a particular point on the design to a
@@ -78,7 +78,7 @@ void rnd_gtk_crosshair_set(rnd_coord_t x, rnd_coord_t y, int action, int offset_
 		 */
 		/* Fall through */
 
-	case HID_SC_WARP_POINTER:
+	case RND_SC_WARP_POINTER:
 		rnd_gtk_coords_design2event(view, x, y, &widget_x, &widget_y);
 
 		pointer_x = offset_x + widget_x;
