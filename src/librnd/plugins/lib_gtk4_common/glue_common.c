@@ -10,7 +10,7 @@ static inline void gtkc_scb_zoom_adjustment(GtkWidget *scrollb, rnd_coord_t view
 	double ps = MIN(view_size, dsg_max - dsg_min);
 
 	gtk_adjustment_set_page_size(adj, ps);
-	gtk_adjustment_set_lower(adj, -view_size);
+	gtk_adjustment_set_lower(adj, dsg_min - view_size);
 	gtk_adjustment_set_upper(adj, dsg_max - dsg_min + ps);
 
 	gtk_adjustment_set_step_increment(adj, ps / 100.0);
@@ -44,7 +44,7 @@ gtk_adjustment_set_value(adj, 20);
 static inline void gtkc_scb_zoom_adjustment(GtkWidget *scb, rnd_coord_t view_size, rnd_coord_t dsg_min, rnd_coord_t dsg_max)
 {
 	double ps = MIN(view_size, (dsg_max - dsg_min));
-	gtkc_scrollbar_set_range(GTKC_SCROLLBAR(scb), dsg_min-view_size, dsg_max + ps, ps);
+	gtkc_scrollbar_set_range(GTKC_SCROLLBAR(scb), dsg_min-view_size, dsg_max - dsg_min + ps, ps);
 }
 
 #define gtkc_scb_getval(scb)     gtkc_scrollbar_get_val(GTKC_SCROLLBAR(scb))
