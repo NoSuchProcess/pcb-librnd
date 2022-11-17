@@ -53,11 +53,11 @@ void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn, int xmirror, int y
 	fprintf(pctx->outf, "%g dup scale\n", pctx->scale);
 	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -pctx->bounds.X1, -pctx->bounds.Y2);
 	if (xmirror && ymirror)
-		rnd_fprintf(pctx->outf, "-1 -1 scale %mi %mi translate\n", pctx->bounds.X1 - pctx->bounds.X2, pctx->bounds.Y1 - pctx->bounds.Y2);
+		rnd_fprintf(pctx->outf, "-1 -1 scale %mi %mi translate\n", pctx->bounds.X1 - pctx->bounds.X2, -pctx->bounds.Y1 - pctx->bounds.Y2);
 	else if (xmirror)
-		rnd_fprintf(pctx->outf, "-1 1 scale %mi 0 translate\n", pctx->bounds.X1 - pctx->bounds.X2);
+		rnd_fprintf(pctx->outf, "-1 1 scale %mi 0 translate\n", -pctx->bounds.X1 - pctx->bounds.X2);
 	else if (ymirror)
-		rnd_fprintf(pctx->outf, "1 -1 scale 0 %mi translate\n", pctx->bounds.Y1 - pctx->bounds.Y2);
+		rnd_fprintf(pctx->outf, "1 -1 scale 0 %mi translate\n", -pctx->bounds.Y1 - pctx->bounds.Y2);
 
 #define Q (rnd_coord_t) RND_MIL_TO_COORD(10)
 	rnd_fprintf(pctx->outf,
