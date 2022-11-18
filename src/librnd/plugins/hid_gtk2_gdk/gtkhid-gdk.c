@@ -379,7 +379,7 @@ static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
 /* write 1 to dst for any pixel in SRC that is non-transparent */
 void copy_mask_pixmap(GdkPixmap *DST, GdkPixbuf *SRC, int sx, int sy, GdkGC *gc)
 {
-	int src_rowstd, dst_rowstd, nch, x, y, subp;
+	int src_rowstd, nch, x, y;
 	unsigned char *src_row, *src;
 
 	src_row = gdk_pixbuf_get_pixels(SRC);
