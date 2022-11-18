@@ -26,14 +26,14 @@ librnd_objs: $(LIBRND_A)
 
 
 librnd_test: librnd_test.o librnd_objs
-	$(CC) -o librnd_test librnd_test.o obj/hid/*.o obj/poly/*.o  obj/3rd/*.o $(LDFLAGS)
+	$(CC) -o librnd_test librnd_test.o obj/hid/*.o obj/font/*.o obj/poly/*.o obj/3rd/*.o $(LDFLAGS)
 
 
 librnd_test.o: librnd_test.c includes
 	$(CC) $(CFLAGS) -c -o librnd_test.o librnd_test.c
 
 librnd_includes: librnd_includes.o librnd_objs
-	$(CC) -o librnd_includes librnd_includes.o  obj/hid/*.o obj/poly/*.o  obj/3rd/*.o $(LDFLAGS)
+	$(CC) -o librnd_includes librnd_includes.o  obj/hid/*.o obj/font/*.o obj/poly/*.o  obj/3rd/*.o $(LDFLAGS)
 
 librd_includes.o: librnd_includes.c includes
 
