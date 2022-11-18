@@ -1,4 +1,4 @@
-*** Upcoming release ***
+1. For the upcoming release ===============================================================================
 - BUG: libualloc *_api.h are not installed
 - BUG: make sure tests compile with -DNDEBUG in production, else it fails in alpine packaging (-fomit-frame-pointer brings in fortify headers for some reason which fail with use-librnd #defines in config.h) [report: aron]
 - 4.0.0: ABI incompatible (feature removal)
@@ -86,9 +86,11 @@
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
 	- grep the code for 4.0.0 for more (don't remove this until all items resolved as more 4.0.0 may be added)
 
-*** Later releases ***
+2. For later releases ===============================================================================
 
-*** Low prio ***
+3. Long term ===============================================================================
+
+4. Low prio ===============================================================================
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
 	- BUG: hid_lesstif potential bug: bug_files/TODO/lesstif.txt [report: Fuz]
 	- bitmap object export in png, ps, eps, svg
@@ -98,5 +100,5 @@
 		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
 		- unicode translation table so that the upper 127 chars can be used for mu, degree and similar
 
-*** Unsorted ***
+5. unsorted ===============================================================================
 	- lesstif: vertical text, truncated text support
