@@ -390,26 +390,25 @@ do { \
 	RND_DAD_ALLOC(table, RND_HATT_COLOR); \
 } while(0)
 
-#define RND_DAD_BEGIN_HPANE(table) \
-do { \
-	RND_DAD_BEGIN(table, RND_HATT_BEGIN_HPANE); \
-	table[table ## _len - 1].val.dbl = 0.5; \
-} while(0)
 
-#define RND_DAD_BEGIN_VPANE(table) \
-do { \
-	RND_DAD_BEGIN(table, RND_HATT_BEGIN_VPANE); \
-	table[table ## _len - 1].val.dbl = 0.5; \
-} while(0)
-
-/* pane name is used when saving pane position in window geometry;
+/* Create a horizontal or vertical pane.
+   pane_name is used when saving pane position in window geometry;
    name is a const char *, not strdup'd or free'd (should be constant in the
    caller). Name must contain only alphanumerical characters, dashes and
    underscores  */
-#define RND_DAD_SET_PANE_NAME(table, pname) \
+
+#define RND_DAD_BEGIN_HPANE(table, pane_name) \
 do { \
-	assert((table[table ## _len - 1].type == RND_HATT_BEGIN_HPANE) || (table[table ## _len - 1].type == RND_HATT_BEGIN_VPANE)); \
-	table[table ## _len - 1].name = pname; \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_HPANE); \
+	table[table ## _len - 1].val.dbl = 0.5; \
+	table[table ## _len - 1].name = pane_name; \
+} while(0)
+
+#define RND_DAD_BEGIN_VPANE(table, pane_name) \
+do { \
+	RND_DAD_BEGIN(table, RND_HATT_BEGIN_VPANE); \
+	table[table ## _len - 1].val.dbl = 0.5; \
+	table[table ## _len - 1].name = pane_name; \
 } while(0)
 
 

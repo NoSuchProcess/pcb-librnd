@@ -216,9 +216,8 @@ static void script_dlg_open(void)
 
 	RND_DAD_BEGIN_VBOX(script_dlg.dlg);
 	RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
-	RND_DAD_BEGIN_HPANE(script_dlg.dlg);
+	RND_DAD_BEGIN_HPANE(script_dlg.dlg, "left-right");
 		RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
-		RND_DAD_SET_PANE_NAME(script_dlg.dlg, "left-right");
 		/* left side */
 		RND_DAD_BEGIN_VBOX(script_dlg.dlg);
 			RND_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);

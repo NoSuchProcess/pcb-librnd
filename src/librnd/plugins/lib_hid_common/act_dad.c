@@ -507,13 +507,13 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "begin_hpane") == 0) {
 		if (dad->running) goto cant_chg;
-		RND_DAD_BEGIN_HPANE(dad->dlg);
+		RND_DAD_BEGIN_HPANE(dad->dlg, "anon_scripted");
 		dad->level++;
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "begin_vpane") == 0) {
 		if (dad->running) goto cant_chg;
-		RND_DAD_BEGIN_VPANE(dad->dlg);
+		RND_DAD_BEGIN_VPANE(dad->dlg, "anon_scripted");
 		dad->level++;
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
