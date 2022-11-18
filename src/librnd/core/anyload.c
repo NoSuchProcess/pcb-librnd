@@ -40,7 +40,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/event.h>
 #include <librnd/core/paths.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/core/misc_util.h>
 #include <librnd/core/hidlib_conf.h>
 
 #include "anyload.h"

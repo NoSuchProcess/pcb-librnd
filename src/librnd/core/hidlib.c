@@ -33,6 +33,8 @@
 
 rnd_app_t rnd_app;
 
+int rnd_hid_in_main_loop = 0;
+
 void rnd_log_print_uninit_errs(const char *title)
 {
 	rnd_logline_t *n, *from = rnd_log_find_first_unseen();

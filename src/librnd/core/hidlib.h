@@ -173,6 +173,9 @@ typedef struct rnd_app_s {
 
 extern rnd_app_t rnd_app;
 
+/* set to 1 when librnd is running the main loop (set by hid_init.c) */
+extern int rnd_hid_in_main_loop;
+
 /* print pending log messages to stderr after gui uninit */
 void rnd_log_print_uninit_errs(const char *title);
 

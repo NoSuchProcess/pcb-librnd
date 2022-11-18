@@ -87,7 +87,6 @@ const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 
 rnd_hid_t **rnd_hid_list = 0;
 int rnd_hid_num_hids = 0;
-int rnd_hid_in_main_loop = 0;
 
 rnd_hid_t *rnd_gui = NULL;
 rnd_hid_t *rnd_render = NULL;
