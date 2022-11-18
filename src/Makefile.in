@@ -91,6 +91,7 @@ put /local/librnd/OBJS_C99_HIDLIB [@
 append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/actions.o
 	$(LIBRND)/core/anyload.o
+	$(LIBRND)/core/anyload_act.o
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
 	$(LIBRND)/core/box_isc.o
@@ -597,6 +598,7 @@ append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_GENHT
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/anyload_act.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_act.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}

@@ -649,6 +649,7 @@ extern void rnd_gui_act_init2(void);
 extern void rnd_main_act_init2(void);
 extern void rnd_menu_act_init2(void);
 extern void rnd_anyload_init2(void);
+extern void rnd_anyload_act_init2(void);
 extern void rnd_conf_init2(void);
 
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
@@ -705,6 +706,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_conf_load_extra(NULL, NULL);
 	rnd_units_init();
 	rnd_funchash_init();
+	rnd_anyload_act_init2();
 
 	rnd_anyload_init2(); /* must be at the end because any init2() may register an anyload */
 }

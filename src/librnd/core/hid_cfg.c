@@ -34,7 +34,6 @@
 #include <liblihata/tree.h>
 
 #include <librnd/rnd_config.h>
-#include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
