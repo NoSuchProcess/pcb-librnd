@@ -885,8 +885,7 @@ void rnd_drwpx_draw_pixmap(rnd_drwpx_t *pctx, rnd_hid_t *hid, rnd_coord_t cx, rn
 		row = pixmap->p + ir * sx3;
 
 		for (x = 0; x < w; x++) {
-			unsigned long pp;
-			int tr = 0, ic;
+			int ic;
 			unsigned int r, g, b;
 
 /*			if (pctx->xmirror)
