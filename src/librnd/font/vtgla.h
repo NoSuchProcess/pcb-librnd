@@ -1,3 +1,6 @@
+#ifndef RND_VTGLA_H
+#define RND_VTGLA_H
+
 #define GVT(x) vtgla_ ## x
 #define GVT_ELEM_TYPE rnd_glyph_atom_t
 #define GVT_SIZE_TYPE size_t
@@ -11,4 +14,6 @@
 
 #ifndef RND_VTGLA_C
 #include <genvector/genvector_undef.h>
+#endif
+
 #endif
