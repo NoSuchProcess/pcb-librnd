@@ -98,7 +98,6 @@ do { \
 
 static void irc_poll(void)
 {
-	static int connected = 0;
 	uirc_event_t ev = uirc_poll(&irc_ctx.irc);
 
 	if (ev & UIRC_CONNECT) {
