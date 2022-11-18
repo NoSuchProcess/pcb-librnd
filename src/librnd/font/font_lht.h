@@ -38,7 +38,7 @@
     lht_node_t *HASH_GET(lht_node_t *hash, const char *name);
 
    Prints error for nd:
-    LHT_ERROR(lht_node_t *nd, const char *fmt, ...)
+    RND_LHT_ERROR(lht_node_t *nd, const char *fmt, ...)
 
 */
 
@@ -103,12 +103,12 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 			int len, h, i;
 
 			if (obj->type != LHT_LIST) {
-				LHT_ERROR(obj, "Symbol error: simplepoly is not a list! (ignoring this poly)\n");
+				RND_LHT_ERROR(obj, "Symbol error: simplepoly is not a list! (ignoring this poly)\n");
 				continue;
 			}
 			for(len = 0, n = obj->data.list.first; n != NULL; len++, n = n->next) ;
 			if ((len % 2 != 0) || (len < 6)) {
-				LHT_ERROR(obj, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
+				RND_LHT_ERROR(obj, "Symbol error: sumplepoly has wrong number of points (%d, expected an even integer >= 6)! (ignoring this poly)\n", len);
 				continue;
 			}
 
@@ -139,7 +139,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	int err = 0;
 
 	if (nd->type != LHT_HASH) {
-		LHT_ERROR(nd, "font must be a hash\n");
+		RND_LHT_ERROR(nd, "font must be a hash\n");
 		return -1;
 	}
 
@@ -156,7 +156,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 			char *end;
 			chr = strtol(sym->name+1, &end, 16);
 			if (*end != '\0') {
-				LHT_ERROR(sym, "Ignoring glyph with invalid glyph name '%s'.\n", sym->name);
+				RND_LHT_ERROR(sym, "Ignoring glyph with invalid glyph name '%s'.\n", sym->name);
 				continue;
 			}
 		}
