@@ -533,7 +533,7 @@ static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
 }
 
-TODO("closing from within a tree table causes a gtk/glib segf");
+TODO("closing from within a tree table causes a gtk/glib segf")
 static void timed_close_cb(rnd_hidval_t user_data)
 {
 	static rnd_dad_retovr_t retovr;
