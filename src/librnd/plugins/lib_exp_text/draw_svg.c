@@ -164,7 +164,7 @@ void rnd_svg_header(rnd_svg_t *pctx)
 	x2 = pctx->hidlib->dwg.X2;
 	y2 = pctx->hidlib->dwg.Y2;
 	if (pctx->true_size) {
-		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
+		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"%mm %mm %mm %mm\">\n", x2, y2, x1, 0, x2-x1, y2-y1);
 	}
 	else {
 		rnd_coord_t o1 = RND_MM_TO_COORD(2), o2 = RND_MM_TO_COORD(5);
