@@ -108,6 +108,7 @@ append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/grid.o
 	$(LIBRND)/core/heap.o
 	$(LIBRND)/core/hid.o
+	$(LIBRND)/core/hid_act.o
 	$(LIBRND)/core/hid_attrib.o
 	$(LIBRND)/core/hid_cfg.o
 	$(LIBRND)/core/hid_cfg_action.o
@@ -596,6 +597,7 @@ append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_GENHT
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
+sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_act.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
 sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}
 append /local/librnd/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
