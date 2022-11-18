@@ -99,16 +99,6 @@ static int loghid_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static const rnd_export_opt_t *loghid_get_export_options(rnd_hid_t *hid, int *n)
-{
-/*	loghid_attribute_list[HA_psfile] = rnd_strdup("default?");*/
-
-	if (n)
-		*n = (sizeof(loghid_attribute_list)/sizeof(loghid_attribute_list[0]));
-	return loghid_attribute_list;
-}
-
-
 int pplg_check_ver_loghid(int ver_needed) { return 0; }
 
 void pplg_uninit_loghid(void)
