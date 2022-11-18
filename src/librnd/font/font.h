@@ -31,7 +31,7 @@
 #include <genht/htip.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/box.h>
-#include <rnd_inclib/font/glyph.h>
+#include <librnd/font/glyph.h>
 
 #define RND_FONT_MAX_GLYPHS 255
 #define RND_FONT_DEFAULT_CELLSIZE 50

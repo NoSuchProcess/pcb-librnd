@@ -25,7 +25,7 @@
  *
  */
 
-#include <librnd/core/config.h>
+#include "config.h"
 #include <librnd/core/math_helper.h>
 #include <math.h>
 #include <string.h>

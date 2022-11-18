@@ -65,7 +65,7 @@ typedef union rnd_glyph_atom_s {
 } rnd_glyph_atom_t;
 
 
-#include <rnd_inclib/font/vtgla.h>
+#include <librnd/font/vtgla.h>
 
 typedef struct rnd_glyph_s {
 	unsigned valid:1;

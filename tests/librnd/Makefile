@@ -8,7 +8,7 @@ include $(TRUNK)/src/librnd/core/librnd.mak
 
 CFLAGS =  -I$(LIBRND_ROOT)/include/librnd4 -I$(LIBRND_ROOT)/include/librnd4/librnd/src_3rd $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND)
 LDFLAGS = $(LIBRND_RDYNAMIC) $(LDFLAGS_LIBRND)
-LIBRND_A = include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
+LIBRND_A = include/$(HL_LIBDIR)/librnd-font.a include/$(HL_LIBDIR)/librnd-poly.a include/$(HL_LIBDIR)/librnd-hid.a include/$(HL_LIBDIR)/librnd-3rd.a
 
 all: librnd_test librnd_includes
 
@@ -17,9 +17,10 @@ test: librnd_test librnd_includes
 	./librnd_includes
 
 librnd_objs: $(LIBRND_A)
-	$(SCCBX) mkdir -p obj obj/poly obj/hid obj/3rd
-	$(SCCBX) rm -f obj/poly/*.o obj/hid/*.o obj/3rd/*.o
+	$(SCCBX) mkdir -p obj obj/font obj/poly obj/hid obj/3rd
+	$(SCCBX) rm -f obj/font/*.o obj/poly/*.o obj/hid/*.o obj/3rd/*.o
 	cd obj/hid &&  ar x ../../include/$(HL_LIBDIR)/librnd-hid.a
+	cd obj/font && ar x ../../include/$(HL_LIBDIR)/librnd-font.a
 	cd obj/poly && ar x ../../include/$(HL_LIBDIR)/librnd-poly.a
 	cd obj/3rd &&  ar x ../../include/$(HL_LIBDIR)/librnd-3rd.a  
 

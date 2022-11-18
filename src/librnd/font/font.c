@@ -26,12 +26,12 @@
  */
 
 #include <ctype.h>
-#include <librnd/core/config.h>
+#include "config.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/globalconst.h>
-#include <rnd_inclib/font/font.h>
-#include <rnd_inclib/font/xform_mx.h>
+#include <librnd/font/font.h>
+#include <librnd/font/xform_mx.h>
 
 #define MAX_SIMPLE_POLY_POINTS 256
 
