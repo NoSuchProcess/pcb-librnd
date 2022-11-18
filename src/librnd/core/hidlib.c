@@ -29,9 +29,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/tool.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid.h>
-
-static const char *hidlib_cookie = "hidlib";
+#include <librnd/core/error.h>
 
 rnd_app_t rnd_app;
 
@@ -41,13 +39,6 @@ void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_
 		rnd_event(hidlib, RND_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
 	if (rnd_app.crosshair_move_to != NULL)
 		rnd_app.crosshair_move_to(hidlib, abs_x, abs_y, mouse_mot);
-}
-
-
-static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
-{
-	rnd_tool_gui_init();
-	rnd_gui->set_mouse_cursor(rnd_gui, rnd_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
 void rnd_log_print_uninit_errs(const char *title)
@@ -67,13 +58,3 @@ void rnd_log_print_uninit_errs(const char *title)
 		fprintf(stderr, "\n\n");
 }
 
-
-void rnd_hidlib_event_uninit(void)
-{
-	rnd_event_unbind_allcookie(hidlib_cookie);
-}
-
-void rnd_hidlib_event_init(void)
-{
-	rnd_event_bind(RND_EVENT_GUI_INIT, hidlib_gui_init_ev, NULL, hidlib_cookie);
-}

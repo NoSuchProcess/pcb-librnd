@@ -173,9 +173,6 @@ typedef struct rnd_app_s {
 
 extern rnd_app_t rnd_app;
 
-void rnd_hidlib_event_uninit(void);
-void rnd_hidlib_event_init(void);
-
 /* print pending log messages to stderr after gui uninit */
 void rnd_log_print_uninit_errs(const char *title);
 

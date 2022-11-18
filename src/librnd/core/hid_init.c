@@ -68,7 +68,11 @@
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/buildin.hidlib.h>
+#include <librnd/core/tool.h>
 #include "../../../config.h"
+
+static const char *hid_init_cookie = "hidlib";
+
 
 int rnd_coord_t_size = sizeof(rnd_coord_t);
 
@@ -598,6 +602,22 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 	return exec_prefix;
 }
 
+static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	rnd_tool_gui_init();
+	rnd_gui->set_mouse_cursor(rnd_gui, rnd_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
+}
+
+static void rnd_hid_init_init(void)
+{
+	rnd_event_bind(RND_EVENT_GUI_INIT, hidlib_gui_init_ev, NULL, hid_init_cookie);
+}
+
+static void rnd_hid_init_uninit(void)
+{
+	rnd_event_unbind_allcookie(hid_init_cookie);
+}
+
 
 extern void rnd_menu_init1(void);
 
@@ -609,7 +629,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	conf_core_init();
 	rnd_pcbhl_conf_postproc();
 	rnd_hidlib_conf_init();
-	rnd_hidlib_event_init();
+	rnd_hid_init_init();
 	rnd_hid_dlg_init();
 	rnd_hid_init();
 	rnd_grid_init();
@@ -723,7 +743,7 @@ void rnd_hidlib_uninit(void)
 	rnd_hid_menu_merge_inhibit_inc(); /* make sure no menu merging happens during the uninitialization */
 	rnd_grid_uninit();
 	rnd_menu_uninit();
-	rnd_hidlib_event_uninit();
+	rnd_hid_init_uninit();
 	rnd_hid_dlg_uninit();
 
 	if (rnd_conf_isdirty(RND_CFR_USER))
@@ -1071,3 +1091,4 @@ void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib)
 	rnd_hid_in_main_loop = 0;
 	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
 }
+
