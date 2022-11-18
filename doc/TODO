@@ -57,7 +57,6 @@
 		- apps may refer to it through preferences dialog
 	- define drawing area with bbox, not width/height
 		- extension to negative coords
-			- svg export + sch-rnd A.rs -> wrong bbox
 			- pcb-rnd negative coord:
 				- import sch placement around frame
 			- sch-rnd: drawing area auto-grow
