@@ -56,6 +56,7 @@ struct rnd_hpgl_path_s { vtph_t path; }; /* rename for the public API */
 
 #include "draw_hpgl.h"
 
+#if 0
 static void path_reverse(ctx_t *ctx, vtph_t *path)
 {
 
@@ -66,6 +67,7 @@ static void path_append_path(ctx_t *ctx, vtph_t *dst, vtph_t *src)
 {
 	
 }
+#endif
 
 RND_INLINE unsigned hash_coord(rnd_coord_t c)
 {
