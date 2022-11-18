@@ -86,3 +86,14 @@ void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib)
 	btmr_hidlib = hidlib;
 }
 
+int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+{
+	if (rnd_gui == NULL) {
+		fprintf(stderr, "rnd_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
+		*x = 0;
+		*y = 0;
+		return -1;
+	}
+	else
+		return rnd_gui->get_coords(rnd_gui, msg, x, y, force);
+}

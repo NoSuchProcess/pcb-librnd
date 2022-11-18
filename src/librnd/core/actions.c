@@ -378,18 +378,6 @@ int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv
 	return res.val.nat_int;
 }
 
-int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
-{
-	if (rnd_gui == NULL) {
-		fprintf(stderr, "rnd_hid_get_coords: can not get coordinates (no gui) for '%s'\n", msg);
-		*x = 0;
-		*y = 0;
-		return -1;
-	}
-	else
-		return rnd_gui->get_coords(rnd_gui, msg, x, y, force);
-}
-
 static int is_res_non_zero(fgw_arg_t *res)
 {
 	switch(res->type) {

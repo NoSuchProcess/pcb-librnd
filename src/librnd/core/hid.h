@@ -686,4 +686,11 @@ extern int rnd_hid_enable_per_dialog_hidlib;
    the file select dialog into core, useful in non-GUI cases. */
 extern char *(*rnd_hid_fileselect_imp)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
+/* If the mouse cursor is in the drawin area, set x;y silently and return;
+   else show msg and let the user click in the drawing area. If force is
+   non-zero and msg is non-NULL, discard the cache and force querying a
+   new coord. This mode must NOT be used unless action arguments explictly
+   requested it. Returns 0 on success, -1 on esc pressed */
+int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
+
 #endif
