@@ -39,7 +39,6 @@
 #include <librnd/rnd_config.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_init.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/safe_fs.h>

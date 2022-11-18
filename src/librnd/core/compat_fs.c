@@ -50,7 +50,6 @@
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/hid_init.h>
 
 #include <genvector/gds_char.h>
 
