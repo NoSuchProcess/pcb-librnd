@@ -40,7 +40,6 @@
 	- centralize mouse cursor temporary set:
 		- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
 		- centralize hid API's ->busy - just set the cursor
-	- check what's the diff between rnd_hid_t-> user_context and hid_data; maybe it is enough to keep only one
 	- there are no spare fields in:
 		- rnd_hid_tree_t (calloced from macro so calloc is on app side!)
 		- rnd_hid_dad_subdialog_s
