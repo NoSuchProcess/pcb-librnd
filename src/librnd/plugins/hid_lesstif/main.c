@@ -2651,7 +2651,7 @@ static int lesstif_mod1_is_pressed(rnd_hid_t *hid)
 
 extern int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
-static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action)
 {
 	if (crosshair_x != x || crosshair_y != y) {
 		lesstif_show_crosshair(0);

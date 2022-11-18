@@ -218,7 +218,7 @@ int rnd_mbtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_mbtk_topwin_create(mctx, argc, argv);
 }
 
-static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void rnd_mbtk_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 	int offset_x, offset_y;

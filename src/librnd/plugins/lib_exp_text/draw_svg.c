@@ -638,6 +638,6 @@ void rnd_svg_fill_polygon_offs(rnd_svg_t *pctx, rnd_hid_gc_t gc, int n_coords, r
 		draw_poly(pctx, &pctx->sclip, gc, n_coords, x, y, dx, dy, clip_color);
 }
 
-void rnd_svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+void rnd_svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t a)
 {
 }

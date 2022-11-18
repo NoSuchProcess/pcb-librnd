@@ -268,7 +268,7 @@ static int batch_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd
 	return -1;
 }
 
-static void batch_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void batch_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action)
 {
 }
 

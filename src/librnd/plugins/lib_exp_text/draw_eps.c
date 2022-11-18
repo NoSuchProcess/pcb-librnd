@@ -290,7 +290,7 @@ void rnd_eps_fill_rect(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-void rnd_eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+void rnd_eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action)
 {
 }
 

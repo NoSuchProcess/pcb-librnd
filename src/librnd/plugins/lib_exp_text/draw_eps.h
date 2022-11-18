@@ -35,7 +35,7 @@ void rnd_eps_destroy_gc(rnd_hid_gc_t gc);
 void rnd_eps_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style);
 void rnd_eps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width);
 void rnd_eps_set_draw_xor(rnd_hid_gc_t gc, int xor_);
-void rnd_eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action);
+void rnd_eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action);
 
 
 /* standard HID API with extra pctx first arg */

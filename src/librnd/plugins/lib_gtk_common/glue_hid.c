@@ -248,7 +248,7 @@ static void rnd_gtk_parse_arguments_first(rnd_gtk_t *gctx, rnd_hid_t *hid, int *
 /* Create top level window for routines that will need top_window before rnd_gtk_create_topwin_widgets() is called. */
 int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv);
 
-static void rnd_gtkg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void rnd_gtkg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_set_crosshair_t action)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 	int offset_x, offset_y;
