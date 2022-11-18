@@ -40,6 +40,7 @@
 #include "in_keyboard.h"
 #include "wt_preview.h"
 #include <librnd/core/safe_fs.h>
+#include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 
 rnd_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 

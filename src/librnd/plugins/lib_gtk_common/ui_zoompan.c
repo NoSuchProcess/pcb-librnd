@@ -32,6 +32,7 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 #include "glue_common.h"
 
 double rnd_gtk_clamp_zoom(const rnd_gtk_view_t *vw, double coord_per_px)

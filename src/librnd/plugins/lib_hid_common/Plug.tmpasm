@@ -16,6 +16,7 @@ put /local/pcb/mod/OBJS [@
   $(LIBRND_PLUGDIR)/lib_hid_common/toolbar.o
   $(LIBRND_PLUGDIR)/lib_hid_common/xpm.o
   $(LIBRND_PLUGDIR)/lib_hid_common/zoompan.o
+  $(LIBRND_PLUGDIR)/lib_hid_common/gui_act.o
 @]
 
 # dialog config is here because of hidlib: each hidlib user shall have its

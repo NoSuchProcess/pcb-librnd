@@ -106,7 +106,6 @@ append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/file_loaded.o
 	$(LIBRND)/core/funchash.o
 	$(LIBRND)/core/grid.o
-	$(LIBRND)/core/gui_act.o
 	$(LIBRND)/core/heap.o
 	$(LIBRND)/core/hid.o
 	$(LIBRND)/core/hid_attrib.o

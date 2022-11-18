@@ -176,8 +176,4 @@ extern rnd_app_t rnd_app;
 /* print pending log messages to stderr after gui uninit */
 void rnd_log_print_uninit_errs(const char *title);
 
-/*** API wrappers provided for plugins (these are translated into calls to the
-     app within the hidlib and are typically called from within librnd) ***/
-void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
-
 #endif
