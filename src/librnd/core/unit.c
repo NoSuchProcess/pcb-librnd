@@ -162,6 +162,7 @@ double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)
 	switch(unit->family) {
 		case RND_UNIT_METRIC: base = RND_COORD_TO_MM(1); break;
 		case RND_UNIT_IMPERIAL: base = RND_COORD_TO_MIL(1); break;
+		case RND_UNIT_CSCHEM:
 		case RND_UNIT_FREQ: base = 1.0; break;
 	}
 	return x * unit->scale_factor * base;
