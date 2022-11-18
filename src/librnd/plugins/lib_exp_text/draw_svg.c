@@ -167,11 +167,8 @@ void rnd_svg_header(rnd_svg_t *pctx)
 		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
 	}
 	else {
-		x1 += RND_MM_TO_COORD(2);
-		y1 += RND_MM_TO_COORD(2);
-		x2 += RND_MM_TO_COORD(5);
-		y2 += RND_MM_TO_COORD(5);
-		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+		rnd_coord_t o1 = RND_MM_TO_COORD(2), o2 = RND_MM_TO_COORD(5);
+		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"%mm %mm %mm %mm\">\n", w, h, x1-o1, -o1, x2-x1+o2, y2-y1+o2);
 	}
 }
 
