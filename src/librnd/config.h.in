@@ -210,9 +210,6 @@ typedef @/local/librnd/coord_type@ rnd_coord_t;
 #define RND_COORD_MAX @/local/librnd/coord_max@
 #define coord_abs rnd_coord_abs
 
-/* Other autodetected types */
-typedef @/local/librnd/long64@    rnd_long64_t;
-
 /* gtk */
 #define RND_GTK2_KEY(keyname) (@?libs/gui/gtk2/key_prefix@ ## keyname)
 

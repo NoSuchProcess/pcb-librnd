@@ -55,6 +55,7 @@
 #include <librnd/core/box.h>
 #include <librnd/poly/rtree2_compat.h>
 
+#include "polyconf.h"
 
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
 

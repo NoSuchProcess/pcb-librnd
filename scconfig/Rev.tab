@@ -1,3 +1,4 @@
+34568	configure	new generatewd polyconf.h in the poly lib (moving 64 bit int type from central config.h: only the poly lib uses this type and nothing else should start using it)
 34532	configure	remove per hid local file selector dialog
 34363	configure	switch over test program's static linking from .a to .o so that all symbols are preserved
 34278	configure	new low level text exporter: hpgl
