@@ -55,8 +55,6 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
-	- define drawing area with bbox, not width/height
-		- sch-rnd: drawing area auto-grow
 	- rename hidlib_conf.[ch] to librnd_conf.[ch]
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
