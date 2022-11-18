@@ -120,12 +120,22 @@ fgw_error_t rnd_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_Help[] = "Help()";
+static const char rnd_acth_Help[] = "On-line action help";
+static fgw_error_t rnd_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_print_actions();
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static rnd_action_t rnd_main_action_list[] = {
 	{"PrintActions", rnd_act_PrintActions, rnd_acth_PrintActions, rnd_acts_PrintActions},
 	{"DumpActions", rnd_act_DumpActions, rnd_acth_DumpActions, rnd_acts_DumpActions},
 	{"PrintFiles", rnd_act_PrintFiles, rnd_acth_PrintFiles, rnd_acts_PrintFiles},
 	{"DumpPlugins", rnd_act_DumpPlugins, rnd_acth_DumpPlugins, rnd_acts_DumpPlugins},
 	{"DumpPluginDirs", rnd_act_DumpPluginDirs, rnd_acth_DumpPluginDirs, rnd_acts_DumpPluginDirs},
+	{"Help", rnd_act_Help, rnd_acth_Help, rnd_acts_Help}
 };
 
 void rnd_main_act_init2(void)

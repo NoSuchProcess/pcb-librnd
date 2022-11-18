@@ -331,15 +331,6 @@ static fgw_error_t rnd_act_Benchmark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char rnd_acts_Help[] = "Help()";
-static const char rnd_acth_Help[] = "On-line action help";
-static fgw_error_t rnd_act_Help(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	rnd_print_actions();
-	RND_ACT_IRES(0);
-	return 0;
-}
-
 static const char rnd_acts_Redraw[] = "Redraw()";
 static const char rnd_acth_Redraw[] = "Redraw the entire screen";
 static fgw_error_t rnd_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -356,7 +347,6 @@ static rnd_action_t rnd_gui_action_list[] = {
 	{"Grid", rnd_act_grid, rnd_acth_grid, rnd_acts_grid},
 	{"GetXY", rnd_act_GetXY, rnd_acth_GetXY, rnd_acts_GetXY},
 	{"Benchmark", rnd_act_Benchmark, rnd_acth_Benchmark, rnd_acts_Benchmark},
-	{"Help", rnd_act_Help, rnd_acth_Help, rnd_acts_Help},
 	{"Redraw", rnd_act_Redraw, rnd_acth_Redraw, rnd_acts_Redraw}
 };
 
