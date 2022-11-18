@@ -45,6 +45,14 @@
 #include <librnd/core/tool.h>
 #include <librnd/core/hid_dad.h>
 
+void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+{
+	if (mouse_mot)
+		rnd_event(hidlib, RND_EVENT_STROKE_RECORD, "cc", abs_x, abs_y);
+	if (rnd_app.crosshair_move_to != NULL)
+		rnd_app.crosshair_move_to(hidlib, abs_x, abs_y, mouse_mot);
+}
+
 
 /* This action is provided for CLI convenience */
 static const char rnd_acts_FullScreen[] = "FullScreen(on|off|toggle)\n";
