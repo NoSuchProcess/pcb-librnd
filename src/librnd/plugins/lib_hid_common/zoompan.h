@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <librnd/core/hid.h>
+
 /* Return error from an action if there's no GUI, or set result to 0
    if there's GUI */
 #define RND_GUI_NOGUI() \

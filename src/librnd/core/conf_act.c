@@ -33,6 +33,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/grid.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/misc_util.h>
 
 static const char rnd_acts_Conf[] =
 	"conf(set, path, value, [role], [policy]) - change a config setting to an absolute value\n"

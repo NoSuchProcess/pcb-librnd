@@ -42,6 +42,7 @@
 #include <librnd/core/funchash.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/misc_util.h>
 
 const rnd_action_t *rnd_current_action = NULL;
 

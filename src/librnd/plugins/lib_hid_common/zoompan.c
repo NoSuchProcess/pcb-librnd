@@ -31,6 +31,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/misc_util.h>
 
 #include "zoompan.h"
 

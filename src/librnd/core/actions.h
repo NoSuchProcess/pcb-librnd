@@ -1,7 +1,8 @@
 #ifndef RND_ACTIONS_H
 #define RND_ACTIONS_H
 
-#include <librnd/core/hid.h>
+#include <librnd/core/global_typedefs.h>
+#include <librnd/core/error.h>
 #include <string.h>
 #include <libfungw/fungw.h>
 

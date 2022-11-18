@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
 #include <librnd/rnd_config.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
