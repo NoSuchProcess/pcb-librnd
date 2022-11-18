@@ -56,10 +56,7 @@
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
 	- define drawing area with bbox, not width/height
-		- extension to negative coords
-			- pcb-rnd negative coord:
-				- import sch placement around frame
-			- sch-rnd: drawing area auto-grow
+		- sch-rnd: drawing area auto-grow
 	- rename hidlib_conf.[ch] to librnd_conf.[ch]
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
