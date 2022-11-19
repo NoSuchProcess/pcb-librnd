@@ -63,7 +63,7 @@ struct {
 
 /*** crosshair ***/
 #include <librnd/hid/hid_inlines.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 rnd_hid_gc_t foobar_crosshair_gc;
 void foobar_crosshair_gui_init(void)
 {

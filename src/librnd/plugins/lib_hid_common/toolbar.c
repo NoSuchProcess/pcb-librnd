@@ -37,7 +37,7 @@
 #include <librnd/hid/hid_dad.h>
 #include <librnd/hid/tool.h>
 #include <librnd/hid/hid_menu.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/actions.h>
 

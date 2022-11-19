@@ -6,7 +6,7 @@
 #include <librnd/hid/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/file_loaded.h>
 #include "conf_core.h"

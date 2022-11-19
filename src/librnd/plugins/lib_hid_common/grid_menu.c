@@ -27,7 +27,7 @@
 #include <librnd/rnd_config.h>
 
 #include <librnd/core/conf.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/hid/grid.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid_cfg.h>

@@ -60,7 +60,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf.h>
 #include <librnd/hid/grid.h>
 #include <librnd/core/funchash.h>

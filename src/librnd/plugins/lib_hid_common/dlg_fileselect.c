@@ -47,7 +47,7 @@
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include "dialogs_conf.h"
 #include "dlg_fileselect.h"

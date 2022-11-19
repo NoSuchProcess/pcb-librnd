@@ -36,7 +36,7 @@
 #include <librnd/rnd_config.h>
 #include "rnd_gtk.h"
 #include "bu_command.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include <gdk/gdkkeysyms.h>
 

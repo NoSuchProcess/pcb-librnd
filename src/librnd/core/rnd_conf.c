@@ -31,7 +31,7 @@
 #include <librnd/core/color.h>
 #include <librnd/core/hidlib.h>
 
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 rnd_conf_t rnd_conf;
 

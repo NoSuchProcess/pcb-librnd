@@ -1,6 +1,6 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf_hid.h>
 
 

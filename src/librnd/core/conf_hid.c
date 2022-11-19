@@ -3,7 +3,7 @@
 #include <genht/hash.h>
 #include <genht/htpp.h>
 #include <librnd/core/error.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 typedef struct {
 	const rnd_conf_hid_callbacks_t *cb;

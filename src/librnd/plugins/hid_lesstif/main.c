@@ -2,7 +2,7 @@
 
 #include <librnd/rnd_config.h>
 #include <librnd/core/math_helper.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/hid/pixmap.h>
 

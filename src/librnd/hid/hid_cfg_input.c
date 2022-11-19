@@ -38,7 +38,7 @@
 #include <librnd/hid/hid_cfg_input.h>
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/hid_cfg_action.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>

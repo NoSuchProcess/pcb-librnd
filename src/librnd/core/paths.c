@@ -32,7 +32,7 @@
 #include <librnd/core/paths.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 int rnd_getpid(void);
 

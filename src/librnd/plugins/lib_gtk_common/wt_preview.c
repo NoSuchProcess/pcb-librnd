@@ -33,7 +33,7 @@
    then got a major refactoring by Tibor 'Igor2' Palinkas and Alain in pcb-rnd */
 
 #include "config.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include "in_mouse.h"
 #include "in_keyboard.h"

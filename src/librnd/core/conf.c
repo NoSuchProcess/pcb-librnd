@@ -49,7 +49,7 @@
 #include <librnd/core/fptr_cast.h>
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 static const char *flcat = "conf";
 

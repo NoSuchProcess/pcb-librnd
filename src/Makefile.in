@@ -109,7 +109,7 @@ append /local/librnd/OBJS_CORELIB [@
 	$(LIBRND)/core/hid_cfg.o
 	$(LIBRND)/core/hid_cfg_action.o
 	$(LIBRND)/core/hidlib.o
-	$(LIBRND)/core/hidlib_conf.o
+	$(LIBRND)/core/rnd_conf.o
 	$(LIBRND)/core/list_conf.o
 	$(LIBRND)/core/main_act.o
 	$(LIBRND)/core/misc_util.o
@@ -546,11 +546,11 @@ print [@
 pcblib_DATA=
 EXTRA_DIST=
 
-../src/librnd/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
-	AWK=@/host/fstools/awk@ $(LIBRND)/scconfig/gen_conf.sh < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
+../src/librnd/core/hidlib_conf_fields.h: $(LIBRND)/core/rnd_conf.h $(ROOT)/doc/conf/tree/rc.html
+	AWK=@/host/fstools/awk@ $(LIBRND)/scconfig/gen_conf.sh < $(LIBRND)/core/rnd_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
 
-$(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h
-	cat $(LIBRND)/core/hidlib_conf.h | AWK=@/host/fstools/awk@ $(LIBRND)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
+$(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/rnd_conf.h
+	cat $(LIBRND)/core/rnd_conf.h | AWK=@/host/fstools/awk@ $(LIBRND)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
 
 FORCE:
 

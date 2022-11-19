@@ -26,7 +26,7 @@
 
 #include <librnd/rnd_config.h>
 
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
 

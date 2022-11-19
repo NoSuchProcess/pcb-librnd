@@ -29,7 +29,7 @@
 #include "config.h"
 #include "ui_zoompan.h"
 
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/plugins/lib_hid_common/lib_hid_common.h>

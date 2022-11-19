@@ -27,7 +27,7 @@
 /* Preferences dialog, window geometry tab */
 
 #include <librnd/core/conf.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 #include <librnd/plugins/lib_hid_common/place.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>

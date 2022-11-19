@@ -40,7 +40,7 @@
 #include <genvector/gds_char.h>
 
 #include <librnd/core/math_helper.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/error.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>

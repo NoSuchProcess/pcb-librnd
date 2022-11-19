@@ -45,7 +45,7 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/actions.h>

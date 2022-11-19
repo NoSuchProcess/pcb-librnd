@@ -37,7 +37,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 /* This is the "gui" that is installed at startup, and is used when
    there is no other real GUI to use.  For the most part, it just

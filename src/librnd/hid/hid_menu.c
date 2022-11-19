@@ -41,7 +41,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/file_loaded.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/funchash_core.h>
 #include <librnd/core/compat_misc.h>

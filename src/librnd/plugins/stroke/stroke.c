@@ -30,7 +30,7 @@
 
 #include <stroke.h>
 
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/plugins.h>

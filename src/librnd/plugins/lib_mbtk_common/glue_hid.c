@@ -40,7 +40,7 @@
 #include <librnd/hid/hid_attrib.h>
 #include <librnd/hid/pixmap.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 #include <librnd/plugins/lib_hid_common/menu_helper.h>

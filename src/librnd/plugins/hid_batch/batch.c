@@ -10,7 +10,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 #include <librnd/hid/hid_nogui.h>
 #include <librnd/core/actions.h>

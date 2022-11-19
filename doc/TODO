@@ -18,7 +18,7 @@
 		- make freq units pcb-rnd app specific, retest the openems exporter
 	- BUG: check all librnd calls to rnd_conf_get_project_conf_name(); hidlib->filename should be renamed and split to a load_name and a real_name, for project file use load_name (because of symlink designs)
 	- *BUG: sch-rnd critical: hid->attr_dlg_new() needs to get a void **hid_ctx_out argument so it can set hid_ctx before return; this is important because non-gtk HIDs will call back in sync during creating the dialog while core hid_dad will set hid_ctx only after this function returns (and the whole dialog is created); test: tree dialog {w t} in sch-rnd segfaults
-	- *BUG: sch-rnd critical: rnd_app.expose_main needs to get the rnd_hidlib_t to draw (multisheet GUI needs this, as a dialog may draw non-current-GUI)
+	- *BUG: sch-rnd critical: rnd_app.expose_main needs to get the rnd_design_t to draw (multisheet GUI needs this, as a dialog may draw non-current-GUI)
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 		- apply librnd core patch TODO.hid_dad_tree
 		- make sure all callers strdup() all cells
@@ -51,7 +51,6 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- conf: plugins/hid_gtk/history_size should be non-gtk-specific
 		- apps may refer to it through preferences dialog
-	- rename hidlib_conf.[ch] to librnd_conf.[ch]
 	- multi design (multides.html):
 		- problem: rnd_conf_fields
 			- it hosts native (merged) config data
@@ -59,10 +58,9 @@
 			- but if a new plugin registers a new field, that needs to be done in every existing design!
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 		- mark each event [local] or [global]
-		- rename rnd_hidlib_t to rnd_design_t (or to something better)
-			- rnd_hidlib_t must contain:
-				- real file name (realpath'd)
-				- original file name (short name, as the user called it)
+		- rnd_design_t must contain:
+			- real file name (realpath'd)
+			- original file name (short name, as the user called it)
 		- cleanup: extend callbacks in rnd_conf_hid_callbacks_t to pass hidlib (multiple callbacks with different designs if multiple open designs are changed!)
 		- rnd_conf_hid_callbacks_t needs a void *user_data so code that registers an event can save context for the callback; get callbacks to get rnd_conf_hid_callbacks_t, see mbtk menu.c librnd4 TODO
 		- switch over from rnd_conf and conf_core to per design conf

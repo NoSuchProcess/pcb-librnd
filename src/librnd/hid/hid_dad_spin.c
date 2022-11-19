@@ -36,7 +36,7 @@
 #include <librnd/hid/hid_dad_unit.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 
 gdl_list_t rnd_dad_coord_spins;
 

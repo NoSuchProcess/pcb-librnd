@@ -31,7 +31,7 @@
    then got reworked heavily by Tibor 'Igor2' Palinkas for pcb-rnd DAD */
 
 #include "config.h"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include "dlg_attribute.h"
 #include <stdlib.h>
 

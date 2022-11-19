@@ -67,7 +67,7 @@ static htsp_t scripts; /* ID->script_t */
 static pup_context_t script_pup;
 
 #include "c_script.c"
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/core/compat_fs.h>
 
 /* dir name under dotdir for saving script persistency data */

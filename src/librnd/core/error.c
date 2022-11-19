@@ -34,7 +34,7 @@
 #include <librnd/core/event.h>
 #include <librnd/hid/hid_dad.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <genvector/gds_char.h>
 
 rnd_hid_t *rnd_gui = NULL;

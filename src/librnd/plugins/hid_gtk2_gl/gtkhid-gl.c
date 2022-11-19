@@ -4,7 +4,7 @@
 
 #include <librnd/core/color_cache.h>
 #include <librnd/hid/hid_attrib.h>
-#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/hid/pixmap.h>
 #include <librnd/core/globalconst.h>
 
