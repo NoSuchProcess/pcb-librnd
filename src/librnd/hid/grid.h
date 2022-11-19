@@ -81,7 +81,7 @@ void rnd_grid_init(void);
 void rnd_grid_uninit(void);
 
 /* sets cursor grid with respect to grid spacing, offset and unit values */
-void rnd_hidlib_set_grid(rnd_design_t *design, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
-void rnd_hidlib_set_unit(rnd_design_t *design, const rnd_unit_t *new_unit);
+void rnd_hid_set_grid(rnd_design_t *design, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
+void rnd_hid_set_unit(rnd_design_t *design, const rnd_unit_t *new_unit);
 
 #endif

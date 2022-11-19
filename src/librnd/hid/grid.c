@@ -172,9 +172,9 @@ char *rnd_grid_print(const rnd_grid_t *src)
 
 void rnd_grid_set(rnd_design_t *hidlib, const rnd_grid_t *src)
 {
-	rnd_hidlib_set_grid(hidlib, src->size, rnd_true, src->ox, src->oy);
+	rnd_hid_set_grid(hidlib, src->size, rnd_true, src->ox, src->oy);
 	if (src->unit != NULL)
-		rnd_hidlib_set_unit(hidlib, src->unit);
+		rnd_hid_set_unit(hidlib, src->unit);
 }
 
 void rnd_grid_free(rnd_grid_t *dst)
@@ -284,7 +284,7 @@ void rnd_grid_uninit(void)
 }
 
 /* sets cursor grid with respect to grid offset values */
-void rnd_hidlib_set_grid(rnd_design_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
+void rnd_hid_set_grid(rnd_design_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
 {
 	if (Grid >= 1 && Grid <= RND_MAX_GRID) {
 		if (align) {
@@ -298,7 +298,7 @@ void rnd_hidlib_set_grid(rnd_design_t *hidlib, rnd_coord_t Grid, rnd_bool align,
 	}
 }
 
-void rnd_hidlib_set_unit(rnd_design_t *hidlib, const rnd_unit_t *new_unit)
+void rnd_hid_set_unit(rnd_design_t *hidlib, const rnd_unit_t *new_unit)
 {
 	if (new_unit != NULL && new_unit->allow != RND_UNIT_NO_PRINT)
 		rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, RND_POL_OVERWRITE);
