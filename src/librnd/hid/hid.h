@@ -221,11 +221,11 @@ struct rnd_hid_s {
  /* when 1 and this hid is rnd_render, do not change rnd_render even if an export plugin or GUI is calling the render code */
 	unsigned override_render:1;
 
-	/* called by core when the global hidlib context changes (e.g. design changed)
-	   The HID should store the hidlib pointer for knowing drawing area dimensions */
-	void (*set_hidlib)(rnd_hid_t *hid, rnd_design_t *hidlib);
+	/* called by core when the global design context changes (e.g. design changed)
+	   The HID should store the design pointer for knowing drawing area dimensions */
+	void (*set_hidlib)(rnd_hid_t *hid, rnd_design_t *design);
 
-	/* Return the hidlib the given GUI HID is currently showing
+	/* Return the design the given GUI HID is currently showing
 	   (not implemented in export HIDs) */
 	rnd_design_t *(*get_hidlib)(rnd_hid_t *hid);
 
@@ -529,10 +529,10 @@ struct rnd_hid_s {
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
 
-	/* convert hid_ctx into hidlib ptr; only valid within a DAD callback. This
-	   is different from ->get_hidlib because this returns the hidlib associated
+	/* convert hid_ctx into design ptr; only valid within a DAD callback. This
+	   is different from ->get_hidlib because this returns the design associated
 	   with the dialog, which (for multi-instance local dialogs) may be different
-	   from the hidlib what's currently show by the GUI */
+	   from the design what's currently show by the GUI */
 	rnd_design_t *(*get_dad_hidlib)(void *hid_ctx);
 
 	/*** (these should be upper, but the struct has to be extended at spares
@@ -642,9 +642,9 @@ void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete
 /* Plugin helper: timed batch updates; any plugin may trigger the update, multiple
    triggers are batched and only a single RND_EVENT_GUI_BATCH_TIMER is emitted
    after a certain time passed since the last trigger. The event is emitted
-   with the last hidlib argument passed. If there's no GUI available, no event
+   with the last design argument passed. If there's no GUI available, no event
    is emitted. */
-void rnd_hid_gui_batch_timer(rnd_design_t *hidlib);
+void rnd_hid_gui_batch_timer(rnd_design_t *design);
 
 	/* Run the file selection dialog. Return a string the caller needs to free().
 	 * title may be used as a dialog box title.  Ignored if NULL.
