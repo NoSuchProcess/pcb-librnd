@@ -384,7 +384,7 @@ int pplg_init_hid_remote(void)
 	remote_hid.attr_dlg_close = remote_attr_dlg_close;
 	remote_hid.attr_dlg_free = remote_attr_dlg_free;
 	remote_hid.attr_dlg_property = remote_attr_dlg_property;
-	remote_hid.set_hidlib = remote_set_hidlib;
+	remote_hid.set_design = remote_set_hidlib;
 
 
 /*	RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/

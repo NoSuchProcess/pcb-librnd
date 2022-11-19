@@ -679,9 +679,9 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->set_top_title = rnd_gtkg_set_top_title;
 	dst->busy = rnd_gtkg_busy;
 
-	dst->set_hidlib = rnd_gtkg_set_hidlib;
-	dst->get_hidlib = rnd_gtkg_get_hidlib;
-	dst->get_dad_hidlib = rnd_gtk_attr_get_dad_hidlib;
+	dst->set_design = rnd_gtkg_set_hidlib;
+	dst->get_design = rnd_gtkg_get_hidlib;
+	dst->get_dad_design = rnd_gtk_attr_get_dad_hidlib;
 
 	dst->key_state = &rnd_gtk_keymap;
 

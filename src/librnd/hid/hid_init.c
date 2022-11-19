@@ -1059,8 +1059,8 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *hidlib, rnd_bool is_emp
 
 	if (is_empty)
 		rnd_message(RND_MSG_WARNING, "Exporting empty design (nothing loaded or drawn).\n");
-	if (rnd_gui->set_hidlib != NULL)
-		rnd_gui->set_hidlib(rnd_gui, hidlib);
+	if (rnd_gui->set_design != NULL)
+		rnd_gui->set_design(rnd_gui, hidlib);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	rnd_gui->do_export(rnd_gui, 0);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
@@ -1072,8 +1072,8 @@ void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *hidlib)
 {
 	rnd_hid_in_main_loop = 1;
 	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
-	if (rnd_gui->set_hidlib != NULL)
-		rnd_gui->set_hidlib(rnd_gui, hidlib);
+	if (rnd_gui->set_design != NULL)
+		rnd_gui->set_design(rnd_gui, hidlib);
 	rnd_gui->do_export(rnd_gui, 0);
 	rnd_hid_in_main_loop = 0;
 	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);

@@ -365,8 +365,8 @@ int pplg_init_hid_batch(void)
 	batch_hid.description = "Batch-mode GUI for non-interactive use.";
 	batch_hid.gui = 1;
 
-	batch_hid.set_hidlib = batch_set_hidlib;
-	batch_hid.get_hidlib = batch_get_hidlib;
+	batch_hid.set_design = batch_set_hidlib;
+	batch_hid.get_design = batch_get_hidlib;
 	batch_hid.get_export_options = batch_get_export_options;
 	batch_hid.do_export = batch_do_export;
 	batch_hid.do_exit = batch_do_exit;

@@ -223,11 +223,11 @@ struct rnd_hid_s {
 
 	/* called by core when the global design context changes (e.g. design changed)
 	   The HID should store the design pointer for knowing drawing area dimensions */
-	void (*set_hidlib)(rnd_hid_t *hid, rnd_design_t *design);
+	void (*set_design)(rnd_hid_t *hid, rnd_design_t *design);
 
 	/* Return the design the given GUI HID is currently showing
 	   (not implemented in export HIDs) */
-	rnd_design_t *(*get_hidlib)(rnd_hid_t *hid);
+	rnd_design_t *(*get_design)(rnd_hid_t *hid);
 
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
@@ -530,10 +530,10 @@ struct rnd_hid_s {
 	void *hid_data;
 
 	/* convert hid_ctx into design ptr; only valid within a DAD callback. This
-	   is different from ->get_hidlib because this returns the design associated
+	   is different from ->get_design because this returns the design associated
 	   with the dialog, which (for multi-instance local dialogs) may be different
 	   from the design what's currently show by the GUI */
-	rnd_design_t *(*get_dad_hidlib)(void *hid_ctx);
+	rnd_design_t *(*get_dad_design)(void *hid_ctx);
 
 	/*** (these should be upper, but the struct has to be extended at spares
 	     for binary compatibility) ***/
@@ -676,8 +676,8 @@ char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 /* temporary, will be removed in 4.0.0 where it will become hardwired 1:
    if set to 1, enable each DAD dialog remembering their own hid; when 0,
-   ->get_dad_hidlib() returns the same hid-global "currently displayed"
-   value as ->get_hidlib(); 0 is the default, old, pre-4.0.0 behavior */
+   ->get_dad_design() returns the same hid-global "currently displayed"
+   value as ->get_design(); 0 is the default, old, pre-4.0.0 behavior */
 extern int rnd_hid_enable_per_dialog_hidlib;
 
 /* Actual implementation of rnd_hid_fileselect(); registered by the plugin

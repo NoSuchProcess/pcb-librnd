@@ -78,7 +78,7 @@ static void toolbar_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		return;
 
 	tid = (ptrdiff_t)attr->user_data;
-	rnd_tool_select_by_id(rnd_gui->get_dad_hidlib(hid_ctx), tid);
+	rnd_tool_select_by_id(rnd_gui->get_dad_design(hid_ctx), tid);
 }
 
 static void toolbar_create_tool(rnd_toolid_t tid, rnd_tool_t *tool, const char *menufile_help)

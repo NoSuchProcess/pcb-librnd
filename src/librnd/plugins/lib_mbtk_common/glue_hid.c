@@ -623,9 +623,9 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->set_top_title = rnd_mbtk_set_top_title;
 	dst->busy = rnd_mbtk_busy;
 
-	dst->set_hidlib = rnd_mbtk_set_hidlib;
-	dst->get_hidlib = rnd_mbtk_get_hidlib;
-	dst->get_dad_hidlib = rnd_mbtk_attr_get_dad_hidlib;
+	dst->set_design = rnd_mbtk_set_hidlib;
+	dst->get_design = rnd_mbtk_get_hidlib;
+	dst->get_dad_design = rnd_mbtk_attr_get_dad_hidlib;
 
 	dst->key_state = &rnd_mbtk_keymap;
 

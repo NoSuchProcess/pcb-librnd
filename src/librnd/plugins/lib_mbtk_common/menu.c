@@ -18,7 +18,7 @@ static mbtk_event_handled_t rnd_mbtk_menu_cb(mbtk_widget_t *w, mbtk_kw_t id, voi
 	menu_handle_t *hand = user_data;
 
 	if (hand->action != NULL) {
-		rnd_design_t *hidlib = rnd_gui->get_hidlib(rnd_gui);
+		rnd_design_t *hidlib = rnd_gui->get_design(rnd_gui);
 		rnd_hid_cfg_action(hidlib, hand->action);
 
 		/* GUI updates to reflect the result of the above action */

@@ -125,7 +125,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 
 static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
-	rnd_design_t *hidlib = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hidlib = rnd_gui->get_dad_design(hid_ctx);
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr;
 	char buf[128];
@@ -210,7 +210,7 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 
 static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_attribute_t *attr, rnd_hid_row_t *r)
 {
-	rnd_design_t *hidlib = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hidlib = rnd_gui->get_dad_design(hid_ctx);
 	char *nv = rnd_hid_prompt_for(hidlib, "list item value:", r->cell[0], "Edit config list item");
 	if (nv == NULL)
 		return;
@@ -248,7 +248,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 
 static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
-	rnd_design_t *hidlib = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hidlib = rnd_gui->get_dad_design(hid_ctx);
 	confedit_ctx_t *ctx = caller_data;
 	rnd_actionva(hidlib, ctx->nat->gui_edit_act,
 		rnd_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,

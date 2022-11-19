@@ -3111,12 +3111,12 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.draw_pixmap = rnd_ltf_draw_pixmap;
 	lesstif_hid.uninit_pixmap = rnd_ltf_uninit_pixmap;
 
-	lesstif_hid.set_hidlib = ltf_set_hidlib;
-	lesstif_hid.get_hidlib = ltf_get_hidlib;
+	lesstif_hid.set_design = ltf_set_hidlib;
+	lesstif_hid.get_design = ltf_get_hidlib;
 
 	lesstif_hid.usage = lesstif_usage;
 
-	lesstif_hid.get_dad_hidlib = ltf_attr_get_dad_hidlib;
+	lesstif_hid.get_dad_design = ltf_attr_get_dad_hidlib;
 
 	lesstif_hid.argument_array = ltf_values;
 
