@@ -103,7 +103,7 @@ void proto_send_invalidate_all(void)
 	send_end(&pctx);
 }
 
-int proto_send_set_layer_group(rnd_layergrp_id_t group, const char *purpose, int is_empty, rnd_xform_t **xform)
+int proto_send_set_layer_group(rnd_layergrp_id_t group, rnd_design_t *design, const char *purpose, int is_empty, rnd_xform_t **xform)
 {
 	send_begin(&pctx, "setlg");
 	send_open(&pctx, 0, 1);

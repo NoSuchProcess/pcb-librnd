@@ -2225,7 +2225,7 @@ static void lesstif_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 		invalidate_depth++;
 }
 
-static int lesstif_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
+static int lesstif_set_layer_group(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	/* accept anything and draw */
 	return 1;

@@ -282,8 +282,10 @@ struct rnd_hid_s {
 	   the items in that layer [group] should be drawn using the various drawing
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
-	   zero it may be non-empty. */
-	int (*set_layer_group)(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
+	   zero it may be non-empty. Exports the current design, as set with
+	   ->set_design(), but design is also passed so exporters don't need to implement
+	   ->set_design(). */
+	int (*set_layer_group)(rnd_hid_t *hid, rnd_design_t *design, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
 
 	/* Tell the GUI the layer last selected has been finished with. */
 	void (*end_layer)(rnd_hid_t *hid);
