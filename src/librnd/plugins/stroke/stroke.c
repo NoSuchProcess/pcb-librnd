@@ -115,7 +115,7 @@ static fgw_error_t rnd_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_MAY_CONVARG(2, FGW_STR, stroke,  arg = argv[2].val.str);
 		if (arg == NULL)
 			RND_ACT_FAIL(stroke);
-		rnd_stroke_exec(RND_ACT_HIDLIB, arg);
+		rnd_stroke_exec(RND_ACT_DESIGN, arg);
 	}
 	else if (rnd_strcasecmp(cmd, "zoom") == 0) {
 		fgw_arg_t args[5];
@@ -127,7 +127,7 @@ static fgw_error_t rnd_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 
-		args[0].type = FGW_FUNC; args[0].val.argv0.func = f; args[0].val.argv0.user_call_ctx = RND_ACT_HIDLIB;
+		args[0].type = FGW_FUNC; args[0].val.argv0.func = f; args[0].val.argv0.user_call_ctx = RND_ACT_DESIGN;
 		args[1].type = FGW_COORD; fgw_coord(&args[1]) = stroke_first_x;
 		args[2].type = FGW_COORD; fgw_coord(&args[2]) = stroke_first_y;
 		args[3].type = FGW_COORD; fgw_coord(&args[3]) = stroke_last_x;
@@ -135,7 +135,7 @@ static fgw_error_t rnd_act_stroke(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return rnd_actionv_(f, res, 5, args);
 	}
 	else if (rnd_strcasecmp(cmd, "stopline") == 0)
-		rnd_actionva(RND_ACT_HIDLIB, "Tool", "Escape", NULL);
+		rnd_actionva(RND_ACT_DESIGN, "Tool", "Escape", NULL);
 	else
 		RND_ACT_FAIL(stroke);
 

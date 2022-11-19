@@ -271,7 +271,7 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(2, FGW_STR, dad, cmd = argv[2].val.str);
 
 	if (rnd_strcasecmp(cmd, "new") == 0) {
-		RND_ACT_IRES(dad_new(RND_ACT_HIDLIB, dlgname));
+		RND_ACT_IRES(dad_new(RND_ACT_DESIGN, dlgname));
 		return 0;
 	}
 
@@ -421,7 +421,7 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		uctx->act_mouse = rnd_concat(prefix, "mouse", NULL);
 		uctx->act_free = rnd_concat(prefix, "free", NULL);
 		uctx->udata = rnd_strdup(suctx);
-		uctx->hidlib = RND_ACT_HIDLIB;
+		uctx->hidlib = RND_ACT_DESIGN;
 		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, NULL, dad_prv_free_cb, &vb, sx, sy, uctx);
 	}
 	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {

@@ -270,7 +270,7 @@ static fgw_error_t rnd_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else {
 			/* call through to the dialog box version */
-			return rnd_actionv_bin(RND_ACT_HIDLIB, "LogGui", res, argc, argv);
+			return rnd_actionv_bin(RND_ACT_DESIGN, "LogGui", res, argc, argv);
 		}
 	}
 	else {

@@ -40,7 +40,7 @@ const char rnd_acth_Zoom_default[] = "Change zoom level (relative, absolute, win
 const char rnd_acts_Zoom_default[] = rnd_gui_acts_zoom;
 fgw_error_t rnd_gui_act_zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_design_t *hidlib = RND_ACT_HIDLIB;
+	rnd_design_t *hidlib = RND_ACT_DESIGN;
 	const char *vp, *ovp;
 	double v;
 	rnd_coord_t x = 0, y = 0;

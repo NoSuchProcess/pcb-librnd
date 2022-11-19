@@ -67,11 +67,11 @@ static fgw_error_t rnd_act_ChkGridSize(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	RND_ACT_CONVARG(1, FGW_STR, ChkGridSize, dst = argv[1].val.str);
 
 	if (strcmp(dst, "none") == 0) {
-		RND_ACT_IRES(RND_ACT_HIDLIB->grid <= 300);
+		RND_ACT_IRES(RND_ACT_DESIGN->grid <= 300);
 		return 0;
 	}
 
-	RND_ACT_IRES(RND_ACT_HIDLIB->grid == rnd_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
+	RND_ACT_IRES(RND_ACT_DESIGN->grid == rnd_get_value_ex(dst, NULL, NULL, NULL, NULL, NULL));
 	return 0;
 }
 
@@ -112,9 +112,9 @@ static fgw_error_t rnd_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		rnd_grid_inval();
 		if (val[0] == '*')
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), rnd_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_DESIGN, rnd_round(RND_ACT_DESIGN->grid * d), rnd_false, 0, 0);
 		else
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), rnd_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_DESIGN, rnd_round(RND_ACT_DESIGN->grid / d), rnd_false, 0, 0);
 		return 0;
 	}
 
@@ -122,15 +122,15 @@ static fgw_error_t rnd_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_grid_inval();
 	if (absolute)
-		rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, rnd_false, 0, 0);
+		rnd_hidlib_set_grid(RND_ACT_DESIGN, value, rnd_false, 0, 0);
 	else {
 		/* On the way down, until the minimum unit (1) */
-		if ((value + RND_ACT_HIDLIB->grid) < 1)
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, 1, rnd_false, 0, 0);
-		else if (RND_ACT_HIDLIB->grid == 1)
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, rnd_false, 0, 0);
+		if ((value + RND_ACT_DESIGN->grid) < 1)
+			rnd_hidlib_set_grid(RND_ACT_DESIGN, 1, rnd_false, 0, 0);
+		else if (RND_ACT_DESIGN->grid == 1)
+			rnd_hidlib_set_grid(RND_ACT_DESIGN, value, rnd_false, 0, 0);
 		else
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, rnd_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_DESIGN, value + RND_ACT_DESIGN->grid, rnd_false, 0, 0);
 	}
 	return 0;
 }
@@ -157,12 +157,12 @@ static fgw_error_t rnd_act_SetGridOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return 1;
 	}
 
-	if (!xa) x += RND_ACT_HIDLIB->grid_ox;
-	if (!ya) y += RND_ACT_HIDLIB->grid_oy;
+	if (!xa) x += RND_ACT_DESIGN->grid_ox;
+	if (!ya) y += RND_ACT_DESIGN->grid_oy;
 
 
 	rnd_grid_inval();
-	rnd_hidlib_set_grid(RND_ACT_HIDLIB, RND_ACT_HIDLIB->grid, rnd_true, x, y);
+	rnd_hidlib_set_grid(RND_ACT_DESIGN, RND_ACT_DESIGN->grid, rnd_true, x, y);
 
 	return 0;
 }
@@ -179,7 +179,7 @@ static fgw_error_t rnd_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	new_unit = rnd_get_unit_struct(name);
-	rnd_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
+	rnd_hidlib_set_unit(RND_ACT_DESIGN, new_unit);
 
 	return 0;
 }

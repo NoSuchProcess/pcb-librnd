@@ -296,7 +296,7 @@ static const char rnd_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t rnd_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_design_t *hidlib = RND_ACT_HIDLIB;
+	rnd_design_t *hidlib = RND_ACT_DESIGN;
 	const char *cmd;
 	RND_ACT_IRES(0);
 	RND_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);
@@ -304,56 +304,56 @@ static fgw_error_t rnd_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	hidlib->tool_x = hidlib->ch_x;
 	hidlib->tool_y = hidlib->ch_y;
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_false);
 	if (rnd_strcasecmp(cmd, "Cancel") == 0) {
-		rnd_tool_select_by_id(RND_ACT_HIDLIB, rnd_conf.editor.mode);
+		rnd_tool_select_by_id(RND_ACT_DESIGN, rnd_conf.editor.mode);
 	}
 	else if (rnd_strcasecmp(cmd, "Escape") == 0) {
 		const rnd_tool_t *t;
 		escape:;
 		t = rnd_tool_get(rnd_conf.editor.mode);
 		if ((t == NULL) || (t->escape == NULL)) {
-			rnd_tool_select_by_name(RND_ACT_HIDLIB, "arrow");
+			rnd_tool_select_by_name(RND_ACT_DESIGN, "arrow");
 			hidlib->tool_hit = hidlib->tool_click = 0; /* if the mouse button is still pressed, don't start selecting a box */
 		}
 		else
-			t->escape(RND_ACT_HIDLIB);
+			t->escape(RND_ACT_DESIGN);
 	}
 	else if ((rnd_strcasecmp(cmd, "Press") == 0) || (rnd_strcasecmp(cmd, "Notify") == 0)) {
-		rnd_tool_do_press(RND_ACT_HIDLIB);
+		rnd_tool_do_press(RND_ACT_DESIGN);
 	}
 	else if (rnd_strcasecmp(cmd, "Release") == 0) {
 		if (rnd_conf.editor.enable_stroke) {
 			int handled = 0;
-			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_FINISH, "p", &handled);
+			rnd_event(RND_ACT_DESIGN, RND_EVENT_STROKE_FINISH, "p", &handled);
 			if (handled) {
 			/* Ugly hack: returning 1 here will break execution of the
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */
-				do_release(RND_ACT_HIDLIB);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+				do_release(RND_ACT_DESIGN);
+				rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 				return 1;
 			}
 		}
-		do_release(RND_ACT_HIDLIB);
+		do_release(RND_ACT_DESIGN);
 	}
 	else if (rnd_strcasecmp(cmd, "Stroke") == 0) {
 		if (rnd_conf.editor.enable_stroke)
-			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
+			rnd_event(RND_ACT_DESIGN, RND_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 		else
 			goto escape; /* Right mouse button restarts drawing mode. */
 	}
 	else if (rnd_strcasecmp(cmd, "Restore") == 0) { /* restore the last saved tool */
-		rnd_tool_restore(RND_ACT_HIDLIB);
+		rnd_tool_restore(RND_ACT_DESIGN);
 	}
 	else if (rnd_strcasecmp(cmd, "Save") == 0) { /* save currently selected tool */
-		rnd_tool_save(RND_ACT_HIDLIB);
+		rnd_tool_save(RND_ACT_DESIGN);
 	}
 	else {
-		if (rnd_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
+		if (rnd_tool_select_by_name(RND_ACT_DESIGN, cmd) != 0)
 			rnd_message(RND_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_DESIGN, rnd_true);
 	return 0;
 }
 

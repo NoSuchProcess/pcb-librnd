@@ -45,7 +45,7 @@ fgw_error_t rnd_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		path = path_free = rnd_hid_fileselect(rnd_gui, "Import an anyload", NULL, "anyload.lht", NULL, NULL, "anyload", RND_HID_FSD_READ, NULL);
 
 	if (path != NULL)
-		RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path));
+		RND_ACT_IRES(rnd_anyload(RND_ACT_DESIGN, path));
 	else
 		RND_ACT_IRES(-1);
 

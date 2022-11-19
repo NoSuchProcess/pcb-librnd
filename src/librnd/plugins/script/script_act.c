@@ -288,7 +288,7 @@ static fgw_error_t rnd_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	ID_VALIDATE(id, LoadScript);
 
-	RND_ACT_IRES(rnd_script_load(RND_ACT_HIDLIB, id, fn, lang));
+	RND_ACT_IRES(rnd_script_load(RND_ACT_DESIGN, id, fn, lang));
 	script_dlg_update();
 	return 0;
 }
@@ -317,7 +317,7 @@ static fgw_error_t rnd_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	ID_VALIDATE(id, ReloadScript);
 
-	RND_ACT_IRES(script_reload(RND_ACT_HIDLIB, id));
+	RND_ACT_IRES(script_reload(RND_ACT_DESIGN, id));
 	script_dlg_update();
 	return 0;
 }
@@ -419,7 +419,7 @@ static fgw_error_t rnd_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	RND_ACT_IRES(script_oneliner(RND_ACT_HIDLIB, lang, scr));
+	RND_ACT_IRES(script_oneliner(RND_ACT_DESIGN, lang, scr));
 	return 0;
 }
 
@@ -429,7 +429,7 @@ static fgw_error_t rnd_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	const char *act;
 	RND_ACT_CONVARG(1, FGW_STR, ActionString, act = argv[1].val.str);
-	return rnd_parse_command_res(RND_ACT_HIDLIB, res, act, 1);
+	return rnd_parse_command_res(RND_ACT_DESIGN, res, act, 1);
 }
 
 static const char rnd_acth_rnd_math0[] = "No-argument math functions";

@@ -81,7 +81,7 @@ static const char rnd_acth_Cursor[] = "Move the cursor.";
 /* DOC: cursor.html */
 static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_design_t *hidlib = RND_ACT_HIDLIB;
+	rnd_design_t *hidlib = RND_ACT_DESIGN;
 	rnd_unit_list_t extra_units_x = {
 		{"grid", 0, 0},
 		{"view", 0, RND_UNIT_PERCENT},
@@ -102,13 +102,13 @@ static fgw_error_t rnd_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *a1, *a2, *a3, *op;
 	rnd_box_t vbx;
 
-	extra_units_x[0].scale = RND_ACT_HIDLIB->grid;
-	extra_units_x[2].scale = rnd_dwg_get_size_x(RND_ACT_HIDLIB);
-	extra_units_x[3].scale = rnd_dwg_get_size_x(RND_ACT_HIDLIB);
+	extra_units_x[0].scale = RND_ACT_DESIGN->grid;
+	extra_units_x[2].scale = rnd_dwg_get_size_x(RND_ACT_DESIGN);
+	extra_units_x[3].scale = rnd_dwg_get_size_x(RND_ACT_DESIGN);
 
-	extra_units_y[0].scale = RND_ACT_HIDLIB->grid;
-	extra_units_y[2].scale = rnd_dwg_get_size_y(RND_ACT_HIDLIB);
-	extra_units_y[3].scale = rnd_dwg_get_size_y(RND_ACT_HIDLIB);
+	extra_units_y[0].scale = RND_ACT_DESIGN->grid;
+	extra_units_y[2].scale = rnd_dwg_get_size_y(RND_ACT_DESIGN);
+	extra_units_y[3].scale = rnd_dwg_get_size_y(RND_ACT_DESIGN);
 
 	rnd_gui->view_get(rnd_gui, &vbx);
 	view_width = vbx.X2 - vbx.X1;
@@ -186,13 +186,13 @@ static const char rnd_acts_MoveCursorTo[] = "MoveCursorTo(x,y)";
 static const char rnd_acth_MoveCursorTo[] = "Move the cursor to absolute coords, pan the view as needed.";
 static fgw_error_t rnd_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_design_t *hidlib = RND_ACT_HIDLIB;
+	rnd_design_t *hidlib = RND_ACT_DESIGN;
 	rnd_coord_t x, y;
 
 	RND_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
 	RND_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
-	rnd_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
+	rnd_hidcore_crosshair_move_to(RND_ACT_DESIGN, x, y, 0);
 	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, RND_SC_PAN_VIEWPORT);
 
 	RND_ACT_IRES(0);
@@ -249,19 +249,19 @@ static fgw_error_t rnd_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
 		if (!rnd_grid_parse(&dst, a))
 			RND_ACT_FAIL(grid);
-		rnd_grid_set(RND_ACT_HIDLIB, &dst);
+		rnd_grid_set(RND_ACT_DESIGN, &dst);
 		rnd_grid_free(&dst);
 	}
 	else if ((strcmp(op, "up") == 0) || (strcmp(op, "+") == 0))
-		rnd_grid_list_step(RND_ACT_HIDLIB, +1);
+		rnd_grid_list_step(RND_ACT_DESIGN, +1);
 	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
-		rnd_grid_list_step(RND_ACT_HIDLIB, -1);
+		rnd_grid_list_step(RND_ACT_DESIGN, -1);
 	else if (strcmp(op, "idx") == 0) {
 		RND_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
-		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(a));
+		rnd_grid_list_jump(RND_ACT_DESIGN, atoi(a));
 	}
 	else if (op[0] == '#') {
-		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(op+1));
+		rnd_grid_list_jump(RND_ACT_DESIGN, atoi(op+1));
 	}
 	else if (strcmp(op, "get") == 0) {
 		res->type = FGW_COORD;
@@ -275,7 +275,7 @@ static fgw_error_t rnd_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		g.size = grid_ask();
 		if (g.size > 0)
-			rnd_grid_set(RND_ACT_HIDLIB, &g);
+			rnd_grid_set(RND_ACT_DESIGN, &g);
 	}
 	else
 		RND_ACT_FAIL(grid);

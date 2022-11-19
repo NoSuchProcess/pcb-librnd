@@ -167,7 +167,7 @@ RND_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 }
 
 /* Retrieve the (rnd_design_t *) context from argv[0] within an action */
-#define RND_ACT_HIDLIB ((rnd_design_t *)argv[0].val.argv0.user_call_ctx)
+#define RND_ACT_DESIGN ((rnd_design_t *)argv[0].val.argv0.user_call_ctx)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */

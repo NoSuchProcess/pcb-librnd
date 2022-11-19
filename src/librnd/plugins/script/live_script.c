@@ -479,7 +479,7 @@ fgw_error_t rnd_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_IRES(1);
 			return 0;
 		}
-		lvs = rnd_dlg_live_script(RND_ACT_HIDLIB, name);
+		lvs = rnd_dlg_live_script(RND_ACT_DESIGN, name);
 		if (lvs != NULL) {
 			htsp_set(&rnd_live_scripts, lvs->name, lvs);
 			RND_ACT_IRES(0);
@@ -493,7 +493,7 @@ fgw_error_t rnd_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int n, len;
 
 		memset(&l, 0, sizeof(l));
-		len = lvs_list_langs(RND_ACT_HIDLIB, &l);
+		len = lvs_list_langs(RND_ACT_DESIGN, &l);
 		for(n = 0; n < len; n++) {
 			printf("'%s' '%s'\n", l.langs[n], l.lang_engines[n]);
 			free(l.langs[n]);
@@ -525,24 +525,24 @@ fgw_error_t rnd_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(live_save(NULL, lvs, arg));
 	}
 	else if (rnd_strcasecmp(cmd, "undo") == 0) {
-		RND_ACT_IRES(live_undo(RND_ACT_HIDLIB, lvs));
+		RND_ACT_IRES(live_undo(RND_ACT_DESIGN, lvs));
 	}
 	else if (rnd_strcasecmp(cmd, "run") == 0) {
-		live_run(RND_ACT_HIDLIB, lvs);
+		live_run(RND_ACT_DESIGN, lvs);
 	}
 	else if (rnd_strcasecmp(cmd, "stop") == 0) {
 		live_stop(lvs);
 	}
 	else if (rnd_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
-		live_undo(RND_ACT_HIDLIB, lvs);
-		live_run(RND_ACT_HIDLIB, lvs);
+		live_undo(RND_ACT_DESIGN, lvs);
+		live_run(RND_ACT_DESIGN, lvs);
 	}
 	if (rnd_strcasecmp(cmd, "reload-rerun") == 0) {
 		RND_ACT_IRES(live_load(NULL, lvs, lvs->fn));
 		live_stop(lvs);
-		live_undo(RND_ACT_HIDLIB,lvs);
-		live_run(RND_ACT_HIDLIB, lvs);
+		live_undo(RND_ACT_DESIGN,lvs);
+		live_run(RND_ACT_DESIGN, lvs);
 	}
 
 	return 0;

@@ -148,7 +148,7 @@ static fgw_error_t rnd_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	t->next = rnd_dtime() + period;
 	t->period = period;
 	t->count = count;
-	t->hidlib = RND_ACT_HIDLIB;
+	t->hidlib = RND_ACT_DESIGN;
 	strcpy(t->aname, fn);
 	if (user_data != NULL)
 		t->user_data = rnd_strdup(user_data);

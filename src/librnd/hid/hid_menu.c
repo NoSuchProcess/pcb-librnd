@@ -1327,7 +1327,7 @@ fgw_error_t rnd_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (rnd_strcasecmp(op, "save") == 0) {
 		RND_ACT_CONVARG(2, FGW_STR, MenuDebug, path = argv[2].val.str);
-		f = rnd_fopen(RND_ACT_HIDLIB, path, "w");
+		f = rnd_fopen(RND_ACT_DESIGN, path, "w");
 		if (f != NULL) {
 			lht_dom_export(rnd_gui->menu->doc->root, f, "");
 			fclose(f);
