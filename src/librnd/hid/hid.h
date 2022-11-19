@@ -616,9 +616,9 @@ void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
 #define rnd_hid_redraw(pcb) rnd_gui->invalidate_all(rnd_gui)
 
-#define rnd_hid_busy(pcb, is_busy) \
+#define rnd_hid_busy(design, is_busy) \
 do { \
-	rnd_event(&pcb->hidlib, RND_EVENT_BUSY, "i", is_busy, NULL); \
+	rnd_event(design, RND_EVENT_BUSY, "i", is_busy, NULL); \
 	if ((rnd_gui != NULL) && (rnd_gui->busy != NULL)) \
 		rnd_gui->busy(rnd_gui, is_busy); \
 } while(0)
