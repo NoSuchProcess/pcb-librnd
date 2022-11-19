@@ -1,4 +1,5 @@
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_cfg_action.h>
 #include "topwin.h"
 
 static const char *cookie_menu = "mbtk hid menu";
