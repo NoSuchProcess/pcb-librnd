@@ -1156,7 +1156,5 @@ rnd_design_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
-	if (rnd_hid_enable_per_dialog_hidlib)
-		return ctx->hidlib;
-	return ctx->gctx->hidlib;
+	return ctx->hidlib;
 }

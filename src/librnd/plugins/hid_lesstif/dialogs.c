@@ -955,9 +955,7 @@ TODO("layer: call a redraw on the edit group")
 rnd_design_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
-	if (rnd_hid_enable_per_dialog_hidlib)
-		return ctx->hidlib;
-	return ltf_hidlib;
+	return ctx->hidlib;
 }
 
 
