@@ -259,8 +259,8 @@ static fgw_error_t rnd_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(op, "Export") == 0) {
 		const char *fn = NULL, *fmt = NULL;
 
-			RND_ACT_MAY_CONVARG(2, FGW_STR, Log, fn = argv[2].val.str);
-			RND_ACT_MAY_CONVARG(3, FGW_STR, Log, fmt = argv[3].val.str);
+		RND_ACT_MAY_CONVARG(2, FGW_STR, Log, fn = argv[2].val.str);
+		RND_ACT_MAY_CONVARG(3, FGW_STR, Log, fmt = argv[3].val.str);
 
 		if (fn != NULL) {
 			int fmt_lihata = (fmt != NULL) && (strcmp(fmt, "lihata") == 0);
