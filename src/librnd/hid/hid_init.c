@@ -612,7 +612,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
-	rnd_pcbhl_conf_postproc();
+	rnd_conf_postproc();
 	rnd_hidlib_conf_init();
 	rnd_hid_init_init();
 	rnd_hid_dlg_init();

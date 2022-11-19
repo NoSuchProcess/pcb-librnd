@@ -461,6 +461,6 @@ int rnd_conf_resolve_all(rnd_conf_resolve_t *res);
 
 
 /*** misc ***/
-void rnd_pcbhl_conf_postproc(void);
+void rnd_conf_postproc(void);
 
 #endif

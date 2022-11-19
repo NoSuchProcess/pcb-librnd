@@ -59,7 +59,7 @@ static const char conf_cookie_al[] = "core/conf/anyload";
 static htsi_t conf_interns;
 static int conf_files_inited = 0;
 
-extern void rnd_pcbhl_conf_postproc(void);
+extern void rnd_conf_postproc(void);
 
 int rnd_conf_in_production = 0;
 
@@ -1101,7 +1101,7 @@ static char *get_homedir(void)
 	return homedir;
 }
 
-void rnd_pcbhl_conf_postproc(void)
+void rnd_conf_postproc(void)
 {
 	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
@@ -1150,7 +1150,7 @@ void rnd_conf_update(const char *path, int arr_idx)
 	rnd_conf_merge_all(path);
 	if (rnd_app.conf_core_postproc != NULL)
 		rnd_app.conf_core_postproc();
-	rnd_pcbhl_conf_postproc();
+	rnd_conf_postproc();
 
 	if (path == NULL) {
 		htsp_entry_t *e;
