@@ -170,7 +170,7 @@ static void rnd_gtkg_main_export_uninit(rnd_gtk_t *gctx, rnd_hid_t *hid)
 	hid->hid_data = NULL;
 }
 
-static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
+static void rnd_gtkg_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec);
 
 static void rnd_gtkg_do_exit_(rnd_gtk_t *gctx)
 {

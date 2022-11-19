@@ -157,8 +157,9 @@ int rnd_main_args_setup1(rnd_main_args_t *ga);
 int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval);
 
 /* if -x was specified, do the export and return 1 (the caller should
-   exit); else return 0 */
-int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *design, rnd_bool is_empty);
+   exit); else return 0. Appspec is application specific custom config
+   passed on to the exporter's ->do_export as-is. */
+int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *design, rnd_bool is_empty, void *appspec);
 
 /* launches the GUI or CLI; after it returns, if rnd_gui is not NULL, the user
    has selected another GUI to switch to. */

@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
 
 	/* foobar: load the design specified on command line */
 
-	if (rnd_main_exported(&ga, &foobar.hidlib, 0)) {
+	if (rnd_main_exported(&ga, &foobar.hidlib, 0, NULL)) {
 		foobar_main_uninit();
 		rnd_main_args_uninit(&ga);
 		exit(0);

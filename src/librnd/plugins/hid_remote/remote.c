@@ -55,7 +55,7 @@ static void remote_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 	remote_hidlib = hidlib;
 }
 
-static void remote_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void remote_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	rnd_hid_expose_ctx_t ctx;
 	rnd_design_t *hidlib = remote_hidlib;

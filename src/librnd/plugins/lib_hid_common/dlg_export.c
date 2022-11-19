@@ -36,6 +36,7 @@
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
+	void *appspec;
 
 	int tabs, len;
 
@@ -80,7 +81,7 @@ static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 
 			rnd_render = export_ctx->hid[h];
 			rnd_event(hl, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
-			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
+			export_ctx->hid[h]->do_export(export_ctx->hid[h], hl, results, export_ctx->appspec);
 			rnd_event(hl, RND_EVENT_EXPORT_SESSION_END, NULL);
 			rnd_render = render_save;
 			free(results);

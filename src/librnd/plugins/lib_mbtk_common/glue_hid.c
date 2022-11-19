@@ -535,7 +535,7 @@ static double rnd_mbtk_benchmark(rnd_hid_t *hid)
 	return 0;
 }
 
-static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void rnd_mbtk_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 

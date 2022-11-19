@@ -1574,7 +1574,7 @@ static void ltf_topwin_make_bottom(void)
 	ltf_fullscreen_bottom = messages;
 }
 
-static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void lesstif_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	Dimension width, height;
 

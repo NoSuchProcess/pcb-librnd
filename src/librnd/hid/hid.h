@@ -237,11 +237,14 @@ struct rnd_hid_s {
 	   and persistent. */
 	const rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
 
-	/* Exports (or print) the current design.  The options given represent
-	   the choices made from the options returned from
+	/* Exports (or print) the current design (also passed as an argument so that
+	   pure export plugins don't have to implement set_design). The options given
+	   represent the choices made from the options returned from
 	   get_export_options.  Call with options_ == NULL to start the
-	   primary GUI (create a main window, print, export, etc)  */
-	void (*do_export)(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
+	   primary GUI (create a main window, print, export, etc).
+	   Appspec is application specific custom config (used by app-specific
+	   exporters only)  */
+	void (*do_export)(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec);
 
 	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
 	   value backing memory from this array */

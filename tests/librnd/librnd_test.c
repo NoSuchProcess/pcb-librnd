@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 		exit(n);
 	}
 
-	if (rnd_main_exported(&ga, &CTX.hidlib, 0)) {
+	if (rnd_main_exported(&ga, &CTX.hidlib, 0, NULL)) {
 		fprintf(stderr, "main_exported fail\n");
 		rnd_main_args_uninit(&ga);
 		exit(1);

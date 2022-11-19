@@ -133,7 +133,7 @@ static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *des
 
 /* ----------------------------------------------------------------------------- */
 static int batch_stay;
-static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void batch_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	int interactive;
 	char line[1000];

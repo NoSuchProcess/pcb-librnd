@@ -106,7 +106,7 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 
 
 static void (*rnd_lpr_hid_export_to_file)(FILE *, rnd_hid_attr_val_t *, rnd_xform_t *) = NULL;
-static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void lpr_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	FILE *f;
 	const char *filename;

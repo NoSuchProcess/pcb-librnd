@@ -61,7 +61,7 @@ static const rnd_export_opt_t *nogui_get_export_options(rnd_hid_t *hid, int *n_r
 	return NULL;
 }
 
-static void nogui_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+static void nogui_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	CRASH("do_export");
 }
