@@ -67,7 +67,7 @@
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/buildin.hidlib.h>
+#include <librnd/hid/buildin.hidlib.h>
 #include <librnd/hid/tool.h>
 #include "../../../config.h"
 
