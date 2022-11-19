@@ -56,7 +56,7 @@ fgw_error_t rnd_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 static rnd_action_t anyload_action_list[] = {
-	{"AnyLoad", rnd_act_AnyLoad, rnd_acth_AnyLoad, rnd_acts_AnyLoad},
+	{"AnyLoad", rnd_act_AnyLoad, rnd_acth_AnyLoad, rnd_acts_AnyLoad}
 };
 
 void rnd_anyload_act_init2(void)
