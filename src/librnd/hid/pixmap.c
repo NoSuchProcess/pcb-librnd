@@ -30,8 +30,8 @@
 #include <genht/hash.h>
 #include <string.h>
 
-#include <librnd/core/pixmap.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/pixmap.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/error.h>
 
 static unsigned int pixmap_hash_(const void *key_, int pixels)

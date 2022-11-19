@@ -32,8 +32,8 @@
 #include <ctype.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/core/error.h>
 
 #include "act_dad.h"

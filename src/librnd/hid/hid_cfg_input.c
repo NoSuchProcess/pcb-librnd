@@ -35,7 +35,8 @@
 #include <genvector/gds_char.h>
 
 #include <librnd/rnd_config.h>
-#include <librnd/core/hid_cfg_input.h>
+#include <librnd/hid/hid_cfg_input.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/hid_cfg_action.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/error.h>

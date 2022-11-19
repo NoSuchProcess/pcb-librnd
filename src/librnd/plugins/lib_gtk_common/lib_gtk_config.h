@@ -1,4 +1,4 @@
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/event.h>
 #include <librnd/core/conf_hid.h>
 

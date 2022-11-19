@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 #include <librnd/plugins/lib_gtk2_common/compat.h>
 #include <librnd/plugins/lib_gtk_common/glue_common.h>

@@ -31,9 +31,9 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_nogui.h>
 
 static int hid_dlg_gui_inited = 0;
 

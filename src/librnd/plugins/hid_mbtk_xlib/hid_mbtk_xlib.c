@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 #include <libmbtk/backend.h>
 #include <libmbtk/backend/xlib.h>

@@ -49,6 +49,7 @@
 #include <librnd/core/fptr_cast.h>
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/event.h>
+#include <librnd/core/hidlib_conf.h>
 
 static const char *flcat = "conf";
 
@@ -1090,6 +1091,19 @@ static void conf_field_clear(rnd_conf_native_t *f)
 
 	f->used     = 0;
 	f->rnd_conf_rev = rnd_conf_rev;
+}
+
+static char *get_homedir(void)
+{
+	char *homedir = getenv("HOME");
+	if (homedir == NULL)
+		homedir = getenv("USERPROFILE");
+	return homedir;
+}
+
+void rnd_pcbhl_conf_postproc(void)
+{
+	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
 int rnd_conf_rev = 0;

@@ -42,8 +42,8 @@
 
 #include <puplug/os_dep_fs.h>
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
 #include <librnd/core/event.h>
 
 /* for dlopen() and friends; will also solve all system-dependent includes
@@ -51,9 +51,9 @@
    includes. */
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_dad_unit.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_dad_unit.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/compat_inc.h>
@@ -62,13 +62,13 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf.h>
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/funchash.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/buildin.hidlib.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include "../../../config.h"
 
 static const char *hid_init_cookie = "hidlib";
@@ -88,7 +88,6 @@ const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 rnd_hid_t **rnd_hid_list = 0;
 int rnd_hid_num_hids = 0;
 
-rnd_hid_t *rnd_gui = NULL;
 rnd_hid_t *rnd_render = NULL;
 rnd_hid_t *rnd_exporter = NULL;
 
@@ -496,19 +495,6 @@ const char *rnd_hid_export_fn(const char *filename)
 extern void rnd_hid_dlg_uninit(void);
 extern void rnd_hid_dlg_init(void);
 
-static char *get_homedir(void)
-{
-	char *homedir = getenv("HOME");
-	if (homedir == NULL)
-		homedir = getenv("USERPROFILE");
-	return homedir;
-}
-
-void rnd_pcbhl_conf_postproc(void)
-{
-	rnd_conf_force_set_str(rnd_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
-}
-
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
 {
 	size_t l;
@@ -644,7 +630,6 @@ extern void rnd_hid_nogui_init2(void);
 extern void rnd_conf_act_init2(void);
 extern void rnd_hid_act_init2(void);
 extern void rnd_tool_act_init2(void);
-extern void rnd_gui_act_init2(void);
 extern void rnd_main_act_init2(void);
 extern void rnd_menu_act_init2(void);
 extern void rnd_anyload_init2(void);
@@ -691,7 +676,6 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	rnd_conf_act_init2();
 	rnd_hid_act_init2();
 	rnd_tool_act_init2();
-	rnd_gui_act_init2();
 	rnd_main_act_init2();
 	rnd_menu_act_init2();
 	rnd_conf_init2();

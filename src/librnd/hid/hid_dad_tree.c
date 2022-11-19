@@ -27,7 +27,7 @@
 /* Non-inline utility functions for the DAD tree widget */
 
 #include <librnd/rnd_config.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad_tree.h>
 
 /* recursively free a row list subtree */
 static void rnd_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *list)

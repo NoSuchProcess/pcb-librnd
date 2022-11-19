@@ -31,7 +31,7 @@
 
 #include <genlist/gendlist.h>
 
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 typedef struct {
 	rnd_hid_compound_t cmp;

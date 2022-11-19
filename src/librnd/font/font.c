@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include "config.h"
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/font/font.h>
 #include <librnd/font/xform_mx.h>

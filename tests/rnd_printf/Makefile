@@ -11,7 +11,7 @@ CFLAGS_OP = -O3
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 LDLIBS = -lm
 
-LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-3rd.a
+LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-core.a $(SRC)/librnd-3rd.a
 
 include $(LIBRND)/core/librnd.mak
 LDFLAGS = $(LDFLAGS_LIBRND)

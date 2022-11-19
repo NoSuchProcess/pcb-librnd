@@ -34,16 +34,16 @@
  */
 #include <librnd/rnd_config.h>
 #include <librnd/core/hidlib_conf.h>
-#include <librnd/core/tool.h>
-#include <librnd/core/grid.h>
+#include <librnd/hid/tool.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/error.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/tool.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/tool.h>
+#include <librnd/hid/hid_dad.h>
 
 void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
@@ -340,6 +340,44 @@ static fgw_error_t rnd_act_Redraw(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_LogGui[] =
+	"LogGui(export, [filename, [text|lihata])\n";
+static const char rnd_acth_LogGui[] = "Log() action GUI section";
+static fgw_error_t rnd_act_LogGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int ret;
+	const char *op = "";
+
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LogGui, op = argv[1].val.str);
+
+	if (rnd_strcasecmp(op, "Export") == 0) {
+		const char *fmts[] = { "text", "lihata", NULL };
+		rnd_hid_dad_subdialog_t fmtsub;
+		char *fn;
+		int wfmt;
+
+		memset(&fmtsub, 0, sizeof(fmtsub));
+		RND_DAD_ENUM(fmtsub.dlg, fmts);
+			wfmt = RND_DAD_CURRENT(fmtsub.dlg);
+		fn = rnd_hid_fileselect(rnd_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", 0, &fmtsub);
+		if (fn != NULL) {
+			ret = rnd_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
+			if (ret != 0)
+				rnd_message(RND_MSG_ERROR, "Failed to export log to '%s'\n", fn);
+			free(fn);
+		}
+		else
+			ret = 0;
+	}
+	else {
+		RND_ACT_FAIL(LogGui);
+		ret = -1;
+	}
+
+	RND_ACT_IRES(ret);
+	return 0;
+}
+
 static rnd_action_t rnd_gui_action_list[] = {
 	{"FullScreen", rnd_act_FullScreen, rnd_acth_FullScreen, rnd_acts_FullScreen},
 	{"Cursor", rnd_act_Cursor, rnd_acth_Cursor, rnd_acts_Cursor},
@@ -347,10 +385,11 @@ static rnd_action_t rnd_gui_action_list[] = {
 	{"Grid", rnd_act_grid, rnd_acth_grid, rnd_acts_grid},
 	{"GetXY", rnd_act_GetXY, rnd_acth_GetXY, rnd_acts_GetXY},
 	{"Benchmark", rnd_act_Benchmark, rnd_acth_Benchmark, rnd_acts_Benchmark},
-	{"Redraw", rnd_act_Redraw, rnd_acth_Redraw, rnd_acts_Redraw}
+	{"Redraw", rnd_act_Redraw, rnd_acth_Redraw, rnd_acts_Redraw},
+	{"LogGui", rnd_act_LogGui, rnd_acth_LogGui, rnd_acts_LogGui}
 };
 
-void rnd_gui_act_init2(void)
+void rnd_gui_act_init(void)
 {
 	RND_REGISTER_ACTIONS(rnd_gui_action_list, NULL);
 }

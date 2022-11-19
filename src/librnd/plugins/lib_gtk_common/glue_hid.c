@@ -6,9 +6,10 @@
 #include "rnd_gtk.h"
 #include <librnd/core/actions.h>
 #include "glue_hid.h"
-#include <librnd/core/hid_nogui.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/hid_menu.h>
+#include <librnd/hid/hid_nogui.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/pixmap.h>
 #include "coord_conv.h"
 
 #include "in_keyboard.h"

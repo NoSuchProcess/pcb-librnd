@@ -17,9 +17,9 @@
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
 
 #include "media.h"
 #include "draw_ps.h"

@@ -6,7 +6,7 @@
 #include <gtk/gtk.h>
 
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 #include "rnd_gtk.h"
 #include "bu_command.h"

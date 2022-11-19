@@ -28,8 +28,8 @@
  */
 
 #include <ctype.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include "live_script.h"
 
 /*** dialog box ***/

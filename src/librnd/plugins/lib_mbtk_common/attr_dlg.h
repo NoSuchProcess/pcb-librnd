@@ -1,4 +1,4 @@
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/hidlib.h>
 #include <librnd/core/rnd_bool.h>
 

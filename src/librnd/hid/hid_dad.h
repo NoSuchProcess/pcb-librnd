@@ -30,7 +30,7 @@
 #include <stddef.h>
 #include <assert.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/global_typedefs.h>
@@ -148,7 +148,7 @@ typedef struct {
 	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and RND_HATT_END_COMPOUND widget */
 } rnd_hid_compound_t;
 
-#include <librnd/core/hid_dad_spin.h>
+#include <librnd/hid/hid_dad_spin.h>
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define RND_DAD_DECL(table) \

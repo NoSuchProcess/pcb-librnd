@@ -8,7 +8,7 @@ LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 HELPER_OBJS=conf_core.o
 LIBRND_OBJS= \
  $(ROOT)/src/librnd/plugins/diag_rnd/diag_rnd.o \
- $(ROOT)/src/librnd-hid.a $(ROOT)/src/librnd-3rd.a
+ $(ROOT)/src/librnd-hid.a $(ROOT)/src/librnd-core.a $(ROOT)/src/librnd-3rd.a
 
 DEPH = \
 	$(ROOT)/src/librnd/core/conf.h \

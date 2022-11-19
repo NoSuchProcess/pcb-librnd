@@ -26,7 +26,7 @@
 
 /* Preferences dialog, menu tab */
 
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 

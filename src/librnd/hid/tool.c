@@ -28,11 +28,11 @@
 
 #include <librnd/rnd_config.h>
 
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 

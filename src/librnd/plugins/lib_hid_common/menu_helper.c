@@ -36,6 +36,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "menu_helper.h"
 

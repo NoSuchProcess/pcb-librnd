@@ -4,7 +4,7 @@ append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/librnd/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/librnd/OBJS_3RDLIB {}
-put /local/librnd/OBJS_HIDLIB {}
+put /local/librnd/OBJS_CORELIB {}
 put /local/librnd/OBJS_C99_HIDLIB_PLG {}
 put /local/librnd/OBJS_HIDLIB_PLG {}
 
@@ -84,14 +84,13 @@ include {librnd/scconfig/template/debug.tmpasm}
 # These have constructs that are not c89 strictly speaking but are
 # effectively c89; typical example is casting a function pointer to a
 # data pointer for dlsym().
-put /local/librnd/OBJS_C99_HIDLIB [@
+put /local/librnd/OBJS_C99_CORELIB [@
 	$(LIBRND)/core/fptr_cast.o
 @]
 
-append /local/librnd/OBJS_HIDLIB [@
+append /local/librnd/OBJS_CORELIB [@
 	$(LIBRND)/core/actions.o
 	$(LIBRND)/core/anyload.o
-	$(LIBRND)/core/anyload_act.o
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
 	$(LIBRND)/core/box_isc.o
@@ -106,22 +105,9 @@ append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/event.o
 	$(LIBRND)/core/file_loaded.o
 	$(LIBRND)/core/funchash.o
-	$(LIBRND)/core/grid.o
 	$(LIBRND)/core/heap.o
-	$(LIBRND)/core/hid.o
-	$(LIBRND)/core/hid_act.o
-	$(LIBRND)/core/hid_attrib.o
 	$(LIBRND)/core/hid_cfg.o
 	$(LIBRND)/core/hid_cfg_action.o
-	$(LIBRND)/core/hid_cfg_input.o
-	$(LIBRND)/core/hid_dlg.o
-	$(LIBRND)/core/hid_dad.o
-	$(LIBRND)/core/hid_dad_tree.o
-	$(LIBRND)/core/hid_dad_spin.o
-	$(LIBRND)/core/hid_dad_unit.o
-	$(LIBRND)/core/hid_init.o
-	$(LIBRND)/core/hid_menu.o
-	$(LIBRND)/core/hid_nogui.o
 	$(LIBRND)/core/hidlib.o
 	$(LIBRND)/core/hidlib_conf.o
 	$(LIBRND)/core/list_conf.o
@@ -131,12 +117,9 @@ append /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/core/rnd_bool.o
 	$(LIBRND)/core/rnd_printf.o
 	$(LIBRND)/core/plugins.o
-	$(LIBRND)/core/pixmap.o
 	$(LIBRND)/core/safe_fs.o
-	$(LIBRND)/core/tool.o
 	$(LIBRND)/core/unit.o
 	$(LIBRND)/core/vtc0.o
-	buildin.hidlib.o
 @]
 
 put /local/librnd/OBJS_POLYLIB [@
@@ -151,6 +134,26 @@ put /local/librnd/OBJS_FONTLIB [@
 	$(LIBRND)/font/font.o
 	$(LIBRND)/font/vtgla.o
 	$(LIBRND)/font/xform_mx.o
+@]
+
+put /local/librnd/OBJS_HIDLIB [@
+	$(LIBRND)/hid/anyload_act.o
+	$(LIBRND)/hid/grid.o
+	$(LIBRND)/hid/hid.o
+	$(LIBRND)/hid/hid_act.o
+	$(LIBRND)/hid/hid_attrib.o
+	$(LIBRND)/hid/hid_cfg_input.o
+	$(LIBRND)/hid/hid_dlg.o
+	$(LIBRND)/hid/hid_dad.o
+	$(LIBRND)/hid/hid_dad_tree.o
+	$(LIBRND)/hid/hid_dad_spin.o
+	$(LIBRND)/hid/hid_dad_unit.o
+	$(LIBRND)/hid/hid_init.o
+	$(LIBRND)/hid/hid_menu.o
+	$(LIBRND)/hid/hid_nogui.o
+	$(LIBRND)/hid/pixmap.o
+	$(LIBRND)/hid/tool.o
+	buildin.hidlib.o
 @]
 
 append /local/librnd/OBJS_3RDLIB [@
@@ -200,11 +203,12 @@ append /local/librnd/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
 @]
 
-put /local/librnd/OBJS_C99 /local/librnd/OBJS_C99_HIDLIB
-put /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
+put /local/librnd/OBJS_C99 /local/librnd/OBJS_C99_CORELIB
+put /local/librnd/OBJS /local/librnd/OBJS_CORELIB
 append /local/librnd/OBJS /local/librnd/OBJS_3RDLIB
 append /local/librnd/OBJS /local/librnd/OBJS_POLYLIB
 append /local/librnd/OBJS /local/librnd/OBJS_FONTLIB
+append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 
 
 #---- modules ----#
@@ -252,8 +256,9 @@ uniq /local/librnd/OBJS_3RDLIB
 uniq /local/librnd/OBJS_3RDLIB_NOAUTO
 uniq /local/librnd/OBJS_POLYLIB
 uniq /local/librnd/OBJS_FONTLIB
+uniq /local/librnd/OBJS_CORELIB
 uniq /local/librnd/OBJS_HIDLIB
-uniq /local/librnd/OBJS_C99_HIDLIB
+uniq /local/librnd/OBJS_C99_CORELIB
 uniq /local/librnd/OBJS_HIDLIB_PLG
 uniq /local/librnd/OBJS_C99_HIDLIB_PLG
 uniq /local/librnd/OBJS_UTIL
@@ -271,6 +276,7 @@ append /local/librnd/SRCS ?/local/librnd/OBJS_C99
 append /local/librnd/SRCS ?/local/librnd/OBJS_3RDLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_POLYLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_FONTLIB
+append /local/librnd/SRCS ?/local/librnd/OBJS_CORELIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_HIDLIB
 gsub /local/librnd/SRCS {.o } {.c }
 
@@ -318,8 +324,9 @@ OBJS_C99=@/local/librnd/OBJS_C99@
 OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
 OBJS_FONTLIB=@/local/librnd/OBJS_FONTLIB@
 OBJS_3RDLIB=@/local/librnd/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
+OBJS_CORELIB=@/local/librnd/OBJS_CORELIB@
 OBJS_HIDLIB=@/local/librnd/OBJS_HIDLIB@
-OBJS_C99_HIDLIB=@/local/librnd/OBJS_C99_HIDLIB@
+OBJS_C99_CORELIB=@/local/librnd/OBJS_C99_CORELIB@
 OBJS_HIDLIB_PLG=@/local/librnd/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/librnd/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/librnd/OBJS_UTIL@
@@ -358,15 +365,16 @@ revcheck:
 
 all_exe: $(SPHASH) test-rnd$(EXE) @/local/librnd/all@
 
-test-rnd.o: $(LIBRND)/core/buildin.hidlib.h
+test-rnd.o: $(LIBRND)/hid/buildin.hidlib.h
 
 test-rnd$(EXE): $(OBJS) test-rnd.o $(OBJS_C99) $(LIBS_3RD)
 	$(CC) test-rnd.o $(OBJS) $(OBJS_C99) -o test-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
 
 ### librnd, hidlib ####
 
-OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_C99_HIDLIB)
-DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
+OBJS_CORELIB_ALL = $(OBJS_CORELIB) $(OBJS_C99_CORELIB)
+DEPS_CORELIB_ALL = $(OBJS_CORELIB_ALL) $(LIBS_3RD) $(LIBRND)/hid/buildin.hidlib.h
+OBJS_HIDLIB_ALL = $(OBJS_HIDLIB) $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG)
 @]
 
 switch cc/soname
@@ -378,19 +386,20 @@ SONAME_FONT=
 @]
 	end;
 	default print [@
-SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
+SONAME_CORE=@cc/soname@librnd-core.so.$(PCB_RND_VER_MAJOR)
 SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
 SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT=@cc/soname@librnd-font.so.$(PCB_RND_VER_MAJOR)
+SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
 @]
 	end;
 end
 
 print [@
 
-librnd-hid.a: $(DEPS_HIDLIB_ALL)
-	$(ARU) $(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
-	$(RANLIB) librnd-hid.a
+librnd-core.a: $(DEPS_CORELIB_ALL)
+	$(ARU) $(AR) rvu librnd-core.a $(OBJS_CORELIB_ALL)
+	$(RANLIB) librnd-core.a
 
 librnd-3rd.a: $(OBJS_3RDLIB)
 	$(ARU) $(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
@@ -404,11 +413,15 @@ librnd-font.a: $(OBJS_FONTLIB)
 	$(ARU) $(AR) rvu librnd-font.a $(OBJS_FONTLIB)
 	$(RANLIB) librnd-font.a
 
+librnd-hid.a: $(OBJS_HIDLIB_ALL)
+	$(ARU) $(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
+	$(RANLIB) librnd-hid.a
+
 # Note: .so depends on .a because $(ARU) renames some object files temporarily
 # so building the .so and the .a shouldn't be done in parallel
 
-librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL) librnd-hid.a
-	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS)
+librnd-core.so.$(PCB_RND_VER): $(DEPS_CORELIB_ALL) librnd-core.a
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_CORE) -o librnd-core.so.$(PCB_RND_VER) $(OBJS_CORELIB_ALL) $(LDFLAGS)
 
 librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB) librnd-3rd.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) $(LDFLAGS) @/local/librnd/LIBRND_3RD_LDFLAGS@ @?libs/ldl@ -lm
@@ -419,13 +432,16 @@ librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB) librnd-poly.a
 librnd-font.so.$(PCB_RND_VER): $(OBJS_FONTLIB) librnd-font.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_FONT) -o librnd-font.so.$(PCB_RND_VER) $(OBJS_FONTLIB) $(LDFLAGS) -lm
 
+librnd-hid.so.$(PCB_RND_VER): $(OBJS_HIDLIB_ALL) librnd-hid.a
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS) -lm
+
 
 # these are required in case librnd is used from source checkout in dynamic
 # lib mode
 
-librnd-hid.so: librnd-hid.so.$(PCB_RND_VER)
-	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so
-	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so.$(PCB_RND_VER_MAJOR)
+librnd-core.so: librnd-core.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-core.so.$(PCB_RND_VER) librnd-core.so
+	$(SCCBOX) ln -f librnd-core.so.$(PCB_RND_VER) librnd-core.so.$(PCB_RND_VER_MAJOR)
 
 librnd-3rd.so: librnd-3rd.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.so
@@ -439,6 +455,10 @@ librnd-font.so: librnd-font.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so.$(PCB_RND_VER_MAJOR)
 
+librnd-hid.so: librnd-hid.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so
+	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so.$(PCB_RND_VER_MAJOR)
+
 @]
 
 
@@ -451,25 +471,28 @@ HIDLIB_CLEAN_FILES_SO=
 else
 	print [@
 HIDLIB_CLEAN_FILES_SO=\
-	librnd-hid.so.$(PCB_RND_VER) \
+	librnd-core.so.$(PCB_RND_VER) \
 	librnd-3rd.so.$(PCB_RND_VER) \
 	librnd-poly.so.$(PCB_RND_VER) \
-	librnd-font.so.$(PCB_RND_VER)
+	librnd-font.so.$(PCB_RND_VER) \
+	librnd-hid.so.$(PCB_RND_VER)
 
 HIDLIB_CLEAN_FILES_SO_SY=\
-	librnd-hid.so \
+	librnd-core.so \
 	librnd-3rd.so \
 	librnd-poly.so \
-	librnd-font.so
+	librnd-font.so \
+	librnd-hid.so
 @]
 end
 
 print [@
 HIDLIB_CLEAN_FILES_A=\
-	librnd-hid.a \
+	librnd-core.a \
 	librnd-3rd.a \
 	librnd-poly.a \
-	librnd-font.a
+	librnd-font.a \
+	librnd-hid.a
 
 HIDLIB_CLEAN_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
 
@@ -494,8 +517,8 @@ buildin.h: $(LIBRND_PLUGDIR)/.builtin.pups $(PUPLUG)
 buildin.hidlib.c: $(LIBRND_PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	cd $(LIBRND_PLUGDIR) && ../../$(PUPLUG) buildin.c "-" < .builtin.hidlib.pups > ../../buildin.hidlib.c
 
-$(LIBRND)/core/buildin.hidlib.h: $(LIBRND_PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
-	$(PUPLUG) buildin.h > $(LIBRND)/core/buildin.hidlib.h
+$(LIBRND)/hid/buildin.hidlib.h: $(LIBRND_PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
+	$(PUPLUG) buildin.h > $(LIBRND)/hid/buildin.hidlib.h
 
 @]
 
@@ -531,7 +554,7 @@ $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h
 
 FORCE:
 
-DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak $(LIBRND)/plugin.state @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak $(LIBRND)/plugin.state @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(CLEANFILES)
@@ -543,11 +566,12 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd4
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/font" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
-	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
+	$(SCCBOX) $(HOW) "librnd-core.a" "$(HL_LIBDIR)/librnd-core.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "librnd-font.a" "$(HL_LIBDIR)/librnd-font.a"
+	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "$(LIBRND)/plugin.state" "$(HL_SHAREDIR)/plugin.state"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
@@ -567,7 +591,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
 	$(SCCBOX) $(HOW) "librnd/scconfig/rnd_hook_detect.h" "$(HL_INCDIR)/scconfig/rnd_hook_detect.h"
 	$(SCCBOX) $(HOW) "librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
-	$(SCCBOX) $(HOW) "$(LIBRND)/core/buildin.hidlib.h" "$(HL_INCDIR)/core/buildin.hidlib.h"
+	$(SCCBOX) $(HOW) "$(LIBRND)/hid/buildin.hidlib.h" "$(HL_INCDIR)/hid/buildin.hidlib.h"
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd4/plugins/map_plugins.sh"
 	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"@/local/pcb/rules/install_@@]
 
@@ -577,47 +601,48 @@ then
 @]
 else
 	print [@
-	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-core.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-core.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
 @]
 end
 
 # rndlib: build a list of header files to be installed with the hidlib
 put /local/librnd/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
-put /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_HIDLIB
-append /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_POLYLIB
-append /local/librnd/HDRS_HIDLIB /local/librnd/OBJS_FONTLIB
+put /local/librnd/HDRS_CORELIB /local/librnd/OBJS_CORELIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYLIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONTLIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_HIDLIB
 uniq /local/librnd/HDRS_3RDLIB
-uniq /local/librnd/HDRS_HIDLIB
-gsub /local/librnd/HDRS_HIDLIB {.o } {.h }
+uniq /local/librnd/HDRS_CORELIB
+gsub /local/librnd/HDRS_CORELIB {.o } {.h }
 gsub /local/librnd/HDRS_3RDLIB {.o } {.h }
 append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_GENHT
 
 # rndlib: corner case: some headers are not derived from the objects
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_dlg.h } {}
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/conf_act.h } {}
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/anyload_act.h } {}
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/hid_act.h } {}
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/gui_act.h } {}
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/main_act.h } {}
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/font/font_lht.h $(LIBRND)/font/glyph.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/dlg_pref.h $(LIBRND)/plugins/lib_hid_common/zoompan.h $(LIBRND)/plugins/lib_hid_common/dlg_export.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_eps.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_ps.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/draw_svg.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/media.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_act.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/main_act.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/anyload_act.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_act.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_dlg.h } {}
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/hid/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/font/font_lht.h $(LIBRND)/font/glyph.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/dlg_pref.h $(LIBRND)/plugins/lib_hid_common/zoompan.h $(LIBRND)/plugins/lib_hid_common/dlg_export.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_wget/lib_wget.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/draw_eps.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/draw_ps.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/draw_svg.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/media.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
 
 # TODO: remove this in 4.0.0
-append /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/conf_multi_temp.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_multi_temp.h }
 
 # extra core headers to install
-append /local/librnd/HDRS_HIDLIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
+append /local/librnd/HDRS_CORELIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }
 
 gsub /local/librnd/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
 gsub /local/librnd/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
@@ -631,11 +656,11 @@ append /local/librnd/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 append /local/librnd/HDRS_3RDLIB {../src_3rd/genregex/regex_templ.h }
 append /local/librnd/HDRS_3RDLIB {../src_3rd/genlist/ }
 
-sub /local/librnd/HDRS_HIDLIB {$(LIBRND)/core/buildin.hidlib.h } {}
-sub /local/librnd/HDRS_HIDLIB {buildin.hidlib.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/buildin.hidlib.h } {}
+sub /local/librnd/HDRS_CORELIB {buildin.hidlib.h } {}
 
 # dynamic part of install_pcbrnd: hidlib headers
-foreach /local/h in /local/librnd/HDRS_HIDLIB
+foreach /local/h in /local/librnd/HDRS_CORELIB
 	put /local/hd /local/h
 	switch /local/h
 		case {^$(LIBRND)/}
@@ -679,14 +704,16 @@ install_librnd_sy:
 else
 print [@
 install_librnd_sy:
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-core.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-core.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-core.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-core.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so"
 
 @]
 end

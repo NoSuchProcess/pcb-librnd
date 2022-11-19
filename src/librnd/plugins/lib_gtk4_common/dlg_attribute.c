@@ -2,7 +2,7 @@
 
 #define DLG_INCLUDES "librnd/plugins/lib_gtk4_common/dlg_includes.c"
 
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include "gtkc_trunc_label.h"
 
 static inline GtkWidget *gtkc_dad_label_new(rnd_hid_attribute_t *attr)

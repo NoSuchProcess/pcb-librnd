@@ -38,8 +38,8 @@
 #include <librnd/core/event.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 

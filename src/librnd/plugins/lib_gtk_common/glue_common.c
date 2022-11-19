@@ -28,7 +28,7 @@
  */
 
 #include "config.h"
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 
 #include "glue_common.h"
 
@@ -48,7 +48,7 @@ rnd_gtk_t _ghidgui, *ghidgui = &_ghidgui;
 
 #ifdef __WIN32__
 
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/compat_fs.h>
 
 static void rnd_gtkg_win32_init(void)

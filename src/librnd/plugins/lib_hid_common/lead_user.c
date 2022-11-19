@@ -30,7 +30,7 @@
 
 #include <librnd/core/unit.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 #define LEAD_ARROW_LEN    RND_MM_TO_COORD(3)
 #define LEAD_CENTER_RAD   RND_MM_TO_COORD(0.5)

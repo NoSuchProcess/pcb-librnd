@@ -565,7 +565,7 @@ typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. It is used for on-screen GUI calls, such as dialog boxes */
-extern rnd_hid_t *rnd_gui;
+/*extern rnd_hid_t *rnd_gui; - declared in core/error.h */
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. Normally

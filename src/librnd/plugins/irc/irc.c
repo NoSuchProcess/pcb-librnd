@@ -27,10 +27,10 @@
 #include <librnd/rnd_config.h>
 #include "config.h"
 #include <ctype.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hidlib.h>

@@ -41,9 +41,9 @@ TODO("^ replace this with librnd config.h, but that needs RND_HAVE_GDIMAGE* ther
 #include <librnd/core/color_cache.h>
 #include <librnd/core/error.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 
 #include <gd.h>
 

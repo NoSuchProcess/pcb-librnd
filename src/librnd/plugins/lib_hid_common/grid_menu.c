@@ -28,11 +28,11 @@
 
 #include <librnd/core/conf.h>
 #include <librnd/core/hidlib_conf.h>
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_menu.h>
 
 #include "grid_menu.h"
 

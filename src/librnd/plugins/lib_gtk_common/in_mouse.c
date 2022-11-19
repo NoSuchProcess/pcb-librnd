@@ -39,7 +39,7 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/color.h>
 
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 #define GVT_DONT_UNDEF
 #include "in_mouse.h"

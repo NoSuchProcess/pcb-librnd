@@ -32,7 +32,7 @@
 #include <stdio.h>
 
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 static int perma_load(rnd_hidlib_t *hl, const char *dir, const char *id, const char *path_in, const char *lang)
 {

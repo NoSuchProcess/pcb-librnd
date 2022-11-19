@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <librnd/config.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/hidlib_conf.h>

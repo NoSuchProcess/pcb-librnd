@@ -2,7 +2,7 @@
 #define RND_HID_ATTRIB_H
 
 #include <genlist/gendlist.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/color.h>
 
 /* Used for HID attributes (exporting and printing, mostly).

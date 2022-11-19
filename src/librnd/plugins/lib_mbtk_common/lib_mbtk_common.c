@@ -27,7 +27,7 @@
 #include "config.h"
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 
 int pplg_check_ver_lib_mbtk_common(int ver_needed) { return 0; }

@@ -37,7 +37,7 @@
 
 #include <gtk/gtk.h>
 #include <genlist/gendlist.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "ui_zoompan.h"
 #include "rnd_gtk.h"
 

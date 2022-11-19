@@ -37,17 +37,17 @@
 #include <liblihata/tree.h>
 
 #include <librnd/rnd_config.h>
-#include "anyload.h"
-#include "hidlib.h"
-#include "actions.h"
-#include "file_loaded.h"
-#include "hidlib_conf.h"
-#include "paths.h"
-#include "funchash_core.h"
-#include "compat_misc.h"
-#include "event.h"
-#include "conf_hid.h"
-#include "safe_fs.h"
+#include <librnd/core/anyload.h>
+#include <librnd/core/hidlib.h>
+#include <librnd/core/actions.h>
+#include <librnd/core/file_loaded.h>
+#include <librnd/core/hidlib_conf.h>
+#include <librnd/core/paths.h>
+#include <librnd/core/funchash_core.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/event.h>
+#include <librnd/core/conf_hid.h>
+#include <librnd/core/safe_fs.h>
 
 #include "hid_menu.h"
 

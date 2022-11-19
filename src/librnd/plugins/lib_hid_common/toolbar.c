@@ -32,10 +32,11 @@
 #include <genvector/vti0.h>
 #include <liblihata/tree.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/tool.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/actions.h>

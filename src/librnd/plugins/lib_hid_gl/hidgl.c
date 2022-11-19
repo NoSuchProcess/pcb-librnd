@@ -35,8 +35,8 @@
 #include <math.h>
 #include <assert.h>
 
-#include <librnd/core/grid.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/grid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/core/hidlib.h>
 

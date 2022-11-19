@@ -27,7 +27,7 @@
 /* widget-type-independent DAD functions */
 
 #include <librnd/rnd_config.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 int rnd_dock_is_vert[RND_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if rnd_hid_dock_t changes */
 int rnd_dock_has_frame[RND_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if rnd_hid_dock_t changes */

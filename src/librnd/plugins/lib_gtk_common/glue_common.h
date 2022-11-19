@@ -1,7 +1,7 @@
 #ifndef RND_GTK_GLUE_COMMON_H
 #define RND_GTK_GLUE_COMMON_H
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "rnd_gtk.h"
 
 #include <librnd/plugins/lib_gtk_common/dlg_topwin.h>

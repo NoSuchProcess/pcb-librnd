@@ -29,7 +29,7 @@
 #define RND_GTK_H
 
 #include <librnd/config.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/conf.h>
 
 typedef struct rnd_gtk_port_s  rnd_gtk_port_t;

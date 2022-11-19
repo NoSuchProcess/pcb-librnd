@@ -30,7 +30,7 @@
 
 #include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/hidlib.h>
 #include "xpm.h"
 #include "dlg_comm_m.h"

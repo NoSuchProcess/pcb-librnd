@@ -30,11 +30,8 @@
 #include <librnd/core/error.h>
 #include <librnd/core/color.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/hid.h>
 
 #include <librnd/core/hidlib_conf.h>
-
-#define RND_MAX_GRID         RND_MIL_TO_COORD(1000)
 
 rnd_conf_t rnd_conf;
 
@@ -49,23 +46,3 @@ int rnd_hidlib_conf_init()
 	return cnt;
 }
 
-/* sets cursor grid with respect to grid offset values */
-void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy)
-{
-	if (Grid >= 1 && Grid <= RND_MAX_GRID) {
-		if (align) {
-			hidlib->grid_ox = ox % Grid;
-			hidlib->grid_oy = oy % Grid;
-		}
-		hidlib->grid = Grid;
-		rnd_conf_set_design("editor/grid", "%$mS", Grid);
-		if (rnd_conf.editor.draw_grid)
-			rnd_gui->invalidate_all(rnd_gui);
-	}
-}
-
-void rnd_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit)
-{
-	if (new_unit != NULL && new_unit->allow != RND_UNIT_NO_PRINT)
-		rnd_conf_set(RND_CFR_DESIGN, "editor/grid_unit", -1, new_unit->suffix, RND_POL_OVERWRITE);
-}

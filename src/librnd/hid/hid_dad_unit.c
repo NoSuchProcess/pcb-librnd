@@ -28,9 +28,9 @@
 
 #include <librnd/rnd_config.h>
 
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_unit.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_unit.h>
 #include <librnd/core/unit.h>
 
 void rnd_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

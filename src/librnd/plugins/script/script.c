@@ -43,10 +43,10 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/rnd_printf.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/event.h>
 #include <librnd/core/globalconst.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 
 #include "script.h"
 #include "guess_lang.c"

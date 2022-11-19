@@ -32,7 +32,6 @@
 #include <liblihata/dom.h>
 #include <stdarg.h>
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/hid.h>
 
 #define RND_M_Mod0(n)  (1u<<(n))
 typedef enum {
@@ -89,9 +88,5 @@ int rnd_hid_cfg_dfs(lht_node_t *parent, int (*cb)(void *ctx, lht_node_t *n), voi
 
 /* Report an error about a node */
 void rnd_hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
-
-
-/* for backward compatibility: */
-#include "hid_menu.h"
 
 #endif

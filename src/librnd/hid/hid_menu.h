@@ -1,6 +1,7 @@
 #ifndef RND_HID_MENU_H
 #define RND_HID_MENU_H
 
+#include <librnd/hid/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <genvector/vtp0.h>
 

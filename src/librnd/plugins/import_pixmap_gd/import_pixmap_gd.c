@@ -34,7 +34,7 @@
 #include <gd.h>
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/safe_fs.h>
 
 static const char *import_pixmap_gd_cookie = "import_pixmap_gd";

@@ -31,8 +31,8 @@
 
 /* librnd headers */
 #include <librnd/core/unit.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/buildin.hidlib.h>
 #include <librnd/core/compat_misc.h>
@@ -62,7 +62,7 @@ struct {
 } foobar;
 
 /*** crosshair ***/
-#include <librnd/core/hid_inlines.h>
+#include <librnd/hid/hid_inlines.h>
 #include <librnd/core/hidlib_conf.h>
 rnd_hid_gc_t foobar_crosshair_gc;
 void foobar_crosshair_gui_init(void)

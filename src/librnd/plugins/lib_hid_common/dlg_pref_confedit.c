@@ -26,7 +26,7 @@
 
 /* Preferences dialog, conf tree tab -> edit conf node (input side) popup */
 
-#include <librnd/core/hid_dad_unit.h>
+#include <librnd/hid/hid_dad_unit.h>
 
 #define is_read_only(ctx)   rnd_conf_is_read_only(ctx->role)
 

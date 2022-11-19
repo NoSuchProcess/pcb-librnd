@@ -1,7 +1,7 @@
 #ifndef RND_HID_LOGGER_H
 #define RND_HID_LOGGER_H
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 #include <stdio.h>
 

@@ -230,27 +230,8 @@ static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char rnd_acts_setunits[] = "SetUnits(mm|mil)";
-static const char rnd_acth_setunits[] = "Set the default measurement units.";
-/* DOC: setunits.html */
-static fgw_error_t rnd_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	const rnd_unit_t *new_unit;
-	const char *name;
-
-	RND_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
-	RND_ACT_IRES(0);
-
-	new_unit = rnd_get_unit_struct(name);
-	rnd_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
-
-	return 0;
-}
-
-
 static rnd_action_t rnd_conf_action_list[] = {
-	{"conf", rnd_act_Conf, rnd_acth_Conf, rnd_acts_Conf},
-	{"SetUnits", rnd_act_SetUnits, rnd_acth_setunits, rnd_acts_setunits}
+	{"conf", rnd_act_Conf, rnd_acth_Conf, rnd_acts_Conf}
 };
 
 void rnd_conf_act_init2(void)

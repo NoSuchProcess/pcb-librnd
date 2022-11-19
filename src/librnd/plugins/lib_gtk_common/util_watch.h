@@ -1,4 +1,4 @@
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "rnd_gtk.h"
 
 rnd_hidval_t rnd_gtk_watch_file(rnd_gtk_t *gctx, int fd, unsigned int condition,

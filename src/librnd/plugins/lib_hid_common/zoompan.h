@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 /* Return error from an action if there's no GUI, or set result to 0
    if there's GUI */

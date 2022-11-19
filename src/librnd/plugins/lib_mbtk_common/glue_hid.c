@@ -34,11 +34,11 @@
 #include "attr_dlg.h"
 
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_nogui.h>
-#include <librnd/core/hid_menu.h>
-#include <librnd/core/hid_cfg_input.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/hid_nogui.h>
+#include <librnd/hid/hid_menu.h>
+#include <librnd/hid/hid_cfg_input.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hidlib_conf.h>
 

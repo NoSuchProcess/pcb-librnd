@@ -37,6 +37,10 @@
    disabled in non-debug compilation */
 void rnd_trace(const char *Format, ...);
 
+/* This is initially set to a "no-gui" GUI, and later reset by
+   main. It is used for on-screen GUI calls, such as dialog boxes */
+extern rnd_hid_t *rnd_gui;
+
 typedef enum rnd_message_level_s {
 	RND_MSG_DEBUG = 0,   /* Debug message. Should probably not be shown in regular operation. */
 	RND_MSG_INFO,        /* Info message. FYI for the user, no action needed. */

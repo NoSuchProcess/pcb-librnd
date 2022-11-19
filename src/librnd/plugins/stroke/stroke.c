@@ -36,7 +36,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 
 #include <librnd/plugins/stroke/conf_internal.c>
 #include "stroke_conf.h"

@@ -29,8 +29,8 @@
 #ifndef RND_HID_DAD_TREE_H
 #define RND_HID_DAD_TREE_H
 
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_dad.h>
 #include <assert.h>
 #include <genvector/gds_char.h>
 #include <genht/hash.h>

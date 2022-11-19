@@ -34,7 +34,7 @@
 #include <ctype.h>
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>

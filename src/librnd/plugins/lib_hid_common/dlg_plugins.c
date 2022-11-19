@@ -25,9 +25,10 @@
  */
 
 #include <librnd/rnd_config.h>
+#include <genvector/vtp0.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/core/plugins.h>
 
 #include "dlg_plugins.h"

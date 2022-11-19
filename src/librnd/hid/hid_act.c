@@ -30,8 +30,8 @@
 #include <librnd/core/funchash_core.h>
 #include <librnd/core/error.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/grid.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/grid.h>
+#include <librnd/hid/tool.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>
 
@@ -167,12 +167,30 @@ static fgw_error_t rnd_act_SetGridOffs(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char rnd_acts_setunits[] = "SetUnits(mm|mil)";
+static const char rnd_acth_setunits[] = "Set the default measurement units.";
+/* DOC: setunits.html */
+static fgw_error_t rnd_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const rnd_unit_t *new_unit;
+	const char *name;
+
+	RND_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
+	RND_ACT_IRES(0);
+
+	new_unit = rnd_get_unit_struct(name);
+	rnd_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
+
+	return 0;
+}
+
 static rnd_action_t rnd_hid_action_list[] = {
 	{"ChkMode", rnd_act_ChkMode, rnd_acth_ChkMode, rnd_acts_ChkMode},
 	{"ChkGridSize", rnd_act_ChkGridSize, rnd_acth_ChkGridSize, rnd_acts_ChkGridSize},
 	{"ChkGridUnits", rnd_act_ChkGridUnits, rnd_acth_ChkGridUnits, rnd_acts_ChkGridUnits},
 	{"SetGrid", rnd_act_SetGrid, rnd_acth_SetGrid, rnd_acts_SetGrid},
 	{"SetGridOffs", rnd_act_SetGridOffs, rnd_acth_SetGridOffs, rnd_acts_SetGridOffs},
+	{"SetUnits", rnd_act_SetUnits, rnd_acth_setunits, rnd_acts_setunits}
 };
 
 void rnd_hid_act_init2(void)

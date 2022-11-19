@@ -15,11 +15,11 @@
 #include <librnd/core/event.h>
 #include <librnd/core/rnd_printf.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include "lesstif.h"
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include "ltf_stdarg.h"
 #include <librnd/core/misc_util.h>
 #include "dialogs.h"

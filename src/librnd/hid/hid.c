@@ -28,8 +28,8 @@
  */
 
 #include <librnd/rnd_config.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/event.h>
 
 int rnd_hid_enable_per_dialog_hidlib = 0;

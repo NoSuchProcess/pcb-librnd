@@ -30,7 +30,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid_menu.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/actions.h>
 #include "grid_menu.h"
 #include "cli_history.h"
@@ -134,6 +134,8 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_dlg_log_uninit();
 }
 
+extern void rnd_gui_act_init(void);
+
 int pplg_init_lib_hid_common(void)
 {
 	static rnd_conf_hid_callbacks_t ccb, ccbu;
@@ -174,6 +176,8 @@ int pplg_init_lib_hid_common(void)
 		rnd_conf_hid_set_cb(nat, conf_id, &ccbu);
 
 	rnd_hid_fileselect_imp = rnd_dlg_fileselect;
+
+	rnd_gui_act_init();
 
 	return 0;
 }

@@ -13,10 +13,10 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
 
 #include "lpr_hid.h"
 

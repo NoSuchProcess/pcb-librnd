@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <puplug/puplug.h>
 #include <genvector/vtp0.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 
 #define RND_ACTION_ARGS_WIDTH 5
 
@@ -188,8 +188,6 @@ extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf lo
 	}
 
 extern int rnd_coord_t_size;
-
-void rnd_pcbhl_conf_postproc(void);
 
 /* Search all GUI plugins (even if they are not loaded) and call cb()
    on them. If cb returns non-zero, cancel the search. */

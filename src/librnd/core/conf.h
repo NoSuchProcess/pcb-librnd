@@ -460,4 +460,7 @@ int rnd_conf_resolve(rnd_conf_resolve_t *res);
 int rnd_conf_resolve_all(rnd_conf_resolve_t *res);
 
 
+/*** misc ***/
+void rnd_pcbhl_conf_postproc(void);
+
 #endif

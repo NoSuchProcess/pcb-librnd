@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/pixmap.h>
 #include <librnd/core/globalconst.h>
 
 #include <librnd/plugins/lib_gtk2_common/compat.h>

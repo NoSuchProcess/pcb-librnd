@@ -5,17 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hidlib_conf.h>
 
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid_nogui.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_attrib.h>
 
 static const char *batch_cookie = "batch HID";
 

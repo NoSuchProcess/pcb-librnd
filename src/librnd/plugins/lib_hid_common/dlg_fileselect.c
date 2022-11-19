@@ -39,8 +39,8 @@
 #include <genvector/vti0.h>
 #include <genregex/regex_se.h>
 #include <librnd/core/error.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_tree.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_tree.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>

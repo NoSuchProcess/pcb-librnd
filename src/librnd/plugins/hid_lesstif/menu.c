@@ -11,10 +11,11 @@
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_cfg_action.h>
-#include <librnd/core/hid_cfg_input.h>
+#include <librnd/hid/hid_cfg_input.h>
 #include <librnd/core/conf_hid.h>
 #include "lesstif.h"
 #include <librnd/core/paths.h>

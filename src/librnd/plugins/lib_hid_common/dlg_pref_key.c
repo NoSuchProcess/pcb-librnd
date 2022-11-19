@@ -28,7 +28,7 @@
 
 #include <librnd/core/conf.h>
 #include <librnd/core/hidlib_conf.h>
-#include <librnd/core/hid_cfg_input.h>
+#include <librnd/hid/hid_cfg_input.h>
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include <liblihata/tree.h>
 

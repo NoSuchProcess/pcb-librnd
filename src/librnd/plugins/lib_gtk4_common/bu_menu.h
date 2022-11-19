@@ -6,7 +6,7 @@
 
 #include <librnd/core/conf.h>
 #include <librnd/core/hid_cfg.h>
-#include <librnd/core/hid_cfg_input.h>
+#include <librnd/hid/hid_cfg_input.h>
 #include <librnd/core/conf_hid.h>
 
 typedef struct rnd_gtk_menu_ctx_s {

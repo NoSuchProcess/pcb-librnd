@@ -35,7 +35,7 @@
 #include <string.h>
 
 #include <librnd/core/actions.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib_conf.h>
 

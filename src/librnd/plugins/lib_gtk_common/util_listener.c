@@ -36,7 +36,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 

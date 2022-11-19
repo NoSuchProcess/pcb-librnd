@@ -30,10 +30,10 @@
 
 #include <ctype.h>
 
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_spin.h>
-#include <librnd/core/hid_dad_unit.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_spin.h>
+#include <librnd/hid/hid_dad_unit.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib_conf.h>

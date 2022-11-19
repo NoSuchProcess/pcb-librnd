@@ -1,6 +1,6 @@
 #include "compat.h"
 
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 
 #define DLG_INCLUDES "librnd/plugins/lib_gtk2_common/dlg_includes.c"
 

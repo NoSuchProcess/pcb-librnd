@@ -5,7 +5,7 @@ typedef struct pref_ctx_s pref_ctx_t;
 
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/actions.h>
 
 typedef struct pref_conflist_s pref_confitem_t;

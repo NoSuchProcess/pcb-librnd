@@ -1,8 +1,8 @@
 #define RND_APP_PREFIX(x)  rndtest_ ## x
 
 #include <librnd/core/unit.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/buildin.hidlib.h>
 #include <librnd/core/compat_misc.h>

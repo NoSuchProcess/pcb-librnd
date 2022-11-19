@@ -26,7 +26,7 @@
 
 #include "wt_preview.h"
 #include "dialogs.h"
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 
 static gdl_list_t ltf_previews;
 

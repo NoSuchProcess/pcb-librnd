@@ -30,6 +30,8 @@
 #ifndef RND_GRID_H
 #define RND_GRID_H
 
+#define RND_MAX_GRID         RND_MIL_TO_COORD(1000)
+
 #include <genvector/gds_char.h>
 #include <librnd/core/rnd_bool.h>
 #include <librnd/core/global_typedefs.h>
@@ -77,5 +79,9 @@ void rnd_grid_install_menu(void);
 
 void rnd_grid_init(void);
 void rnd_grid_uninit(void);
+
+/* sets cursor grid with respect to grid spacing, offset and unit values */
+void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
+void rnd_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit);
 
 #endif

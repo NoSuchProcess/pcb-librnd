@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include <librnd/core/plugins.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid_init.h>
 #include <librnd/core/hidlib_conf.h>
 
 #include <librnd/plugins/lib_hid_gl/hidgl.h>

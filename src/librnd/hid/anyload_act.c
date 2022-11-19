@@ -28,7 +28,7 @@
 #include <librnd/rnd_config.h>
 
 #include <librnd/core/actions.h>
-#include <librnd/core/hid.h>
+#include <librnd/hid/hid.h>
 #include <librnd/core/anyload.h>
 
 static const char rnd_acts_AnyLoad[] = "AnyLoad([path])";

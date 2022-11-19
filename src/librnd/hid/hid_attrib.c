@@ -30,7 +30,7 @@
 
 #include <librnd/rnd_config.h>
 #include <string.h>
-#include <librnd/core/hid_attrib.h>
+#include <librnd/hid/hid_attrib.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib.h>
 

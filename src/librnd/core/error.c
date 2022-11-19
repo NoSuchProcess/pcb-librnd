@@ -32,10 +32,12 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/error.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/hidlib_conf.h>
 #include <genvector/gds_char.h>
+
+rnd_hid_t *rnd_gui = NULL;
 
 void rnd_trace(const char *Format, ...)
 {
@@ -249,29 +251,27 @@ static fgw_error_t rnd_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rnd_strcasecmp(op, "Clear") == 0) {
 		unsigned long from = -1, to = -1;
 		RND_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
-		RND_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
+		RND_ACT_MAY_CONVARG(3, FGW_ULONG, Log, to = fgw_keyword(&argv[3]));
 		rnd_log_del_range(from, to);
 		rnd_event(NULL, RND_EVENT_LOG_CLEAR, "pp", &from, &to);
 		ret = 0;
 	}
 	else if (rnd_strcasecmp(op, "Export") == 0) {
-		const char *fmts[] = { "text", "lihata", NULL };
-		rnd_hid_dad_subdialog_t fmtsub;
-		char *fn;
-		int wfmt;
+		const char *fn, *fmt;
 
-		memset(&fmtsub, 0, sizeof(fmtsub));
-		RND_DAD_ENUM(fmtsub.dlg, fmts);
-			wfmt = RND_DAD_CURRENT(fmtsub.dlg);
-		fn = rnd_hid_fileselect(rnd_gui, "Export log", NULL, "log.txt", NULL, NULL, "log", 0, &fmtsub);
+			RND_ACT_MAY_CONVARG(2, FGW_STR, Log, fn = argv[2].val.str);
+			RND_ACT_MAY_CONVARG(3, FGW_STR, Log, fmt = argv[3].val.str);
+
 		if (fn != NULL) {
-			ret = rnd_log_export(NULL, fn, (fmtsub.dlg[wfmt].val.lng == 1));
+			int fmt_lihata = (fmt != NULL) && (strcmp(fmt, "lihata") == 0);
+			ret = rnd_log_export(NULL, fn, fmt_lihata);
 			if (ret != 0)
 				rnd_message(RND_MSG_ERROR, "Failed to export log to '%s'\n", fn);
-			free(fn);
 		}
-		else
-			ret = 0;
+		else {
+			/* call through to the dialog box version */
+			return rnd_actionv_bin(RND_ACT_HIDLIB, "LogGui", res, argc, argv);
+		}
 	}
 	else {
 		RND_ACT_FAIL(Log);

@@ -27,10 +27,10 @@
 #include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/event.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_dad.h>
-#include <librnd/core/hid_dad_unit.h>
-#include <librnd/core/hid_init.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_dad.h>
+#include <librnd/hid/hid_dad_unit.h>
+#include <librnd/hid/hid_init.h>
 #include "dlg_export.h"
 
 typedef struct{

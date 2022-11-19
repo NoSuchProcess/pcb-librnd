@@ -4,7 +4,7 @@
 #include <librnd/core/math_helper.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/hidlib.h>
-#include <librnd/core/pixmap.h>
+#include <librnd/hid/pixmap.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,20 +25,20 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/safe_fs.h>
 
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
+#include <librnd/hid/hid.h>
+#include <librnd/hid/hid_nogui.h>
 #include <librnd/core/hid_cfg.h>
 #include "lesstif.h"
-#include <librnd/core/hid_cfg_input.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_init.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/hid/hid_cfg_input.h>
+#include <librnd/hid/hid_attrib.h>
+#include <librnd/hid/hid_init.h>
+#include <librnd/hid/hid_dad.h>
 #include <librnd/core/actions.h>
 #include "ltf_stdarg.h"
-#include <librnd/core/grid.h>
+#include <librnd/hid/grid.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/tool.h>
+#include <librnd/hid/tool.h>
 #include <librnd/core/globalconst.h>
 
 #include "wt_preview.h"
