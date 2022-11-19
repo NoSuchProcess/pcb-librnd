@@ -74,7 +74,7 @@ char *rnd_build_fn(rnd_design_t *design, const char *template);
    the array if they are not NULL; use with rnd_build_argfn() */
 typedef struct {
 	const char *params['z' - 'a' + 1]; /* [0] for 'a' */
-	rnd_design_t *hidlib; /* if NULL, some of the substitutions (e.g. %B, %D, %N) won't be performed */
+	rnd_design_t *design; /* if NULL, some of the substitutions (e.g. %B, %D, %N) won't be performed */
 } rnd_build_argfn_t;
 
 char *rnd_build_argfn(const char *template, rnd_build_argfn_t *arg);

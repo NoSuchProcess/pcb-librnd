@@ -109,7 +109,7 @@ int rnd_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 		(*input)++;
 		return 0;
 	}
-	return rnd_build_fn_cb(ctx->hidlib, s, input);
+	return rnd_build_fn_cb(ctx->design, s, input);
 }
 
 char *rnd_build_fn(rnd_design_t *hidlib, const char *template)
