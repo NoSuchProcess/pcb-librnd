@@ -33,25 +33,25 @@
    If extra_room is non-zero, allocate this many bytes extra for each slot;
    this leaves some room to append a file name. If quiet is non-zero, suppress
    error messages. */
-void rnd_path_resolve(rnd_design_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet);
+void rnd_path_resolve(rnd_design_t *design, const char *in, char **out, unsigned int extra_room, int quiet);
 
 /* Same as resolve_path, but it returns the pointer to the new path and calls
    free() on in */
-char *rnd_path_resolve_inplace(rnd_design_t *hidlib, char *in, unsigned int extra_room, int quiet);
+char *rnd_path_resolve_inplace(rnd_design_t *design, char *in, unsigned int extra_room, int quiet);
 
 
 /* Resolve all paths from a in[] into out[](should be large enough) */
-void rnd_paths_resolve(rnd_design_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet);
+void rnd_paths_resolve(rnd_design_t *design, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet);
 
 /* Resolve all paths from a char *in[] into a freshly allocated char **out */
-#define rnd_paths_resolve_all(hidlib, in, out, extra_room, quiet) \
+#define rnd_paths_resolve_all(design, in, out, extra_room, quiet) \
 do { \
 	int __numpath__; \
 	for(__numpath__ = 0; in[__numpath__] != NULL; __numpath__++) ; \
 	__numpath__++; \
 	if (__numpath__ > 0) { \
 		out = malloc(sizeof(char *) * __numpath__); \
-		rnd_paths_resolve(hidlib, in, out, __numpath__, extra_room, quiet); \
+		rnd_paths_resolve(design, in, out, __numpath__, extra_room, quiet); \
 	} \
 } while(0)
 
@@ -67,7 +67,7 @@ do { \
 */
 int rnd_build_fn_cb(void *ctx, gds_t *s, const char **input);
 
-char *rnd_build_fn(rnd_design_t *hidlib, const char *template);
+char *rnd_build_fn(rnd_design_t *design, const char *template);
 
 
 /* Same as above, but also replaces lower case formatting to the members of

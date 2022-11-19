@@ -63,7 +63,7 @@ struct rnd_hid_cfg_s {
 };
 
 /* Generic, low level lihata loader */
-lht_doc_t *rnd_hid_cfg_load_lht(rnd_design_t *hidlib, const char *filename);
+lht_doc_t *rnd_hid_cfg_load_lht(rnd_design_t *design, const char *filename);
 lht_doc_t *rnd_hid_cfg_load_str(const char *text);
 
 /* Generic, low level lihata text value fetch */

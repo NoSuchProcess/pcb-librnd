@@ -50,7 +50,7 @@ void rnd_anyload_unreg_by_cookie(const char *cookie);
 /* Load a file or pack: path may be a lihata file (either anything we can load
    or a $APP-anyload-v*) or a directory that has an anyload.lht in it.
    Return 0 on success. */
-int rnd_anyload(rnd_design_t *hidlib, const char *path);
+int rnd_anyload(rnd_design_t *design, const char *path);
 
 /* if non-zero: merge and update the conf after loading anyloads */
 extern int rnd_anyload_conf_needs_update;

@@ -25,7 +25,7 @@
   */
 
 /* Wrap standard file system calls, giving the user a chance to control
-   where pcb-rnd may go on the file system. Where hidlib is NULL, some
+   where pcb-rnd may go on the file system. Where design is NULL, some
    of the % substitutions will not be performed (the ones that depend on
    design (file) name) */
 
@@ -38,59 +38,59 @@
 /* file name templating wrappers around file system calls; later they
    will also execute checks to avoid unsafe access */
 
-FILE *rnd_fopen(rnd_design_t *hidlib, const char *path, const char *mode);
-FILE *rnd_fopen_askovr(rnd_design_t *hidlib, const char *path, const char *mode, int *all);
-FILE *rnd_popen(rnd_design_t *hidlib, const char *cmd, const char *mode);
+FILE *rnd_fopen(rnd_design_t *design, const char *path, const char *mode);
+FILE *rnd_fopen_askovr(rnd_design_t *design, const char *path, const char *mode, int *all);
+FILE *rnd_popen(rnd_design_t *design, const char *cmd, const char *mode);
 int rnd_pclose(FILE *f);
-int rnd_system(rnd_design_t *hidlib, const char *cmd);
-int rnd_remove(rnd_design_t *hidlib, const char *path);
-int rnd_rename(rnd_design_t *hidlib, const char *old_path, const char *new_path);
-int rnd_mkdir(rnd_design_t *hidlib, const char *path, int mode);
-int rnd_unlink(rnd_design_t *hidlib, const char *path);
+int rnd_system(rnd_design_t *design, const char *cmd);
+int rnd_remove(rnd_design_t *design, const char *path);
+int rnd_rename(rnd_design_t *design, const char *old_path, const char *new_path);
+int rnd_mkdir(rnd_design_t *design, const char *path, int mode);
+int rnd_unlink(rnd_design_t *design, const char *path);
 
 /* Query multiple stat fields at once. Returns 0 on success. Output
    fields must not be NULL. */
-int rnd_file_stat(rnd_design_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
+int rnd_file_stat(rnd_design_t *design, const char *path, int *is_dir, long *size, double *mtime);
 
 
 /* Batched ask-overwrite in storage provided by the caller; the return value
    of the init() call needs to be passed to the uninit() so nested batching is
    possible. */
-int *rnd_batched_ask_ovr_init(rnd_design_t *hidlib, int *storage);
-void rnd_batched_ask_ovr_uninit(rnd_design_t *hidlib, int *init_retval);
+int *rnd_batched_ask_ovr_init(rnd_design_t *design, int *storage);
+void rnd_batched_ask_ovr_uninit(rnd_design_t *design, int *init_retval);
 
 
 /* Return the size of non-large files; on error or for large files
    (size larger than the value long can hold) return -1 */
-long rnd_file_size(rnd_design_t *hidlib, const char *path);
+long rnd_file_size(rnd_design_t *design, const char *path);
 
 /* Return -1 on error or the last modification time (in sec from epoch) */
-double rnd_file_mtime(rnd_design_t *hidlib, const char *path);
+double rnd_file_mtime(rnd_design_t *design, const char *path);
 
 /* This is going to be available only in 3.1.0:
    Query is_dir, size and mtime with a single syscall; Return 0 on success.
-int rnd_file_stat(rnd_design_t *hidlib, const char *path, int *is_dir, long *size, double *mtime);
+int rnd_file_stat(rnd_design_t *design, const char *path, int *is_dir, long *size, double *mtime);
 */
 
 /* Return non-zero if path is a directory */
-int rnd_is_dir(rnd_design_t *hidlib, const char *path);
+int rnd_is_dir(rnd_design_t *design, const char *path);
 
 /* Check if path could be open with mode; if yes, return the substituted/expanded
    file name, if no, return NULL */
-char *rnd_fopen_check(rnd_design_t *hidlib, const char *path, const char *mode);
+char *rnd_fopen_check(rnd_design_t *design, const char *path, const char *mode);
 
 /* Same as rnd_fopen(), but on success load fn_out() with the malloc()'d
    file name as it looked after the substitution */
-FILE *rnd_fopen_fn(rnd_design_t *hidlib, const char *path, const char *mode, char **fn_out);
+FILE *rnd_fopen_fn(rnd_design_t *design, const char *path, const char *mode, char **fn_out);
 
 /* Open a file given as a basename fn, under the directory dir, optionally
    doing a recusrive search in the directory tree. If full_path is not NULL,
    and the call succeeds, load it with the full path of the file opened. */
-FILE *rnd_fopen_at(rnd_design_t *hidlib, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *rnd_fopen_at(rnd_design_t *design, const char *dir, const char *fn, const char *mode, char **full_path, int recursive);
 
 
 /* Return 1 if path is a file that can be opened for read */
-int rnd_file_readable(rnd_design_t *hidlib, const char *path);
+int rnd_file_readable(rnd_design_t *design, const char *path);
 
 #include <librnd/core/conf.h>
 
@@ -101,6 +101,6 @@ int rnd_file_readable(rnd_design_t *hidlib, const char *path);
    (or NULL on failure); the caller needs to call free() on it.
    If recursive is set, all subcirectories under each path is also searched for the file.
    */
-FILE *rnd_fopen_first(rnd_design_t *hidlib, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
+FILE *rnd_fopen_first(rnd_design_t *design, const rnd_conflist_t *paths, const char *fn, const char *mode, char **full_path, int recursive);
 
 #endif

@@ -143,7 +143,7 @@ void rnd_cli_uninit(void);
 #define RND_ACTION_MAX_ARGS 16
 
 /* Read and execute an action script from a file; return 0 if all actions returned 0 */
-int rnd_act_execute_file(rnd_design_t *hidlib, const char *fn);
+int rnd_act_execute_file(rnd_design_t *design, const char *fn);
 
 /* low level action function lookup */
 fgw_func_t *rnd_act_lookup(const char *aname);
@@ -171,8 +171,8 @@ RND_INLINE int rnd_act_result(fgw_arg_t *res, fgw_error_t ret)
 
 /* Call an action function directly, bypassing fungw; evaluates to an int
    that is 0 on success */
-#define RND_ACT_CALL_C(hidlib, funcp, res, argc, argv) \
-	((argv)[0].type = FGW_FUNC, (argv)[0].val.argv0.func = NULL, (argv)[0].val.argv0.user_call_ctx = (hidlib), rnd_act_result(res, funcp(res, argc, argv)))
+#define RND_ACT_CALL_C(design, funcp, res, argc, argv) \
+	((argv)[0].type = FGW_FUNC, (argv)[0].val.argv0.func = NULL, (argv)[0].val.argv0.user_call_ctx = (design), rnd_act_result(res, funcp(res, argc, argv)))
 
 /* Require argument idx to exist and convert it to type; on success, also execute stmt */
 #define RND_ACT_CONVARG(idx, type, aname, stmt) \

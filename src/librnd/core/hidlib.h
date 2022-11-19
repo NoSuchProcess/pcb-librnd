@@ -142,10 +142,10 @@ typedef struct rnd_app_s {
 
 /* Optional: draw any fixed mark on XOR overlay; if inhibit_drawing_mode is
    true, do not call ->set_drawing_mode */
-	void (*draw_marks)(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode);
+	void (*draw_marks)(rnd_design_t *design, rnd_bool inhibit_drawing_mode);
 
 	/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-	void (*draw_attached)(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode);
+	void (*draw_attached)(rnd_design_t *design, rnd_bool inhibit_drawing_mode);
 
 	/*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, design or preview). The expose

@@ -267,7 +267,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn);
 
 /* Save an in-memory lihata representation to the disk */
-int rnd_conf_save_file(rnd_design_t *hidlib, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn);
+int rnd_conf_save_file(rnd_design_t *design, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn);
 
 /* Returns whether a given lihata tree is locked */
 int rnd_conf_islocked(rnd_conf_role_t target);
@@ -305,7 +305,7 @@ void rnd_conf_ro(const char *path);
 
 void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
-#define rnd_conf_list_foreach_path_first(hidlib, res, conf_list, call) \
+#define rnd_conf_list_foreach_path_first(design, res, conf_list, call) \
 do { \
 	rnd_conf_listitem_t *__n__; \
 	const rnd_conflist_t *__lst1__ = (conf_list); \
@@ -316,7 +316,7 @@ do { \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
 				continue; \
-			rnd_path_resolve(hidlib, *__in__, &__path__, 0, rnd_false); \
+			rnd_path_resolve(design, *__in__, &__path__, 0, rnd_false); \
 			res = call; \
 			free(__path__); \
 			if (res == 0) \
@@ -365,7 +365,7 @@ lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
 lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
 /* Get first config subtree for role, create the file if doesn't exist */
-lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role);
+lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *design, rnd_conf_role_t role);
 
 /* loop helper */
 rnd_conf_listitem_t *rnd_conf_list_first_str(rnd_conflist_t *list, const char **item_str, int *idx);
@@ -396,7 +396,7 @@ lht_node_t *rnd_conf_lht_get_at(rnd_conf_role_t target, const char *path, int cr
 lht_node_t *rnd_conf_lht_get_at_mainplug(rnd_conf_role_t target, const char *path, int allow_plug, int create);
 
 /* Write an existing conf subtree to a file */
-int rnd_conf_export_to_file(rnd_design_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path);
+int rnd_conf_export_to_file(rnd_design_t *design, const char *fn, rnd_conf_role_t role, const char *conf_path);
 
 /* Determine the policy and priority of a config lihata node;
    returns 0 on success but may not fill in both values, caller is
