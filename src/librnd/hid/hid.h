@@ -614,7 +614,7 @@ void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t
 int rnd_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
-#define rnd_hid_redraw(pcb) rnd_gui->invalidate_all(rnd_gui)
+#define rnd_hid_redraw(design) rnd_gui->invalidate_all(rnd_gui)
 
 #define rnd_hid_busy(design, is_busy) \
 do { \
