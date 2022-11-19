@@ -29,6 +29,7 @@
 
 #include "compat.h"
 #include <librnd/core/hid_cfg_action.h>
+#include <librnd/hid/hid_menu.h>
 #include <librnd/plugins/lib_gtk_common/rnd_gtk.h>
 #include <librnd/plugins/lib_gtk_common/in_keyboard.h>
 #include <librnd/plugins/lib_hid_common/menu_helper.h>
