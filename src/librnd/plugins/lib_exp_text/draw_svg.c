@@ -104,7 +104,7 @@ do { \
 		y = pctx->hidlib->dwg.Y2 - y; \
 } while(0)
 
-void rnd_svg_init(rnd_svg_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int opacity, int flip, int true_size)
+void rnd_svg_init(rnd_svg_t *pctx, rnd_design_t *hidlib, FILE *f, int opacity, int flip, int true_size)
 {
 	memset(pctx, 0, sizeof(rnd_svg_t));
 	pctx->hidlib = hidlib;

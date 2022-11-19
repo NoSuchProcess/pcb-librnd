@@ -136,7 +136,7 @@ void rnd_ps_end_file(rnd_ps_t *pctx)
 	fprintf(f, "%%%%EOF\n");
 }
 
-void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor)
+void rnd_ps_init(rnd_ps_t *pctx, rnd_design_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor)
 {
 	memset(pctx, 0, sizeof(rnd_ps_t));
 

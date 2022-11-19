@@ -265,7 +265,7 @@ RND_INLINE void reserve_grid_points(int n, int n3)
 	}
 }
 
-void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid)
+void hidgl_draw_local_grid(rnd_design_t *hidlib, rnd_coord_t grd, rnd_coord_t cx, rnd_coord_t cy, int radius, double scale, rnd_bool cross_grid)
 {
 	int npoints = 0;
 	rnd_coord_t x, y;
@@ -309,7 +309,7 @@ void hidgl_draw_local_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_coord_t cx
 	hidgl_draw.xor_end();
 }
 
-void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
+void hidgl_draw_grid(rnd_design_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_area, double scale, rnd_bool cross_grid)
 {
 	rnd_coord_t x1, y1, x2, y2, n, i, n3;
 	double x, y;

@@ -119,7 +119,7 @@ void rnd_events_uninit(void);
 
 /* Event callback prototype; user_data is the same as in rnd_event_bind().
    argv[0] is always an RND_EVARG_INT with the event id that triggered the event. */
-typedef void (rnd_event_handler_t)(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+typedef void (rnd_event_handler_t)(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 
 /* Bind: add a handler to the call-list of an event; the cookie is also remembered
    so that mass-unbind is easier later. user_data is passed to the handler. */
@@ -136,7 +136,7 @@ void rnd_event_unbind_allcookie(const char *cookie);
 
 /* Event trigger: call all handlers for an event. Fmt is a list of
    format characters (e.g. i for RND_EVARG_INT). */
-void rnd_event(rnd_hidlib_t *hidlib, rnd_event_id_t ev, const char *fmt, ...);
+void rnd_event(rnd_design_t *hidlib, rnd_event_id_t ev, const char *fmt, ...);
 
 /* Return the name of an event as seen on regisrtation */
 const char *rnd_event_name(rnd_event_id_t ev);

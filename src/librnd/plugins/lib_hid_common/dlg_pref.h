@@ -118,14 +118,14 @@ extern rnd_conf_hid_id_t pref_hid;
 
 /*** public API for the caller ***/
 
-lht_node_t *rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
-void rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx);
+lht_node_t *rnd_pref_dlg2conf_pre(rnd_design_t *hidlib, pref_ctx_t *ctx);
+void rnd_pref_dlg2conf_post(rnd_design_t *hidlib, pref_ctx_t *ctx);
 
 void rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab);
 
 
 /* In event callbacks no context is available; return context baed on hidlib */
-pref_ctx_t *rnd_pref_get_ctx(rnd_hidlib_t *hidlib);
+pref_ctx_t *rnd_pref_get_ctx(rnd_design_t *hidlib);
 
 #define PREF_INIT_FUNC rnd_pref_init_func_dummy
 

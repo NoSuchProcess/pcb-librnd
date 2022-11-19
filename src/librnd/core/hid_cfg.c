@@ -51,7 +51,7 @@ static int hid_cfg_load_error(lht_doc_t *doc, const char *filename, lht_err_t er
 	return 1;
 }
 
-lht_doc_t *rnd_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename)
+lht_doc_t *rnd_hid_cfg_load_lht(rnd_design_t *hidlib, const char *filename)
 {
 	FILE *f;
 	lht_doc_t *doc;

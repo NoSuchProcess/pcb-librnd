@@ -34,7 +34,7 @@ struct rnd_box_s {        /* a bounding box */
 	rnd_coord_t X2, Y2;     /* and lower right corner */
 };
 
-typedef struct rnd_hidlib_s rnd_hidlib_t;
+typedef struct rnd_design_s rnd_design_t;
 
 
 /* typedef ... rnd_coord_t; pcb base unit, typedef'd in config.h */

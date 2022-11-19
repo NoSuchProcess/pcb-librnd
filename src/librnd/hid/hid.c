@@ -34,7 +34,7 @@
 
 int rnd_hid_enable_per_dialog_hidlib = 0;
 
-void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete)
+void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete)
 {
 	if (rnd_gui->notify_crosshair_change)
 		rnd_gui->notify_crosshair_change(rnd_gui, changes_complete);
@@ -58,7 +58,7 @@ char *rnd_hid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 
 static int btmr_timer_active = 0;
 static rnd_hidval_t btmr_timer;
-static rnd_hidlib_t *btmr_hidlib;
+static rnd_design_t *btmr_hidlib;
 
 static void btmr_cb(rnd_hidval_t user_data)
 {
@@ -68,7 +68,7 @@ static void btmr_cb(rnd_hidval_t user_data)
 	rnd_hid_menu_merge_inhibit_dec();
 }
 
-void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib)
+void rnd_hid_gui_batch_timer(rnd_design_t *hidlib)
 {
 	rnd_hidval_t timerdata;
 

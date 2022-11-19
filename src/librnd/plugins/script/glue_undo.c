@@ -1,7 +1,7 @@
 /* Live scripting needs to undo using the host app; to make this host app
    API independent, the action interface should be used */
 
-static long script_undo_action(rnd_hidlib_t *hl, const char *cmd)
+static long script_undo_action(rnd_design_t *hl, const char *cmd)
 {
 	fgw_arg_t res, argv[2];
 
@@ -16,22 +16,22 @@ static long script_undo_action(rnd_hidlib_t *hl, const char *cmd)
 	return res.val.nat_long;
 }
 
-static long get_undo_serial(rnd_hidlib_t *hl)
+static long get_undo_serial(rnd_design_t *hl)
 {
 	return script_undo_action(hl, "GetSerial");
 }
 
-static long get_num_undo(rnd_hidlib_t *hl)
+static long get_num_undo(rnd_design_t *hl)
 {
 	return script_undo_action(hl, "GetNum");
 }
 
-static void inc_undo_serial(rnd_hidlib_t *hl)
+static void inc_undo_serial(rnd_design_t *hl)
 {
 	script_undo_action(hl, "IncSerial");
 }
 
-static void undo_above(rnd_hidlib_t *hl, long ser)
+static void undo_above(rnd_design_t *hl, long ser)
 {
 	fgw_arg_t res, argv[3];
 

@@ -136,7 +136,7 @@ static void set_clip(render_priv_t *priv, GdkGC *gc)
 		gdk_gc_set_clip_mask(gc, NULL);
 }
 
-static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
+static inline void ghid_gdk_draw_grid_global(rnd_design_t *hidlib)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	rnd_coord_t x, y, x1, y1, x2, y2, grd;
@@ -233,7 +233,7 @@ static inline void ghid_gdk_draw_grid_global(rnd_hidlib_t *hidlib)
 	}
 }
 
-static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius)
+static void ghid_gdk_draw_grid_local_(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t cy, int radius)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	static GdkPoint *points_base = NULL;
@@ -316,7 +316,7 @@ static void ghid_gdk_draw_grid_local_(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_
 static int grid_local_have_old = 0, grid_local_old_r = 0;
 static rnd_coord_t grid_local_old_x, grid_local_old_y;
 
-static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
+static void ghid_gdk_draw_grid_local(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
 {
 	if (grid_local_have_old) {
 		ghid_gdk_draw_grid_local_(hidlib, grid_local_old_x, grid_local_old_y, grid_local_old_r);
@@ -340,7 +340,7 @@ static void ghid_gdk_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_c
 	grid_local_old_r = rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gdk_draw_grid(rnd_hidlib_t *hidlib)
+static void ghid_gdk_draw_grid(rnd_design_t *hidlib)
 {
 	static GdkColormap *colormap = NULL;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -397,7 +397,7 @@ void copy_mask_pixmap(GdkPixmap *DST, GdkPixbuf *SRC, int sx, int sy, GdkGC *gc)
 	}
 }
 
-static void ghid_gdk_uninit_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm)
+static void ghid_gdk_uninit_pixmap(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm)
 {
 	if (gpm->cache.gdk.pb != NULL) {
 		g_object_unref(G_OBJECT(gpm->cache.gdk.pb));
@@ -409,7 +409,7 @@ static void ghid_gdk_uninit_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm)
 	}
 }
 
-static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
+static void ghid_gdk_draw_pixmap(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
 	GdkInterpType interp_type;
 	gint src_x, src_y, dst_x, dst_y, w, h, w_src, h_src;
@@ -471,7 +471,7 @@ static void ghid_gdk_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rn
 	}
 }
 
-static void ghid_gdk_draw_bg_image(rnd_hidlib_t *hidlib)
+static void ghid_gdk_draw_bg_image(rnd_design_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
 		ghid_gdk_draw_pixmap(hidlib, &ghidgui->bg_pixmap, hidlib->dwg.X1, hidlib->dwg.Y2, hidlib->dwg.X2, hidlib->dwg.Y2);
@@ -1132,7 +1132,7 @@ static void ghid_gdk_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		gdk_draw_rectangle(priv->out_clip, priv->clip_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
+static void redraw_region(rnd_design_t *hidlib, GdkRectangle *rect)
 {
 	int eleft, eright, etop, ebottom;
 	rnd_hid_expose_ctx_t ctx;
@@ -1223,7 +1223,7 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 static int preview_lock = 0;
 static void ghid_gdk_invalidate_lr(rnd_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	int dleft, dright, dtop, dbottom;
 	int minx, maxx, miny, maxy;
 	GdkRectangle rect;
@@ -1256,7 +1256,7 @@ static void ghid_gdk_invalidate_lr(rnd_hid_t *hid, rnd_coord_t left, rnd_coord_t
 
 static void ghid_gdk_invalidate_all(rnd_hid_t *hid)
 {
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		redraw_region(hidlib, NULL);
 		if (!preview_lock) {
@@ -1270,7 +1270,7 @@ static void ghid_gdk_invalidate_all(rnd_hid_t *hid)
 
 static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */
@@ -1305,7 +1305,7 @@ static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_co
 
 static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
 	/* We sometimes get called before the GUI is up */

@@ -60,7 +60,7 @@ void rnd_hid_uninit(void);
 /* When the application runs in interactive mode, this is called to instantiate
    one GUI HID which happens to be the GUI.  This HID is the one that
    interacts with the mouse and keyboard.  */
-rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference);
+rnd_hid_t *rnd_hid_find_gui(rnd_design_t *hidlib, const char *preference);
 
 /* Finds the one printer HID and instantiates it.  */
 rnd_hid_t *rnd_hid_find_printer(void);
@@ -158,11 +158,11 @@ int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval);
 
 /* if -x was specified, do the export and return 1 (the caller should
    exit); else return 0 */
-int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty);
+int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *hidlib, rnd_bool is_empty);
 
 /* launches the GUI or CLI; after it returns, if rnd_gui is not NULL, the user
    has selected another GUI to switch to. */
-void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib);
+void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *hidlib);
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);

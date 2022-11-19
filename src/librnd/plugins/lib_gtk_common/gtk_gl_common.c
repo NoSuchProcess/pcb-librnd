@@ -66,7 +66,7 @@ void ghid_gl_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *sc
 
 int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
 	double tx, ty, zx, zy, zz;
 
@@ -108,7 +108,7 @@ rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 	return rv;
 }
 
-void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
+void ghid_gl_draw_grid_local(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
 {
 	if (hidlib->grid <= 0)
 		return;
@@ -119,7 +119,7 @@ void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t c
 	grid_local_radius = rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
+static void ghid_gl_draw_grid(rnd_design_t *hidlib, rnd_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	rnd_coord_t grd = hidlib->grid;
@@ -141,18 +141,18 @@ static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 		hidgl_draw_grid(hidlib, grd, drawn_area, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
 }
 
-static void rnd_gl_draw_texture(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
+static void rnd_gl_draw_texture(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
 {
 	hidgl_draw_texture_rect(ox, oy, ox+bw, oy+bh, gpm->cache.lng);
 }
 
-static void ghid_gl_uninit_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm)
+static void ghid_gl_uninit_pixmap(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm)
 {
 	if (gpm->cache.lng != 0)
 		hidgl_texture_free(gpm->cache.lng);
 }
 
-static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
+static void ghid_gl_draw_pixmap(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t bw, rnd_coord_t bh)
 {
 	if (gpm->cache.lng == 0) {
 		int width = gpm->pxm->sx;
@@ -175,7 +175,7 @@ static void ghid_gl_draw_pixmap(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd
 	rnd_gl_draw_texture(hidlib, gpm, ox, oy, bw, bh);
 }
 
-static void ghid_gl_draw_bg_image(rnd_hidlib_t *hidlib)
+static void ghid_gl_draw_bg_image(rnd_design_t *hidlib)
 {
 	if (ghidgui->bg_pixmap.image != NULL)
 		ghid_gl_draw_pixmap(hidlib, &ghidgui->bg_pixmap, 0, 0, hidlib->dwg.X2, hidlib->dwg.Y2);
@@ -374,7 +374,7 @@ static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 	ghid_gl_invalidate_all(hid);
 }
 
-static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
+static void ghid_gl_show_crosshair(rnd_design_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
 	static int done_once = 0;
 	static rnd_gtk_color_t cross_color;
@@ -432,7 +432,7 @@ static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr
 static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
 {
 	rnd_gtk_port_t *port = vport;
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
 	rnd_hid_expose_ctx_t ctx;
@@ -486,7 +486,7 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 }
 
 /* Assumes gl context is set up for drawing in the target widget */
-static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_hidlib_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
+static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_design_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	double xz, yz, vw, vh;

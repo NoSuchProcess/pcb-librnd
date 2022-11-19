@@ -62,7 +62,7 @@ union tmp_u {
 
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	char *name;
 	const char *row_domain;
 	int level;
@@ -73,7 +73,7 @@ typedef struct {
 
 htsp_t dads;
 
-static int dad_new(rnd_hidlib_t *hl, const char *name)
+static int dad_new(rnd_design_t *hl, const char *name)
 {
 	dad_t *dad;
 
@@ -131,10 +131,10 @@ static void dad_row_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_
 typedef struct {
 	char *act_expose, *act_mouse, *act_free;
 	char *udata;
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 } dad_prv_t;
 
-static int prv_action(rnd_hidlib_t *hl, const char *actname, rnd_hid_gc_t gc, const char *udata)
+static int prv_action(rnd_design_t *hl, const char *actname, rnd_hid_gc_t gc, const char *udata)
 {
 	fgw_arg_t r = {0};
 	fgw_arg_t args[3];

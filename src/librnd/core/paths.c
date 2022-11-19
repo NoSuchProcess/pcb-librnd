@@ -38,7 +38,7 @@ int rnd_getpid(void);
 
 int rnd_build_fn_cb(void *ctx, gds_t *s, const char **input)
 {
-	rnd_hidlib_t *hidlib = ctx;
+	rnd_design_t *hidlib = ctx;
 	char buff[20];
 	const char *name = NULL;
 
@@ -112,7 +112,7 @@ int rnd_build_argfn_cb(void *ctx_, gds_t *s, const char **input)
 	return rnd_build_fn_cb(ctx->hidlib, s, input);
 }
 
-char *rnd_build_fn(rnd_hidlib_t *hidlib, const char *template)
+char *rnd_build_fn(rnd_design_t *hidlib, const char *template)
 {
 	rnd_strdup_subst_t sbs = RND_SUBST_ALL;
 #ifdef __WIN32__
@@ -307,7 +307,7 @@ char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
 	return rnd_strdup_subst_(template, cb, ctx, flags, 0);
 }
 
-void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
+void rnd_paths_resolve(rnd_design_t *hidlib, const char **in, char **out, int numpaths, unsigned int extra_room, int quiet)
 {
 	rnd_strdup_subst_t flags = RND_SUBST_ALL;
 #ifdef __WIN32__
@@ -319,12 +319,12 @@ void rnd_paths_resolve(rnd_hidlib_t *hidlib, const char **in, char **out, int nu
 		*out = rnd_strdup_subst_(*in, rnd_build_fn_cb, hidlib, flags, extra_room);
 }
 
-void rnd_path_resolve(rnd_hidlib_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)
+void rnd_path_resolve(rnd_design_t *hidlib, const char *in, char **out, unsigned int extra_room, int quiet)
 {
 	rnd_paths_resolve(hidlib, &in, out, 1, extra_room, quiet);
 }
 
-char *rnd_path_resolve_inplace(rnd_hidlib_t *hidlib, char *in, unsigned int extra_room, int quiet)
+char *rnd_path_resolve_inplace(rnd_design_t *hidlib, char *in, unsigned int extra_room, int quiet)
 {
 	char *out;
 	rnd_path_resolve(hidlib, in, &out, extra_room, quiet);

@@ -93,12 +93,12 @@ void *rnd_mbtk_attr_sub_new(rnd_mbtk_t *gctx, mbtk_widget_t *parent_box, rnd_hid
 
 }
 
-int rnd_mbtk_winplace_cfg(rnd_hidlib_t *hidlib, mbtk_widget_t *widget, void *ctx, const char *id)
+int rnd_mbtk_winplace_cfg(rnd_design_t *hidlib, mbtk_widget_t *widget, void *ctx, const char *id)
 {
 
 }
 
-rnd_hidlib_t *rnd_mbtk_attr_get_dad_hidlib(void *hid_ctx)
+rnd_design_t *rnd_mbtk_attr_get_dad_hidlib(void *hid_ctx)
 {
 
 }

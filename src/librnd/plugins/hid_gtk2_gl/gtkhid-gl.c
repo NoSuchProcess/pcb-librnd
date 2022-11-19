@@ -291,7 +291,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, 
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
 	GtkAllocation allocation;
-	rnd_hidlib_t *hidlib = ghidgui->hidlib;
+	rnd_design_t *hidlib = ghidgui->hidlib;
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
 
 	gtkc_widget_get_allocation(widget, &allocation);

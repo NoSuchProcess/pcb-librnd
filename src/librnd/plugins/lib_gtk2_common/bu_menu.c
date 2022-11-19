@@ -384,7 +384,7 @@ static void rnd_gtk_main_menu_add_popup_node(rnd_gtk_menu_ctx_t *ctx, RndGtkMain
 }
 
 /* callback for rnd_gtk_main_menu_update_toggle_state() */
-static void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
+static void menu_toggle_update_cb(rnd_design_t *hidlib, GtkAction *act, const char *tflag, const char *aflag)
 {
 	if (tflag != NULL) {
 		int v = rnd_hid_get_flag(hidlib, tflag);
@@ -401,7 +401,7 @@ static void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const ch
 	}
 }
 
-void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
+void rnd_gtk_main_menu_update_toggle_state(rnd_design_t *hidlib, GtkWidget *menubar)
 {
 	GList *list;
 	RndGtkMainMenu *menu = RND_GTK_MAIN_MENU(menubar);
@@ -479,7 +479,7 @@ static void rnd_gtk_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
+GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_design_t *hidlib)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

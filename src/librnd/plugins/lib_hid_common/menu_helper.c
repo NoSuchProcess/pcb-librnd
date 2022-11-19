@@ -40,7 +40,7 @@
 
 #include "menu_helper.h"
 
-int rnd_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
+int rnd_hid_get_flag(rnd_design_t *hidlib, const char *name)
 {
 	const char *cp;
 

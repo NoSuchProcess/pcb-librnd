@@ -105,7 +105,7 @@ void rnd_anyload_uninit(void)
 	rnd_event_unbind_allcookie(anyload_cookie);
 }
 
-static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
+static lht_doc_t *load_lht(rnd_design_t *hidlib, const char *path)
 {
 	lht_doc_t *doc;
 	FILE *f = rnd_fopen(hidlib, path, "r");
@@ -127,7 +127,7 @@ static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
 
 
 /* call a loader to load a subtree; retruns non-zero on error */
-int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree)
+int rnd_anyload_parse_subtree(rnd_design_t *hidlib, lht_node_t *subtree)
 {
 	rnd_aload_t *al;
 
@@ -139,7 +139,7 @@ int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree)
 	return -1;
 }
 
-int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, lht_node_t *nd, const char *real_cwd, int real_cwd_len)
+int rnd_anyload_ext_file(rnd_design_t *hidlib, const char *path, const char *type, lht_node_t *nd, const char *real_cwd, int real_cwd_len)
 {
 	rnd_aload_t *al;
 	char *fpath, *tmp;
@@ -187,7 +187,7 @@ int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 }
 
 /* parse an anyload file, load all roots; retruns non-zero on any error */
-int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, const char *cwd)
+int rnd_anyload_parse_anyload_v1(rnd_design_t *hidlib, lht_node_t *root, const char *cwd)
 {
 	lht_node_t *rsc, *n;
 	int res = 0, real_cwd_len = 0;
@@ -262,7 +262,7 @@ int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, const c
 
 /* parse the root of a random file, which will either be an anyload pack or
    a single root one of our backends can handle; retruns non-zero on error */
-int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, const char *cwd)
+int rnd_anyload_parse_root(rnd_design_t *hidlib, lht_node_t *root, const char *cwd)
 {
 	static int applen = -1;
 	if (applen < 0)
@@ -298,7 +298,7 @@ static void anyload_conf_inhibit_dec(void)
 		anyload_conf_update();
 }
 
-int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
+int rnd_anyload(rnd_design_t *hidlib, const char *path)
 {
 	char *path_free = NULL, *cwd_free = NULL;
 	const char *cwd;
@@ -339,7 +339,7 @@ int rnd_anyload(rnd_hidlib_t *hidlib, const char *path)
 	return res;
 }
 
-static void anyload_persistent_load_dir(rnd_hidlib_t *hidlib, const char *path, int silent_fail)
+static void anyload_persistent_load_dir(rnd_design_t *hidlib, const char *path, int silent_fail)
 {
 	DIR *d = rnd_opendir(hidlib, path);
 	struct dirent *de;
@@ -369,7 +369,7 @@ static void anyload_persistent_load_dir(rnd_hidlib_t *hidlib, const char *path, 
 	rnd_closedir(d);
 }
 
-static void anyload_persistent_init(rnd_hidlib_t *hidlib)
+static void anyload_persistent_init(rnd_design_t *hidlib)
 {
 	rnd_conf_listitem_t *ci;
 
@@ -406,7 +406,7 @@ static void anyload_persistent_init(rnd_hidlib_t *hidlib)
 	anyload_conf_inhibit_dec();
 }
 
-static void anyload_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void anyload_mainloop_perma_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (rnd_hid_in_main_loop)
 		anyload_persistent_init(hidlib);

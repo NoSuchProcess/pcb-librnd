@@ -2,7 +2,7 @@
 typedef struct rnd_ps_s {
 
 	/* public: config */
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	FILE *outf;
 	double calibration_x, calibration_y;
 	double fade_ratio;
@@ -39,7 +39,7 @@ typedef struct rnd_ps_s {
 } rnd_ps_t;
 
 /* Set up context before the file is open */
-void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor);
+void rnd_ps_init(rnd_ps_t *pctx, rnd_design_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor);
 
 /* Call these whenever a new file is written */
 void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver);

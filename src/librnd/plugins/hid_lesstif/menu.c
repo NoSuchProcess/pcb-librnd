@@ -27,7 +27,7 @@
 
 #include <librnd/plugins/lib_hid_common/menu_helper.h>
 
-extern rnd_hidlib_t *ltf_hidlib;
+extern rnd_design_t *ltf_hidlib;
 
 Widget lesstif_menubar;
 rnd_conf_hid_id_t lesstif_menuconf_id = -1;

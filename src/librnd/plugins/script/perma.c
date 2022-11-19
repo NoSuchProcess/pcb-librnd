@@ -34,7 +34,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/hid/hid_init.h>
 
-static int perma_load(rnd_hidlib_t *hl, const char *dir, const char *id, const char *path_in, const char *lang)
+static int perma_load(rnd_design_t *hl, const char *dir, const char *id, const char *path_in, const char *lang)
 {
 	char spath[RND_PATH_MAX];
 	const char *path;
@@ -49,7 +49,7 @@ static int perma_load(rnd_hidlib_t *hl, const char *dir, const char *id, const c
 	return rnd_script_load(hl, id, path, lang);
 }
 
-static void perma_script_load_conf(rnd_hidlib_t *hl, const char *dir)
+static void perma_script_load_conf(rnd_design_t *hl, const char *dir)
 {
 	char path[RND_PATH_MAX], *errmsg;
 	lht_doc_t *doc;
@@ -117,7 +117,7 @@ static void perma_script_load_conf(rnd_hidlib_t *hl, const char *dir)
 	lht_dom_uninit(doc);
 }
 
-static void perma_script_init(rnd_hidlib_t *hl)
+static void perma_script_init(rnd_design_t *hl)
 {
 	static int inited = 0;
 
@@ -129,7 +129,7 @@ static void perma_script_init(rnd_hidlib_t *hl)
 	inited = 1;
 }
 
-static void script_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void script_mainloop_perma_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (rnd_hid_in_main_loop)
 		perma_script_init(hidlib);

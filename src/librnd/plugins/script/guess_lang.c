@@ -203,7 +203,7 @@ const char *rnd_script_lang2eng(const char **lang)
 	return eng;
 }
 
-const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
+const char *rnd_script_guess_lang(rnd_design_t *hl, const char *fn, int is_filename)
 {
 	rnd_script_guess_lang_init();
 

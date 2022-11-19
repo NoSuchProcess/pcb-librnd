@@ -89,7 +89,7 @@ typedef struct{
 	char *cwd;
 	int cwd_offs[FSD_MAX_DIRS]; /* string lengths for each dir button within ->cwd */
 	vtde_t des;
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	rnd_hid_fsd_flags_t flags;
 	const rnd_hid_fsd_filter_t *flt;
 	const char *history_tag;

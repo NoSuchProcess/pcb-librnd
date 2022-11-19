@@ -53,7 +53,7 @@ static const char *lvs_cookie = "live_script";
 
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
@@ -151,7 +151,7 @@ int lvs_list_langs_line_split(pup_list_parse_pup_t *ctx, const char *fname, char
 }
 
 
-static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
+static int lvs_list_langs(rnd_design_t *hl, live_script_t *lvs)
 {
 	const char *paths[2];
 	pup_list_parse_pup_t ctx = {0};
@@ -173,7 +173,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	return lctx.vl.used;
 }
 #else
-static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
+static int lvs_list_langs(rnd_design_t *hl, live_script_t *lvs)
 {
 	vtp0_t vl, ve;
 
@@ -213,7 +213,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	rnd_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
 }
 
-static live_script_t *rnd_dlg_live_script(rnd_hidlib_t *hidlib, const char *name)
+static live_script_t *rnd_dlg_live_script(rnd_design_t *hidlib, const char *name)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
@@ -301,7 +301,7 @@ static int live_stop(live_script_t *lvs)
 
 #include "glue_undo.c"
 
-static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
+static int live_run(rnd_design_t *hl, live_script_t *lvs)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	rnd_hid_text_t *txt = atxt->wdata;
@@ -361,7 +361,7 @@ static const char *live_default_ext(live_script_t *lvs)
 	return NULL;
 }
 
-static int live_undo(rnd_hidlib_t *hl, live_script_t *lvs)
+static int live_undo(rnd_design_t *hl, live_script_t *lvs)
 {
 	if (lvs->undo_pre == lvs->undo_post)
 		return 0; /* the script did nothing */
@@ -375,7 +375,7 @@ static int live_undo(rnd_hidlib_t *hl, live_script_t *lvs)
 }
 
 
-static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
+static int live_load(rnd_design_t *hl, live_script_t *lvs, const char *fn)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	rnd_hid_text_t *txt = atxt->wdata;
@@ -417,7 +417,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 	return 0;
 }
 
-static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
+static int live_save(rnd_design_t *hl, live_script_t *lvs, const char *fn)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	rnd_hid_text_t *txt = atxt->wdata;

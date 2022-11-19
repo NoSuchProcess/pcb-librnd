@@ -54,7 +54,7 @@ TODO("^ replace this with librnd config.h, but that needs RND_HAVE_GDIMAGE* ther
 #define FROM_DRAW_PIXMAP_C
 #include "draw_pixmap.h"
 
-void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_hidlib_t *hidlib)
+void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_design_t *hidlib)
 {
 	memset(pctx, 0, sizeof(rnd_drwpx_t));
 	pctx->hidlib = hidlib;

@@ -823,7 +823,7 @@ static rnd_menu_patch_t *rnd_hid_menu_store_doc(rnd_hid_t *hid, lht_doc_t *doc, 
 	return menu;
 }
 
-rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_hidlib_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
+rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_design_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc)
 {
 	lht_doc_t *doc = NULL;
 	int has_file = 0;
@@ -1420,7 +1420,7 @@ static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
 	rnd_hid_menu_merge_inhibit_dec();
 }
 
-static int menu_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+static int menu_anyload_subtree(const rnd_anyload_t *al, rnd_design_t *hl, lht_node_t *root)
 {
 	lht_doc_t *doc;
 	rnd_menu_patch_t *menu;

@@ -53,7 +53,7 @@
 
 const char *lesstif_cookie = "lesstif HID";
 
-rnd_hidlib_t *ltf_hidlib;
+rnd_design_t *ltf_hidlib;
 
 rnd_hid_cfg_mouse_t lesstif_mouse;
 rnd_hid_cfg_keys_t lesstif_keymap;
@@ -416,11 +416,11 @@ static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 	old_cursor_mode = -1;
 }
 
-extern void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
-extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+extern void LesstifNetlistChanged(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+extern void LesstifLibraryChanged(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 
 
-static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void ltf_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	rnd_coord_t siz;
 	ltf_hidlib = hidlib;
@@ -448,7 +448,7 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	return;
 }
 
-static rnd_hidlib_t *ltf_get_hidlib(rnd_hid_t *hid)
+static rnd_design_t *ltf_get_hidlib(rnd_hid_t *hid)
 {
 	return ltf_hidlib;
 }
@@ -661,7 +661,7 @@ typedef struct {
 	unsigned flip_y:1;
 } rnd_ltf_pixmap_t;
 
-static void rnd_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, rnd_ltf_pixmap_t *lpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
+static void rnd_ltf_draw_pixmap_(rnd_design_t *hidlib, rnd_ltf_pixmap_t *lpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh)
 {
 	int w, h, sx3, done = 0;
 

@@ -26,7 +26,7 @@
 
 
 int rnd_ltf_ok;
-extern rnd_hidlib_t *ltf_hidlib;
+extern rnd_design_t *ltf_hidlib;
 
 
 #define COMPONENT_SIDE_NAME "(top)"
@@ -952,7 +952,7 @@ void lesstif_update_layer_groups()
 TODO("layer: call a redraw on the edit group")
 }
 
-rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
+rnd_design_t *ltf_attr_get_dad_hidlib(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	if (rnd_hid_enable_per_dialog_hidlib)

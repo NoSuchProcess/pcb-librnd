@@ -29,7 +29,7 @@ typedef struct rnd_mbtk_view_s {
 	struct rnd_mbtk_s *ctx;
 
 	unsigned local_hidlib:1; /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
-	rnd_hidlib_t *hidlib;    /* remember the hidlib the dialog was opened for */
+	rnd_design_t *hidlib;    /* remember the hidlib the dialog was opened for */
 } rnd_mbtk_view_t;
 
 typedef struct rnd_mbtk_topwin_s rnd_mbtk_topwin_t; /* opaque so that libmbtk/widgets.h doesn't need to be included here */
@@ -42,7 +42,7 @@ typedef struct rnd_mbtk_s {
 
 	rnd_bool drawing_allowed;     /* track if a drawing area is available for rendering */
 	rnd_mbtk_view_t view;         /* top window's ddrawing area */
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	unsigned hid_active:1;
 	unsigned gui_is_up:1;
 	rnd_mbtk_topwin_t *topwin;

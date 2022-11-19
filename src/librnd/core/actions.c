@@ -254,12 +254,12 @@ void rnd_dump_actions(void)
 	}
 }
 
-int rnd_action(rnd_hidlib_t *hl, const char *name)
+int rnd_action(rnd_design_t *hl, const char *name)
 {
 	return rnd_actionv(hl, name, 0, 0);
 }
 
-int rnd_actionva(rnd_hidlib_t *hl, const char *name, ...)
+int rnd_actionva(rnd_design_t *hl, const char *name, ...)
 {
 	const char *argv[20];
 	int argc = 0;
@@ -318,7 +318,7 @@ fgw_error_t rnd_actionv_(const fgw_func_t *f, fgw_arg_t *res, int argc, fgw_arg_
 	return ret;
 }
 
-static fgw_error_t rnd_actionv_bin_(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_bool print_error)
+static fgw_error_t rnd_actionv_bin_(rnd_design_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_bool print_error)
 {
 	fgw_func_t *f = rnd_act_lookup(name);
 
@@ -336,12 +336,12 @@ static fgw_error_t rnd_actionv_bin_(rnd_hidlib_t *hl, const char *name, fgw_arg_
 	return rnd_actionv_(f, res, argc, argv);
 }
 
-fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t rnd_actionv_bin(rnd_design_t *hl, const char *name, fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	return rnd_actionv_bin_(hl, name, res, argc, argv, 0);
 }
 
-int rnd_actionv(rnd_hidlib_t *hl, const char *name, int argc, const char **argsv)
+int rnd_actionv(rnd_design_t *hl, const char *name, int argc, const char **argsv)
 {
 	fgw_func_t *f;
 	fgw_arg_t res, argv[RND_ACTION_MAX_ARGS+1];
@@ -394,7 +394,7 @@ static int is_res_non_zero(fgw_arg_t *res)
     - any non-last action results a non-zero integer
     - if last_int_fail is true, the last action results a non-zero integer
 */
-static int hid_parse_actionstring(rnd_hidlib_t *hl, fgw_arg_t *res_, const char *rstr, char require_parens, int last_int_fail)
+static int hid_parse_actionstring(rnd_design_t *hl, fgw_arg_t *res_, const char *rstr, char require_parens, int last_int_fail)
 {
 	const char **list = NULL;
 	int max = 0;
@@ -626,7 +626,7 @@ int rnd_cli_leave(void)
 	return -1;
 }
 
-static int rnd_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
+static int rnd_cli_common(rnd_design_t *hl, fgw_arg_t *args)
 {
 	const rnd_action_t *a;
 	fgw_func_t *f;
@@ -646,7 +646,7 @@ static int rnd_cli_common(rnd_hidlib_t *hl, fgw_arg_t *args)
 	return 0;
 }
 
-int rnd_cli_tab(rnd_hidlib_t *hl)
+int rnd_cli_tab(rnd_design_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -662,7 +662,7 @@ int rnd_cli_tab(rnd_hidlib_t *hl)
 	return res.val.nat_int;
 }
 
-int rnd_cli_edit(rnd_hidlib_t *hl)
+int rnd_cli_edit(rnd_design_t *hl)
 {
 	fgw_arg_t res, args[2];
 
@@ -678,7 +678,7 @@ int rnd_cli_edit(rnd_hidlib_t *hl)
 	return res.val.nat_int;
 }
 
-int rnd_cli_mouse(rnd_hidlib_t *hl, rnd_bool notify)
+int rnd_cli_mouse(rnd_design_t *hl, rnd_bool notify)
 {
 	fgw_arg_t res, args[3];
 
@@ -703,7 +703,7 @@ void rnd_cli_uninit(void)
 		free(cli_pop());
 }
 
-static int rnd_parse_command_res_(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode, int last_int_fail)
+static int rnd_parse_command_res_(rnd_design_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode, int last_int_fail)
 {
 	fgw_arg_t args[2];
 	fgw_func_t *f;
@@ -745,12 +745,12 @@ static int rnd_parse_command_res_(rnd_hidlib_t *hl, fgw_arg_t *res, const char *
 	return rnd_actionv_(f, res, 2, args);
 }
 
-int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode)
+int rnd_parse_command_res(rnd_design_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode)
 {
 	return rnd_parse_command_res_(hl, res, str_, force_action_mode, 0);
 }
 
-int rnd_parse_command(rnd_hidlib_t *hl, const char *str, rnd_bool force_action_mode)
+int rnd_parse_command(rnd_design_t *hl, const char *str, rnd_bool force_action_mode)
 {
 	fgw_arg_t res;
 
@@ -761,7 +761,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str, rnd_bool force_action_m
 	return res.val.nat_int;
 }
 
-int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_)
+int rnd_parse_actions(rnd_design_t *hl, const char *str_)
 {
 	return hid_parse_actionstring(hl, NULL, str_, rnd_true, 1);
 }
@@ -935,7 +935,7 @@ static void rnd_action_err(fgw_obj_t *obj, const char *msg)
 	rnd_message(RND_MSG_ERROR, "fungw(%s): %s", obj->name, msg);
 }
 
-int rnd_act_execute_file(rnd_hidlib_t *hidlib, const char *fn)
+int rnd_act_execute_file(rnd_design_t *hidlib, const char *fn)
 {
 	FILE *f;
 	char *s, line[4096];

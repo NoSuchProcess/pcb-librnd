@@ -51,7 +51,7 @@
 typedef struct attr_dlg_s {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	rnd_gtk_t *gctx;
-	rnd_hidlib_t *hidlib; /* active hidlib at the moment the dialog box was created */
+	rnd_design_t *hidlib; /* active hidlib at the moment the dialog box was created */
 	rnd_hid_attribute_t *attrs;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
@@ -1137,7 +1137,7 @@ void rnd_gtk_dad_fixcolor(void *hid_ctx, const rnd_gtk_color_t *color)
 	}
 }
 
-int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
+int rnd_gtk_winplace_cfg(rnd_design_t *hidlib, GtkWidget *widget, void *ctx, const char *id)
 {
 	GtkAllocation allocation;
 
@@ -1152,7 +1152,7 @@ int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 	return 0;
 }
 
-rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx)
+rnd_design_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 

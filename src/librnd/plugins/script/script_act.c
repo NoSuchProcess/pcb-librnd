@@ -143,7 +143,7 @@ static void btn_unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void btn_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
 	if (row == NULL)
 		return;
@@ -161,7 +161,7 @@ static void slist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *ro
 static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	int failed;
 	char *tmp, *fn = rnd_hid_fileselect(rnd_gui, "script to load", "Select a script file to load", NULL, NULL, NULL, "script", RND_HID_FSD_READ, NULL);
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};

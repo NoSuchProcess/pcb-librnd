@@ -29,7 +29,7 @@
 #include <librnd/core/actions.h>
 #include <liblihata/tree.h>
 
-int rnd_hid_cfg_action(rnd_hidlib_t *hl, const lht_node_t *node)
+int rnd_hid_cfg_action(rnd_design_t *hl, const lht_node_t *node)
 {
 	if (node == NULL)
 		return -1;

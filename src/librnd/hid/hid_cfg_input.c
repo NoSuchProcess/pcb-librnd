@@ -183,7 +183,7 @@ static lht_node_t *find_best_action(rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_
 	return NULL;
 }
 
-void rnd_hid_cfg_mouse_action(rnd_hidlib_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active)
+void rnd_hid_cfg_mouse_action(rnd_design_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active)
 {
 	rnd_conf.temp.click_cmd_entry_active = cmd_entry_active;
 	rnd_hid_cfg_action(hl, find_best_action(mouse, button_and_mask));
@@ -589,7 +589,7 @@ char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_r
 }
 
 
-int rnd_hid_cfg_keys_input_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
+int rnd_hid_cfg_keys_input_(rnd_design_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len)
 {
 	rnd_hid_cfg_keyseq_t *ns;
 	rnd_hid_cfg_keyhash_t addr;
@@ -710,7 +710,7 @@ static void xlate_reload(rnd_hid_cfg_keys_t *km, rnd_conf_native_t *nat)
 	xlate_avail = 1;
 }
 
-int rnd_hid_cfg_keys_input(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+int rnd_hid_cfg_keys_input(rnd_design_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
 {
 	rnd_hid_cfg_keyhash_t ck, *cv;
 
@@ -752,7 +752,7 @@ int rnd_hid_cfg_keys_input(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg
 
 /*** key translation hash ends **/
 
-int rnd_hid_cfg_keys_action_(rnd_hidlib_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len)
+int rnd_hid_cfg_keys_action_(rnd_design_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len)
 {
 	int res;
 
@@ -764,7 +764,7 @@ int rnd_hid_cfg_keys_action_(rnd_hidlib_t *hl, rnd_hid_cfg_keyseq_t **seq, int s
 	return res;
 }
 
-int rnd_hid_cfg_keys_action(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km)
+int rnd_hid_cfg_keys_action(rnd_design_t *hl, rnd_hid_cfg_keys_t *km)
 {
 	int ret = rnd_hid_cfg_keys_action_(hl, km->seq, km->seq_len_action);
 	km->seq_len_action = 0;

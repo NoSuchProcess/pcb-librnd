@@ -18,7 +18,7 @@ static mbtk_event_handled_t rnd_mbtk_menu_cb(mbtk_widget_t *w, mbtk_kw_t id, voi
 	menu_handle_t *hand = user_data;
 
 	if (hand->action != NULL) {
-		rnd_hidlib_t *hidlib = rnd_gui->get_hidlib(rnd_gui);
+		rnd_design_t *hidlib = rnd_gui->get_hidlib(rnd_gui);
 		rnd_hid_cfg_action(hidlib, hand->action);
 
 		/* GUI updates to reflect the result of the above action */
@@ -52,7 +52,7 @@ static menu_handle_t *handle_alloc(mbtk_box_t *row, lht_node_t *node)
 /* update the checkbox of a menu item */
 static void menu_chkbox_update(rnd_mbtk_t *mctx, menu_handle_t *m)
 {
-	rnd_hidlib_t *hidlib = mctx->hidlib;
+	rnd_design_t *hidlib = mctx->hidlib;
 
 	if (m->checked != NULL) {
 		int v = rnd_hid_get_flag(hidlib, m->checked);
@@ -72,7 +72,7 @@ TODO("set active");
 }
 
 
-static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_hidlib_t *hidlib)
+static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_design_t *hidlib)
 {
 	menu_handle_t *m;
 	for(m = gdl_first(&mctx->topwin->menu_chk); m != NULL; m = gdl_next(&mctx->topwin->menu_chk, m))

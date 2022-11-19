@@ -2,7 +2,7 @@
 
 typedef struct {
 	/* public: config */
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	FILE *outf;
 	gds_t sbright, sdark, snormal, sclip; /* accumulators for various groups generated parallel */
 	int opacity;
@@ -27,7 +27,7 @@ typedef struct {
 } rnd_svg_t;
 
 
-void rnd_svg_init(rnd_svg_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int opacity, int flip, int true_size);
+void rnd_svg_init(rnd_svg_t *pctx, rnd_design_t *hidlib, FILE *f, int opacity, int flip, int true_size);
 void rnd_svg_uninit(rnd_svg_t *pctx);
 
 /* Write header or footer. Footer also writes cached groups and closes them. */

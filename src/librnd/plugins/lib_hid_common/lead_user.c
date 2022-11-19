@@ -41,7 +41,7 @@
 static rnd_coord_t leadx, leady, step;
 static rnd_bool lead;
 static rnd_hidval_t lead_timer;
-static rnd_hidlib_t *lead_hidlib;
+static rnd_design_t *lead_hidlib;
 
 static void lead_cb(rnd_hidval_t user_data)
 {
@@ -56,7 +56,7 @@ static void lead_cb(rnd_hidval_t user_data)
 		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-static void rnd_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
+static void rnd_lead_user_to_location(rnd_design_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
 {
 	rnd_hidval_t user_data;
 
@@ -75,7 +75,7 @@ static void rnd_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_c
 		lead_timer = rnd_gui->add_timer(rnd_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-void rnd_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_lead_user_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (argc < 4)
 		return;
@@ -88,7 +88,7 @@ void rnd_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event
 
 
 #define ARL LEAD_ARROW_LEN/3
-void rnd_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_lead_user_draw_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (lead) {
 		rnd_hid_gc_t *gc = argv[1].d.p;

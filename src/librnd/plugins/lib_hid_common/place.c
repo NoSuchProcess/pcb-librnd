@@ -115,7 +115,7 @@ static void rnd_pane_store(const char *dlg_id, const char *pane_id, double val)
 		htsi_set(&e->value.panes, rnd_strdup(pane_id), new_val);
 }
 
-void rnd_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_dialog_place(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
@@ -137,7 +137,7 @@ void rnd_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event
 /*	rnd_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-void rnd_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_dialog_resize(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((argc < 7) || (argv[1].type != RND_EVARG_PTR) || (argv[2].type != RND_EVARG_STR))
 		return;
@@ -246,9 +246,9 @@ void rnd_wplc_load(rnd_conf_role_t role)
 	}
 }
 
-lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role);
+lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role);
 
-static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int force)
+static void place_maybe_save(rnd_design_t *hidlib, rnd_conf_role_t role, int force)
 {
 	htsw_entry_t *e;
 	char path[128 + sizeof(BASEPATH)];
@@ -346,19 +346,19 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 /* event handlers that run before the current design is saved to save win geo
    in the design conf and after loading a new board to fetch window placement
    info. */
-static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void place_save_pre(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	place_maybe_save(hidlib, RND_CFR_PROJECT, 0);
 	place_maybe_save(hidlib, RND_CFR_DESIGN, 0);
 }
 
-static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void place_load_post(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_wplc_load(RND_CFR_PROJECT);
 	rnd_wplc_load(RND_CFR_DESIGN);
 }
 
-static void place_pane_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void place_pane_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((argv[1].type != RND_EVARG_STR) || (argv[2].type != RND_EVARG_STR) || (argv[3].type != RND_EVARG_DOUBLE))
 		return;
@@ -366,7 +366,7 @@ static void place_pane_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, 
 	rnd_pane_store(argv[1].d.s, argv[2].d.s, argv[3].d.d);
 }
 
-static void place_new_pane(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void place_new_pane(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	htsw_entry_t *e;
 	htsi_entry_t *i;
@@ -387,12 +387,12 @@ static void place_new_pane(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 	*pos = (double)i->value / (double)PANE_INT2DBL;
 }
 
-void rnd_wplc_save_to_role(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
+void rnd_wplc_save_to_role(rnd_design_t *hidlib, rnd_conf_role_t role)
 {
 	place_maybe_save(hidlib, role, 1);
 }
 
-int rnd_wplc_save_to_file(rnd_hidlib_t *hidlib, const char *fn)
+int rnd_wplc_save_to_file(rnd_design_t *hidlib, const char *fn)
 {
 	htsw_entry_t *e;
 	FILE *f;

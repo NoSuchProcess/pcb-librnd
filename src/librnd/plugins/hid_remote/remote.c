@@ -36,7 +36,7 @@ static const rnd_export_opt_t *remote_get_export_options(rnd_hid_t *hid, int *n_
 
 /* ----------------------------------------------------------------------------- */
 
-static void ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void ev_board_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 }
 
@@ -48,9 +48,9 @@ RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
-rnd_hidlib_t *remote_hidlib;
+rnd_design_t *remote_hidlib;
 
-static void remote_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void remote_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	remote_hidlib = hidlib;
 }
@@ -58,7 +58,7 @@ static void remote_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 static void remote_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	rnd_hid_expose_ctx_t ctx;
-	rnd_hidlib_t *hidlib = remote_hidlib;
+	rnd_design_t *hidlib = remote_hidlib;
 
 	ctx.view.X1 = hidlib->dwg.X1;
 	ctx.view.Y1 = hidlib->dwg.Y1;

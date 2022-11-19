@@ -360,7 +360,7 @@ static void rnd_hid_load_gui_plugin(const char *plugname)
 	}
 }
 
-rnd_hid_t *rnd_hid_find_gui(rnd_hidlib_t *hidlib, const char *preference)
+rnd_hid_t *rnd_hid_find_gui(rnd_design_t *hidlib, const char *preference)
 {
 	rnd_hid_t *gui;
 	int i;
@@ -587,7 +587,7 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 	return exec_prefix;
 }
 
-static void hidlib_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void hidlib_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_tool_gui_init();
 	rnd_gui->set_mouse_cursor(rnd_gui, rnd_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
@@ -1052,7 +1052,7 @@ int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval)
 	return 0;
 }
 
-int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty)
+int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *hidlib, rnd_bool is_empty)
 {
 	if (!rnd_main_exporting)
 		return 0;
@@ -1068,7 +1068,7 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_emp
 	return 1;
 }
 
-void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib)
+void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *hidlib)
 {
 	rnd_hid_in_main_loop = 1;
 	rnd_event(hidlib, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);

@@ -67,7 +67,7 @@ void rnd_tool_uninit(void)
 	vtp0_uninit(&rnd_tools);
 }
 
-void rnd_tool_chg_mode(rnd_hidlib_t *hl)
+void rnd_tool_chg_mode(rnd_design_t *hl)
 {
 	if ((hl != NULL) && (!tool_select_lock))
 		rnd_tool_select_by_id(hl, rnd_conf.editor.mode);
@@ -110,7 +110,7 @@ rnd_toolid_t rnd_tool_lookup(const char *name)
 	return RND_TOOLID_INVALID;
 }
 
-int rnd_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name)
+int rnd_tool_select_by_name(rnd_design_t *hidlib, const char *name)
 {
 	rnd_toolid_t id = rnd_tool_lookup(name);
 	if (id == RND_TOOLID_INVALID)
@@ -118,7 +118,7 @@ int rnd_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name)
 	return rnd_tool_select_by_id(hidlib, id);
 }
 
-int rnd_tool_select_by_id(rnd_hidlib_t *hidlib, rnd_toolid_t id)
+int rnd_tool_select_by_id(rnd_design_t *hidlib, rnd_toolid_t id)
 {
 	char id_s[32];
 	static rnd_bool recursing = rnd_false;
@@ -157,7 +157,7 @@ int rnd_tool_select_by_id(rnd_hidlib_t *hidlib, rnd_toolid_t id)
 	return 0;
 }
 
-int rnd_tool_select_highest(rnd_hidlib_t *hidlib)
+int rnd_tool_select_highest(rnd_design_t *hidlib)
 {
 	rnd_toolid_t n, bestn = RND_TOOLID_INVALID;
 	unsigned int bestp = -1;
@@ -173,7 +173,7 @@ int rnd_tool_select_highest(rnd_hidlib_t *hidlib)
 	return rnd_tool_select_by_id(hidlib, bestn);
 }
 
-int rnd_tool_save(rnd_hidlib_t *hidlib)
+int rnd_tool_save(rnd_design_t *hidlib)
 {
 	save_stack[save_position] = rnd_conf.editor.mode;
 	if (save_position < RND_MAX_MODESTACK_DEPTH - 1)
@@ -183,7 +183,7 @@ int rnd_tool_save(rnd_hidlib_t *hidlib)
 	return 0;
 }
 
-int rnd_tool_restore(rnd_hidlib_t *hidlib)
+int rnd_tool_restore(rnd_design_t *hidlib)
 {
 	if (save_position == 0) {
 		rnd_message(RND_MSG_ERROR, "hace: underflow of restore mode\n");
@@ -230,37 +230,37 @@ static void uninit_current_tool(void)
 	wrap_void(uninit, ());
 }
 
-void rnd_tool_press(rnd_hidlib_t *hidlib)
+void rnd_tool_press(rnd_design_t *hidlib)
 {
 	wrap_void(press, (hidlib));
 }
 
-void rnd_tool_release(rnd_hidlib_t *hidlib)
+void rnd_tool_release(rnd_design_t *hidlib)
 {
 	wrap_void(release, (hidlib));
 }
 
-void rnd_tool_adjust_attached(rnd_hidlib_t *hl)
+void rnd_tool_adjust_attached(rnd_design_t *hl)
 {
 	wrap_void(adjust_attached, (hl));
 }
 
-void rnd_tool_draw_attached(rnd_hidlib_t *hl)
+void rnd_tool_draw_attached(rnd_design_t *hl)
 {
 	wrap_void(draw_attached, (hl));
 }
 
-rnd_bool rnd_tool_undo_act(rnd_hidlib_t *hl)
+rnd_bool rnd_tool_undo_act(rnd_design_t *hl)
 {
 	wrap_retv(undo_act, return rnd_true, (hl));
 }
 
-rnd_bool rnd_tool_redo_act(rnd_hidlib_t *hl)
+rnd_bool rnd_tool_redo_act(rnd_design_t *hl)
 {
 	wrap_retv(redo_act, return rnd_true, (hl));
 }
 
-static void do_release(rnd_hidlib_t *hidlib)
+static void do_release(rnd_design_t *hidlib)
 {
 	if (rnd_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
 		return;
@@ -275,7 +275,7 @@ static void do_release(rnd_hidlib_t *hidlib)
 	rnd_event(hidlib, RND_EVENT_TOOL_RELEASE, NULL);
 }
 
-void rnd_tool_do_press(rnd_hidlib_t *hidlib)
+void rnd_tool_do_press(rnd_design_t *hidlib)
 {
 	if (rnd_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 1) == 0))
 		return;
@@ -296,7 +296,7 @@ static const char rnd_acth_Tool[] = "Change or use the tool mode.";
 /* DOC: tool.html */
 static fgw_error_t rnd_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
+	rnd_design_t *hidlib = RND_ACT_HIDLIB;
 	const char *cmd;
 	RND_ACT_IRES(0);
 	RND_ACT_CONVARG(1, FGW_STR, Tool, cmd = argv[1].val.str);

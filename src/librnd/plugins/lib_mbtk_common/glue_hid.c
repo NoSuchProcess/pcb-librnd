@@ -155,7 +155,7 @@ static void rnd_mbtk_do_exit(rnd_hid_t *hid);
 
 TODO("in mbtk this can be done when creating the window");
 #if 0
-void rnd_mbtk_topwinplace(rnd_hidlib_t *hidlib, *dialog, const char *id)
+void rnd_mbtk_topwinplace(rnd_design_t *hidlib, *dialog, const char *id)
 {
 }
 #endif
@@ -420,7 +420,7 @@ static int rnd_mbtk_open_popup(rnd_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static void rnd_mbtk_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void rnd_mbtk_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 
@@ -445,7 +445,7 @@ TODO("implemet");
 #endif
 }
 
-static rnd_hidlib_t *rnd_mbtk_get_hidlib(rnd_hid_t *hid)
+static rnd_design_t *rnd_mbtk_get_hidlib(rnd_hid_t *hid)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 

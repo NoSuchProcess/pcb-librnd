@@ -14,7 +14,7 @@ typedef struct {
 } rnd_hid_cfg_mouse_t;
 
 int rnd_hid_cfg_mouse_init(rnd_hid_cfg_t *hr, rnd_hid_cfg_mouse_t *mouse);
-void rnd_hid_cfg_mouse_action(rnd_hidlib_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active);
+void rnd_hid_cfg_mouse_action(rnd_design_t *hl, rnd_hid_cfg_mouse_t *mouse, rnd_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active);
 
 
 /************************** KEYBOARD ***************************/
@@ -127,13 +127,13 @@ char *rnd_hid_cfg_keys_gen_desc(rnd_hid_cfg_mod_t mods, unsigned short int key_r
      + a positive integer means the lookup succeeded and the return value
        is the length of the resulting sequence.
 */
-int rnd_hid_cfg_keys_input(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
-int rnd_hid_cfg_keys_input_(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len);
+int rnd_hid_cfg_keys_input(rnd_design_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
+int rnd_hid_cfg_keys_input_(rnd_design_t *hl, rnd_hid_cfg_keys_t *km, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr, rnd_hid_cfg_keyseq_t **seq, int *seq_len);
 
 /* Run the action for a key sequence looked up by rnd_hid_cfg_keys_input().
    Returns: the result of the action or -1 on error */
-int rnd_hid_cfg_keys_action(rnd_hidlib_t *hl, rnd_hid_cfg_keys_t *km);
-int rnd_hid_cfg_keys_action_(rnd_hidlib_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len);
+int rnd_hid_cfg_keys_action(rnd_design_t *hl, rnd_hid_cfg_keys_t *km);
+int rnd_hid_cfg_keys_action_(rnd_design_t *hl, rnd_hid_cfg_keyseq_t **seq, int seq_len);
 
 /* Print a squence into dst in human readable form; returns strlen(dst) */
 int rnd_hid_cfg_keys_seq(rnd_hid_cfg_keys_t *km, char *dst, int dst_len);

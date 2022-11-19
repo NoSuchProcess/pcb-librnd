@@ -96,7 +96,7 @@ rnd_logline_t *rnd_log_find_first_unseen(void);
 void rnd_log_del_range(unsigned long from, unsigned long to);
 
 /* Export the whole log list to a file, in lihata or plain text */
-int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata);
+int rnd_log_export(rnd_design_t *hidlib, const char *fn, int fmt_lihata);
 
 /* Free all memory and reset the log system */
 void rnd_log_uninit(void);

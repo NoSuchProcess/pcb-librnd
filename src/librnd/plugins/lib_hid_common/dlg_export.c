@@ -68,7 +68,7 @@ static rnd_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	export_ctx_t *export_ctx = caller_data;
-	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_design_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	int h, wid;
 
 

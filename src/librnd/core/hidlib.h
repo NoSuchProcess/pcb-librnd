@@ -42,7 +42,7 @@ typedef struct rnd_mark_s {
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 } rnd_mark_t;
 
-struct rnd_hidlib_s {
+struct rnd_design_s {
 	rnd_coord_t grid;                  /* grid resolution */
 	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
 	rnd_box_t dwg;                     /* drawing area extents (or design dimensions) */
@@ -126,26 +126,26 @@ typedef struct rnd_app_s {
 
 	/*** callbacks ***/
 	/* Optional: called to update crosshair-attached object because crosshair coords likely changed; if NULL, rnd_tool_adjust_attached() is called instead (most apps want that) */
-	void (*adjust_attached_objects)(rnd_hidlib_t *hl);
+	void (*adjust_attached_objects)(rnd_design_t *hl);
 
 /* Optional: Suspend the crosshair: save all crosshair states in a newly
    allocated and returned temp buffer, then reset the crosshair to initial
    state; the returned buffer is used to restore the crosshair states later
    on. Used in the get location loop. */
-	void *(*crosshair_suspend)(rnd_hidlib_t *hl);
-	void (*crosshair_restore)(rnd_hidlib_t *hl, void *susp_data);
+	void *(*crosshair_suspend)(rnd_design_t *hl);
+	void (*crosshair_restore)(rnd_design_t *hl, void *susp_data);
 
 /* Optional: move the crosshair to an absolute x;y coord on the design and
    update the GUI; if mouse_mot is non-zero, the request is a direct result
    of a mouse motion event */
-	void (*crosshair_move_to)(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
+	void (*crosshair_move_to)(rnd_design_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 /* Optional: draw any fixed mark on XOR overlay; if inhibit_drawing_mode is
    true, do not call ->set_drawing_mode */
-	void (*draw_marks)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+	void (*draw_marks)(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 	/* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-	void (*draw_attached)(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+	void (*draw_attached)(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 	/*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, design or preview). The expose

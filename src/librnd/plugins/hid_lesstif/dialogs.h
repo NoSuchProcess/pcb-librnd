@@ -2,7 +2,7 @@
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
-	rnd_hidlib_t *hidlib; /* the hidlib that was active at the moment the dialog was created */
+	rnd_design_t *hidlib; /* the hidlib that was active at the moment the dialog was created */
 	rnd_hid_attribute_t *attrs;
 	int n_attrs;
 	Widget *wl;   /* content widget */

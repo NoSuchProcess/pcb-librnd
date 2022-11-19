@@ -261,7 +261,7 @@ static char *script_fn(const char *fn)
 	return rnd_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
-int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char *lang)
+int rnd_script_load(rnd_design_t *hl, const char *id, const char *fn, const char *lang)
 {
 	pup_plugin_t *pup = NULL;
 	script_t *s;
@@ -330,7 +330,7 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 	return 0;
 }
 
-static int script_reload(rnd_hidlib_t *hl, const char *id)
+static int script_reload(rnd_design_t *hl, const char *id)
 {
 	int ret;
 	char *fn, *lang, *cookie;
@@ -398,7 +398,7 @@ static void oneliner_boilerplate(FILE *f, const char *lang, int pre)
 	}
 }
 
-int script_oneliner(rnd_hidlib_t *hl, const char *lang, const char *src)
+int script_oneliner(rnd_design_t *hl, const char *lang, const char *src)
 {
 	FILE *f;
 	char *fn;
@@ -436,7 +436,7 @@ char *script_cookie = "script plugin";
 static rnd_anyload_t script_anyload = {0};
 
 
-static int script_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd)
+static int script_anyload_file(const rnd_anyload_t *al, rnd_design_t *hl, const char *filename, const char *type, lht_node_t *nd)
 {
 	lht_node_t *nlang, *nid;
 	const char *lang, *id;

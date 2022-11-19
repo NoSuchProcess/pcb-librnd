@@ -35,7 +35,7 @@ typedef struct {
 	double next, period;
 	long count;
 	char *user_data;
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	char aname[1];
 } script_timer_t;
 
@@ -120,7 +120,7 @@ static void start_timer(void)
 	rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
 }
 
-static void script_timer_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void script_timer_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (want_timer && !timer_running) /* script created a timer before gui init */
 		start_timer();

@@ -223,11 +223,11 @@ struct rnd_hid_s {
 
 	/* called by core when the global hidlib context changes (e.g. design changed)
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
-	void (*set_hidlib)(rnd_hid_t *hid, rnd_hidlib_t *hidlib);
+	void (*set_hidlib)(rnd_hid_t *hid, rnd_design_t *hidlib);
 
 	/* Return the hidlib the given GUI HID is currently showing
 	   (not implemented in export HIDs) */
-	rnd_hidlib_t *(*get_hidlib)(rnd_hid_t *hid);
+	rnd_design_t *(*get_hidlib)(rnd_hid_t *hid);
 
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
@@ -533,7 +533,7 @@ struct rnd_hid_s {
 	   is different from ->get_hidlib because this returns the hidlib associated
 	   with the dialog, which (for multi-instance local dialogs) may be different
 	   from the hidlib what's currently show by the GUI */
-	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
+	rnd_design_t *(*get_dad_hidlib)(void *hid_ctx);
 
 	/*** (these should be upper, but the struct has to be extended at spares
 	     for binary compatibility) ***/
@@ -593,13 +593,13 @@ extern int rnd_pixel_slop;
    value. "msg" is printed above the query. The optional title
    is the window title.
    Returns NULL on cancel. The caller needs to free the returned string */
-char *rnd_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
+char *rnd_hid_prompt_for(rnd_design_t *hl, const char *msg, const char *default_string, const char *title);
 
 /* Present a dialog box with a message and variable number of buttons. If icon
    is not NULL, attempt to draw the named icon on the left. The vararg part is
    one or more buttons, as a list of "char *label, int retval", terminated with
    NULL. */
-int rnd_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
+int rnd_hid_message_box(rnd_design_t *hl, const char *icon, const char *title, const char *label, ...);
 
 /* Show modal progressbar to the user, offering cancel long running processes.
    Pass all zeros to flush display and remove the dialog.
@@ -637,14 +637,14 @@ do { \
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */
-void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete);
+void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete);
 
 /* Plugin helper: timed batch updates; any plugin may trigger the update, multiple
    triggers are batched and only a single RND_EVENT_GUI_BATCH_TIMER is emitted
    after a certain time passed since the last trigger. The event is emitted
    with the last hidlib argument passed. If there's no GUI available, no event
    is emitted. */
-void rnd_hid_gui_batch_timer(rnd_hidlib_t *hidlib);
+void rnd_hid_gui_batch_timer(rnd_design_t *hidlib);
 
 	/* Run the file selection dialog. Return a string the caller needs to free().
 	 * title may be used as a dialog box title.  Ignored if NULL.

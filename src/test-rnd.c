@@ -57,7 +57,7 @@ static const char *menu_file_paths[] = { "./", "~/.foobar/", NULL };
 /*** the data model ***/
 #include <librnd/core/hidlib.h>
 struct {
-	rnd_hidlib_t hidlib;
+	rnd_design_t hidlib;
 	int whatever_data;
 } foobar;
 
@@ -77,7 +77,7 @@ void foobar_crosshair_gui_uninit(void)
 	rnd_hid_destroy_gc(foobar_crosshair_gc);
 }
 
-static void my_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+static void my_draw_attached(rnd_design_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, 1, NULL);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE_XOR, 1, NULL);
@@ -88,7 +88,7 @@ static void my_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
-static void my_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+static void my_crosshair_move_to(rnd_design_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	/* do the grid fit/snap then: update the GUI */
 	rnd_hid_notify_crosshair_change(hl, rnd_false);

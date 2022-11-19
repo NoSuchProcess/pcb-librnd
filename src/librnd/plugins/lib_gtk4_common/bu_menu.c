@@ -58,7 +58,7 @@ static void maybe_set_chkbtn(GtkWidget *chk, int v)
 	gtk_check_button_set_active(GTK_CHECK_BUTTON(chk), v);
 }
 
-static void menu_item_update_chkbox(rnd_hidlib_t *hidlib, lht_node_t *mnd, GtkWidget *real_row)
+static void menu_item_update_chkbox(rnd_design_t *hidlib, lht_node_t *mnd, GtkWidget *real_row)
 {
 	int v;
 	GtkWidget *w, *lab, *chk, *hbox = gtk_widget_get_first_child(real_row);
@@ -90,7 +90,7 @@ static void menu_item_update_chkbox(rnd_hidlib_t *hidlib, lht_node_t *mnd, GtkWi
 		maybe_set_chkbtn(chk, !!v);
 }
 
-static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
+static void menu_update_toggle_state(rnd_design_t *hidlib, open_menu_t *om)
 {
 	int n;
 	GtkWidget *real_row;
@@ -104,7 +104,7 @@ static void menu_update_toggle_state(rnd_hidlib_t *hidlib, open_menu_t *om)
 	}
 }
 
-void rnd_gtk_main_menu_update_toggle_state(rnd_hidlib_t *hidlib, GtkWidget *menubar)
+void rnd_gtk_main_menu_update_toggle_state(rnd_design_t *hidlib, GtkWidget *menubar)
 {
 	open_menu_t *om;
 	for(om = gdl_first(&open_menu); om != NULL; om = om->link.next)
@@ -707,7 +707,7 @@ static void gtkci_menu_install_hotkeys(rnd_gtk_menu_ctx_t *menu, const lht_node_
 	}
 }
 
-GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib)
+GtkWidget *rnd_gtk_load_menus(rnd_gtk_menu_ctx_t *menu, rnd_design_t *hidlib)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

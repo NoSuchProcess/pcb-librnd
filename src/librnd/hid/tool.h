@@ -60,13 +60,13 @@ typedef struct rnd_tool_s {
 	/* tool implementation */
 	void     (*init)(void);
 	void     (*uninit)(void);
-	void     (*press)(rnd_hidlib_t *hl);
-	void     (*release)(rnd_hidlib_t *hl);
-	void     (*adjust_attached)(rnd_hidlib_t *hl);
-	void     (*draw_attached)(rnd_hidlib_t *hl);
-	rnd_bool (*undo_act)(rnd_hidlib_t *hl);
-	rnd_bool (*redo_act)(rnd_hidlib_t *hl);
-	void     (*escape)(rnd_hidlib_t *hl);
+	void     (*press)(rnd_design_t *hl);
+	void     (*release)(rnd_design_t *hl);
+	void     (*adjust_attached)(rnd_design_t *hl);
+	void     (*draw_attached)(rnd_design_t *hl);
+	rnd_bool (*undo_act)(rnd_design_t *hl);
+	rnd_bool (*redo_act)(rnd_design_t *hl);
+	void     (*escape)(rnd_design_t *hl);
 	
 	unsigned long user_flags;
 
@@ -88,7 +88,7 @@ void rnd_tool_init(void);
 void rnd_tool_uninit(void);
 
 /* call this when the mode (tool) config node changes */
-void rnd_tool_chg_mode(rnd_hidlib_t *hl);
+void rnd_tool_chg_mode(rnd_design_t *hl);
 
 /* Insert a new tool in rnd_tools; returns -1 on failure */
 rnd_toolid_t rnd_tool_reg(rnd_tool_t *tool, const char *cookie);
@@ -101,12 +101,12 @@ rnd_toolid_t rnd_tool_lookup(const char *name);
 
 
 /* Select a tool by name, id or pick the highest prio tool; return 0 on success */
-int rnd_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name);
-int rnd_tool_select_by_id(rnd_hidlib_t *hidlib, rnd_toolid_t id);
-int rnd_tool_select_highest(rnd_hidlib_t *hidlib);
+int rnd_tool_select_by_name(rnd_design_t *hidlib, const char *name);
+int rnd_tool_select_by_id(rnd_design_t *hidlib, rnd_toolid_t id);
+int rnd_tool_select_highest(rnd_design_t *hidlib);
 
-int rnd_tool_save(rnd_hidlib_t *hidlib);
-int rnd_tool_restore(rnd_hidlib_t *hidlib);
+int rnd_tool_save(rnd_design_t *hidlib);
+int rnd_tool_restore(rnd_design_t *hidlib);
 
 /* Called after GUI_INIT; registers all mouse cursors in the GUI */
 void rnd_tool_gui_init(void);
@@ -115,16 +115,16 @@ void rnd_tool_gui_init(void);
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in rnd_conf.editor.mode ****/
 
-void rnd_tool_press(rnd_hidlib_t *hidlib);
-void rnd_tool_release(rnd_hidlib_t *hidlib);
-void rnd_tool_adjust_attached(rnd_hidlib_t *hl);
-void rnd_tool_draw_attached(rnd_hidlib_t *hl);
-rnd_bool rnd_tool_undo_act(rnd_hidlib_t *hl);
-rnd_bool rnd_tool_redo_act(rnd_hidlib_t *hl);
+void rnd_tool_press(rnd_design_t *hidlib);
+void rnd_tool_release(rnd_design_t *hidlib);
+void rnd_tool_adjust_attached(rnd_design_t *hl);
+void rnd_tool_draw_attached(rnd_design_t *hl);
+rnd_bool rnd_tool_undo_act(rnd_design_t *hl);
+rnd_bool rnd_tool_redo_act(rnd_design_t *hl);
 
 
 /* fake a click */
-void rnd_tool_do_press(rnd_hidlib_t *hidlib);
+void rnd_tool_do_press(rnd_design_t *hidlib);
 
 /**** Low level, for internal use ****/
 

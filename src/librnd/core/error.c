@@ -200,7 +200,7 @@ void rnd_log_del_range(unsigned long from, unsigned long to)
 
 
 
-int rnd_log_export(rnd_hidlib_t *hidlib, const char *fn, int fmt_lihata)
+int rnd_log_export(rnd_design_t *hidlib, const char *fn, int fmt_lihata)
 {
 	FILE *f;
 	rnd_logline_t *n;

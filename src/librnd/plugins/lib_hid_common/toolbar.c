@@ -181,13 +181,13 @@ static void toolbar_create(void)
 	}
 }
 
-void rnd_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_toolbar_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((RND_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
 		toolbar_create();
 }
 
-void rnd_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+void rnd_toolbar_reg_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((toolbar.sub_inited) && (argv[1].type == RND_EVARG_PTR)) {
 		rnd_tool_t *tool = argv[1].d.p;

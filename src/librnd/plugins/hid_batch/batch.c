@@ -58,7 +58,7 @@ static void uninit_batch(void)
 	}
 }
 
-static void ev_design_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void ev_design_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -92,7 +92,7 @@ static void log_append(rnd_logline_t *line)
 	line->seen = 1;
 }
 
-static void ev_log_append(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void ev_log_append(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (!batch_active)
 		return;
@@ -312,12 +312,12 @@ static void batch_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_boo
 {
 }
 
-static void batch_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void batch_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	hid->hid_data = hidlib;
 }
 
-static rnd_hidlib_t *batch_get_hidlib(rnd_hid_t *hid)
+static rnd_design_t *batch_get_hidlib(rnd_hid_t *hid)
 {
 	return hid->hid_data;
 }
@@ -325,7 +325,7 @@ static rnd_hidlib_t *batch_get_hidlib(rnd_hid_t *hid)
 
 static void batch_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
-	rnd_hidlib_t *hidlib = hid->hid_data;
+	rnd_design_t *hidlib = hid->hid_data;
 	viewbox->X1 = hidlib->dwg.X1;
 	viewbox->Y1 = hidlib->dwg.Y1;
 	viewbox->X2 = hidlib->dwg.X2;

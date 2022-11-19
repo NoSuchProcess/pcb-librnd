@@ -33,7 +33,7 @@
    an action (if name has a parenthesis). When an action is run, it has 0
    or 1 argument only and the return value of the action is returned.
    On error, returns -1. */
-int rnd_hid_get_flag(rnd_hidlib_t *hidlib, const char *name);
+int rnd_hid_get_flag(rnd_design_t *hidlib, const char *name);
 
 /* Return non-zero if submenu has further submenus; generate rnd_message(RND_MSG_ERROR, ) if
    there is a submenu field with the wrong lihata type */

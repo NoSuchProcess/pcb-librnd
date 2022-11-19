@@ -39,7 +39,7 @@ typedef struct gdImage_s gdImage;
 
 typedef struct rnd_drwpx_s {
 	/* public: config */
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 	double scale; /* should be 1 by default */
 	double bloat;
 	rnd_coord_t x_shift, y_shift;
@@ -71,7 +71,7 @@ typedef struct rnd_drwpx_s {
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_drwpx_t;
 
-void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_hidlib_t *hidlib);
+void rnd_drwpx_init(rnd_drwpx_t *pctx, rnd_design_t *hidlib);
 void rnd_drwpx_uninit(rnd_drwpx_t *pctx);
 
 void rnd_drwpx_parse_bloat(rnd_drwpx_t *pctx, const char *str);

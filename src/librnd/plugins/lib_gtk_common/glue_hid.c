@@ -186,7 +186,7 @@ static void rnd_gtkg_do_exit_(rnd_gtk_t *gctx)
 static void rnd_gtkg_do_exit(rnd_hid_t *hid);
 
 
-void rnd_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const char *id)
+void rnd_gtk_topwinplace(rnd_design_t *hidlib, GtkWidget *dialog, const char *id)
 {
 	int plc[4] = {-1, -1, -1, -1};
 
@@ -457,7 +457,7 @@ static int rnd_gtkg_open_popup(rnd_hid_t *hid, const char *menupath)
 	return 0;
 }
 
-static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
+static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 
@@ -479,7 +479,7 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
 }
 
-static rnd_hidlib_t *rnd_gtkg_get_hidlib(rnd_hid_t *hid)
+static rnd_design_t *rnd_gtkg_get_hidlib(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
 

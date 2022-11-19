@@ -61,7 +61,7 @@ struct rnd_gtk_impl_s {
 	gboolean (*preview_expose)(GtkWidget *widget, rnd_gtk_expose_t *p, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
-	void (*draw_grid_local)(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
+	void (*draw_grid_local)(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
 
 	/* screen */
 	void (*screen_update)(void);
@@ -71,8 +71,8 @@ struct rnd_gtk_impl_s {
 	const gchar *(*get_color_name)(rnd_gtk_color_t *color);
 
 	void (*set_special_colors)(rnd_conf_native_t *cfg);
-	void (*draw_pixmap)(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
-	void (*uninit_pixmap)(rnd_hidlib_t *hidlib, rnd_gtk_pixmap_t *gpm);
+	void (*draw_pixmap)(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
+	void (*uninit_pixmap)(rnd_design_t *hidlib, rnd_gtk_pixmap_t *gpm);
 };
 
 #include <librnd/plugins/lib_gtk_common/ui_zoompan.h>
@@ -199,7 +199,7 @@ struct rnd_gtk_s {
 	rnd_gtk_impl_t impl;
 	rnd_gtk_port_t port;
 
-	rnd_hidlib_t *hidlib;
+	rnd_design_t *hidlib;
 
 	GtkWidget *wtop_window;
 

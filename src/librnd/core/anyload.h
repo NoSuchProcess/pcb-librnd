@@ -31,8 +31,8 @@
 typedef struct rnd_anyload_s rnd_anyload_t;
 
 struct rnd_anyload_s {
-	int (*load_subtree)(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root);
-	int (*load_file)(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd);
+	int (*load_subtree)(const rnd_anyload_t *al, rnd_design_t *hl, lht_node_t *root);
+	int (*load_file)(const rnd_anyload_t *al, rnd_design_t *hl, const char *filename, const char *type, lht_node_t *nd);
 	const char *cookie;
 
 	/* Spare: see doc/developer/spare.txt */
@@ -50,7 +50,7 @@ void rnd_anyload_unreg_by_cookie(const char *cookie);
 /* Load a file or pack: path may be a lihata file (either anything we can load
    or a $APP-anyload-v*) or a directory that has an anyload.lht in it.
    Return 0 on success. */
-int rnd_anyload(rnd_hidlib_t *hidlib, const char *path);
+int rnd_anyload(rnd_design_t *hidlib, const char *path);
 
 /* if non-zero: merge and update the conf after loading anyloads */
 extern int rnd_anyload_conf_needs_update;

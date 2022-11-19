@@ -229,7 +229,7 @@ char *rnd_gtk_command_entry_get(rnd_gtk_command_t *ctx, const char *prompt, cons
 }
 
 
-void rnd_gtk_handle_user_command(rnd_hidlib_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise)
+void rnd_gtk_handle_user_command(rnd_design_t *hl, rnd_gtk_command_t *ctx, rnd_bool raise)
 {
 	char *command;
 

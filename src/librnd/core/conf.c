@@ -1242,7 +1242,7 @@ lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t
 	return conf_lht_get_first_(rnd_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
 }
 
-lht_node_t *rnd_pref_ensure_conf_root(rnd_hidlib_t *hidlib, rnd_conf_role_t role)
+lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role)
 {
 	lht_node_t *m;
 
@@ -1978,7 +1978,7 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
 }
 
 
-int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn)
+int rnd_conf_save_file(rnd_design_t *hidlib, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn)
 {
 	int fail = 1;
 	lht_node_t *r = rnd_conf_lht_get_first(role, 0);
@@ -2058,7 +2058,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 	return fail;
 }
 
-int rnd_conf_export_to_file(rnd_hidlib_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path)
+int rnd_conf_export_to_file(rnd_design_t *hidlib, const char *fn, rnd_conf_role_t role, const char *conf_path)
 {
 	lht_node_t *at = rnd_conf_lht_get_at(role, conf_path, 0);
 	lht_err_t r;
@@ -2298,7 +2298,7 @@ int rnd_conf_print_native(rnd_conf_pfn pfn, void *ctx, const char * prefix, int 
 
 
 /****************/
-static int conf_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+static int conf_anyload_subtree(const rnd_anyload_t *al, rnd_design_t *hl, lht_node_t *root)
 {
 	lht_doc_t *doc;
 	int res;

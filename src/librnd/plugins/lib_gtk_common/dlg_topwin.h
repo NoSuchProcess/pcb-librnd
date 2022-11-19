@@ -11,7 +11,7 @@
 #include "rnd_gtk.h"
 #include "bu_command.h"
 
-void rnd_gtk_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie);
+void rnd_gtk_update_toggle_flags(rnd_design_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie);
 void rnd_gtk_create_topwin_widgets(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw, GtkWidget *in_top_window);
 void rnd_gtk_fullscreen_apply(rnd_gtk_topwin_t *tw);
 void rnd_gtk_tw_layer_vis_update(rnd_gtk_topwin_t *tw);

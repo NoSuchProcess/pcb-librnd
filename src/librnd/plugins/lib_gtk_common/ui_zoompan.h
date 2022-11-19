@@ -76,7 +76,7 @@ typedef struct {
 	struct rnd_gtk_s *ctx;
 
 	unsigned local_hidlib:1; /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
-	rnd_hidlib_t *hidlib;    /* remember the hidlib the dialog was opened for */
+	rnd_design_t *hidlib;    /* remember the hidlib the dialog was opened for */
 } rnd_gtk_view_t;
 
 #include "in_mouse.h"

@@ -144,7 +144,7 @@ void rnd_pixmap_uninit(void)
 		rnd_message(RND_MSG_ERROR, "rnd_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
 
-int rnd_old_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
+int rnd_old_pixmap_load(rnd_design_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	rnd_pixmap_import_t *i;
 	for(i = rnd_pixmap_chain; i != NULL; i = i->next)
@@ -153,7 +153,7 @@ int rnd_old_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 	return -1;
 }
 
-rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
+rnd_pixmap_t *rnd_pixmap_load(rnd_design_t *hidlib, const char *fn)
 {
 	rnd_pixmap_t *p = calloc(sizeof(rnd_pixmap_t), 1);
 	if (rnd_old_pixmap_load(hidlib, p, fn) == 0)
@@ -162,7 +162,7 @@ rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
 	return NULL;
 }
 
-rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
+rnd_pixmap_t *rnd_pixmap_alloc(rnd_design_t *hidlib, long sx, long sy)
 {
 	rnd_pixmap_t *p = calloc(sizeof(rnd_pixmap_t), 1);
 	p->sx = sx;
@@ -172,7 +172,7 @@ rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
 	return p;
 }
 
-rnd_pixmap_t *rnd_pixmap_dup(rnd_hidlib_t *hidlib, const rnd_pixmap_t *pxm)
+rnd_pixmap_t *rnd_pixmap_dup(rnd_design_t *hidlib, const rnd_pixmap_t *pxm)
 {
 	rnd_pixmap_t *r = malloc(sizeof(rnd_pixmap_t));
 	memcpy(r, pxm, sizeof(rnd_pixmap_t));

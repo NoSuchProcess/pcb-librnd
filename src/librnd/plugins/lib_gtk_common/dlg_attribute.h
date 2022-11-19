@@ -25,9 +25,9 @@ void rnd_gtk_dad_fixcolor(void *hid_ctx, const rnd_gtk_color_t *color);
 
 /* Report new window coords to the central window placement code
    emitting an event */
-int rnd_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
+int rnd_gtk_winplace_cfg(rnd_design_t *hidlib, GtkWidget *widget, void *ctx, const char *id);
 
-rnd_hidlib_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx);
+rnd_design_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx);
 
 /* Close and free all open DAD dialogs */
 void rnd_gtk_attr_dlg_free_all(rnd_gtk_t *gctx);

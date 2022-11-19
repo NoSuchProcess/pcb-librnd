@@ -51,7 +51,7 @@ static const char *rnd_stroke_cookie = "stroke plugin";
 static rnd_coord_t stroke_first_x, stroke_first_y, stroke_last_x, stroke_last_y;
 static rnd_bool rnd_mid_stroke = rnd_false;
 
-static int rnd_stroke_exec(rnd_hidlib_t *hl, const char *seq)
+static int rnd_stroke_exec(rnd_design_t *hl, const char *seq)
 {
 	rnd_conf_listitem_t *item;
 	int idx;
@@ -65,7 +65,7 @@ static int rnd_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 	return 0;
 }
 
-static void rnd_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_finish(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	char msg[255];
 	int *handled = argv[1].d.p;
@@ -78,7 +78,7 @@ static void rnd_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 		*handled = rnd_stroke_exec(hidlib, msg);
 }
 
-static void rnd_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_record(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 
@@ -93,7 +93,7 @@ static void rnd_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 	return;
 }
 
-static void rnd_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void rnd_stroke_start(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 	rnd_mid_stroke = rnd_true;

@@ -73,18 +73,18 @@ rnd_conf_hid_id_t pref_hid;
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
 static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
 
-pref_ctx_t *rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
+pref_ctx_t *rnd_pref_get_ctx(rnd_design_t *hidlib)
 {
 	return &pref_ctx;
 }
 
-lht_node_t *rnd_pref_dlg2conf_pre(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
+lht_node_t *rnd_pref_dlg2conf_pre(rnd_design_t *hidlib, pref_ctx_t *ctx)
 {
 	return rnd_pref_ensure_conf_root(hidlib, ctx->role);
 }
 
 
-void rnd_pref_dlg2conf_post(rnd_hidlib_t *hidlib, pref_ctx_t *ctx)
+void rnd_pref_dlg2conf_post(rnd_design_t *hidlib, pref_ctx_t *ctx)
 {
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), ctx->role, NULL);
@@ -383,7 +383,7 @@ static void rnd_dlg_pref(const char *target_tab_str, const char *tabarg)
 		pref_tab_chosen(&pref_ctx, 0);
 }
 
-static void pref_ev_design_replaced(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pref_ev_design_replaced(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
@@ -397,7 +397,7 @@ static void pref_ev_design_replaced(rnd_hidlib_t *hidlib, void *user_data, int a
 	rnd_dlg_pref_win_design_replaced(ctx);
 }
 
-static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pref_ev_board_meta_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
@@ -407,7 +407,7 @@ static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, in
 	pref_win_brd2dlg(ctx);
 }
 
-static void pref_ev_menu_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+static void pref_ev_menu_changed(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)

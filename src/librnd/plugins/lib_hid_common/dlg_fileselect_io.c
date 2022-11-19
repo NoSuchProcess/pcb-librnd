@@ -45,7 +45,7 @@ char *rnd_strchr_pathsep(char *path)
 }
 
 /* mkdir -p on arg - writes (but restores) the string in arg */
-static void rnd_mkdir_p(rnd_hidlib_t *hidlib, char *arg)
+static void rnd_mkdir_p(rnd_design_t *hidlib, char *arg)
 {
 	char *curr, *next, save;
 

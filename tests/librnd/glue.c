@@ -1,7 +1,7 @@
 /*** hidlib glue ***/
 
 typedef struct design_s {
-	rnd_hidlib_t hidlib; /* shall be the first */
+	rnd_design_t hidlib; /* shall be the first */
 } design_t;
 
 design_t CTX;

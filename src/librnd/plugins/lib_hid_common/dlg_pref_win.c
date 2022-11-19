@@ -68,7 +68,7 @@ static void pref_win_board_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void pref_win_project_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	rnd_hidlib_t *hidlib = rnd_gui->get_dad_hidlib(rnd_gui);
+	rnd_design_t *hidlib = rnd_gui->get_dad_hidlib(rnd_gui);
 
 	if (rnd_pref_dlg2conf_pre(hidlib, ctx) == NULL)
 		return;

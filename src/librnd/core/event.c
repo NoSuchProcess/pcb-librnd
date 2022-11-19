@@ -184,7 +184,7 @@ const char *rnd_event_name(rnd_event_id_t ev)
 	return rnd_evnames_lib[ev];
 }
 
-void rnd_event(rnd_hidlib_t *hidlib, rnd_event_id_t ev, const char *fmt, ...)
+void rnd_event(rnd_design_t *hidlib, rnd_event_id_t ev, const char *fmt, ...)
 {
 	va_list ap;
 	rnd_event_arg_t argv[RND_EVENT_MAX_ARG], *a;

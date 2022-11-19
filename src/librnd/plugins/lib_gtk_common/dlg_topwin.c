@@ -175,7 +175,7 @@ void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 
 /*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
-void rnd_gtk_update_toggle_flags(rnd_hidlib_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)
+void rnd_gtk_update_toggle_flags(rnd_design_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)
 {
 	if (rnd_menu_sys.inhibit)
 		return;

@@ -63,13 +63,13 @@ rnd_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src);
 char *rnd_grid_print(const rnd_grid_t *src);
 
 /* Apply grid settings from src to the pcb */
-void rnd_grid_set(rnd_hidlib_t *hidlib, const rnd_grid_t *src);
+void rnd_grid_set(rnd_design_t *hidlib, const rnd_grid_t *src);
 
 /* Jump to grid index dst (clamped); absolute set */
-rnd_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst);
+rnd_bool_t rnd_grid_list_jump(rnd_design_t *hidlib, int dst);
 
 /* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
-rnd_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp);
+rnd_bool_t rnd_grid_list_step(rnd_design_t *hidlib, int stp);
 
 /* invalidate the grid index; call this when changing the grid settings */
 void rnd_grid_inval(void);
@@ -81,7 +81,7 @@ void rnd_grid_init(void);
 void rnd_grid_uninit(void);
 
 /* sets cursor grid with respect to grid spacing, offset and unit values */
-void rnd_hidlib_set_grid(rnd_hidlib_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
-void rnd_hidlib_set_unit(rnd_hidlib_t *hidlib, const rnd_unit_t *new_unit);
+void rnd_hidlib_set_grid(rnd_design_t *hidlib, rnd_coord_t Grid, rnd_bool align, rnd_coord_t ox, rnd_coord_t oy);
+void rnd_hidlib_set_unit(rnd_design_t *hidlib, const rnd_unit_t *new_unit);
 
 #endif

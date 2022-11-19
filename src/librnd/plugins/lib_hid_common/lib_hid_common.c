@@ -53,7 +53,7 @@
 
 conf_dialogs_t dialogs_conf;
 
-void rnd_hid_announce_gui_init(rnd_hidlib_t *hidlib)
+void rnd_hid_announce_gui_init(rnd_design_t *hidlib)
 {
 	rnd_hid_menu_merge_inhibit_inc();
 	rnd_event(hidlib, RND_EVENT_GUI_INIT, NULL);
