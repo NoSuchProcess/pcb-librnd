@@ -36,7 +36,7 @@ typedef struct rnd_pixmap_import_s rnd_pixmap_import_t;
 struct rnd_pixmap_import_s {
 	/* configured by the caller at registration */
 	const char *name;
-	int (*load)(rnd_design_t *hidlib, rnd_pixmap_t *pxm, const char *fn);
+	int (*load)(rnd_design_t *design, rnd_pixmap_t *pxm, const char *fn);
 
 	/* filled in by code */
 	rnd_pixmap_import_t *next;
@@ -85,10 +85,10 @@ void rnd_pixmap_reg_import(const rnd_pixmap_import_t *imp, const char *cookie);
 void rnd_pixmap_unreg_import_all(const char *cookie);
 void rnd_pixmap_uninit(void);
 
-int rnd_old_pixmap_load(rnd_design_t *hidlib, rnd_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
-rnd_pixmap_t *rnd_pixmap_load(rnd_design_t *hidlib, const char *fn);
-rnd_pixmap_t *rnd_pixmap_alloc(rnd_design_t *hidlib, long sx, long sy);
-rnd_pixmap_t *rnd_pixmap_dup(rnd_design_t *hidlib, const rnd_pixmap_t *pxm);
+int rnd_old_pixmap_load(rnd_design_t *design, rnd_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
+rnd_pixmap_t *rnd_pixmap_load(rnd_design_t *design, const char *fn);
+rnd_pixmap_t *rnd_pixmap_alloc(rnd_design_t *design, long sx, long sy);
+rnd_pixmap_t *rnd_pixmap_dup(rnd_design_t *design, const rnd_pixmap_t *pxm);
 
 unsigned int rnd_pixmap_hash_meta(const void *key);
 unsigned int rnd_pixmap_hash_pixels(const void *key);

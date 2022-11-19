@@ -33,7 +33,7 @@ typedef struct {
    not found, parse embedded_fallback instead (if it is not NULL).
    Prio is ignored when loading a menu patch file with priority specified in the file.
    Returns NULL on error. */
-rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_design_t *hidlib, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc);
+rnd_menu_patch_t *rnd_hid_menu_load(rnd_hid_t *hid, rnd_design_t *design, const char *cookie, int prio, const char *fn, int exact_fn, const char *embedded_fallback, const char *desc);
 
 /* Unload a menu patch by cookie */
 void rnd_hid_menu_unload(rnd_hid_t *hid, const char *cookie);
