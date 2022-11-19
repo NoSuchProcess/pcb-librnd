@@ -3,8 +3,8 @@
 #include <librnd/core/unit.h>
 #include <librnd/hid/hid_init.h>
 #include <librnd/hid/hid.h>
+#include <librnd/hid/buildin.hidlib.h>
 #include <librnd/core/conf.h>
-#include <librnd/core/buildin.hidlib.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hidlib.h>
