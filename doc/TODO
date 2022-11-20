@@ -61,7 +61,7 @@
 		- implement every little detail of the new project file handling as specified
 		- rnd_app.single_design setting for single design mode
 		- rnd_hid_parse_command_line() doesn't allow multiple filenames (but somehow it still works in sch-rnd!)
-		- rnd_main_loop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main)
+		- once multi is implemented: rnd_mainloop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main); check if happens in camv-rnd as well (it's single-design)
 		- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
 			- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
 		- multi preview widget:
