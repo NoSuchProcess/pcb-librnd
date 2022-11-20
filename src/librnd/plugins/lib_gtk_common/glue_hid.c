@@ -340,36 +340,18 @@ static const char *rnd_gtk_command_entry(rnd_hid_t *hid, const char *ovr, int *c
 	return rnd_gtk_cmd_command_entry(&gctx->topwin.cmd, ovr, cursor);
 }
 
-static int rnd_gtkg_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
+static int rnd_gtkg_clip_set(rnd_hid_t *hid, const char *str)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-
-	switch(format) {
-		case RND_HID_CLIPFMT_TEXT:
-			gtkc_clipboard_set_text(gctx->topwin.drawing_area, data);
-			break;
-	}
+	gtkc_clipboard_set_text(gctx->topwin.drawing_area, str);
 	return 0;
 }
 
-int rnd_gtkg_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
+char *rnd_gtkg_clip_get(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
-	int res = gtkc_clipboard_get_text(gctx->topwin.drawing_area, data, len);
-
-	if (res == 0)
-		*format = RND_HID_CLIPFMT_TEXT;
-
-	return res;
-}
-
-void rnd_gtkg_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
-{
-	switch(format) {
-		case RND_HID_CLIPFMT_TEXT:
-			g_free(data);
-			break;
-	}
+	char *data = gtkc_clipboard_get_text(gctx->topwin.drawing_area);
+	return (data == NULL) ? NULL : rnd_strdup(data);
 }
 
 static void rnd_gtkg_iterate(rnd_hid_t *hid);
@@ -661,7 +643,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 
 	dst->clip_set  = rnd_gtkg_clip_set;
 	dst->clip_get  = rnd_gtkg_clip_get;
-	dst->clip_free = rnd_gtkg_clip_free;
 
 	dst->zoom_win = rnd_gtkg_zoom_win;
 	dst->zoom = rnd_gtkg_zoom;

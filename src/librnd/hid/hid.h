@@ -141,10 +141,6 @@ typedef struct rnd_menu_prop_s {
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 } rnd_menu_prop_t;
 
-typedef enum rnd_hid_clipfmt_e {
-	RND_HID_CLIPFMT_TEXT              /* plain text (c string with the \0 included) */
-} rnd_hid_clipfmt_t;
-
 typedef enum {
 	RND_HID_DOCK_TOP_LEFT,       /*  hbox on the top, below the menubar */
 	RND_HID_DOCK_TOP_RIGHT,      /*  hbox on the top, next to the menubar */
@@ -470,16 +466,12 @@ struct rnd_hid_s {
 	const char *(*command_entry)(rnd_hid_t *hid, const char *ovr, int *cursor);
 
 	/*** clipboard handling for GUI HIDs ***/
-	/* Place format/data/len on the clipboard; return 0 on success */
-	int (*clip_set)(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len);
+	/* Place string on the clipboard; return 0 on success */
+	int (*clip_set)(rnd_hid_t *hid, const char *str);
 
-	/* retrieve format/data/len from the clipboard; return 0 on success;
-	   data is a copy of the data, modifiable by the caller */
-	int (*clip_get)(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len);
-
-	/* release the data from the last clip_get(); clip_get() and clip_free() should
-	   be called in pair */
-	void (*clip_free)(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len);
+	/* retrieve a string from the clipboard; return NULL when empty;
+	   caller needs to free() the returned string. */
+	char *(*clip_get)(rnd_hid_t *hid);
 
 	/* run redraw-benchmark and return an FPS value (optional) */
 	double (*benchmark)(rnd_hid_t *hid);

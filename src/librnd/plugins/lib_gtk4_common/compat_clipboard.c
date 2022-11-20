@@ -6,8 +6,7 @@ int gtkc_clipboard_set_text(GtkWidget *widget, const char *text)
 }
 
 typedef struct {
-	void **data;
-	size_t *len;
+	char *str;
 	int valid;
 	GMainLoop *loop;
 	guint timer_id;
@@ -26,8 +25,7 @@ static void ghid_paste_received(GObject  *source_object, GAsyncResult *result, g
 	/* Get the resulting text of the read operation */
 	text = gdk_clipboard_read_text_finish(clipboard, result, &error);
 	if (text != NULL) {
-		*cd->data = text;
-		*cd->len = strlen(text) + 1;
+		cd->str = text;
 		cd->valid = 1;
 	}
 
@@ -46,13 +44,12 @@ static gboolean ghid_paste_timer(void *user_data)
 
 
 
-int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len)
+char *gtkc_clipboard_get_text(GtkWidget *wdg)
 {
 	GdkClipboard *cbrd = gtk_widget_get_clipboard(wdg);
 	ghid_clip_get_t cd;
 
-	cd.data = data;
-	cd.len = len;
+	cd.str = NULL;
 	cd.valid = 0;
 
 	gdk_clipboard_read_text_async(cbrd, NULL, ghid_paste_received, &cd);
@@ -65,5 +62,8 @@ int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len)
 		g_source_remove(cd.timer_id);
 	g_main_loop_unref(cd.loop);
 
-	return !cd.valid;
+	if (cd.valid && (cd.str != NULL))
+		return rnd_strdup(cd.str);
+
+	return NULL;
 }

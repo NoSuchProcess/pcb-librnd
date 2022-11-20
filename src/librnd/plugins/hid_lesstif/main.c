@@ -2870,7 +2870,7 @@ static void lesstif_conf_regs(const char *cookie)
 
 #include <Xm/CutPaste.h>
 
-static int ltf_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
+static int ltf_clip_set(rnd_hid_t *hid, const char *str)
 {
 	static long cnt = 0;
 	long item_id, data_id;
@@ -2882,7 +2882,7 @@ static int ltf_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *da
 		return -1;
 	}
 	XmStringFree(lab);
-	if (XmClipboardCopy(display, window, item_id, "STRING", (void *)data, len, ++cnt, &data_id) != XmClipboardSuccess) {
+	if (XmClipboardCopy(display, window, item_id, "STRING", (void *)str, strlen(str), ++cnt, &data_id) != XmClipboardSuccess) {
 		XmClipboardCancelCopy(display, window, item_id);
 		return -1;
 	}
@@ -2893,19 +2893,16 @@ static int ltf_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *da
 	return 0;
 }
 
-static int ltf_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
+static char *ltf_clip_get(rnd_hid_t *hid)
 {
 	int res;
-	gds_t tmp;
+	gds_t tmp = {0};
 	char buff[65536];
 	long unsigned bl = 0;
 	long dummy;
 
 	if (XmClipboardStartRetrieve(display, window, CurrentTime) != XmClipboardSuccess)
 		return -1;
-
-	gds_init(&tmp);
-
 
 	res = XmClipboardRetrieve(display, window, "STRING", buff, sizeof(buff), &bl, &dummy);
 	if (res == XmClipboardSuccess) {
@@ -2914,18 +2911,7 @@ static int ltf_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, 
 	}
 
 	XmClipboardEndRetrieve(display, window);
-	if (tmp.used == 0) {
-		gds_uninit(&tmp);
-		return -1;
-	}
-	*data = tmp.array;
-	*len = tmp.used;
-	return 0;
-}
-
-static void ltf_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
-{
-	free(data);
+	return tmp.array;
 }
 
 static void ltf_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
@@ -3079,7 +3065,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.command_entry = lesstif_command_entry;
 	lesstif_hid.clip_set = ltf_clip_set;
 	lesstif_hid.clip_get = ltf_clip_get;
-	lesstif_hid.clip_free = ltf_clip_free;
 
 	lesstif_hid.create_menu_by_node = lesstif_create_menu_widget;
 	lesstif_hid.remove_menu_node = lesstif_remove_menu_node;

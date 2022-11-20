@@ -321,7 +321,7 @@ static inline GtkWidget *wrap_bind_click(GtkWidget *w, struct gtkc_event_xyz_s *
 }
 
 int gtkc_clipboard_set_text(GtkWidget *widget, const char *text);
-int gtkc_clipboard_get_text(GtkWidget *wdg, void **data, size_t *len);
+char *gtkc_clipboard_get_text(GtkWidget *wdg);
 
 #define GTKC_TYPE_DRAWING_AREA GTK_TYPE_DRAWING_AREA
 #define GtkcDrawingAreaClass   GtkDrawingAreaClass

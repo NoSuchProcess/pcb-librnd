@@ -295,38 +295,19 @@ static const char *rnd_mbtk_command_entry(rnd_hid_t *hid, const char *ovr, int *
 	TODO("implemet");
 }
 
-static int rnd_mbtk_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
+static int rnd_mbtk_clip_set(rnd_hid_t *hid, const char *str)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
 
-	switch(format) {
-		case RND_HID_CLIPFMT_TEXT:
-			TODO("implemet");
-			break;
-	}
 	return 0;
 }
 
-int rnd_mbtk_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
+char *rnd_mbtk_clip_get(rnd_hid_t *hid)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
-	int res = -1;
 	TODO("implemet");
 
-	if (res == 0)
-		*format = RND_HID_CLIPFMT_TEXT;
-
-	return res;
-}
-
-void rnd_mbtk_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
-{
-	TODO("implemet");
-	switch(format) {
-		case RND_HID_CLIPFMT_TEXT:
-			free(data);
-			break;
-	}
+	return NULL;
 }
 
 static int rnd_mbtk_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
@@ -607,7 +588,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 
 	dst->clip_set  = rnd_mbtk_clip_set;
 	dst->clip_get  = rnd_mbtk_clip_get;
-	dst->clip_free = rnd_mbtk_clip_free;
 
 	dst->zoom_win = rnd_mbtk_zoom_win;
 	dst->zoom = rnd_mbtk_zoom;

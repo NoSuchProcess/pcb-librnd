@@ -6,9 +6,6 @@
 		- check how pcb-rnd layersel would work with this
 		- canvas:
 			- opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
-	- DEL?: HID API: clipboard format is always text; remove format and length (SDL and glfw don't support non-text anyway)
-		- get() should return an allocated string
-		- there should be a free() to be used by the caller after get()
 	- *FEATURE: sch-rnd critical: more flexilble unit system where apps can register new units - remove k from librnd, revise sch-rnd grid menu
 		- split the unit table in two, one librnd, one app
 		- families should be registered

@@ -386,46 +386,24 @@ static int clip_warn(void)
 	return 0;
 }
 
-static void *clip_data = NULL;
-static size_t clip_len;
-static rnd_hid_clipfmt_t clip_format;
+static char *clip_data = NULL;
 
-static int nogui_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
+static int nogui_clip_set(rnd_hid_t *hid, const char *str)
 {
 	free(clip_data);
-	clip_data = malloc(len);
-	if (clip_data != NULL) {
-		memcpy(clip_data, data, len);
-		clip_len = len;
-		clip_format = format;
-	}
+	if (str != NULL)
+		clip_data = rnd_strdup(str);
 	else
 		clip_data = NULL;
 	return clip_warn();
 }
 
-static int nogui_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
+static char *nogui_clip_get(rnd_hid_t *hid)
 {
-	if (clip_data == NULL) {
-		*data = NULL;
-		clip_warn();
-		return -1;
-	}
-	*data = malloc(clip_len);
-	if (*data == NULL) {
-		*data = NULL;
-		return -1;
-	}
-
-	memcpy(*data, clip_data, clip_len);
-	*format = clip_format;
-	*len = clip_len;
-	return clip_warn();
-}
-
-static void nogui_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
-{
-	free(data);
+	if (clip_data == NULL)
+		return NULL;
+	clip_warn();
+	return rnd_strdup(clip_data);
 }
 
 static void nogui_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
@@ -481,7 +459,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->attr_dlg_property = nogui_attr_dlg_property;
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;
-	hid->clip_free = nogui_clip_free;
 	hid->set_mouse_cursor = nogui_set_mouse_cursor;
 	hid->reg_mouse_cursor = nogui_reg_mouse_cursor;
 	hid->set_top_title = nogui_set_top_title;
