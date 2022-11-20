@@ -38,6 +38,13 @@ typedef struct {
 	void **hid_ctx;
 	rnd_family_t family; /* which families of units are allowed in this spinbox */
 	int wenum;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2;
+	void *spare_p1, *spare_p2;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 } rnd_hid_dad_unit_t;
 
 /*** implementation ***/

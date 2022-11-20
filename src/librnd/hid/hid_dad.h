@@ -64,6 +64,13 @@ typedef struct {
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
 	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 } rnd_hid_text_t;
 
 
@@ -82,6 +89,13 @@ typedef struct {
 		long lng;
 		double dbl;
 	} user_data2;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2;
+	void *spare_p1, *spare_p2;
+	double spare_d1, spare_d2;
+
 	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
 } rnd_hid_row_t;
 
@@ -108,6 +122,13 @@ typedef struct {
 	void (*hid_jumpto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row); /* row = NULL means deselect all */
 	void (*hid_expcoll_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, rnd_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
 	void (*hid_update_hide_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 } rnd_hid_tree_t;
 
 typedef struct rnd_hid_preview_s rnd_hid_preview_t;
@@ -130,6 +151,13 @@ struct rnd_hid_preview_s {
 	void *hid_wdata;
 	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_box_t *view); /* redraw only if view == NULL */
 	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 };
 
 typedef struct {
@@ -146,6 +174,13 @@ typedef struct {
 	void (*set_field_ptr)(rnd_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
 	void (*set_geo)(rnd_hid_attribute_t *attr, rnd_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
 	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and RND_HATT_END_COMPOUND widget */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 } rnd_hid_compound_t;
 
 #include <librnd/hid/hid_dad_spin.h>
@@ -871,6 +906,13 @@ struct rnd_hid_dad_subdialog_s {
 	void *sub_ctx;    /* used by the sub-dialog's creator */
 
 	gdl_elem_t link;  /* list of subdialogs: e.g. dock */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2;
+	rnd_coord_t spare_c1, spare_c2;
 };
 
 typedef struct rnd_hid_export_opt_func_dad_s {
