@@ -62,7 +62,6 @@
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
 		- rnd_app.single_design setting for single design mode
-		- make sure the batch HID maintains set/get_hidlib()
 		- rnd_hid_parse_command_line() doesn't allow multiple filenames (but somehow it still works in sch-rnd!)
 		- rnd_main_loop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main)
 		- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
