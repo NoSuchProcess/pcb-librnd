@@ -45,8 +45,6 @@ static int batch_usage(rnd_hid_t *hid, const char *topic)
 }
 
 
-/* ----------------------------------------------------------------------------- */
-
 static char *prompt = NULL;
 
 static void uninit_batch(void)
@@ -130,8 +128,6 @@ static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *des
 		return rnd_strdup(answer);
 }
 
-
-/* ----------------------------------------------------------------------------- */
 static int batch_stay;
 static void batch_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
@@ -283,9 +279,7 @@ static void batch_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
 {
 }
 
-rnd_hidval_t
-batch_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),
-								 rnd_hidval_t user_data)
+rnd_hidval_t batch_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data), rnd_hidval_t user_data)
 {
 	rnd_hidval_t ret;
 	ret.ptr = NULL;
