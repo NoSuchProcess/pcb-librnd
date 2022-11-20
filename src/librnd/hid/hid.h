@@ -180,20 +180,22 @@ struct rnd_hid_s {
 	/* Likewise, but allowed to be longer and more descriptive.  */
 	const char *description;
 
-	/* If set, this is the GUI HID.  Exactly one of these three flags
-	   must be set; setting "gui" lets the expose callback optimize and
-	   coordinate itself.  */
+	/* If set, this is the GUI HID.  Exactly one of these three
+	   (gui, printer, exporter) flags must be set; setting "gui" lets the
+	   expose callback optimize and coordinate itself.  */
 	unsigned gui:1;
 
 	/* If set, this is the printer-class HID.  The application
 	   may use this to do command-line printing, without having
 	   instantiated any GUI HIDs.  Only one printer HID is normally
-	   defined at a time.  */
+	   defined at a time. Exactly one of these three
+	   (gui, printer, exporter) flags must be set  */
 	unsigned printer:1;
 
 	/* If set, this HID provides an export option, and should be used as
 	   part of the File->Export menu option.  Examples are PNG, Gerber,
-	   and EPS exporters.  */
+	   and EPS exporters. Exactly one of these three
+	   (gui, printer, exporter) flags must be set  */
 	unsigned exporter:1;
 
 	/* Export plugin should not be listed in the export dialog; GUI plugin
