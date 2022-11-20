@@ -94,7 +94,7 @@ void rnd_grid_install_menu(void)
 
 static int grid_lock = 0;
 
-void rnd_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if (grid_lock) return;
 	grid_lock++;

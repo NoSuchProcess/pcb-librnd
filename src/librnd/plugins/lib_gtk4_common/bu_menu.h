@@ -12,7 +12,7 @@
 typedef struct rnd_gtk_menu_ctx_s {
 	GtkWidget *menu_bar;
 	rnd_conf_hid_id_t rnd_gtk_menuconf_id;
-	void (*confchg_checkbox)(rnd_conf_native_t *cfg, int arr_idx);
+	void (*confchg_checkbox)(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
 	rnd_design_t *hidlib;
 
 	GtkWidget *main_open_w;   /* set to the menu popover widget that is open from the main menu at the moment */

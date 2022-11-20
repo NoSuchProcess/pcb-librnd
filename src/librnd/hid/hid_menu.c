@@ -1358,7 +1358,7 @@ static rnd_action_t rnd_menu_action_list[] = {
 	{"MenuDebug", rnd_act_MenuDebug, rnd_acth_MenuDebug, rnd_acts_MenuDebug}
 };
 
-static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
+static void menu_conf_chg(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	int n;
 	rnd_conf_listitem_t *i;

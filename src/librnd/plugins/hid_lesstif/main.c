@@ -2825,7 +2825,7 @@ static int lesstif_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
+static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if (!lesstif_active)
 		return;
@@ -2838,7 +2838,7 @@ static void lesstif_globconf_change_post(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
-static void ltf_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
+static void ltf_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if (!lesstif_active)
 		return;

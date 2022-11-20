@@ -6,15 +6,17 @@
 
 typedef struct rnd_conf_hid_callbacks_s {
 	/* Called before/after a value of a config item is updated - this doesn't necessarily mean the value actually changes */
-	void (*val_change_pre)(rnd_conf_native_t *cfg, int arr_idx);
-	void (*val_change_post)(rnd_conf_native_t *cfg, int arr_idx);
+	void (*val_change_pre)(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
+	void (*val_change_post)(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
 
 	/* Called when a new config item is added to the database; global-only */
-	void (*new_item_post)(rnd_conf_native_t *cfg, int arr_idx);
-	void (*new_hlist_item_post)(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i);
+	void (*new_item_post)(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
+	void (*new_hlist_item_post)(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i, void *user_data);
 
 	/* Called during rnd_conf_hid_unreg to get hid-data cleaned up */
-	void (*unreg_item)(rnd_conf_native_t *cfg, int arr_idx);
+	void (*unreg_item)(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
+
+	void *user_data; /* set on registration, passed to all calls */
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
@@ -55,7 +57,7 @@ do { \
 	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
 		const rnd_conf_hid_callbacks_t *cbs = (native)->hid_callbacks.array[__n__]; \
 		if ((cbs != NULL) && (cbs->cb != NULL)) \
-			cbs->cb(native, arr_idx); \
+			cbs->cb(native, arr_idx, cbs->user_data); \
 	} \
 } while(0)
 

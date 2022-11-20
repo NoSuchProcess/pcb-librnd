@@ -80,9 +80,9 @@ static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_design_t *hidl
 }
 
 
-TODO("librnd4: once we get rnd_conf_hid_callbacks_t mbtk_glboal can come from its user_data");
+TODO("librnd4: mbtk_glboal should come user_data, set it at registration");
 static rnd_mbtk_t mbtk_global;
-static void rnd_mbtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_mbtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if ((mbtk_global.hid_active) && (mbtk_global.hidlib != NULL))
 		rnd_mbtk_menu_update_checkboxes(&mbtk_global, mbtk_global.hidlib);

@@ -439,7 +439,7 @@ static void set_ins_after(Widget menu, lht_node_t *ins_after)
 	}
 }
 
-static void lesstif_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
+static void lesstif_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	lesstif_update_widget_flags(NULL, NULL);
 }

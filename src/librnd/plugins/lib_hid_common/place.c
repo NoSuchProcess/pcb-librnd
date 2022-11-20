@@ -435,7 +435,7 @@ int rnd_wplc_save_to_file(rnd_design_t *hidlib, const char *fn)
 
 
 #define WIN_GEO_HPATH "plugins/dialogs/window_geometry/"
-static void wplc_new_hlist_item(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
+static void wplc_new_hlist_item(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i, void *user_data)
 {
 	lht_node_t *n = i->prop.src, *vn;
 	double val;

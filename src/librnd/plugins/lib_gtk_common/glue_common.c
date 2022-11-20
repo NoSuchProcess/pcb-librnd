@@ -80,30 +80,30 @@ static void rnd_gtkg_win32_init(void) {} /* no-op on non-win32 */
 
 static const char *cookie_menu = "gtk hid menu";
 
-static void rnd_gtk_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if (ghidgui->hid_active)
 		rnd_gtk_fullscreen_apply(&ghidgui->topwin);
 }
 
 
-void rnd_gtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_gtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if ((ghidgui->hid_active) && (ghidgui->hidlib != NULL))
 		rnd_gtk_update_toggle_flags(ghidgui->hidlib, &ghidgui->topwin, NULL);
 }
 
-static void rnd_gtk_confchg_cli(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_cli(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	rnd_gtk_command_update_prompt(&ghidgui->topwin.cmd);
 }
 
-static void rnd_gtk_confchg_flip(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_flip(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	rnd_gtk_previews_flip(ghidgui);
 }
 
-static void rnd_gtk_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
+static void rnd_gtk_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	if (!ghidgui->hid_active)
 		return;
@@ -114,7 +114,7 @@ static void rnd_gtk_confchg_spec_color(rnd_conf_native_t *cfg, int arr_idx)
 
 
 
-static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
+static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int, void *))
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n != NULL) {

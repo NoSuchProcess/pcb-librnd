@@ -203,7 +203,7 @@ void rnd_toolbar_reg_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_eve
 	}
 }
 
-void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
+void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	toolbar_design2dlg();
 }
@@ -212,7 +212,7 @@ void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 
 static const char *toolbar_cookie = "lib_hid_common/toolbar";
 
-static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int))
+static rnd_conf_hid_id_t install_events(const char *cookie, const char *paths[], rnd_conf_hid_callbacks_t cb[], void (*update_cb)(rnd_conf_native_t*,int,void *))
 {
 	const char **rp;
 	rnd_conf_native_t *nat;

@@ -415,7 +415,7 @@ static void pref_ev_menu_changed(rnd_design_t *hidlib, void *user_data, int argc
 	pref_menu_brd2dlg(ctx);
 }
 
-void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
+void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	pref_confitem_t *i;
 

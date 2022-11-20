@@ -234,7 +234,7 @@ void rnd_grid_inval(void)
 
 /*** catch editor/grid changes to update editor/grids_idx */
 
-static void grid_conf_chg(rnd_conf_native_t *cfg, int arr_idx)
+static void grid_conf_chg(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *ge;

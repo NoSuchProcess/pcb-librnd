@@ -107,7 +107,7 @@ void rnd_conf_hid_unreg(const char *cookie)
 	if ((h->cb != NULL) && (h->cb->unreg_item != NULL)) {
 		rnd_conf_fields_foreach(e) {
 			rnd_conf_native_t *cfg = e->value;
-			h->cb->unreg_item(cfg, -1);
+			h->cb->unreg_item(cfg, -1, h->cb->user_data);
 		}
 	}
 

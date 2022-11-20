@@ -65,7 +65,7 @@ static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
 
 extern void rnd_dad_spin_update_global_coords(void);
-static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx)
+static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
 	rnd_dad_spin_update_global_coords();
 }

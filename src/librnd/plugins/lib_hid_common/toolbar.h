@@ -9,7 +9,7 @@ void rnd_toolbar_uninit(void);
 /* Alternatively, the caller can bind these */
 void rnd_toolbar_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 void rnd_toolbar_reg_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
-void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx);
+void rnd_toolbar_update_conf(rnd_conf_native_t *cfg, int arr_idx, void *user_data);
 
 
 /* Action variant so direct linking is not necessary */
