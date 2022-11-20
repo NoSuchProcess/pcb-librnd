@@ -23,7 +23,6 @@
 		- make sure all callers strdup() all cells
 		- user implemented ->user_free_cb() should never free cell values, the lib does that
 	- hidlib_init1() should rnd_conf_set() "rc/path/exec_prefix" at the end so the host app doesn't need to
-	- *FEATURE: sch-rnd critical: hid->draw_pixmap should pass the original object as void, so that the high level export plugin can embed hints in the output (e.g. sch-rnd embedding text to make the drawing searchable)
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- *BUG: sch-rnd critical: in the installed .mak LIBRND_LIBDIR shall include /librnd4 suffix, librnd's scconfig templates depend on this! (sch-rnd has scconfig template dups because of this)
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
