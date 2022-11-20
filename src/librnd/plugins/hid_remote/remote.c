@@ -60,6 +60,7 @@ static void remote_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_
 	rnd_hid_expose_ctx_t ctx;
 	rnd_design_t *hidlib = remote_hidlib;
 
+	ctx.design = design;
 	ctx.view.X1 = hidlib->dwg.X1;
 	ctx.view.Y1 = hidlib->dwg.Y1;
 	ctx.view.X2 = hidlib->dwg.X2;

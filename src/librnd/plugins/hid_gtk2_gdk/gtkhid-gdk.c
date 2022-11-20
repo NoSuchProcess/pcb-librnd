@@ -1157,6 +1157,7 @@ static void redraw_region(rnd_design_t *hidlib, GdkRectangle *rect)
 	set_clip(priv, priv->offlimits_gc);
 	set_clip(priv, priv->grid_gc);
 
+	ctx.design = hidlib;
 	ctx.view.X1 = MIN(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y1 = MIN(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));

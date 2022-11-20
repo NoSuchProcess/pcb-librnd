@@ -442,6 +442,7 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 
 	ghid_gl_start_drawing(port);
 
+	ctx.design = hidlib;
 	ctx.view.X1 = MIN(Px(0), Px(allocation.width + 1));
 	ctx.view.Y1 = MIN(Py(0), Py(allocation.height + 1));
 	ctx.view.X2 = MAX(Px(0), Px(allocation.width + 1));

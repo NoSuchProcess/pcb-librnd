@@ -18,7 +18,6 @@
 		- make freq units pcb-rnd app specific, retest the openems exporter
 	- BUG: check all librnd calls to rnd_conf_get_project_conf_name(); hidlib->filename should be renamed and split to a load_name and a real_name, for project file use load_name (because of symlink designs)
 	- *BUG: sch-rnd critical: hid->attr_dlg_new() needs to get a void **hid_ctx_out argument so it can set hid_ctx before return; this is important because non-gtk HIDs will call back in sync during creating the dialog while core hid_dad will set hid_ctx only after this function returns (and the whole dialog is created); test: tree dialog {w t} in sch-rnd segfaults
-	- *BUG: sch-rnd critical: rnd_app.expose_main needs to get the rnd_design_t to draw (multisheet GUI needs this, as a dialog may draw non-current-GUI)
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 		- apply librnd core patch TODO.hid_dad_tree
 		- make sure all callers strdup() all cells

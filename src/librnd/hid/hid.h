@@ -554,7 +554,8 @@ struct rnd_hid_s {
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
 
 struct rnd_hid_expose_ctx_s {
-	rnd_box_t view;
+	rnd_design_t *design;            /* what's being exposed */
+	rnd_box_t view;                  /* which part is being exposed */
 	rnd_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
 

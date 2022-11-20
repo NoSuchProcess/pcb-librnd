@@ -616,6 +616,7 @@ static double ltf_benchmark(rnd_hid_t *hid)
 	save_main = main_pixmap;
 	main_pixmap = window;
 
+	ctx.design = ltf_hidlib;
 	ctx.view.X1 = ltf_hidlib->dwg.X1;
 	ctx.view.Y1 = ltf_hidlib->dwg.Y1;
 	ctx.view.X2 = ltf_hidlib->dwg.X2;
@@ -2046,6 +2047,7 @@ static Boolean idle_proc(XtPointer dummy)
 		pixmap = main_pixmap;
 		mx = view_width;
 		my = view_height;
+		ctx.design = ltf_hidlib;
 		ctx.view.X1 = Px(0);
 		ctx.view.Y1 = Py(0);
 		ctx.view.X2 = Px(view_width);
