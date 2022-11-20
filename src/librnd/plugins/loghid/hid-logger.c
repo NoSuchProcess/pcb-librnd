@@ -235,13 +235,6 @@ static void log_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	delegatee_->fill_rect(gc, x1, y1, x2, y2);
 }
 
-static void log_beep(rnd_hid_t *hid)
-{
-	SANITY(return);
-	rnd_fprintf(out_, "beep();   BEEEP   .... BEEEEEEEP\n");
-	delegatee_->beep(hid);
-}
-
 void create_log_hid(FILE *log_out, rnd_hid_t *loghid, rnd_hid_t *delegatee)
 {
 	out_ = log_out;
@@ -287,7 +280,6 @@ void create_log_hid(FILE *log_out, rnd_hid_t *loghid, rnd_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(fill_polygon);
 	REGISTER_IF_NOT_NULL(fill_polygon_offs);
 	REGISTER_IF_NOT_NULL(fill_rect);
-	REGISTER_IF_NOT_NULL(beep);
 
 #undef REGISTER_IF_NOT_NULL
 }

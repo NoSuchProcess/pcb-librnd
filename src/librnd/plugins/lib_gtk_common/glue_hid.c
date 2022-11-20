@@ -284,8 +284,6 @@ static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attri
 	return rnd_gtk_attr_dlg_new(hid, (rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
 
-static void rnd_gtkg_beep(rnd_hid_t *hid);
-
 static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
@@ -651,7 +649,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->dock_enter = rnd_gtkg_dock_enter;
 	dst->dock_leave = rnd_gtkg_dock_leave;
 
-	dst->beep = rnd_gtkg_beep;
 	dst->point_cursor = PointCursor;
 	dst->benchmark = rnd_gtkg_benchmark;
 

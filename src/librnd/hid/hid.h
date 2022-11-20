@@ -424,9 +424,6 @@ struct rnd_hid_s {
 	int (*dock_enter)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 	void (*dock_leave)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub);
 
-	/* Something to alert the user.  */
-	void (*beep)(rnd_hid_t *hid);
-
 	/* Removes a menu recursively */
 	int (*remove_menu_node)(rnd_hid_t *hid, lht_node_t *nd);
 

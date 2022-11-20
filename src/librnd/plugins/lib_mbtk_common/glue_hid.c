@@ -595,7 +595,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->dock_enter = rnd_mbtk_dock_enter;
 	dst->dock_leave = rnd_mbtk_dock_leave;
 
-	dst->beep = rnd_mbtk_beep;
 	dst->point_cursor = PointCursor;
 	dst->benchmark = rnd_mbtk_benchmark;
 

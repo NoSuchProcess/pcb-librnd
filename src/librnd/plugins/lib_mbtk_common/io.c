@@ -18,8 +18,3 @@ static void rnd_mbtk_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 	TODO("implement");
 }
-
-static void rnd_mbtk_beep(rnd_hid_t *hid)
-{
-	TODO("remove me with librnd4");
-}

@@ -350,12 +350,6 @@ static void nogui_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, cons
 	CRASH("attr_dlg_dlg_property");
 }
 
-static void nogui_beep(rnd_hid_t *hid)
-{
-	putchar(7);
-	fflush(stdout);
-}
-
 int rnd_nogui_progress(long so_far, long total, const char *message)
 {
 	static int on = 0;
@@ -485,7 +479,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->attr_dlg_close = nogui_attr_dlg_close;
 	hid->attr_dlg_free = nogui_attr_dlg_free;
 	hid->attr_dlg_property = nogui_attr_dlg_property;
-	hid->beep = nogui_beep;
 	hid->clip_set = nogui_clip_set;
 	hid->clip_get = nogui_clip_get;
 	hid->clip_free = nogui_clip_free;

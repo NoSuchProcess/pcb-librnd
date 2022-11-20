@@ -47,11 +47,6 @@ int rnd_gtk_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return 0;
 }
 
-static void rnd_gtkg_beep(rnd_hid_t *hid)
-{
-	gdk_beep();
-}
-
 static void rnd_gtkg_iterate(rnd_hid_t *hid)
 {
 	while(gtk_events_pending())

@@ -2811,12 +2811,6 @@ extern void lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 #include "wt_preview.c"
 
-static void lesstif_beep(rnd_hid_t *hid)
-{
-	putchar(7);
-	fflush(stdout);
-}
-
 static int lesstif_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
@@ -3081,7 +3075,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_set_help = lesstif_attr_dlg_set_help;
 	lesstif_hid.supports_dad_text_markup = 0;
 
-	lesstif_hid.beep = lesstif_beep;
 	lesstif_hid.point_cursor = PointCursor;
 	lesstif_hid.command_entry = lesstif_command_entry;
 	lesstif_hid.clip_set = ltf_clip_set;
