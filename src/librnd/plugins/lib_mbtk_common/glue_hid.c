@@ -561,7 +561,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 
 	dst->struct_size = sizeof(rnd_hid_t);
 	dst->gui = 1;
-	dst->heavy_term_layer_ind = 1;
 	dst->allow_dad_before_init = 1;
 
 	dst->do_export = rnd_mbtk_do_export;

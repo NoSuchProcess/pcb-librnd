@@ -210,9 +210,6 @@ struct rnd_hid_s {
 	/* Always draw layers in compositing mode - no base layer */
 	unsigned force_compositing:1;
 
-	/* When enabled, indicate layer of heavy terminals graphically */
-	unsigned heavy_term_layer_ind:1;
-
 	/* When 1, HID supports markup (e.g. color) in DAD text widgets  */
 	unsigned supports_dad_text_markup:1;
 

@@ -617,7 +617,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 
 	dst->struct_size = sizeof(rnd_hid_t);
 	dst->gui = 1;
-	dst->heavy_term_layer_ind = 1;
 	dst->allow_dad_before_init = 1;
 
 	dst->do_export = rnd_gtkg_do_export;
