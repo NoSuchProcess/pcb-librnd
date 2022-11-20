@@ -54,7 +54,6 @@
 		- rnd_design_t must contain:
 			- real file name (realpath'd)
 			- original file name (short name, as the user called it)
-		- cleanup: extend callbacks in rnd_conf_hid_callbacks_t to pass hidlib (multiple callbacks with different designs if multiple open designs are changed!)
 		- switch over from rnd_conf and conf_core to per design conf
 		- implement user file name and realpath file name
 		- implement project list and pointing back
