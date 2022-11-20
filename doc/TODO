@@ -31,7 +31,6 @@
 	- missing event emits in apps:
 		- RND_EVENT_SAVE_*: copy this from pcb-rnd to sch-rnd and camv-rnd
 		- RND_EVENT_LOAD_*: copy this from pcb-rnd to sch-rnd and camv-rnd
-	- remove rnd_hid_t->heavy_term_layer_ind and figure how to substitute it in a portable way
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- centralize mouse cursor temporary set:
 		- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
