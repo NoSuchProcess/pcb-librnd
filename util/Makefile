@@ -5,12 +5,16 @@ all:
 
 include $(ROOT)/Makefile.conf
 
+DEVHLP=$(LIBDIR)/devhelpers
+
 clean:
 
 distclean:
 
 install_all:
-#	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
+	$(SCCBOX) mkdir -p  "$(DEVHLP)"
+	$(SCCBOX) $(HOW) devhelpers/awk_on_formats.sh "$(DEVHLP)/awk_on_formats.sh"
+	
 
 install:
 	$(MAKE) install_all HOW="install -f"
