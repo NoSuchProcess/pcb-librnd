@@ -21,6 +21,25 @@
 	- hidlib_init1() should rnd_conf_set() "rc/path/exec_prefix" at the end so the host app doesn't need to
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- build: unify utils
+		- move to librnd, unify, install + centralize
+			- devhelper/awk_on_format
+			- devhelper/list_dialogs
+			- devhelper/font2c from pcb-rnd
+			- build_ps
+			- keylist
+			- menu2svg
+		- keep only in librnd
+			- devhelper/404.sh, generalize for all projects
+			- devhelper/chlog_*
+			- devhelper/comment_hunt
+			- devhelper/copyright_miss
+			- devhelper/inc_*
+			- devhelper/rename*
+			- devhelper/todo.sh
+		- remove from all
+			- devhelper/deblist
+		- copy to all:
+			- sign/
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
