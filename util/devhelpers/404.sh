@@ -1,13 +1,14 @@
 #!/bin/sh
 
 SERVER=www.repo.hu
-ROOT_URL=http://$SERVER/projects
+BASEDIR=projects
+ROOT_URL=http://$SERVER/$BASEDIR
 PROJECTS="librnd pcb-rnd sch-rnd camv-rnd route-rnd"
 
 # search the official web pages for broken links
 spider() {
 echo "Collecting the log for $1..." >&2
-wget --spider -o 404.raw.log -r -p "$ROOT_URL/$1"
+wget --spider  -o 404.raw.log -r -p "$ROOT_URL/$1" -X "$BASEDIR/$1/releases"
 
 echo "Evaluatng the log..." >&2
 awk '
