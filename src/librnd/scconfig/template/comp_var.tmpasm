@@ -1,17 +1,20 @@
-# Generate Makefile code to compile .c -> .o
+# Generate Makefile code to compile .c -> .o, output saved in /local/comp/output
+# same as compile.tmpasm but without extra -I's for grammar files
 # Arguments:
-#  /local/comp/OBJS     list of .o files (assuming each have at least a .c)
-#  /local/comp/OBJS_C99 list of .o files (assuming each have at least a .c) for non-c89 compilation
+#  /local/comp/OBJS_C89   list of .o files (assuming each have at least a .c)
+#  /local/comp/OBJS_C99   list of .o files (assuming each have at least a .c) for non-c89 compilation
+#  /local/comp/C89FLAGS   cflags for c89 compilation
+#  /local/comp/C99FLAGS   cflags for c99 compilation
 
 put /local/comp/output {}
-append /local/comp/CFLAGS {}
+append /local/comp/C99FLAGS {}
 
-foreach /local/o in /local/comp/OBJS
+foreach /local/o in /local/comp/OBJS_C89
 put /local/c /local/o
 sub /local/c {.o$} {.c}
 append /local/comp/output [@
 @/local/o@: @/local/c@
-	$(CC) -c $(C89FLAGS) @/local/comp/CFLAGS@ -o @/local/o@ $<
+	$(CC) -c @/local/comp/C89FLAGS@ -o @/local/o@ $<
 @]
 end
 
@@ -21,11 +24,12 @@ put /local/c /local/o
 sub /local/c {.o$} {.c}
 append /local/comp/output [@
 @/local/o@: @/local/c@
-	$(CC) -c $(CFLAGS) @/local/comp/CFLAGS@ -o @/local/o@ $<
+	$(CC) -c @/local/comp/C99FLAGS@ -o @/local/o@ $<
 @]
 end
 
-put /local/comp/OBJS {}
+put /local/comp/OBJS_C89 {}
 put /local/comp/OBJS_C99 {}
-put /local/comp/CFLAGS {}
+put /local/comp/C89FLAGS {}
+put /local/comp/C99FLAGS {}
 

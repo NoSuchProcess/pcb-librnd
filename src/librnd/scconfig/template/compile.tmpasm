@@ -1,4 +1,5 @@
-# Generate Makefile code to compile .c -> .o
+# Generate Makefile code to compile .c -> .o, output printed
+# same as com_var.tmpasm plus extra -I's for grammar files
 # Arguments:
 #  /local/comp/OBJS_C89   list of .o files (assuming each have at least a .c)
 #  /local/comp/OBJS_C99   list of .o files (assuming each have at least a .c), for non-c89 compilation
