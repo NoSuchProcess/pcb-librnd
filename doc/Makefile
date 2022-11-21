@@ -1,4 +1,3 @@
-DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
 
 all:
