@@ -22,7 +22,6 @@
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- build: unify utils
 		- move to librnd, unify, install + centralize
-			- devhelper/awk_on_format
 			- devhelper/list_dialogs
 			- devhelper/font2c from pcb-rnd
 			- build_ps
