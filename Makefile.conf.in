@@ -14,7 +14,7 @@ Install_root=$(install_root)$(DESTDIR)
 
 # prefix is @/local/prefix@
 DOCDIR=$(Install_root)@/local/prefix@/share/doc/librnd4
-LIBDIR=$(Install_root)@/local/prefix@/lib/pcb-rnd
+LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@/librnd4
 BINDIR=$(Install_root)@/local/prefix@/bin
 DATADIR=$(Install_root)@/local/prefix@/share/librnd4
 MAN1DIR=$(Install_root)@/local/prefix@@/local/man1dir@
