@@ -42,6 +42,9 @@ print [@
 LIBRND_PREFIX=@/local/prefix@
 LIBRND_INCDIR=$(LIBRND_PREFIX)/include/librnd4
 
+# Note: no need to define LIBRND_SHAREDIR: librnd.mak is included from there
+# so the user already has it
+
 # architecture specific name of "/lib":
 # some systems want to put 64 bit libs and binaries in /lib64 instead of /lib
 LIBRND_LIBARCHDIR=@/local/libarchdir@
