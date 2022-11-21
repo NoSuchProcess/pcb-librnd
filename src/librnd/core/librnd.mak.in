@@ -55,6 +55,9 @@ LIBRND_LIBDIR=$(LIBRND_PREFIX)/$(LIBRND_LIBARCHDIR)/librnd4
 # where the .so files are installed
 LIBRND_SODIR=$(LIBRND_PREFIX)/$(LIBRND_LIBARCHDIR)
 
+# where librnd plugins are installed (should be on puplug search path)
+LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
+
 CFLAGS_LIBRND=@?/local/librnd/CFLAGS_HIDLIB_STATIC_@ -I$(LIBRND_INCDIR) -I$(LIBRND_INCDIR)/librnd/src_3rd @?/local/librnd/librnd_mak_extra_inc@
 LDFLAGS_LIBRND=@?/local/librnd/librnd_mak_extra_ldf@ @?/local/librnd/LDFLAGS_HIDLIB_STATIC_@
 
