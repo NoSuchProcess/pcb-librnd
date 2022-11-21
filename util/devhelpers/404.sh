@@ -1,9 +1,13 @@
 #!/bin/sh
 
-# search the official web page for broken links
+SERVER=www.repo.hu
+ROOT_URL=http://$SERVER/projects
+PROJECTS="librnd pcb-rnd sch-rnd camv-rnd route-rnd"
 
-echo "Collecting the log..." >&2
-wget --spider -o 404.raw.log -r -p http://repo.hu/projects/pcb-rnd
+# search the official web pages for broken links
+spider() {
+echo "Collecting the log for $1..." >&2
+wget --spider -o 404.raw.log -r -p "$ROOT_URL/$1"
 
 echo "Evaluatng the log..." >&2
 awk '
@@ -21,4 +25,13 @@ awk '
 	(reported) { next }
 	/response.*404/ { report() }
 	/broken link/ { report() }
-' < 404.raw.log | tee 404.log
+' < 404.raw.log
+}
+
+for n in $PROJECTS
+do
+	echo ""
+	echo "=== PROJECT: $n ==="
+	echo ""
+	spider "$n"
+done | tee 404.log
