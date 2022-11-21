@@ -2,6 +2,20 @@
 
 # assumes running from the source tree
 
+# Print table header (but no html header)
+print_hdr()
+{
+echo '
+<table border=1 cellspacing=0>
+<tr>
+	<th> ID
+	<th> dialog box name
+	<th> action
+	<th> source
+	<th> comments
+'
+}
+
 # list all dialogs from the source files provided on the arg list
 list_dlgs()
 {
@@ -86,12 +100,6 @@ function out(id, name, src, action, comment     ,acturl1,acturl2,fn,tmp) {
 		next
 	out(id, name, src)
 }
-'
-
-echo '
-</table>
-</body>
-</html>
 '
 }
 
