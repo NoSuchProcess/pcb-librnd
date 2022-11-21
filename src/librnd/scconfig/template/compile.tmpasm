@@ -1,15 +1,19 @@
 # Generate Makefile code to compile .c -> .o
 # Arguments:
-#  /local/comp/OBJS     list of .o files (assuming each have at least a .c)
-#  /local/comp/OBJS_C99 list of .o files (assuming each have at least a .c), for non-c89 compilation
+#  /local/comp/OBJS_C89   list of .o files (assuming each have at least a .c)
+#  /local/comp/OBJS_C99   list of .o files (assuming each have at least a .c), for non-c89 compilation
+#  /local/comp/C89FLAGS   cflags for c89 compilation
+#  /local/comp/C99FLAGS   cflags for c99 compilation
 
 print {
 ### explicit rules for .c -> .o ###
 }
 
-append /local/comp/CFLAGS {}
+append /local/comp/C89FLAGS {}
+append /local/comp/C99FLAGS {}
 
-foreach /local/o in /local/comp/OBJS
+append /local/comp/OBJS_C89 {}
+foreach /local/o in /local/comp/OBJS_C89
 put /local/c /local/o
 sub /local/c {.o$} {.c}
 switch /local/c
@@ -27,7 +31,7 @@ switch /local/c
 end
 print [@
 @/local/o@: @/local/c@
-	$(CC) -c $(C89FLAGS) @/local/comp/CFLAGS@@/local/extinc@ -o @/local/o@ $<
+	$(CC) -c @/local/comp/C89FLAGS@@/local/extinc@ -o @/local/o@ $<
 @]
 end
 
@@ -50,11 +54,13 @@ switch /local/c
 end
 print [@
 @/local/o@: @/local/c@
-	$(CC) -c $(CFLAGS) @/local/comp/CFLAGS@@/local/extinc@ -o @/local/o@ $<
+	$(CC) -c @/local/comp/C99FLAGS@@/local/extinc@ -o @/local/o@ $<
 @]
 end
 
-put /local/comp/OBJS {}
+# clean arguments and local temp vars for safe reuse
+put /local/comp/OBJS_C89 {}
 put /local/comp/OBJS_C99 {}
-put /local/comp/CFLAGS {}
-
+put /local/comp/C89FLAGS {}
+put /local/comp/C99FLAGS {}
+put /local/extinc {}

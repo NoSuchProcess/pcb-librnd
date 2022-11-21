@@ -748,14 +748,17 @@ map_plugins:
 @]
 
 # generate explicit rules for .c -> .o
-put /local/comp/OBJS /local/librnd/OBJS
+put /local/comp/OBJS_C89 /local/librnd/OBJS
 put /local/comp/OBJS_C99 ?/local/librnd/OBJS_C99
+put /local/comp/C89FLAGS {$(C89FLAGS)}
+put /local/comp/C99FLAGS {$(CFLAGS)}
 include {librnd/scconfig/template/compile.tmpasm}
 
 print [@
 # for extern utils:@]
 
-put /local/comp/OBJS /local/librnd/OBJS_UTIL
+put /local/comp/OBJS_C89 /local/librnd/OBJS_UTIL
+put /local/comp/C89FLAGS {$(C89FLAGS)}
 include {librnd/scconfig/template/compile.tmpasm}
 
 # generate deps
