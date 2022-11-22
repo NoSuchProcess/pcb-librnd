@@ -64,6 +64,7 @@ LDFLAGS_LIBRND=@?/local/librnd/librnd_mak_extra_ldf@ @?/local/librnd/LDFLAGS_HID
 # build helper tools
 PUPLUG=$(LIBRND_LIBDIR)/puplug
 SPHASH=$(LIBRND_LIBDIR)/sphash
+FONT2C=$(LIBRND_LIBDIR)/font2c.sh
 CQUOTE=$(LIBRND_LIBDIR)/scconfig/cquote
 GENCONF=$(LIBRND_LIBDIR)/scconfig/gen_conf.sh
 
