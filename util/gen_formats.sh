@@ -27,13 +27,13 @@ echo '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - list of file formats </title>
+	<title> '$APP' - list of file formats </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 	<link rel="stylesheet" type="text/css" href="../default.css">
 </head>
 <body>
 
-<h1> pcb-rnd User Manual: Appendix </h1>
+<h1> '$APP' User Manual: Appendix </h1>
 <p>
 <h2> File format support </h2>
 
