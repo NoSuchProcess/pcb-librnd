@@ -19,6 +19,7 @@ install_all:
 	$(SCCBOX) $(HOW) build_ps.sh "$(LIBDIR)/build_ps.sh"
 	$(SCCBOX) $(HOW) keylist.sh "$(LIBDIR)/keylist.sh"
 	$(SCCBOX) $(HOW) menu2svg.sh "$(LIBDIR)/menu2svg.sh"
+	$(SCCBOX) $(HOW) action_compiler.sh "$(LIBDIR)/action_compiler.sh"
 
 install:
 	$(MAKE) install_all HOW="install -f"
