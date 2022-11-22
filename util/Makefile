@@ -18,6 +18,7 @@ install_all:
 	$(SCCBOX) $(HOW) devhelpers/font2c.sh "$(DEVHLP)/font2c.sh"
 	$(SCCBOX) $(HOW) build_ps.sh "$(LIBDIR)/build_ps.sh"
 	$(SCCBOX) $(HOW) keylist.sh "$(LIBDIR)/keylist.sh"
+	$(SCCBOX) $(HOW) menu2svg.sh "$(LIBDIR)/menu2svg.sh"
 
 install:
 	$(MAKE) install_all HOW="install -f"
