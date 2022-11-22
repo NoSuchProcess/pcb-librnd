@@ -16,6 +16,7 @@ install_all:
 	$(SCCBOX) $(HOW) devhelpers/awk_on_formats.sh "$(DEVHLP)/awk_on_formats.sh"
 	$(SCCBOX) $(HOW) devhelpers/list_dialogs.sh "$(DEVHLP)/list_dialogs.sh"
 	$(SCCBOX) $(HOW) devhelpers/font2c.sh "$(DEVHLP)/font2c.sh"
+	$(SCCBOX) $(HOW) build_ps.sh "$(LIBDIR)/build_ps.sh"
 
 install:
 	$(MAKE) install_all HOW="install -f"
