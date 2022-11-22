@@ -135,7 +135,7 @@ extract_from_lht()
 	'
 }
 
-# convert a "key src action" to a html table with rowspans for base keys
+# convert a "key src action" to a html table
 gen_html()
 {
 	$AWK -F '[\t]' '
@@ -206,12 +206,8 @@ gen_html()
 		print "<body>"
 		print "<h1> Key to action bindings </h1>"
 		print "<table border=1 cellspacing=0>"
-		printf("<tr><th> key")
-		colspan = 2
-		for(h in HIDS) {
-			printf(" <th>%s", h)
-			colspan++
-		}
+		printf("<tr><th> key <th> action <th> source")
+
 		print ""
 		for(n = 0; n < key_combos; n++) {
 			clr_cnt++
@@ -229,7 +225,8 @@ gen_html()
 			}
 			
 
-			print "	<th align=left>" cleanup(keystr)
+			print "	<th align=left>" cleanup(keystr) " <td>"
+			srcs=""
 			for(h in HIDS) {
 				mn = cleanup(MENUNAME[h, key])
 				act = cleanup(ACTION[h, key])
@@ -239,11 +236,18 @@ gen_html()
 					gsub(");", "); ", act)
 					if (mn != "")
 						act = "<I>" mn "</I>" "<br>" act
+					if (srcs == "")
+						srcs = h
+					else
+						srcs = srcs " <br> " h
 				}
-				print "	<td>", act
+				print act
 				if ((h, key) in ERR)
 					print "<br> <b>Error: key prefix collision</b>"
 			}
+			if (srcs == "")
+				scrs = "n/a"
+			print "<td>", srcs
 			last_base = base
 		}
 		print "</table>"
