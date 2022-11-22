@@ -20,13 +20,9 @@
 		- user implemented ->user_free_cb() should never free cell values, the lib does that
 	- hidlib_init1() should rnd_conf_set() "rc/path/exec_prefix" at the end so the host app doesn't need to
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
-	- build: unify utils
-		- move to librnd, unify, install + centralize
-			- devhelper/list_dialogs
-			- devhelper/font2c from pcb-rnd
-			- build_ps
-			- keylist
-			- menu2svg
+	- librnd utils/, app util/doc unification
+		- build: unify utils for doc/user/appendix generation
+		- keylist: need to load plugin menu files as well! (pcb-rnd, djopt)
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
