@@ -17,6 +17,7 @@ install_all:
 	$(SCCBOX) $(HOW) devhelpers/list_dialogs.sh "$(DEVHLP)/list_dialogs.sh"
 	$(SCCBOX) $(HOW) devhelpers/font2c.sh "$(DEVHLP)/font2c.sh"
 	$(SCCBOX) $(HOW) build_ps.sh "$(LIBDIR)/build_ps.sh"
+	$(SCCBOX) $(HOW) keylist.sh "$(LIBDIR)/keylist.sh"
 
 install:
 	$(MAKE) install_all HOW="install -f"
