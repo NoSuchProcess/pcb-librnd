@@ -20,6 +20,7 @@ install_all:
 	$(SCCBOX) $(HOW) keylist.sh "$(LIBDIR)/keylist.sh"
 	$(SCCBOX) $(HOW) menu2svg.sh "$(LIBDIR)/menu2svg.sh"
 	$(SCCBOX) $(HOW) action_compiler.sh "$(LIBDIR)/action_compiler.sh"
+	$(SCCBOX) $(HOW) dump_actions_to_html.sh  "$(LIBDIR)/dump_actions_to_html.sh"
 
 install:
 	$(MAKE) install_all HOW="install -f"

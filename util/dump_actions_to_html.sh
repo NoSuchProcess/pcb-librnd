@@ -1,34 +1,39 @@
 #!/bin/sh
+#   action list dump - collates the pcb-rnd action table into a html doc page
+#   Copyright (C) 2017,2018 Tibor 'Igor2' Palinkas
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#   http://repo.hu/projects/librnd
 
-# collates the pcb-rnd action table into a html doc page
+#shell lib; configuration:
+# $asrc  path to action sources
+# $lsrc  path to librnd action sources
 
-asrc="../action_src"
-lsrc="librnd_acts"
-
-cd ../../../../src
-pcb_rnd_ver=`./pcb-rnd --version`
-pcb_rnd_rev=`svn info ^/ | awk '/Revision:/ {
-	print $0
-	got_rev=1
-	exit
-	}
-	END {
-		if (!got_rev)
-		print "Rev unknown"
-	}
-	'`
-cd ../doc/user/09_appendix/src
-
-echo 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+# $1 is app name
+print_hdr() {
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 <html>
 <head>
-<title> pcb-rnd user manual </title>
+<title> $1 user manual </title>
 <meta http-equiv=\"Content-Type\" content=\"text/html;charset=us-ascii\">
 <link rel=\"stylesheet\" type=\"text/css\" href=\" ../default.css\">
 </head>
 <body>
 <p>
-<h1> pcb-rnd User Manual: Appendix </h1>
+<h1> $1 User Manual: Appendix </h1>
 <p>
 <h2> Action Reference</h2>
 <table border=1>"
@@ -36,10 +41,10 @@ echo "<caption>\n" "<b>"
 echo $pcb_rnd_ver ", " $pcb_rnd_rev
 echo "</b>"
 echo  "<th> Action <th> Description <th> Syntax <th> Plugin"
-(
-	cd ../../../../src
-	./pcb-rnd --dump-actions 2>/dev/null
-) | awk '
+}
+
+gen() {
+ awk '
 
 function flush_sd()
 {
@@ -119,3 +124,4 @@ function flush_sd()
 		print "</html>"
 	}
 '
+}
