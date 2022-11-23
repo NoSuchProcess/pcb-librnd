@@ -140,8 +140,11 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	if (!can_glob)
 		unit = rnd_unit_get_idx(unum);
-	else if ((!is_globbing) && (unum >= 0) && (unum < rnd_get_n_units(0)))
+	else if (!is_globbing) {
 		unit = rnd_unit_get_idx(unum);
+		if (unit->is_alias)
+			unit = rnd_conf.editor.grid_unit;
+	}
 	else
 		unit = rnd_conf.editor.grid_unit;
 
@@ -234,8 +237,11 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 
 		if (!can_glob)
 			spin->unit = rnd_unit_get_idx(unum);
-		else if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < rnd_get_n_units(0)))
+		else if (!ctx.dlg[ctx.wglob].val.lng) {
 			spin->unit = rnd_unit_get_idx(unum);
+			if (spin->unit->is_alias)
+				spin->unit = NULL;
+		}
 		else
 			spin->unit = NULL;
 

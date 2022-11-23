@@ -144,9 +144,11 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		case RND_CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
 		case RND_CFN_COORD:   rnd_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
 		case RND_CFN_UNIT:
-			if ((attr->val.lng < 0) || (attr->val.lng >= rnd_get_n_units(0)))
+			if ((attr->val.lng < 0) || (attr->val.lng >= rnd_get_n_units()))
 				return;
 			un = rnd_unit_get_idx(attr->val.lng);
+			if (un->is_alias)
+				return;
 			val = un->suffix;
 			break;
 		case RND_CFN_COLOR:   val = attr->val.clr.str; break;

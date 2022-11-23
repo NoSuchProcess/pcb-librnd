@@ -62,7 +62,7 @@ rnd_unit_t rnd_units[] = {
 	/* temporary, for sch-rnd - should be removed in librnd4 */
 	{"k",    'K', 1.0/1024000.0, RND_UNIT_CSCHEM,  RND_UNIT_ALLOW_K, 3, 0},
 
-	/* aliases - must be a block at the end */
+	/* aliases */
 	{"inch",  0,  0.001,    RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_IN, 5, 1},
 	{"pcb",   0,  100,      RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0, 1} /* old io_pcb unit */
 };
@@ -144,14 +144,9 @@ const rnd_unit_t *rnd_unit_get_suffix(const char *suffix)
 	return NULL;
 }
 
-int rnd_get_n_units(int aliases_too)
+int rnd_get_n_units()
 {
-	static int num_base = -1;
-	if (aliases_too)
-		return N_UNITS;
-	if (num_base < 0)
-		for(num_base = 0; rnd_units[num_base].printf_code != 0; num_base++) ;
-	return num_base;
+	return N_UNITS;
 }
 
 double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)

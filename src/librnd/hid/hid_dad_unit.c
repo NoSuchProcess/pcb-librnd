@@ -68,7 +68,7 @@ void rnd_dad_unit_set_num(rnd_hid_attribute_t *attr, long unit_id, double unused
 void rnd_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val_)
 {
 	const rnd_unit_t *val = val_;
-	int __n__, __v__ = rnd_get_n_units(1);
+	int __n__, __v__ = rnd_get_n_units();
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {
 			const rnd_unit_t *u = rnd_unit_get_idx(__n__);
@@ -121,11 +121,11 @@ void rnd_dad_unit_init(enum rnd_family_e family)
 	if (rnd_dad_unit_enum != NULL)
 		return;
 
-	len = rnd_get_n_units(0);
+	len = rnd_get_n_units();
 	rnd_dad_unit_enum = malloc(sizeof(char *) * (len+1));
 	for(n = i = 0; i < len; i++) {
 		const rnd_unit_t *u = rnd_unit_get_idx(i);
-		if (u->family & family)
+		if (!u->is_alias && (u->family & family))
 			rnd_dad_unit_enum[n++] = u->suffix;
 	}
 	rnd_dad_unit_enum[n] = NULL;

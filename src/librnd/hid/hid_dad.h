@@ -751,11 +751,11 @@ do { \
 			break; \
 		case RND_HATT_UNIT: \
 			{ \
-				int __n__, __v__ = rnd_get_n_units(0); \
+				int __n__, __v__ = rnd_get_n_units(); \
 				if (val_ != NULL) { \
 					for(__n__ = 0; __n__ < __v__; __n__++) { \
 						const rnd_unit_t *__u__ = rnd_unit_get_idx(__n__); \
-						if (__u__ == (rnd_unit_t *)(val_)) { \
+						if (!__u__->is_alias && (__u__ == (rnd_unit_t *)(val_))) { \
 							table[table ## _len - 1].field.lng = __n__; \
 							break; \
 						} \

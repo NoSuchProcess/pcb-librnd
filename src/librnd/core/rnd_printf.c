@@ -206,7 +206,9 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
-	for (n = 0; n < rnd_get_n_units(0); ++n) {
+	for (n = 0; n < rnd_get_n_units(); ++n) {
+		if (rnd_units[n].is_alias)
+			continue;
 		if ((rnd_units[n].allow & allow) != 0 && (rnd_units[n].family == family)) {
 			int n_above_one = 0;
 
@@ -218,10 +220,10 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 		}
 	}
 	/* If nothing worked, wind back to the smallest allowable unit */
-	if (n == rnd_get_n_units(0)) {
+	if (n == rnd_get_n_units()) {
 		do {
 			--n;
-		} while ((n>=0) && ((rnd_units[n].allow & allow) == 0 || rnd_units[n].family != family));
+		} while ((n>=0) && ((rnd_units[n].allow & allow) == 0 || rnd_units[n].family != family) || rnd_units[n].is_alias);
 	}
 
 	/* Apply scale factor */
@@ -762,7 +764,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 						case '*':
 							{
 								int found = 0;
-								for (i = 0; i < rnd_get_n_units(1); ++i) {
+								for (i = 0; i < rnd_get_n_units(); ++i) {
 									if (strcmp(ext_unit, rnd_units[i].suffix) == 0) {
 										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
 										found = 1;
@@ -814,7 +816,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 						default:
 							{
 								int found = 0;
-								for (i = 0; i < rnd_get_n_units(1); ++i) {
+								for (i = 0; i < rnd_get_n_units(); ++i) {
 									if (*fmt == rnd_units[i].printf_code) {
 										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
 										found = 1;
