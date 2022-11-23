@@ -180,7 +180,8 @@ char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
    %r formats. Output should be appended to string. Standard specifier
    sequence (the part between %r and the format letter) is in spec. The
    format letter is in fmt; fmt should be incremented by the callee depending
-   on how many format letters are consumed. Mask and suffix are information
+   on how many format letters are consumed; at the end fmt should point to the
+   last format char processed. Mask and suffix are information
    extracted from earlier format portions about how units should be printed.
    Read arguments from args. */
 extern int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, enum rnd_allow_e mask, enum rnd_suffix_e suffix, va_list args);
