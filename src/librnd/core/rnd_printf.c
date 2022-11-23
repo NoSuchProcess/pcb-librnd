@@ -565,7 +565,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 			/* Get our sub-specifiers */
 			if (*fmt == '#') {
-				mask = RND_UNIT_ALLOW_CMIL;			/* This must be pcb's base unit */
+				mask = RND_UNIT_ALLOW_CMIL; /* This must be pcb's base unit */
 				fmt++;
 			}
 			if (*fmt == '$') {
@@ -583,7 +583,10 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 			/* Tack full specifier onto specifier */
 			if (*fmt != 'm')
-				if (gds_append(&spec, *fmt) != 0) goto err;
+				if (gds_append(&spec, *fmt) != 0)
+					goto err;
+
+
 			switch (*fmt) {
 				/* Printf specs */
 			case 'o':
