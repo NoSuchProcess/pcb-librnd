@@ -77,12 +77,6 @@ enum rnd_unit_allow_e {
 	RND_UNIT_ALLOW_ALL_SANE = (RND_UNIT_ALLOW_DMIL-1) & (~(RND_UNIT_ALLOW_HZ | RND_UNIT_ALLOW_KHZ | RND_UNIT_ALLOW_MHZ | RND_UNIT_ALLOW_GHZ))
 }; /* used as rnd_unit_allow_t, which is unsigned long to guarantee enough bits for dynamic units */
 
-/* Can't be part of the enum because it's fixed unsigned long */
-#define RND_UNIT_ALLOW_ALL (1UL<<31)-1
-
-/* Temporary: remove this by librnd4.0.0 in favor of dynamic units */
-#define RND_UNIT_ALLOW_K (1UL<<31)
-
 typedef unsigned long rnd_unit_allow_t;
 
 /* bitfield */
@@ -93,9 +87,6 @@ enum rnd_family_e {
 	RND_UNIT_dyn      = 8   /* first bit available for dynamic registration */
 }; /* used as rnd_unit_family_t, which is unsigned long to guarantee enough bits for dynamic units */
 typedef unsigned long rnd_unit_family_t;
-
-/* Temporary: remove this by librnd4.0.0 in favor of dynamic units */
-#define RND_UNIT_CSCHEM (1UL<<31)
 
 typedef enum rnd_unit_suffix_e {
 	RND_UNIT_NO_SUFFIX,    /* do not print suffix */
