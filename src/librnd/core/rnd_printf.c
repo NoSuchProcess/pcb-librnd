@@ -585,7 +585,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 			}
 
 			if (maxfmts == 0)
-				return -1;
+				goto err;
 			maxfmts--;
 
 			/* Tack full specifier onto specifier */
@@ -604,7 +604,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				case 'x':
 				case 'X':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					if (spec.array[1] == 'l')
 						tmplen = sprintf(tmp, spec.array, va_arg(args, long));
 					else
@@ -617,7 +617,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				case 'g':
 				case 'G':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					if (strchr(spec.array, '*')) {
 						int prec = va_arg(args, int);
 						tmplen = sprintf(tmp, spec.array, va_arg(args, double), prec);
@@ -628,7 +628,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					break;
 				case 'c':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
 						tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
 					else
@@ -637,7 +637,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					break;
 				case 's':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					if (spec.array[0] == 'l') {
 						fprintf(stderr, "Internal error: appending %%ls is not supported\n");
 						abort();
@@ -650,7 +650,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					break;
 				case 'n':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					/* Depending on gcc settings, this will probably break with
 					 *  some silly "can't put %n in writable data space" message */
 					tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
@@ -658,7 +658,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					break;
 				case 'p':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
+						goto err;
 					tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
@@ -671,7 +671,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					++fmt;
 					if (*fmt == '*') {
 						if (safe & RND_SAFEPRINT_COORD_ONLY)
-							return -1;
+							goto err;
 						ext_unit = va_arg(args, const char *);
 					}
 					if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q' && *fmt != 'w')
@@ -680,7 +680,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					switch (*fmt) {
 						case 'q':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							qstr = va_arg(args, const char *);
 							if (mq_has_spec)
 								needsq = spec.array;
@@ -702,7 +702,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 						case 'H':
 							if ((safe & RND_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
-								return -1;
+								goto err;
 							if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
 							break;
 						case 'M':
@@ -720,42 +720,42 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							/* All these fallthroughs are deliberate */
 						case '9':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '8':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '7':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '6':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '5':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '4':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '3':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '2':
 						case 'D':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[count++] = va_arg(args, rnd_coord_t);
 							if (CoordsToString(string, value, count, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 							break;
 						case 'd':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							value[1] = va_arg(args, rnd_coord_t);
 							if (CoordsToString(string, value, 2, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
 							break;
@@ -775,7 +775,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 						case 'a':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
 							if (suffix == RND_UNIT_SUFFIX)
 								if (gds_append_len(&spec, " deg", 4) != 0) goto err;
@@ -784,7 +784,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 						case 'A':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 							/* if (suffix == RND_UNIT_SUFFIX)
 								if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
@@ -793,7 +793,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 						case 'f':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							gds_append_len(&spec, "f", 1);
 							tmplen = sprintf(tmp, spec.array, va_arg(args, double));
 							dot = strchr(spec.array, '.');
@@ -803,12 +803,12 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 						case 'w':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							print_fgw_arg(string, va_arg(args, fgw_arg_t), mask);
 							break;
 						case '+':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
-								return -1;
+								goto err;
 							mask = va_arg(args, enum rnd_allow_e);
 							break;
 						default:
@@ -831,10 +831,10 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				/*** ringdove app-specific custom spec ***/
 				case 'r':
 					if (rnd_printf_app_format == NULL)
-						return -1;
+						goto err;
 					++fmt;
 					if (rnd_printf_app_format(string, &spec, &fmt, mask, suffix, args) != 0)
-						return -1;
+						goto err;
 				break;
 			}
 		}
