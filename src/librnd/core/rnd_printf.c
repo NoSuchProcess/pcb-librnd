@@ -593,213 +593,215 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 
 			switch (*fmt) {
-				/* Printf specs */
-			case 'o':
-			case 'i':
-			case 'd':
-			case 'u':
-			case 'x':
-			case 'X':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				if (spec.array[1] == 'l')
-					tmplen = sprintf(tmp, spec.array, va_arg(args, long));
-				else
-					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
-				break;
-			case 'e':
-			case 'E':
-			case 'f':
-			case 'g':
-			case 'G':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				if (strchr(spec.array, '*')) {
-					int prec = va_arg(args, int);
-					tmplen = sprintf(tmp, spec.array, va_arg(args, double), prec);
-				}
-				else
-					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
-				break;
-			case 'c':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
-					tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
-				else
-					tmplen = sprintf(tmp, spec.array, va_arg(args, int));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
-				break;
-			case 's':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				if (spec.array[0] == 'l') {
-					fprintf(stderr, "Internal error: appending %%ls is not supported\n");
-					abort();
-				}
-				else {
-					const char *s = va_arg(args, const char *);
-					if (s == NULL) s = "(null)";
-					if (gds_append_str(string, s) != 0) goto err;
-				}
-				break;
-			case 'n':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				/* Depending on gcc settings, this will probably break with
-				 *  some silly "can't put %n in writable data space" message */
-				tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
-				break;
-			case 'p':
-				if (safe & RND_SAFEPRINT_COORD_ONLY)
-					return -1;
-				tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
-				if (gds_append_len(string, tmp, tmplen) != 0) goto err;
-				break;
-			case '%':
-				if (gds_append(string, '%') != 0) goto err;
-				break;
-				/* Our specs */
-			case 'm':
-				++fmt;
-				if (*fmt == '*')
-					ext_unit = va_arg(args, const char *);
-				if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q' && *fmt != 'w')
-					value[0] = va_arg(args, rnd_coord_t);
-				count = 1;
-				switch (*fmt) {
-				case 'q':
-					qstr = va_arg(args, const char *);
-					if (mq_has_spec)
-						needsq = spec.array;
+
+				/*** Standard printf specs ***/
+				case 'o':
+				case 'i':
+				case 'd':
+				case 'u':
+				case 'x':
+				case 'X':
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
+						return -1;
+					if (spec.array[1] == 'l')
+						tmplen = sprintf(tmp, spec.array, va_arg(args, long));
 					else
-						needsq = " \"\\";
-					if (QstringToString(string, qstr, '"', '\\', needsq) != 0) goto err;
+						tmplen = sprintf(tmp, spec.array, va_arg(args, int));
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
-				case 'I':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_NM, RND_UNIT_NO_SUFFIX) != 0) goto err;
+				case 'e':
+				case 'E':
+				case 'f':
+				case 'g':
+				case 'G':
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
+						return -1;
+					if (strchr(spec.array, '*')) {
+						int prec = va_arg(args, int);
+						tmplen = sprintf(tmp, spec.array, va_arg(args, double), prec);
+					}
+					else
+						tmplen = sprintf(tmp, spec.array, va_arg(args, double));
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+					break;
+				case 'c':
+					if (safe & RND_SAFEPRINT_COORD_ONLY)
+						return -1;
+					if (spec.array[1] == 'l' && sizeof(int) <= sizeof(wchar_t))
+						tmplen = sprintf(tmp, spec.array, va_arg(args, wchar_t));
+					else
+						tmplen = sprintf(tmp, spec.array, va_arg(args, int));
+					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 's':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
-					break;
-				case 'S':
-					if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_NATURAL, suffix) != 0) goto err;
-					break;
-				case 'N':
-					if (CoordsToString(string, value, 1, &spec, mask, suffix) != 0) goto err;
-					break;
-				case 'H':
-					if ((safe & RND_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
-						return -1;
-					if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
-					break;
-				case 'M':
-					if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_METRIC, suffix) != 0) goto err;
-					break;
-				case 'L':
-					if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_IMPERIAL, suffix) != 0) goto err;
-					break;
-				case 'k':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_DMIL, suffix) != 0) goto err;
-					break;
-				case 'r':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_READABLE, RND_UNIT_NO_SUFFIX) != 0) goto err;
-					break;
-					/* All these fallthroughs are deliberate */
-				case '9':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '8':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '7':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '6':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '5':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '4':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '3':
-					value[count++] = va_arg(args, rnd_coord_t);
-				case '2':
-				case 'D':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
-					value[count++] = va_arg(args, rnd_coord_t);
-					if (CoordsToString(string, value, count, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
-					break;
-				case 'd':
-					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
-					value[1] = va_arg(args, rnd_coord_t);
-					if (CoordsToString(string, value, 2, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
-					break;
-				case '*':
-					{
-						int found = 0;
-						for (i = 0; i < rnd_get_n_units(1); ++i) {
-							if (strcmp(ext_unit, rnd_units[i].suffix) == 0) {
-								if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
-								found = 1;
-								break;
-							}
-						}
-						if (!found)
-							if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
+					if (spec.array[0] == 'l') {
+						fprintf(stderr, "Internal error: appending %%ls is not supported\n");
+						abort();
+					}
+					else {
+						const char *s = va_arg(args, const char *);
+						if (s == NULL) s = "(null)";
+						if (gds_append_str(string, s) != 0) goto err;
 					}
 					break;
-				case 'a':
+				case 'n':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
-					if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
-					if (suffix == RND_UNIT_SUFFIX)
-						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
-					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, rnd_angle_t));
+					/* Depending on gcc settings, this will probably break with
+					 *  some silly "can't put %n in writable data space" message */
+					tmplen = sprintf(tmp, spec.array, va_arg(args, int *));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
-				case 'A':
+				case 'p':
 					if (safe & RND_SAFEPRINT_COORD_ONLY)
 						return -1;
-					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
-					/* if (suffix == RND_UNIT_SUFFIX)
-						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
-					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, rnd_angle_t))); /* kicad legacy needs decidegrees */
+					tmplen = sprintf(tmp, spec.array, va_arg(args, void *));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
-				case 'f':
-					if (safe & RND_SAFEPRINT_COORD_ONLY)
-						return -1;
-					gds_append_len(&spec, "f", 1);
-					tmplen = sprintf(tmp, spec.array, va_arg(args, double));
-					dot = strchr(spec.array, '.');
-					if ((dot != NULL) && (dot[1] == '0'))
-						tmplen = do_trunc0(tmp);
-					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+				case '%':
+					if (gds_append(string, '%') != 0) goto err;
 					break;
-				case 'w':
-					print_fgw_arg(string, va_arg(args, fgw_arg_t), mask);
-					break;
-				case '+':
-					mask = va_arg(args, enum rnd_allow_e);
-					break;
-				default:
-					{
-						int found = 0;
-						for (i = 0; i < rnd_get_n_units(1); ++i) {
-							if (*fmt == rnd_units[i].printf_code) {
-								if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
-								found = 1;
-								break;
+
+				/*** librnd (ex-pcb-rnd) custom spec ***/
+				case 'm':
+					++fmt;
+					if (*fmt == '*')
+						ext_unit = va_arg(args, const char *);
+					if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q' && *fmt != 'w')
+						value[0] = va_arg(args, rnd_coord_t);
+					count = 1;
+					switch (*fmt) {
+						case 'q':
+							qstr = va_arg(args, const char *);
+							if (mq_has_spec)
+								needsq = spec.array;
+							else
+								needsq = " \"\\";
+							if (QstringToString(string, qstr, '"', '\\', needsq) != 0) goto err;
+							break;
+						case 'I':
+							if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_NM, RND_UNIT_NO_SUFFIX) != 0) goto err;
+							break;
+						case 's':
+							if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
+							break;
+						case 'S':
+							if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_NATURAL, suffix) != 0) goto err;
+							break;
+						case 'N':
+							if (CoordsToString(string, value, 1, &spec, mask, suffix) != 0) goto err;
+							break;
+						case 'H':
+							if ((safe & RND_SAFEPRINT_COORD_ONLY) && (value[0] > 1))
+								return -1;
+							if (CoordsToHumanString(string, value[0], &spec, suffix) != 0) goto err;
+							break;
+						case 'M':
+							if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_METRIC, suffix) != 0) goto err;
+							break;
+						case 'L':
+							if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_IMPERIAL, suffix) != 0) goto err;
+							break;
+						case 'k':
+							if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_DMIL, suffix) != 0) goto err;
+							break;
+						case 'r':
+							if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_READABLE, RND_UNIT_NO_SUFFIX) != 0) goto err;
+							break;
+							/* All these fallthroughs are deliberate */
+						case '9':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '8':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '7':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '6':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '5':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '4':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '3':
+							value[count++] = va_arg(args, rnd_coord_t);
+						case '2':
+						case 'D':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
+							value[count++] = va_arg(args, rnd_coord_t);
+							if (CoordsToString(string, value, count, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
+							break;
+						case 'd':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
+							value[1] = va_arg(args, rnd_coord_t);
+							if (CoordsToString(string, value, 2, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
+							break;
+						case '*':
+							{
+								int found = 0;
+								for (i = 0; i < rnd_get_n_units(1); ++i) {
+									if (strcmp(ext_unit, rnd_units[i].suffix) == 0) {
+										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
+										found = 1;
+										break;
+									}
+								}
+								if (!found)
+									if (CoordsToString(string, value, 1, &spec, mask & RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
 							}
-						}
-						if (!found)
-							if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
+							break;
+						case 'a':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
+							if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
+							if (suffix == RND_UNIT_SUFFIX)
+								if (gds_append_len(&spec, " deg", 4) != 0) goto err;
+							tmplen = sprintf(tmp, spec.array, (double) va_arg(args, rnd_angle_t));
+							if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+							break;
+						case 'A':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
+							if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
+							/* if (suffix == RND_UNIT_SUFFIX)
+								if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
+							tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, rnd_angle_t))); /* kicad legacy needs decidegrees */
+							if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+							break;
+						case 'f':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
+							gds_append_len(&spec, "f", 1);
+							tmplen = sprintf(tmp, spec.array, va_arg(args, double));
+							dot = strchr(spec.array, '.');
+							if ((dot != NULL) && (dot[1] == '0'))
+								tmplen = do_trunc0(tmp);
+							if (gds_append_len(string, tmp, tmplen) != 0) goto err;
+							break;
+						case 'w':
+							print_fgw_arg(string, va_arg(args, fgw_arg_t), mask);
+							break;
+						case '+':
+							mask = va_arg(args, enum rnd_allow_e);
+							break;
+						default:
+							{
+								int found = 0;
+								for (i = 0; i < rnd_get_n_units(1); ++i) {
+									if (*fmt == rnd_units[i].printf_code) {
+										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
+										found = 1;
+										break;
+									}
+								}
+								if (!found)
+									if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_ALL_SANE, suffix) != 0) goto err;
+							}
+							break;
 					}
 					break;
-				}
-				break;
 			}
 		}
 		else
