@@ -46,20 +46,21 @@ enum rnd_unit_allow_e {
 	RND_UNIT_ALLOW_CM = 8,
 	RND_UNIT_ALLOW_M = 16,
 	RND_UNIT_ALLOW_KM = 32,
-	RND_UNIT_ALLOW_DU = 64, /* "du" = 0.1 micron "decimicron" units, for eagle bin */
 
-	RND_UNIT_ALLOW_CMIL = 1024,
+	RND_UNIT_ALLOW_HZ = 64,
+	RND_UNIT_ALLOW_KHZ = 128,
+	RND_UNIT_ALLOW_MHZ = 256,
+	RND_UNIT_ALLOW_GHZ = 512,
+
+	RND_UNIT_ALLOW_CMIL = 1024, /* old pcb format */
 	RND_UNIT_ALLOW_MIL = 2048,
+
+	/* unusual units, avoid using these */
 	RND_UNIT_ALLOW_IN = 4096,
-
 	RND_UNIT_ALLOW_DMIL = 8192, /* for kicad legacy decimil units */
+	RND_UNIT_ALLOW_DU = 16384,  /* "du" = 0.1 micron "decimicron" units, for eagle bin */
 
-	RND_UNIT_ALLOW_HZ = 16384,
-	RND_UNIT_ALLOW_KHZ = 32768,
-	RND_UNIT_ALLOW_MHZ = 65536,
-	RND_UNIT_ALLOW_GHZ = 131072,
-
-	RND_UNIT_ALLOW_K = 262144, /* sch-rnd's, temporary, should be removed in librnd 4.0.0 */
+	RND_UNIT_ALLOW_dyn = 32768, /* first bit available for dynamic registration */
 
 	RND_UNIT_ALLOW_METRIC = RND_UNIT_ALLOW_NM  | RND_UNIT_ALLOW_UM | RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_CM | RND_UNIT_ALLOW_M | RND_UNIT_ALLOW_KM,
 	RND_UNIT_ALLOW_IMPERIAL = RND_UNIT_ALLOW_DMIL | RND_UNIT_ALLOW_CMIL | RND_UNIT_ALLOW_MIL | RND_UNIT_ALLOW_IN,
@@ -71,11 +72,16 @@ enum rnd_unit_allow_e {
 	/* Used for pcb-printf %mS - should not include unusual units like km, cmil and dmil */
 	RND_UNIT_ALLOW_NATURAL = RND_UNIT_ALLOW_NM | RND_UNIT_ALLOW_UM | RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_M | RND_UNIT_ALLOW_MIL | RND_UNIT_ALLOW_IN,
 
-	/* Allow all but the most exotic */
-	RND_UNIT_ALLOW_ALL_SANE = ~(RND_UNIT_ALLOW_DU | RND_UNIT_ALLOW_DMIL | RND_UNIT_ALLOW_K),
-
-	RND_UNIT_ALLOW_ALL = ~0
+	/* Allow all but the most exotic: anything up to IN, minus the freqs */
+	RND_UNIT_ALLOW_ALL_SANE = (RND_UNIT_ALLOW_DMIL-1) & (~(RND_UNIT_ALLOW_HZ | RND_UNIT_ALLOW_KHZ | RND_UNIT_ALLOW_MHZ | RND_UNIT_ALLOW_GHZ))
 }; /* used as rnd_unit_allow_t, which is unsigned long to guarantee enough bits for dynamic units */
+
+/* Can't be part of the enum because it's fixed unsigned long */
+#define RND_UNIT_ALLOW_ALL (1UL<<31)-1
+
+/* Temporary: remove this by librnd4.0.0 in favor of dynamic units */
+#define RND_UNIT_ALLOW_K (1UL<<31)
+
 typedef unsigned long rnd_unit_allow_t;
 
 /* bitfield */
