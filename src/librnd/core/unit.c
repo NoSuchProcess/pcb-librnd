@@ -118,7 +118,7 @@ const rnd_unit_t *rnd_get_unit_struct(const char *suffix)
 }
 
 
-const rnd_unit_t *rnd_get_unit_struct_by_allow(enum rnd_allow_e allow)
+const rnd_unit_t *rnd_get_unit_struct_by_allow(rnd_unit_allow_t allow)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)

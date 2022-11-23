@@ -36,7 +36,7 @@
 typedef struct {
 	rnd_hid_compound_t cmp;
 	void **hid_ctx;
-	rnd_family_t family; /* which families of units are allowed in this spinbox */
+	rnd_unit_family_t family; /* which families of units are allowed in this spinbox */
 	int wenum;
 
 	/* Spare: see doc/developer/spare.txt */

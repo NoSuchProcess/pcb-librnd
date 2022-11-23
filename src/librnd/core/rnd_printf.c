@@ -111,7 +111,7 @@ do { \
 } while(0)
 
 /* append a suffix, with or without space */
-static int inline append_suffix(gds_t *dest, enum rnd_suffix_e suffix_type, const char *suffix)
+static int inline append_suffix(gds_t *dest, rnd_unit_suffix_t suffix_type, const char *suffix)
 {
 	switch (suffix_type) {
 	case RND_UNIT_NO_SUFFIX:
@@ -142,7 +142,7 @@ static int inline append_suffix(gds_t *dest, enum rnd_suffix_e suffix_type, cons
  *
  * return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum rnd_allow_e allow, enum rnd_suffix_e suffix_type)
+static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, rnd_unit_allow_t allow, rnd_unit_suffix_t suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -268,11 +268,11 @@ err:;
 typedef struct {
 	int           score_factor;
 
-	enum rnd_allow_e  base;
+	rnd_unit_allow_t  base;
 	double        down_limit;
-	enum rnd_allow_e  down;
+	rnd_unit_allow_t  down;
 	double        up_limit;
-	enum rnd_allow_e  up;
+	rnd_unit_allow_t  up;
 
 	/* persistent, calculated once */
 	const rnd_unit_t    *base_unit, *down_unit, *up_unit;
@@ -329,7 +329,7 @@ static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, dou
 }
 
 /* Same as CoordsToString but take only one coord and print it in human readable format */
-static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *printf_spec_, enum rnd_suffix_e suffix_type)
+static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *printf_spec_, rnd_unit_suffix_t suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -410,7 +410,7 @@ int QstringToString(gds_t *dest, const char *qstr, char q, char esc, const char 
 	return 0;
 }
 
-static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
+static void print_fgw_arg(gds_t *string, fgw_arg_t a, rnd_unit_allow_t mask)
 {
 	if ((a.type & FGW_STR) == FGW_STR) {
 		gds_append_str(string, a.val.str);
@@ -460,7 +460,7 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
 	rnd_append_printf(string, "<invalid fgw_arg_t %d>", a.type);
 }
 
-int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, enum rnd_allow_e mask, enum rnd_suffix_e suffix, va_list args) = NULL;
+int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args) = NULL;
 
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
@@ -480,7 +480,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0, mq_has_spec;
 	char *dot, *free_fmt = NULL;
-	enum rnd_allow_e mask = RND_UNIT_ALLOW_ALL_SANE;
+	rnd_unit_allow_t mask = RND_UNIT_ALLOW_ALL_SANE;
 	unsigned long maxfmts;
 
 	/* set up static allocation for spec */
@@ -496,7 +496,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 	new_fmt:;
 	while (*fmt) {
-		enum rnd_suffix_e suffix = RND_UNIT_NO_SUFFIX;
+		rnd_unit_suffix_t suffix = RND_UNIT_NO_SUFFIX;
 
 		if (*fmt == '%') {
 			const char *ext_unit = "";
@@ -809,7 +809,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 						case '+':
 							if (safe & RND_SAFEPRINT_COORD_ONLY)
 								goto err;
-							mask = va_arg(args, enum rnd_allow_e);
+							mask = va_arg(args, rnd_unit_allow_t);
 							break;
 						default:
 							{
