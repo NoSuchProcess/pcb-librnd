@@ -84,7 +84,11 @@ typedef enum rnd_family_e {
 	RND_UNIT_CSCHEM   = 8   /* temporary: should be removed in librnd 4.0.0 */
 } rnd_family_t;
 
-enum rnd_suffix_e { RND_UNIT_NO_SUFFIX, RND_UNIT_SUFFIX, RND_UNIT_FILE_MODE };
+enum rnd_suffix_e {
+	RND_UNIT_NO_SUFFIX,    /* do not print suffix */
+	RND_UNIT_SUFFIX,       /* print suffix separated by a space from the value - human readable */
+	RND_UNIT_FILE_MODE     /* print suffix without separation - keeps the value a single token */
+};
 
 struct rnd_unit_s {
 	const char *suffix;
