@@ -589,7 +589,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 			maxfmts--;
 
 			/* Tack full specifier onto specifier */
-			if (*fmt != 'm')
+			if ((*fmt != 'm') && (*fmt != 'r'))
 				if (gds_append(&spec, *fmt) != 0)
 					goto err;
 
