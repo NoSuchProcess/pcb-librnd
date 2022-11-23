@@ -142,8 +142,7 @@ static int inline append_suffix(gds_t *dest, enum rnd_suffix_e suffix_type, cons
  *
  * return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum rnd_allow_e allow,
-														 enum rnd_suffix_e suffix_type)
+static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum rnd_allow_e allow, enum rnd_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
