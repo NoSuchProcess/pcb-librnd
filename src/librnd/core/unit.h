@@ -89,9 +89,12 @@ enum rnd_family_e {
 	RND_UNIT_METRIC   = 1,
 	RND_UNIT_IMPERIAL = 2,
 	RND_UNIT_FREQ     = 4,
-	RND_UNIT_CSCHEM   = 8   /* temporary: should be removed in librnd 4.0.0 */
+	RND_UNIT_dyn      = 8   /* first bit available for dynamic registration */
 }; /* used as rnd_unit_family_t, which is unsigned long to guarantee enough bits for dynamic units */
 typedef unsigned long rnd_unit_family_t;
+
+/* Temporary: remove this by librnd4.0.0 in favor of dynamic units */
+#define RND_UNIT_CSCHEM (1UL<<31)
 
 typedef enum rnd_unit_suffix_e {
 	RND_UNIT_NO_SUFFIX,    /* do not print suffix */
