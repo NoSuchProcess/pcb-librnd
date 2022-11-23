@@ -130,10 +130,10 @@ const rnd_unit_t *rnd_get_unit_struct_by_allow(rnd_unit_allow_t allow);
 int rnd_get_n_units(int aliases_too);
 
 /* Return the idxth unit or NULL (bounds check) */
-const rnd_unit_t *get_unit_by_idx(int idx);
+const rnd_unit_t *rnd_unit_get_idx(int idx);
 
 /* Return the unit with (case sensitive) matching suffix */
-const rnd_unit_t *get_unit_by_suffix(const char *suffix);
+const rnd_unit_t *rnd_unit_get_suffix(const char *suffix);
 
 /* Convert x to the given unit */
 double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x);

@@ -128,14 +128,14 @@ const rnd_unit_t *rnd_get_unit_struct_by_allow(rnd_unit_allow_t allow)
 	return NULL;
 }
 
-const rnd_unit_t *get_unit_by_idx(int idx)
+const rnd_unit_t *rnd_unit_get_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
 		return NULL;
 	return rnd_units + idx;
 }
 
-const rnd_unit_t *get_unit_by_suffix(const char *suffix)
+const rnd_unit_t *rnd_unit_get_suffix(const char *suffix)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
