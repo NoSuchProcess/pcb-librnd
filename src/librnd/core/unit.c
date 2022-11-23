@@ -231,3 +231,28 @@ rnd_angle_t rnd_normalize_angle(rnd_angle_t a)
 		a -= 360.0;
 	return a;
 }
+
+/*** dynamic ***/
+static unsigned long rnd_unit_next_family_bit = RND_UNIT_dyn;
+unsigned long rnd_unit_reg_family(void)
+{
+	long id = rnd_unit_next_family_bit;
+	rnd_unit_next_family_bit <<= 1;
+	return id;
+}
+
+
+static unsigned long rnd_unit_next_allow_bit = RND_UNIT_ALLOW_dyn;
+int rnd_unit_reg_units(rnd_unit_t *in, int num_in, unsigned long family_bit)
+{
+	int n;
+
+	for(n = 0; n < num_in; n++) {
+		in[n].index = rnd_units.used;
+		in[n].family = family_bit;
+		in[n].allow = rnd_unit_next_allow_bit;
+		rnd_unit_next_allow_bit <<= 1;
+		vtp0_append(&rnd_units, &in[n]);
+	}
+}
+

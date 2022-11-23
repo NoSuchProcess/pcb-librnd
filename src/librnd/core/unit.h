@@ -170,4 +170,20 @@ RND_INLINE rnd_coord_t rnd_coord_abs(rnd_coord_t c)
 	return c;
 }
 
+/*** dynamic unit system (for apps to register custom types) ***/
+
+/* Register a new family and return a type bit representing it (as if it
+   was part of the rnd_unit_family_t enum) */
+unsigned long rnd_unit_reg_family(void);
+
+/* Register a set of units of a family. Fills in the following fields:
+    ->family (from the argument)
+    ->allow (newly allocated bits)
+    ->index
+   Returns 0 on success.
+*/
+int rnd_unit_reg_units(rnd_unit_t *in, int num_in, unsigned long family_bit);
+
+
+
 #endif
