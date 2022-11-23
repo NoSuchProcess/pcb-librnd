@@ -460,6 +460,8 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
 	rnd_append_printf(string, "<invalid fgw_arg_t %d>", a.type);
 }
 
+int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, enum rnd_allow_e mask, enum rnd_suffix_e suffix, va_list args) = NULL;
+
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
  * output pcb coords as various units. See the comment at the top
@@ -825,6 +827,15 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 					}
 					break;
+
+				/*** ringdove app-specific custom spec ***/
+				case 'r':
+					if (rnd_printf_app_format == NULL)
+						return -1;
+					++fmt;
+					if (rnd_printf_app_format(string, &spec, &fmt, mask, suffix, args) != 0)
+						return -1;
+				break;
 			}
 		}
 		else

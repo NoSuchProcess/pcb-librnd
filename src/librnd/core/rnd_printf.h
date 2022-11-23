@@ -176,4 +176,14 @@ int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
    (the caller needs to free() after use) or NULL on error. */
 char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, const char **input), void *ctx, rnd_strdup_subst_t flags);
 
+/* Optional: ringdove apps may provide this format print callback to render
+   %r formats. Output should be appended to string. Standard specifier
+   sequence (the part between %r and the format letter) is in spec. The
+   format letter is in fmt; fmt should be incremented by the callee depending
+   on how many format letters are consumed. Mask and suffix are information
+   extracted from earlier format portions about how units should be printed.
+   Read arguments from args. */
+extern int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, enum rnd_allow_e mask, enum rnd_suffix_e suffix, va_list args);
+
+
 #endif
