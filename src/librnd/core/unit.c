@@ -251,5 +251,7 @@ int rnd_unit_reg_units(rnd_unit_t *in, int num_in, unsigned long family_bit)
 		rnd_unit_next_allow_bit <<= 1;
 		vtp0_append(&rnd_units, &in[n]);
 	}
+
+	return 0;
 }
 
