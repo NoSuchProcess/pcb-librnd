@@ -667,13 +667,18 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				/*** librnd (ex-pcb-rnd) custom spec ***/
 				case 'm':
 					++fmt;
-					if (*fmt == '*')
+					if (*fmt == '*') {
+						if (safe & RND_SAFEPRINT_COORD_ONLY)
+							return -1;
 						ext_unit = va_arg(args, const char *);
+					}
 					if (*fmt != '+' && *fmt != 'a' && *fmt != 'A' && *fmt != 'f' && *fmt != 'q' && *fmt != 'w')
 						value[0] = va_arg(args, rnd_coord_t);
 					count = 1;
 					switch (*fmt) {
 						case 'q':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							qstr = va_arg(args, const char *);
 							if (mq_has_spec)
 								needsq = spec.array;
@@ -712,18 +717,32 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							break;
 							/* All these fallthroughs are deliberate */
 						case '9':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '8':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '7':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '6':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '5':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '4':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '3':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							value[count++] = va_arg(args, rnd_coord_t);
 						case '2':
 						case 'D':
@@ -781,9 +800,13 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 							break;
 						case 'w':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							print_fgw_arg(string, va_arg(args, fgw_arg_t), mask);
 							break;
 						case '+':
+							if (safe & RND_SAFEPRINT_COORD_ONLY)
+								return -1;
 							mask = va_arg(args, enum rnd_allow_e);
 							break;
 						default:
