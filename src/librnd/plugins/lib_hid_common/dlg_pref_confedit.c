@@ -130,6 +130,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	rnd_hid_attribute_t *attr;
 	char buf[128];
 	const char *val = buf;
+	const rnd_unit_t *un;
 
 	if (ctx->idx >= ctx->nat->array_size)
 		return; /* shouldn't ever happen - we have checked this before creating the dialog! */
@@ -145,7 +146,8 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		case RND_CFN_UNIT:
 			if ((attr->val.lng < 0) || (attr->val.lng >= rnd_get_n_units(0)))
 				return;
-			val = rnd_units[attr->val.lng].suffix;
+			un = rnd_unit_get_idx(attr->val.lng);
+			val = un->suffix;
 			break;
 		case RND_CFN_COLOR:   val = attr->val.clr.str; break;
 		case RND_CFN_LIST:

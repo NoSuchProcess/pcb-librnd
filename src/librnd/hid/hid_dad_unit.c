@@ -53,7 +53,8 @@ void rnd_dad_unit_set_num(rnd_hid_attribute_t *attr, long unit_id, double unused
 	int l;
 	rnd_hid_dad_unit_t *unit = attr->wdata;
 	rnd_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
-	const char *target = rnd_units[unit_id].suffix;
+	const rnd_unit_t *u = rnd_unit_get_idx(unit_id);
+	const char *target = u->suffix;
 	const char **vals = enu->wdata;
 
 	for(l = 0; vals[l] != NULL; l++) {
@@ -70,7 +71,8 @@ void rnd_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val_)
 	int __n__, __v__ = rnd_get_n_units(1);
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {
-			if (&rnd_units[__n__] == val) {
+			const rnd_unit_t *u = rnd_unit_get_idx(__n__);
+			if (u == val) {
 				rnd_dad_unit_set_num(end, __n__, 0, 0);
 				return;
 			}
@@ -122,8 +124,9 @@ void rnd_dad_unit_init(enum rnd_family_e family)
 	len = rnd_get_n_units(0);
 	rnd_dad_unit_enum = malloc(sizeof(char *) * (len+1));
 	for(n = i = 0; i < len; i++) {
-		if (rnd_units[i].family & family)
-			rnd_dad_unit_enum[n++] = rnd_units[i].suffix;
+		const rnd_unit_t *u = rnd_unit_get_idx(i);
+		if (u->family & family)
+			rnd_dad_unit_enum[n++] = u->suffix;
 	}
 	rnd_dad_unit_enum[n] = NULL;
 }
