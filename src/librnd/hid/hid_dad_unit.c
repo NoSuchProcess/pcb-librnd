@@ -40,7 +40,7 @@ void rnd_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
 	const char **vals = enu->wdata;
 	const rnd_unit_t *u = get_unit_by_suffix(vals[enu->val.lng]);
-	int unit_id = u == NULL ? -1 : u - rnd_units;
+	int unit_id = u == NULL ? -1 : u->index;
 
 	end->val.lng = unit_id;
 	end->changed = 1;

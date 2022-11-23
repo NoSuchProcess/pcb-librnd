@@ -86,7 +86,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			{
 				const rnd_unit_t *u = rnd_get_unit_struct(val);
 				if (u != NULL)
-					hv.lng = u - rnd_units;
+					hv.lng = rnd_units->index;
 				else
 					hv.lng = -1;
 				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);

@@ -147,7 +147,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	if (is_globbing && su->dlg[su->wglob].val.lng) {
 		/* global ticked in: also set the unit by force */
-		unum = rnd_conf.editor.grid_unit - rnd_units;
+		unum = rnd_conf.editor.grid_unit->index;
 		hv.lng = unum;
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
