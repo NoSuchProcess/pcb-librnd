@@ -472,6 +472,7 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, enum rnd_allow_e mask)
  * return 0 on success */
 int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *fmt, va_list args)
 {
+	char spec_buff[128]; /* large enough for any reasonable format spec */
 	gds_t spec;
 	const char *qstr, *needsq;
 	char tmp[128]; /* large enough for rendering a long long int */
@@ -480,12 +481,16 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 	enum rnd_allow_e mask = RND_UNIT_ALLOW_ALL_SANE;
 	unsigned long maxfmts;
 
+	/* set up static allocation for spec */
+	spec.array = spec_buff;
+	spec.no_realloc = 1;
+	spec.used = 0;
+	spec.alloced = sizeof(spec_buff);
+
 	if ((safe & RND_SAFEPRINT_arg_max) > 0)
 		maxfmts = (safe & RND_SAFEPRINT_arg_max);
 	else
 		maxfmts = 1UL<<31;
-
-	gds_init(&spec);
 
 	new_fmt:;
 	while (*fmt) {
@@ -804,7 +809,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 	retval = 0;
 err:;
-	gds_uninit(&spec);
+	/* gds_uninit(&spec); - not needed with static allocation */
 	if (free_fmt != NULL)
 		free(free_fmt);
 
