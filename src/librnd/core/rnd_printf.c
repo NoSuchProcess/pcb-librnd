@@ -207,13 +207,14 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
 	for (n = 0; n < rnd_get_n_units(); ++n) {
-		if (rnd_units[n].is_alias)
+		const rnd_unit_t *u = rnd_units.array[n];
+		if (u->is_alias)
 			continue;
-		if ((rnd_units[n].allow & allow) != 0 && (rnd_units[n].family == family)) {
+		if (((u->allow & allow) != 0) && (u->family == family)) {
 			int n_above_one = 0;
 
 			for (i = 0; i < n_coords; ++i)
-				if (fabs(value[i] * rnd_units[n].scale_factor) > 1)
+				if (fabs(value[i] * u->scale_factor) > 1)
 					++n_above_one;
 			if (n_above_one == n_coords)
 				break;
@@ -221,17 +222,28 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 	}
 	/* If nothing worked, wind back to the smallest allowable unit */
 	if (n == rnd_get_n_units()) {
+		const rnd_unit_t *u;
 		do {
 			--n;
-		} while ((n>=0) && ((rnd_units[n].allow & allow) == 0 || rnd_units[n].family != family) || rnd_units[n].is_alias);
+			if (n < 0)
+				break;
+			u = rnd_units.array[n];
+		} while (u->is_alias || ((u->allow & allow) == 0) || (u->family != family));
 	}
 
-	/* Apply scale factor */
-	suffix = rnd_units[n].suffix;
-	for (i = 0; i < n_coords; ++i)
-		value[i] = value[i] * rnd_units[n].scale_factor;
+	if (n < 0)
+		return -1;
 
-	make_printf_spec(printf_spec_new, printf_spec, rnd_units[n].default_prec, &trunc0);
+	/* Apply scale factor */
+	{
+		const rnd_unit_t *u = rnd_units.array[n];
+		suffix = u->suffix;
+		for(i = 0; i < n_coords; ++i)
+			value[i] = value[i] * u->scale_factor;
+
+		make_printf_spec(printf_spec_new, printf_spec, u->default_prec, &trunc0);
+	}
+
 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
@@ -765,8 +777,9 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							{
 								int found = 0;
 								for (i = 0; i < rnd_get_n_units(); ++i) {
-									if (strcmp(ext_unit, rnd_units[i].suffix) == 0) {
-										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
+									const rnd_unit_t *u = rnd_units.array[i];
+									if (strcmp(ext_unit, u->suffix) == 0) {
+										if (CoordsToString(string, value, 1, &spec, u->allow, suffix) != 0) goto err;
 										found = 1;
 										break;
 									}
@@ -817,8 +830,9 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 							{
 								int found = 0;
 								for (i = 0; i < rnd_get_n_units(); ++i) {
-									if (*fmt == rnd_units[i].printf_code) {
-										if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
+									const rnd_unit_t *u = rnd_units.array[i];
+									if (*fmt == u->printf_code) {
+										if (CoordsToString(string, value, 1, &spec, u->allow, suffix) != 0) goto err;
 										found = 1;
 										break;
 									}

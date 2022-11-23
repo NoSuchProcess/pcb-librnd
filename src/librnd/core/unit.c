@@ -38,9 +38,11 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/unit.h>
 
+vtp0_t rnd_units;
+
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */
-rnd_unit_t rnd_units[] = {
+static rnd_unit_t rnd_unit_tbl[] = {
 	{"km",   'k', 0.000001, RND_UNIT_METRIC,   RND_UNIT_ALLOW_KM, 5, 0},
 	{"m",    'f', 0.001,    RND_UNIT_METRIC,   RND_UNIT_ALLOW_M, 5, 0},
 	{"cm",   'e', 0.1,      RND_UNIT_METRIC,   RND_UNIT_ALLOW_CM, 5, 0},
@@ -67,13 +69,27 @@ rnd_unit_t rnd_units[] = {
 	{"pcb",   0,  100,      RND_UNIT_IMPERIAL, RND_UNIT_ALLOW_CMIL, 0, 1} /* old io_pcb unit */
 };
 
-#define N_UNITS ((int) (sizeof rnd_units / sizeof rnd_units[0]))
+#define UNIT_TBL_LEN ((int) (sizeof(rnd_unit_tbl) / sizeof(rnd_unit_tbl[0])))
 
 void rnd_units_init(void)
 {
 	int i;
-	for (i = 0; i < N_UNITS; ++i)
-		rnd_units[i].index = i;
+
+/* Initial allocation to avoid reallocs. Since rnd_unit_allow_t may
+   be 32 bit bitfield, generally there would be at most 32 types and their
+   aliases, so this buffer doesn't need to be too large. */
+	vtp0_enlarge(&rnd_units, 128);
+	rnd_units.used = 0;
+
+	for (i = 0; i < UNIT_TBL_LEN; ++i) {
+		rnd_unit_tbl[i].index = i;
+		vtp0_append(&rnd_units, &rnd_unit_tbl[i]);
+	}
+}
+
+void rnd_units_uninit(void)
+{
+	vtp0_uninit(&rnd_units);
 }
 
 const rnd_unit_t *rnd_get_unit_struct_(const char *suffix, int strict)
@@ -99,14 +115,18 @@ const rnd_unit_t *rnd_get_unit_struct_(const char *suffix, int strict)
 	if (s_len <= 0)
 		return NULL;
 
-	for (i = 0; i < N_UNITS; ++i)
-		if (strcmp(suffix, rnd_units[i].suffix) == 0)
-			return &rnd_units[i];
+	for (i = 0; i < rnd_units.used; ++i) {
+		const rnd_unit_t *u = rnd_units.array[i];
+		if (strcmp(suffix, u->suffix) == 0)
+			return u;
+	}
 
 	if (!strict) {
-		for (i = 0; i < N_UNITS; ++i)
-			if (strncmp(suffix, rnd_units[i].suffix, s_len) == 0)
-				return &rnd_units[i];
+		for (i = 0; i < rnd_units.used; ++i) {
+			const rnd_unit_t *u = rnd_units.array[i];
+			if (strncmp(suffix, u->suffix, s_len) == 0)
+				return u;
+		}
 	}
 
 	return NULL;
@@ -121,32 +141,36 @@ const rnd_unit_t *rnd_get_unit_struct(const char *suffix)
 const rnd_unit_t *rnd_get_unit_struct_by_allow(rnd_unit_allow_t allow)
 {
 	int i;
-	for (i = 0; i < N_UNITS; ++i)
-		if (rnd_units[i].allow == allow)
-			return &rnd_units[i];
+	for (i = 0; i < rnd_units.used; ++i) {
+		const rnd_unit_t *u = rnd_units.array[i];
+		if (u->allow == allow)
+			return u;
+	}
 
 	return NULL;
 }
 
 const rnd_unit_t *rnd_unit_get_idx(int idx)
 {
-	if ((idx < 0) || (idx >= N_UNITS))
+	if ((idx < 0) || (idx >= rnd_units.used))
 		return NULL;
-	return rnd_units + idx;
+	return rnd_units.array[idx];
 }
 
 const rnd_unit_t *rnd_unit_get_suffix(const char *suffix)
 {
 	int i;
-	for (i = 0; i < N_UNITS; ++i)
-		if (strcmp(rnd_units[i].suffix, suffix) == 0)
-			return &rnd_units[i];
+	for (i = 0; i < rnd_units.used; ++i) {
+		const rnd_unit_t *u = rnd_units.array[i];
+		if (strcmp(u->suffix, suffix) == 0)
+			return u;
+	}
 	return NULL;
 }
 
 int rnd_get_n_units()
 {
-	return N_UNITS;
+	return rnd_units.used;
 }
 
 double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)

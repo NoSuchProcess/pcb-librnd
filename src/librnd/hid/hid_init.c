@@ -638,6 +638,7 @@ extern void rnd_conf_init2(void);
 
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
+	rnd_units_init();
 	rnd_actions_init();
 
 	/* load custom config files in the order they were specified */
@@ -687,7 +688,6 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	pup_autoload_dir(&rnd_pup, NULL, NULL);
 
 	rnd_conf_load_extra(NULL, NULL);
-	rnd_units_init();
 	rnd_funchash_init();
 	rnd_anyload_act_init2();
 
@@ -744,6 +744,7 @@ void rnd_hidlib_uninit(void)
 	rnd_hid_cfg_keys_uninit_module();
 	rnd_anyload_uninit();
 	rnd_events_uninit();
+	rnd_units_uninit();
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */

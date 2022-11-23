@@ -36,6 +36,7 @@
 #define RND_UNIT_H
 
 #include <librnd/core/global_typedefs.h>
+#include <genvector/vtp0.h>
 
 /*** Static units - these are hardwired because they are needed by most apps ***/
 enum rnd_unit_allow_e {
@@ -115,7 +116,7 @@ struct rnd_unit_s {
 	int index; /* Index into the rnd_units vector */
 };
 
-extern rnd_unit_t rnd_units[];
+extern vtp0_t rnd_units; /* of (const rnd_unit_t *) elements */
 
 /* Look up a given suffix in the units array. Pluralized units are supported.
    The _ version allows strict (full name match) lookup if strict iz non-zero. */
@@ -148,9 +149,9 @@ rnd_angle_t rnd_normalize_angle(rnd_angle_t a);
 
 
 /* Initialize non-static unit data: assigns each unit its index for
-   quick access through the main units array, and internationalize
-   the units for GUI display. */
+   quick access through the main units vector */
 void rnd_units_init(void);
+void rnd_units_uninit(void);
 
 /* internal<->physical unit conversions */
 #define RND_COORD_TO_MIL(n)      ((n) / 25400.0)

@@ -29,6 +29,7 @@ int main()
 	int n, rep;
 
 	setlocale(LC_ALL, "C");
+	rnd_units_init();
 
 	for(rep = 0; rep < NUMREP; rep++) {
 		for(n = 0; n < sizeof(c) / sizeof(c[0]); n++) {
@@ -69,6 +70,9 @@ int main()
 		printf("Average prints per second: %.4f\n", (double)pc/spent);
 	}
 #endif
+
+	rnd_units_uninit();
+
 	return 0;
 }
 
