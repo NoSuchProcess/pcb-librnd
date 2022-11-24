@@ -25,11 +25,6 @@
  *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
- *
- *  Old contact info:
- *  Andrew Poelstra, 16966 60A Ave, V3S 8X5 Surrey, BC, Canada
- *  asp11@sfu.ca
- *
  */
 #include <librnd/rnd_config.h>
 #include <stdlib.h>
