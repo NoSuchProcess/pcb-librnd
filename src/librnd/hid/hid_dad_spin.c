@@ -295,7 +295,7 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 				step = pow(10, floor(log10(fabs(v)) - 1.0));
 			break;
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			if (spin->unit == NULL) {
 				rnd_bool succ = 0;
 				if (str->val.str != NULL)
@@ -348,7 +348,7 @@ static void do_step(void *hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t
 			sprintf(buf, "%f", end->val.dbl);
 			break;
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			end->val.crd += step;
 			SPIN_CLAMP(end->val.crd);
 			spin->last_good_crd = end->val.crd;
@@ -439,7 +439,7 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			end->val.dbl = d;
 			break;
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			/* special case: 0 is okay without unit */
 			if (is_str_zero(str->val.str)) {
 				end->val.crd = 0;
@@ -495,7 +495,7 @@ void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 
 	switch(spin->type) {
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			inval = str->val.str;
 			while(isspace(*inval)) inval++;
 			if (*inval == '\0')
@@ -588,7 +588,7 @@ void rnd_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 			str->val.str = rnd_strdup_printf("%f", d);
 			break;
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			attr->val.crd = c;
 			spin->last_good_crd = c;
 			spin->unit = NULL;
@@ -640,7 +640,7 @@ int rnd_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, con
 			end->val.dbl = val->dbl;
 			break;
 		case RND_DAD_SPIN_COORD:
-		case RND_DAD_SPIN_UNIT_INT:
+		case RND_DAD_SPIN_UNIT_CRD:
 			if (val->crd == end->val.crd)
 				return 0;
 			end->val.crd = val->crd;

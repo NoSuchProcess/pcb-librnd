@@ -52,7 +52,7 @@ typedef struct {
 		RND_DAD_SPIN_DOUBLE,
 		RND_DAD_SPIN_COORD,
 		RND_DAD_SPIN_FREQ,
-		RND_DAD_SPIN_UNIT_INT            /* integer value with custom unit */
+		RND_DAD_SPIN_UNIT_CRD            /* .crd (integer) value with custom unit; interpreted in the same domain as RND_DAD_SPIN_COORD but unit is not from the metric/imperial family */
 	} type;
 	rnd_hid_attr_type_t wtype;
 	gdl_elem_t link;
@@ -75,7 +75,7 @@ typedef struct {
 #define RND_DAD_SPIN_GET_TYPE(attr) \
 	((((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) ? ((rnd_hid_dad_spin_t *)((attr)->wdata))->wtype : RND_HATT_END)
 
-/* Set the initial unit (for a RND_DAD_SPIN_UNIT_INT) */
+/* Set the initial unit (for a RND_DAD_SPIN_UNIT_CRD) */
 #define RND_DAD_SPIN_SET_EMPTY_UNIT(table, unit_) \
 do { \
 	rnd_hid_attribute_t *attr = &(table[table ## _len - 1]); \
@@ -83,7 +83,7 @@ do { \
 		((rnd_hid_dad_spin_t *)((attr)->wdata))->empty_unit = unit_; \
 } while(0)
 
-/* Set the printf format string (for a RND_DAD_SPIN_UNIT_INT) */
+/* Set the printf format string (for a RND_DAD_SPIN_UNIT_CRD) */
 #define RND_DAD_SPIN_SET_FMT(table, fmt_) \
 do { \
 	rnd_hid_attribute_t *attr = &(table[table ## _len - 1]); \
