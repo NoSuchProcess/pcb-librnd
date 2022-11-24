@@ -302,7 +302,10 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 					succ = rnd_get_value_unit(str->val.str, NULL, 0, &v, &unit);
 				if (!succ) {
 					v = end->val.crd;
-					unit = rnd_conf.editor.grid_unit;
+					if (spin->empty_unit != NULL)
+						unit = spin->empty_unit;
+					else
+						unit = rnd_conf.editor.grid_unit;
 				}
 			}
 			else
