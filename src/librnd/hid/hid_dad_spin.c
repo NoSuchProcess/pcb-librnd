@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019..2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019..2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -110,16 +110,27 @@ static void spin_warn(void *hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute
 
 static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
 {
-	const rnd_unit_t *unit;
-	if (spin->unit != NULL)
-		unit = spin->unit;
-	else
-		unit = rnd_conf.editor.grid_unit;
+	const rnd_unit_t *unit = NULL;
+
+	if (spin->fmt == NULL) {
+		if (spin->unit != NULL)
+			unit = spin->unit;
+		else
+			unit = rnd_conf.editor.grid_unit;
+	}
+
 	if (buf != NULL) {
-		rnd_snprintf(buf, buflen, "%.06$m*", unit->suffix, c);
+		if (spin->fmt == NULL)
+			rnd_snprintf(buf, buflen, "%.06$m*", unit->suffix, c);
+		else
+			rnd_snprintf(buf, buflen, spin->fmt, c);
 		return buf;
 	}
-	return rnd_strdup_printf("%.06$m*", unit->suffix, c);
+
+	if (spin->fmt == NULL)
+		return rnd_strdup_printf("%.06$m*", unit->suffix, c);
+
+	return rnd_strdup_printf(spin->fmt, c);
 }
 
 typedef struct {
@@ -282,6 +293,7 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 				step = pow(10, floor(log10(fabs(v)) - 1.0));
 			break;
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			if (spin->unit == NULL) {
 				rnd_bool succ = 0;
 				if (str->val.str != NULL)
@@ -334,6 +346,7 @@ static void do_step(void *hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t
 			sprintf(buf, "%f", end->val.dbl);
 			break;
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			end->val.crd += step;
 			SPIN_CLAMP(end->val.crd);
 			spin->last_good_crd = end->val.crd;
@@ -424,6 +437,7 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			end->val.dbl = d;
 			break;
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			/* special case: 0 is okay without unit */
 			if (is_str_zero(str->val.str)) {
 				end->val.crd = 0;
@@ -467,6 +481,7 @@ void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 
 	switch(spin->type) {
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			inval = str->val.str;
 			while(isspace(*inval)) inval++;
 			if (*inval == '\0')
@@ -549,6 +564,7 @@ void rnd_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 			str->val.str = rnd_strdup_printf("%f", d);
 			break;
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			attr->val.crd = c;
 			spin->last_good_crd = c;
 			spin->unit = NULL;
@@ -600,6 +616,7 @@ int rnd_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, con
 			end->val.dbl = val->dbl;
 			break;
 		case RND_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_UNIT_INT:
 			if (val->crd == end->val.crd)
 				return 0;
 			end->val.crd = val->crd;

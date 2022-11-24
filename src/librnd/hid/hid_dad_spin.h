@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2022 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ typedef struct {
 	const rnd_unit_t *unit; /* for RND_DAD_SPIN_COORD and RND_DAD_SPIN_FREQ only: current unit */
 	rnd_unit_family_t unit_family;
 	rnd_hid_attribute_t **attrs;
+	const char *fmt; /* rnd_printf format string */
 	void **hid_ctx;
 	int set_writeback_lock;
 	rnd_coord_t last_good_crd;
@@ -49,7 +50,8 @@ typedef struct {
 		RND_DAD_SPIN_INT,
 		RND_DAD_SPIN_DOUBLE,
 		RND_DAD_SPIN_COORD,
-		RND_DAD_SPIN_FREQ
+		RND_DAD_SPIN_FREQ,
+		RND_DAD_SPIN_UNIT_INT            /* integer value with custom unit */
 	} type;
 	rnd_hid_attr_type_t wtype;
 	gdl_elem_t link;
@@ -71,6 +73,22 @@ typedef struct {
    useful for dispatching what value set to use */
 #define RND_DAD_SPIN_GET_TYPE(attr) \
 	((((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) ? ((rnd_hid_dad_spin_t *)((attr)->wdata))->wtype : RND_HATT_END)
+
+/* Set the initial unit (for a RND_DAD_SPIN_UNIT_INT) */
+#define RND_DAD_SPIN_SET_UNIT(table, unit_) \
+do { \
+	rnd_hid_attribute_t *attr = &(table[table ## _len - 1]); \
+	if (((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) \
+		((rnd_hid_dad_spin_t *)((attr)->wdata))->unit = unit_; \
+} while(0)
+
+/* Set the printf format string (for a RND_DAD_SPIN_UNIT_INT) */
+#define RND_DAD_SPIN_SET_FMT(table, fmt_) \
+do { \
+	rnd_hid_attribute_t *attr = &(table[table ## _len - 1]); \
+	if (((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) \
+		((rnd_hid_dad_spin_t *)((attr)->wdata))->fmt = fmt_; \
+} while(0)
 
 /*** implementation ***/
 
