@@ -40,6 +40,7 @@ typedef struct {
 	unsigned no_unit_chg:1;
 	int wall, wstr, wup, wdown, wunit, wwarn;
 	const rnd_unit_t *unit; /* for RND_DAD_SPIN_COORD and RND_DAD_SPIN_FREQ only: current unit */
+	const rnd_unit_t *empty_unit; /* use this unit if no unit is set/found */
 	rnd_unit_family_t unit_family;
 	rnd_hid_attribute_t **attrs;
 	const char *fmt; /* rnd_printf format string */
@@ -75,11 +76,11 @@ typedef struct {
 	((((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) ? ((rnd_hid_dad_spin_t *)((attr)->wdata))->wtype : RND_HATT_END)
 
 /* Set the initial unit (for a RND_DAD_SPIN_UNIT_INT) */
-#define RND_DAD_SPIN_SET_UNIT(table, unit_) \
+#define RND_DAD_SPIN_SET_EMPTY_UNIT(table, unit_) \
 do { \
 	rnd_hid_attribute_t *attr = &(table[table ## _len - 1]); \
 	if (((attr)->type == RND_HATT_END) && (((rnd_hid_dad_spin_t *)((attr)->wdata))->cmp.free == rnd_dad_spin_free)) \
-		((rnd_hid_dad_spin_t *)((attr)->wdata))->unit = unit_; \
+		((rnd_hid_dad_spin_t *)((attr)->wdata))->empty_unit = unit_; \
 } while(0)
 
 /* Set the printf format string (for a RND_DAD_SPIN_UNIT_INT) */

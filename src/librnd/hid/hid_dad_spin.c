@@ -115,6 +115,8 @@ static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, i
 	if (spin->fmt == NULL) {
 		if (spin->unit != NULL)
 			unit = spin->unit;
+		else if (spin->empty_unit != NULL)
+			unit = spin->empty_unit;
 		else
 			unit = rnd_conf.editor.grid_unit;
 	}
@@ -187,7 +189,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.end = end;
 
-	def_unit = spin->unit == NULL ? rnd_conf.editor.grid_unit : spin->unit;
+	def_unit = spin->empty_unit == NULL ? rnd_conf.editor.grid_unit : spin->empty_unit;
 
 	RND_DAD_BEGIN_VBOX(ctx.dlg);
 		RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
@@ -451,10 +453,22 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 				spin->last_good_crd = d;
 			}
 			else {
-				warn = "Invalid coord value or unit - result is truncated";
-				end->val.crd = spin->last_good_crd;
+				char *dend;
+				d = strtod(str->val.str, &dend);
+				while(isspace(*dend)) dend++;
+				if ((spin->empty_unit != NULL) && (*dend == '\0')) {
+					SPIN_CLAMP(d);
+					unit = spin->empty_unit;
+					d /= unit->scale_factor;
+					end->val.crd = d;
+					spin->last_good_crd = d;
+				}
+				else {
+					warn = "Invalid coord value or unit - result is truncated";
+					end->val.crd = spin->last_good_crd;
+				}
 			}
-			if (!spin->no_unit_chg)
+			if (!spin->no_unit_chg && (unit != NULL))
 				spin->unit = unit;
 			break;
 		default: rnd_trace("INTERNAL ERROR: spin_set_num\n");
@@ -489,18 +503,28 @@ void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 			succ = rnd_get_value_unit(inval, &absolute, 0, &d, &unit);
 			if (succ)
 				break;
-			strtod(inval, &ends);
+			d = strtod(inval, &ends);
 			while(isspace(*ends)) ends++;
 			if (*ends == '\0') {
 				rnd_hid_attr_val_t hv;
-				char *tmp = rnd_concat(inval, " ", rnd_conf.editor.grid_unit->suffix, NULL);
+				const rnd_unit_t *unit = (spin->empty_unit == NULL) ? rnd_conf.editor.grid_unit : spin->empty_unit;
+				char *tmp = NULL;
 
 				changed = 1;
-				hv.str = tmp;
-				spin->set_writeback_lock++;
-				rnd_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
-				spin->set_writeback_lock--;
-				succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
+				if ((unit->suffix != NULL) && (*unit->suffix != '\0')) {
+					tmp = rnd_concat(inval, " ", unit->suffix, NULL);
+					hv.str = tmp;
+					spin->set_writeback_lock++;
+					rnd_gui->attr_dlg_set_value(hid_ctx, spin->wstr, &hv);
+					spin->set_writeback_lock--;
+					succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
+				}
+				else {
+					/* special case: empty unit */
+					d = d / unit->scale_factor;
+					succ = 1;
+				}
+
 				if (succ) {
 					end->val.crd = d;
 					spin->last_good_crd = d;
