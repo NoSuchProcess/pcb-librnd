@@ -57,9 +57,10 @@ double rnd_distance2(double x1, double y1, double x2, double y2)
 	return delta_x * delta_x + delta_y * delta_y;
 }
 
+const char *rnd_get_value_default_unit = "cmil";
 double rnd_get_value(const char *val, const char *units, rnd_bool * absolute, rnd_bool *success)
 {
-	return rnd_get_value_ex(val, units, absolute, NULL, "cmil", success);
+	return rnd_get_value_ex(val, units, absolute, NULL, rnd_get_value_default_unit, success);
 }
 
 rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const rnd_unit_t **unit_out)
