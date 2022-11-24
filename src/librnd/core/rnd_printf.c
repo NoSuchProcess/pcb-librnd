@@ -171,9 +171,9 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 		printf_spec_new = printf_spec_new_local;
 
 	/* Check our freedom in choosing units */
-	if ((allow & RND_UNIT_ALLOW_IMPERIAL) == 0)
+	if (((allow & RND_UNIT_ALLOW_IMPERIAL) == 0) && (allow < RND_UNIT_ALLOW_dyn))
 		family = RND_UNIT_METRIC;
-	else if ((allow & RND_UNIT_ALLOW_METRIC) == 0)
+	else if (((allow & RND_UNIT_ALLOW_METRIC) == 0) && (allow < RND_UNIT_ALLOW_dyn))
 		family = RND_UNIT_IMPERIAL;
 	else {
 		int met_votes = 0, imp_votes = 0;
