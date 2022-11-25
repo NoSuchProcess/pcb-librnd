@@ -475,17 +475,6 @@ static void rnd_gtkg_set_top_title(rnd_hid_t *hid, const char *title)
 	rnd_gtk_tw_set_title(&gctx->topwin, title);
 }
 
-static void rnd_gtkg_busy(rnd_hid_t *hid, rnd_bool busy)
-{
-	rnd_gtk_t *gctx = hid->hid_data;
-	if ((gctx == NULL) || (!gctx->hid_active))
-		return;
-	if (busy)
-		rnd_gtk_watch_cursor(gctx);
-	else
-		rnd_gtk_restore_cursor(gctx);
-}
-
 static int rnd_gtkg_shift_is_pressed(rnd_hid_t *hid)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
@@ -643,7 +632,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->reg_mouse_cursor = rnd_gtkg_reg_mouse_cursor;
 	dst->set_mouse_cursor = rnd_gtkg_set_mouse_cursor;
 	dst->set_top_title = rnd_gtkg_set_top_title;
-	dst->busy = rnd_gtkg_busy;
 
 	dst->set_design = rnd_gtkg_set_hidlib;
 	dst->get_design = rnd_gtkg_get_hidlib;

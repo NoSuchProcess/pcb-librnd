@@ -63,16 +63,6 @@ static GdkCursor *cursor_override_X;
 #define ICON_X_HOT 8
 #define ICON_Y_HOT 8
 
-void rnd_gtk_watch_cursor(rnd_gtk_t *ctx)
-{
-	static GdkCursor *xc;
-
-	cursor_override = GDKC_WATCH;
-	if (xc == NULL) xc = gdkc_cursor_new(ctx, cursor_override);
-	cursor_override_X = xc;
-	rnd_gtk_mode_cursor(ctx);
-}
-
 static void rnd_gtk_hand_cursor(rnd_gtk_t *ctx)
 {
 	static GdkCursor *xc;

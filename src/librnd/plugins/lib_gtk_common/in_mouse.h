@@ -23,7 +23,6 @@ gboolean rnd_gtk_button_release_cb(GtkWidget *drawing_area, long x, long y, long
 void rnd_gtk_reg_mouse_cursor(rnd_gtk_t *ctx, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
 void rnd_gtk_set_mouse_cursor(rnd_gtk_t *ctx, int idx);
 
-void rnd_gtk_watch_cursor(rnd_gtk_t *ctx); /* Override the cursor appearance to signifies a wait state */
 void rnd_gtk_mode_cursor(rnd_gtk_t *ctx); /* Changes the normal cursor appearance according to last set mode, but respect override */
 void rnd_gtk_restore_cursor(rnd_gtk_t *ctx); /* Remove override and restore the mode cursor */
 

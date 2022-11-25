@@ -380,26 +380,6 @@ Pixel lesstif_parse_color(const rnd_color_t *value)
 	return 0;
 }
 
-/* ------------------------------------------------------------ */
-
-/* Called from the core when it's busy doing something and we need to indicate that to the user.  */
-static void ltf_busy(rnd_hid_t *hid, rnd_bool busy)
-{
-	static Cursor busy_cursor = 0;
-	if (!lesstif_active)
-		return;
-
-	if (busy) {
-		if (busy_cursor == 0)
-			busy_cursor = XCreateFontCursor(display, XC_watch);
-		XDefineCursor(display, window, busy_cursor);
-		XFlush(display);
-	}
-	else
-		need_idle_proc(); /* restores the cursor */
-}
-
-
 /* ---------------------------------------------------------------------- */
 
 /* Local actions.  */
@@ -3072,7 +3052,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.set_top_title = ltf_set_top_title;
 	lesstif_hid.dock_enter = ltf_dock_enter;
 	lesstif_hid.dock_leave = ltf_dock_leave;
-	lesstif_hid.busy = ltf_busy;
 
 	lesstif_hid.draw_pixmap = rnd_ltf_draw_pixmap;
 	lesstif_hid.uninit_pixmap = rnd_ltf_uninit_pixmap;

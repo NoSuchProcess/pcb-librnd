@@ -516,9 +516,6 @@ struct rnd_hid_s {
 	/* change top window title any time the after the GUI_INIT event */
 	void (*set_top_title)(rnd_hid_t *hid, const char *title);
 
-	/* OPTIONAL: override the mouse cursor to indicate busy state */
-	void (*busy)(rnd_hid_t *hid, rnd_bool busy);
-
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
 

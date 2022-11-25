@@ -1,7 +1,6 @@
 #include "compat.h"
 
 #define GDKC_HAND2       "pointer"
-#define GDKC_WATCH       "progress"
 #define GDKC_DRAPED_BOX  "all-scroll"
 #define GDKC_LEFT_PTR    "default"
 

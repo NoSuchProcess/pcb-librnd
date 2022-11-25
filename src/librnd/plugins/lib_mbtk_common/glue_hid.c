@@ -442,11 +442,6 @@ static void rnd_mbtk_set_top_title(rnd_hid_t *hid, const char *title)
 	TODO("implemet");
 }
 
-static void rnd_mbtk_busy(rnd_hid_t *hid, rnd_bool busy)
-{
-	TODO("Del: will be removed in librnd4");
-}
-
 static int rnd_mbtk_shift_is_pressed(rnd_hid_t *hid)
 {
 	rnd_mbtk_t *mctx = hid->hid_data;
@@ -588,7 +583,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->reg_mouse_cursor = rnd_mbtk_reg_mouse_cursor;
 	dst->set_mouse_cursor = rnd_mbtk_set_mouse_cursor;
 	dst->set_top_title = rnd_mbtk_set_top_title;
-	dst->busy = rnd_mbtk_busy;
 
 	dst->set_design = rnd_mbtk_set_hidlib;
 	dst->get_design = rnd_mbtk_get_hidlib;
