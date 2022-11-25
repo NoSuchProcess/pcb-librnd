@@ -606,8 +606,17 @@ static void rnd_hid_init_uninit(void)
 
 extern void rnd_menu_init1(void);
 
+static char *rnd_hidlib_init_exec_prefix;
 void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix)
 {
+	char **s;
+
+	/* can't conf-set yet, roots are not initialized before conf_load_all() */
+	rnd_hidlib_init_exec_prefix = rnd_strdup(exec_prefix);
+
+	s = (char **)&rnd_conf.rc.path.exec_prefix;
+	*s = rnd_hidlib_init_exec_prefix;
+
 	rnd_events_init();
 	rnd_file_loaded_init();
 	rnd_conf_init();
@@ -621,8 +630,6 @@ void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix)
 	rnd_color_init();
 	rnd_menu_init1();
 
-	if (exec_prefix != NULL)
-		rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 }
 
 static vts0_t hidlib_conffile;
@@ -669,6 +676,9 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	}
 
 	rnd_conf_load_all(NULL, NULL);
+
+	rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, rnd_hidlib_init_exec_prefix, RND_POL_OVERWRITE);
+	free(rnd_hidlib_init_exec_prefix);
 
 	pup_init(&rnd_pup);
 	rnd_pup.error_stack_enable = 1;
