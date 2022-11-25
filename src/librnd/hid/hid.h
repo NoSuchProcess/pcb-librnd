@@ -610,13 +610,7 @@ void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
 #define rnd_hid_redraw(design) rnd_gui->invalidate_all(rnd_gui)
 
-#define rnd_hid_busy(design, is_busy) \
-do { \
-	rnd_event(design, RND_EVENT_BUSY, "i", is_busy, NULL); \
-	if ((rnd_gui != NULL) && (rnd_gui->busy != NULL)) \
-		rnd_gui->busy(rnd_gui, is_busy); \
-} while(0)
-
+void rnd_hid_busy(rnd_design_t *design, rnd_bool is_busy);
 
 /* Notify the GUI that data relating to the crosshair is being changed.
  *

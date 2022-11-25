@@ -29,6 +29,7 @@
 
 #include <librnd/rnd_config.h>
 #include <librnd/hid/hid.h>
+#include <librnd/hid/tool.h>
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/event.h>
 
@@ -97,7 +98,16 @@ int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int forc
 }
 
 /*** mouse cursor management ***/
+
+/* need to register a dummy tool for the normal-cursor because mouse cursors
+   are managed by the tool code */
+
+static rnd_tool_t pcb_tool_normal = {
+	"normal-cursor", NULL, NULL, 0, NULL, RND_TOOL_CURSOR_NAMED("left_ptr"), 0,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0 };
+
 static int last_normal_cursor = -1, cursor_override = -1;
+static int normal_id = -1;
 void rnd_hid_set_mouse_cursor(int id)
 {
 	last_normal_cursor = id;
@@ -108,8 +118,14 @@ void rnd_hid_set_mouse_cursor(int id)
 void rnd_hid_override_mouse_cursor(int id)
 {
 	if (id < 0) {
-		if ((rnd_gui != NULL) && (last_normal_cursor >= 0))
+		if (rnd_gui != NULL) {
+			if (last_normal_cursor < 0) {
+				if (normal_id < 0)
+					normal_id = rnd_tool_reg(&pcb_tool_normal, "hid.c");
+				last_normal_cursor = normal_id;
+			}
 			rnd_gui->set_mouse_cursor(rnd_gui, last_normal_cursor);
+		}
 		cursor_override = -1;
 	}
 	else {
@@ -117,4 +133,34 @@ void rnd_hid_override_mouse_cursor(int id)
 			rnd_gui->set_mouse_cursor(rnd_gui, id);
 		cursor_override = id;
 	}
+}
+
+
+/* need to register a dummy tool for the busy-cursor because mouse cursors
+   are managed by the tool code */
+static rnd_tool_t pcb_tool_point = {
+	"busy-cursor", NULL, NULL, 0, NULL, RND_TOOL_CURSOR_NAMED("busy"), 0,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0 };
+
+
+/* save cursor_override in this */
+static int last_busy_override = -1;
+static int busy_state = 0, busy_id = -1;
+void rnd_hid_busy(rnd_design_t *design, rnd_bool is_busy)
+{
+	/* no state change */
+	if (!!is_busy == busy_state)
+		return;
+
+	rnd_event(design, RND_EVENT_BUSY, "i", is_busy, NULL);
+
+	if (is_busy) {
+		last_busy_override = cursor_override; /* remember what override we override */
+		if (busy_id < 0)
+			busy_id = rnd_tool_reg(&pcb_tool_point, "hid.c");
+		rnd_hid_override_mouse_cursor(busy_id);
+	}
+	else
+		rnd_hid_override_mouse_cursor(last_busy_override);
+	busy_state = !!is_busy;
 }
