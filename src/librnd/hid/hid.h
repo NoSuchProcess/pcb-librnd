@@ -509,8 +509,11 @@ struct rnd_hid_s {
 	int (*open_popup)(rnd_hid_t *hid, const char *menupath);
 
 
-	/* Change the mouse cursor to a named cursor e.g. after the tool has changed.
-	   The list of cursors names available may depend on the HID. */
+	/* Change the mouse cursor. Cursors are registered first, either by name
+	   (named cursor) or by supplying a 16*16 pixel/mask combo. The list of
+	   cursors names available may depend on the HID. Indices are allocated
+	   sequentially by the caller (the tool code) starting from 0. Apps
+	   shouldn't call these directly. */
 	void (*reg_mouse_cursor)(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
 	void (*set_mouse_cursor)(rnd_hid_t *hid, int idx);
 
