@@ -92,8 +92,6 @@ XtAppContext app_context;
 Widget appwidget, ltf_fullscreen_left, ltf_fullscreen_top, ltf_fullscreen_bottom;
 Display *display;
 static Window window = 0;
-static int old_cursor_mode = -1;
-static int over_point = 0;
 
 static Pixmap pixmap = 0;          /* Current pixmap we are drawing to (either main_pixmap in direct mode or mask_pixmap when drawing the sketch) */
 static Pixmap main_pixmap = 0;     /* 'Base pixmap', the final output all sketches are composed onto (then drawn) */
@@ -396,7 +394,6 @@ static void ltf_busy(rnd_hid_t *hid, rnd_bool busy)
 			busy_cursor = XCreateFontCursor(display, XC_watch);
 		XDefineCursor(display, window, busy_cursor);
 		XFlush(display);
-		old_cursor_mode = -1;
 	}
 	else
 		need_idle_proc(); /* restores the cursor */
@@ -406,15 +403,6 @@ static void ltf_busy(rnd_hid_t *hid, rnd_bool busy)
 /* ---------------------------------------------------------------------- */
 
 /* Local actions.  */
-
-static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
-{
-	if (grabbed > 0)
-		over_point = 1;
-	else
-		over_point = 0;
-	old_cursor_mode = -1;
-}
 
 extern void LesstifNetlistChanged(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 extern void LesstifLibraryChanged(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
@@ -3061,7 +3049,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_set_help = lesstif_attr_dlg_set_help;
 	lesstif_hid.supports_dad_text_markup = 0;
 
-	lesstif_hid.point_cursor = PointCursor;
 	lesstif_hid.command_entry = lesstif_command_entry;
 	lesstif_hid.clip_set = ltf_clip_set;
 	lesstif_hid.clip_get = ltf_clip_get;

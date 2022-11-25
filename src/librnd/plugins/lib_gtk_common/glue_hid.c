@@ -284,16 +284,6 @@ static void rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attrib
 	return rnd_gtk_attr_dlg_new(hid, (rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny, hid_ctx_out);
 }
 
-static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
-{
-	rnd_gtk_t *gctx = hid->hid_data;
-
-	if (gctx == NULL)
-		return;
-
-	rnd_gtk_point_cursor(gctx, grabbed);
-}
-
 static int rnd_gtk_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	rnd_gtk_t *gctx = hid->hid_data;
@@ -631,7 +621,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->dock_enter = rnd_gtkg_dock_enter;
 	dst->dock_leave = rnd_gtkg_dock_leave;
 
-	dst->point_cursor = PointCursor;
 	dst->benchmark = rnd_gtkg_benchmark;
 
 	dst->command_entry = rnd_gtk_command_entry;

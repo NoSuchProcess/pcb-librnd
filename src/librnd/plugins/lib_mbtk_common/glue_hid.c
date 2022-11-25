@@ -245,16 +245,6 @@ static void rnd_mbtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attri
 	TODO("implemet");
 }
 
-static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
-{
-	rnd_mbtk_t *mctx = hid->hid_data;
-
-	if (mctx == NULL)
-		return;
-
-	TODO("implemet");
-}
-
 static int rnd_mbtk_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	TODO("implemet");
@@ -576,7 +566,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->dock_enter = rnd_mbtk_dock_enter;
 	dst->dock_leave = rnd_mbtk_dock_leave;
 
-	dst->point_cursor = PointCursor;
 	dst->benchmark = rnd_mbtk_benchmark;
 
 	dst->command_entry = rnd_mbtk_command_entry;

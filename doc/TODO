@@ -19,7 +19,6 @@
 		- RND_EVENT_LOAD_*: copy this from pcb-rnd to sch-rnd and camv-rnd
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- centralize mouse cursor temporary set:
-		- remove rnd_hid_t->point_cusror in favor of rnd_hid_t->set_mouse_cursor named - affects pcb-rnd only
 		- centralize hid API's ->busy - just set the cursor
 	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
 		- remove /local/pcb from librnd central scconfig

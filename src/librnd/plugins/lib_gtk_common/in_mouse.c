@@ -84,20 +84,6 @@ static void rnd_gtk_hand_cursor(rnd_gtk_t *ctx)
 }
 
 
-void rnd_gtk_point_cursor(rnd_gtk_t *ctx, rnd_bool grabbed)
-{
-	if (grabbed) {
-		static GdkCursor *xc;
-		cursor_override = GDKC_DRAPED_BOX;
-		if (xc == NULL) xc = gdkc_cursor_new(ctx, cursor_override);
-		cursor_override_X = xc;
-	}
-	else
-		cursor_override = 0;
-	rnd_gtk_mode_cursor(ctx);
-}
-
-
 typedef struct {
 	GMainLoop *loop;
 	rnd_gtk_t *gctx;

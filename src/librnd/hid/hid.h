@@ -449,10 +449,6 @@ struct rnd_hid_s {
 	*/
 	int (*usage)(rnd_hid_t *hid, const char *subtopic);
 
-
-	/* Optional: change cursor to indicate if an object is grabbed (or not) */
-	void (*point_cursor)(rnd_hid_t *hid, rnd_bool grabbed);
-
 	/* Optional: when non-zero, the core renderer may decide to draw cheaper
 	   (simplified) approximation of some objects that would end up being too
 	   small. For a GUI, this should depend on the zoom level */
