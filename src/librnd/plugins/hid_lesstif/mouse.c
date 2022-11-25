@@ -28,6 +28,7 @@ typedef struct {
 
 static const named_cursor_t named_cursors[] = {
 	{"question_arrow", XC_question_arrow},
+	{"busy", XC_watch}, /* this is a must */
 	{"left_ptr", XC_left_ptr},
 	{"hand", XC_hand1},
 	{"crosshair", XC_crosshair},
@@ -38,6 +39,7 @@ static const named_cursor_t named_cursors[] = {
 	{"pirate", XC_pirate},
 	{"xterm", XC_xterm},
 	{"iron_cross", XC_iron_cross},
+
 	{NULL, 0}
 };
 

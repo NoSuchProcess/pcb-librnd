@@ -12,6 +12,7 @@ typedef struct {
 
 static const named_cursor_t named_cursors[] = {
 	{"question_arrow", GDK_QUESTION_ARROW},
+	{"busy",     GDK_WATCH},
 	{"left_ptr", GDK_LEFT_PTR},
 	{"hand", GDK_HAND1},
 	{"crosshair", GDK_CROSSHAIR},
