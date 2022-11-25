@@ -373,15 +373,16 @@ struct rnd_hid_s {
 
 
 
-	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
+	/* A generic Dynamic Attribute Dialog box (DAD). If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
 	   non-zero if an error occurred (usually, this means the user cancelled
-	   the dialog or something). title is the title of the dialog box
-	   The HID may choose to ignore it or it may use it for a tooltip or
-	   text in a dialog box, or a help string. Id is used in some events (e.g.
+	   the dialog or something). Title is the window title, id is a human readable
+	   unique ID of the dialog box.
+	   The HID may choose to ignore id or it may use it for a tooltip or
+	   text in a dialog box, or a help string. It is used in some events (e.g.
 	   for window placement) and is strdup'd. If defx and defy are larger than 0,
 	   they are hints for the default (starting) window size - can be overridden
-	   by window placement. Sets opaque hid_ctx as soon as possiblem, in *hid_ctx_out.
+	   by window placement. Sets opaque hid_ctx as soon as possible, in *hid_ctx_out.
 	   (Hid_ctx shall save rnd_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
 	void (*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out);
