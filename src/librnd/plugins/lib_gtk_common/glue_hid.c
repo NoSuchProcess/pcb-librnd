@@ -279,9 +279,9 @@ static rnd_hidval_t rnd_gtkg_watch_file(rnd_hid_t *hid, int fd, unsigned int con
 	return rnd_gtk_watch_file((rnd_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }
 
-static void *rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void rnd_gtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
-	return rnd_gtk_attr_dlg_new(hid, (rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
+	return rnd_gtk_attr_dlg_new(hid, (rnd_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny, hid_ctx_out);
 }
 
 static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)

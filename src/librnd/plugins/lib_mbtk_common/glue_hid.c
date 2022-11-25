@@ -240,7 +240,7 @@ static int rnd_mbtk_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, 
 	TODO("implemet");
 }
 
-static void *rnd_mbtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void rnd_mbtk_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 	TODO("implemet");
 }

@@ -381,10 +381,10 @@ struct rnd_hid_s {
 	   text in a dialog box, or a help string. Id is used in some events (e.g.
 	   for window placement) and is strdup'd. If defx and defy are larger than 0,
 	   they are hints for the default (starting) window size - can be overridden
-	   by window placement. Returns opaque hid_ctx.
+	   by window placement. Sets opaque hid_ctx as soon as possiblem, in *hid_ctx_out.
 	   (Hid_ctx shall save rnd_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
-	void *(*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+	void (*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_close)(void *hid_ctx); /* close the GUI but do not yet free hid_ctx (results should be available) */

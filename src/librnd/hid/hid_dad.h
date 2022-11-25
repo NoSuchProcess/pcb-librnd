@@ -231,7 +231,7 @@ do { \
 do { \
 	table ## _ret_override = calloc(sizeof(rnd_dad_retovr_t), 1); \
 	table ## _append_lock = 1; \
-	table ## _hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny); \
+	rnd_gui->attr_dlg_new(rnd_gui, id, table, table ## _len, title, caller_data, modal, ev_cb, table ## _defx, table ## _defy, table ## _minx, table ## _miny, &(table ## _hid_ctx)); \
 } while(0)
 
 /* Sets the default window size (that is only a hint) - NOTE: must be called

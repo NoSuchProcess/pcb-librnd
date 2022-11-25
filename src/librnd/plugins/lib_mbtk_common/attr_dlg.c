@@ -32,7 +32,7 @@
 
 #include "attr_dlg.h"
 
-void *rnd_mbtk_attr_dlg_new(rnd_hid_t *hid, rnd_mbtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void rnd_mbtk_attr_dlg_new(rnd_hid_t *hid, rnd_mbtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 
 }

@@ -2,7 +2,7 @@
 #include <librnd/hid/hid.h>
 #include "rnd_gtk.h"
 
-void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out);
 int rnd_gtk_attr_dlg_run(void *hid_ctx);
 void rnd_gtk_attr_dlg_raise(void *hid_ctx);
 void rnd_gtk_attr_dlg_close(void *hid_ctx);

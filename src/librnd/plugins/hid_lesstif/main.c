@@ -2796,7 +2796,7 @@ rnd_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, 
 	return ret;
 }
 
-extern void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+extern void lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out);
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
 extern void lesstif_attr_dlg_raise(void *hid_ctx);

@@ -301,9 +301,10 @@ void remote_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 
-static void *remote_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void remote_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
-	return NULL;
+	*hid_ctx_out = NULL;
+	return;
 }
 
 static int remote_attr_dlg_run(void *hid_ctx)

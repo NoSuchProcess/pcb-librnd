@@ -671,12 +671,13 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 	Widget topform, main_tbl;
 	lesstif_attr_dlg_t *ctx;
 
 	ctx = calloc(sizeof(lesstif_attr_dlg_t), 1);
+	*hid_ctx_out = ctx;
 	ctx->creating = 1;
 	ctx->hidlib = ltf_hidlib;
 	ctx->attrs = attrs;
@@ -748,7 +749,6 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 	ltf_initial_wstates(ctx);
 
 	ctx->creating = 0;
-	return ctx;
 }
 
 void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)

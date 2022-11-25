@@ -862,7 +862,7 @@ void rnd_gtk_attr_dlg_mapped_cb(GObject *self, gpointer user_data)
 	ctx->mapped = 1;
 }
 
-void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 	GtkWidget *main_vbox;
 	attr_dlg_t *ctx;
@@ -873,6 +873,7 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 	plc[3] = defy;
 
 	ctx = calloc(sizeof(attr_dlg_t), 1);
+	*hid_ctx_out = ctx;
 	ctx->gctx = gctx;
 	ctx->hidlib = gctx->hidlib;
 	ctx->attrs = attrs;
@@ -932,9 +933,6 @@ void *rnd_gtk_attr_dlg_new(rnd_hid_t *hid, rnd_gtk_t *gctx, const char *id, rnd_
 
 	if (rnd_gtk_conf_hid.plugins.hid_gtk.dialog.auto_present)
 		gtk_window_present(GTK_WINDOW(ctx->dialog));
-
-
-	return ctx;
 }
 
 void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)

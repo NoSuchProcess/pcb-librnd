@@ -6,7 +6,6 @@
 		- check how pcb-rnd layersel would work with this
 		- canvas:
 			- opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
-	- *BUG: sch-rnd critical: hid->attr_dlg_new() needs to get a void **hid_ctx_out argument so it can set hid_ctx before return; this is important because non-gtk HIDs will call back in sync during creating the dialog while core hid_dad will set hid_ctx only after this function returns (and the whole dialog is created); test: tree dialog {w t} in sch-rnd segfaults
 	- CLEANUP/BUG: revise rnd_dad_tree_modify_cell() - previous cell[] should be free'd...
 		- apply librnd core patch TODO.hid_dad_tree
 		- make sure all callers strdup() all cells
