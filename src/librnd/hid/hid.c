@@ -95,3 +95,26 @@ int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int forc
 	else
 		return rnd_gui->get_coords(rnd_gui, msg, x, y, force);
 }
+
+/*** mouse cursor management ***/
+static int last_normal_cursor = -1, cursor_override = -1;
+void rnd_hid_set_mouse_cursor(int id)
+{
+	last_normal_cursor = id;
+	if ((rnd_gui != NULL) && (cursor_override < 0))
+		rnd_gui->set_mouse_cursor(rnd_gui, id);
+}
+
+void rnd_hid_override_mouse_cursor(int id)
+{
+	if (id < 0) {
+		if ((rnd_gui != NULL) && (last_normal_cursor >= 0))
+			rnd_gui->set_mouse_cursor(rnd_gui, last_normal_cursor);
+		cursor_override = -1;
+	}
+	else {
+		if (rnd_gui != NULL)
+			rnd_gui->set_mouse_cursor(rnd_gui, id);
+		cursor_override = id;
+	}
+}

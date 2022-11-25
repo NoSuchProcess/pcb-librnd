@@ -685,4 +685,11 @@ extern char *(*rnd_hid_fileselect_imp)(rnd_hid_t *hid, const char *title, const 
    requested it. Returns 0 on success, -1 on esc pressed */
 int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
+/* Change normal mouse cursor to id (in rnd_gui) */
+void rnd_hid_set_mouse_cursor(int id);
+
+/* Temporarily override normal mouse cursor to id (in rnd_gui). If id is -1,
+   return to the last set normal cursor. */
+void rnd_hid_override_mouse_cursor(int id);
+
 #endif

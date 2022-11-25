@@ -152,8 +152,7 @@ int rnd_tool_select_by_id(rnd_design_t *hidlib, rnd_toolid_t id)
 
 	recursing = rnd_false;
 
-	if (rnd_gui != NULL)
-		rnd_gui->set_mouse_cursor(rnd_gui, id);
+	rnd_hid_set_mouse_cursor(id);
 	return 0;
 }
 
