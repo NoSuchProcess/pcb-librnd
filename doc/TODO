@@ -11,7 +11,6 @@
 		- apply librnd core patch TODO.hid_dad_tree
 		- make sure all callers strdup() all cells
 		- user implemented ->user_free_cb() should never free cell values, the lib does that
-	- hidlib_init1() should rnd_conf_set() "rc/path/exec_prefix" at the end so the host app doesn't need to
 	- BUG: camv-rnd old dep workaround: remove trunk/src/Makefile.in TODO#GENHT part and test with system installed fungw+genht and camv-rnd
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open

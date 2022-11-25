@@ -606,7 +606,7 @@ static void rnd_hid_init_uninit(void)
 
 extern void rnd_menu_init1(void);
 
-void rnd_hidlib_init1(void (*conf_core_init)(void))
+void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix)
 {
 	rnd_events_init();
 	rnd_file_loaded_init();
@@ -620,6 +620,9 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	rnd_grid_init();
 	rnd_color_init();
 	rnd_menu_init1();
+
+	if (exec_prefix != NULL)
+		rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 }
 
 static vts0_t hidlib_conffile;

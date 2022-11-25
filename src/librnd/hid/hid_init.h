@@ -138,7 +138,7 @@ void rnd_fix_locale_and_env_();
    */
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix);
 
-void rnd_hidlib_init1(void (*conf_core_init)(void)); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
+void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
 void rnd_hidlib_init3_auto(void);
 void rnd_hidlib_uninit(void);
