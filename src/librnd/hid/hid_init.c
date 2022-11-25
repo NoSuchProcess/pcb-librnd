@@ -365,7 +365,7 @@ rnd_hid_t *rnd_hid_find_gui(rnd_design_t *hidlib, const char *preference)
 	rnd_hid_t *gui;
 	int i;
 
-	if (strncmp(preference, "hid_", 4) == 0)
+	if ((preference != NULL) && strncmp(preference, "hid_", 4) == 0)
 		preference += 4;
 
 	/* ugly hack for historical reasons: some old configs and veteran users are used to the --gui gtk option */
