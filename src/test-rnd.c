@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
 	rnd_main_args_init(&ga, argc, foobar_action_args);
 
-	rnd_hidlib_init1(conf_core_init, NULL);
+	rnd_hidlib_init1(conf_core_init, ".");
 /*	foobar_event_init_app(); - creates all the events */
 
 	for(n = 1; n < argc; n++)

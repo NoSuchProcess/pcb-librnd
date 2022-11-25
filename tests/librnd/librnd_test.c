@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	rnd_main_args_init(&ga, argc, action_args);
 
 
-	rnd_hidlib_init1(conf_core_init, NULL);
+	rnd_hidlib_init1(conf_core_init, ".");
 	for(n = 1; n < argc; n++)
 		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
 
