@@ -47,4 +47,8 @@ void rnd_project_uninit(rnd_project_t *project);
    0 or 1 normally) */
 int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg);
 
+/* Recalculate the ->hdr.filename and ->hdr.prjdir of prj using its
+   ->hdr.loadname field */
+int rnd_project_update_filename(rnd_project_t *prj);
+
 #endif

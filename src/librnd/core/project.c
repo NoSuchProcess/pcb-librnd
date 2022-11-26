@@ -26,6 +26,10 @@
 
 #include <librnd/rnd_config.h>
 
+#include "compat_lrealpath.h"
+#include "compat_misc.h"
+#include "compat_fs.h"
+
 #include "project.h"
 
 
@@ -48,4 +52,25 @@ int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg)
 		}
 	}
 	return r;
+}
+
+int rnd_project_update_filename(rnd_project_t *prj)
+{
+	char *end, *real_fn = rnd_lrealpath(prj->loadname);
+	if (real_fn == NULL)
+		return -1;
+	free(prj->filename);
+	prj->filename = real_fn;
+
+	free(prj->prjdir);
+	prj->prjdir = rnd_strdup(real_fn);
+	end = strrchr(prj->prjdir, '/');
+	if (end == NULL) {
+		free(prj->prjdir);
+		prj->prjdir = rnd_strdup(rnd_get_wd(NULL));
+	}
+	else
+		*end = '\0';
+
+	return 0;
 }
