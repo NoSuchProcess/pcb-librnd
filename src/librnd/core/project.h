@@ -43,6 +43,10 @@ struct rnd_project_s {
    project->designs are free'd by the caller */
 void rnd_project_uninit(rnd_project_t *project);
 
+/* Append dsg at the end of prj->designs, if dsg is not already in a project.
+   Returns 0 on success. */
+int rnd_project_append_design(rnd_project_t *prj, rnd_design_t *dsg);
+
 /* Remove dsg from prj's ->designs and return number of removals (should be
    0 or 1 normally) */
 int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg);

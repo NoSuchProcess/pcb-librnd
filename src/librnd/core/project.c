@@ -41,6 +41,12 @@ void rnd_project_uninit(rnd_project_t *prj)
 	free(prj->loadname);
 }
 
+int rnd_project_append_design(rnd_project_t *prj, rnd_design_t *dsg)
+{
+	vtp0_append(&prj->designs, dsg);
+	return 0;
+}
+
 int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg)
 {
 	long n, r = 0;
