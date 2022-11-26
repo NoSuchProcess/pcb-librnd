@@ -1,3 +1,4 @@
+34734	configure	project support
 34599	configure	splitting hid code from core
 34594	configure	new lib: font rendering
 34568	configure	new generatewd polyconf.h in the poly lib (moving 64 bit int type from central config.h: only the poly lib uses this type and nothing else should start using it)
