@@ -36,3 +36,16 @@ void rnd_project_uninit(rnd_project_t *prj)
 	free(prj->filename);
 	free(prj->loadname);
 }
+
+int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg)
+{
+	long n, r = 0;
+	for(n = 0; n < prj->designs.used; n++) {
+		if (prj->designs.array[n] == dsg) {
+			vtp0_remove(&prj->designs, n, 1);
+			n--;
+			r++;
+		}
+	}
+	return r;
+}
