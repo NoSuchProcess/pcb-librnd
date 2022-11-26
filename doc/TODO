@@ -37,7 +37,6 @@
 			- original file name (short name, as the user called it)
 			- BUG: check all librnd calls to rnd_conf_get_project_conf_name(); hidlib->filename should be renamed and split to a load_name and a real_name, for project file use load_name (because of symlink designs)
 		- switch over from global var rnd_conf and conf_core to per design conf field
-		- implement user file name and realpath file name
 		- implement project list and pointing back
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
