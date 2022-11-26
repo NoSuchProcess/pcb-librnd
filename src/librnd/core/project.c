@@ -29,4 +29,10 @@
 #include "project.h"
 
 
-
+void rnd_project_uninit(rnd_project_t *prj)
+{
+	vtp0_uninit(&prj->designs);
+	free(prj->prjdir);
+	free(prj->filename);
+	free(prj->loadname);
+}

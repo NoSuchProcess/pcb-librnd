@@ -28,6 +28,7 @@
 #define RND_PROJECT_H
 
 #include <genvector/vtp0.h>
+#include <librnd/core/global_typedefs.h>
 
 /* Generic part of a project struct; should be the first field (called "hdr")
    of an app's project struct */
@@ -37,5 +38,9 @@ struct rnd_project_s {
 	char *prjdir;   /* real path to the directory that hosts the project file */
 	vtp0_t designs; /* list of (rnd_design_t *) that are loaded for this project */
 };
+
+/* Free fields of project; doesn't free project itself. Assumes items on
+   project->designs are free'd by the caller */
+void rnd_project_uninit(rnd_project_t *project);
 
 #endif
