@@ -29,12 +29,20 @@
 #include "compat_lrealpath.h"
 #include "compat_misc.h"
 #include "compat_fs.h"
+#include "hidlib.h"
 
 #include "project.h"
 
 
 void rnd_project_uninit(rnd_project_t *prj)
 {
+	long n;
+
+	for(n = 0; n < prj->designs.used; n++) {
+		rnd_design_t *dsg = prj->designs.array[n];
+		dsg->project = NULL;
+	}
+
 	vtp0_uninit(&prj->designs);
 	free(prj->prjdir);
 	free(prj->filename);
@@ -43,6 +51,9 @@ void rnd_project_uninit(rnd_project_t *prj)
 
 int rnd_project_append_design(rnd_project_t *prj, rnd_design_t *dsg)
 {
+	if (dsg->project != NULL)
+		return -1;
+	dsg->project = prj;
 	vtp0_append(&prj->designs, dsg);
 	return 0;
 }
@@ -52,6 +63,7 @@ int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg)
 	long n, r = 0;
 	for(n = 0; n < prj->designs.used; n++) {
 		if (prj->designs.array[n] == dsg) {
+			dsg->project = NULL;
 			vtp0_remove(&prj->designs, n, 1);
 			n--;
 			r++;

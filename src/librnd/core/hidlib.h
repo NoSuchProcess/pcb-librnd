@@ -49,6 +49,8 @@ struct rnd_design_s {
 	char *name;                        /* name of the design */
 	char *filename;                    /* name of the file (from load) */
 
+	rnd_project_t *project;            /* if the design is appended to any project */
+
 	/* tool state */
 	rnd_coord_t ch_x, ch_y, tool_x, tool_y; /* ch is crosshair */
 	unsigned int tool_hit;                  /* optional: type of a hit object of RND_MOVE_TYPES; 0 if there was no RND_MOVE_TYPES object under the crosshair */

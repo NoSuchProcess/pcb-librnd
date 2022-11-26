@@ -40,7 +40,8 @@ struct rnd_project_s {
 };
 
 /* Free fields of project; doesn't free project itself. Assumes items on
-   project->designs are free'd by the caller */
+   project->designs are free'd by the caller. Any design still on the
+   priject's designs list will be reset to have no project (dsg->project == NULL) */
 void rnd_project_uninit(rnd_project_t *project);
 
 /* Append dsg at the end of prj->designs, if dsg is not already in a project.
