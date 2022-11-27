@@ -37,7 +37,6 @@
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 			- valgrind: sch-rnd batch HID multiple sheets quit: make sure all configs are free'd
 		- mark each event [local] or [global]
-		- switch over from global var rnd_conf and conf_core to per design conf field
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
 		- once multi is implemented: rnd_mainloop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main); check if happens in camv-rnd as well (it's single-design)
