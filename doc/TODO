@@ -26,10 +26,14 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
-		- problem: rnd_conf_fields
-			- it hosts native (merged) config data
-			- thus it needs to be per design
-			- but if a new plugin registers a new field, that needs to be done in every existing design!
+		- config handling
+			- problem: can not be per design because configured plugins each have their own global var!
+			- create multi API where plugins can register their conf struct + size
+			- sch-rnd conf_core should register there too instead of doing local memcpy
+			- conf_(un)reg_intern should be renamed and should get extra args for that, also move the conf_reg macro into this
+			- multi_design: move list of projects from sch-rnd to librnd; update configs of all designs in all projects with the new registration
+			- !multi_design: need to remember currently active hidlib so excess switches can be avoided; update this design's config with the new registration
+			- remove upon unreg
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 		- mark each event [local] or [global]
 		- switch over from global var rnd_conf and conf_core to per design conf field
