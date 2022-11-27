@@ -35,6 +35,7 @@
 			- !multi_design: need to remember currently active hidlib so excess switches can be avoided; update this design's config with the new registration
 			- remove upon unreg
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
+			- valgrind: sch-rnd batch HID multiple sheets quit: make sure all configs are free'd
 		- mark each event [local] or [global]
 		- switch over from global var rnd_conf and conf_core to per design conf field
 		- conf: implement a way to make sure design file list is coming from the project file only
