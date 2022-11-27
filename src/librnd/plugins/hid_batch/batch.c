@@ -60,12 +60,12 @@ static void ev_design_changed(rnd_design_t *hidlib, void *user_data, int argc, r
 {
 	if (prompt != NULL)
 		free(prompt);
-	if ((hidlib != NULL) && (hidlib->filename != NULL)) {
-		prompt = strrchr(hidlib->filename, '/');
+	if ((hidlib != NULL) && (hidlib->loadname != NULL)) {
+		prompt = strrchr(hidlib->loadname, '/');
 		if (prompt)
 			prompt++;
 		else
-			prompt = hidlib->filename;
+			prompt = hidlib->loadname;
 		if (prompt != NULL)
 			prompt = rnd_strdup(prompt);
 	}

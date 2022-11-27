@@ -337,7 +337,7 @@ static void place_maybe_save(rnd_design_t *hidlib, rnd_conf_role_t role, int for
 
 
 	if (role != RND_CFR_DESIGN) {
-		int r = rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), role, NULL);
+		int r = rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->loadname), role, NULL);
 		if (r != 0)
 			rnd_message(RND_MSG_ERROR, "Failed to save window geometry in %s\n", rnd_conf_role_name(role));
 	}

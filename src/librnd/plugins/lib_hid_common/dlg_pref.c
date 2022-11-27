@@ -87,7 +87,7 @@ lht_node_t *rnd_pref_dlg2conf_pre(rnd_design_t *hidlib, pref_ctx_t *ctx)
 void rnd_pref_dlg2conf_post(rnd_design_t *hidlib, pref_ctx_t *ctx)
 {
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
-		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->filename), ctx->role, NULL);
+		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->loadname), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
 		rnd_event(hidlib, RND_EVENT_DESIGN_META_CHANGED_LIB, NULL);
 }

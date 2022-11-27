@@ -34,8 +34,8 @@
 		- mark each event [local] or [global]
 		- rnd_design_t must contain:
 			- real file name (realpath'd)
-			- original file name (short name, as the user called it)
 			- BUG: check all librnd calls to rnd_conf_get_project_conf_name(); hidlib->filename should be renamed and split to a load_name and a real_name, for project file use load_name (because of symlink designs)
+			- sch-rnd: load project file from CLI broke
 		- switch over from global var rnd_conf and conf_core to per design conf field
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified

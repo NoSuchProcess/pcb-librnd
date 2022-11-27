@@ -50,13 +50,13 @@ int rnd_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			return 0;
 		case 'F':
 			if (hidlib != NULL)
-				name = hidlib->filename;
+				name = hidlib->loadname;
 			gds_append_str(s, (name != NULL) ? name : "no_filename");
 			(*input)++;
 			return 0;
 		case 'B':
 			if (hidlib != NULL)
-				name = hidlib->filename;
+				name = hidlib->loadname;
 			if (name != NULL) {
 				const char *bn = strrchr(name, '/');
 				if (bn != NULL)
@@ -71,7 +71,7 @@ int rnd_build_fn_cb(void *ctx, gds_t *s, const char **input)
 			return 0;
 		case 'D':
 			if (hidlib != NULL)
-				name = hidlib->filename;
+				name = hidlib->loadname;
 			if (name != NULL) {
 				char *bn = strrchr(name, '/');
 				if (bn != NULL)

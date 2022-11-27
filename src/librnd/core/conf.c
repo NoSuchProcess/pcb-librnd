@@ -1249,7 +1249,7 @@ lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role
 	m = rnd_conf_lht_get_first(role, 0);
 	if (m == NULL) {
 		if (role == RND_CFR_PROJECT) {
-			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->filename);
+			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->loadname);
 			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
 			if (fn == NULL) {
 				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");

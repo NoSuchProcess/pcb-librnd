@@ -49,7 +49,7 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 
 	/* %%Title DCS provides text title for the document that is useful
 	   for printing banner pages. */
-	fprintf(f, "%%%%Title: %s\n", rnd_hid_export_fn(pctx->hidlib->filename));
+	fprintf(f, "%%%%Title: %s\n", rnd_hid_export_fn(pctx->hidlib->loadname));
 
 	/* %%CreationDate DCS indicates the date and time the document was
 	   created. Neither the date nor time need be in any standard
@@ -228,7 +228,7 @@ int rnd_ps_printed_toc(rnd_ps_t *pctx, int group, const char *name)
 		if ((group < 0) || (group != pctx->lastgroup)) {
 			if (pctx->pagecount == 1) {
 				time_t currenttime = time(NULL);
-				fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->filename));
+				fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->loadname));
 
 				fprintf(pctx->outf, "(%d.) tocp\n", pctx->pagecount);
 				fprintf(pctx->outf, "(Table of Contents \\(This Page\\)) toc\n");
@@ -301,7 +301,7 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 	fprintf(pctx->outf, "/Helvetica findfont 10 scalefont setfont\n");
 	if (pctx->legend) {
 		gds_t tmp;
-		fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->filename));
+		fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->loadname));
 
 		gds_init(&tmp);
 		if (pctx->hidlib->name)
