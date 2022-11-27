@@ -34,7 +34,7 @@
    of an app's project struct */
 struct rnd_project_s {
 	char *loadname; /* file name as specified by the user */
-	char *filename; /* real file name */
+	char *fullpath; /* loadname resolved with realpath() - the actual full path file name on the file system */
 	char *prjdir;   /* real path to the directory that hosts the project file */
 	vtp0_t designs; /* list of (rnd_design_t *) that are loaded for this project */
 };

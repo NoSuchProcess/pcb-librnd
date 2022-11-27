@@ -45,7 +45,7 @@ void rnd_project_uninit(rnd_project_t *prj)
 
 	vtp0_uninit(&prj->designs);
 	free(prj->prjdir);
-	free(prj->filename);
+	free(prj->fullpath);
 	free(prj->loadname);
 }
 
@@ -77,8 +77,8 @@ int rnd_project_update_filename(rnd_project_t *prj)
 	char *end, *real_fn = rnd_lrealpath(prj->loadname);
 	if (real_fn == NULL)
 		return -1;
-	free(prj->filename);
-	prj->filename = real_fn;
+	free(prj->fullpath);
+	prj->fullpath = real_fn;
 
 	free(prj->prjdir);
 	prj->prjdir = rnd_strdup(real_fn);
