@@ -22,6 +22,11 @@ void rnd_conf_state_load(rnd_conf_state_t *src);
    a new design */
 void rnd_conf_state_init_from(rnd_conf_state_t *src);
 
+/* Announce a new design after loaded or created (creates config save structs) */
+void rnd_conf_state_new_design(rnd_design_t *dsg);
+
+/* call when design is unloaded/discarded (frees config save structs) */
+void rnd_conf_state_del_design(rnd_design_t *dsg);
 
 /*** per plugin and per app custom config ***/
 void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie);

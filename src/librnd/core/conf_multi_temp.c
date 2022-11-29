@@ -28,6 +28,9 @@
 
 #include "conf_multi_temp.h"
 
+static gdl_list_t designs;
+
+
 typedef struct rnd_conf_plug_state_s {
 	const char *cookie;    /* compared as pointer */
 	void *globvar;         /* pointer to the global variable the plugin is using */
@@ -183,3 +186,33 @@ void rnd_conf_state_plug_unreg_all_cookie(const char *cookie)
 	rnd_conf_state_plug_unreg_all_cookie_(&plug_states, cookie);
 	TODO("rnd_conf_state_plug_unreg_all_cookie_() in all existing designs");
 }
+
+void rnd_conf_state_new_design(rnd_design_t *dsg)
+{
+	rnd_conf_plug_state_t *n, *nnew;
+
+	memset(&dsg->link, 0, sizeof(dsg->link)); /* can't trust caller to zero this */
+	gdl_append(&designs, dsg, link);
+
+	for(n = gdl_first(&plug_states); n != NULL; n = n->link.next) {
+		nnew = calloc(sizeof(rnd_conf_plug_state_t) + n->size, 1);
+		nnew->cookie = n->cookie;
+		nnew->globvar = n->globvar;
+		nnew->size = n->size;
+		gdl_append(&dsg->saved_rnd_conf->plug_states, nnew, link);
+	}
+}
+
+void rnd_conf_state_del_design(rnd_design_t *dsg)
+{
+	gdl_remove(&designs, dsg, link);
+
+	rnd_conf_plug_state_t *n, *next;
+	for(n = gdl_first(&dsg->saved_rnd_conf->plug_states); n != NULL; n = next) {
+		next = n->link.next;
+		free(n);
+	}
+	memset(&dsg->saved_rnd_conf->plug_states, 0, sizeof(dsg->saved_rnd_conf->plug_states));
+}
+
+
