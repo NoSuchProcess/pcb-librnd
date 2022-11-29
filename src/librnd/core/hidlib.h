@@ -28,6 +28,7 @@
 #define RND_HIDLIB_H
 
 #include <librnd/core/global_typedefs.h>
+#include <genlist/gendlist.h>
 
 typedef struct rnd_mark_s {
 	rnd_bool status;
@@ -58,6 +59,9 @@ struct rnd_design_s {
 	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
 	rnd_mark_t tool_grabbed;                /* point where a drag&drop operation started */
 	rnd_box_t *tool_snapped_obj_bbox;
+
+	/* multi-sheet (app->multi_design==1) support */
+	gdl_elem_t link; /* linked list of designs currently open */
 
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */
