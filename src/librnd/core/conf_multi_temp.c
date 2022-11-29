@@ -28,6 +28,16 @@
 
 #include "conf_multi_temp.h"
 
+typedef struct rnd_conf_plug_state_s {
+	const char *cookie;    /* compared as pointer */
+	void *globvar;         /* pointer to the global variable the plugin is using */
+	long size;             /* sizeof() the globvar struct */
+	gdl_elem_t link;       /* either in global plug_states or in rnd_conf_state_t's plug_states */
+	char saved[1];         /* (overallocated) a copy of the last content of globvar when design is not active (switched away); not used in global plug_states */
+} rnd_conf_plug_state_t;
+
+static gdl_list_t plug_states;
+
 struct rnd_conf_state_s {
 	htsi_t conf_interns;
 	int conf_files_inited;
@@ -42,6 +52,8 @@ struct rnd_conf_state_s {
 	int rnd_conf_rev;
 
 	int valid;
+
+	gdl_list_t plug_states; /* extra saves */
 };
 
 static void rnd_conf_state_copy_nat(htsp_t *dst, const htsp_t *src)
@@ -138,4 +150,36 @@ void rnd_conf_state_init_from(rnd_conf_state_t *src)
 		rnd_conf_lht_dirty[r] = src->rnd_conf_lht_dirty[r];
 		rnd_conf_plug_root[r] = src->rnd_conf_plug_root[r];
 	}
+}
+
+
+
+void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie)
+{
+	rnd_conf_plug_state_t *pst = calloc(sizeof(rnd_conf_plug_state_t), 1);
+	pst->cookie = cookie;
+	pst->globvar = globvar;
+	pst->size = size;
+
+	gdl_append(&plug_states, pst, link);
+
+	TODO("gdl_append() in all existing designs");
+}
+
+static void rnd_conf_state_plug_unreg_all_cookie_(gdl_list_t *lst, const char *cookie)
+{
+	rnd_conf_plug_state_t *n, *next;
+	for(n = gdl_first(lst); n != NULL; n = next) {
+		next = n->link.next;
+		if (n->cookie == cookie) {
+			gdl_remove(lst, n, link);
+			free(n);
+		}
+	}
+}
+
+void rnd_conf_state_plug_unreg_all_cookie(const char *cookie)
+{
+	rnd_conf_state_plug_unreg_all_cookie_(&plug_states, cookie);
+	TODO("rnd_conf_state_plug_unreg_all_cookie_() in all existing designs");
 }

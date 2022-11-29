@@ -21,3 +21,10 @@ void rnd_conf_state_load(rnd_conf_state_t *src);
 /* Copy shared conf from src to current global; useful for initializing for
    a new design */
 void rnd_conf_state_init_from(rnd_conf_state_t *src);
+
+
+/*** per plugin and per app custom config ***/
+void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie);
+void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
+
+
