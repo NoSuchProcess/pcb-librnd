@@ -61,7 +61,8 @@ struct rnd_design_s {
 	rnd_box_t *tool_snapped_obj_bbox;
 
 	/* multi-sheet (app->multi_design==1) support */
-	gdl_elem_t link; /* linked list of designs currently open */
+	gdl_elem_t link;                        /* linked list of designs currently open */
+	rnd_conf_state_t *saved_rnd_conf;       /* global config structs are saved here */
 
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */

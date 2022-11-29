@@ -4,9 +4,6 @@
 
 */
 
-typedef struct rnd_conf_state_s rnd_conf_state_t;
-
-
 /* Allocate storage where the global config can be saved to */
 rnd_conf_state_t *rnd_conf_state_alloc(void);
 
