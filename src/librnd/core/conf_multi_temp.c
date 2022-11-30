@@ -53,6 +53,7 @@ struct rnd_conf_state_s {
 	htsp_t *rnd_conf_fields;
 	vmst_t merge_subtree;
 	int rnd_conf_rev;
+	rnd_conf_t rnd_conf;
 
 	int valid;
 
@@ -106,6 +107,7 @@ void rnd_conf_state_save(rnd_conf_state_t *dst)
 	SAVE(rnd_conf_fields, 0);
 	SAVE(merge_subtree, 1);
 	SAVE(rnd_conf_rev, 1);
+	SAVE(rnd_conf, 1);
 
 	for(n = gdl_first(&dst->plug_states); n != NULL; n = n->link.next) {
 		memcpy(&n->saved, n->globvar, n->size);
@@ -138,6 +140,7 @@ void rnd_conf_state_load(rnd_conf_state_t *src)
 	LOAD(rnd_conf_fields);
 	LOAD(merge_subtree);
 	LOAD(rnd_conf_rev);
+	LOAD(rnd_conf);
 
 	for(n = gdl_first(&src->plug_states); n != NULL; n = n->link.next) {
 		memcpy(n->globvar, &n->saved, n->size);
