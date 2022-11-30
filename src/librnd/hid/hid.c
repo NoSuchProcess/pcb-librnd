@@ -35,8 +35,8 @@
 
 void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete)
 {
-	if (rnd_gui->notify_crosshair_change)
-		rnd_gui->notify_crosshair_change(rnd_gui, changes_complete);
+	if (rnd_render->notify_crosshair_change)
+		rnd_render->notify_crosshair_change(rnd_gui, changes_complete);
 	rnd_event(hl, RND_EVENT_CROSSHAIR_MOVE, "i", (int)changes_complete, NULL);
 }
 
