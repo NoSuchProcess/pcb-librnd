@@ -92,6 +92,7 @@ void rnd_conf_state_free(rnd_conf_state_t *cs)
 
 void rnd_conf_state_save(rnd_conf_state_t *dst)
 {
+	rnd_conf_plug_state_t *n;
 	assert(!dst->valid);
 
 	SAVE(conf_interns, 1);
@@ -106,6 +107,11 @@ void rnd_conf_state_save(rnd_conf_state_t *dst)
 	SAVE(merge_subtree, 1);
 	SAVE(rnd_conf_rev, 1);
 
+	for(n = gdl_first(&dst->plug_states); n != NULL; n = n->link.next) {
+		memcpy(&n->saved, n->globvar, n->size);
+		memset(n->globvar, 0, n->size); /* for easier debug */
+	}
+
 	dst->valid = 1;
 }
 
@@ -117,6 +123,8 @@ void rnd_conf_state_save(rnd_conf_state_t *dst)
 
 void rnd_conf_state_load(rnd_conf_state_t *src)
 {
+	rnd_conf_plug_state_t *n;
+
 	assert(src->valid);
 
 	LOAD(conf_interns);
@@ -130,6 +138,11 @@ void rnd_conf_state_load(rnd_conf_state_t *src)
 	LOAD(rnd_conf_fields);
 	LOAD(merge_subtree);
 	LOAD(rnd_conf_rev);
+
+	for(n = gdl_first(&src->plug_states); n != NULL; n = n->link.next) {
+		memcpy(n->globvar, &n->saved, n->size);
+		memset(&n->saved, 0, n->size); /* for easier debug */
+	}
 
 	src->valid = 0;
 }
