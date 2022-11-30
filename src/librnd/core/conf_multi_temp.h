@@ -4,6 +4,10 @@
 
 */
 
+#include <genlist/gendlist.h>
+
+extern gdl_list_t rnd_designs; /* all design files currently open (in any project) */
+
 /* Allocate storage where the global config can be saved to */
 rnd_conf_state_t *rnd_conf_state_alloc(void);
 

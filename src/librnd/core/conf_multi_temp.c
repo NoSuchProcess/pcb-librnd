@@ -28,7 +28,7 @@
 
 #include "conf_multi_temp.h"
 
-static gdl_list_t designs;
+gdl_list_t rnd_designs;
 
 
 typedef struct rnd_conf_plug_state_s {
@@ -208,7 +208,7 @@ void rnd_conf_state_new_design(rnd_design_t *dsg)
 	rnd_conf_plug_state_t *n, *nnew;
 
 	memset(&dsg->link, 0, sizeof(dsg->link)); /* can't trust caller to zero this */
-	gdl_append(&designs, dsg, link);
+	gdl_append(&rnd_designs, dsg, link);
 
 	for(n = gdl_first(&plug_states); n != NULL; n = n->link.next) {
 		nnew = calloc(sizeof(rnd_conf_plug_state_t) + n->size, 1);
@@ -221,7 +221,7 @@ void rnd_conf_state_new_design(rnd_design_t *dsg)
 
 void rnd_conf_state_del_design(rnd_design_t *dsg)
 {
-	gdl_remove(&designs, dsg, link);
+	gdl_remove(&rnd_designs, dsg, link);
 
 	rnd_conf_plug_state_t *n, *next;
 	for(n = gdl_first(&dsg->saved_rnd_conf->plug_states); n != NULL; n = next) {
