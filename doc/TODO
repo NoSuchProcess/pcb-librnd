@@ -26,16 +26,18 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
+		- CLEANUP: hid's preview expose callback shouldn't have expose ctx const, the callee may need to fill in hidlib; see sch_dialogs/dlg_tree.c tree_prv_expose_cb()
+		- CLEANUP: hid's get_export_options should get an (rnd_design_t *) but callees should accept NULL (happens when exporting GUI)
 		- config handling
 			- problem: can not be per design because configured plugins each have their own global var!
-			- create multi API where plugins can register their conf struct + size
-			- sch-rnd conf_core should register there too instead of doing local memcpy
 			- conf_(un)reg_intern should be renamed and should get extra args for that, also move the conf_reg macro into this
 			- multi_design: move list of projects from sch-rnd to librnd; update configs of all designs in all projects with the new registration
 			- !multi_design: need to remember currently active hidlib so excess switches can be avoided; update this design's config with the new registration
 			- remove upon unreg
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 			- valgrind: sch-rnd batch HID multiple sheets quit: make sure all configs are free'd
+			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
+			- BUG: sch-rnd: zoom/pan not saved between switches (auto zoom-extents)
 		- mark each event [local] or [global]
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
