@@ -593,9 +593,20 @@ static void hidlib_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, 
 	rnd_gui->set_mouse_cursor(rnd_gui, rnd_conf.editor.mode); /* make sure the mouse cursor is set up now that it is registered */
 }
 
+static void hidlib_design_set_current_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	rnd_design_t *dsg = argv[1].d.p;
+
+	if ((rnd_gui != NULL) && (rnd_gui->set_design != NULL))
+		rnd_gui->set_design(rnd_gui, dsg);
+	if ((rnd_render != NULL) && (rnd_render->set_design != NULL) && (rnd_render != rnd_gui))
+		rnd_render->set_design(rnd_render, dsg);
+}
+
 static void rnd_hid_init_init(void)
 {
 	rnd_event_bind(RND_EVENT_GUI_INIT, hidlib_gui_init_ev, NULL, hid_init_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, hidlib_design_set_current_ev, NULL, hid_init_cookie);
 }
 
 static void rnd_hid_init_uninit(void)

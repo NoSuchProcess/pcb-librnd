@@ -29,6 +29,7 @@
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
+#include <librnd/core/conf_multi_temp.h>
 
 rnd_app_t rnd_app;
 
@@ -49,5 +50,105 @@ void rnd_log_print_uninit_errs(const char *title)
 	}
 	if (printed)
 		fprintf(stderr, "\n\n");
+}
+
+
+/*** multi ***/
+
+rnd_design_t *rnd_curr_dsg;
+
+static void rnd_multi_switched_to_notify(rnd_design_t *dsg)
+{
+	rnd_event(dsg, RND_EVENT_DESIGN_SET_CURRENT, "p", dsg);
+	rnd_event(dsg, RND_EVENT_DESIGN_REPLACED, "i", 0);
+	rnd_event(dsg, RND_EVENT_DESIGN_FN_CHANGED, NULL);
+}
+
+void rnd_multi_switch_to_(rnd_design_t *dsg)
+{
+	rnd_curr_dsg = dsg;
+	assert(dsg->saved_rnd_conf != NULL);
+	rnd_conf_state_load(dsg->saved_rnd_conf);
+	rnd_multi_switched_to_notify(dsg);
+}
+
+rnd_design_t *rnd_multi_switch_to(rnd_design_t *dsg)
+{
+	rnd_design_t *curr = rnd_curr_dsg;
+
+	/* switch to nothing (useful when loading a new sheet) */
+	if (dsg == NULL) {
+		rnd_conf_state_save(curr->saved_rnd_conf);
+		rnd_curr_dsg = NULL;
+		return curr;
+	}
+
+	/* first switch from nothing to s */
+	if (curr == NULL) {
+		rnd_curr_dsg = dsg;
+		rnd_multi_switched_to_notify(dsg);
+		return curr;
+	}
+
+	/* switching to the current is no-op */
+	if (dsg == curr)
+		return curr;
+
+	rnd_conf_state_save(curr->saved_rnd_conf);
+	rnd_multi_switch_to_(dsg);
+
+	return curr;
+}
+
+void rnd_multi_switch_to_delta(rnd_design_t *curr, int step)
+{
+	if (curr == NULL) {
+		if (step == 0)
+			return; /* would switch to the hidlib that's already active in the GUI */
+		curr = rnd_curr_dsg;
+	}
+	else if (step == 0) {
+		rnd_multi_switch_to(curr);
+		return;
+	}
+
+	if (curr == NULL)
+		return; /* no known starting point */
+
+	if (step > 0) {
+		for(;step > 0; step--) {
+			curr = curr->link.next;
+			if (curr == NULL)
+				curr = gdl_first(&rnd_designs);
+		}
+	}
+	else if (step < 0) {
+		for(;step < 0; step++) {
+			curr = curr->link.prev;
+			if (curr == NULL)
+				curr = gdl_last(&rnd_designs);
+		}
+	}
+
+	if (curr != NULL)
+		rnd_multi_switch_to(curr);
+}
+
+rnd_design_t *rnd_multi_neighbour_sheet(rnd_design_t *dsg)
+{
+	if (dsg == NULL)
+		dsg = rnd_curr_dsg;
+
+	if (dsg == NULL)
+		return NULL;
+
+	if (dsg->link.next != NULL)
+		return dsg->link.next;
+	return dsg->link.prev;
+}
+
+rnd_design_t *rnd_multi_get_current(void)
+{
+	return rnd_curr_dsg;
 }
 

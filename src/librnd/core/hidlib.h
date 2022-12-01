@@ -187,4 +187,29 @@ extern int rnd_hid_in_main_loop;
 /* print pending log messages to stderr after gui uninit */
 void rnd_log_print_uninit_errs(const char *title);
 
+
+/*** multi ***/
+
+
+/* Return the next (or previous) sheet or NULL if sheet was the last
+   sheet open. If sheet is NULL, use currently active sheet. */
+rnd_design_t *rnd_multi_neighbour_sheet(rnd_design_t *dsg);
+
+/* Return currently active design or NULL */
+rnd_design_t *rnd_multi_get_current(void);
+
+/* Swap current design to dsg; inform the GUI. If dsg is NULL, switch to
+   no-design (use only temporarily). */
+rnd_design_t *rnd_multi_switch_to(rnd_design_t *dsg);
+
+/* Switch to next or previous design */
+void rnd_multi_switch_to_delta(rnd_design_t *curr, int step);
+
+/* Return next or previous design - useful for picking one to activate
+   when dsg is unloaded */
+rnd_design_t *rnd_multi_neighbour_sheet(rnd_design_t *dsg);
+
+/* Swap current design with less side effects */
+void rnd_multi_switch_to_(rnd_design_t *dsg);
+
 #endif
