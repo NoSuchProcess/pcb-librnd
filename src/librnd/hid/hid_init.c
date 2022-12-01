@@ -778,7 +778,7 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	for(;;) {
 		int res;
 		if (rnd_gui->get_export_options != NULL)
-			rnd_gui->get_export_options(rnd_gui, NULL);
+			rnd_gui->get_export_options(rnd_gui, NULL, NULL, NULL);
 		res = rnd_gui->parse_arguments(rnd_gui, hid_argc, hid_argv);
 		if (res == 0)
 			break; /* HID accepted, don't try anything else */

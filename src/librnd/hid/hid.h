@@ -229,8 +229,13 @@ struct rnd_hid_s {
 	   set up the selectable options.  In command line mode, these are
 	   used to interpret command line options.  If n_ret_ is non-NULL,
 	   the number of attributes is stored there. Note: the table is read-only
-	   and persistent. */
-	const rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
+	   and persistent.
+	   When called for starting up the GUI or initialize the export for -x,
+	   dsg is NULL and appspec is NULL.
+	   When called for actual exporting, dsg is not NULL and appspec is NULL or an
+	   application specific context to control export details.
+	   */
+	const rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret, rnd_design_t *dsg, void *appspec);
 
 	/* Exports (or print) the current design (also passed as an argument so that
 	   pure export plugins don't have to implement set_design). The options given

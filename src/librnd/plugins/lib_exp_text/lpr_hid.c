@@ -68,7 +68,7 @@ static const double *lpr_xcalib, *lpr_ycalib;
 static void lpr_ps_init(rnd_hid_t *ps_hid)
 {
 	if (lpr_options == 0) {
-		const rnd_export_opt_t *ps_opts = ps_hid->get_export_options(ps_hid, &num_lpr_options);
+		const rnd_export_opt_t *ps_opts = ps_hid->get_export_options(ps_hid, &num_lpr_options, NULL, NULL);
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
@@ -84,7 +84,7 @@ static void lpr_ps_init(rnd_hid_t *ps_hid)
 	}
 }
 
-static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	const char *val;
 
@@ -112,7 +112,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 	const char *filename;
 
 	if (!options) {
-		lpr_get_export_options(hid, 0);
+		lpr_get_export_options(hid, 0, design, appspec);
 		options = lpr_values;
 	}
 
@@ -132,7 +132,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 
 static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	lpr_get_export_options(hid, 0);
+	lpr_get_export_options(hid, 0, NULL, NULL);
 	rnd_export_register_opts2(hid, lpr_options, num_lpr_options, lpr_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }

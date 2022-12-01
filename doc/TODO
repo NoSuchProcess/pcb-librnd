@@ -26,7 +26,7 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
-		- CLEANUP: hid's get_export_options should get an (rnd_design_t *) but callees should accept NULL (happens when exporting GUI)
+		- lib_hid_common, dlg_export.h: publish rnd_dlg_export() and install the header
 		- config handling
 			- problem: can not be per design because configured plugins each have their own global var!
 			- conf_(un)reg_intern should be renamed and should get extra args for that, also move the conf_reg macro into this

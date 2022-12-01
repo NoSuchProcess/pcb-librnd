@@ -24,13 +24,13 @@ extern rnd_hid_t loghid_exp;
 	} \
 
 
-static const rnd_export_opt_t *log_get_export_options(rnd_hid_t *hid, int *ret)
+static const rnd_export_opt_t *log_get_export_options(rnd_hid_t *hid, int *ret, rnd_design_t *dsg, void *appspec)
 {
 	const rnd_export_opt_t *result;
 
 	SANITY(return NULL);
 
-	result = delegatee_->get_export_options(hid, ret);
+	result = delegatee_->get_export_options(hid, ret, dsg, appspec);
 	if (ret != NULL)
 		rnd_fprintf(out_, "get_export_options(ret) -> ret=%d\n", *ret);
 	else

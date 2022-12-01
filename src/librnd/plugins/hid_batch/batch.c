@@ -30,7 +30,7 @@ typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
 } rnd_hid_gc_s;
 
-static const rnd_export_opt_t *batch_get_export_options(rnd_hid_t *hid, int *n_ret)
+static const rnd_export_opt_t *batch_get_export_options(rnd_hid_t *hid, int *n_ret, rnd_design_t *dsg, void *appspec)
 {
 	if (n_ret != NULL)
 		*n_ret = 0;

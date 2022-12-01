@@ -102,7 +102,7 @@ GType rnd_gtk_preview_get_type(void);
 void rnd_gtk_preview_get_natsize(rnd_gtk_preview_t *preview, int *width, int *height);
 
 GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget,
-	rnd_gtk_preview_expose_t expose, rnd_hid_preview_expose_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data);
+	rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data);
 
 void rnd_gtk_preview_zoomto(rnd_gtk_preview_t *preview, const rnd_box_t *data_view);
 

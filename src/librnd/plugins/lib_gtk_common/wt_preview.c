@@ -554,7 +554,7 @@ static gint preview_destroy_cb(GtkWidget *widget, long x, long y, long z, gpoint
 
 
 GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget,
-																			rnd_gtk_preview_expose_t expose, rnd_hid_preview_expose_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data)
+																			rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data)
 {
 	rnd_gtk_preview_t *prv = (rnd_gtk_preview_t *)g_object_new(
 		RND_GTK_TYPE_PREVIEW,

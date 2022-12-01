@@ -129,7 +129,7 @@ static void export_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static void rnd_dlg_export(const char *title, int exporters, int printers)
+void rnd_dlg_export(const char *title, int exporters, int printers, rnd_design_t *dsg, void *appspec)
 {
 	rnd_hid_t **hids;
 	int n, i, *exp_attr;
@@ -178,7 +178,7 @@ static void rnd_dlg_export(const char *title, int exporters, int printers)
 			export_ctx.tabs = RND_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
-				const rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
+				const rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo, dsg, appspec);
 				rnd_hid_attr_val_t *args = export_ctx.hid[n]->argument_array;
 				export_ctx.numo[n] = numo;
 				export_ctx.aa[n] = args;
@@ -251,17 +251,17 @@ static void rnd_dlg_export(const char *title, int exporters, int printers)
 
 const char rnd_acts_ExportDialog[] = "ExportDialog()\n";
 const char rnd_acth_ExportDialog[] = "Open the export dialog.";
-fgw_error_t rnd_act_ExportDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t rnd_act_ExportDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_dlg_export("Export to file", 1, 0);
+	rnd_dlg_export("Export to file", 1, 0, RND_ACT_DESIGN, NULL);
 	return 0;
 }
 
 const char rnd_acts_PrintDialog[] = "PrintDialog()\n";
 const char rnd_acth_PrintDialog[] = "Open the print dialog.";
-fgw_error_t rnd_act_PrintDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
+fgw_error_t rnd_act_PrintDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_dlg_export("Print", 0, 1);
+	rnd_dlg_export("Print", 0, 1, RND_ACT_DESIGN, NULL);
 	return 0;
 }
 

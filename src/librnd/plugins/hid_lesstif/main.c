@@ -851,7 +851,7 @@ static void LoadBackgroundImage(const char *fn)
 
 /* ---------------------------------------------------------------------- */
 
-static const rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n, rnd_design_t *dsg, void *appspec)
 {
 	if (n != NULL)
 		*n = sizeof(lesstif_attribute_list) / sizeof(rnd_export_opt_t);
