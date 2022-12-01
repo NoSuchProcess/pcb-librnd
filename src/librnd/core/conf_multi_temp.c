@@ -221,9 +221,10 @@ void rnd_conf_state_new_design(rnd_design_t *dsg)
 
 void rnd_conf_state_del_design(rnd_design_t *dsg)
 {
+	rnd_conf_plug_state_t *n, *next;
+
 	gdl_remove(&rnd_designs, dsg, link);
 
-	rnd_conf_plug_state_t *n, *next;
 	for(n = gdl_first(&dsg->saved_rnd_conf->plug_states); n != NULL; n = next) {
 		next = n->link.next;
 		free(n);
