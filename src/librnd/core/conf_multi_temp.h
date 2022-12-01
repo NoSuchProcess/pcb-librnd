@@ -37,3 +37,19 @@ void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie);
 void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
 
 
+/* Plugin conf registration */
+
+#define rnd_conf_plug_reg(globvar, intern__, cookie) \
+	do { \
+		rnd_conf_reg_intern(intern__); \
+		rnd_conf_state_plug_reg(&(globvar), sizeof(globvar), cookie); \
+	} while(0)
+
+
+#define rnd_conf_plug_unreg(conf_path_prefix, intern__, cookie) \
+	do { \
+		rnd_conf_unreg_intern(intern__); \
+		rnd_conf_unreg_fields(conf_path_prefix); \
+		rnd_conf_state_plug_unreg_all_cookie(cookie); \
+	} while(0)
+
