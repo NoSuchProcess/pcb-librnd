@@ -63,7 +63,7 @@ static GtkWidget *rnd_gtk_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *
 	return prg;
 }
 
-static void rnd_gtka_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void rnd_gtka_preview_expose(rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	rnd_hid_preview_t *prv = e->draw_data;
 	prv->user_expose_cb(prv->attrib, prv, gc, e);

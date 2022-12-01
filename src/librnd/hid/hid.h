@@ -536,7 +536,7 @@ struct rnd_hid_s {
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
 
-typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e);
 
 struct rnd_hid_expose_ctx_s {
 	rnd_design_t *design;            /* what's being exposed */
@@ -553,6 +553,7 @@ struct rnd_hid_expose_ctx_s {
 };
 
 typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
+typedef void (*rnd_hid_preview_expose_t)(rnd_hid_t *hid, rnd_hid_expose_ctx_t *ctx);
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. It is used for on-screen GUI calls, such as dialog boxes */

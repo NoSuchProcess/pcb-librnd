@@ -56,7 +56,7 @@ struct rnd_gtk_preview_class_s {
 
 typedef void (*rnd_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
 typedef void (*rnd_gtk_preview_config_t)(rnd_gtk_preview_t *gp, GtkWidget *widget);
-typedef gboolean(*rnd_gtk_preview_expose_t)(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx);
+typedef gboolean(*rnd_gtk_preview_expose_t)(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_preview_expose_t expcall, rnd_hid_expose_ctx_t *ctx);
 typedef rnd_bool(*rnd_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 typedef rnd_bool(*rnd_gtk_preview_key_ev_t)(void *widget, void *draw_data, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr);
 
@@ -102,7 +102,7 @@ GType rnd_gtk_preview_get_type(void);
 void rnd_gtk_preview_get_natsize(rnd_gtk_preview_t *preview, int *width, int *height);
 
 GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget,
-	rnd_gtk_preview_expose_t expose, rnd_hid_expose_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data);
+	rnd_gtk_preview_expose_t expose, rnd_hid_preview_expose_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data);
 
 void rnd_gtk_preview_zoomto(rnd_gtk_preview_t *preview, const rnd_box_t *data_view);
 

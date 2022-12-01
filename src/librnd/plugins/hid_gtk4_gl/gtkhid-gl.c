@@ -138,7 +138,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expose
 	return ghid_gl_drawing_area_expose_cb_common(&gtk4_gl_hid, widget, ev, vport);
 }
 
-static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_preview_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GtkAllocation allocation;
 	rnd_design_t *hidlib = ghidgui->hidlib;

@@ -487,7 +487,7 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 }
 
 /* Assumes gl context is set up for drawing in the target widget */
-static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_design_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
+static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_design_t *hidlib, rnd_gtk_expose_t *ev, rnd_hid_preview_expose_t expcall, rnd_hid_expose_ctx_t *ctx, long widget_xs, long widget_ys)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	double xz, yz, vw, vh;

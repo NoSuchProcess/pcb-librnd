@@ -159,7 +159,7 @@ static int prv_action(rnd_design_t *hl, const char *actname, rnd_hid_gc_t gc, co
 	return rv;
 }
 
-void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	dad_prv_t *ctx = prv->user_ctx;
 	prv_action(ctx->hidlib, ctx->act_expose, gc, ctx->udata);

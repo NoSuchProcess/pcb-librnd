@@ -78,7 +78,7 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_ha
 
 /* called back from core (which is called from wt_preview) to get the user
    expose function called */
-static void ltf_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+static void ltf_preview_expose(rnd_hid_gc_t gc, rnd_hid_expose_ctx_t *e)
 {
 	rnd_ltf_preview_t *pd = e->draw_data;
 	rnd_hid_attribute_t *attr = pd->attr;

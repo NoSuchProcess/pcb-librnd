@@ -169,8 +169,8 @@ typedef struct rnd_app_s {
 	void (*expose_main)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
 
 	/* Mandatory: preview expose: generic, dialog based, used in preview
-	   widgets */
-	void (*expose_preview)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
+	   widgets; e is not const because the call chain needs to fill in e->design */
+	void (*expose_preview)(rnd_hid_t *hid, rnd_hid_expose_ctx_t *e);
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);

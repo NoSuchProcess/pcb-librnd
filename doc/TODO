@@ -26,7 +26,6 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
-		- CLEANUP: hid's preview expose callback shouldn't have expose ctx const, the callee may need to fill in hidlib; see sch_dialogs/dlg_tree.c tree_prv_expose_cb()
 		- CLEANUP: hid's get_export_options should get an (rnd_design_t *) but callees should accept NULL (happens when exporting GUI)
 		- config handling
 			- problem: can not be per design because configured plugins each have their own global var!

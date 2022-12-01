@@ -1476,7 +1476,7 @@ static void ghid_gdk_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 {
 }
 
-static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
+static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev, rnd_hid_preview_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GdkWindow *window = gtkc_widget_get_window(widget);
 	GdkDrawable *save_drawable;

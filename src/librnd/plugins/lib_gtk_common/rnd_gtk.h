@@ -58,7 +58,7 @@ struct rnd_gtk_impl_s {
 
 	GtkWidget *(*new_drawing_widget)(rnd_gtk_impl_t *impl);
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
-	gboolean (*preview_expose)(GtkWidget *widget, rnd_gtk_expose_t *p, rnd_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
+	gboolean (*preview_expose)(GtkWidget *widget, rnd_gtk_expose_t *p, rnd_hid_preview_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
