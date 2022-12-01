@@ -601,7 +601,8 @@ int rnd_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define RND_HAVE_GUI_ATTR_DLG \
 	((rnd_gui != NULL) && (rnd_gui->gui) && (rnd_gui->attr_dlg_new != NULL) && (rnd_gui->attr_dlg_new != rnd_nogui_attr_dlg_new))
-void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny, void **hid_ctx_out);
+
 
 int rnd_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
