@@ -243,6 +243,7 @@ static gboolean rnd_gtk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev)
 	save_fy = rnd_conf.editor.view.flip_y;
 	flip_apply(preview);
 
+	preview->expose_data.design = VIEW_HIDLIB(&preview->view);
 	res = preview->expose(widget, ev, rnd_app.expose_preview, &preview->expose_data);
 
 	rnd_conf_force_set_bool(rnd_conf.editor.view.flip_x, save_fx);

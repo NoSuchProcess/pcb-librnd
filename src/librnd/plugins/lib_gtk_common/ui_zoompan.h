@@ -75,7 +75,7 @@ typedef struct {
 
 	struct rnd_gtk_s *ctx;
 
-	/* local/global design; used only for flip calculation */
+	/* local/global design; used only for flip calculation and initial expose ctx design setup */
 	unsigned local_dsg:1;  /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
 	rnd_design_t *dsg;     /* remember the hidlib the dialog was opened for */
 } rnd_gtk_view_t;
