@@ -229,7 +229,6 @@ do { \
 	} \
 } while(0)
 
-/* Converter: set up a pinout expose and use the generic preview expose call */
 static gboolean rnd_gtk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev)
 {
 	rnd_gtk_preview_t *preview = RND_GTK_PREVIEW(widget);
