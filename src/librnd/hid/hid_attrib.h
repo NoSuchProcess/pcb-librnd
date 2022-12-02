@@ -89,9 +89,12 @@ struct rnd_hid_attribute_s {
 	double min_val, max_val; /* for integer and real */
 	rnd_hid_attr_val_t val; /* Also actual value for global attributes. */
 
-	/* RND_HATT_ENUM: const char ** (NULL terminated list of values)
+	/* Already set by the caller when creating the widget.
+	   RND_HATT_ENUM: const char ** (NULL terminated list of values)
 	   RND_HATT_PICTURE & RND_HATT_PICBUTTON: const char **xpm
-	   RND_HATT_TREE and others: (rnd_hid_*_t *)  */
+	   RND_HATT_TREE and others: (rnd_hid_*_t *)
+	   RND_HATT_PREVIEW: 
+	   */
 	void *wdata; /* main widget data */
 	int wdata_aux1; /* auixiliary widget data - should phase out long term */
 

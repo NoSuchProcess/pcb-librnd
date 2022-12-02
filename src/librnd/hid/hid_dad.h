@@ -140,6 +140,8 @@ struct rnd_hid_preview_s {
 
 	int min_sizex_px, min_sizey_px; /* hint: widget minimum size in pixels */
 
+	rnd_design_t *loc_dsg; /* set when preview is created; NULL for global design, (rnd_design_t *) for sticking to a design */
+
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
 	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
@@ -377,7 +379,8 @@ do { \
 	RND_DAD_ALLOC(table, RND_HATT_PROGRESS); \
 } while(0)
 
-#define RND_DAD_PREVIEW(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
+/* Do not use directly: */
+#define RND_DAD_PREVIEW_(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_, loc_dsg_) \
 do { \
 	rnd_hid_preview_t *prv = calloc(sizeof(rnd_hid_preview_t), 1); \
 	prv->user_ctx = user_ctx_; \
@@ -387,6 +390,7 @@ do { \
 	prv->user_free_cb = free_cb; \
 	prv->min_sizex_px = min_sizex_px_; \
 	prv->min_sizey_px = min_sizey_px_; \
+	prv->loc_dsg = loc_dsg_; \
 	if ((initial_view_box) != NULL) { \
 		prv->initial_view.X1 = ((rnd_box_t *)(initial_view_box))->X1; \
 		prv->initial_view.Y1 = ((rnd_box_t *)(initial_view_box))->Y1; \
@@ -398,6 +402,24 @@ do { \
 	prv->attrib = &table[table ## _len-1]; \
 	RND_DAD_SET_ATTR_FIELD(table, wdata, prv); \
 } while(0)
+
+
+/* Preview that's following the global current design or is independent
+   from designs (not ever flipped). This following matters in two things:
+    - flip needs design size
+    - initial setting of expose context ->design on expose callback (callee normally overrides it tho)
+*/
+#define RND_DAD_PREVIEW(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
+	RND_DAD_PREVIEW_(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_, NULL)
+
+/* Preview that sticks to a specific design. Matters for size-for-flip and
+   initial expose context ->desing. Independent of global/local flip settings
+   (which are coming from flags). For example it is possible to have a _DSG
+   preview showing a virtual design that still keeps flipping with the current
+   design. */
+#define RND_DAD_PREVIEW_FOR_DSG(table, dsg_, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
+	RND_DAD_PREVIEW_(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_, dsg_)
+
 
 #define rnd_dad_preview_zoomto(attr, view) \
 do { \

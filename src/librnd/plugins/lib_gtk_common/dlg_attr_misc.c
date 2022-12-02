@@ -124,7 +124,7 @@ static GtkWidget *rnd_gtk_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	hp->hid_zoomto_cb = rnd_gtka_preview_zoomto;
 	
 	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
-	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, rnd_gtka_preview_expose, rnd_gtka_preview_config, attr->wdata);
+	prv = rnd_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, rnd_gtka_preview_expose, rnd_gtka_preview_config, attr->wdata, hp->loc_dsg);
 	gtkc_box_pack_append(bparent, prv, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
 	p = (rnd_gtk_preview_t *) prv;

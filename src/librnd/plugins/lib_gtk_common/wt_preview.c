@@ -552,7 +552,7 @@ static gint preview_destroy_cb(GtkWidget *widget, long x, long y, long z, gpoint
 }
 
 
-GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget, rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data)
+GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget, rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data, rnd_design_t *local_dsg)
 {
 	rnd_gtk_preview_t *prv = (rnd_gtk_preview_t *)g_object_new(
 		RND_GTK_TYPE_PREVIEW,
@@ -575,9 +575,14 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.coord_per_px = RND_MM_TO_COORD(0.25);
 	prv->view.ctx = ctx;
 
-TODO("multi: at the moment every preview is global, later there should be an option for this through the hidlib API");
-	prv->view.local_dsg = 0;
-	prv->view.dsg = ctx->hidlib;
+	if (local_dsg != NULL) {
+		prv->view.local_dsg = 1;
+		prv->view.dsg = local_dsg;
+	}
+	else {
+		prv->view.local_dsg = 0;
+		prv->view.dsg = ctx->hidlib;
+	}
 
 	update_expose_data(prv);
 
