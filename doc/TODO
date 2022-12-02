@@ -27,15 +27,15 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
 		- config handling
-			- problem: can not be per design because configured plugins each have their own global var!
 			- multi_design: move list of projects from sch-rnd to librnd; update configs of all designs in all projects with the new registration
-			- !multi_design: need to remember currently active hidlib so excess switches can be avoided; update this design's config with the new registration
+			- apps: don't use rnd_gui->set_design() directly, use multi
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 			- valgrind: sch-rnd batch HID multiple sheets quit: make sure all configs are free'd
 			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
 			- BUG: sch-rnd: zoom/pan not saved between switches (auto zoom-extents)
 			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: can't cycle through all sheets, list of designs broken
 			- pcb-rnd, camv-rnd: switch over to rnd_conf_plug_(un)reg()
+			- revise event names, there are too many for RND_EVENT_DESIGN_*
 		- mark each event [local] or [global]
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
