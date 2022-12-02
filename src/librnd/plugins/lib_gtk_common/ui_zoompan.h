@@ -33,7 +33,7 @@
 #include <librnd/core/rnd_bool.h>
 #include <librnd/core/global_typedefs.h>
 
-#define VIEW_HIDLIB(v) ((v)->local_hidlib ? ((v)->hidlib) : ((v)->ctx->hidlib))
+#define VIEW_HIDLIB(v) ((v)->local_dsg ? ((v)->dsg) : ((v)->ctx->hidlib))
 
 #define LOCALFLIPX(v) ((v)->local_flip ? (v)->flip_x : rnd_conf.editor.view.flip_x)
 #define LOCALFLIPY(v) ((v)->local_flip ? (v)->flip_y : rnd_conf.editor.view.flip_y)
@@ -75,8 +75,9 @@ typedef struct {
 
 	struct rnd_gtk_s *ctx;
 
-	unsigned local_hidlib:1; /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
-	rnd_design_t *hidlib;    /* remember the hidlib the dialog was opened for */
+	/* local/global design; used only for flip calculation */
+	unsigned local_dsg:1;  /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
+	rnd_design_t *dsg;     /* remember the hidlib the dialog was opened for */
 } rnd_gtk_view_t;
 
 #include "in_mouse.h"

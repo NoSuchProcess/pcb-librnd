@@ -578,8 +578,8 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.ctx = ctx;
 
 TODO("multi: at the moment every preview is global, later there should be an option for this through the hidlib API");
-	prv->view.local_hidlib = 0;
-	prv->view.hidlib = ctx->hidlib;
+	prv->view.local_dsg = 0;
+	prv->view.dsg = ctx->hidlib;
 
 	update_expose_data(prv);
 
