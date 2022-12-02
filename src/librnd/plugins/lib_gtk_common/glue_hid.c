@@ -5,6 +5,7 @@
 
 #include "rnd_gtk.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/conf_multi_temp.h>
 #include "glue_hid.h"
 #include <librnd/hid/hid_menu.h>
 #include <librnd/hid/hid_nogui.h>
@@ -102,6 +103,7 @@ static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 		rnd_hid_announce_gui_init(gctx->hidlib);
 		rnd_gtk_zoom_view_win(&gctx->port.view, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.X2, gctx->hidlib->dwg.Y2, 0);
 		rnd_gtk_pan_view_abs(&gctx->port.view, midx, midy, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
+		gctx->port.view.inited = 1;
 	}
 }
 
@@ -446,7 +448,12 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 		return;
 
 	rnd_gtk_tw_ranges_scale(gctx);
-	rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
+	if (!gctx->port.view.inited) {
+		rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
+		gctx->port.view.inited = 1;
+	}
+	else
+		rnd_gui->invalidate_all(rnd_gui); /* switched design */
 }
 
 static rnd_design_t *rnd_gtkg_get_hidlib(rnd_hid_t *hid)
@@ -560,12 +567,15 @@ static void rnd_gtkg_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy,
 	}
 }
 
+static const char gtk_hid_cookie[] = "gtk hid";
+
 static void rnd_gtkg_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
 {
 	if (pixmap->hid_data != NULL) {
 		rnd_gtkg_uninit_pixmap_(hid, pixmap);
 		pixmap->hid_data = NULL;
 	}
+	rnd_conf_state_plug_unreg_all_cookie(gtk_hid_cookie);
 }
 
 void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
@@ -645,4 +655,8 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->uninit_pixmap = rnd_gtkg_uninit_pixmap;
 
 	dst->hid_data = ghidgui;
+
+	/* save/load only the first few fields that are the zoom states */
+	rnd_conf_state_plug_reg(&ghidgui->port.view, (char *)&ghidgui->port.view.ctx - (char *)&ghidgui->port.view, gtk_hid_cookie);
+
 }

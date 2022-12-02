@@ -32,7 +32,6 @@
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 			- valgrind: sch-rnd batch HID multiple sheets quit: make sure all configs are free'd
 			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
-			- BUG: sch-rnd: zoom/pan not saved between switches (auto zoom-extents)
 			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: can't cycle through all sheets, list of designs broken
 			- pcb-rnd, camv-rnd: switch over to rnd_conf_plug_(un)reg()
 			- revise event names, there are too many for RND_EVENT_DESIGN_*

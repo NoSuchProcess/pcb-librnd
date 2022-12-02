@@ -52,12 +52,16 @@
 #define EVENT_TO_DESIGN_Y(view, y)  EVENT_TO_DESIGN_Y_(VIEW_HIDLIB(view), view, (y))
 
 typedef struct {
+	/* ORDER MATTERS: first fields until ctx are special: they are saved/restored on esign switch */
 	double coord_per_px;     /* Zoom level described as PCB units per screen pixel */
 
 	rnd_coord_t x0;
 	rnd_coord_t y0;
 	rnd_coord_t width;
 	rnd_coord_t height;
+	int inited;
+
+	struct rnd_gtk_s *ctx;
 
 	unsigned inhibit_pan_common:1; /* when 1, do not call rnd_gtk_pan_common() */
 	unsigned use_max_hidlib:1;     /* when 1, use hidlib->size_*; when 0, use the following two: */
@@ -73,7 +77,6 @@ typedef struct {
 	rnd_coord_t design_x, design_y;        /* design space coordinates of the mouse pointer */
 	rnd_coord_t crosshair_x, crosshair_y;  /* design_space coordinates of the crosshair     */
 
-	struct rnd_gtk_s *ctx;
 
 	/* local/global design; used only for flip calculation and initial expose ctx design setup */
 	unsigned local_dsg:1;  /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */
