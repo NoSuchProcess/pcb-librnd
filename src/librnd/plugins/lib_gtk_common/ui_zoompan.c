@@ -157,7 +157,7 @@ void rnd_gtk_zoom_view_rel(rnd_gtk_view_t *v, rnd_coord_t center_x, rnd_coord_t 
 	rnd_gtk_zoom_view_abs(v, center_x, center_y, v->coord_per_px * factor);
 }
 
-/* Side-correct version - long term this will be kept and the other is removed */
+/* Side-correct version zoom-to-window */
 void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch)
 {
 	double xf, yf;
