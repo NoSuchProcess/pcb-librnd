@@ -536,8 +536,7 @@ GType rnd_gtk_preview_get_type()
 			NULL, /* instance_init */
 		};
 
-		rnd_gtk_preview_type =
-			g_type_register_static(GTKC_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &rnd_gtk_preview_info, (GTypeFlags) 0);
+		rnd_gtk_preview_type = g_type_register_static(GTKC_TYPE_DRAWING_AREA, "rnd_gtk_preview_t", &rnd_gtk_preview_info, (GTypeFlags) 0);
 	}
 
 	return rnd_gtk_preview_type;
@@ -553,8 +552,7 @@ static gint preview_destroy_cb(GtkWidget *widget, long x, long y, long z, gpoint
 }
 
 
-GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget,
-																			rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data)
+GtkWidget *rnd_gtk_preview_new(rnd_gtk_t *ctx, rnd_gtk_init_drawing_widget_t init_widget, rnd_gtk_preview_expose_t expose, rnd_hid_expose_cb_t dialog_draw, rnd_gtk_preview_config_t config, void *draw_data)
 {
 	rnd_gtk_preview_t *prv = (rnd_gtk_preview_t *)g_object_new(
 		RND_GTK_TYPE_PREVIEW,
