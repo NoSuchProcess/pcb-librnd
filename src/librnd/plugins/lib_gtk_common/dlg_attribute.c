@@ -496,8 +496,7 @@ static int rnd_gtk_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, rnd_gtk
 					p = (rnd_gtk_preview_t *)ctx->wl[j];
 					p->flip_local = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_LFLIP);
 					p->flip_global = !!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_PRV_GFLIP);
-					p->view.local_flip = (p->flip_local && !p->flip_global);
-					
+					p->view.local_flip = !p->flip_global; /* if not local, it's hardwired 0;0 which is easiest done by saying it's local and keeping local flips 0 */
 				}
 				break;
 
