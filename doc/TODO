@@ -42,10 +42,6 @@
 		- once multi is implemented: rnd_mainloop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main); check if happens in camv-rnd as well (it's single-design)
 		- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
 			- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
-		- multi preview widget:
-			- gtk preview widget locality: add a HID API to set local bit (see r34242, TODO "multi:")
-			- bind unload event and invalidate local previews' hidlib (see r34242) so they don't crash if the caller doesn't do that
-			- lesstif: implement gtk's r34242 and test with sch-rnd tree view (depends on hid_ctx return fix)
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
 		- remove librnd conf_multi_temp.[ch]
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
@@ -57,13 +53,13 @@
 
 4. Low prio ===============================================================================
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
-	- BUG: hid_lesstif potential bug: bug_files/TODO/lesstif.txt [report: Fuz]
+	- lesstif (would be removed anyway)
+		- BUG: hid_lesstif potential bug: bug_files/TODO/lesstif.txt [report: Fuz]
+		- multi preview widget: implement gtk's r34242, r34773
+		- lesstif: vertical text, truncated text support
 	- bitmap object export in png, ps, eps, svg
 	- FEATURE: font -v2 support:
 		- baseline?
 		- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
 		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
 		- unicode translation table so that the upper 127 chars can be used for mu, degree and similar
-
-5. unsorted ===============================================================================
-	- lesstif: vertical text, truncated text support
