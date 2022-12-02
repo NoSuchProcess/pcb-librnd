@@ -416,7 +416,10 @@ do { \
    initial expose context ->desing. Independent of global/local flip settings
    (which are coming from flags). For example it is possible to have a _DSG
    preview showing a virtual design that still keeps flipping with the current
-   design. */
+   design.
+   NOTE: caller must make sure dsg_ is valid while the preview widget is alive,
+         e.g. bind pre-unload event and close the dialog
+   */
 #define RND_DAD_PREVIEW_FOR_DSG(table, dsg_, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
 	RND_DAD_PREVIEW_(table, expose_cb, mouse_cb, key_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_, dsg_)
 
