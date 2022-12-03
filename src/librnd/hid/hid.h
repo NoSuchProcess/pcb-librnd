@@ -217,7 +217,8 @@ struct rnd_hid_s {
 	unsigned override_render:1;
 
 	/* called by core when the global design context changes (e.g. design changed)
-	   The HID should store the design pointer for knowing drawing area dimensions */
+	   The HID should store the design pointer for knowing drawing area dimensions.
+	   Apps should NOT call this directly, use rnd_multi_switch_to() instead. */
 	void (*set_design)(rnd_hid_t *hid, rnd_design_t *design);
 
 	/* Return the design the given GUI HID is currently showing
