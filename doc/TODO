@@ -34,14 +34,14 @@
 			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: can't cycle through all sheets, list of designs broken
 			- pcb-rnd, camv-rnd: switch over to rnd_conf_plug_(un)reg()
 			- revise event names, there are too many for RND_EVENT_DESIGN_*
+				- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
+					- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
 		- mark each event [local] or [global]
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
 		- once multi is implemented: rnd_mainloop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main); check if happens in camv-rnd as well (it's single-design)
-		- RND_EVENT_DESIGN_REPLACED doesn't make sense in a multi-design env; replace it with an PRE_UNLOAD event
-			- double test: pcb-rnd, load board, open propedit on an object, select a row, start new board (or rather, unload board) -> propedit should close
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
-		- remove librnd conf_multi_temp.[ch]
+		- rename librnd conf_multi_temp.[ch]
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 	- grep the code for 4.0.0 for more (don't remove this until all items resolved as more 4.0.0 may be added)
 
