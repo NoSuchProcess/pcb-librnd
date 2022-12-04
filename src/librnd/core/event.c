@@ -57,7 +57,6 @@ static const char *rnd_evnames_lib[] = {
 	"rndev_stroke_record",
 	"rndev_stroke_finish",
 	"rndev_design_set_current",
-	"rndev_design_replaced",
 	"rndev_design_meta_changed",
 	"rndev_design_fn_changed",
 	"rndev_save_pre",

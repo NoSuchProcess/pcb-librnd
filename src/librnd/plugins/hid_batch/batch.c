@@ -400,7 +400,7 @@ int pplg_init_hid_batch(void)
 	batch_hid.open_command = batch_open_command;
 	batch_hid.open_popup = batch_open_popup;
 
-	rnd_event_bind(RND_EVENT_DESIGN_REPLACED, ev_design_changed, NULL, batch_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, ev_design_changed, NULL, batch_cookie);
 	rnd_event_bind(RND_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
 
 	rnd_hid_register_hid(&batch_hid);
