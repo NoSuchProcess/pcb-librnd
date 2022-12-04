@@ -190,6 +190,9 @@ void rnd_log_print_uninit_errs(const char *title);
 
 /*** multi ***/
 
+/* Single-design app has loaded a new design and switched to it; no configs are
+   saved/loaded because the old design is discarded anyway, but the GUI is notified */
+void rnd_single_switch_to(rnd_design_t *dsg);
 
 /* Return the next (or previous) sheet or NULL if sheet was the last
    sheet open. If sheet is NULL, use currently active sheet. */

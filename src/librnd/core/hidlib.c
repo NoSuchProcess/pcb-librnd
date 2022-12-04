@@ -64,6 +64,12 @@ static void rnd_multi_switched_to_notify(rnd_design_t *dsg)
 	rnd_event(dsg, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 }
 
+void rnd_single_switch_to(rnd_design_t *dsg)
+{
+	rnd_curr_dsg = dsg;
+	rnd_multi_switched_to_notify(dsg);
+}
+
 void rnd_multi_switch_to_(rnd_design_t *dsg)
 {
 	rnd_curr_dsg = dsg;
