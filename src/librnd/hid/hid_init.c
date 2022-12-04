@@ -1084,7 +1084,10 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *design, rnd_bool is_emp
 
 	if (is_empty)
 		rnd_message(RND_MSG_WARNING, "Exporting empty design (nothing loaded or drawn).\n");
-	rnd_multi_switch_to(design);
+	if (rnd_app.multi_design)
+		rnd_multi_switch_to(design);
+	else
+		rnd_single_switch_to(design);
 	rnd_event(design, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	rnd_gui->do_export(rnd_gui, design, 0, appspec);
 	rnd_event(design, RND_EVENT_EXPORT_SESSION_END, NULL);
@@ -1096,7 +1099,10 @@ void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *design)
 {
 	rnd_hid_in_main_loop = 1;
 	rnd_event(design, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
-	rnd_multi_switch_to(design);
+	if (rnd_app.multi_design)
+		rnd_multi_switch_to(design);
+	else
+		rnd_single_switch_to(design);
 	rnd_gui->do_export(rnd_gui, design, 0, NULL);
 	rnd_hid_in_main_loop = 0;
 	rnd_event(design, RND_EVENT_MAINLOOP_CHANGE, "i", rnd_hid_in_main_loop);
