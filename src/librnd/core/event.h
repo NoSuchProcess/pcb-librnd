@@ -78,8 +78,6 @@ typedef enum {
 	RND_EVENT_GUI_BATCH_TIMER,        /* [a] request timed batch GUI update, see rnd_hid_gui_batch_timer() */
 	RND_EVENT_MAINLOOP_CHANGE,        /* [a] called after the mainloop variable has changed */
 
-	RND_EVENT_DESIGN_META_CHANGED_LIB,/* [d] called by librnd as the earliest event when it changes the config of the design */
-
 	RND_EVENT_DAD_NEW_PANE,           /* [a] called by the GUI after a new paned widget is created; args are pointer hid_ctx, string dialog, string paned id and a (double *) for getting back preferred ratio (-1 means unknown) */
 	RND_EVENT_DAD_PANE_GEO_CHG,       /* [a] called by the GUI after the pane geometry _may_ have changed; args are: void *hid_ctx, const char *dialog id, const char *pane id, double ratio */
 

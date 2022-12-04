@@ -195,7 +195,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(hidlib, NULL, (hidlib == NULL ? NULL : hidlib->loadname), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
-		rnd_event(hidlib, RND_EVENT_DESIGN_META_CHANGED_LIB, NULL);
+		rnd_event(hidlib, RND_EVENT_DESIGN_META_CHANGED, NULL);
 
 	rnd_gui->invalidate_all(rnd_gui);
 }

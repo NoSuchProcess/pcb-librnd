@@ -66,7 +66,6 @@ static const char *rnd_evnames_lib[] = {
 	"rndev_menu_changed",
 	"rndev_gui_batch_timer",
 	"rndev_mainloop_change",
-	"rndev_design_meta_changed_lib",
 	"rndev_dad_new_pane",
 	"rndev_dad_pane_geo_chg",
 	"rndev_conf_file_save_post"
