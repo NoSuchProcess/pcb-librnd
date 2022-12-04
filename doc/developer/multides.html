@@ -9,22 +9,22 @@ supported starting from librnd 4.0.0.
 
 <h2> Architecture </h2>
 <p>
-There is a global variable in librnd, called rnd_designs . This is a
+There is a global variable in librnd, called rnd_designs. This is a
 doubly linked list holding all designs currently open, each an
-rnd_hidlib_t *. There is a hash of project files (key is realpath):
+(rnd_design_t *). There is a hash of project files (key is realpath):
 each project file opened and cached in memory only once, referenced
 by one or more of the design files.
 <p>
-Globally there is no "current design" or "current project", but only locally
-saved design/project reference in subsystems.
+Globally there is a "current design", which also determines the
+"current project" (via it's parent project pointer).
 <p>
-Note: a design (rnd_hidlib_t *) represents a board file in pcb-rnd, a sheet
+Note: a design (rnd_design_t *) represents a board file in pcb-rnd, a sheet
 in sch-rnd.
 
 <h3> What's in a design </h3>
 <p>
-All actual design data is on the app's side, where rnd_hidlib_t MUST be the
-first field of the design structure. On librnd side rnd_hidlib_t contains:
+All actual design data is on the app's side, where rnd_design_t MUST be the
+first field of the design structure. On librnd side rnd_design_t contains:
 <ul>
 	<li> public fields:
 	<ul>
@@ -41,11 +41,6 @@ first field of the design structure. On librnd side rnd_hidlib_t contains:
 			<li> conf backing data
 		</ul>
 </ul>
-<p>
-Starting from 4.0.0 there are no global config structures, config is always
-picked up from the relevant design struct. This is because configuration
-may differ per design file (because of per project or per design file conf
-differences).
 
 <h3> What's in a project </h3>
 <p>
@@ -128,24 +123,29 @@ can be removed from there.
 
 <h2> Local vs. global access </h2>
 
+<H3> librnd core </H3>
+
+Librnd is aware of the <i>current design</i> (see rnd_multi_*), the list
+of designs loaded and their project files. Apps should use the core
+librnd API to manipulate <i>current design</i> or the list of designs.
+
 <H3> UI </H3>
 <p>
 For example the UI is dealing with one design at a time: the UI state,
 accessed with ->set_hidlib() and ->get_hidlib(), stored by the HID. In
 any GUI event, such as dialog box callbacks on user input events, the
-related (rnd_hidlib_t *) is delivered. This means dialog boxes are always
-bound to a specific design and they remember their (rnd_hidlib_t *) and pass
+related (rnd_design_t *) is delivered. This means dialog boxes are always
+bound to a specific design and they remember their (rnd_design_t *) and pass
 that on in one way or another to any of their callbacks.
 <p>
-There is a global event for switching the current design shown on the GUI.
-In this document this event is called SCD.
+There is an event called RND_EVENT_DESIGN_SET_CURRENT for switching the current design shown on the GUI.
 If a dialog box is <b>global</b>:
 <p>
 <ul>
-	<li> only one instance can be open per process (the dialog is not per design)
-	<li> it still has it's (rnd_hidlib_t *), but that field is changed to the new
-	     current GUI design when the SCD event is received
-	<li> the necessary GUI updates are also done on the SCD event
+	<li> typically only one instance can be open per process (the dialog is not per design)
+	<li> it still has it's (rnd_design_t *), but that field is changed to the new
+	     current GUI design when the RND_EVENT_DESIGN_SET_CURRENT event is received
+	<li> the necessary GUI updates are also done on the RND_EVENT_DESIGN_SET_CURRENT event
 </ul>
 <p>
 A typical example of "single instance <b>global</b> dialog" is the preferences dialog.
@@ -153,7 +153,7 @@ Only one instance can be open, and it changes its contents when the current
 design is switched.
 <p>
 The other type of dialog box is <b>local</b>, which presnets states/data of
-a given design and is not affected by SCD.
+a given design and is not affected by RND_EVENT_DESIGN_SET_CURRENT.
 <p>
 A typical example of a "multiple instance local dialog" is pcb-rnd's propedit
 dialog: there can be multiple propedits open, but each is bound to a specific
@@ -161,17 +161,20 @@ board, listing and manipulating objects of only that one board.
 
 <h3> events (rnd_event()) </h3>
 <p>
-Local events are per design. A typical examples are RND_EVENT_SAVE_*,
-RND_EVENT_LOAD_*, RND_EVENT_BOARD_CHANGED, RND_EVENT_BOARD_*_CHANGED.
-These events are delivered only once, with the (hidlib_t *) set to the
-design that is affected (which is not necessarily the currently active
-design in any context, including GUI context.)
+Event callbacks get a (rnd_design_t *). There are two kind of events:
+<ul>
+ <li>per-design: the event affects a specific design only; most often called
+               for the current design, but callbacks shouldn't depend on that.
+               Examples: RND_EVENT_SAVE_*, RND_EVENT_DESIGN_*.
+               Marked as [d].
+ <li>per-app: the event affects the whole application and the design pointer
+            passed is irrelevant (points to the current design or is NULL).
+            Examples: RND_EVENT_NEW_DIALOG, RND_EVENT_BUSY.
+            Marked as [a].
+</ul>
+
 <p>
-Global events affect all open design. They are called with (hidlib_t *) set
-to NULL. The callee may have to iterate over all open design using the global
-design list.
-<p>
-Each event must be marked as [local] or [global] in the documentation (comment).
+Each event must be marked as [d] or [a] in the documentation (comment).
 
 <h3> config change callbacks </h3>
 <p>
@@ -199,4 +202,6 @@ all prepared for multiple designs and related project administration, but
 when a new design is registered, it is not appended to the list of designs
 but replaces the previous design there. So the list of designs is always
 of size 1.
+<p>
+Instead of rnd_multi_* API, such app should use rnd_single_*.
 
