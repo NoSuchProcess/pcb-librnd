@@ -121,6 +121,46 @@ to a project structure in memory can be made an explicit listed design
 file in the project config tree, or a design file part of the config tree
 can be removed from there.
 
+<h3> How config is managed </h3>
+<p>
+Runtime configuration, or <i>config</i> for short, is stored in read-only
+global variables (structs) for quick access. There are multiple such global
+config variables:
+<p>
+<ul>
+	<li> rnd_conf: librnd's core conf
+	<li> conf_core: the app's core config
+	<li> each module ("plugin") may have its own config, dynamically created when the module is loaded
+</ul>
+<p>
+Upon switching the current design, global config states are saved in a field
+of the design we are switching away from and then the global config states are
+loaded from the design we are switching to. This way global config states always
+reflect the config state of the current design.
+<p>
+There's an API provided for plugins to register their config states:
+rnd_conf_plug_reg(). This in turn calls rnd_conf_state_plug_reg(), which
+registers the global var and its size in the list of "need to save/load on
+switch".
+<p>
+The app's conf_core is registered on the same list, by the app, using
+rnd_conf_state_plug_reg().
+
+<h3> Why config is not stored in rnd_design_t </h3>
+<p>
+Saves and loads are done using memcpy. A typical config struct ranges from
+a few dozen bytes to a few hundred bytes. Which means a full switch takes
+a handful of memcpy()s moving at most a few kilobytes. Compared to the
+frequency of design switches and all the GUI refresh implications, this
+cost is reasonable.
+<p>
+An earlier plan was to move rnd_conf and conf_core into the design struct so
+each design really has its won, then every single time the code needs to
+access the config, it needs to do so using a design (e.g. the current design).
+Besides the code complication on each config access, the main problem with
+this approach is that it can't deal with dynamic config vars supplied by
+the modules without making config access from modules real complicated.
+
 <h2> Local vs. global access </h2>
 
 <H3> librnd core </H3>
