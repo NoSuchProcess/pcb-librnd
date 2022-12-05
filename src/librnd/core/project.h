@@ -28,6 +28,7 @@
 #define RND_PROJECT_H
 
 #include <genvector/vtp0.h>
+#include <genht/htsp.h>
 #include <librnd/core/global_typedefs.h>
 
 /* Generic part of a project struct; should be the first field (called "hdr")
@@ -38,6 +39,9 @@ struct rnd_project_s {
 	char *prjdir;   /* real path to the directory that hosts the project file */
 	vtp0_t designs; /* list of (rnd_design_t *) that are loaded for this project */
 };
+
+/* all open projects; key is real file name of project file, value is (rnd_project_t *) */
+htsp_t rnd_projects;
 
 /* Free fields of project; doesn't free project itself. Assumes items on
    project->designs are free'd by the caller. Any design still on the
@@ -55,5 +59,12 @@ int rnd_project_remove_design(rnd_project_t *prj, rnd_design_t *dsg);
 /* Recalculate the ->hdr.filename and ->hdr.prjdir of prj using its
    ->hdr.loadname field */
 int rnd_project_update_filename(rnd_project_t *prj);
+
+
+/* These are usually called from hidlib_(un)init* */
+void rnd_projects_init(void);
+void rnd_projects_uninit(void);
+
+
 
 #endif

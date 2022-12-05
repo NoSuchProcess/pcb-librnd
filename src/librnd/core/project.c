@@ -26,6 +26,8 @@
 
 #include <librnd/rnd_config.h>
 
+#include <genht/hash.h>
+
 #include "compat_lrealpath.h"
 #include "compat_misc.h"
 #include "compat_fs.h"
@@ -92,3 +94,16 @@ int rnd_project_update_filename(rnd_project_t *prj)
 
 	return 0;
 }
+
+void rnd_projects_init(void)
+{
+	if (rnd_app.multi_design)
+		htsp_init(&rnd_projects, strhash, strkeyeq);
+}
+
+void rnd_projects_uninit(void)
+{
+	if (rnd_app.multi_design)
+		htsp_uninit(&rnd_projects);
+}
+

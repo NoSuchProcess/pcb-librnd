@@ -62,6 +62,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/project.h>
 #include <librnd/hid/grid.h>
 #include <librnd/core/funchash.h>
 #include <librnd/hid/hid_menu.h>
@@ -628,6 +629,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix)
 	s = (char **)&rnd_conf.rc.path.exec_prefix;
 	*s = rnd_hidlib_init_exec_prefix;
 
+	rnd_projects_init();
 	rnd_events_init();
 	rnd_file_loaded_init();
 	rnd_conf_init();
@@ -640,7 +642,6 @@ void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix)
 	rnd_grid_init();
 	rnd_color_init();
 	rnd_menu_init1();
-
 }
 
 static vts0_t hidlib_conffile;
@@ -769,6 +770,7 @@ void rnd_hidlib_uninit(void)
 	rnd_anyload_uninit();
 	rnd_events_uninit();
 	rnd_units_uninit();
+	rnd_projects_uninit();
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
