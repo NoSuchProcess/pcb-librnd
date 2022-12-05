@@ -23,7 +23,6 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
 		- config handling
-			- multi_design: move list of projects from sch-rnd to librnd; update configs of all designs in all projects with the new registration
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 				- call conf change callback on every design affected
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
