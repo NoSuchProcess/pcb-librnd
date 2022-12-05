@@ -5,7 +5,7 @@
 
 #include "rnd_gtk.h"
 #include <librnd/core/actions.h>
-#include <librnd/core/conf_multi_temp.h>
+#include <librnd/core/conf_multi.h>
 #include "glue_hid.h"
 #include <librnd/hid/hid_menu.h>
 #include <librnd/hid/hid_nogui.h>

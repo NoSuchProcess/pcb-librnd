@@ -96,8 +96,8 @@
  ../src/librnd/core/fptr_cast.h ../src/librnd/core/safe_fs_dir.h \
  ../src/librnd/core/compat_inc.h ../src/librnd/core/event.h ../src/librnd/core/rnd_conf.h \
  ../src_3rd/genvector/genvector_impl.c ../src/librnd/core/conf_regfile.c \
- ../src/librnd/core/conf_multi_temp.c \
- ../src/librnd/core/conf_multi_temp.h
+ ../src/librnd/core/conf_multi.c \
+ ../src/librnd/core/conf_multi.h
 ../src/librnd/core/conf_act.o: ../src/librnd/core/conf_act.c \
  ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \

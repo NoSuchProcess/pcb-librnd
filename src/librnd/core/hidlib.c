@@ -29,7 +29,7 @@
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
-#include <librnd/core/conf_multi_temp.h>
+#include <librnd/core/conf_multi.h>
 
 rnd_app_t rnd_app;
 

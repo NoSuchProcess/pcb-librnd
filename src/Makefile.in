@@ -639,8 +639,7 @@ append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/media.h }
 append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_text/lpr_hid.h }
 append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_exp_pixmap/draw_pixmap.h }
 
-# TODO: remove this in 4.0.0
-append /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_multi_temp.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_multi.h }
 
 # extra core headers to install
 append /local/librnd/HDRS_CORELIB { $(LIBRND)/core/funchash_core.h $(LIBRND)/core/funchash_core_list.h }

@@ -24,9 +24,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Temporary API for pre-4.0.0 multi-sheet support in sch-rnd */
+/* conf system multi-design support (conf struct global var swapping) */
 
-#include "conf_multi_temp.h"
+#include "conf_multi.h"
 
 gdl_list_t rnd_designs;
 
