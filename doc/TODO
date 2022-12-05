@@ -14,9 +14,6 @@
 	- cleanup: rnd_pref_tab_hook_s calls need hidlib arg: open_cb, board_changed_cb, meta_changed_cb
 	- feature: rnd_pref_tab_hook_s ->open should deliver extra action arguments because some tabs may have optional args to specify how exactly it should be open
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
-	- missing event emits in apps:
-		- RND_EVENT_SAVE_*: copy this from pcb-rnd to sch-rnd and camv-rnd
-		- RND_EVENT_LOAD_*: copy this from pcb-rnd to sch-rnd and camv-rnd
 	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
 		- remove /local/pcb from librnd central scconfig
