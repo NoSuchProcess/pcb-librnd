@@ -29,7 +29,7 @@
 				- call conf change callback on every design affected
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
 			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
-			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: can't cycle through all sheets, list of designs broken
+			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: switch with {<} and {>}, sheetsel lags behind (GUI load is probably not needed)
 			- pcb-rnd, camv-rnd: switch over to rnd_conf_plug_(un)reg()
 		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
