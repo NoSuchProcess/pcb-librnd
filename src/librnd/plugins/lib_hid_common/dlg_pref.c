@@ -370,7 +370,12 @@ static void rnd_dlg_pref(rnd_design_t *dsg, const char *target_tab_str, const ch
 	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = RND_CFR_DESIGN;
 
-	call_hook(&pref_ctx, dsg, open_cb);
+	{ /* call the open hook; special case because it may need tabarg passed */
+		int t;
+		for(t = 0; t < pref_ctx.tabs; t++)
+			if (pref_ctx.tab[t].hooks->open_cb != NULL)
+				pref_ctx.tab[t].hooks->open_cb(&pref_ctx, dsg, ((target_tab == t) ? tabarg : NULL));
+	}
 
 	rnd_dlg_pref_win_open(&pref_ctx);
 	rnd_dlg_pref_key_open(&pref_ctx);

@@ -26,7 +26,7 @@ struct rnd_pref_tab_hook_s {
 	const char *tab_label;
 	unsigned long flags;                /* bitfield of rnd_pref_tab_flag_t */
 
-	void (*open_cb)(pref_ctx_t *ctx, rnd_design_t *dsg);   /* called right after the dialog box is created */
+	void (*open_cb)(pref_ctx_t *ctx, rnd_design_t *dsg, const char *tabdatareq);   /* called right after the dialog box is created; tabdatareq is an optional tab-specific request from the user if preferences dialog is open for this specific tab, NULL otherwise */
 	void (*close_cb)(pref_ctx_t *ctx, rnd_design_t *dsg);  /* called from the dialog box is close_cb event */
 	void (*create_cb)(pref_ctx_t *ctx, rnd_design_t *dsg); /* called while the dialog box is being created: create widgets in current tab */
 
