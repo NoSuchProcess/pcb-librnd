@@ -38,6 +38,7 @@
 #include <librnd/core/event.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hidlib.h>
 #include <librnd/hid/hid_dad.h>
 #include <librnd/hid/hid_dad_tree.h>
 
@@ -58,12 +59,12 @@ void rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
 #include "dlg_pref_menu.c"
 #include "dlg_pref_conf.c"
 
-#define call_hook(pctx, HOOK) \
+#define call_hook(pctx, dsg, HOOK) \
 	do { \
 		int t; \
 		for(t = 0; t < (pctx)->tabs; t++) \
 			if ((pctx)->tab[t].hooks->HOOK != NULL) \
-				(pctx)->tab[t].hooks->HOOK(pctx); \
+				(pctx)->tab[t].hooks->HOOK(pctx, dsg); \
 	} while(0)
 
 pref_ctx_t pref_ctx;
@@ -260,7 +261,7 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	long n;
 	pref_ctx_t *ctx = caller_data;
 
-	call_hook(ctx, close_cb);
+	call_hook(ctx, rnd_multi_get_current(), close_cb);
 
 	rnd_dlg_pref_win_close(ctx);
 	rnd_dlg_pref_menu_close(ctx);
@@ -289,7 +290,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 	}
 }
 
-static void rnd_dlg_pref(const char *target_tab_str, const char *tabarg)
+static void rnd_dlg_pref(rnd_design_t *dsg, const char *target_tab_str, const char *tabarg)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1, t;
@@ -323,7 +324,7 @@ static void rnd_dlg_pref(const char *target_tab_str, const char *tabarg)
 			for(t = 0; t < pref_ctx.tabs; t++) {
 				if (pref_ctx.tab[t].hooks->create_cb != NULL) {
 					RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
-						pref_ctx.tab[t].hooks->create_cb(&pref_ctx);
+						pref_ctx.tab[t].hooks->create_cb(&pref_ctx, dsg);
 					RND_DAD_END(pref_ctx.dlg);
 				}
 			}
@@ -369,7 +370,7 @@ static void rnd_dlg_pref(const char *target_tab_str, const char *tabarg)
 	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = RND_CFR_DESIGN;
 
-	call_hook(&pref_ctx, open_cb);
+	call_hook(&pref_ctx, dsg, open_cb);
 
 	rnd_dlg_pref_win_open(&pref_ctx);
 	rnd_dlg_pref_key_open(&pref_ctx);
@@ -389,7 +390,7 @@ static void pref_ev_design_replaced(rnd_design_t *hidlib, void *user_data, int a
 	if (!pref_ctx.active)
 		return;
 
-	call_hook(ctx, design_replaced_cb);
+	call_hook(ctx, hidlib, design_replaced_cb);
 	pref_win_brd2dlg(ctx);
 
 	/* builtin tabs */
@@ -403,7 +404,7 @@ static void pref_ev_board_meta_changed(rnd_design_t *hidlib, void *user_data, in
 	if (!pref_ctx.active)
 		return;
 
-	call_hook(ctx, meta_changed_cb);
+	call_hook(ctx, hidlib, meta_changed_cb);
 	pref_win_brd2dlg(ctx);
 }
 
@@ -482,7 +483,9 @@ fgw_error_t rnd_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!pref_ctx.tabs_inited)
 		rnd_dlg_pref_init(0, NULL);
 
-	rnd_dlg_pref(tab, tabarg);
+	/* The preferences dialog is always following the currently active design;
+	   open for that, even if action design differs */
+	rnd_dlg_pref(rnd_multi_get_current(), tab, tabarg);
 
 	RND_ACT_IRES(0);
 	return 0;

@@ -26,12 +26,12 @@ struct rnd_pref_tab_hook_s {
 	const char *tab_label;
 	unsigned long flags;                /* bitfield of rnd_pref_tab_flag_t */
 
-	void (*open_cb)(pref_ctx_t *ctx);   /* called right after the dialog box is created */
-	void (*close_cb)(pref_ctx_t *ctx);  /* called from the dialog box is close_cb event */
-	void (*create_cb)(pref_ctx_t *ctx); /* called while the dialog box is being created: create widgets in current tab */
+	void (*open_cb)(pref_ctx_t *ctx, rnd_design_t *dsg);   /* called right after the dialog box is created */
+	void (*close_cb)(pref_ctx_t *ctx, rnd_design_t *dsg);  /* called from the dialog box is close_cb event */
+	void (*create_cb)(pref_ctx_t *ctx, rnd_design_t *dsg); /* called while the dialog box is being created: create widgets in current tab */
 
-	void (*design_replaced_cb)(pref_ctx_t *ctx); /* called if the design got replaced (e.g. new board loaded) */
-	void (*meta_changed_cb)(pref_ctx_t *ctx);    /* called if the design metadata changed */
+	void (*design_replaced_cb)(pref_ctx_t *ctx, rnd_design_t *dsg); /* called if the design got replaced (e.g. new board loaded) */
+	void (*meta_changed_cb)(pref_ctx_t *ctx, rnd_design_t *dsg);    /* called if the design metadata changed */
 
 	void (*spare_f1)(); void (*spare_f2)(); void (*spare_f3)(); void (*spare_f4)();
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
