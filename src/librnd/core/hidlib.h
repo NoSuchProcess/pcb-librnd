@@ -119,7 +119,9 @@ typedef struct rnd_app_s {
 	/* Optional: if not NULL, and returns non-zero, the given
 	   conf value from the given source is ignored (not merged). Role
 	   is really rnd_conf_role_t and policy is rnd_conf_policy_t, lhtn is
-	   (lht_node_t *). */
+	   (lht_node_t *). Typical example: project file's settings for the list
+	   of designs for the project (e.g. list of sheets in sch-rnd) should be
+	   accepted only from the project file (only when role is CFR_PROJECT). */
 	int (*conf_dont_merge_node)(const char *path, void *lhtn, int role, int default_prio, int default_policy, rnd_conf_native_t *target);
 
 	/* Optional: a NULL terminated array of config paths that shall not be
