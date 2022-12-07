@@ -215,8 +215,11 @@ struct rnd_hid_s {
  /* when 1 and this hid is rnd_render, do not change rnd_render even if an export plugin or GUI is calling the render code */
 	unsigned override_render:1;
 
-	/* called by core when the global design context changes (e.g. design changed)
-	   The HID should store the design pointer for knowing drawing area dimensions.
+	/* Called by core when the global design context changes (e.g. design changed)
+	   Optional: The HID may store the design pointer so it doesn't have to call
+	   rnd_multi_get_current() repeatedly. This function is called first when
+	   core desing changes (switched to a different design in a multi-design app
+	   or loaded a new design in a single-design app).
 	   Apps should NOT call this directly, use rnd_multi_switch_to() instead. */
 	void (*set_design)(rnd_hid_t *hid, rnd_design_t *design);
 
