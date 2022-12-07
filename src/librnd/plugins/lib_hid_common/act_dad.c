@@ -367,6 +367,7 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case RND_DAD_SPIN_DOUBLE:  ty = RND_HATT_REAL; break;
 				case RND_DAD_SPIN_FREQ:    ty = RND_HATT_REAL; break;
 				case RND_DAD_SPIN_COORD:   ty = RND_HATT_COORD; break;
+				case RND_DAD_SPIN_UNIT_CRD: ty = RND_HATT_UNIT; break;
 			}
 		}
 
