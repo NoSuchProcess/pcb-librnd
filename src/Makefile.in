@@ -199,6 +199,19 @@ append /local/librnd/OBJS_3RDLIB [@
 	../src_3rd/libualloc/libualloc.o
 @]
 
+# extra headers to be installed with libualloc
+put /local/librnd/HDRS_LIBUALLOC_API [@
+	../src_3rd/libualloc/libualloc_impl.h
+	../src_3rd/libualloc/acache_api.h
+	../src_3rd/libualloc/buddy_api.h
+	../src_3rd/libualloc/mcache_api.h
+	../src_3rd/libualloc/slab_api.h
+	../src_3rd/libualloc/slabap_api.h
+	../src_3rd/libualloc/stackd_api.h
+	../src_3rd/libualloc/stackdnp_api.h
+	../src_3rd/libualloc/stacks_api.h
+@]
+
 # these need special rules for compilation
 append /local/librnd/OBJS_3RDLIB_NOAUTO [@
 	../src_3rd/puplug/libpuplug.a
@@ -621,6 +634,7 @@ uniq /local/librnd/HDRS_CORELIB
 gsub /local/librnd/HDRS_CORELIB {.o } {.h }
 gsub /local/librnd/HDRS_3RDLIB {.o } {.h }
 append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_GENHT
+append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_LIBUALLOC_API
 
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_act.h } {}
