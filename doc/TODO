@@ -27,7 +27,6 @@
 			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
 			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: switch with {<} and {>}, sheetsel lags behind (GUI load is probably not needed)
 			- pcb-rnd, camv-rnd: switch over to rnd_conf_plug_(un)reg()
-		- conf: implement a way to make sure design file list is coming from the project file only
 		- implement every little detail of the new project file handling as specified
 		- once multi is implemented: rnd_mainloop_interactive() shouldn't receiver a hidlib arg (assume it's already set in the gui earlier in main); check if happens in camv-rnd as well (it's single-design)
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
