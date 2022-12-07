@@ -2870,7 +2870,7 @@ static char *ltf_clip_get(rnd_hid_t *hid)
 	long dummy;
 
 	if (XmClipboardStartRetrieve(display, window, CurrentTime) != XmClipboardSuccess)
-		return -1;
+		return NULL;
 
 	res = XmClipboardRetrieve(display, window, "STRING", buff, sizeof(buff), &bl, &dummy);
 	if (res == XmClipboardSuccess) {
