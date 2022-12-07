@@ -162,8 +162,9 @@ int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval);
 int rnd_main_exported(rnd_main_args_t *ga, rnd_design_t *design, rnd_bool is_empty, void *appspec);
 
 /* launches the GUI or CLI; after it returns, if rnd_gui is not NULL, the user
-   has selected another GUI to switch to. */
-void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *design);
+   has selected another GUI to switch to. dsg is the design that should be
+   switched to (as "current design") before entering the main loop. */
+void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_design_t *dsg);
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
 int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
