@@ -220,10 +220,6 @@ struct rnd_hid_s {
 	   Apps should NOT call this directly, use rnd_multi_switch_to() instead. */
 	void (*set_design)(rnd_hid_t *hid, rnd_design_t *design);
 
-	/* Return the design the given GUI HID is currently showing
-	   (not implemented in export HIDs) */
-	rnd_design_t *(*get_design)(rnd_hid_t *hid);
-
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
 	   set up the selectable options.  In command line mode, these are
@@ -522,7 +518,7 @@ struct rnd_hid_s {
 	void *hid_data;
 
 	/* convert hid_ctx into design ptr; only valid within a DAD callback. This
-	   is different from ->get_design because this returns the design associated
+	   is different from rnd_multi_get_current() because this returns the design associated
 	   with the dialog, which (for multi-instance local dialogs) may be different
 	   from the design what's currently show by the GUI */
 	rnd_design_t *(*get_dad_design)(void *hid_ctx);

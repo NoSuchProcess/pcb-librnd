@@ -311,12 +311,6 @@ static void batch_set_design(rnd_hid_t *hid, rnd_design_t *design)
 	hid->hid_data = design;
 }
 
-static rnd_design_t *batch_get_design(rnd_hid_t *hid)
-{
-	return hid->hid_data;
-}
-
-
 static void batch_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	rnd_design_t *hidlib = hid->hid_data;
@@ -360,7 +354,6 @@ int pplg_init_hid_batch(void)
 	batch_hid.gui = 1;
 
 	batch_hid.set_design = batch_set_design;
-	batch_hid.get_design = batch_get_design;
 	batch_hid.get_export_options = batch_get_export_options;
 	batch_hid.do_export = batch_do_export;
 	batch_hid.do_exit = batch_do_exit;

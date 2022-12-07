@@ -416,11 +416,6 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 	return;
 }
 
-static rnd_design_t *ltf_get_hidlib(rnd_hid_t *hid)
-{
-	return ltf_hidlib;
-}
-
 static Widget m_cmd = 0, m_cmd_label;
 static int cmd_is_active = 0;
 
@@ -3057,7 +3052,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.uninit_pixmap = rnd_ltf_uninit_pixmap;
 
 	lesstif_hid.set_design = ltf_set_hidlib;
-	lesstif_hid.get_design = ltf_get_hidlib;
 
 	lesstif_hid.usage = lesstif_usage;
 

@@ -416,16 +416,6 @@ TODO("implemet");
 #endif
 }
 
-static rnd_design_t *rnd_mbtk_get_hidlib(rnd_hid_t *hid)
-{
-	rnd_mbtk_t *mctx = hid->hid_data;
-
-	if (mctx == NULL)
-		return NULL;
-
-	return mctx->hidlib;
-}
-
 static void rnd_mbtk_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	TODO("implemet");
@@ -585,7 +575,6 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->set_top_title = rnd_mbtk_set_top_title;
 
 	dst->set_design = rnd_mbtk_set_hidlib;
-	dst->get_design = rnd_mbtk_get_hidlib;
 	dst->get_dad_design = rnd_mbtk_attr_get_dad_hidlib;
 
 	dst->key_state = &rnd_mbtk_keymap;

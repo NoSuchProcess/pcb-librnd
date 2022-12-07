@@ -456,16 +456,6 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 		rnd_gui->invalidate_all(rnd_gui); /* switched design */
 }
 
-static rnd_design_t *rnd_gtkg_get_hidlib(rnd_hid_t *hid)
-{
-	rnd_gtk_t *gctx = hid->hid_data;
-
-	if (gctx == NULL)
-		return NULL;
-
-	return gctx->hidlib;
-}
-
 static void rnd_gtkg_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	rnd_gtk_reg_mouse_cursor((rnd_gtk_t *)hid->hid_data, idx, name, pixel, mask);
@@ -644,7 +634,6 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->set_top_title = rnd_gtkg_set_top_title;
 
 	dst->set_design = rnd_gtkg_set_hidlib;
-	dst->get_design = rnd_gtkg_get_hidlib;
 	dst->get_dad_design = rnd_gtk_attr_get_dad_hidlib;
 
 	dst->key_state = &rnd_gtk_keymap;
