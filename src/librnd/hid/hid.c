@@ -33,6 +33,8 @@
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/event.h>
 
+int rnd_ps_faded = 0; /* ugly workaround for compatibility ps export in pcb-rnd - DO NOT USE FOR ANYTHING ELSE */
+
 void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete)
 {
 	if (rnd_render->notify_crosshair_change)

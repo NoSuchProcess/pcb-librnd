@@ -25,6 +25,7 @@
 #include "draw_ps.h"
 
 static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc);
+extern int rnd_ps_faded;
 
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
@@ -481,7 +482,7 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 		fprintf(pctx->outf, "%d setlinecap %d setlinejoin\n", c, c);
 		pctx->lastcap = gc->cap;
 	}
-#define CBLEND(gc) (((gc->r)<<24)|((gc->g)<<16)|((gc->b)<<8)|(gc->faded))
+#define CBLEND(gc) (((gc->r)<<24)|((gc->g)<<16)|((gc->b)<<8)|(rnd_ps_faded))
 	if (pctx->lastcolor != CBLEND(gc)) {
 		if (pctx->is_drill || pctx->is_mask) {
 			fprintf(pctx->outf, "%d gray\n", (gc->erase || pctx->is_mask) ? 0 : 1);
@@ -492,7 +493,7 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 			r = gc->r;
 			g = gc->g;
 			b = gc->b;
-			if (gc->faded) {
+			if (rnd_ps_faded) {
 				r = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * r;
 				g = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * g;
 				b = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * b;
