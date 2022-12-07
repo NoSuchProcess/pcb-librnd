@@ -1,7 +1,8 @@
 ROOT=../..
 LIBRND=$(ROOT)/src/librnd/core
+include $(ROOT)/Makefile.conf
 
-CFLAGS = -Wall -g -I$(ROOT)/src
+CFLAGS = -Wall -g -I$(ROOT)/src $(PCB_RND_C89FLAGS)
 
 all: main
 
