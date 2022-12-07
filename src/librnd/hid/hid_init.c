@@ -607,7 +607,7 @@ static void hidlib_design_set_current_ev(rnd_design_t *hidlib, void *user_data, 
 static void rnd_hid_init_init(void)
 {
 	rnd_event_bind(RND_EVENT_GUI_INIT, hidlib_gui_init_ev, NULL, hid_init_cookie);
-	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, hidlib_design_set_current_ev, NULL, hid_init_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT_INTR, hidlib_design_set_current_ev, NULL, hid_init_cookie);
 }
 
 static void rnd_hid_init_uninit(void)

@@ -420,7 +420,9 @@ const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *d
    subtree if needed */
 lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
 
-/* (un)register a custom config file internal (executable-embedded) version;
+/* DO NOT CALL THESE DIRECLY from plugoind, use rnd_conf_plug_(un)reg()
+   instead, which are multi-design-safe.
+   (un)register a custom config file internal (executable-embedded) version;
    it's not strdup'd, the caller needs to keep the string available
    until rnd_conf_unreg_file(). */
 void rnd_conf_reg_intern(const char *intern);

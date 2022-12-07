@@ -66,6 +66,7 @@ typedef enum {
 	RND_EVENT_STROKE_FINISH,          /* [a] parameters: int *handled; if it is non-zero, stroke has handled the request and Tool() should return 1, breaking action script execution */
 
 	RND_EVENT_DESIGN_SET_CURRENT,     /* [d] called after the current design on display got _replaced_; should be emitted when the design data got replaced in memory or GUI switched between designs loaded (in case of multiple designs); argument is rnd_design_t *now_active */
+	RND_EVENT_DESIGN_SET_CURRENT_INTR,/* [d] same as RND_EVENT_DESIGN_SET_CURRENT but called first, only for librnd internal usage */
 	RND_EVENT_DESIGN_META_CHANGED,    /* [d] called if the metadata of the design has changed (size, changed flag, etc; anything except the file names) */
 	RND_EVENT_DESIGN_FN_CHANGED,      /* [d] called after the file name of the design has changed */
 

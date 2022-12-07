@@ -59,6 +59,7 @@ rnd_design_t *rnd_curr_dsg;
 
 static void rnd_multi_switched_to_notify(rnd_design_t *dsg)
 {
+	rnd_event(dsg, RND_EVENT_DESIGN_SET_CURRENT_INTR, "p", dsg);
 	rnd_event(dsg, RND_EVENT_DESIGN_SET_CURRENT, "p", dsg);
 	rnd_event(dsg, RND_EVENT_DESIGN_FN_CHANGED, NULL);
 }
