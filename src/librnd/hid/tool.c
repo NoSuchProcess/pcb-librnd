@@ -47,6 +47,8 @@ rnd_toolid_t rnd_tool_next_id;
 static int save_position = 0;
 static int save_stack[RND_MAX_MODESTACK_DEPTH];
 
+static const char tool_cookie[] = "core/tool.c";
+
 static void init_current_tool(void);
 static void uninit_current_tool(void);
 
@@ -361,9 +363,21 @@ static rnd_action_t tool_action_list[] = {
 	{"Mode", rnd_act_Tool, rnd_acth_Tool, rnd_acts_Tool}
 };
 
+static void tool_design_set_current_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	rnd_design_t *dsg = argv[1].d.p;
+	rnd_tool_chg_mode(dsg);
+}
+
 void rnd_tool_act_init2(void)
 {
 	RND_REGISTER_ACTIONS(tool_action_list, NULL);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, tool_design_set_current_ev, NULL, tool_cookie);
 }
 
+
+void rnd_tool_act_uninit(void)
+{
+	rnd_event_unbind_allcookie(tool_cookie);
+}
 

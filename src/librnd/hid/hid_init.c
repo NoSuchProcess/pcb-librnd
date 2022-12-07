@@ -748,7 +748,7 @@ void rnd_hidlib_init3_auto(void)
 extern void rnd_menu_uninit(void);
 extern void rnd_anyload_uninit(void);
 extern void rnd_hid_cfg_keys_uninit_module(void);
-
+extern void rnd_tool_act_uninit(void);
 
 void rnd_hidlib_uninit(void)
 {
@@ -757,6 +757,7 @@ void rnd_hidlib_uninit(void)
 	rnd_menu_uninit();
 	rnd_hid_init_uninit();
 	rnd_hid_dlg_uninit();
+	rnd_tool_act_uninit();
 
 	if (rnd_conf_isdirty(RND_CFR_USER))
 		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
