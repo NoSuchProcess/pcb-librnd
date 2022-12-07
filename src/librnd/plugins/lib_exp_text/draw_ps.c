@@ -34,7 +34,6 @@ typedef struct rnd_hid_gc_s {
 	rnd_coord_t width;
 	unsigned char r, g, b;
 	int erase;
-	int faded;
 } rnd_hid_gc_s;
 
 void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
@@ -444,11 +443,6 @@ void rnd_ps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 void rnd_ps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
-}
-
-void rnd_ps_set_draw_faded(rnd_hid_gc_t gc, int faded)
-{
-	gc->faded = faded;
 }
 
 static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)

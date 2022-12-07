@@ -11,7 +11,6 @@
 		- make sure all callers strdup() all cells
 		- user implemented ->user_free_cb() should never free cell values, the lib does that
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
-	- remove rnd_hid_t->set_draw_faded and figure how to substitute
 	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
 		- remove /local/pcb from librnd central scconfig
 		- for plugin control rename /local/pcb to /local/plugin/

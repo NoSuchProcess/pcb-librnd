@@ -64,7 +64,6 @@ typedef struct {
 	rnd_coord_t width;     /* as set by set_line_width */
 	rnd_cap_style_t cap;   /* as set by set_line_cap */
 	int xor;               /* as set by set_draw_xor */
-	int faded;             /* as set by set_draw_faded */
 	rnd_hid_t *hid;        /* the HID that owns this gc */
 
 
@@ -320,9 +319,6 @@ struct rnd_hid_s {
 	void (*set_line_cap)(rnd_hid_gc_t gc, rnd_cap_style_t style);
 	void (*set_line_width)(rnd_hid_gc_t gc, rnd_coord_t width);
 	void (*set_draw_xor)(rnd_hid_gc_t gc, int xor);
-	/* Blends 20% or so color with 80% background.  Only used for
-	   assembly drawings so far. */
-	void (*set_draw_faded)(rnd_hid_gc_t gc, int faded);
 
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width

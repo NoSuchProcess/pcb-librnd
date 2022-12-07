@@ -130,10 +130,6 @@ static void nogui_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 	CRASH("set_draw_xor");
 }
 
-static void nogui_set_draw_faded(rnd_hid_gc_t gc, int faded)
-{
-}
-
 static void nogui_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	CRASH("draw_line");
@@ -435,7 +431,6 @@ void rnd_hid_nogui_init(rnd_hid_t * hid)
 	hid->set_line_cap = nogui_set_line_cap;
 	hid->set_line_width = nogui_set_line_width;
 	hid->set_draw_xor = nogui_set_draw_xor;
-	hid->set_draw_faded = nogui_set_draw_faded;
 	hid->draw_line = nogui_draw_line;
 	hid->draw_arc = nogui_draw_arc;
 	hid->draw_rect = nogui_draw_rect;

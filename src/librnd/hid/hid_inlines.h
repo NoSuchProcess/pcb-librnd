@@ -39,7 +39,6 @@ RND_INLINE rnd_hid_gc_t rnd_hid_make_gc(void)
 	hc->width = RND_MAX_COORD;
 	hc->cap = rnd_cap_invalid;
 	hc->xor = 0;
-	hc->faded = 0;
 	hc->hid = rnd_gui;
 	return res;
 }
@@ -73,15 +72,6 @@ RND_INLINE void rnd_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 	if (hc->xor != xor) {
 		hc->xor = xor;
 		rnd_render->set_draw_xor(gc, xor);
-	}
-}
-
-RND_INLINE void rnd_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
-{
-	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
-	if (hc->faded != faded) {
-		hc->faded = faded;
-		rnd_render->set_draw_faded(gc, faded);
 	}
 }
 

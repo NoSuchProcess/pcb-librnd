@@ -168,13 +168,6 @@ static void log_set_draw_xor(rnd_hid_gc_t gc, int xor)
 	delegatee_->set_draw_xor(gc, xor);
 }
 
-static void log_set_draw_faded(rnd_hid_gc_t gc, int faded)
-{
-	SANITY(return);
-	rnd_fprintf(out_, "set_draw_faded(gc, %s)\n", faded ? "true" : "false");
-	delegatee_->set_draw_faded(gc, faded);
-}
-
 static void log_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	SANITY(return);
@@ -272,7 +265,6 @@ void create_log_hid(FILE *log_out, rnd_hid_t *loghid, rnd_hid_t *delegatee)
 	REGISTER_IF_NOT_NULL(set_line_cap);
 	REGISTER_IF_NOT_NULL(set_line_width);
 	REGISTER_IF_NOT_NULL(set_draw_xor);
-	REGISTER_IF_NOT_NULL(set_draw_faded);
 	REGISTER_IF_NOT_NULL(draw_line);
 	REGISTER_IF_NOT_NULL(draw_arc);
 	REGISTER_IF_NOT_NULL(draw_rect);
