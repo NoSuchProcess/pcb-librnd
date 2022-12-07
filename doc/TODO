@@ -22,8 +22,6 @@
 			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
 				- call conf change callback on every design affected
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
-			- BUG: sch-rnd: start with 2 sheets, select wire tool on one, switch to the other -> tool state not reset
-			- BUG: sch-rnd: start with A.rs and B.rs from CLI, load C.rs from GUI: switch with {<} and {>}, sheetsel lags behind (GUI load is probably not needed)
 		- implement every little detail of the new project file handling as specified
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
