@@ -36,10 +36,13 @@ void rnd_conf_state_new_design(rnd_design_t *dsg);
 /* call when design is unloaded/discarded (frees config save structs) */
 void rnd_conf_state_del_design(rnd_design_t *dsg);
 
+/* Call this to get dsg's project config loaded or bound if it's already loaded.
+   Assumes dsg->project is set and the project structure is created. */
+void rnd_multi_load_prj_for_dsg(rnd_design_t *dsg);
+
 /*** per plugin and per app custom config ***/
 void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie);
 void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
-
 
 /* Plugin conf registration */
 
