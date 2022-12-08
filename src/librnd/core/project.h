@@ -44,7 +44,7 @@ struct rnd_project_s {
 };
 
 /* all open projects; key is real file name of project file, value is (rnd_project_t *) */
-htsp_t rnd_projects;
+extern htsp_t rnd_projects;
 
 /* Free fields of project; doesn't free project itself. Assumes items on
    project->designs are free'd by the caller. Any design still on the
