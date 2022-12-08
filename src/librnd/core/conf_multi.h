@@ -22,10 +22,6 @@ void rnd_conf_state_save(rnd_conf_state_t *dst);
    so it can not be loaded twice. */
 void rnd_conf_state_load(rnd_conf_state_t *src);
 
-/* Copy shared conf from src to current global; useful for initializing for
-   a new design */
-void rnd_conf_state_init_from(rnd_conf_state_t *src);
-
 /* call this before loading a new design in a multi-design app; resets
    and prepares global conf */
 void rnd_conf_multi_pre_load_design(void);
