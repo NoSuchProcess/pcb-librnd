@@ -266,6 +266,10 @@ int rnd_conf_replace_subtree(rnd_conf_role_t dst_role, const char *dst_path, rnd
    Useful for io_ plugins, on RND_CFR_DESIGN, before loading a new file. */
 void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn);
 
+/* Free the lht doc for the given role */
+void rnd_conf_free(rnd_conf_role_t target);
+
+
 /* Save an in-memory lihata representation to the disk */
 int rnd_conf_save_file(rnd_design_t *design, const char *project_fn, const char *design_fn, rnd_conf_role_t role, const char *fn);
 

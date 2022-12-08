@@ -2176,15 +2176,21 @@ rnd_conf_role_t rnd_conf_lookup_role(const lht_node_t *nd)
 	return RND_CFR_invalid;
 }
 
+void rnd_conf_free(rnd_conf_role_t target)
+{
+	if (rnd_conf_main_root[target] != NULL) {
+		lht_dom_uninit(rnd_conf_main_root[target]);
+		rnd_conf_main_root[target] = NULL;
+	}
+}
+
 void rnd_conf_reset(rnd_conf_role_t target, const char *source_fn)
 {
 	lht_node_t *n, *cfr;
 
-	if (rnd_conf_main_root[target] != NULL)
-		lht_dom_uninit(rnd_conf_main_root[target]);
+	rnd_conf_free(target);
 
 	rnd_conf_main_root[target] = lht_dom_init();
-
 
 	if (source_fn != NULL)
 		lht_dom_loc_newfile(rnd_conf_main_root[target], source_fn);
