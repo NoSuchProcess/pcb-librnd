@@ -27,6 +27,7 @@
 /* conf system multi-design support (conf struct global var swapping) */
 
 #include "conf_multi.h"
+#include "project.h"
 
 gdl_list_t rnd_designs;
 
@@ -303,6 +304,13 @@ rnd_trace("after switch conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESI
 
 void rnd_conf_multi_pre_load_design(void)
 {
+	rnd_conf_main_root[RND_CFR_PROJECT] = NULL;
 	rnd_conf_main_root[RND_CFR_DESIGN] = NULL;
 }
 
+void rnd_multi_load_prj_for_dsg(rnd_design_t *dsg)
+{
+	rnd_project_t *prj = dsg->project;
+	if (prj != NULL)
+		rnd_conf_load_as(RND_CFR_PROJECT, prj->fullpath, 0);
+}
