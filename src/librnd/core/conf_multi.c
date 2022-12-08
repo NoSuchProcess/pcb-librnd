@@ -311,6 +311,23 @@ void rnd_conf_multi_pre_load_design(void)
 void rnd_multi_load_prj_for_dsg(rnd_design_t *dsg)
 {
 	rnd_project_t *prj = dsg->project;
-	if (prj != NULL)
+
+	if (prj == NULL)
+		return;
+
+	/*rnd_trace("prj4dsg: d=%p p=%p %p glob=%p\n", dsg, prj, prj->root, rnd_conf_main_root[RND_CFR_PROJECT]);*/
+	if (prj->root == NULL) {
+		/* initial root with the first design the project file is loaded with */
 		rnd_conf_load_as(RND_CFR_PROJECT, prj->fullpath, 0);
+		prj->root = rnd_conf_main_root[RND_CFR_PROJECT];
+		/*rnd_trace(" load\n");*/
+	}
+	else {
+		/* we have already loaded the project conf, just bind it */
+		rnd_conf_free(RND_CFR_PROJECT);
+		rnd_conf_main_root[RND_CFR_PROJECT] = prj->root;
+		rnd_conf_merge_all(NULL);
+		/*rnd_trace(" bind\n");*/
+	}
+
 }

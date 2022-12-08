@@ -27,6 +27,8 @@
 #ifndef RND_PROJECT_H
 #define RND_PROJECT_H
 
+#include <liblihata/lihata.h>
+#include <liblihata/dom.h>
 #include <genvector/vtp0.h>
 #include <genht/htsp.h>
 #include <librnd/core/global_typedefs.h>
@@ -34,10 +36,11 @@
 /* Generic part of a project struct; should be the first field (called "hdr")
    of an app's project struct */
 struct rnd_project_s {
-	char *loadname; /* file name as specified by the user */
-	char *fullpath; /* loadname resolved with realpath() - the actual full path file name on the file system */
-	char *prjdir;   /* real path to the directory that hosts the project file */
-	vtp0_t designs; /* list of (rnd_design_t *) that are loaded for this project */
+	char *loadname;  /* file name as specified by the user */
+	char *fullpath;  /* loadname resolved with realpath() - the actual full path file name on the file system */
+	char *prjdir;    /* real path to the directory that hosts the project file */
+	vtp0_t designs;  /* list of (rnd_design_t *) that are loaded for this project */
+	lht_doc_t *root; /* shared conf doc for all designs; rnd_conf_main_root[RND_CFR_PROJECT] will point to this */
 };
 
 /* all open projects; key is real file name of project file, value is (rnd_project_t *) */
