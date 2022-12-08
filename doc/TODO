@@ -19,8 +19,9 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
 		- config handling
-			- if a shared tree (project, user, sys) changes, we need to re-merge all design's rnd_conf_fields
-				- call conf change callback on every design affected
+			- shared confs
+				- native structs should be alloced per design; bug: sch-rnd with 2 sheets, change bgcolor on CFR_DESIGN in one, {i c p} shows the wrong role in the other
+				- test pcb-rnd and sch-rnd on lesstif and gtk4 with background color on different roles
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
 		- implement every little detail of the new project file handling as specified
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
