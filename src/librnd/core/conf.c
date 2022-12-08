@@ -649,7 +649,7 @@ int rnd_conf_merge_patch_text(rnd_conf_native_t *dest, lht_node_t *src, int prio
 		dest->prop[0].prio = prio;
 		dest->prop[0].src  = src;
 		dest->used         = 1;
-		dest->rnd_conf_rev     = rnd_conf_rev;
+		dest->rnd_conf_rev = rnd_conf_rev;
 	}
 	return 0;
 }
