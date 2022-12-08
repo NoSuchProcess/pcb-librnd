@@ -465,4 +465,8 @@ int rnd_conf_resolve_all(rnd_conf_resolve_t *res);
 /*** misc ***/
 void rnd_conf_postproc(void);
 
+/*** Internal use ***/
+extern long rnd_conf_lht_edits[RND_CFR_max_alloc];
+extern int rnd_conf_edits_lock;
+
 #endif

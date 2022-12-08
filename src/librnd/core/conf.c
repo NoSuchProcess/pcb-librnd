@@ -94,6 +94,12 @@ long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc]; /* number of times the r
 int rnd_conf_main_root_lock[RND_CFR_max_alloc];
 int rnd_conf_lht_dirty[RND_CFR_max_alloc];
 
+/* number of edits done on this subtree; multi: this central value is not
+   saved per design, but each design has its own. For shared docs if the
+   design's own edits is lower than this value, a merge is needed */
+long rnd_conf_lht_edits[RND_CFR_max_alloc];
+int rnd_conf_edits_lock = 0;
+
 /* Plugin config: only plugin configuration is accepted; never edited, only
    merged in. Merge takes two steps: first all files per role are merged into
    a single rnd_conf_plug_root[R] (lihata level merge), then rnd_conf_plug_root[R]
@@ -1711,6 +1717,8 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 		lht_tree_del(cwd);
 
 	rnd_conf_lht_dirty[target]++;
+	if (rnd_conf_edits_lock == 0)
+		rnd_conf_lht_edits[target]++;
 
 	free(path);
 	return 0;

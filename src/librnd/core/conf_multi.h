@@ -26,6 +26,10 @@ void rnd_conf_state_load(rnd_conf_state_t *src);
    a new design */
 void rnd_conf_state_init_from(rnd_conf_state_t *src);
 
+/* call this before loading a new design in a multi-design app; resets
+   and prepares global conf */
+void rnd_conf_multi_pre_load_design(void);
+
 /* Announce a new design after loaded or created (creates config save structs) */
 void rnd_conf_state_new_design(rnd_design_t *dsg);
 
@@ -53,3 +57,8 @@ void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
 		rnd_conf_state_plug_unreg_all_cookie(cookie); \
 	} while(0)
 
+
+/*** internal ***/
+
+/* Called after a switch, merges config if needed */
+void rnd_conf_multi_merge_after_switch(rnd_design_t *dsg);

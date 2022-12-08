@@ -147,9 +147,13 @@ int rnd_tool_select_by_id(rnd_design_t *hidlib, rnd_toolid_t id)
 	rnd_tool_next_id = id;
 	uninit_current_tool();
 	sprintf(id_s, "%d", id);
+
+	rnd_conf_edits_lock++;
 	tool_select_lock = 1;
 	rnd_conf_set(RND_CFR_DESIGN, "editor/mode", -1, id_s, RND_POL_OVERWRITE);
 	tool_select_lock = 0;
+	rnd_conf_edits_lock--;
+
 	init_current_tool();
 
 	recursing = rnd_false;

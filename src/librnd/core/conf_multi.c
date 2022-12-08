@@ -41,15 +41,37 @@ typedef struct rnd_conf_plug_state_s {
 
 static gdl_list_t plug_states;
 
+/* When 1, do not keep a per design copy, all designs should use the central */
+static const char rnd_conf_main_root_is_shared[RND_CFR_max_alloc] = {
+	1, /* RND_CFR_INTERNAL */
+	1, /* RND_CFR_SYSTEM */
+	1, /* RND_CFR_DEFAULTDSG */
+	1, /* RND_CFR_USER */
+	1, /* RND_CFR_ENV */
+	0, /* RND_CFR_PROJECT */
+	0, /* RND_CFR_DESIGN */
+	1, /* RND_CFR_CLI */
+	1, /* RND_CFR_max_real */
+	0, /* RND_CFR_file */
+	0  /* RND_CFR_binary */
+};
+
+static long rnd_conf_lht_last_edits[RND_CFR_max_alloc]; /* shared docs: remember which edit revision got merged last */
+
 struct rnd_conf_state_s {
 	htsi_t conf_interns;
 	int conf_files_inited;
 	int rnd_conf_in_production;
+
+	/* from these not all are duplicated, see rnd_conf_main_root_is_shared[] */
 	lht_doc_t *rnd_conf_main_root[RND_CFR_max_alloc];
 	long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc];
 	int rnd_conf_main_root_lock[RND_CFR_max_alloc];
 	int rnd_conf_lht_dirty[RND_CFR_max_alloc];
-	lht_doc_t *rnd_conf_plug_root[RND_CFR_max_alloc];
+
+	long rnd_conf_lht_last_edits[RND_CFR_max_alloc];
+
+/*	lht_doc_t *rnd_conf_plug_root[RND_CFR_max_alloc];  - always shared for all roles as we are not editing or reloading these */ 
 	htsp_t *rnd_conf_fields;
 	vmst_t merge_subtree;
 	int rnd_conf_rev;
@@ -91,19 +113,30 @@ void rnd_conf_state_free(rnd_conf_state_t *cs)
 	memcpy(&dst->field, &field, sizeof(field)); \
 	if (reset) memset(&field, 0, sizeof(field));
 
+#define SAVE_SHARED(field, reset) \
+	for(r = 0; r < RND_CFR_max_real; r++) { \
+		if (!rnd_conf_main_root_is_shared[r]) { \
+			memcpy(&dst->field[r], &field[r], sizeof(field[r])); \
+			if (reset) memset(&field[r], 0, sizeof(field[r])); \
+		} \
+	}
+
 void rnd_conf_state_save(rnd_conf_state_t *dst)
 {
+	rnd_conf_role_t r;
 	rnd_conf_plug_state_t *n;
 	assert(!dst->valid);
 
 	SAVE(conf_interns, 1);
 	SAVE(conf_files_inited, 1);
 	SAVE(rnd_conf_in_production, 1);
-	SAVE(rnd_conf_main_root, 1);
-	SAVE(rnd_conf_main_root_replace_cnt, 1);
-	SAVE(rnd_conf_main_root_lock, 1);
-	SAVE(rnd_conf_lht_dirty, 1);
-	SAVE(rnd_conf_plug_root, 1);
+	SAVE_SHARED(rnd_conf_main_root, 1);
+	SAVE_SHARED(rnd_conf_main_root_replace_cnt, 1);
+	SAVE_SHARED(rnd_conf_main_root_lock, 1);
+	SAVE_SHARED(rnd_conf_lht_dirty, 1);
+	SAVE(rnd_conf_lht_last_edits, 0);
+
+/*	SAVE(rnd_conf_plug_root, 1);*/
 	SAVE(rnd_conf_fields, 0);
 	SAVE(merge_subtree, 1);
 	SAVE(rnd_conf_rev, 1);
@@ -123,8 +156,17 @@ void rnd_conf_state_save(rnd_conf_state_t *dst)
 	memcpy(&field, &src->field, sizeof(field)); \
 	memset(&src->field, 0, sizeof(field));
 
+#define LOAD_SHARED(field) \
+	for(r = 0; r < RND_CFR_max_real; r++) { \
+		if (!rnd_conf_main_root_is_shared[r]) { \
+			memcpy(&field[r], &src->field[r], sizeof(field[r])); \
+			memset(&src->field[r], 0, sizeof(field[r])); \
+		} \
+	}
+
 void rnd_conf_state_load(rnd_conf_state_t *src)
 {
+	rnd_conf_role_t r;
 	rnd_conf_plug_state_t *n;
 
 	assert(src->valid);
@@ -132,11 +174,12 @@ void rnd_conf_state_load(rnd_conf_state_t *src)
 	LOAD(conf_interns);
 	LOAD(conf_files_inited);
 	LOAD(rnd_conf_in_production);
-	LOAD(rnd_conf_main_root);
-	LOAD(rnd_conf_main_root_replace_cnt);
-	LOAD(rnd_conf_main_root_lock);
-	LOAD(rnd_conf_lht_dirty);
-	LOAD(rnd_conf_plug_root);
+	LOAD_SHARED(rnd_conf_main_root);
+	LOAD_SHARED(rnd_conf_main_root_replace_cnt);
+	LOAD_SHARED(rnd_conf_main_root_lock);
+	LOAD_SHARED(rnd_conf_lht_dirty);
+	LOAD(rnd_conf_lht_last_edits);
+/*	LOAD(rnd_conf_plug_root);*/
 	LOAD(rnd_conf_fields);
 	LOAD(merge_subtree);
 	LOAD(rnd_conf_rev);
@@ -161,14 +204,17 @@ void rnd_conf_state_init_from(rnd_conf_state_t *src)
 	rnd_conf_in_production = src->rnd_conf_in_production;
 
 	for(r = 0; r < RND_CFR_max_real; r++) {
-		if ((r == RND_CFR_DESIGN) || (r == RND_CFR_PROJECT))
-			continue;
-		rnd_conf_main_root[r] = src->rnd_conf_main_root[r];
-		rnd_conf_main_root_replace_cnt[r] = src->rnd_conf_main_root_replace_cnt[r];
-		rnd_conf_main_root_lock[r] = src->rnd_conf_main_root_lock[r];
-		rnd_conf_lht_dirty[r] = src->rnd_conf_lht_dirty[r];
-		rnd_conf_plug_root[r] = src->rnd_conf_plug_root[r];
+		rnd_conf_lht_last_edits[r] = rnd_conf_lht_edits[r];
+		if (rnd_conf_main_root_is_shared[r]) {
+			rnd_conf_main_root[r] = src->rnd_conf_main_root[r];
+			rnd_conf_main_root_replace_cnt[r] = src->rnd_conf_main_root_replace_cnt[r];
+			rnd_conf_main_root_lock[r] = src->rnd_conf_main_root_lock[r];
+			rnd_conf_lht_dirty[r] = src->rnd_conf_lht_dirty[r];
+			/*rnd_conf_plug_root[r] = src->rnd_conf_plug_root[r];*/
+		}
 	}
+
+rnd_trace("after init   conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);
 }
 
 
@@ -232,4 +278,31 @@ void rnd_conf_state_del_design(rnd_design_t *dsg)
 	memset(&dsg->saved_rnd_conf->plug_states, 0, sizeof(dsg->saved_rnd_conf->plug_states));
 }
 
+
+void rnd_conf_multi_merge_after_switch(rnd_design_t *dsg)
+{
+	rnd_conf_role_t r;
+	int need_merge = 0;
+
+	rnd_trace("SW: %p\n", dsg);
+	for(r = 0; r < RND_CFR_max_real; r++) {
+		if (rnd_conf_lht_last_edits[r] < rnd_conf_lht_edits[r]) {
+			rnd_trace(" [%d] %d < %d\n", r, rnd_conf_lht_last_edits[r], rnd_conf_lht_edits[r]);
+			need_merge = 1;
+		}
+		rnd_conf_lht_last_edits[r] = rnd_conf_lht_edits[r];
+	}
+
+	if (need_merge) {
+		rnd_trace(" MERGE\n");
+		rnd_conf_merge_all(NULL);
+	}
+
+rnd_trace("after switch conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);
+}
+
+void rnd_conf_multi_pre_load_design(void)
+{
+	rnd_conf_main_root[RND_CFR_DESIGN] = NULL;
+}
 
