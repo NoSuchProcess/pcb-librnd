@@ -580,18 +580,18 @@ static void ghid_gdk_set_special_colors(rnd_conf_native_t *cfg)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if (((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.background) && priv->bg_gc) {
-		if (map_color(&cfg->val.color[0], &priv->bg_color)) {
+	if (((cfg == NULL) || ((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.background)) && priv->bg_gc) {
+		if (map_color(&rnd_conf.appearance.color.background, &priv->bg_color)) {
 			gdk_gc_set_foreground(priv->bg_gc, &priv->bg_color);
 			set_special_grid_color();
 		}
 	}
-	else if (((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.off_limit) && priv->offlimits_gc) {
-		if (map_color(&cfg->val.color[0], &priv->offlimits_color))
+	if (((cfg == NULL) || ((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.off_limit)) && priv->offlimits_gc) {
+		if (map_color(&rnd_conf.appearance.color.off_limit, &priv->offlimits_color))
 			gdk_gc_set_foreground(priv->offlimits_gc, &priv->offlimits_color);
 	}
-	else if (((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.grid) && priv->grid_gc) {
-		if (map_color(&cfg->val.color[0], &priv->grid_color))
+	if (((cfg == NULL) || ((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.grid)) && priv->grid_gc) {
+		if (map_color(&rnd_conf.appearance.color.grid, &priv->grid_color))
 			set_special_grid_color();
 	}
 }
