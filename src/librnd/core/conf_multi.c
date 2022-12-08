@@ -215,7 +215,7 @@ void rnd_conf_state_init_from(rnd_conf_state_t *src)
 		}
 	}
 
-rnd_trace("after init   conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);
+	/*rnd_trace("after init   conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);*/
 }
 
 
@@ -285,21 +285,21 @@ void rnd_conf_multi_merge_after_switch(rnd_design_t *dsg)
 	rnd_conf_role_t r;
 	int need_merge = 0;
 
-	rnd_trace("SW: %p\n", dsg);
+/*	rnd_trace("SW: %p\n", dsg);*/
 	for(r = 0; r < RND_CFR_max_real; r++) {
 		if (rnd_conf_lht_last_edits[r] < rnd_conf_lht_edits[r]) {
-			rnd_trace(" [%d] %d < %d\n", r, rnd_conf_lht_last_edits[r], rnd_conf_lht_edits[r]);
+/*			rnd_trace(" [%d] %d < %d\n", r, rnd_conf_lht_last_edits[r], rnd_conf_lht_edits[r]);*/
 			need_merge = 1;
 		}
 		rnd_conf_lht_last_edits[r] = rnd_conf_lht_edits[r];
 	}
 
 	if (need_merge) {
-		rnd_trace(" MERGE\n");
+/*		rnd_trace(" MERGE\n");*/
 		rnd_conf_merge_all(NULL);
 	}
 
-rnd_trace("after switch conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);
+	/*rnd_trace("after switch conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);*/
 }
 
 void rnd_conf_multi_pre_load_design(void)
