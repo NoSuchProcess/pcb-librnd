@@ -35,6 +35,7 @@
 
 #include "project.h"
 
+htsp_t rnd_projects;
 
 void rnd_project_uninit(rnd_project_t *prj)
 {
