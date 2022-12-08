@@ -447,6 +447,9 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 	if (!gctx->port.drawing_allowed)
 		return;
 
+	if (ghidgui->impl.set_special_colors != NULL)
+		ghidgui->impl.set_special_colors(NULL);
+
 	rnd_gtk_tw_ranges_scale(gctx);
 	if (!gctx->port.view.inited) {
 		rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);

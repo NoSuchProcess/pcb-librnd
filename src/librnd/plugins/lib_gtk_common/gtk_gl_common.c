@@ -198,7 +198,14 @@ void ghid_gl_set_special_colors(rnd_conf_native_t *cfg)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	if (((RND_CFT_COLOR *) cfg->val.color == &rnd_conf.appearance.color.background)) {
+	if (cfg == NULL) {
+		/* update all from current conf */
+		priv->bg_color = rnd_conf.appearance.color.background;
+		priv->offlimits_color = rnd_conf.appearance.color.off_limit;
+		priv->grid_color = rnd_conf.appearance.color.grid;
+		set_special_grid_color();
+	}
+	else if (((RND_CFT_COLOR *) cfg->val.color == &rnd_conf.appearance.color.background)) {
 		priv->bg_color = cfg->val.color[0];
 	}
 	else if ((RND_CFT_COLOR *)cfg->val.color == &rnd_conf.appearance.color.off_limit) {
