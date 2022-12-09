@@ -21,6 +21,7 @@
 		- config handling
 			- shared confs
 				- native structs should be alloced per design; bug: sch-rnd with 2 sheets, change bgcolor on CFR_DESIGN in one, {i c p} shows the wrong role in the other
+				- plugin's reg/unreg should affect all designs (field registration)
 				- test pcb-rnd and sch-rnd on lesstif with background color on different roles
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
 		- implement every little detail of the new project file handling as specified
