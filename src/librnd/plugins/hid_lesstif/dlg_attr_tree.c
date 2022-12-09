@@ -365,7 +365,8 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 		case ett_mouse_btn_drag:
 			break;
 		case ett_mouse_btn_down:
-			XtSetKeyboardFocus(lt->ctx->dialog, lt->w);
+			if (lt->ctx->dialog != NULL) /* docked subdialog */
+				XtSetKeyboardFocus(lt->ctx->dialog, lt->w);
 			e = ltf_tt_lookup_row(data, data->current_row);
 			if (e == NULL)
 				return;
