@@ -6,13 +6,7 @@
 
 #include <genlist/gendlist.h>
 
-extern gdl_list_t rnd_designs; /* all design files currently open (in any project) */
-
-/* Allocate storage where the global config can be saved to */
-rnd_conf_state_t *rnd_conf_state_alloc(void);
-
-/* Free storage and all fields of a conf state */
-void rnd_conf_state_free(rnd_conf_state_t *cs);
+/*** calls for an app core ***/
 
 /* Save global config to dst then zero out global config; dst becomes valid
    so it can be loaded later. */
@@ -49,7 +43,7 @@ void rnd_multi_load_prj_for_dsg(rnd_design_t *dsg);
 void rnd_conf_state_plug_reg(void *globvar, long size, const char *cookie);
 void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
 
-/* Plugin conf registration */
+/*** Plugin conf registration ***/
 
 #define rnd_conf_plug_reg(globvar, intern__, cookie) \
 	do { \
@@ -68,5 +62,14 @@ void rnd_conf_state_plug_unreg_all_cookie(const char *cookie);
 
 /*** internal ***/
 
+/* all design files currently open (in any project, in the order of creation) */
+extern gdl_list_t rnd_designs;
+
 /* Called after a switch, merges config if needed */
 void rnd_conf_multi_merge_after_switch(rnd_design_t *dsg);
+
+/* Allocate storage where the global config can be saved to */
+rnd_conf_state_t *rnd_conf_state_alloc(void);
+
+/* Free storage and all fields of a conf state */
+void rnd_conf_state_free(rnd_conf_state_t *cs);
