@@ -22,9 +22,17 @@ void rnd_conf_state_save(rnd_conf_state_t *dst);
    so it can not be loaded twice. */
 void rnd_conf_state_load(rnd_conf_state_t *src);
 
-/* call this before loading a new design in a multi-design app; resets
-   and prepares global conf */
-void rnd_conf_multi_pre_load_design(rnd_conf_state_t *ncs);
+/* call this before loading/creating a new design in a multi-design app; resets
+   and prepares global conf; ncs is an unitialized cookie that is used
+   to store states until rnd_conf_multi_post_new_design is called.
+   rnd_conf_state_t *ncs then call with &ncs.
+   */
+void rnd_conf_multi_pre_new_design(rnd_conf_state_t **ncs);
+
+/* Call this after a succesful (dsg != NULL) or failed (dsg == NULL) load.
+   Call with the same &ncs that was passed to rnd_conf_multi_pre_new_design() */
+void rnd_conf_multi_post_new_design(rnd_conf_state_t **ncs, rnd_design_t *dsg);
+
 
 /* Announce a new design after loaded or created (creates config save structs) */
 void rnd_conf_state_new_design(rnd_design_t *dsg);

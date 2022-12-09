@@ -279,11 +279,25 @@ void rnd_conf_multi_merge_after_switch(rnd_design_t *dsg)
 	/*rnd_trace("after switch conf root design: %p\n", rnd_conf_main_root[RND_CFR_DESIGN]);*/
 }
 
-void rnd_conf_multi_pre_load_design(rnd_conf_state_t *ncs)
+void rnd_conf_multi_pre_new_design(rnd_conf_state_t **ncs)
 {
 	rnd_conf_main_root[RND_CFR_PROJECT] = NULL;
 	rnd_conf_main_root[RND_CFR_DESIGN] = NULL;
-	rnd_conf_fields = ncs->rnd_conf_fields;
+	*ncs = rnd_conf_state_alloc();
+	rnd_conf_fields = (*ncs)->rnd_conf_fields;
+}
+
+void rnd_conf_multi_post_new_design(rnd_conf_state_t **ncs, rnd_design_t *dsg)
+{
+	if (dsg == NULL) {
+		/* failed to load/create design */
+		rnd_conf_state_free(*ncs);
+	}
+	else {
+		/* new design is dsg */
+		dsg->saved_rnd_conf = *ncs;
+	}
+	*ncs = NULL;
 }
 
 void rnd_multi_load_prj_for_dsg(rnd_design_t *dsg)
