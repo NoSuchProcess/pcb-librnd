@@ -20,7 +20,6 @@
 	- multi design (multides.html):
 		- config handling
 			- shared confs
-				- BUG: start without cli args, empty sheet: can't use tools
 				- native structs should be alloced per design; bug: sch-rnd with 2 sheets, change bgcolor on CFR_DESIGN in one, {i c p} shows the wrong role in the other
 				- test pcb-rnd and sch-rnd on lesstif with background color on different roles
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
