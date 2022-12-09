@@ -108,7 +108,9 @@ int rnd_conf_edits_lock = 0;
 lht_doc_t *rnd_conf_plug_root[RND_CFR_max_alloc];
 
 
-htsp_t *rnd_conf_fields = NULL;
+htsp_t *rnd_conf_fields = NULL;         /* current design's config */
+htsp_t *rnd_conf_fields_master = NULL;  /* master config: new design's own config is copied from here*/
+
 const int rnd_conf_default_prio[] = {
 /*	RND_CFR_INTERNAL */   100,
 /*	RND_CFR_SYSTEM */     200,
@@ -1412,10 +1414,10 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 {
 	rnd_conf_native_t *node;
 
-	if (rnd_conf_fields == NULL) {
-		rnd_conf_fields = htsp_alloc(strhash, strkeyeq);
-		assert(rnd_conf_fields != NULL);
-	}
+	if (rnd_conf_fields_master == NULL)
+		rnd_conf_fields = rnd_conf_fields_master = htsp_alloc(strhash, strkeyeq);
+
+	assert(rnd_conf_fields != NULL);
 	assert(array_size >= 1);
 
 	assert(htsp_get(rnd_conf_fields, path) == NULL);

@@ -24,7 +24,7 @@ void rnd_conf_state_load(rnd_conf_state_t *src);
 
 /* call this before loading a new design in a multi-design app; resets
    and prepares global conf */
-void rnd_conf_multi_pre_load_design(void);
+void rnd_conf_multi_pre_load_design(rnd_conf_state_t *ncs);
 
 /* Announce a new design after loaded or created (creates config save structs) */
 void rnd_conf_state_new_design(rnd_design_t *dsg);

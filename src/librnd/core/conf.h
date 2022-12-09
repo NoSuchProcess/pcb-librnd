@@ -117,7 +117,7 @@ struct rnd_conf_native_s {
 
 	/* dynamic fields for HIDs storing their data */
 	vtp0_t hid_data;
-	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *) */
+	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *); shared among all design instances */
 
 	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
 };
