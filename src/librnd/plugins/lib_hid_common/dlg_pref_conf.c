@@ -496,5 +496,11 @@ void rnd_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 
 void rnd_dlg_pref_conf_design_replaced(pref_ctx_t *ctx)
 {
+	if (ctx->conf.selected_nat != NULL) {
+		/* in a multi-design app each design has its own rnd_conf_fields hash,
+		   we need to look up the same nat in the new design's hash and re-display
+		   that (may have different prio and sources) */
+		ctx->conf.selected_nat = rnd_conf_get_field(ctx->conf.selected_nat->hash_path);
+	}
 	dlg_conf_select_node(ctx, NULL, ctx->conf.selected_nat, ctx->conf.selected_idx);
 }
