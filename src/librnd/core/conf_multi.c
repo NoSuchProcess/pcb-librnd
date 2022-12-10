@@ -60,8 +60,6 @@ static const char rnd_conf_main_root_is_shared[RND_CFR_max_alloc] = {
 static long rnd_conf_lht_last_edits[RND_CFR_max_alloc]; /* shared docs: remember which edit revision got merged last */
 
 struct rnd_conf_state_s {
-	int rnd_conf_in_production;
-
 	/* from these not all are duplicated, see rnd_conf_main_root_is_shared[] */
 	lht_doc_t *rnd_conf_main_root[RND_CFR_max_alloc];
 	long rnd_conf_main_root_replace_cnt[RND_CFR_max_alloc];
@@ -167,7 +165,6 @@ void rnd_conf_state_save(rnd_conf_state_t *dst)
 	rnd_conf_plug_state_t *n;
 	assert(!dst->valid);
 
-	SAVE(rnd_conf_in_production, 1);
 	SAVE_SHARED(rnd_conf_main_root, 1);
 	SAVE_SHARED(rnd_conf_main_root_replace_cnt, 1);
 	SAVE_SHARED(rnd_conf_main_root_lock, 1);
@@ -209,7 +206,6 @@ void rnd_conf_state_load(rnd_conf_state_t *src)
 
 	assert(src->valid);
 
-	LOAD(rnd_conf_in_production);
 	LOAD_SHARED(rnd_conf_main_root);
 	LOAD_SHARED(rnd_conf_main_root_replace_cnt);
 	LOAD_SHARED(rnd_conf_main_root_lock);
