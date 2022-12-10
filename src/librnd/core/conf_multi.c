@@ -129,6 +129,28 @@ void rnd_conf_multi_copy_master_to_per_dsg(const rnd_conf_native_t *nat_master)
 		rnd_conf_dup_field_into(rnd_conf_fields, nat_master);
 }
 
+void rnd_conf_multi_remove_field_per_dsg(const char *path)
+{
+	rnd_design_t *dsg;
+
+	/* remove from every design's own saved conf */
+	for(dsg = gdl_first(&rnd_designs); dsg != NULL; dsg = gdl_next(&rnd_designs, dsg)) {
+		if (dsg->saved_rnd_conf->rnd_conf_fields != NULL) {
+			htsp_entry_t *e = htsp_popentry(dsg->saved_rnd_conf->rnd_conf_fields, path);
+			if (e != NULL)
+				rnd_conf_free_native(e->value);
+		}
+	}
+
+	/* one of the designs is probably active, remove there too */
+	if (rnd_conf_fields != NULL) {
+		htsp_entry_t *e = htsp_popentry(rnd_conf_fields, path);
+		if (e != NULL)
+			rnd_conf_free_native(e->value);
+	}
+}
+
+
 #define SAVE(field, reset) \
 	memcpy(&dst->field, &field, sizeof(field)); \
 	if (reset) memset(&field, 0, sizeof(field));

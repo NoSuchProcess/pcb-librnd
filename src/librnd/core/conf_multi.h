@@ -77,3 +77,5 @@ void rnd_conf_state_free(rnd_conf_state_t *cs);
 /* Copy new native fielf to all designs */
 void rnd_conf_multi_copy_master_to_per_dsg(const rnd_conf_native_t *nat_master);
 
+/* remove a naive field from every design */
+void rnd_conf_multi_remove_field_per_dsg(const char *path);

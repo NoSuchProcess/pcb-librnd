@@ -1485,6 +1485,10 @@ void rnd_conf_free_native(rnd_conf_native_t *node)
 	free(node);
 }
 
+
+#define rnd_conf_fields_foreach_master(e) \
+	for (e = htsp_first(rnd_conf_fields_master); e; e = htsp_next(rnd_conf_fields_master, e))
+
 void rnd_conf_unreg_fields(const char *prefix)
 {
 	int len = strlen(prefix);
@@ -1492,17 +1496,19 @@ void rnd_conf_unreg_fields(const char *prefix)
 
 	assert(prefix[len-1] == '/');
 
-	rnd_conf_fields_foreach(e) {
+	rnd_conf_fields_foreach_master(e) {
 		if (strncmp(e->key, prefix, len) == 0) {
+			rnd_conf_multi_remove_field_per_dsg(e->key);
 			rnd_conf_free_native(e->value);
-			htsp_delentry(rnd_conf_fields, e);
+			htsp_delentry(rnd_conf_fields_master, e);
 		}
 	}
 }
 
 void rnd_conf_unreg_field(rnd_conf_native_t *field)
 {
-	htsp_pop(rnd_conf_fields, field->hash_path);
+	rnd_conf_multi_remove_field_per_dsg(field->hash_path);
+	htsp_pop(rnd_conf_fields_master, field->hash_path);
 	rnd_conf_free_native(field);
 }
 
