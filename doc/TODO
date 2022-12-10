@@ -19,14 +19,7 @@
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
 		- config handling
-			- shared confs
-				- design natives; bug: sch-rnd with 2 sheets, change bgcolor on CFR_DESIGN in one, {i c p} shows the wrong role in the other
-					- test rnd_gui_act using sch-rnd {i c p}, compile/views editing, see project.c prj_conf_hlist(), pcb-rnd DrcQueryEditRule
-					- verify in plugins: shared->hid_data is the same for all designs
-				- BUG: sch-rnd: start with no sheet -> segf
-				- BUG: sch-rnd: A.rs, B.rs, change bg color on CFR_DESIGN on B, it's not updated until switching
-				- BUG: sch-rnd: start with no sheet, load sheet from gui, {f q} -> assert on cleanup
-				- test pcb-rnd and sch-rnd on lesstif with background color on different roles
+			- test rnd_gui_act using sch-rnd {i c p}, compile/views editing, see project.c prj_conf_hlist(), pcb-rnd DrcQueryEditRule
 			- valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
 		- implement every little detail of the new project file handling as specified
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
