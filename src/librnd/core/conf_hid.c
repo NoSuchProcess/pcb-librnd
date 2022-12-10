@@ -12,14 +12,14 @@ typedef struct {
 
 void *rnd_conf_hid_set_data(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id, void *data)
 {
-	void **old = vtp0_get(&cfg->hid_data, id, 0);
-	vtp0_set(&cfg->hid_data, id, data);
+	void **old = vtp0_get(&cfg->shared->hid_data, id, 0);
+	vtp0_set(&cfg->shared->hid_data, id, data);
 	return old == NULL ? NULL : *old;
 }
 
 void *rnd_conf_hid_get_data(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id)
 {
-	void **old = vtp0_get(&cfg->hid_data, id, 0);
+	void **old = vtp0_get(&cfg->shared->hid_data, id, 0);
 	return old == NULL ? NULL : *old;
 }
 
@@ -27,8 +27,8 @@ const rnd_conf_hid_callbacks_t *rnd_conf_hid_set_cb(rnd_conf_native_t *cfg, rnd_
 {
 	void **old;
 	assert(id >= 0);
-	old = vtp0_get(&cfg->hid_callbacks, id, 0);
-	vtp0_set(&cfg->hid_callbacks, id, (void *)cbs);
+	old = vtp0_get(&cfg->shared->hid_callbacks, id, 0);
+	vtp0_set(&cfg->shared->hid_callbacks, id, (void *)cbs);
 	return (const rnd_conf_hid_callbacks_t *)(old == NULL ? NULL : *old);
 }
 
@@ -88,19 +88,19 @@ void rnd_conf_hid_unreg(const char *cookie)
 	rnd_conf_fields_foreach(e) {
 		int len;
 		rnd_conf_native_t *cfg = e->value;
-		len = vtp0_len(&cfg->hid_callbacks);
+		len = vtp0_len(&cfg->shared->hid_callbacks);
 
 		rnd_conf_hid_local_cb(cfg, -1, unreg_item);
 
 		/* truncate the list if there are empty items at the end */
 		if (len > h->id) {
 			int last;
-			cfg->hid_callbacks.array[h->id] = NULL;
+			cfg->shared->hid_callbacks.array[h->id] = NULL;
 			for(last = len-1; last >= 0; last--)
-				if (cfg->hid_callbacks.array[last] != NULL)
+				if (cfg->shared->hid_callbacks.array[last] != NULL)
 					break;
 			if (last < len)
-				vtp0_truncate(&cfg->hid_callbacks, last+1);
+				vtp0_truncate(&cfg->shared->hid_callbacks, last+1);
 		}
 	}
 

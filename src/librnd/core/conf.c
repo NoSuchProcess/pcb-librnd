@@ -1393,9 +1393,19 @@ void rnd_conf_load_project(const char *project_fn, const char *design_fn)
 }
 
 
-static rnd_conf_native_t *rnd_conf_alloc_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags)
+static rnd_conf_native_t *rnd_conf_alloc_field_(void *value, int array_size, rnd_conf_native_type_t type, const char *path, const char *desc, rnd_conf_flag_t flags, int alloc4shared)
 {
-	rnd_conf_native_t *node = calloc(sizeof(rnd_conf_native_t), 1);
+	rnd_conf_native_t *node;
+
+	if (alloc4shared) {
+		/* overallocate to store shared locally - useful when storing for master */
+		node = calloc(sizeof(rnd_conf_native_t) + sizeof(rnd_conf_nat_shared_t), 1);
+		node->shared = (rnd_conf_nat_shared_t *)&node->shared_static;
+		vtp0_init(&(node->shared->hid_data));
+		vtp0_init(&(node->shared->hid_callbacks));
+	}
+	else
+		node = calloc(sizeof(rnd_conf_native_t), 1);
 
 	node->array_size  = array_size;
 	node->type        = type;
@@ -1404,8 +1414,6 @@ static rnd_conf_native_t *rnd_conf_alloc_field_(void *value, int array_size, rnd
 	node->description = desc;
 	node->hash_path   = path;
 	node->flags       = flags;
-	vtp0_init(&(node->hid_data));
-	vtp0_init(&(node->hid_callbacks));
 
 	return node;
 }
@@ -1421,7 +1429,7 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	assert(array_size >= 1);
 
 	assert(htsp_get(rnd_conf_fields, path) == NULL);
-	node = rnd_conf_alloc_field_(value, array_size, type, path, desc, flags);
+	node = rnd_conf_alloc_field_(value, array_size, type, path, desc, flags, 1);
 
 	htsp_set(rnd_conf_fields, (char *)path, node);
 	rnd_conf_hid_global_cb(node, -1, new_item_post);
@@ -1468,8 +1476,8 @@ void rnd_conf_free_native(rnd_conf_native_t *node)
 	if (node->random_flags.dyn_val)
 		free(node->val.any);
 
-	vtp0_uninit(&(node->hid_data));
-	vtp0_uninit(&(node->hid_callbacks));
+	vtp0_uninit(&(node->shared->hid_data));
+	vtp0_uninit(&(node->shared->hid_callbacks));
 	free(node->prop);
 	free(node);
 }

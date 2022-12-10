@@ -54,8 +54,8 @@ void rnd_conf_hid_uninit(void);
 #define rnd_conf_hid_local_cb(native, arr_idx, cb) \
 do { \
 	unsigned int __n__; \
-	for(__n__ = 0; __n__ < vtp0_len(&((native)->hid_callbacks)); __n__++) { \
-		const rnd_conf_hid_callbacks_t *cbs = (native)->hid_callbacks.array[__n__]; \
+	for(__n__ = 0; __n__ < vtp0_len(&((native)->shared->hid_callbacks)); __n__++) { \
+		const rnd_conf_hid_callbacks_t *cbs = (native)->shared->hid_callbacks.array[__n__]; \
 		if ((cbs != NULL) && (cbs->cb != NULL)) \
 			cbs->cb(native, arr_idx, cbs->user_data); \
 	} \

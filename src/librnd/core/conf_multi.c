@@ -89,8 +89,8 @@ static void rnd_conf_state_copy_nat(htsp_t *dst, const htsp_t *src)
 	for(e = htsp_first(src); e != NULL; e = htsp_next(src, e)) {
 		rnd_conf_native_t *nat_src = e->value, *nat_dst;
 		nat_dst = rnd_conf_alloc_field_(nat_src->val.any, nat_src->array_size,
-			nat_src->type, nat_src->hash_path, nat_src->description, nat_src->flags);
-		nat_dst->hid_callbacks = nat_src->hid_callbacks;
+			nat_src->type, nat_src->hash_path, nat_src->description, nat_src->flags, 0);
+		nat_dst->shared = nat_src->shared;
 		htsp_set(dst, (char *)nat_dst->hash_path, nat_dst);
 	}
 }

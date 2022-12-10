@@ -254,7 +254,7 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid
 {
 	rnd_design_t *hidlib = rnd_gui->get_dad_design(hid_ctx);
 	confedit_ctx_t *ctx = caller_data;
-	rnd_actionva(hidlib, ctx->nat->gui_edit_act,
+	rnd_actionva(hidlib, ctx->nat->shared->gui_edit_act,
 		rnd_conf_role_name(ctx->role), ctx->nat->hash_path, trigger_attr->val.str,
 		NULL);
 }
@@ -418,7 +418,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	}
 
 	if (pctx->conf.selected_nat->type == RND_CFN_HLIST) {
-		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
+		if (pctx->conf.selected_nat->shared->gui_edit_act == NULL) {
 			rnd_message(RND_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
 			return;
 		}

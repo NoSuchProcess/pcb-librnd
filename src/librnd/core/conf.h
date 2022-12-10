@@ -94,6 +94,16 @@ typedef struct {
 	lht_node_t *src;
 } rnd_confprop_t;
 
+/* Shared part of rnd_conf_native_t: these are allocated only once, as an
+   over-allocation in rnd_conf_fields_master and per design conf natives
+   are just pointing to it. Stores hid/plugin registrations that affect all
+   designs */
+typedef struct rnd_conf_nat_shared_s {
+	vtp0_t hid_data;
+	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *); shared among all design instances */
+	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
+} rnd_conf_nat_shared_t;
+
 struct rnd_conf_native_s {
 	/* static fields defined by the macros */
 	const char *description;
@@ -116,10 +126,9 @@ struct rnd_conf_native_s {
 	int rnd_conf_rev;     /* last changed rev */
 
 	/* dynamic fields for HIDs storing their data */
-	vtp0_t hid_data;
-	vtp0_t hid_callbacks; /* vector of (const rnd_conf_hid_callbacks_t *); shared among all design instances */
+	rnd_conf_nat_shared_t *shared;
 
-	const char *gui_edit_act; /* if non-zero, run this action for GUI editing; args: role_name, full_list_conf_path, item_name */
+	void *shared_static; /* for over-allocation for ->shared in rnd_conf_fields_master */
 };
 
 struct conf_listitem_s {
