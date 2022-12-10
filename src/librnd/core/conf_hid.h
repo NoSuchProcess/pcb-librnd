@@ -24,7 +24,8 @@ typedef struct rnd_conf_hid_callbacks_s {
 
 typedef int rnd_conf_hid_id_t;
 
-/* Set local hid data in a native item; returns the previous value set or NULL */
+/* Set local hid data in a native conf field; returns the previous value set
+   or NULL. Note: hid data is shared among all open designs. */
 void *rnd_conf_hid_set_data(rnd_conf_native_t *cfg, rnd_conf_hid_id_t id, void *data);
 
 /* Returns local hid data in a native item */
