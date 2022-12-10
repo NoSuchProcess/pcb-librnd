@@ -1496,9 +1496,15 @@ void rnd_conf_unreg_fields(const char *prefix)
 
 	assert(prefix[len-1] == '/');
 
+	/* First free it in all open designs */
+	rnd_conf_fields_foreach_master(e)
+		if (strncmp(e->key, prefix, len) == 0)
+			rnd_conf_multi_remove_field_per_dsg(e->key);
+
+	/* Then check if we still have anything in master (single-design apps may
+	   have free'd it in master already) */
 	rnd_conf_fields_foreach_master(e) {
 		if (strncmp(e->key, prefix, len) == 0) {
-			rnd_conf_multi_remove_field_per_dsg(e->key);
 			rnd_conf_free_native(e->value);
 			htsp_delentry(rnd_conf_fields_master, e);
 		}
@@ -1507,9 +1513,16 @@ void rnd_conf_unreg_fields(const char *prefix)
 
 void rnd_conf_unreg_field(rnd_conf_native_t *field)
 {
-	rnd_conf_multi_remove_field_per_dsg(field->hash_path);
-	htsp_pop(rnd_conf_fields_master, field->hash_path);
-	rnd_conf_free_native(field);
+	const char *hash_path = field->hash_path;
+
+	rnd_conf_multi_remove_field_per_dsg(hash_path);
+
+	/* check if we still have anything in master (single-design apps may
+	   have free'd it in master already) */
+	if (htsp_has(rnd_conf_fields_master, hash_path)) {
+		htsp_pop(rnd_conf_fields_master, hash_path);
+		rnd_conf_free_native(field);
+	}
 }
 
 
