@@ -37,6 +37,7 @@
 #include <librnd/core/color.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/conf_multi.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/error.h>
@@ -1431,8 +1432,10 @@ rnd_conf_native_t *rnd_conf_reg_field_(void *value, int array_size, rnd_conf_nat
 	assert(htsp_get(rnd_conf_fields, path) == NULL);
 	node = rnd_conf_alloc_field_(value, array_size, type, path, desc, flags, 1);
 
-	htsp_set(rnd_conf_fields, (char *)path, node);
+	htsp_set(rnd_conf_fields_master, (char *)path, node);
 	rnd_conf_hid_global_cb(node, -1, new_item_post);
+
+	rnd_conf_multi_copy_master_to_per_dsg(node);
 
 	return node;
 }

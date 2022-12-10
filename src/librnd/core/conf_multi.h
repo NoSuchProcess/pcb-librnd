@@ -73,3 +73,7 @@ rnd_conf_state_t *rnd_conf_state_alloc(void);
 
 /* Free storage and all fields of a conf state */
 void rnd_conf_state_free(rnd_conf_state_t *cs);
+
+/* Copy new native fielf to all designs */
+void rnd_conf_multi_copy_master_to_per_dsg(const rnd_conf_native_t *nat_master);
+
