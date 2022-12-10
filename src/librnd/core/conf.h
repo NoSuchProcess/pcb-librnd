@@ -318,23 +318,36 @@ void rnd_conf_ro(const char *path);
 
 void rnd_conf_setf(rnd_conf_role_t role, const char *path, int idx, const char *fmt, ...);
 
+/* execute call() on each string of a conflist, saving result in res
+   and break the first time res == 0. Saves a list of strings to run on
+   so changing the list or calling conf_merge() is safe to call within call()
+   and it's always the "list at the time of the call" that is used. */
 #define rnd_conf_list_foreach_path_first(design, res, conf_list, call) \
 do { \
 	rnd_conf_listitem_t *__n__; \
 	const rnd_conflist_t *__lst1__ = (conf_list); \
 	rnd_conflist_t *__lst__ = (rnd_conflist_t *)(__lst1__); \
 	if (__lst__ != NULL) { \
+		vtp0_t __strv__ = {0}; \
+		long __i__; \
 		for(__n__ = rnd_conflist_first(__lst__); __n__ != NULL; __n__ = rnd_conflist_next(__n__)) { \
-			char *__path__; \
 			const char **__in__ = __n__->val.string; \
 			if (__in__ == NULL) \
 				continue; \
-			rnd_path_resolve(design, *__in__, &__path__, 0, rnd_false); \
+			vtp0_append(&__strv__, rnd_strdup(*__in__)); \
+		} \
+		for(__i__ = 0; __i__ < __strv__.used; __i__++) { \
+			char *__path__; \
+			char *__inpa__ = __strv__.array[__i__]; \
+			rnd_path_resolve(design, __inpa__, &__path__, 0, rnd_false); \
 			res = call; \
 			free(__path__); \
 			if (res == 0) \
 				break; \
 		} \
+		for(__i__ = 0; __i__ < __strv__.used; __i__++) \
+			free(__strv__.array[__i__]); \
+		vtp0_uninit(&__strv__); \
 	} \
 } while(0)
 
