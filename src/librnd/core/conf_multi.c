@@ -83,16 +83,21 @@ struct rnd_conf_state_s {
 	gdl_list_t plug_states; /* extra saves */
 };
 
-static void rnd_conf_state_copy_nat(htsp_t *dst, const htsp_t *src)
+static rnd_conf_native_t *rnd_conf_dup_field_into(htsp_t *dst, const rnd_conf_native_t *nat_src)
+{
+	rnd_conf_native_t *nat_dst;
+	nat_dst = rnd_conf_alloc_field_(nat_src->val.any, nat_src->array_size,
+		nat_src->type, nat_src->hash_path, nat_src->description, nat_src->flags, 0);
+	nat_dst->shared = nat_src->shared;
+	htsp_set(dst, (char *)nat_dst->hash_path, nat_dst);
+	return nat_dst;
+}
+
+static void rnd_conf_state_copy_nats(htsp_t *dst, const htsp_t *src)
 {
 	htsp_entry_t *e;
-	for(e = htsp_first(src); e != NULL; e = htsp_next(src, e)) {
-		rnd_conf_native_t *nat_src = e->value, *nat_dst;
-		nat_dst = rnd_conf_alloc_field_(nat_src->val.any, nat_src->array_size,
-			nat_src->type, nat_src->hash_path, nat_src->description, nat_src->flags, 0);
-		nat_dst->shared = nat_src->shared;
-		htsp_set(dst, (char *)nat_dst->hash_path, nat_dst);
-	}
+	for(e = htsp_first(src); e != NULL; e = htsp_next(src, e))
+		rnd_conf_dup_field_into(dst, (rnd_conf_native_t *)e->value);
 }
 
 rnd_conf_state_t *rnd_conf_state_alloc(void)
@@ -100,7 +105,7 @@ rnd_conf_state_t *rnd_conf_state_alloc(void)
 	rnd_conf_state_t *res = calloc(sizeof(rnd_conf_state_t), 1);
 
 	res->rnd_conf_fields = htsp_alloc(strhash, strkeyeq);
-	rnd_conf_state_copy_nat(res->rnd_conf_fields, rnd_conf_fields_master);
+	rnd_conf_state_copy_nats(res->rnd_conf_fields, rnd_conf_fields_master);
 	return res;
 }
 
