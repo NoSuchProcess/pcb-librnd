@@ -18,7 +18,6 @@
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
 	- multi design (multides.html):
-		- config handling: valgrind: sch-rnd -x single sheet then batch HID multiple sheets quit: make sure all configs are free'd
 		- implement every little detail of the new project file handling as specified
 		- export API for exporting a whole project at once (instead of exporting a single sheet); pass on project ptr, not sheet ptr
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)

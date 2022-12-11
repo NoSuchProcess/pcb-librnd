@@ -107,7 +107,13 @@ rnd_conf_state_t *rnd_conf_state_alloc(void)
 
 void rnd_conf_state_free(rnd_conf_state_t *cs)
 {
-	TODO("free all fields");
+	if (cs->rnd_conf_fields != NULL) {
+		htsp_entry_t *e;
+		for(e = htsp_first(cs->rnd_conf_fields); e != NULL; e = htsp_first(cs->rnd_conf_fields)) {
+			rnd_conf_free_native(e->value);
+			htsp_delentry(cs->rnd_conf_fields, e);
+		}
+	}
 	free(cs);
 }
 
