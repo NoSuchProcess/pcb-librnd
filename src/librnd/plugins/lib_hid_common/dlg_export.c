@@ -155,6 +155,7 @@ void rnd_dlg_export(const char *title, int exporters, int printers, rnd_design_t
 	export_ctx.button = malloc(sizeof(int) * (export_ctx.len));
 	export_ctx.numo = malloc(sizeof(int) * (export_ctx.len));
 	export_ctx.aa = malloc(sizeof(rnd_hid_attr_val_t *) * (export_ctx.len));
+	export_ctx.appspec = appspec;
 
 	for(i = n = 0; hids[n] != NULL; n++) {
 		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui)) {
