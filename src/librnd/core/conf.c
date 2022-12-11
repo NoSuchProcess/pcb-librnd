@@ -2408,11 +2408,22 @@ void rnd_conf_uninit(void)
 			lht_dom_uninit(rnd_conf_plug_root[n]);
 	}
 
+	if (rnd_conf_fields == rnd_conf_fields_master)
+		rnd_conf_fields = NULL;
+
 	rnd_conf_fields_foreach_master(e) {
 		rnd_conf_free_native(e->value);
-		htsp_delentry(rnd_conf_fields, e);
+		htsp_delentry(rnd_conf_fields_master, e);
 	}
-	htsp_free(rnd_conf_fields);
+	htsp_free(rnd_conf_fields_master);
+
+	if (rnd_conf_fields != NULL) {
+		rnd_conf_fields_foreach(e) {
+			rnd_conf_free_native(e->value);
+			htsp_delentry(rnd_conf_fields, e);
+		}
+		htsp_free(rnd_conf_fields);
+	}
 
 	vmst_uninit(&merge_subtree);
 	rnd_conf_files_uninit();
