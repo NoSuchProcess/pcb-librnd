@@ -2394,7 +2394,7 @@ void rnd_conf_uninit(void)
 
 	rnd_anyload_unreg_by_cookie(conf_cookie_al);
 
-	rnd_conf_fields_foreach(e) {
+	rnd_conf_fields_foreach_master(e) {
 		if (strncmp(e->key, "plugins/", 8) == 0)
 			fprintf(stderr, "%s conf ERROR: conf node '%s' is not unregistered\n", rnd_app.package, e->key);
 	}
@@ -2408,7 +2408,7 @@ void rnd_conf_uninit(void)
 			lht_dom_uninit(rnd_conf_plug_root[n]);
 	}
 
-	rnd_conf_fields_foreach(e) {
+	rnd_conf_fields_foreach_master(e) {
 		rnd_conf_free_native(e->value);
 		htsp_delentry(rnd_conf_fields, e);
 	}
