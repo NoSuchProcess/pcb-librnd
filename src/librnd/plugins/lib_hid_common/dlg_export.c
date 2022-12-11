@@ -163,12 +163,17 @@ void rnd_dlg_export(const char *title, int exporters, int printers, rnd_design_t
 				continue;
 			}
 
+			/* skip exporters that can not export the current design with appspec */
+			if ((hids[n]->can_export != NULL) && !hids[n]->can_export(hids[n], dsg, appspec))
+				continue;
+
 			export_ctx.tab_name[i] = hids[n]->name;
 			export_ctx.hid[i] = hids[n];
 			i++;
 		}
 	}
 
+	export_ctx.len = i;
 	export_ctx.tab_name[i] = NULL;
 
 	RND_DAD_BEGIN_VBOX(export_ctx.dlg);

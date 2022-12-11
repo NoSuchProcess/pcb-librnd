@@ -245,6 +245,11 @@ struct rnd_hid_s {
 	   exporters only)  */
 	void (*do_export)(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec);
 
+	/* OPTIONAL: called to check if a given design with the given appspec
+	   could be exported by the given hid. If NULL, true is assumed.
+	   Not called on GUI, only on exporters and printers */
+	rnd_bool (*can_export)(rnd_hid_t *hid, rnd_design_t *design, void *appspec);
+
 	/* Export plugins: if not NULL, rnd_hid_parse_command_line() sets up opt
 	   value backing memory from this array */
 	rnd_hid_attr_val_t *argument_array;
