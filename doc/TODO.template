@@ -1,7 +1,7 @@
 Used by public templates:
 ?/local/pcb/rules
-?/local/pcb/symbols
-?/local/pcb/debug
++/local/pcb/symbols
++/local/pcb/debug
 ?/local/pcb/DEPCFLAGS
 ?/local/pcb/DEPDEPS_SORTED
 ?/local/pcb/DEPDEPS

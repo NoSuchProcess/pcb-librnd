@@ -552,7 +552,7 @@ int hook_generate()
 	printf("=====================\n");
 
 	print_sum_setting("/local/librnd/debug",          "Compilation for debugging");
-	print_sum_setting_or("/local/librnd/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
+	print_sum_setting_or("/local/librnd/symbols",     "Include debug symbols", istrue(get("/local/rnd/debug")));
 	print_sum_cfg_val("/local/librnd/coord_bits",     "Coordinate type bits");
 
 #undef plugin_def

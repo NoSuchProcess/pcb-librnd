@@ -72,7 +72,7 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 	if (strcmp(key, "debug") == 0) {
-		put("/local/pcb/debug", strue);
+		put("/local/rnd/debug", strue);
 		put("/local/" APP"/debug", strue);
 		pup_set_debug(strue);
 		return 1;
@@ -83,7 +83,7 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 	if (strcmp(key, "symbols") == 0) {
-		put("/local/pcb/symbols", strue);
+		put("/local/rnd/symbols", strue);
 		put("/local/" APP "/symbols", strue);
 		return 1;
 	}
@@ -381,11 +381,11 @@ void rnd_hook_postinit()
 #ifndef LIBRNDS_SCCONFIG
 	put("/local/confdir", "");
 #endif
-	put("/local/pcb/debug", sfalse);
+	put("/local/rnd/debug", sfalse);
 	put("/local/" APP "/debug", sfalse);
 	put("/local/pcb/profile", sfalse);
 	put("/local/" APP "/profile", sfalse);
-	put("/local/pcb/symbols", sfalse);
+	put("/local/rnd/symbols", sfalse);
 	put("/local/" APP "/symbols", sfalse);
 	put("/local/pcb/disable_so", sfalse);
 	put("/local/" APP "/disable_so", sfalse);
