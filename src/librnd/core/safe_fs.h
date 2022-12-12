@@ -25,7 +25,7 @@
   */
 
 /* Wrap standard file system calls, giving the user a chance to control
-   where pcb-rnd may go on the file system. Where design is NULL, some
+   where the app may go on the file system. Where design is NULL, some
    of the % substitutions will not be performed (the ones that depend on
    design (file) name) */
 

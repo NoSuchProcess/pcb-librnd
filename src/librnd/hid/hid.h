@@ -30,12 +30,12 @@ typedef enum {
 
 The way the HID layer works is that you instantiate a HID device
 structure, and invoke functions through its members.  Code in the
-pcb-rnd core may *not* rely on HID internals (*anything* other than what's
+application may *not* rely on HID internals (*anything* other than what's
 defined in this file).  Code in the HID layers *may* rely on data and
-functions in hidlib (like, design size and such), but not on anything
+functions in librnd (like, design size and such), but not on anything
 in application core.
 
-Coordinates are ALWAYS in pcb's internal units rnd_coord_t. Positive X is
+Coordinates are ALWAYS in librnd internal units rnd_coord_t. Positive X is
 right, positive Y is down, unless flip is activated.  Angles are
 degrees, with 0 being right (positive X) and 90 being up (negative Y) - unless
 flip is activated. All zoom, scaling, panning, and conversions are hidden
