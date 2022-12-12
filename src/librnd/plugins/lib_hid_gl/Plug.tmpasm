@@ -1,5 +1,5 @@
-put /local/pcb/mod {lib_hid_gl}
-put /local/pcb/mod/OBJS_C99 [@
+put /local/rnd/mod {lib_hid_gl}
+put /local/rnd/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_hid_gl/hidgl.o
   $(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl.o
   $(LIBRND_PLUGDIR)/lib_hid_gl/stencil_gl.o
@@ -11,28 +11,28 @@ put /local/pcb/mod/OBJS_C99 [@
 
 if ?libs/gui/gl/vao/presents
 then
-append /local/pcb/mod/OBJS_C99 [@
+append /local/rnd/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_hid_gl/draw_vao.o
 @]
 end
 
 if ?libs/gui/gl/fb_attachment/presents
 then
-append /local/pcb/mod/OBJS_C99 [@
+append /local/rnd/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_hid_gl/stenc_framebuffer.o
 @]
 end
 
-append /local/pcb/mod/DISTCLEANFILES { $(PLUGDIR)/lib_hid_gl/opengl.h }
-put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl_conf.h}
-put /local/pcb/mod/CONFFILE {lib_hid_gl.conf}
-put /local/pcb/mod/CONFVAR {lib_hid_gl_conf_internal}
+append /local/rnd/mod/DISTCLEANFILES { $(PLUGDIR)/lib_hid_gl/opengl.h }
+put /local/rnd/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_gl/lib_hid_gl_conf.h}
+put /local/rnd/mod/CONFFILE {lib_hid_gl.conf}
+put /local/rnd/mod/CONFVAR {lib_hid_gl_conf_internal}
 
 switch /local/pcb/lib_hid_gl/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   [@@/target/libs/gui/gl/cflags@ @/target/libs/gui/glu/cflags@@]
-		put /local/pcb/mod/LDFLAGS  [@@/target/libs/gui/gl/ldflags@ @/target/libs/gui/glu/ldflags@@]
+		put /local/rnd/mod/CFLAGS   [@@/target/libs/gui/gl/cflags@ @/target/libs/gui/glu/cflags@@]
+		put /local/rnd/mod/LDFLAGS  [@@/target/libs/gui/gl/ldflags@ @/target/libs/gui/glu/ldflags@@]
 	end
 end
 

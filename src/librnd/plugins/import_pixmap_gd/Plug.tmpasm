@@ -1,11 +1,11 @@
-put /local/pcb/mod {import_pixmap_gd}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_pixmap_gd/import_pixmap_gd.o @]
+put /local/rnd/mod {import_pixmap_gd}
+put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_pixmap_gd/import_pixmap_gd.o @]
 
 switch /local/pcb/import_pixmap_gd/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/LDFLAGS         libs/gui/gd/ldflags
-		put /local/pcb/mod/CFLAGS          libs/gui/gd/cflags
+		put /local/rnd/mod/LDFLAGS         libs/gui/gd/ldflags
+		put /local/rnd/mod/CFLAGS          libs/gui/gd/cflags
 		end
 end
 

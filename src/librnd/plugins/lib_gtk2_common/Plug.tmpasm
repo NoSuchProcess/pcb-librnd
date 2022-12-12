@@ -1,17 +1,17 @@
-put /local/pcb/mod {lib_gtk2_common}
+put /local/rnd/mod {lib_gtk2_common}
 if ?/local/pcb/gtk_common/hid_gtk_conf
 then
 else
-	put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
+	put /local/rnd/mod/CONF {$(LIBRND_PLUGDIR)/lib_gtk_common/hid_gtk_conf.h}
 	put /local/pcb/gtk_common/hid_gtk_conf {true}
 end
 
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod/OBJS [@
   $(LIBRND_PLUGDIR)/lib_gtk2_common/lib_gtk2_common.o
   $(LIBRND_PLUGDIR)/lib_gtk2_common/lib_gtk_config.o
 @]
 
-put /local/pcb/mod/OBJS_C99 [@
+put /local/rnd/mod/OBJS_C99 [@
   $(LIBRND_PLUGDIR)/lib_gtk2_common/compat.o
 
   $(LIBRND_PLUGDIR)/lib_gtk2_common/bu_dwg_tooltip.o
@@ -35,8 +35,8 @@ put /local/pcb/mod/OBJS_C99 [@
 switch /local/pcb/lib_gtk2_common/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS   /target/libs/gui/gtk2/cflags
-		put /local/pcb/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
+		put /local/rnd/mod/CFLAGS   /target/libs/gui/gtk2/cflags
+		put /local/rnd/mod/LDFLAGS  /target/libs/gui/gtk2/ldflags
 	end
 end
 

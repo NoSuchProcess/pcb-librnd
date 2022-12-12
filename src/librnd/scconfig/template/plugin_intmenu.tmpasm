@@ -1,32 +1,32 @@
 # Set up internal embedde dconfig
-# Input: /local/pcb/mod/MENUFILE is the file name of the conf file (without path)
-#        /local/pcb/mod/MENUVAR is the variable name to use in menu_internal.c
+# Input: /local/rnd/mod/MENUFILE is the file name of the conf file (without path)
+#        /local/rnd/mod/MENUVAR is the variable name to use in menu_internal.c
 
-switch ?/local/pcb/mod/MENUFILE
+switch ?/local/rnd/mod/MENUFILE
 case {...}
 
-if ?/local/pcb/mod/is_hidlib
+if ?/local/rnd/mod/is_hidlib
 then
-	put /local/rnd/MMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
-	put /local/rnd/IMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+	put /local/rnd/MMENU [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/MENUFILE@@]
+	put /local/rnd/IMENU [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/menu_internal.c@]
 else
-	put /local/rnd/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
-	put /local/rnd/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+	put /local/rnd/MMENU [@$(PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/MENUFILE@@]
+	put /local/rnd/IMENU [@$(PLUGDIR)/@/local/rnd/mod@/menu_internal.c@]
 end
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/IMENU@ @]
 append /local/rnd/DISTCLEANFILES [@ @/local/rnd/IMENU@ @]
 append /local/rnd/RULES [@
 @/local/rnd/IMENU@: @/local/rnd/MMENU@ $(CQUOTE)
-	$(CQUOTE) -n @/local/pcb/mod/MENUVAR@ < @/local/rnd/MMENU@ > @/local/rnd/IMENU@
+	$(CQUOTE) -n @/local/rnd/mod/MENUVAR@ < @/local/rnd/MMENU@ > @/local/rnd/IMENU@
 @]
 
 
 # plugin menu exists only as internal for now
-#switch /local/pcb/mod/enabled
+#switch /local/rnd/mod/enabled
 #	case {1}
 #		append /local/rnd/rules/install_ [@
-#	$(SCCBOX) $(HOW) "@/local/rnd/MMENU@" "$(CONFDIR)/@/local/pcb/mod/MENUFILE@"@]
+#	$(SCCBOX) $(HOW) "@/local/rnd/MMENU@" "$(CONFDIR)/@/local/rnd/mod/MENUFILE@"@]
 #	end
 #	default end;
 #end

@@ -1,16 +1,16 @@
-put /local/pcb/mod {script}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {script}
+put /local/rnd/mod/OBJS [@
 	$(PLUGDIR)/script/script.o
 	$(PLUGDIR)/script/live_script.o
 @]
-put /local/pcb/mod/MENUFILE {script-menu.lht}
-put /local/pcb/mod/MENUVAR {script_menu}
+put /local/rnd/mod/MENUFILE {script-menu.lht}
+put /local/rnd/mod/MENUVAR {script_menu}
 
 # Fallback scripting: if no system installed fungw is available, static link libfawk
 if /local/librnd/fungw_system
 then
 else
-	append /local/pcb/mod/OBJS [@
+	append /local/rnd/mod/OBJS [@
 	$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o
 	@]
 	append /local/rnd/RULES [@

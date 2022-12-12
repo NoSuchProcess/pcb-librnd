@@ -1,18 +1,18 @@
 # explicit conf_fields.h generation rules
 
-switch /local/pcb/mod/CONF
+switch /local/rnd/mod/CONF
 	case {^$} end
 	default
-		put /local/pcb/mod/CONFOUT /local/pcb/mod/CONF
-		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
-		append /local/rnd/CLEANFILES /local/pcb/mod/CONFOUT
-		append /local/rnd/DEPDEPS /local/pcb/mod/CONFOUT
+		put /local/rnd/mod/CONFOUT /local/rnd/mod/CONF
+		sub {/local/rnd/mod/CONFOUT} {.h$} {_fields.h}
+		append /local/rnd/CLEANFILES /local/rnd/mod/CONFOUT
+		append /local/rnd/DEPDEPS /local/rnd/mod/CONFOUT
 		append /local/rnd/RULES [@
-# conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
-@/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
-	AWK=@/host/fstools/awk@ $(LIBRND_LIBDIR)/scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@
+# conf generation for @/local/rnd/mod@ '@/local/rnd/mod/CONF@'
+@/local/rnd/mod/CONFOUT@: @/local/rnd/mod/CONF@
+	AWK=@/host/fstools/awk@ $(LIBRND_LIBDIR)/scconfig/gen_conf.sh < @/local/rnd/mod/CONF@ > @/local/rnd/mod/CONFOUT@
 @]
 		end
 end
 
-put /local/pcb/mod/CONF {}
+put /local/rnd/mod/CONF {}

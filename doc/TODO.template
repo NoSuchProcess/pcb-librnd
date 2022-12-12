@@ -14,7 +14,7 @@ Used by public templates, renamed to rnd:
 +/local/pcb/MMENU
 +/local/pcb/MCFG
 +/local/pcb/DISTCLEANFILES
-?/local/pcb/mod/*
++/local/pcb/mod/*
 
 Renamed to  librnd
 +/local/pcb/ranlib

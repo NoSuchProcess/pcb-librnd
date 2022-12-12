@@ -1,14 +1,14 @@
-put /local/pcb/mod {stroke}
-put /local/pcb/mod/OBJS [@ $(LIBRND_PLUGDIR)/stroke/stroke.o @]
-put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/stroke/stroke_conf.h}
-put /local/pcb/mod/CONFFILE {stroke.conf}
-put /local/pcb/mod/CONFVAR {stroke_conf_internal}
+put /local/rnd/mod {stroke}
+put /local/rnd/mod/OBJS [@ $(LIBRND_PLUGDIR)/stroke/stroke.o @]
+put /local/rnd/mod/CONF {$(LIBRND_PLUGDIR)/stroke/stroke_conf.h}
+put /local/rnd/mod/CONFFILE {stroke.conf}
+put /local/rnd/mod/CONFVAR {stroke_conf_internal}
 
 switch /local/pcb/stroke/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/LDFLAGS         libs/gui/libstroke/ldflags
-		put /local/pcb/mod/CFLAGS          libs/gui/libstroke/cflags
+		put /local/rnd/mod/LDFLAGS         libs/gui/libstroke/ldflags
+		put /local/rnd/mod/CFLAGS          libs/gui/libstroke/cflags
 		end
 end
 

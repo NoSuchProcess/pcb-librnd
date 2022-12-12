@@ -1,5 +1,5 @@
-put /local/pcb/mod {hid_lesstif}
-put /local/pcb/mod/OBJS [@
+put /local/rnd/mod {hid_lesstif}
+put /local/rnd/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/hid_lesstif/dialogs.o
 	$(LIBRND_PLUGDIR)/hid_lesstif/main.o
 	$(LIBRND_PLUGDIR)/hid_lesstif/menu.o
@@ -16,13 +16,13 @@ put /local/pcb/mod/OBJS [@
 switch /local/pcb/hid_lesstif/controls
 	case {disable} end;
 	default
-		put /local/pcb/mod/CFLAGS [@
+		put /local/rnd/mod/CFLAGS [@
 			@?/target/libs/gui/lesstif2/cflags@
 			@?/target/libs/gui/xinerama/cflags@
 			@?/target/libs/gui/xrender/cflags@
 		@]
 
-		put /local/pcb/mod/LDFLAGS [@
+		put /local/rnd/mod/LDFLAGS [@
 			@?/target/libs/gui/lesstif2/ldflags@
 			@?/target/libs/gui/xinerama/ldflags@
 			@?/target/libs/gui/xrender/ldflags@

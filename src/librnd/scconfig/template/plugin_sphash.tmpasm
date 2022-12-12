@@ -1,10 +1,10 @@
 # explicit rules: .sphash -> .c
 # Space separated list of .sphash input files
 # Optional: aux data fileds:   $(PLUGDIR)/query/consts.sphash::long:int:val;
-switch ?/local/pcb/mod/SPHASH
+switch ?/local/rnd/mod/SPHASH
 	case {^$} end
 	default
-		foreach /local/nn in /local/pcb/mod/SPHASH
+		foreach /local/nn in /local/rnd/mod/SPHASH
 			put /local/n  /local/nn
 			sub {/local/n} {::.*$} {}
 			put /local/bn /local/n
@@ -24,9 +24,9 @@ switch ?/local/pcb/mod/SPHASH
 					end
 			end
 			append /local/rnd/RULES [@
-# sphash for @/local/pcb/mod@
+# sphash for @/local/rnd/mod@
 @/local/bn@_sphash.c @/local/bn@_sphash.h: $(SPHASH) @/local/n@
-	$(SPHASH) @/local/aux@ --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash @?/local/pcb/mod/SPHASH_ARGS@ < @/local/n@
+	$(SPHASH) @/local/aux@ --prefix @/local/rnd/mod@_@/local/pr@ --out @/local/bn@_sphash @?/local/rnd/mod/SPHASH_ARGS@ < @/local/n@
 @]
 			append /local/rnd/CLEANFILES [@@/local/bn@_sphash.c@]
 			append /local/rnd/CLEANFILES [@@/local/bn@_sphash.h@]
@@ -36,4 +36,4 @@ switch ?/local/pcb/mod/SPHASH
 	end
 end
 
-put /local/pcb/mod/SPHASH {}
+put /local/rnd/mod/SPHASH {}

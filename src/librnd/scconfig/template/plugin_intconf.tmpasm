@@ -1,36 +1,36 @@
 # Set up internal embedde dconfig
-# Input: /local/pcb/mod/CONFFILE is the file name of the conf file (without path)
-#        /local/pcb/mod/CONFVAR is the variable name to use in conf_internal.c
+# Input: /local/rnd/mod/CONFFILE is the file name of the conf file (without path)
+#        /local/rnd/mod/CONFVAR is the variable name to use in conf_internal.c
 
-switch ?/local/pcb/mod/CONFFILE
+switch ?/local/rnd/mod/CONFFILE
 case {...}
 
-put /local/pcb/mod/is_hidlib  [@/local/pcb/@/local/pcb/mod@/hidlib@]
-resolve /local/pcb/mod/is_hidlib ?/local/pcb/mod/is_hidlib
-if ?/local/pcb/mod/is_hidlib
+put /local/rnd/mod/is_hidlib  [@/local/pcb/@/local/rnd/mod@/hidlib@]
+resolve /local/rnd/mod/is_hidlib ?/local/rnd/mod/is_hidlib
+if ?/local/rnd/mod/is_hidlib
 then
-	put /local/rnd/MCFG [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
-	put /local/rnd/ICFG [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+	put /local/rnd/MCFG [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/CONFFILE@@]
+	put /local/rnd/ICFG [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/conf_internal.c@]
 else
-	put /local/rnd/MCFG [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
-	put /local/rnd/ICFG [@$(PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+	put /local/rnd/MCFG [@$(PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/CONFFILE@@]
+	put /local/rnd/ICFG [@$(PLUGDIR)/@/local/rnd/mod@/conf_internal.c@]
 end
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/ICFG@ @]
 append /local/rnd/DISTCLEANFILES [@ @/local/rnd/ICFG@ @]
 append /local/rnd/RULES [@
 @/local/rnd/ICFG@: @/local/rnd/MCFG@ $(CQUOTE)
-	$(CQUOTE) -n @/local/pcb/mod/CONFVAR@ < @/local/rnd/MCFG@ > @/local/rnd/ICFG@
+	$(CQUOTE) -n @/local/rnd/mod/CONFVAR@ < @/local/rnd/MCFG@ > @/local/rnd/ICFG@
 @]
 
 
 if ?/local/librnd/no_confdir
 then
 else
-	switch /local/pcb/mod/enabled
+	switch /local/rnd/mod/enabled
 		case {1}
 			append /local/rnd/rules/install_ [@
-		$(SCCBOX) $(HOW) "@/local/rnd/MCFG@" "$(CONFDIR)/@/local/pcb/mod/CONFFILE@"@]
+		$(SCCBOX) $(HOW) "@/local/rnd/MCFG@" "$(CONFDIR)/@/local/rnd/mod/CONFFILE@"@]
 		end
 		default end;
 	end
