@@ -1,7 +1,5 @@
 #ifndef LIBRND_SCCONFIG_APP_TREE
-/* for compatibility */
-/* TODO:pcb1 - make this an #error in librnd4 */
-#define APP "pcb"
+#error librnd requires APP to be defined to the app name, e.g. #define APP "pcb"
 #else
 #define APP LIBRND_SCCONFIG_APP_TREE
 #endif
