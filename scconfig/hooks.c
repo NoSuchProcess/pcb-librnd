@@ -364,11 +364,11 @@ static void rnd_hook_detect_coord_bits(void)
    a pup dep because it is not in librnd but in the host app and can have a
    different na,e */
 static const char *dialog_deps[] = {
-	"/local/pcb/dialogs/controls",         /* so we don't relax user's explicit request */
-	"/local/pcb/hid_remote/controls",
-	"/local/pcb/lib_gtk2_common/controls",
-	"/local/pcb/lib_gtk4_common/controls",
-	"/local/pcb/hid_lesstif/controls",
+	"/local/module/dialogs/controls",         /* so we don't relax user's explicit request */
+	"/local/module/hid_remote/controls",
+	"/local/module/lib_gtk2_common/controls",
+	"/local/module/lib_gtk4_common/controls",
+	"/local/module/hid_lesstif/controls",
 	NULL
 };
 
@@ -570,7 +570,7 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_) fprintf(f, "#state %s %s\n", name, get("/local/pcb/" name "/controls"));
+#define plugin_def(name, desc, default_, all_) fprintf(f, "#state %s %s\n", name, get("/local/module/" name "/controls"));
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"
@@ -578,7 +578,7 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_) fprintf(f, "/local/pcb/%s/controls=%s\n/local/pcb/%s/external=true\n", name, get("/local/pcb/" name "/controls"), name);
+#define plugin_def(name, desc, default_, all_) fprintf(f, "/local/module/%s/controls=%s\n/local/module/%s/external=true\n", name, get("/local/module/" name "/controls"), name);
 #define plugin_header(sect)
 #define plugin_dep(plg, on)
 #include "plugins.h"

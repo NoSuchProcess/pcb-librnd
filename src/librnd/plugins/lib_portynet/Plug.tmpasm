@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(SRC_3RD_DIR)/libporty_net/libportytcp4.o
 @]
 
-switch /local/pcb/lib_portynet/controls
+switch /local/module/lib_portynet/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

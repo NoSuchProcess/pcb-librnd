@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS_C99 [@
 	$(LIBRND_PLUGDIR)/hid_gtk4_gl/gtkhid-gl.o
 @]
 
-switch /local/pcb/hid_gtk4_gl/controls
+switch /local/module/hid_gtk4_gl/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS   [@@/target/libs/gui/gtk4/cflags@ @/target/libs/gui/epoxy/cflags@ @libs/gui/glu/cflags@@]
@@ -12,7 +12,7 @@ switch /local/pcb/hid_gtk4_gl/controls
 	end
 end
 
-switch /local/pcb/hid_gtk4_gl/controls
+switch /local/module/hid_gtk4_gl/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

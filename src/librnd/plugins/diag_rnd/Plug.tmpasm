@@ -3,7 +3,7 @@ put /local/rnd/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/diag_rnd/diag_rnd.o
 @]
 
-switch /local/pcb/diag_rnd/controls
+switch /local/module/diag_rnd/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

@@ -1,7 +1,7 @@
 put /local/rnd/mod {import_pixmap_gd}
 put /local/rnd/mod/OBJS [@ $(PLUGDIR)/import_pixmap_gd/import_pixmap_gd.o @]
 
-switch /local/pcb/import_pixmap_gd/controls
+switch /local/module/import_pixmap_gd/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/LDFLAGS         libs/gui/gd/ldflags
@@ -9,7 +9,7 @@ switch /local/pcb/import_pixmap_gd/controls
 		end
 end
 
-switch /local/pcb/import_pixmap_gd/controls
+switch /local/module/import_pixmap_gd/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(SRC_3RD_DIR)/libuirc/libuirc.o
 @]
 
-switch /local/pcb/irc/controls
+switch /local/module/irc/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

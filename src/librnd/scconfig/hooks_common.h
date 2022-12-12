@@ -76,7 +76,7 @@ static int rnd_hook_custom_arg_(const char *key, const char *value, const arg_au
 		return 1;
 	}
 	if (strcmp(key, "profile") == 0) {
-		put("/local/pcb/profile", strue);
+		put("/local/rnd/profile", strue);
 		put("/local/" APP "/profile", strue);
 		return 1;
 	}
@@ -145,11 +145,11 @@ int plugin_dep1(int require, const char *plugin, const char *deps_on)
 	const char *st_plugin, *st_deps_on, *ext_deps_on;
 	int dep_chg = 0;
 
-	sprintf(buff, "/local/pcb/%s/controls", plugin);
+	sprintf(buff, "/local/module/%s/controls", plugin);
 	st_plugin = get(buff);
-	sprintf(buff, "/local/pcb/%s/external", deps_on);
+	sprintf(buff, "/local/module/%s/external", deps_on);
 	ext_deps_on = get(buff);
-	sprintf(buff, "/local/pcb/%s/controls", deps_on);
+	sprintf(buff, "/local/module/%s/controls", deps_on);
 	st_deps_on = get(buff);
 
 	/* do not change buff here, code below depends on it being set on deps_on/controls */
@@ -197,7 +197,7 @@ static void all_plugin_select(const char *state, int force)
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) \
 	if ((all_) || force) { \
-		sprintf(buff, "/local/pcb/%s/controls", name); \
+		sprintf(buff, "/local/module/%s/controls", name); \
 		put(buff, state); \
 	}
 #define plugin_header(sect)
@@ -215,7 +215,7 @@ static int plugin_dep_set_rec1(const char *plg, const char *on, const char *pare
 	char buff[1024], *st_child;
 
 	if (strcmp(on, parent_plugin) == 0) {
-		sprintf(buff, "/local/pcb/%s/controls", plg);
+		sprintf(buff, "/local/module/%s/controls", plg);
 		st_child = get(buff);
 
 		if ((strcmp(target_state, "disable") == 0) && (strcmp(st_child, "disable") != 0)) {
@@ -278,21 +278,21 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 	if (require != 0)
 		return 0;
 
-	sprintf(buff, "/local/pcb/%s/external", deps_on);
+	sprintf(buff, "/local/module/%s/external", deps_on);
 	is_external = istrue(get(buff));
 
-	sprintf(buff, "/local/pcb/%s/externally_forced", deps_on);
+	sprintf(buff, "/local/module/%s/externally_forced", deps_on);
 	is_ext_forced = istrue(get(buff));
 	if (!is_external && !is_ext_forced)
 		return 0;
 
-	sprintf(buff, "/local/pcb/%s/controls", plugin);
+	sprintf(buff, "/local/module/%s/controls", plugin);
 	st_plugin = get(buff);
-	sprintf(buff, "/local/pcb/%s/controls", deps_on);
+	sprintf(buff, "/local/module/%s/controls", deps_on);
 	st_deps_on = get(buff);
 
 	if ((strcmp(st_deps_on, "disable") == 0) && (strcmp(st_plugin, "disable") != 0)) {
-		sprintf(buff, "/local/pcb/%s/explicit", plugin);
+		sprintf(buff, "/local/module/%s/explicit", plugin);
 		is_explicit = (get(buff) != NULL);
 
 		if (is_explicit) {
@@ -312,7 +312,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 	}
 
 	if ((strcmp(st_deps_on, "plugin") == 0) && (strcmp(st_plugin, "buildin") == 0)) {
-		sprintf(buff, "/local/pcb/%s/explicit", plugin);
+		sprintf(buff, "/local/module/%s/explicit", plugin);
 		is_explicit = (get(buff) != NULL);
 
 		if (is_explicit) {
@@ -334,7 +334,7 @@ int plugin_dep_ext(int require, const char *plugin, const char *deps_on)
 	/* if we had to change a plugin because of an external, mark it, so that
 	   this choice won't be overridden */
 	if (dep_chg) {
-		sprintf(buff, "/local/pcb/%s/externally_forced", plugin);
+		sprintf(buff, "/local/module/%s/externally_forced", plugin);
 		put(buff, strue);
 	}
 
@@ -381,7 +381,7 @@ void rnd_hook_postinit()
 #endif
 	put("/local/rnd/debug", sfalse);
 	put("/local/" APP "/debug", sfalse);
-	put("/local/pcb/profile", sfalse);
+	put("/local/rnd/profile", sfalse);
 	put("/local/" APP "/profile", sfalse);
 	put("/local/rnd/symbols", sfalse);
 	put("/local/" APP "/symbols", sfalse);
@@ -410,10 +410,10 @@ static int all_plugin_check_explicit(void)
 #undef plugin_header
 #undef plugin_dep
 #define plugin_def(name, desc, default_, all_) \
-	sprintf(pwanted, "/local/pcb/%s/explicit", name); \
+	sprintf(pwanted, "/local/module/%s/explicit", name); \
 	wanted = get(pwanted); \
 	if (wanted != NULL) { \
-		sprintf(pgot, "/local/pcb/%s/controls", name); \
+		sprintf(pgot, "/local/module/%s/controls", name); \
 		got = get(pgot); \
 		if (strcmp(got, wanted) != 0) {\
 			report("ERROR: %s was requested to be %s but I had to %s it\n", name, wanted, got); \

@@ -15,7 +15,7 @@ append /local/librnd/plugin_rule_linstall  [@	cd ../src_3rd/gensexpr && $(MAKE) 
 append /local/librnd/plugin_rule_uninstall [@	cd ../src_3rd/gensexpr && $(MAKE) install_ CP="../$(SCCBOX) uninstall -f -q" INCDIR=$(HL_INCDIR)/src_3rd/gensexpr LIBDIR=$(INST_DUMMY)
 @] {}
 
-switch /local/pcb/lib_gensexpr/controls
+switch /local/module/lib_gensexpr/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

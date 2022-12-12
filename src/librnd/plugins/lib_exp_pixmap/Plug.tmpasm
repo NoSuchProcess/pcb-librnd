@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/lib_exp_pixmap/draw_pixmap.o
 @]
 
-switch /local/pcb/lib_exp_pixmap/controls
+switch /local/module/lib_exp_pixmap/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/LDFLAGS         libs/gui/gd/ldflags
@@ -12,7 +12,7 @@ switch /local/pcb/lib_exp_pixmap/controls
 		end
 end
 
-switch /local/pcb/lib_exp_pixmap/controls
+switch /local/module/lib_exp_pixmap/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

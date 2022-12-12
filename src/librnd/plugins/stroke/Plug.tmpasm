@@ -4,7 +4,7 @@ put /local/rnd/mod/CONF {$(LIBRND_PLUGDIR)/stroke/stroke_conf.h}
 put /local/rnd/mod/CONFFILE {stroke.conf}
 put /local/rnd/mod/CONFVAR {stroke_conf_internal}
 
-switch /local/pcb/stroke/controls
+switch /local/module/stroke/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/LDFLAGS         libs/gui/libstroke/ldflags
@@ -13,7 +13,7 @@ switch /local/pcb/stroke/controls
 end
 
 
-switch /local/pcb/stroke/controls
+switch /local/module/stroke/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

@@ -13,7 +13,7 @@ put /local/rnd/mod/OBJS [@
 	$(LIBRND_PLUGDIR)/hid_lesstif/Pages.o
 @]
 
-switch /local/pcb/hid_lesstif/controls
+switch /local/module/hid_lesstif/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS [@
@@ -30,7 +30,7 @@ switch /local/pcb/hid_lesstif/controls
 		end
 end
 
-switch /local/pcb/hid_lesstif/controls
+switch /local/module/hid_lesstif/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

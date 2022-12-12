@@ -7,7 +7,7 @@ put /local/rnd/mod/OBJS [@
 put /target/libs/gui/mbtk/cflags {}
 put /target/libs/gui/mbtk/ldflags {-lmbtk_xlib}
 
-switch /local/pcb/lib_mbtk_common/controls
+switch /local/module/lib_mbtk_common/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS   /target/libs/gui/mbtk/cflags
@@ -15,7 +15,7 @@ switch /local/pcb/lib_mbtk_common/controls
 	end
 end
 
-switch /local/pcb/hid_mbtk_xlib/controls
+switch /local/module/hid_mbtk_xlib/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

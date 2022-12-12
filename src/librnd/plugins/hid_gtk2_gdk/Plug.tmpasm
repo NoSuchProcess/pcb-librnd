@@ -4,7 +4,7 @@ put /local/rnd/mod/OBJS_C99 [@
 	$(LIBRND_PLUGDIR)/hid_gtk2_gdk/gtkhid-gdk.o
 @]
 
-switch /local/pcb/hid_gtk2_gdk/controls
+switch /local/module/hid_gtk2_gdk/controls
 	case {disable} end;
 	default
 		put /local/rnd/mod/CFLAGS   /target/libs/gui/gtk2/cflags
@@ -12,7 +12,7 @@ switch /local/pcb/hid_gtk2_gdk/controls
 	end
 end
 
-switch /local/pcb/hid_gtk2_gdk/controls
+switch /local/module/hid_gtk2_gdk/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;

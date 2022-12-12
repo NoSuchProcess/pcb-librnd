@@ -25,7 +25,7 @@ put /local/rnd/mod/CONFFILE {dialogs.conf}
 put /local/rnd/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_common/dialogs_conf.h}
 put /local/rnd/mod/CONFVAR {dialogs_conf_internal}
 
-switch /local/pcb/lib_hid_common/controls
+switch /local/module/lib_hid_common/controls
 	case {buildin}   include /local/librnd/tmpasm/buildin; end;
 	case {plugin}    include /local/librnd/tmpasm/plugin; end;
 	case {disable}   include /local/librnd/tmpasm/disable; end;
