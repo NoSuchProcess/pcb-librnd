@@ -227,15 +227,15 @@ append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 
 #---- modules ----#
 # extra rules for modules
-put /local/pcb/RULES {}
+put /local/rnd/RULES {}
 put /local/rnd/CLEANFILES {test-rnd$(EXE)}
 put /local/librnd/CLEANRULES {}
 put /local/librnd/all {}
 put /local/librnd/buildin_init {}
-put /local/pcb/rules/install_ {}
-put /local/pcb/rules/install {}
-put /local/pcb/rules/linstall {}
-put /local/pcb/rules/uninstall {}
+put /local/rnd/rules/install_ {}
+put /local/rnd/rules/install {}
+put /local/rnd/rules/linstall {}
+put /local/rnd/rules/uninstall {}
 put /local/pcb/mod/OBJS {}
 put /local/pcb/mod/OBJS_C99 {}
 put /local/pcb/mod/CONF {}
@@ -553,7 +553,7 @@ end
 print [@
 ##### module rules begin #####
 
-@/local/pcb/RULES@
+@/local/rnd/RULES@
 
 ##### module rules end #####
 
@@ -607,7 +607,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	$(SCCBOX) $(HOW) "$(LIBRND)/hid/buildin.hidlib.h" "$(HL_INCDIR)/hid/buildin.hidlib.h"
 	$(SCCBOX) $(HOW) "librnd/plugins/map_plugins.sh" "$(HL_LIBDIR)/librnd4/plugins/map_plugins.sh"
-	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"@/local/pcb/rules/install_@@]
+	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"@/local/rnd/rules/install_@@]
 
 if /local/librnd/disable_so
 then

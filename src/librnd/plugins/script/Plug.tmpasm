@@ -13,7 +13,7 @@ else
 	append /local/pcb/mod/OBJS [@
 	$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o
 	@]
-	append /local/pcb/RULES [@
+	append /local/rnd/RULES [@
 
 #$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o: $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.c
 #	$(CC) $(CFLAGS) -c $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.c -o $(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o

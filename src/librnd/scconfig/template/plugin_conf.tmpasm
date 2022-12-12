@@ -7,7 +7,7 @@ switch /local/pcb/mod/CONF
 		sub {/local/pcb/mod/CONFOUT} {.h$} {_fields.h}
 		append /local/rnd/CLEANFILES /local/pcb/mod/CONFOUT
 		append /local/rnd/DEPDEPS /local/pcb/mod/CONFOUT
-		append /local/pcb/RULES [@
+		append /local/rnd/RULES [@
 # conf generation for @/local/pcb/mod@ '@/local/pcb/mod/CONF@'
 @/local/pcb/mod/CONFOUT@: @/local/pcb/mod/CONF@
 	AWK=@/host/fstools/awk@ $(LIBRND_LIBDIR)/scconfig/gen_conf.sh < @/local/pcb/mod/CONF@ > @/local/pcb/mod/CONFOUT@

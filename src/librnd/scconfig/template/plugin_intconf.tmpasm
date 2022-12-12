@@ -18,7 +18,7 @@ end
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/ICFG@ @]
 append /local/rnd/DISTCLEANFILES [@ @/local/rnd/ICFG@ @]
-append /local/pcb/RULES [@
+append /local/rnd/RULES [@
 @/local/rnd/ICFG@: @/local/rnd/MCFG@ $(CQUOTE)
 	$(CQUOTE) -n @/local/pcb/mod/CONFVAR@ < @/local/rnd/MCFG@ > @/local/rnd/ICFG@
 @]
@@ -29,7 +29,7 @@ then
 else
 	switch /local/pcb/mod/enabled
 		case {1}
-			append /local/pcb/rules/install_ [@
+			append /local/rnd/rules/install_ [@
 		$(SCCBOX) $(HOW) "@/local/rnd/MCFG@" "$(CONFDIR)/@/local/pcb/mod/CONFFILE@"@]
 		end
 		default end;

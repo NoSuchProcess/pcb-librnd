@@ -1,5 +1,5 @@
 Used by public templates, renamed to rnd:
-?/local/pcb/rules
++/local/pcb/rules/
 +/local/pcb/symbols
 +/local/pcb/debug
 +/local/pcb/DEPCFLAGS
@@ -7,7 +7,7 @@ Used by public templates, renamed to rnd:
 +/local/pcb/DEPDEPS
 +/local/pcb/CFLAGS
 +/local/pcb/LDFLAGS
-?/local/pcb/RULES
++/local/pcb/RULES
 +/local/pcb/CLEANFILES
 +/local/pcb/IMENU
 +/local/pcb/ICFG
