@@ -108,7 +108,7 @@ static int rnd_hook_detect_sys(void)
 		require("libs/script/fungw/cfg_pupdir/*",  0, 0);
 		if (!istrue(get("libs/script/fungw/user_call_ctx/presents")) || !istrue(get("libs/script/fungw/cfg_pupdir/presents"))) {
 			put("libs/script/fungw/presents", sfalse);
-			report_repeat("\nWARNING: system installed fungw is too old, can not use it, please install a newer version (falling back to minimal fungw shipped with pcb-rnd).\n\n");
+			report_repeat("\nWARNING: system installed fungw is too old, can not use it, please install a newer version (falling back to minimal fungw shipped with librnd).\n\n");
 		}
 	}
 
@@ -134,14 +134,14 @@ static int rnd_hook_detect_sys(void)
 
 	if (require("libs/proc/wait",  0, 0) != 0) {
 		if (require("libs/proc/_spawnvp",  0, 0) != 0) {
-			report_repeat("\nERROR: no fork or _spawnvp. Can not compile pcb-rnd.\n\n");
+			report_repeat("\nERROR: no fork or _spawnvp. Can not compile application.\n\n");
 			return 1;
 		}
 	}
 
 	if (require("libs/fs/_mkdir",  0, 0) != 0) {
 		if (require("libs/fs/mkdir",  0, 0) != 0) {
-			report_repeat("\nERROR: no mkdir() or _mkdir(). Can not compile pcb-rnd.\n\n");
+			report_repeat("\nERROR: no mkdir() or _mkdir(). Can not compile application.\n\n");
 			return 1;
 		}
 	}
