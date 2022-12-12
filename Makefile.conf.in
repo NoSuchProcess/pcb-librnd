@@ -2,8 +2,8 @@ put /tmpasm/OFS { }
 put /local/librnd/CFLAGS_GENERIC cc/cflags
 append /local/librnd/CFLAGS_GENERIC cc/fpic
 append /local/librnd/CFLAGS_GENERIC ?/local/librnd/cflags_profile
-put /local/pcb/CFLAGS /local/librnd/CFLAGS_GENERIC
-uniq /local/pcb/CFLAGS
+put /local/rnd/CFLAGS /local/librnd/CFLAGS_GENERIC
+uniq /local/rnd/CFLAGS
 uniq /local/librnd/CFLAGS_GENERIC
 
 include {src/librnd/scconfig/template/debug.tmpasm}
@@ -30,8 +30,8 @@ PCB_RND_HOST_CC=@/host/cc/cc@
 PCB_RND_VER=@/local/version@
 PCB_RND_VER_MAJOR=@/local/version_major@
 
-PCB_RND_CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
-PCB_RND_C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
+PCB_RND_CFLAGS=@?cc/argstd/std_c99@ @/local/rnd/CFLAGS@
+PCB_RND_C89FLAGS=@/local/librnd/c89flags@ @/local/rnd/CFLAGS@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/prefix@/@/local/libarchdir@

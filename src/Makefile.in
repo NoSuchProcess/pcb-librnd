@@ -1,7 +1,7 @@
-append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
-append /local/pcb/LDFLAGS cc/ldflags
-append /local/pcb/LDFLAGS cc/rdynamic
-append /local/pcb/LDFLAGS ?/local/librnd/cflags_profile
+append /local/rnd/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
+append /local/rnd/LDFLAGS cc/ldflags
+append /local/rnd/LDFLAGS cc/rdynamic
+append /local/rnd/LDFLAGS ?/local/librnd/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/librnd/OBJS_3RDLIB {}
 put /local/librnd/OBJS_CORELIB {}
@@ -10,8 +10,8 @@ put /local/librnd/OBJS_HIDLIB_PLG {}
 
 if ?libs/script/fungw/presents
 then
-	append /local/pcb/CFLAGS libs/script/fungw/cflags
-	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
+	append /local/rnd/CFLAGS libs/script/fungw/cflags
+	append /local/rnd/LDFLAGS libs/script/fungw/ldflags
 	append /local/librnd/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
 	put /local/librnd/HDRS_GENHT {}
 # TODO#GENHT temporary workaround for camv-rnd bug: Makefile.dep uses these
@@ -258,7 +258,7 @@ put /local/librnd/tmpasm/plugin_intmenu  {librnd/scconfig/template/plugin_intmen
 include {../src/librnd/plugins/plugins_ALL.tmpasm}
 
 # Lesstif requires that -lXm is before -lXt or else there is a runtime BadWindow error
-order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
+order /local/rnd/LDFLAGS {-lXm} {before} {-lXt}
 
 # ---- logic ----
 
@@ -276,7 +276,7 @@ uniq /local/librnd/OBJS_C99_CORELIB
 uniq /local/librnd/OBJS_HIDLIB_PLG
 uniq /local/librnd/OBJS_C99_HIDLIB_PLG
 uniq /local/librnd/OBJS_UTIL
-uniq /local/pcb/CFLAGS
+uniq /local/rnd/CFLAGS
 uniq /local/librnd/CFLAGS_GENERIC
 uniq /local/librnd/LIBS
 uniq /local/librnd/LIBS_PRE
@@ -297,9 +297,9 @@ gsub /local/librnd/SRCS {.o } {.c }
 # apple requires multiple "-framework something" instead of -lsomething
 # we need to keep all -frameworks but uniq would keep only the first if it
 # is a word on its own
-gsub /local/pcb/LDFLAGS {-framework } {-framework-}
-uniq /local/pcb/LDFLAGS
-gsub /local/pcb/LDFLAGS {-framework-} {-framework }
+gsub /local/rnd/LDFLAGS {-framework } {-framework-}
+uniq /local/rnd/LDFLAGS
+gsub /local/rnd/LDFLAGS {-framework-} {-framework }
 
 
 # dummy ranlib is echo
@@ -345,9 +345,9 @@ OBJS_HIDLIB_PLG=@/local/librnd/OBJS_HIDLIB_PLG@
 OBJS_C99_HIDLIB_PLG=@/local/librnd/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/librnd/OBJS_UTIL@
 SRCS=@/local/librnd/SRCS@
-CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
-C89FLAGS=@/local/librnd/c89flags@ @/local/pcb/CFLAGS@
-LDFLAGS=@/local/pcb/LDFLAGS@
+CFLAGS=@?cc/argstd/std_c99@ @/local/rnd/CFLAGS@
+C89FLAGS=@/local/librnd/c89flags@ @/local/rnd/CFLAGS@
+LDFLAGS=@/local/rnd/LDFLAGS@
 LIBS_PRE=@/local/librnd/LIBS_PRE@
 LIBS=@/local/librnd/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/librnd/LIBS_3RD@
@@ -776,7 +776,7 @@ put /local/comp/C89FLAGS {$(C89FLAGS)}
 include {librnd/scconfig/template/compile.tmpasm}
 
 # generate deps
-put /local/dep/CFLAGS /local/pcb/CFLAGS
+put /local/dep/CFLAGS /local/rnd/CFLAGS
 put /local/dep/SRCS /local/librnd/SRCS
 
 gsub /local/librnd/DEPSRCS {.o } {.c }

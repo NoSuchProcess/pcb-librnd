@@ -11,8 +11,8 @@ append /local/librnd/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pc
 
 append /local/librnd/OBJS            ?/local/pcb/mod/OBJS
 append /local/librnd/OBJS_C99        ?/local/pcb/mod/OBJS_C99
-append /local/pcb/LDFLAGS         /local/pcb/mod/LDFLAGS
-append /local/pcb/CFLAGS          /local/pcb/mod/CFLAGS
+append /local/rnd/LDFLAGS         /local/pcb/mod/LDFLAGS
+append /local/rnd/CFLAGS          /local/pcb/mod/CFLAGS
 append /local/pcb/RULES [@
 
 mod_@/local/pcb/mod@: all
