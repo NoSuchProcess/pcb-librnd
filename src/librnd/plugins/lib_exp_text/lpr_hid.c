@@ -105,7 +105,7 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n, rn
 }
 
 
-static void (*rnd_lpr_hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *) = NULL;
+static void (*rnd_lpr_hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *, void *) = NULL;
 static void lpr_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val_t *options, void *appspec)
 {
 	FILE *f;
@@ -125,7 +125,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_design_t *design, rnd_hid_attr_val
 		return;
 	}
 
-	rnd_lpr_hid_export_to_file(design, f, options, NULL);
+	rnd_lpr_hid_export_to_file(design, f, options, NULL, appspec);
 
 	rnd_pclose(f);
 }
@@ -153,7 +153,7 @@ void rnd_lpr_uninit(void)
 	lpr_hid.argument_array = NULL;
 }
 
-int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *), const double *xcalib, const double *ycalib)
+int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *, void *), const double *xcalib, const double *ycalib)
 {
 	RND_API_CHK_VER;
 

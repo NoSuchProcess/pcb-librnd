@@ -13,4 +13,4 @@ void rnd_lpr_uninit(void);
                 (the user can change these later as exporter options)
                 (ignored if the target HID doesn't have xcalib/ycalib options)
 */
-int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *), const double *xcalib, const double *ycalib);
+int rnd_lpr_init(rnd_hid_t *ps_hid, void (*ps_ps_init)(rnd_hid_t *), void (*hid_export_to_file)(rnd_design_t *dsg, FILE *, rnd_hid_attr_val_t *, rnd_xform_t *, void *appspec), const double *xcalib, const double *ycalib);
