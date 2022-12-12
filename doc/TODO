@@ -10,11 +10,7 @@
 		- user implemented ->user_free_cb() should never free cell values, the lib does that
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- scconfig: remove /local/pcb/ from templates and hooks.c on librnd side
-		- remove /local/pcb from librnd central scconfig
-		- for plugin control rename /local/pcb to /local/plugin/
-		- switch over librnd published templates, see TODO.template
-			- use /local/mod/ for module temps instead of /local/pcb/mod
-			- use /local/plugin for plugin states, like /local/pcb/hid_batch
+		- _PCB_DEP_
 	- BUG: sch-rnd multi: start sch-rnd with a file name to a non-existing project: sheetsel is confused
 	- BUG: sch-rnd multi: start sch-rnd with 2 file names to a non-existing project: only one is created
 	- implement every little detail of the new project file handling as specified
