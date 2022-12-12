@@ -16,8 +16,8 @@
 #   with this program; if not, write to the Free Software Foundation, Inc.,
 #   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-#   http://repo.hu/projects/pcb-rnd
-#   http://repo.hu/projects/librnd
+#   http://www.repo.hu/projects/pcb-rnd
+#   http://www.repo.hu/projects/librnd
 
 awk '
 

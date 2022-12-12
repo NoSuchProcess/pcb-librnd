@@ -20,8 +20,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Contact:
- *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */

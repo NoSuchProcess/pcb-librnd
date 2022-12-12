@@ -20,8 +20,8 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *  Contact:
- *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #ifndef RND_GTK4_COMPAT_H
