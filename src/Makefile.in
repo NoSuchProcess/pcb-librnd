@@ -228,7 +228,7 @@ append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 #---- modules ----#
 # extra rules for modules
 put /local/pcb/RULES {}
-put /local/pcb/CLEANFILES {test-rnd$(EXE)}
+put /local/rnd/CLEANFILES {test-rnd$(EXE)}
 put /local/librnd/CLEANRULES {}
 put /local/librnd/all {}
 put /local/librnd/buildin_init {}
@@ -281,8 +281,8 @@ uniq /local/librnd/CFLAGS_GENERIC
 uniq /local/librnd/LIBS
 uniq /local/librnd/LIBS_PRE
 uniq /local/librnd/LIBS_3RD
-uniq /local/pcb/CLEANFILES
-uniq /local/pcb/DISTCLEANFILES
+uniq /local/rnd/CLEANFILES
+uniq /local/rnd/DISTCLEANFILES
 uniq /local/librnd/CLEANRULES
 uniq /local/librnd/all
 put /local/librnd/SRCS /local/librnd/OBJS 
@@ -351,7 +351,7 @@ LDFLAGS=@/local/rnd/LDFLAGS@
 LIBS_PRE=@/local/librnd/LIBS_PRE@
 LIBS=@/local/librnd/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/librnd/LIBS_3RD@
-CLEANFILES=@/local/pcb/CLEANFILES@
+CLEANFILES=@/local/rnd/CLEANFILES@
 CLEANRULES=@/local/librnd/CLEANRULES@
 CC=@/target/cc/cc@
 AR=@/target/fstools/ar@
@@ -568,7 +568,7 @@ $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/rnd_conf.h
 
 FORCE:
 
-DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak $(LIBRND)/plugin.state @/local/pcb/DISTCLEANFILES@
+DISTCLEANFILES = librnd/config.h Makefile.depgen buildin.hidlib.c $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h ../src/librnd/plugins/.builtin.pups ../src/librnd/plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak $(LIBRND)/plugin.state @/local/rnd/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(CLEANFILES)

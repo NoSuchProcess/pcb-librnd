@@ -17,7 +17,7 @@ else
 end
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/ICFG@ @]
-append /local/pcb/DISTCLEANFILES [@ @/local/rnd/ICFG@ @]
+append /local/rnd/DISTCLEANFILES [@ @/local/rnd/ICFG@ @]
 append /local/pcb/RULES [@
 @/local/rnd/ICFG@: @/local/rnd/MCFG@ $(CQUOTE)
 	$(CQUOTE) -n @/local/pcb/mod/CONFVAR@ < @/local/rnd/MCFG@ > @/local/rnd/ICFG@

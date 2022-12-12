@@ -15,7 +15,7 @@ else
 end
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/IMENU@ @]
-append /local/pcb/DISTCLEANFILES [@ @/local/rnd/IMENU@ @]
+append /local/rnd/DISTCLEANFILES [@ @/local/rnd/IMENU@ @]
 append /local/pcb/RULES [@
 @/local/rnd/IMENU@: @/local/rnd/MMENU@ $(CQUOTE)
 	$(CQUOTE) -n @/local/pcb/mod/MENUVAR@ < @/local/rnd/MMENU@ > @/local/rnd/IMENU@
