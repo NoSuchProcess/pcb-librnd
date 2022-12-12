@@ -7,18 +7,18 @@ case {...}
 
 if ?/local/pcb/mod/is_hidlib
 then
-	put /local/pcb/MMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
-	put /local/pcb/IMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+	put /local/rnd/MMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
+	put /local/rnd/IMENU [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
 else
-	put /local/pcb/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
-	put /local/pcb/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+	put /local/rnd/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
+	put /local/rnd/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
 end
 
-append /local/rnd/DEPDEPS [@ @/local/pcb/IMENU@ @]
-append /local/pcb/DISTCLEANFILES [@ @/local/pcb/IMENU@ @]
+append /local/rnd/DEPDEPS [@ @/local/rnd/IMENU@ @]
+append /local/pcb/DISTCLEANFILES [@ @/local/rnd/IMENU@ @]
 append /local/pcb/RULES [@
-@/local/pcb/IMENU@: @/local/pcb/MMENU@ $(CQUOTE)
-	$(CQUOTE) -n @/local/pcb/mod/MENUVAR@ < @/local/pcb/MMENU@ > @/local/pcb/IMENU@
+@/local/rnd/IMENU@: @/local/rnd/MMENU@ $(CQUOTE)
+	$(CQUOTE) -n @/local/pcb/mod/MENUVAR@ < @/local/rnd/MMENU@ > @/local/rnd/IMENU@
 @]
 
 
@@ -26,7 +26,7 @@ append /local/pcb/RULES [@
 #switch /local/pcb/mod/enabled
 #	case {1}
 #		append /local/pcb/rules/install_ [@
-#	$(SCCBOX) $(HOW) "@/local/pcb/MMENU@" "$(CONFDIR)/@/local/pcb/mod/MENUFILE@"@]
+#	$(SCCBOX) $(HOW) "@/local/rnd/MMENU@" "$(CONFDIR)/@/local/pcb/mod/MENUFILE@"@]
 #	end
 #	default end;
 #end

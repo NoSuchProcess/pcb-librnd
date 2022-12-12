@@ -9,10 +9,10 @@ Used by public templates, renamed to rnd:
 +/local/pcb/LDFLAGS
 ?/local/pcb/RULES
 ?/local/pcb/CLEANFILES
-?/local/pcb/IMENU
-?/local/pcb/ICFG
-?/local/pcb/MMENU
-?/local/pcb/MCFG
++/local/pcb/IMENU
++/local/pcb/ICFG
++/local/pcb/MMENU
++/local/pcb/MCFG
 ?/local/pcb/DISTCLEANFILES
 ?/local/pcb/mod/*
 
