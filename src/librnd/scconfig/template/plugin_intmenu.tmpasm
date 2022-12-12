@@ -14,7 +14,7 @@ else
 	put /local/pcb/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
 end
 
-append /local/pcb/DEPDEPS [@ @/local/pcb/IMENU@ @]
+append /local/rnd/DEPDEPS [@ @/local/pcb/IMENU@ @]
 append /local/pcb/DISTCLEANFILES [@ @/local/pcb/IMENU@ @]
 append /local/pcb/RULES [@
 @/local/pcb/IMENU@: @/local/pcb/MMENU@ $(CQUOTE)

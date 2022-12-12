@@ -16,7 +16,7 @@ else
 	put /local/pcb/ICFG [@$(PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
 end
 
-append /local/pcb/DEPDEPS [@ @/local/pcb/ICFG@ @]
+append /local/rnd/DEPDEPS [@ @/local/pcb/ICFG@ @]
 append /local/pcb/DISTCLEANFILES [@ @/local/pcb/ICFG@ @]
 append /local/pcb/RULES [@
 @/local/pcb/ICFG@: @/local/pcb/MCFG@ $(CQUOTE)
