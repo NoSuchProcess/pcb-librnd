@@ -5,16 +5,8 @@
 switch ?/local/rnd/mod/CONFFILE
 case {...}
 
-put /local/rnd/mod/is_hidlib  [@/local/pcb/@/local/rnd/mod@/hidlib@]
-resolve /local/rnd/mod/is_hidlib ?/local/rnd/mod/is_hidlib
-if ?/local/rnd/mod/is_hidlib
-then
-	put /local/rnd/MCFG [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/CONFFILE@@]
-	put /local/rnd/ICFG [@$(LIBRND_PLUGDIR)/@/local/rnd/mod@/conf_internal.c@]
-else
-	put /local/rnd/MCFG [@$(PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/CONFFILE@@]
-	put /local/rnd/ICFG [@$(PLUGDIR)/@/local/rnd/mod@/conf_internal.c@]
-end
+put /local/rnd/MCFG [@$(PLUGDIR)/@/local/rnd/mod@/@/local/rnd/mod/CONFFILE@@]
+put /local/rnd/ICFG [@$(PLUGDIR)/@/local/rnd/mod@/conf_internal.c@]
 
 append /local/rnd/DEPDEPS [@ @/local/rnd/ICFG@ @]
 append /local/rnd/DISTCLEANFILES [@ @/local/rnd/ICFG@ @]
