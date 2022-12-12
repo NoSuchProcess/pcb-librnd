@@ -16,6 +16,8 @@
 		- switch over librnd published templates, see TODO.template
 			- use /local/mod/ for module temps instead of /local/pcb/mod
 			- use /local/plugin for plugin states, like /local/pcb/hid_batch
+	- BUG: sch-rnd multi: start sch-rnd with a file name to a non-existing project: sheetsel is confused
+	- BUG: sch-rnd multi: start sch-rnd with 2 file names to a non-existing project: only one is created
 	- implement every little detail of the new project file handling as specified
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 	- grep for "multi:" or TODO.*multi in sch-rnd
