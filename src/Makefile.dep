@@ -548,8 +548,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/core/project.h ../src/librnd/hid/grid.h \
  ../src/librnd/core/funchash.h ../src/librnd/hid/hid_menu.h \
- ../src/librnd/core/compat_lrealpath.h ../src/librnd/core/safe_fs.h \
- ../src/librnd/hid/buildin.hidlib.h ../src/librnd/hid/tool.h \
+ ../src/librnd/core/compat_lrealpath.h ../src/librnd/core/safe_fs.h ../src/librnd/hid/tool.h \
  ../src/librnd/hid/../../../config.h
 ../src/librnd/hid/hid_menu.o: ../src/librnd/hid/hid_menu.c \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/tree.h \
@@ -1810,15 +1809,15 @@
  ../src/librnd/core/hid_cfg_action.h ../src/librnd/core/hid_cfg.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
- ../src/librnd/hid/hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- ../src/librnd/core/error.h ../src/librnd/core/box.h ../src/librnd/core/math_helper.h \
- ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
- ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
- ../src/librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
+ ../src_3rd/genht/ht.h ../src/librnd/hid/hid_menu.h ../src/librnd/hid/hid.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h ../src/librnd/core/error.h \
+ ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
+ ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h ../src/librnd/core/conf.h \
+ ../src/librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/liblihata/lihata.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/plugins/lib_gtk_common/ui_zoompan.h \
  ../src/librnd/plugins/lib_gtk_common/in_mouse.h ../src/librnd/hid/hid_cfg_input.h \
  ../src_3rd/genht/htip.h ../src/librnd/plugins/lib_gtk_common/rnd_gtk.h \
  ../src/librnd/plugins/lib_gtk4_common/bu_menu.h ../src/librnd/core/conf_hid.h \
