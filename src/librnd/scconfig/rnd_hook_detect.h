@@ -159,12 +159,9 @@ static int rnd_hook_detect_sys(void)
 		if (plug_is_enabled("script"))
 			report_repeat("WARNING: Since there's no suitable system-installed fungw, only limited scripting is available using libfawk - if you need more scripting languages, install fungw and reconfigure librnd.\n");
 		put("/local/librnd/fungw_system", sfalse); /* don't use APP here, only librnd should detect fungw */
-		put("/local/pcb/fungw_system", sfalse); /* compatibility */
 	}
-	else {
+	else
 		put("/local/librnd/fungw_system", strue); /* don't use APP here, only librnd should detect fungw */
-		put("/local/pcb/fungw_system", strue); /* compatibility */
-	}
 
 	/* generic utils for Makefiles */
 	require("sys/ext_exe", 0, 1);
