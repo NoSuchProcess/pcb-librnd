@@ -76,7 +76,7 @@ type-specific macros available.
 
 4. multi-call
 
-Currently pcb-rnd does not depend on fungw's multi-call, thus actions are
+Currently librnd does not depend on fungw's multi-call, thus actions are
 free to convert their arguments - the same arguments will not be reused in
 other actions.
 
