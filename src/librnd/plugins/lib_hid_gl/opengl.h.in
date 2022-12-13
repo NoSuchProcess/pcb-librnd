@@ -45,7 +45,7 @@ else
 print [@
 /* if not calculating dependencies, including this header is an error when
    opengl is not configured */
-#ifndef _PCB_DEP_
+#ifndef _RND_DEP_
 #	error opengl is not configured.
 #endif
 @]
