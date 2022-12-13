@@ -47,7 +47,7 @@ extern const rnd_color_t *rnd_color_magenta;
 extern const rnd_color_t *rnd_color_golden;
 extern const rnd_color_t *rnd_color_drill;
 
-/* Convert a color from various formats to a pcb color; returns 0 on success */
+/* Convert a color from various formats to a librnd color; returns 0 on success */
 int rnd_color_load_int(rnd_color_t *dst, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 int rnd_color_load_packed(rnd_color_t *dst, unsigned long p);
 int rnd_color_load_float(rnd_color_t *dst, float r, float g, float b, float a);

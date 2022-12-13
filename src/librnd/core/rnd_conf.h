@@ -81,7 +81,7 @@ typedef struct {
 	const struct {
 		RND_CFT_INTEGER mode;                  /* currently active tool */
 		RND_CFT_UNIT grid_unit;                /* select whether you draw in mm or mil */
-		RND_CFT_COORD grid;                    /* grid in pcb-units */
+		RND_CFT_COORD grid;                    /* grid spacing in librnd coord units */
 		RND_CFT_LIST grids;                    /* grid in grid-string format */
 		RND_CFT_INTEGER grids_idx;             /* the index of the currently active grid from grids */
 		RND_CFT_BOOLEAN draw_grid;             /* draw grid points */

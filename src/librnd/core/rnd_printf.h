@@ -62,8 +62,8 @@
  *   %mw    output an fgw_arg_t value
  *
  * Exotic formats, DO NOT USE:
- *   %mr    output a measure in a unit readable by io_pcb parse_l.l
- *          (outputs in centimil without units - compatibility with pcb mainline)
+ *   %mr    output a measure in a unit readable by pcb-rnd's io_pcb parse_l.l
+ *          (outputs in centimil without units - compatibility with gEDA/pcb)
  *   %mk    output a measure in decimil (kicad legacy format)
  *   %mA    output an angle in decidegrees (degrees x 10) for kicad legacy
  *
@@ -75,7 +75,7 @@
  *     [n]  use stored format n
  *     #    prevents all scaling for %mS/D/1/.../9 (this should
  *          ONLY be used for debug code since its output exposes
- *          pcb's base units).
+ *          librnd internal units).
  *
  * The usual printf(3) precision and length modifiers should work with
  * any format specifier that outputs coords, e.g. %.3mm will output in
@@ -130,8 +130,8 @@ typedef enum {
 	RND_PRINTF_SLOT_USER5,
 	RND_PRINTF_SLOT_USER6,
 	RND_PRINTF_SLOT_USER7,
-	RND_PRINTF_SLOT_FF_ORIG_COORD, /* %[8] original .pcb file format coord prints */
-	RND_PRINTF_SLOT_FF_SAFE_COORD, /* %[9] safe .pcb file format coord print that doesn't lose precision */
+	RND_PRINTF_SLOT_FF_ORIG_COORD, /* %[8] pcb-rnd: original .pcb file format coord prints */
+	RND_PRINTF_SLOT_FF_SAFE_COORD, /* %[9] pcb-rnd: safe .pcb file format coord print that doesn't lose precision */
 	RND_PRINTF_SLOT_max
 } rnd_printf_slot_idx_t;
 extern const char *rnd_printf_slot[RND_PRINTF_SLOT_max];

@@ -48,7 +48,7 @@ enum rnd_unit_allow_e {
 	RND_UNIT_ALLOW_MHZ = 256,
 	RND_UNIT_ALLOW_GHZ = 512,
 
-	RND_UNIT_ALLOW_CMIL = 1024, /* old pcb format */
+	RND_UNIT_ALLOW_CMIL = 1024, /* pcb-rnd: old gEDA/pcb format */
 	RND_UNIT_ALLOW_MIL = 2048,
 
 	/* unusual units, avoid using these */
@@ -62,10 +62,10 @@ enum rnd_unit_allow_e {
 	RND_UNIT_ALLOW_IMPERIAL = RND_UNIT_ALLOW_DMIL | RND_UNIT_ALLOW_CMIL | RND_UNIT_ALLOW_MIL | RND_UNIT_ALLOW_IN,
 	RND_UNIT_ALLOW_FREQ = RND_UNIT_ALLOW_HZ | RND_UNIT_ALLOW_KHZ | RND_UNIT_ALLOW_MHZ | RND_UNIT_ALLOW_GHZ,
 
-	/* DO NOT USE - this is all units allowed in %mr and io_pcb old format */
+	/* DO NOT USE - this is all units allowed in %mr and pcb-rnd's io_pcb old format */
 	RND_UNIT_ALLOW_READABLE = RND_UNIT_ALLOW_CMIL,
 
-	/* Used for pcb-printf %mS - should not include unusual units like km, cmil and dmil */
+	/* Used for rnd_printf %mS - should not include unusual units like km, cmil and dmil */
 	RND_UNIT_ALLOW_NATURAL = RND_UNIT_ALLOW_NM | RND_UNIT_ALLOW_UM | RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_M | RND_UNIT_ALLOW_MIL | RND_UNIT_ALLOW_IN,
 
 	/* Allow all but the most exotic: anything up to IN, minus the freqs */
@@ -127,7 +127,7 @@ double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x);
 /* Return how many rnd-internal-coord-unit a unit translates to */
 double rnd_unit_to_factor(const rnd_unit_t *unit);
 
-/* Convert a given unit to pcb coords; clamp at the end of the ranges */
+/* Convert a given unit to librnd coords; clamp at the end of the ranges */
 rnd_coord_t rnd_unit_to_coord(const rnd_unit_t *unit, double x);
 
 /* Bring an angle into [0, 360) range */

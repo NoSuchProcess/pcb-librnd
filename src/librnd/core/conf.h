@@ -262,8 +262,8 @@ const char *rnd_conf_role_name(rnd_conf_role_t r);
    fields may be modified but the structure of the tree is static (can't
    create or remove nodes). This is useful when an io_ file format supports
    only a subset of settings: it can build the RND_CFR_DESIGN tree, lock it so
-   settings that it wouldn't know how to save won't appear. NOTE: io_pcb
-   supports all settings via attributes so does not lock. */
+   settings that it wouldn't know how to save won't appear. NOTE: pcb-rnd's 
+   io_pcb supports all settings via attributes so does not lock. */
 void rnd_conf_lock(rnd_conf_role_t target);
 void rnd_conf_unlock(rnd_conf_role_t target);
 

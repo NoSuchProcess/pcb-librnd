@@ -38,7 +38,7 @@ typedef struct rnd_project_s rnd_project_t;
 typedef struct rnd_design_s rnd_design_t;
 
 
-/* typedef ... rnd_coord_t; pcb base unit, typedef'd in config.h */
+/* typedef ... rnd_coord_t; librnd base coord unit, typedef'd in config.h */
 typedef double rnd_angle_t; /* degrees */
 typedef struct rnd_unit_s rnd_unit_t;
 

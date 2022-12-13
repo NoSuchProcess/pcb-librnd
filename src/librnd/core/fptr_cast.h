@@ -26,7 +26,7 @@
 
 /* Function pointer <-> data pointer casts with assert on size match. C89
    does not permit these casts but they practically work on any platform
-   pcb-rnd has the chance to run on. Hide the ugliness behind this API. */
+   librnd has the chance to run on. Hide the ugliness behind this API. */
 
 #ifndef RND_FPTRCAST_H
 #define RND_FPTRCAST_H

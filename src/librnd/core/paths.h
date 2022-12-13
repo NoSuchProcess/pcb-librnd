@@ -58,10 +58,10 @@ do { \
 
 /* generic file name template substitution callbacks for rnd_strdup_subst:
     %P    pid
-    %F    load-time file name of the current pcb
-    %B    basename (load-time file name of the current pcb without path)
-    %D    dirname (load-time file path of the current pcb, without file name, with trailing slash, might be ./)
-    %N    name of the current pcb
+    %F    load-time file name of the current design
+    %B    basename (load-time file name of the current design without path)
+    %D    dirname (load-time file path of the current design, without file name, with trailing slash, might be ./)
+    %N    name of the current design
     %T    wall time (Epoch)
    ctx must be the current (rnd_design_t *)
 */

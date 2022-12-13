@@ -50,7 +50,7 @@ double rnd_get_value(const char *val, const char *units, rnd_bool *absolute, rnd
 double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute, rnd_unit_list_t extra_units, const char *default_unit, rnd_bool *success);
 
 /* Unit suffix to use when rnd_get_value()'s val does not have a unit and
-   units is NULL or empty. Default is "cmil" for pcb compatibility. */
+   units is NULL or empty. Default is "cmil" for gEDA/pcb compatibility in pcb-rnd. */
 extern const char *rnd_get_value_default_unit;
 
 /* Convert a string of value+unit to coords and unit struct. Absolute is the same
