@@ -30,7 +30,7 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/color.h>
 
-/* to @conf_gen.sh: begin hidlib */
+/* to @conf_gen.sh: begin librnd */
 
 typedef struct {
 
@@ -100,7 +100,7 @@ typedef struct {
 	} editor;
 } rnd_conf_t;
 
-/* to @conf_gen.sh: end hidlib */
+/* to @conf_gen.sh: end librnd */
 
 
 extern rnd_conf_t rnd_conf;
