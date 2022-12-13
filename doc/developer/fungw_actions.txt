@@ -3,7 +3,7 @@ Actions implemented as fungw functions
 
 1. Intro
 
-All pcb-rnd actions are fungw functions by now. This helps the code to do
+All librnd/application actions are fungw functions. This helps the code to do
 all the data type conversions easier, save a few conversions where we
 don't need conversions. More importantly, this makes a more seamless
 integration between user scripts and C code, whether scripts are calling
@@ -20,31 +20,25 @@ applies the following restrictions:
   case intensity of the old action system, which is still essential for
   the user interface (GUI or CLI command entry and menu).
 
-- temporarily, for the transition, there are two helper macros
-  PCB_OLD_ACT_BEGIN and PCB_OLD_ACT_END that can wrap old function
-  code, converting all arguments to a char **argv. Such old actions
-  should return non-zero on error, while the value of ores will always be
-  FGW_INT/0. New action code shall NOT use the compatibility API.
-
 - a single action call will result in a single fungw function call; that
   is, the fungw function that serves the action is free to convert any
   of the arguments.
 
 2. converting arguments
 
-Arguments are normally converted using PCB_ACT_CONVARG(); the last
+Arguments are normally converted using RND_ACT_CONVARG(); the last
 argument is a statement that can make the value assignment to a local
 variable if the conversion was succesful. For example fetching the 2nd
 argument into a local coord:
 
 {
-	pcb_coord_t c;
-	PCB_ACT_CONVARG(2, FGW_COORD, ActioName, c = fgw_coord(&argv[2]));
+	rnd_coord_t c;
+	RND_ACT_CONVARG(2, FGW_COORD, ActioName, c = fgw_coord(&argv[2]));
 }
 
 If conversion fails or the argument is not available, the macro returns
 from the function with error. Anoter variant of the macro called
-PCB_ACT_MAY_CONVARG() omits the error-return part, allowing the code
+RND_ACT_MAY_CONVARG() omits the error-return part, allowing the code
 to have optional arguments.
 
 When the coordinate conversion needs to keep extra info, e.g. whether
@@ -53,7 +47,7 @@ fgw_coords_t shall be used:
 
 {
 	fgw_coords_t *crd;
-	PCB_ACT_CONVARG(1, FGW_COORDS, d1, crd = fgw_coords(&argv[1]));
+	RND_ACT_CONVARG(1, FGW_COORDS, d1, crd = fgw_coords(&argv[1]));
 }
 
 
@@ -73,11 +67,11 @@ is stored in res. The semantic of the result is action-specifiec. The common
 convention is returning int, 0 meaning success. The shortnad for this:
 
 {
-	PCB_ACT_IRES(0);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
-PCB_ACT_IRES() loads res with type and value. There are other similar,
+RND_ACT_IRES() loads res with type and value. There are other similar,
 type-specific macros available.
 
 4. multi-call
@@ -93,7 +87,7 @@ There are two common cases: wrapping/dispatching and invoking.
 In the wrap/dispatch setup an outer action is called that does not alter
 the arguments (not even converting them!), but has to call another action
 with exactly the same arguments. This can be done by using the macro
-PCB_ACT_CALL_C().
+RND_ACT_CALL_C().
 
 When an action code needs to invoke another action, there are three ways
 doing it.
@@ -120,10 +114,10 @@ Call pcb_find_action() to get an fgw_func_t * to the action - this holds
 the C function pointer. Set up argv, make sure argv[0] is set up to be
 the target function:
 
-  fgw_func_t *fn = pcb_find_action(...);
+  fgw_func_t *fn = rnd_find_action(...);
   argv[0].type = FGW_FUNC;
   argv[0].val.func = fn;
 
-Call pcb_actionv_() with fn and the arguments. Always call fgw_argv_free()
+Call rnd_actionv_() with fn and the arguments. Always call fgw_argv_free()
 afterward. Also call fgw_arg_free() on the res.
 
