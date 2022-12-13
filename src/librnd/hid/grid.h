@@ -62,7 +62,7 @@ void rnd_grid_free(rnd_grid_t *dst);
 rnd_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src);
 char *rnd_grid_print(const rnd_grid_t *src);
 
-/* Apply grid settings from src to the pcb */
+/* Apply grid settings from src to the design */
 void rnd_grid_set(rnd_design_t *design, const rnd_grid_t *src);
 
 /* Jump to grid index dst (clamped); absolute set */

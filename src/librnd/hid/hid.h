@@ -352,7 +352,7 @@ struct rnd_hid_s {
 	   on grid and pad snap.  Note that the HID is responsible for
 	   hiding, showing, redrawing, etc.  The core just tells it what
 	   coordinates it's actually using.  Note that this routine may
-	   need to know what "pcb units" are so it can display them in mm
+	   need to know what "librnd units" are so it can display them in mm
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
