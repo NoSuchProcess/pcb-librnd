@@ -33,7 +33,7 @@ $AWK -v "docdir=$1" '
 			return
 		DOCS[fn]++
 		print "<html><body>" > fn
-		print "<h1>pcb-rnd conf tree</h1>" > fn
+		print "<h1>conf tree</h1>" > fn
 		print "<h2>subtree: " path "</h2>" > fn
 		print "<table border=1>" > fn
 		print "<tr><th>node name <th> type <td> flags <td> description" > fn
