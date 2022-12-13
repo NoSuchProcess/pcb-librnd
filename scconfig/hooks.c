@@ -95,15 +95,12 @@ int hook_custom_arg(const char *key, const char *value)
 		return 1;
 	}
 	if (strcmp(key, "disable-so") == 0) {
-		put("/local/pcb/disable_so", strue);
 		put("/local/librnd/disable_so", strue);
-		put("/local/pcb/want_static_librnd", strue);
 		put("/local/librnd/want_static_librnd", strue);
 		pup_set_debug(strue);
 		return 1;
 	}
 	if (strcmp(key, "static-librnd") == 0) {
-		put("/local/pcb/want_static_librnd", strue);
 		put("/local/librnd/want_static_librnd", strue);
 		pup_set_debug(strue);
 		return 1;

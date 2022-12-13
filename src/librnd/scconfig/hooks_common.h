@@ -385,9 +385,7 @@ void rnd_hook_postinit()
 	put("/local/" APP "/profile", sfalse);
 	put("/local/rnd/symbols", sfalse);
 	put("/local/" APP "/symbols", sfalse);
-	put("/local/pcb/disable_so", sfalse);
 	put("/local/" APP "/disable_so", sfalse);
-	put("/local/pcb/want_static_librnd", sfalse);
 	put("/local/" APP "/want_static_librnd", sfalse);
 
 #undef plugin_def
