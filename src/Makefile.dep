@@ -548,7 +548,8 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src/librnd/core/project.h ../src/librnd/hid/grid.h \
  ../src/librnd/core/funchash.h ../src/librnd/hid/hid_menu.h \
- ../src/librnd/core/compat_lrealpath.h ../src/librnd/core/safe_fs.h ../src/librnd/hid/tool.h \
+ ../src/librnd/core/compat_lrealpath.h ../src/librnd/core/safe_fs.h \
+ ../src/librnd/hid/buildin.hidlib.h ../src/librnd/hid/tool.h \
  ../src/librnd/hid/../../../config.h
 ../src/librnd/hid/hid_menu.o: ../src/librnd/hid/hid_menu.c \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/tree.h \
