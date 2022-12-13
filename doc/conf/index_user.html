@@ -1,13 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - config for users </title>
+	<title> librnd - config for users </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The pcb-rnd config system</H1>
+<H1> The librnd config system</H1>
 <H2> User documentation </H2>
-As of 1.1.0, pcb-rnd switched to a <a href="syntax.html">lihata</a> based configuration system.
+As of pcb-rnd 1.1.0, we switched to a <a href="syntax.html">lihata</a> based configuration system.
 The purpose of this document is to describes the basic system design going into
 enough details to provide the user with full control over the configuration.
 The other side, how the system is implemented is described in the
@@ -18,7 +18,7 @@ The other side, how the system is implemented is described in the
 The final configuration is a collection of values for
 <a href="groups.html"> all known settings, arranged in a tree</a>. The <i>config
 tree</i> is a theoretical concept; different representations of the tree are
-actually built runtime, in-memory. Pcb-rnd code, plugins and utilities
+actually built runtime, in-memory. Application code, plugins and utilities
 are constantly reading these in-memory representations to decide how to
 carry out their tasks.
 <p>

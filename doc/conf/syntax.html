@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - config syntax </title>
+	<title> librnd - config syntax </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The new config system in pcb-rnd </H1>
+<H1> The config system in librnd </H1>
 <H2> Config file syntax </H2>
 
 The config file syntax is <a href="http://repo.hu/projects/lihata">lihata</a>.
@@ -20,7 +20,7 @@ patterns seen in the examples. A few thumb of rules:
 
 <H3> config root syntax </H3>
 <p>
-A pcb-rnd config file, (or <i>document</i> for short) has a single root
+A librnd config file, (or <i>document</i> for short) has a single root
 node whose name must be li:pcb-rnd-conf-v1 - this is the signature of the
 document. It is a flat list of one or more <i>config root/</i> subtrees.
 TODO: is this really a list or a hash?

@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - config groups </title>
+	<title> librnd - config groups </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The new config system in pcb-rnd </H1>
+<H1> The runtime config system in librnd </H1>
 <H2> grouping - flat vs. tree </H2>
 The original settings and HID attribute system in pcb were both flat:
 basically a list of type:key=val triplets. All settings in a few big bags;
@@ -27,7 +27,7 @@ closely related settings end up in the same category (thus the same subtree).
 Thus saving or loading a subtree can fully save or restore a property of the
 program, even if that property is affected by multiple settings.
 
-<h2 id="tree"> pcb-rnd config tree </h2>
+<h2 id="tree"> librnd config tree </h2>
 The config tree, the full tree is, something that exists in memory. Actual
 config files often contain only a subset of the tree. Multiple config files
 (e.g. system level, user level, settings from the board file) are loaded and
@@ -99,13 +99,13 @@ GUI (preferences dialog) to change all settings; uniform way to
 save/restore parts of the settings.
 <p>
 The utils/ subtree is very similar in all aspects except that it is for
-external utility programs. Utils that are closely related to pcb-rnd, such
+external utility programs. Some utils that are closely related to pcb-rnd, such
 as gsch2pcb-rnd, should work from the same configuration.
 If they already load the
 pcb-rnd config files it's easier to keep their settings in the same tree,
 in the same format.
 <p>
-Pcb-rnd doesn't generate warning for unrecognized settings in dynamic subtrees.
+No warning is generated for unrecognized settings in dynamic subtrees.
 This lets the user configure plugins that are not always loaded and let util
 settings sit in their subtree.
 
@@ -122,7 +122,7 @@ access them directly.
 <h2> [hidlib] settings </h2>
 <p>
 Settings marked with [hidlib] are those that are shared among all
-applications based on pcb-rnd's hidlib. They have the same syntax
+Ringdove applications. They have the same syntax
 and meaning in all those applications.
 
 </body>

@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title> pcb-rnd - config sources </title>
+	<title> librnd - config sources </title>
 	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
 </head>
 <body>
-<H1> The new config system in pcb-rnd </H1>
+<H1> The config system in librnd </H1>
 <H2> Sources </H2>
 There are different sources of configuration settings. These are
 different configuration files, sometimes located on the file system.
@@ -17,24 +17,24 @@ The full list of config sources is:
     <td> 100
     <td> (compiled into the executable)
     <td> always
-    <td> the ultimate fallback; allows pcb-rnd even if no other configuration file is found
+    <td> the ultimate fallback; allows the application to run even if no other configuration file is found
 
 
 <tr><td> system
     <td> 200
-    <td> /usr/share/pcb-rnd/pcb-conf.lht
+    <td> app's conf in $(CONFDIR)
     <td> recommended
     <td> should hold system and installation specific settings, e.g. path to the system-wise installed footprint library
 
 <tr><td> default board
     <td> 300
-    <td> /usr/share/pcb-rnd/default4.lht<a href="#footnote1"><sup>1</sup></a>
+    <td> app's default design typically in /usr/share/APP/ <a href="#footnote1"><sup>1</sup></a>
     <td> deprecated<a href="#footnote2"><sup>2</sup></a>
     <td> pcb editable defaults
 
 <tr><td> user
     <td> 400
-    <td> ~/.pcb-rnd/pcb-conf.lht
+    <td> e.g. ~/.pcb-rnd/conf-core.lht
     <td> recommended
     <td> store user preferences, user's common footprint lib path, etc; this is the first file the user can modify (even from the GUI)
 
@@ -42,7 +42,7 @@ The full list of config sources is:
     <td> 500
     <td> environment variables (TODO)
     <td> occasional
-    <td> inject the same (temporary) settings in multiple pcb-rnd sessions without having to change config files
+    <td> inject the same (temporary) settings in multiple app sessions without having to change config files
 
 <tr><td> project
     <td> 600
@@ -52,7 +52,7 @@ The full list of config sources is:
 
 <tr><td> design
     <td> 700
-    <td> saved in the board (.lht) file
+    <td> saved in the design (board, schematics, etc.)
     <td> optional, common
     <td> per design deviation from the user+system config
 
@@ -64,7 +64,7 @@ The full list of config sources is:
 </table>
 
 <p>
-Pcb-rnd reads them all, then merges all settings into a master binary
+The application reads them all, then merges all settings into a master binary
 representation. If a setting is specified in multiple sources, the one
 with the higher priority wins, except for lists where it is also possible
 to prepend/append items. Default priorities are designed to result
@@ -77,11 +77,11 @@ priority and a version controlled project setting can not turn it off")
 <p>
 Footnotes:
 <ul>
-	<li id="footnote1"> <sup>1</sup>: the name of the default board is default4.lht for
+	<li id="footnote1"> <sup>1</sup>: in pcb-rnd the name of the default board is default4.lht for
 	the default 4 layer board. The standard installation also ships default2.lht
 	as a similar 2 layer board. The name of the default boardfile is configured
 	in config node rc/default_pcb_file.
-	<li id="footnote2"> <sup>2</sup>: default pcb should not contain a config subtree; it is
+	<li id="footnote2"> <sup>2</sup>: default design should not contain a config subtree; it is
 	easier to maintain the config tree if default configuration is coming from
 	config files only.
 </ul>
