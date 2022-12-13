@@ -28,7 +28,7 @@ librnd   ./configure       compile, -O0     compile -O3   system
 
 3.1. AIX
 
-It is possible to compile pcb-rnd using gtk2.0 but due to a non-standard
+It is possible to compile librnd using gtk2.0 but due to a non-standard
 AIX libc header, this needs extra CFLAGS for configure:
 
  ./configure CFLAGS=-D_LINUX_SOURCE_COMPAT
