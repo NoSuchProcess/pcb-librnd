@@ -5,7 +5,7 @@ Dialog boxes using the TREE widget
 	+ lib_hid_common/dlg_pref_menu
 	+ lib_hid_common/dlg_pref_conf
 	+ lib_hid_common/dlg_pref_conf_edit
-	- lib_hid_common/dlg_plugins -> need an all-plugin compilation for unload
+	+ lib_hid_common/dlg_plugins -> need an all-plugin compilation for unload
 	+ lib_hid_common/dlg_fileselect
 	+ lib_hid_common/dlg_fileselect_io
 
@@ -18,7 +18,7 @@ Dialog boxes using the TREE widget
 	+ dialogs/dlg_test
 	+ dialogs/dlg_lib_pstk
 	+ dialogs/dlg_pref_lib
-		- RND_DAD_LABEL() shouldn't strdup() cell in lin 298
+		+ RND_DAD_LABEL() shouldn't strdup() cell in lin 298
 	+ dialogs/dlg_undo
 	+ dialogs/dlg_library
 	+ dialogs/dlg_view
@@ -35,7 +35,7 @@ Dialog boxes using the TREE widget
 	+ sch_dialogs/dlg_tree
 	+ sch_dialogs/abst_attr
 	+ dialogs/dlg_pref_lib
-		- RND_DAD_LABEL() shouldn't strdup() cell in lin 303
+		+ RND_DAD_LABEL() shouldn't strdup() cell in lin 303
 	+ sch_dialogs/dlg_pen
 	+ sch_dialogs/dlg_undo
 	+ sch_dialogs/dlg_library
