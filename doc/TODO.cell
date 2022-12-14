@@ -1,6 +1,7 @@
 Dialog boxes using the TREE widget
 
 - pcb-rnd
+	- asm/asm
 	- lib_hid_pcbui/routest_dlg
 	- propedit/propdlg
 	- query/dlg_search_edit
