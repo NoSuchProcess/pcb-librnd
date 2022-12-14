@@ -38,17 +38,7 @@ static void rnd_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *lis
 	while((r = gdl_first(list)) != NULL) {
 		gdl_remove(list, r, link);
 		rnd_dad_tree_free_rowlist(attr, &r->children);
-
-		if (tree->hid_free_cb != NULL)
-			tree->hid_free_cb(tree->attrib, tree->hid_wdata, r);
-
-		if (tree->user_free_cb != NULL)
-			tree->user_free_cb(tree->attrib, tree->hid_wdata, r);
-
-		if (attr->rnd_hatt_flags & RND_HATF_TREE_COL)
-			free(r->path);
-
-		free(r);
+		rnd_dad_tree_free_row(tree, r);
 	}
 }
 
@@ -56,8 +46,8 @@ static void rnd_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *lis
 void rnd_dad_tree_free(rnd_hid_attribute_t *attr)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
-	htsp_uninit(&tree->paths);
 	rnd_dad_tree_free_rowlist(attr, &tree->rows);
+	htsp_uninit(&tree->paths);
 	free(tree);
 }
 

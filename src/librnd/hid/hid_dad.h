@@ -484,12 +484,15 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, wdata, tree); \
 } while(0)
 
+/* *cells strings must be allocated by the caller */
 #define RND_DAD_TREE_APPEND(table, row_after, cells) \
 	rnd_dad_tree_append(&table[table ## _len-1], row_after, cells)
 
+/* *cells strings must be allocated by the caller */
 #define RND_DAD_TREE_APPEND_UNDER(table, parent_row, cells) \
 	rnd_dad_tree_append_under(&table[table ## _len-1], parent_row, cells)
 
+/* *cells strings must be allocated by the caller */
 #define RND_DAD_TREE_INSERT(table, row_before, cells) \
 	rnd_dad_tree_insert(&table[table ## _len-1], row_before, cells)
 

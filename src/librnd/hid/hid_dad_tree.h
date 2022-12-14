@@ -44,7 +44,7 @@ void rnd_dad_tree_unhide_filter(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int c
 
 /* Recursively create the node and all parents in a tree. If cells is not NULL,
    the target path row is created with these cells, else only the first col
-   is filled in. Temporarily modifies path (but changes it back) */
+   is copied for path. Temporarily modifies path (but changes it back) */
 rnd_hid_row_t *rnd_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cells);
 
 /* Internal: Allocate a new row and load the cells (but do not insert it anywhere) */
@@ -65,20 +65,22 @@ RND_INLINE rnd_hid_row_t *rnd_dad_tree_new_row(char **cols)
 
 RND_INLINE void rnd_dad_tree_free_row(rnd_hid_tree_t *tree, rnd_hid_row_t *row)
 {
-	int do_free_path = 0;
-	/* do this before the user callback just in case row->path == row->cell[0]
-	   and the user callback free's it */
-	if (row->path != NULL) {
+	int n;
+
+	if (row->path != NULL)
 		htsp_pop(&tree->paths, row->path);
-		do_free_path = (row->path != row->cell[0]); /* user_free_cb may set row->cell[0] to NULL */
-	}
+
+	if (tree->hid_free_cb != NULL)
+		tree->hid_free_cb(tree->attrib, tree->hid_wdata, row);
 
 	if (tree->user_free_cb != NULL)
 		tree->user_free_cb(tree->attrib, tree->hid_wdata, row);
 
-	if (do_free_path)
-		free(row->path);
+	for(n = 0; n < row->cols; n++)
+		free(row->cell[n]);
 
+	if (row->path != row->cell[0])
+		free(row->path);
 	free(row);
 }
 
@@ -126,12 +128,13 @@ RND_INLINE void rnd_dad_tree_set_hash(rnd_hid_attribute_t *attr, rnd_hid_row_t *
 		row->path = path.array;
 	}
 	else
-		row->path = row->cell[0];
+		row->path = rnd_strdup(row->cell[0]);
 	htsp_set(&tree->paths, row->path, row);
 }
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
-   end of the list of entries in the root (== at the bottom of the list) */
+   end of the list of entries in the root (== at the bottom of the list)
+   *cols strings must be malloc()'d by the caller */
 RND_INLINE rnd_hid_row_t *rnd_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid_row_t *aft, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -155,7 +158,8 @@ RND_INLINE rnd_hid_row_t *rnd_dad_tree_append(rnd_hid_attribute_t *attr, rnd_hid
 }
 
 /* allocate a new row and inert it before bfr; if bfr is NULL, the new row is inserted at the
-   beginning of the list of entries in the root (== at the top of the list) */
+   beginning of the list of entries in the root (== at the top of the list)
+   *cols strings must be malloc()'d by the caller */
 RND_INLINE rnd_hid_row_t *rnd_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid_row_t *bfr, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -179,7 +183,8 @@ RND_INLINE rnd_hid_row_t *rnd_dad_tree_insert(rnd_hid_attribute_t *attr, rnd_hid
 }
 
 /* allocate a new row and append it under prn; if prn is NULL, the new row is appended at the
-   end of the list of entries in the root (== at the bottom of the list) */
+   end of the list of entries in the root (== at the bottom of the list).
+   *cols strings must be malloc()'d by the caller */
 RND_INLINE rnd_hid_row_t *rnd_dad_tree_append_under(rnd_hid_attribute_t *attr, rnd_hid_row_t *prn, char **cols)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -256,6 +261,7 @@ RND_INLINE void rnd_dad_tree_update_hide(rnd_hid_attribute_t *attr)
 		tree->hid_update_hide_cb(tree->attrib, tree->hid_wdata);
 }
 
+/* new_val must be malloc()'d by the caller */
 RND_INLINE int rnd_dad_tree_modify_cell(rnd_hid_attribute_t *attr, rnd_hid_row_t *row, int col, char *new_val)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -271,6 +277,7 @@ RND_INLINE int rnd_dad_tree_modify_cell(rnd_hid_attribute_t *attr, rnd_hid_row_t
 		row->path = NULL;
 	}
 
+	free(row->cell[col]);
 	row->cell[col] = new_val;
 
 	if (col == 0)
