@@ -11,6 +11,7 @@
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- BUG: sch-rnd multi: start sch-rnd with a file name to a non-existing project: sheetsel is confused
 	- BUG: sch-rnd multi: start sch-rnd with 2 file names to a non-existing project: only one is created
+	- BUG: sch-rnd multi: start sch-rnd with a sheet name; open a second from gui; unload either; the other will go black background (probably conf messup)
 	- implement every little detail of the new project file handling as specified
 	- DAD API: think over and document if ->set_val() hv.str needs to be strdupped; probably best if the lib strdups it (revise callers)
 	- grep for "multi:" or TODO.*multi in sch-rnd

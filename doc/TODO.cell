@@ -25,20 +25,19 @@ Dialog boxes using the TREE widget
 	+ dialogs/dlg_netlist
 	+ drc_query/dlg
 - sch-rnd
-	- backann/dlg_ba
-	- propedit/propdlg
-	- std_cschem/quick_attr_connect
-	- query/dlg_search_edit
-	- sch_dialogs/dlg_abstract
-	- sch_dialogs/dlg_attrib
-	- sch_dialogs/dlg_tree
-	- sch_dialogs/abst_attr
-	- dialogs/dlg_pref_lib
+	+ backann/dlg_ba
+	+ propedit/propdlg
+	+ std_cschem/quick_attr_connect
+	+ std_devmap/quick_attr_portmap
+	+ query/dlg_search_edit
+	+ sch_dialogs/dlg_abstract
+	+ sch_dialogs/dlg_attrib
+	+ sch_dialogs/dlg_tree
+	+ sch_dialogs/abst_attr
+	+ dialogs/dlg_pref_lib
 		- RND_DAD_LABEL() shouldn't strdup() cell in lin 303
 	- sch_dialogs/dlg_pen
 	- sch_dialogs/dlg_undo
 	- sch_dialogs/dlg_library
 	- sch_dialogs/dlg_view
-	- std_devmap/quick_attr_portmap
 	- gui/sheetsel
-	
