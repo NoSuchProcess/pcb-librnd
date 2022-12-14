@@ -1,0 +1,34 @@
+Dialog boxes using the TREE widget
+
+- pcb-rnd
+	- lib_hid_pcbui/routest_dlg
+	- propedit/propdlg
+	- query/dlg_search_edit
+	- cam/cam_gui
+	- dialogs/dlg_test
+	- dialogs/dlg_lib_pstk
+	- dialogs/dlg_pref_lib
+		- RND_DAD_LABEL() shouldn't strdup() cell in lin 298
+	- dialogs/dlg_undo
+	- dialogs/dlg_library
+	- dialogs/dlg_view
+	- dialogs/dlg_netlist
+	- drc_query/dlg
+- sch-rnd
+	- backann/dlg_ba
+	- propedit/propdlg
+	- std_cschem/quick_attr_connect
+	- query/dlg_search_edit
+	- sch_dialogs/dlg_abstract
+	- sch_dialogs/dlg_attrib
+	- sch_dialogs/dlg_tree
+	- sch_dialogs/abst_attr
+	- dialogs/dlg_pref_lib
+		- RND_DAD_LABEL() shouldn't strdup() cell in lin 303
+	- sch_dialogs/dlg_pen
+	- sch_dialogs/dlg_undo
+	- sch_dialogs/dlg_library
+	- sch_dialogs/dlg_view
+	- std_devmap/quick_attr_portmap
+	- gui/sheetsel
+	
