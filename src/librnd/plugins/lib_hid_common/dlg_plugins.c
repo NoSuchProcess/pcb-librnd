@@ -74,6 +74,7 @@ static void plugins2dlg(plugins_ctx_t *ctx)
 
 
 	/* add all items */
+	cell[3] = NULL;
 	for(n = 0; n < tmp.used; n++) {
 		rnd_hid_row_t *row;
 
