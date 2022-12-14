@@ -17,13 +17,13 @@ Dialog boxes using the TREE widget
 	+ cam/cam_gui
 	+ dialogs/dlg_test
 	+ dialogs/dlg_lib_pstk
-	- dialogs/dlg_pref_lib
+	+ dialogs/dlg_pref_lib
 		- RND_DAD_LABEL() shouldn't strdup() cell in lin 298
-	- dialogs/dlg_undo
+	+ dialogs/dlg_undo
 	- dialogs/dlg_library
-	- dialogs/dlg_view
-	- dialogs/dlg_netlist
-	- drc_query/dlg
+	+ dialogs/dlg_view
+	+ dialogs/dlg_netlist
+	+ drc_query/dlg
 - sch-rnd
 	- backann/dlg_ba
 	- propedit/propdlg
