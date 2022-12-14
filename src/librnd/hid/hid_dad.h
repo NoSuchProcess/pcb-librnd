@@ -96,7 +96,7 @@ typedef struct {
 	void *spare_p1, *spare_p2;
 	double spare_d1, spare_d2;
 
-	char *cell[1];   /* each cell is a char *; the true length of the array is the value of the len field; the array is allocated together with the struct */
++	char *cell[1];   /* each cell is an strdup'd (char *); the true length of the array is the value of the len field; the array is allocated together with the struct */
 } rnd_hid_row_t;
 
 typedef struct {
@@ -107,7 +107,7 @@ typedef struct {
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
-	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
+	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row); /* should free user data only; cell[] strings are free'd by DAD */
 	void (*user_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
 	int (*user_browse_activate_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row); /* returns non-zero if the row should auto-activate while browsing (e.g. stepping with arrow keys) */
 	const char *(*user_copy_to_clip_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
