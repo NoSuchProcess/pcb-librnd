@@ -20,7 +20,7 @@ Dialog boxes using the TREE widget
 	+ dialogs/dlg_pref_lib
 		- RND_DAD_LABEL() shouldn't strdup() cell in lin 298
 	+ dialogs/dlg_undo
-	- dialogs/dlg_library
+	+ dialogs/dlg_library
 	+ dialogs/dlg_view
 	+ dialogs/dlg_netlist
 	+ drc_query/dlg
@@ -36,8 +36,8 @@ Dialog boxes using the TREE widget
 	+ sch_dialogs/abst_attr
 	+ dialogs/dlg_pref_lib
 		- RND_DAD_LABEL() shouldn't strdup() cell in lin 303
-	- sch_dialogs/dlg_pen
-	- sch_dialogs/dlg_undo
-	- sch_dialogs/dlg_library
-	- sch_dialogs/dlg_view
-	- gui/sheetsel
+	+ sch_dialogs/dlg_pen
+	+ sch_dialogs/dlg_undo
+	+ sch_dialogs/dlg_library
+	+ sch_dialogs/dlg_view
+	+ gui/sheetsel
