@@ -60,6 +60,7 @@ static void pref_key_brd2dlg(pref_ctx_t *ctx)
 		return;
 
 	/* add all items */
+	cell[2] = NULL;
 	rnd_conflist_foreach(nat->val.list, &it, kt) {
 		cell[0] = rnd_strdup(kt->name);
 		cell[1] = rnd_strdup(kt->payload);
