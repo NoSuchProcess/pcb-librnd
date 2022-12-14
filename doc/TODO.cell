@@ -1,13 +1,13 @@
 Dialog boxes using the TREE widget
 
 - pcb-rnd
-	- asm/asm
-	- lib_hid_pcbui/routest_dlg
-	- propedit/propdlg
-	- query/dlg_search_edit
-	- cam/cam_gui
-	- dialogs/dlg_test
-	- dialogs/dlg_lib_pstk
+	+ asm/asm
+	+ lib_hid_pcbui/routest_dlg
+	+ propedit/propdlg
+	+ query/dlg_search_edit
+	+ cam/cam_gui
+	+ dialogs/dlg_test
+	+ dialogs/dlg_lib_pstk
 	- dialogs/dlg_pref_lib
 		- RND_DAD_LABEL() shouldn't strdup() cell in lin 298
 	- dialogs/dlg_undo
