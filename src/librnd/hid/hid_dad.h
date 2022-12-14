@@ -96,7 +96,7 @@ typedef struct {
 	void *spare_p1, *spare_p2;
 	double spare_d1, spare_d2;
 
-+	char *cell[1];   /* each cell is an strdup'd (char *); the true length of the array is the value of the len field; the array is allocated together with the struct */
+	char *cell[1];   /* each cell is an strdup'd (char *); the true length of the array is the value of the len field; the array is allocated together with the struct */
 } rnd_hid_row_t;
 
 typedef struct {
