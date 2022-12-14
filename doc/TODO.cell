@@ -1,13 +1,13 @@
 Dialog boxes using the TREE widget
 - librnd
-	- script/script_act
-	- lib_hid_common/dlg_pref_key
-	- lib_hid_common/dlg_pref_menu
-	- lib_hid_common/dlg_pref_conf
-	- lib_hid_common/dlg_pref_conf_edit
-	- lib_hid_common/dlg_plugins
-	- lib_hid_common/dlg_fileselect
-	- lib_hid_common/dlg_fileselect_io
+	+ script/script_act
+	+ lib_hid_common/dlg_pref_key
+	+ lib_hid_common/dlg_pref_menu
+	+ lib_hid_common/dlg_pref_conf
+	+ lib_hid_common/dlg_pref_conf_edit
+	- lib_hid_common/dlg_plugins -> need an all-plugin compilation for unload
+	+ lib_hid_common/dlg_fileselect
+	+ lib_hid_common/dlg_fileselect_io
 
 - pcb-rnd
 	+ asm/asm
