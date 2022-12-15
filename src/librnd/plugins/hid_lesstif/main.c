@@ -980,26 +980,8 @@ static void Pan(int mode, rnd_coord_t x, rnd_coord_t y)
 	static rnd_coord_t opx, opy;
 
 	panning = mode;
-	/* This is for ctrl-pan, where the viewport's position is directly
-	   proportional to the cursor position in the window (like the Xaw
-	   thumb panner) */
-TODO("4.0.0: remove this if there is no bugreport for a long time");
-#if 0
-	if (pan_thumb_mode) {
-		opx = x * ltf_hidlib->size_x / view_width;
-		opy = y * ltf_hidlib->size_y / view_height;
-		if (rnd_conf.editor.view.flip_x)
-			opx = ltf_hidlib->size_x - opx;
-		if (rnd_conf.editor.view.flip_y)
-			opy = ltf_hidlib->size_y - opy;
-		view_left_x = opx - view_width / 2 * view_zoom;
-		view_top_y = opy - view_height / 2 * view_zoom;
-		lesstif_pan_fixup();
-	}
-	else
-#endif
 
-	/* This is the start of a regular pan.  On the first click, we
+	/* On the first click, we
 	   remember the coordinates where we "grabbed" the screen.  */
 	if (mode == 1) {
 		ox = x;
