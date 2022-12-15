@@ -80,7 +80,7 @@ static void rnd_mbtk_menu_update_checkboxes(rnd_mbtk_t *mctx, rnd_design_t *hidl
 }
 
 
-TODO("librnd4: mbtk_glboal should come user_data, set it at registration");
+TODO("mbtk_glboal should come user_data, already set at registration");
 static rnd_mbtk_t mbtk_global;
 static void rnd_mbtk_confchg_checkbox(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
 {
@@ -203,6 +203,7 @@ static mbtk_box_t *rnd_mbtk_menu_create_(rnd_mbtk_t *mctx, mbtk_widget_t *parent
 				if (!cbs_inited) {
 					memset(&cbs, 0, sizeof(rnd_conf_hid_callbacks_t));
 					cbs.val_change_post = rnd_mbtk_confchg_checkbox;
+					cbs.user_data = mctx;
 					cbs_inited = 1;
 				}
 				rnd_conf_hid_set_cb(nat, mctx->topwin->menuconf_id, &cbs);
