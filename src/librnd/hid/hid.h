@@ -414,7 +414,8 @@ struct rnd_hid_s {
 	int (*attr_dlg_widget_poke)(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
 
 	/* Change the current value of a widget; same as if the user chaged it,
-	   except the value-changed callback is inhibited */
+	   except the value-changed callback is inhibited.  Val is copied (e.g. if
+	   it is a string, .str is strdup'd in the call) */
 	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 
 	/* Change the help text (tooltip) string of a widget; NULL means remove it.
