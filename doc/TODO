@@ -1,16 +1,13 @@
 1. For the upcoming release ===============================================================================
 - 4.0.0: ABI incompatible (feature removal)
-	- HID API for mbtk: pixmaps require a one-time registration and an unique ID
-		- check how pcb-rnd layersel would work with this
-		- canvas:
-			- opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
+	- HID API for mbtk: canvas: opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- BUG: sch-rnd multi: start sch-rnd with a file name to a non-existing project: sheetsel is confused
 	- BUG: sch-rnd multi: start sch-rnd with 2 file names to a non-existing project: only one is created
 	- BUG: sch-rnd multi: start sch-rnd with a sheet name; open a second from gui; unload either; the other will go black background (probably conf messup)
 	- BUG: sch-rnd ran with valgrind on gtk2+gdk; library window, select something to place: xor drawn is blinking on selection - maybe loaded or drawn multiple times?
 	- grep for "multi:" or TODO.*multi in sch-rnd
-	- grep sch-rnd for librnd4 for more (don't remove this until all items resolved as more 4.0.0 may be added)
+	- grep sch-rnd and camv-rnd for librnd4 for more (don't remove this until all items resolved as more 4.0.0 may be added)
 
 2. For later releases ===============================================================================
 
