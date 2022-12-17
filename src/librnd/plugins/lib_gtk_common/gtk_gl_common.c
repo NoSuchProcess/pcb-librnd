@@ -427,9 +427,11 @@ static void ghid_gl_screen_update(void)
 {
 }
 
-/* Settles background color + inital GL configuration, to allow further drawing in GL area.
-    (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
-    The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
+/* Settles background color + inital GL configuration, to allow further
+   drawing in GL area. (w, h) describes the total area concerned,
+   while (xr, yr, wr, hr) describes area requested by an expose event.
+   The color structure holds the wanted solid back-ground color, used to
+   first paint the exposed drawing area. */
 static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_stencil_init();
