@@ -466,7 +466,7 @@ void rnd_conf_files_uninit(void);
 int rnd_conf_merge_all(const char *path);
 
 /* used for ignoring specific conf nodes from specific conf sources for
-   security reason and to wanr only once */
+   security reason and to warn only once */
 struct rnd_conf_ignore_s {
 	const char *name;
 	int len;
