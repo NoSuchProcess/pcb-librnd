@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 - 4.0.0: ABI incompatible (feature removal)
-	- HID API for mbtk: canvas: opengl clipping: hidgl_expose_init() may need am x,y origin; glscissor may conflict with stencil?
 	- move rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse and "local grid" from gtk to global config,make sure all HIDs do it
 	- BUG: sch-rnd multi: start sch-rnd with a file name to a non-existing project: sheetsel is confused
 	- BUG: sch-rnd multi: start sch-rnd with 2 file names to a non-existing project: only one is created
