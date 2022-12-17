@@ -1882,9 +1882,9 @@ static void draw_grid()
 		grd = 1;
 
 	if (Vz(grd) < RND_MIN_GRID_DISTANCE) {
-		if (!/*rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse*/enable_sparse)
+		if (!/*rnd_conf.editor.global_grid.sparse*/enable_sparse)
 			return;
-		grd *= (/*rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.min_dist_px*/ min_dist_px / Vz(grd));
+		grd *= (/*rnd_conf.editor.global_grid.min_dist_px*/ min_dist_px / Vz(grd));
 	}
 
 	if (!grid_gc) {

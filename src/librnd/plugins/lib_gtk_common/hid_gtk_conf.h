@@ -17,16 +17,6 @@ typedef struct {
 			RND_CFT_REAL icon_scale;                         /* scale icon buttons and icons by this factor (normal size = 1); need restart to apply */
 
 			const struct {
-				RND_CFT_BOOLEAN enable;                       /* enable local grid to draw grid points only in a small radius around the crosshair - speeds up software rendering on large screens */
-				RND_CFT_INTEGER radius;                       /* radius, in number of grid points, around the local grid */
-			} local_grid;
-
-			const struct {
-				RND_CFT_INTEGER min_dist_px;                  /* never try to draw a grid so dense that the distance between grid points is smaller than this */
-				RND_CFT_BOOLEAN sparse;                       /* enable drawing sparse grid: when zoomed out beyond min_dist_px draw every 2nd, 4th, 8th, etc. grid point; if disabled the grid is turned off when it'd get too dense */
-			} global_grid;
-
-			const struct {
 				RND_CFT_BOOLEAN to_design;                    /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_design instead */
 				RND_CFT_BOOLEAN to_project;                   /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_project instead */
 				RND_CFT_BOOLEAN to_user;                      /* OBSOLETE: use plugins/dialogs/auto_save_window_geometry/to_user instead */

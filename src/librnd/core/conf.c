@@ -861,7 +861,9 @@ static int conf_warn_unknown_paths_(const char *path, lht_node_t *n, rnd_conf_ig
 }
 
 static rnd_conf_ignore_t rnd_own_conf_ignores[] = {
-	{NULL, 0, 0}
+	{"plugins/hid_gtk/local_grid", 26, 0, "config node plugins/hid_gtk/local_grid got renamed to editor/local_grid, please edit your config file\n"},
+	{"plugins/hid_gtk/global_grid", 27, 0, "config node plugins/hid_gtk/global_grid got renamed to editor/global_grid, please edit your config file\n"},
+	{NULL, 0, 0, NULL}
 };
 
 static void conf_warn_unknown_paths(const char *path, lht_node_t *n)

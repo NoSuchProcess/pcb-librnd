@@ -116,7 +116,7 @@ void ghid_gl_draw_grid_local(rnd_design_t *hidlib, rnd_coord_t cx, rnd_coord_t c
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
 	grid_local_x = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
 	grid_local_y = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
-	grid_local_radius = rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.radius;
+	grid_local_radius = rnd_conf.editor.local_grid.radius;
 }
 
 static void ghid_gl_draw_grid(rnd_design_t *hidlib, rnd_box_t *drawn_area)
@@ -128,14 +128,14 @@ static void ghid_gl_draw_grid(rnd_design_t *hidlib, rnd_box_t *drawn_area)
 		grd = 1;
 
 	if ((Vz(hidlib->grid) < RND_MIN_GRID_DISTANCE) || (!rnd_conf.editor.draw_grid)) {
-		if (!rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.sparse)
+		if (!rnd_conf.editor.global_grid.sparse)
 			return;
-		grd *= (rnd_gtk_conf_hid.plugins.hid_gtk.global_grid.min_dist_px / Vz(grd));
+		grd *= (rnd_conf.editor.global_grid.min_dist_px / Vz(grd));
 	}
 
 	hidgl_set_grid_color(priv->grid_color.fr, priv->grid_color.fg, priv->grid_color.fb);
 
-	if (rnd_gtk_conf_hid.plugins.hid_gtk.local_grid.enable)
+	if (rnd_conf.editor.local_grid.enable)
 		hidgl_draw_local_grid(hidlib, grd, grid_local_x, grid_local_y, grid_local_radius, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);
 	else
 		hidgl_draw_grid(hidlib, grd, drawn_area, ghidgui->port.view.coord_per_px, rnd_conf.editor.cross_grid);

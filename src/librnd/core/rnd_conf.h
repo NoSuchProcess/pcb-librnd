@@ -97,6 +97,16 @@ typedef struct {
 			RND_CFT_BOOLEAN flip_y;              /* view: flip the design along the Y (vertical) axis */
 		} view;
 
+		const struct {
+			RND_CFT_BOOLEAN enable;              /* enable local grid to draw grid points only in a small radius around the crosshair - speeds up software rendering on large screens */
+			RND_CFT_INTEGER radius;              /* radius, in number of grid points, around the local grid */
+		} local_grid;
+
+		const struct {
+			RND_CFT_INTEGER min_dist_px;         /* never try to draw a grid so dense that the distance between grid points is smaller than this */
+			RND_CFT_BOOLEAN sparse;              /* enable drawing sparse grid: when zoomed out beyond min_dist_px draw every 2nd, 4th, 8th, etc. grid point; if disabled the grid is turned off when it'd get too dense */
+		} global_grid;
+
 	} editor;
 } rnd_conf_t;
 
