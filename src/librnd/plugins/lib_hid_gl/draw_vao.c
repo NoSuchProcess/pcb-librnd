@@ -272,11 +272,11 @@ static void vao_draw_lines6(GLfloat *pts, int npts, float red, float green, floa
 }
 
 static int vao_view_w, vao_view_h;
-static void vao_expose_init(int w, int h, const rnd_color_t *bg_c)
+static void vao_expose_init(int x0, int y0, int w, int h, const rnd_color_t *bg_c)
 {
 	glUseProgram(program);
 
-	glViewport(0, 0, w, h);
+	glViewport(x0, y0, w, h);
 	vao_view_w = w;
 	vao_view_h = h;
 

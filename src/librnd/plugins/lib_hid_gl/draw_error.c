@@ -54,7 +54,7 @@ static void error_draw_points_pre(GLfloat *pts) { }
 static void error_draw_points(int npts) { }
 static void error_draw_points_post(void) { }
 static void error_draw_lines6(GLfloat *pts, int npts, float red, float green, float blue, float alpha) { }
-static void error_expose_init(int w, int h, const rnd_color_t *bg_c) { }
+static void error_expose_init(int x0, int y0, int w, int h, const rnd_color_t *bg_c) { }
 static void error_set_view(double tx, double ty, double zx, double zy, double zz) { }
 static int error_xor_start(void) { return -1; }
 static void error_xor_end(void) { }

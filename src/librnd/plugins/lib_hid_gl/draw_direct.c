@@ -265,12 +265,12 @@ static void direct_draw_lines6(GLfloat *pts, int npts, float red, float green, f
 }
 
 
-static void direct_expose_init(int w, int h, const rnd_color_t *bg_c)
+static void direct_expose_init(int x0, int y0, int w, int h, const rnd_color_t *bg_c)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glViewport(0, 0, w, h);
+	glViewport(x0, y0, w, h);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

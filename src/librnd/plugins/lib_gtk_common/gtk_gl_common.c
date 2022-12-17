@@ -435,7 +435,7 @@ static void ghid_gl_screen_update(void)
 static void rnd_gl_draw_expose_init(int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_stencil_init();
-	hidgl_expose_init(w, h, bg_c);
+	hidgl_expose_init(0, 0, w, h, bg_c);
 }
 
 static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget *widget, rnd_gtk_expose_t *ev, void *vport)
@@ -533,7 +533,7 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_design_t *hidlib, 
 
 	ghidgui->port.render_priv->in_context = rnd_true;
 
-	hidgl_expose_init(widget_xs, widget_ys, &priv->bg_color);
+	hidgl_expose_init(0, 0, widget_xs, widget_ys, &priv->bg_color);
 
 	/* call the drawing routine */
 	ghid_gl_invalidate_current_gc();

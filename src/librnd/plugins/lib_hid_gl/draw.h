@@ -55,7 +55,7 @@ struct hidgl_draw_s {
 	void (*set_color)(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	void (*flush)(void);
 	void (*reset)(void);
-	void (*expose_init)(int w, int h, const rnd_color_t *bg_c);
+	void (*expose_init)(int x0, int y0, int w, int h, const rnd_color_t *bg_c);
 
 	/* set up transformation to translate tx,ty and zoom zx,zy,zz */
 	void (*set_view)(double tx, double ty, double zx, double zy, double zz);

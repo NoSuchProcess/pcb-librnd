@@ -783,9 +783,9 @@ void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_c
 	free(vertices);
 }
 
-void hidgl_expose_init(int w, int h, const rnd_color_t *bg_c)
+void hidgl_expose_init(int x0, int y0, int w, int h, const rnd_color_t *bg_c)
 {
-	hidgl_draw.expose_init(w, h, bg_c);
+	hidgl_draw.expose_init(x0, y0, w, h, bg_c);
 }
 
 void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, float blue, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
