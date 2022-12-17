@@ -471,6 +471,7 @@ struct rnd_conf_ignore_s {
 	const char *name;
 	int len;
 	int warned;
+	const char *msg; /* optional error message; if not NULL, print this */
 };
 
 

@@ -849,10 +849,15 @@ static int conf_warn_unknown_paths_(const char *path, lht_node_t *n, rnd_conf_ig
 			if (i->warned)
 				return 1; /* do not warn again */
 			i->warned = 1;
-			break;
+			if (i->msg != NULL) { /* throw own error */
+				rnd_hid_cfg_error(n, i->msg);
+				return 1;
+			}
+			return 0; /* first warning: throw original error */
 		}
 	}
-	return 0;
+
+	return 0; /* not found in the table throw original error */
 }
 
 static rnd_conf_ignore_t rnd_own_conf_ignores[] = {
