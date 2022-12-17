@@ -1872,7 +1872,6 @@ static void draw_grid()
 	rnd_coord_t x, y;
 	int n, n3;
 	static GC grid_gc = 0;
-	static const int enable_sparse = 0, min_dist_px = 4;
 
 	if (!rnd_conf.editor.draw_grid)
 		return;
@@ -1882,9 +1881,9 @@ static void draw_grid()
 		grd = 1;
 
 	if (Vz(grd) < RND_MIN_GRID_DISTANCE) {
-		if (!/*rnd_conf.editor.global_grid.sparse*/enable_sparse)
+		if (!rnd_conf.editor.global_grid.sparse)
 			return;
-		grd *= (/*rnd_conf.editor.global_grid.min_dist_px*/ min_dist_px / Vz(grd));
+		grd *= (rnd_conf.editor.global_grid.min_dist_px / Vz(grd));
 	}
 
 	if (!grid_gc) {
