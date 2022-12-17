@@ -840,22 +840,36 @@ int rnd_conf_merge_patch_list(rnd_conf_native_t *dest, lht_node_t *src_lst, int 
 
 int rnd_conf_merge_patch_recurse(lht_node_t *sect, rnd_conf_role_t role, int default_prio, rnd_conf_policy_t default_policy, const char *path_prefix);
 
-static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
+static int conf_warn_unknown_paths_(const char *path, lht_node_t *n, rnd_conf_ignore_t *tbl)
 {
 	rnd_conf_ignore_t *i;
+
+	for(i = tbl; i->name != NULL; i++) {
+		if (strncmp(path, i->name, i->len) == 0) {
+			if (i->warned)
+				return 1; /* do not warn again */
+			i->warned = 1;
+			break;
+		}
+	}
+	return 0;
+}
+
+static rnd_conf_ignore_t rnd_own_conf_ignores[] = {
+	{NULL, 0, 0}
+};
+
+static void conf_warn_unknown_paths(const char *path, lht_node_t *n)
+{
+	if (conf_warn_unknown_paths_(path, n, rnd_own_conf_ignores) != 0)
+		return;
 
 	if ((strncmp(path, "plugins/", 8) == 0) || (strncmp(path, "utils/", 6) == 0))
 		return; /* it is normal to have configuration for plugins and utils not loaded - ignore these */
 
 	if (rnd_app.conf_ignores != NULL) {
-		for(i = rnd_app.conf_ignores; i->name != NULL; i++) {
-			if (strncmp(path, i->name, i->len) == 0) {
-				if (i->warned)
-					return; /* do not warn again */
-				i->warned = 1;
-				break;
-			}
-		}
+		if (conf_warn_unknown_paths_(path, n, rnd_app.conf_ignores) != 0)
+			return;
 	}
 
 	rnd_hid_cfg_error(n, "conf error: lht->bin conversion: can't find path '%s'\n(it may be an obsolete setting, check your lht)\n", path);
