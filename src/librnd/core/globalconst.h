@@ -32,9 +32,7 @@
 #include <librnd/config.h>
 
 #define RND_LARGE_VALUE      (RND_COORD_MAX / 2 - 1) /* maximum extent of design */
-
 #define RND_MAX_COORD        ((rnd_coord_t)RND_LARGE_VALUE) /* coordinate limits */
-#define RND_MIN_SIZE         0
 
 #ifndef RND_PATH_MAX   /* maximum path length */
 #ifdef PATH_MAX
@@ -44,14 +42,6 @@
 #endif
 #endif
 
-/* number of dynamic flag bits that can be allocated at once; should be n*64 for
-   memory efficiency */
-#define RND_DYNFLAG_BLEN 64
-
-#define RND_MAX_LINE_POINT_DISTANCE     0   /* maximum distance when searching line points; same for arc point */
-#define RND_MAX_POLYGON_POINT_DISTANCE  0   /* maximum distance when searching polygon points */
-#define RND_MAX_NETLIST_LINE_LENGTH     255 /* maximum line length for netlist files */
-#define RND_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing */
-
+#define RND_MIN_GRID_DISTANCE           4   /* minimum distance between point to enable grid drawing (hid_ plugins) */
 
 #endif
