@@ -1,6 +1,4 @@
 1. For the upcoming release ===============================================================================
-- 4.0.0: ABI incompatible (feature removal)
-	- BUG: sch-rnd ran with valgrind on gtk2+gdk; library window, select something to place: xor drawn is blinking on selection - maybe loaded or drawn multiple times?
 
 2. For later releases ===============================================================================
 
