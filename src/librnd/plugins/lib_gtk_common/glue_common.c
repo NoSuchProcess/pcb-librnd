@@ -40,6 +40,7 @@
 #include "in_keyboard.h"
 #include "wt_preview.h"
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/rnd_conf.h>
 #include <librnd/plugins/lib_hid_common/lib_hid_common.h>
 
 rnd_gtk_t _ghidgui, *ghidgui = &_ghidgui;
@@ -160,8 +161,15 @@ void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
 	rnd_gtk_zoom_post(view);
 
-	gtkc_scb_zoom_adjustment(tw->h_range, view->width, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.X2);
-	gtkc_scb_zoom_adjustment(tw->v_range, view->height, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.Y2);
+	if (rnd_conf.editor.view.flip_x)
+		gtkc_scb_zoom_adjustment(tw->h_range, view->width, 0, gctx->hidlib->dwg.X2-gctx->hidlib->dwg.X1);
+	else
+		gtkc_scb_zoom_adjustment(tw->h_range, view->width, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.X2+gctx->hidlib->dwg.X1);
+
+	if (rnd_conf.editor.view.flip_y)
+		gtkc_scb_zoom_adjustment(tw->v_range, view->height, 0, gctx->hidlib->dwg.Y2-gctx->hidlib->dwg.Y1);
+	else
+		gtkc_scb_zoom_adjustment(tw->v_range, view->height, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.Y2+gctx->hidlib->dwg.Y1);
 }
 
 void rnd_gtk_port_ranges_changed(void)
