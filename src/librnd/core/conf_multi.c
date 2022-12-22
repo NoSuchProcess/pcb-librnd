@@ -110,7 +110,11 @@ void rnd_conf_state_free(rnd_conf_state_t *cs)
 	if (cs->rnd_conf_fields != NULL) {
 		htsp_entry_t *e;
 		for(e = htsp_first(cs->rnd_conf_fields); e != NULL; e = htsp_first(cs->rnd_conf_fields)) {
-			rnd_conf_free_native(e->value);
+			rnd_conf_native_t *nat = e->value;
+			if (nat != NULL) { /* make sure shared data is not free'd */
+				nat->shared = NULL;
+				rnd_conf_free_native(nat);
+			}
 			htsp_delentry(cs->rnd_conf_fields, e);
 		}
 	}

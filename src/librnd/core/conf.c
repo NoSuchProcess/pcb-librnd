@@ -1500,8 +1500,10 @@ void rnd_conf_free_native(rnd_conf_native_t *node)
 	if (node->random_flags.dyn_val)
 		free(node->val.any);
 
-	vtp0_uninit(&(node->shared->hid_data));
-	vtp0_uninit(&(node->shared->hid_callbacks));
+	if (node->shared != NULL) {
+		vtp0_uninit(&(node->shared->hid_data));
+		vtp0_uninit(&(node->shared->hid_callbacks));
+	}
 	free(node->prop);
 	free(node);
 }
