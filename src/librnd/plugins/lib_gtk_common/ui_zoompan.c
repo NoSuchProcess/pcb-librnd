@@ -44,7 +44,7 @@ double rnd_gtk_clamp_zoom(const rnd_gtk_view_t *vw, double coord_per_px)
 	/* max zoom is calculated so that zoom * canvas_size * 2 doesn't overflow rnd_coord_t */
 	max_zoom_w = (double)RND_COORD_MAX / (double)vw->canvas_width;
 	max_zoom_h = (double)RND_COORD_MAX / (double)vw->canvas_height;
-	max_zoom = MIN(max_zoom_w, max_zoom_h) / 2.0;
+	max_zoom = MAX(max_zoom_w, max_zoom_h);
 
 	out_zoom = coord_per_px;
 	if (out_zoom < min_zoom)
