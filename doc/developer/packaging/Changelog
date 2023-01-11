@@ -1,9 +1,54 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.2.2
+  ver=4.0.0
   cd /tmp
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
+
+Packaging changes between 4.0.0 and 3.2.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. Need conflict if librnd4-dev contains the .a libs. Normally we do
+   not package the .a files with librnd4 because static linking is
+   supported only in a very limited case. If you do package librnd*.a, it
+   should happen in the -dev package and then librnd4-dev should conflict
+   with librnd3-dev. So it is possible to install librnd4 and librnd3 binary
+   packages in parallel but not the -dev packages. If your -dev package
+   does not have the *.a files, even the -dev packages can be installed
+   in parallel and no conflict is needed.
+
+
+B. changes that probably DO need action
+
+1. package renames for major version: all package names are prefixed with
+   librnd4 instead of librnd3, so they can be installed in parallel.
+
+2. the versionless .so files may require conflicts. Normally librnd3 and
+   librnd4 can be installed in parallel because librnd4 files have different
+   name. Normally in the -dev package there's librnd-hid.so symlink pointing
+   to the "best version" of the .so, and this plain, versionless .so file name
+   is the same as in any previous version. Normally apps from binary packages
+   should link directly to a versioned .so, and this affects only those users
+   who compile apps from source (thus the versionless .so symlink is
+   typically in the -dev package). Normally your package manager should be
+   able to handle doing this symlink automatically, but if it doesn't work
+   out, you may need to add aconflict between librnd3-dev and librnd4-dev
+   (but not between any other packages).
+
+3. installed ehaders changed path from $PREFIX/include/librnd/* to
+   $PREFIX/include/librnd4/librnd/* (this way .h files won't casue conflict
+   between librnd3-dev and librnd4-dev)
+
+4. wherever installation paths contained "librnd3", they contain "librnd4"
+   now, i.e. $PREFIX/usr/lib/librnd4, $PREFIX/usr/share/librnd4
+
+5. new *.so* files in the librnd4 package; we put all versioned non-plugin
+   .so files ($PREFIX/lib/*.so.*) in the main binary package called librnd4;
+   compared to librnd3 there's a new set of .so.* files there called
+   librnd-core.so.*. The versionless librnd-core.so may go in the -dev package.
+   If you already package .a files librnd-core.a needs to be packaged too.
+
 
 Packaging changes between 3.2.2 and 3.2.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
