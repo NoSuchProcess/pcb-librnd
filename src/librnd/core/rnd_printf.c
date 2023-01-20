@@ -469,7 +469,7 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, rnd_unit_allow_t mask)
 	rnd_append_printf(string, "<invalid fgw_arg_t %d>", a.type);
 }
 
-int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args) = NULL;
+rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args) = NULL;
 
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
@@ -841,12 +841,23 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 				/*** ringdove app-specific custom spec ***/
 				case 'r':
-					if (rnd_printf_app_format == NULL)
-						goto err;
-					++fmt;
-					if (rnd_printf_app_format(string, &spec, &fmt, mask, suffix, args) != 0)
-						goto err;
-				break;
+					{
+						rnd_aft_ret_t r;
+						if (rnd_printf_app_format == NULL)
+							goto err;
+						++fmt;
+						r = rnd_printf_app_format(string, &spec, &fmt, mask, suffix, args);
+						switch(r) {
+							case RND_AFT_INT:       va_arg(args, int); break;
+							case RND_AFT_LONG:      va_arg(args, long); break;
+							case RND_AFT_DOUBLE:    va_arg(args, double); break;
+							case RND_AFT_PTR:       va_arg(args, void *); break;
+							case RND_AFT_error:
+							default:
+								goto err;
+						}
+					}
+					break;
 			}
 		}
 		else

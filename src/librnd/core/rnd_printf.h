@@ -179,7 +179,8 @@ char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
    last format char processed. Mask and suffix are information
    extracted from earlier format portions about how units should be printed.
    Read arguments from args. */
-extern int (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args);
+typedef enum { RND_AFT_error, RND_AFT_INT, RND_AFT_LONG, RND_AFT_DOUBLE, RND_AFT_PTR } rnd_aft_ret_t;
+extern rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args);
 
 
 #endif
