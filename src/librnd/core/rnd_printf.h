@@ -178,9 +178,16 @@ char *rnd_strdup_subst(const char *template, int (*cb)(void *ctx, gds_t *s, cons
    on how many format letters are consumed; at the end fmt should point to the
    last format char processed. Mask and suffix are information
    extracted from earlier format portions about how units should be printed.
-   Read arguments from args. */
+   The function is called twice per custom format:
+    - first with arg==NULL, it should return what type ofargument shall be
+      retrieved from varargs (shouldn't print anything in string)
+    - second with arg!=NULL, vararg copied there (should print to string)
+   The function may use cookie to store data between the invocations; cookie
+   is allocated by the caller and is reset to all-0 before the first call of
+   the pair and discarded after the second call. */
 typedef enum { RND_AFT_error, RND_AFT_INT, RND_AFT_LONG, RND_AFT_DOUBLE, RND_AFT_PTR } rnd_aft_ret_t;
-extern rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args);
+typedef union { int i; long l; double d; void *p; } rnd_aft_arg_t;
+extern rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, rnd_aft_arg_t *arg, rnd_aft_arg_t *cookie);
 
 
 #endif

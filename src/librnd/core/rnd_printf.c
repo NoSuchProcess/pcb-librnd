@@ -469,7 +469,7 @@ static void print_fgw_arg(gds_t *string, fgw_arg_t a, rnd_unit_allow_t mask)
 	rnd_append_printf(string, "<invalid fgw_arg_t %d>", a.type);
 }
 
-rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, va_list args) = NULL;
+rnd_aft_ret_t (*rnd_printf_app_format)(gds_t *string, gds_t *spec, const char **fmt, rnd_unit_allow_t mask, rnd_unit_suffix_t suffix, rnd_aft_arg_t *arg, rnd_aft_arg_t *cookie) = NULL;
 
 /* Main low level pcb-printf function
  * This is a printf wrapper that accepts new format specifiers to
@@ -843,19 +843,25 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				case 'r':
 					{
 						rnd_aft_ret_t r;
+						rnd_aft_arg_t arg, cookie;
+
 						if (rnd_printf_app_format == NULL)
 							goto err;
 						++fmt;
-						r = rnd_printf_app_format(string, &spec, &fmt, mask, suffix, args);
+						memset(&cookie, 0, sizeof(cookie));
+						r = rnd_printf_app_format(string, &spec, &fmt, mask, suffix, NULL, &cookie);
 						switch(r) {
-							case RND_AFT_INT:       va_arg(args, int); break;
-							case RND_AFT_LONG:      va_arg(args, long); break;
-							case RND_AFT_DOUBLE:    va_arg(args, double); break;
-							case RND_AFT_PTR:       va_arg(args, void *); break;
+							case RND_AFT_INT:       arg.i = va_arg(args, int); break;
+							case RND_AFT_LONG:      arg.l = va_arg(args, long); break;
+							case RND_AFT_DOUBLE:    arg.d = va_arg(args, double); break;
+							case RND_AFT_PTR:       arg.p = va_arg(args, void *); break;
 							case RND_AFT_error:
 							default:
 								goto err;
 						}
+						r = rnd_printf_app_format(string, &spec, &fmt, mask, suffix, &arg, &cookie);
+						if (r == RND_AFT_error)
+							goto err;
 					}
 					break;
 			}
