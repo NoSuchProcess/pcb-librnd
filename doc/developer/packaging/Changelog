@@ -36,7 +36,7 @@ B. changes that probably DO need action
    out, you may need to add aconflict between librnd3-dev and librnd4-dev
    (but not between any other packages).
 
-3. installed ehaders changed path from $PREFIX/include/librnd/* to
+3. installed headers changed path from $PREFIX/include/librnd/* to
    $PREFIX/include/librnd4/librnd/* (this way .h files won't casue conflict
    between librnd3-dev and librnd4-dev)
 
