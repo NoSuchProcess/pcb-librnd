@@ -7,6 +7,7 @@
 @appendfiles librnd4-dev $PREFIX/lib/*.so
 @appendfiles librnd4-dev $PREFIX/lib/librnd4/puplug $PREFIX/lib/librnd4/sphash
 @appendfiles librnd4-dev $PREFIX/lib/librnd4/plugins/map_plugins.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/devhelpers
 @appendextdeps librnd4 libfungw
 @appendextdeps librnd4-dev libgenht1-dev libfgunw-dev
 
