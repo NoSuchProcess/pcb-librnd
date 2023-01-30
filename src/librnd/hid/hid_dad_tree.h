@@ -278,7 +278,7 @@ RND_INLINE int rnd_dad_tree_modify_cell(rnd_hid_attribute_t *attr, rnd_hid_row_t
 	}
 
 	free(row->cell[col]);
-	row->cell[col] = new_val;
+	row->cell[col] = rnd_strdup(new_val);
 
 	if (col == 0)
 		rnd_dad_tree_set_hash(attr, row);
