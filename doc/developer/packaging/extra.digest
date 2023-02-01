@@ -8,6 +8,12 @@
 @appendfiles librnd4-dev $PREFIX/lib/librnd4/puplug $PREFIX/lib/librnd4/sphash
 @appendfiles librnd4-dev $PREFIX/lib/librnd4/plugins/map_plugins.sh
 @appendfiles librnd4-dev $PREFIX/lib/librnd4/devhelpers
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/action_compiler.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/build_ps.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/dump_actions_to_html.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/gen_formats.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/keylist.sh
+@appendfiles librnd4-dev $PREFIX/lib/librnd4/menu2svg.sh
 @appendextdeps librnd4 libfungw
 @appendextdeps librnd4-dev libgenht1-dev libfgunw-dev
 
