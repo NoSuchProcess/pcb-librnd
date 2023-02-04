@@ -1,2 +1,254 @@
-librnd 4.0.0 (r)
+librnd 4.0.0 (r34958)
 ~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Change: rename librnd3 to librnd4 in all paths
+		-Change: rename incldue path to librnd4/librnd (e.g. /usr/include/librnd4/librnd) to avoid clash with librnd3 and future versions
+		-Cleanup: clarify the c89/c99 split in .c->.o compile makefile templates
+		-Move: rnd_long64_t from central config to the poly lib - only the poly lib needs this type and nothing else should start depending on it
+		-Fix: LIBRND_LIBDIR in installed librnd.mak should include the /librnd4 suffix (where non-so binaries are installed)
+		-Fix: make sure detected/configure cflags, including -NDEBUG are used when compiling tests
+		-Fix: install all headers of libualloc
+		-Add: LIBRND_SODIR in installed librnd.mak that points to the libdir that has the .so files
+		-Add: installed librnd.mak declares SPHASH and CQUOTE so apps don't need to
+		-Add: installed librnd.mak should set GENCONF
+		-Add: comment to explain while librnd.mak doesn't need to have LIBRND_SHAREDIR
+		-Add: LIBRND_PLUGDIR in installed librnd.mak
+		-Add: scconfig template for cdep offers an option to change outpit file name (sch-rnd needs that)
+		-Add: define FONT2C in librnd.mak
+		-Add: install build_ps.sh and include it in librnd.mak
+		-Add: install util/keylist.sh and publish it in librnd.mak
+		-Add: install util/menu2svg.sh and publish it in librnd.mak for the apps
+
+	[core]
+		-Fix: uninitialized local vars on Log(export)
+		-Fix: rnd_printf: refuse more formats when RND_SAFEPRINT_COORD_ONLY is active and the format is not strictly a single coord
+		-Fix: rnd_printf: potential memory leak: goto error label instead of returning -1 directly on any error condition
+		-Fix: rnd_printf: don't choose between imperial and metric if target unit is outside of these
+		-Fix: need to set current desing in GUI before executing any other design-switch event (some parts of the GUI, like the menu system, will use GUI's current)
+		-Fix: make rnd_conf_list_foreach_path_first() safe to call with a callback that changes the conf
+		-Cleanup: rename RND_EVENT_BOARD_CHANGED to RND_EVENT_BOARD_REPLACED because it's not really a change in the board but the whole board replaced
+		-Cleanup: rename RND_EVENT_BOARD_ to RND_EVENT_DESIGN_ to make terminolofy portable accross apps
+		-Cleanup: rename DAD redraw-with-board concept to redraw-with-design (app agnostic terminology)
+		-Cleanup: rename event names from board to design
+		-Cleanup: rename pcbev_ to rndev_ in event names
+		-Cleanup: reorder enum rnd_hid_attr_type_t and add spare values for later binary compatibility
+		-Cleanup: remove suppress_duplicate_action() - it was a workaround for a librnd 3.x.x transition
+		-Cleanup: fix up field ordering of the struct and restore rnd_hid_t spares
+		-Cleanup: struct field ordering in rnd_app_t, restore spares
+		-Cleanup: rename HID_SC_ to RND_SC_ to keep namespace clean
+		-Cleanup: move RND_SC_ from amcros to enum for code clarity
+		-Cleanup: rename rnd_hid_cfg_keys_input2*() to rnd_hid_cfg_keys_input*() - this is the new and only official API for input key handling now
+		-Cleanup: rename conf_board_ignore to reflect it also operates on project level (and board is design)
+		-Cleanup: remove unused context pointer from the hid struct
+		-Cleanup: move hid-specific call get_coords from actions to hid
+		-Cleanup: actions.h shouldn't include hid.h: actions are generic (core)
+		-Cleanup: move hid initialization internals from hidlib.h to hid_init
+		-Cleanup: do not include hid_init.h where not needed
+		-Cleanup: rename rnd_hidlib_t to rnd_design_t to reflect the real purpose of the struct
+		-Cleanup: rename RND_ACT_HIDLIB to RND_ACT_DESIGN to better reflect the purpose
+		-Cleanup: rename hidlib_conf.[ch] to rnd_conf.[ch] for clarity
+		-Cleanup: rename hidlib argument names to design in public API, for clarity
+		-Cleanup: rename path API struct field from ->hidlib to ->design for consistency
+		-Cleanup: rename rnd_pcbhl_conf_postproc to rnd_conf_postproc - the pcbhl prefix is legacy from the hidlib times
+		-Cleanup: unit: rename unit allow/family/suffix prefixes to rnd_unit
+		-Cleanup: unit: create typedefs for the unit enums using unsigned long int to guarantee extra bits for dynamic registration
+		-Cleanup: rename unit get functions to have rnd_ prefix
+		-Cleanup: remove cschem-specific units (libcschem should register them runtime)
+		-Cleanup: rename design ->filename to ->loadname (file name as specified by the user) and introduce ->fullpath for the resolved file name
+		-Cleanup: rename project ->filename to ->fullpath for clarity and uniformity with rnd_design_t
+		-Cleanup: finalize the new multi-conf support, keep global var copying because of plugin confs, rename the implementation to remove the _temp suffix from the file name
+		-Cleanup: remove/fix pcb references in code comments
+		-Cleanup: remove pcb-rnd-specific constants from globalconst.h, these should be #defined in pcb-rnd
+		-Del: obsolete API rnd_hid_cfg_keys_input()
+		-Del: RND_MF_FONT, RND_MF_ACTIVE, RND_MF_BACKGROUND and RND_MF_FOREGROUND from menu system to simplify HID implementation
+		-Del: RND_EVENT_DESIGN_META_CHANGED_LIB in favor of RND_EVENT_DESIGN_META_CHANGED - it wasn't called only for lib and there's no library path list on librnd level anyway
+		-Change: design struct (rnd_hidlib_t, rnd_design_t): store the bbox of drawing area instead of width and height, to allow editing at negative coords
+		-Move: rnd_hidcore_crosshair_move_to() to gui_act.c in preparation of moving gui_act.c out to the hid helper plugin
+		-Move: gui_act to lib_hid_common: not needed in non-gui setup
+		-Move: Help() back to core, useful in cli
+		-Move: rnd_hid_in_main_loop to hidlib.[ch] as it should remain in core among with anyload
+		-Split: move hid-specific actions out from conf_act into hid_act for a hid split
+		-Split: anyload action to a separate file because it depends on hid
+		-Split: librnd-hid.so is only the hid part, librnd-core.so is the core (conf, unit, utils, helpers) without any HID infra
+		-Split: code that frees a config role lihata doc from reset() into rnd_conf_free() as it'd be reused in project conf binding
+		-Add: rnd_conf_hid_callbacks_t callbacks get a void *user_data argument coming from a rnd_conf_hid_callbacks_t field optionally set at registration; this lets the registrar pass on context to the callbacks
+		-Add: better section comments for the long switch in rnd_printf format string processor
+		-Add: rnd_printf: optional hook for apps to render %r format strings
+		-Add: comment to explain unit suffix print options
+		-Add: unit: prepare unit families for dynamic extension
+		-Add: explicit field for indicating if a unit is an alias so aliasing can be decoupled from order of units in the vector later on
+		-Add: unit: dynamic registration of units and unit families
+		-Add: make rnd_get_value()'s fallback unit configurable
+		-Add: project support infra
+		-Add: project free()
+		-Add: project remove_design() call
+		-Add: import rnd_project_update_filename() from libcschem
+		-Add: API call to append a design to a project's list safely
+		-Add: rnd_design_t links back to parent project using a ->project field maintained by project.c
+		-Add: import multi-design support from sch-rnd
+		-Add: mark each event as [a] or [d] (for per-app or per-design)
+		-Add: central hash of projects
+		-Add: rnd_app API comment: example when conf dont_mege is used
+		-Add: prepare the conf system for checking its own conf error ignores for the gtk grid conf transition
+		-Add: extend conf ignores table with a custom error message option
+		-Change: rnd_get_n_units() doesn't have arguments anymore: there's only one "number of units", aliases are marked explicitly
+		-Change: rnd_units is a vector instead of a static table, to make room for dynamic unit allocation
+		-Optimize: rnd_printf() should use static allocation buffer on stack for printf spec strings to save on malloc()/free() calls - no spec string should be longer than 128
+
+	[dad]
+		-Cleanup: remove obsolete usage of RND_HID_FSD_* bits
+		-Cleanup: simplify enum spares, not forcing switch cases to list them
+		-Change: mandate naming HPANE and VPANE widgets on creation (insteadof providing an optional post-creation pane name macro) so any pane position can be remembered
+		-Add: API for creating preview widget tied to a specific rnd_design_t
+
+	[doc]
+		-Cleanup: switch over pcb-rnd referneces
+		-Cleanup: replace the [hidlib] marking with [librnd] marking in conf tree doc
+		-Del: pcb-rnd-specific subtrees from the conf doc
+		-Del: there's no such config type "CFN_INCREMENTS" (was an old leftover from geda/pcb)
+		-Add: final mutli-conf support
+		-Update: conf tree for pcb-removal
+		-Update: made contact info more librnd-specific
+		-Update: fungw action doc for the current API
+
+	[font]
+		-Add: import pcb-rnd's font rendering engine
+
+	[gkt4]
+		-Fix: missing #include after the API renames
+
+	[gtk]
+		-Fix: proper drawing area scrollbar limitats with negative drawing area coords
+		-Add: multi design: save and restore zoom+pan when switching between designs
+		-Update: "special color" handing for invocation from ->set_design()
+		-Move: local_grid and global_grid config subtrees from under the gtk plugin conf tree to editor/ to be shared with other plugins
+
+	[hid]
+		-Cleanup: use unit index instead of offset within rnd_units
+		-Cleanup: switch over to using rnd_unit_get_idx() instead of direct addressing of rnd_units
+		-Cleanup: dad_spin: rename custom integer coord type to reflect it uses the .crd field
+		-Cleanup: rename rnd_hidlib_set_grid and rnd_hidlib_set_unit, replacing "hidlib" with "hid"
+		-Cleanup: do not call hid ->set_design directly, use multi for that
+		-Cleanup: terminology in API comments: we are librnd, not pcb-rnd
+		-Cleanup: remove/fix pcb references in code comments
+		-Del: per HID ->fileselect in favor of centralized API and implementation, either served lib_hid_common or hid_batch (for CLI)
+		-Del: rnd_hid_enable_per_dialog_hidlib (assume it's always 1)
+		-Del: ->heavy_term_layer_ind (was pcb-rnd specific)
+		-Del: beep() from the hid API - nothing uses it anymore
+		-Del: clipboard formats: clipboard is always set and retrieved as a (char *) string
+		-Del: ->point_cursor API; replaced by centralized mouse cursor override API
+		-Del: ->busy() from the HID API and HID implementations: handled centrally
+		-Del: API for faded drawing; this should be done by app's draw code by simply setting lighter colors
+		-Del: HID ->get_design API in favor of multi's rnd_multi_get_current()
+		-Fix: remember exec prefix after conf internal is loaded
+		-Fix: make exec_prefix avialable even before the first real config merge
+		-Fix: don't crash if preferred GUI is NULL
+		-Fix: hid->attr_dlg_new should set hid_ctx as soon as possible; HID gui operations may trigger callbacks during dialog creation which already depend on hid_ctx
+		-Fix: call HID's crosshair notification only if the current render HID wants that (avoids calling crosshair functions while export)
+		-Fix: reset tool states when switching designs so tool logic doesn't get confused
+		-Rename: "hidlib" args to "design" for clarity
+		-Add: ->do_export() should pass on a pointer to the design (so that simple exporters don't need to implement ->set_design) and an optional app-specific config void *
+		-Add: hid->set_layer_group() passes on (rnd_design_t *) as well so exporters don't need to remember current design
+		-Add: expose_main()'s rnd_hid_expose_ctx_t has an (rnd_design_t *) field to remember which design is being exposed (usefule in multi-design apps, like sch-rnd)
+		-Add: explain the gui-printer-exporter flag set better
+		-Add: spare fields in DAD structures for binary compatibility
+		-Add: generalize dad_spin: introduce a new unit type for custom integer coords
+		-Add: hidlib_init1() gets exec_prefix as arg and sets it in the config
+		-Add: more detailed explanation on the mouse cursor reg/set API
+		-Add: centralized mouse cursor set and override calls
+		-Add: all hids should declare a mouse curosr named "busy" for the centralized handlong of busy state
+		-Add: centralize rnd_hid_busy() - per HID implementation is removed
+		-Add: extend the get_export_options() API so it gets the design and the same app-specific context ptr the actual export gets, so it can calculate field defualts with all export info known
+		-Add: keep mainloop_interactive()'s dsg param, mark it "the design we initially switch to"
+		-Add: more explanation to HID->set_design()
+		-Add: optional API to ask an exporter whether a given design with a given appspec cookie can be exported
+		-Add: comments to clarify the new policy on DAD TREE cell[] allocation
+		-Change: preview expose callback can't have expose context const, callee needs to fill in ->design
+		-Change: tree-table cells need to be malloc'd (strdup'd) on caller's side and are free'd by the lib
+
+	[hid_batch]
+		-Cleanup: terminology (hidlib->design)
+		-Cleanup: code formatting
+
+	[hid_lesstif]
+		-Del: long disabled Xaw-compatible pan mode
+		-Fix: don't crash in tree-table widget click event handler if there's no dialog box ptr (happens in subdialog)
+		-Add: support for sparse global grid
+
+	[lib_exp_pixmap]
+		-Fix: page fit bug with negative coords
+
+	[lib_exp_text]
+		-Cleanup: decouple draw_ps from HID API's global faded call, use a hackish global variable specific to the ps export and pcb-rnd (as this is a legacy special case and we are not going to support HID-operated faded draw in any other exporter or for any other app)
+		-Fix: ps: wrong centering of negative coords
+		-Fix: eps: wrong centering with negative coords
+		-Fix: svg bbox calculation with negative coord drawing areas
+		-Fix: svg bbox on negative dwg area coords when used with --true-size
+		-Change: lpr API: export-to-file gets rnd_design_t * as argument
+		-Add: pass on appsepc to the ps exportplugin from the lpr exporter
+
+	[lib_gtk_common]
+		-Cleanup: terminology in zoompan: hidlib -> design
+		-Fix: allow scrolling/panning to negative coords if drawing area extends to negative
+		-Fix: a preview that is neither locally nor globally flipped should be set to local flip with flips kept 0 so it's always displayd in neutral
+		-Fix: always update all "special" colors on ->set_design(), the config may have changed and may bring new color
+		-Add: set initial preview design depending on preview widget locality
+		-Tune: allow zooming out a lot more (sch-rnd may have large sheets)
+
+	[lib_hid_common]
+		-Cleanup: rename preferences board-changed concept to design-replaced to follow event rename
+		-Cleanup: use unit index instead of offset within rnd_units
+		-Cleanup: switch over to using rnd_unit_get_idx() instead of direct addressing of rnd_units
+		-Fix: preferences conf tab: update nat's pointer on design switch because in a multi-design setup each design will have a different set of natives
+		-Fix: export dialog passes on appspec pointer to the plugin
+		-Fix: preferences, key tab: uninitialized ram on table row termination
+		-Fix: plugin dialog tree table handling: uninitialized row terminator
+		-Add: publish rnd_dlg_export() so non-standard export dialogs can be implemented (e.g. project export in sch-rnd)
+		-Add: preferences dialog hook callbacks get current design as argument (provision: just in case we won't operate the preferences dialog for the current design in the far future)
+		-Add: preferences dialog tab open callback: pass on optional tab data request from the user to direct initial state when a specific tab is requested to open
+		-Add: implement UNIT spin box creation in dad() action
+
+	[lib_hid_gl]
+		-Cleanup: passing the wrong string type to standard calls
+		-Add: hidgl_expose_init() doesn't assume starting coords at 0;0 but gets them in arguments to make the API more flexible (hid_mbtk may need this)
+
+	[multi]
+		-Del: remove RND_EVENT_DESIGN_REPLACED in favor of RND_EVENT_DESIGN_SET_CURRENT (better terminology for multi-design)
+		-Fix: most conf lihata docs are shared and shouldn't be copied per design; exceptions are CRF_DESIGN and CFR_PROJECT
+		-Add: API to support multiple designs (mostly imported from sch-rnd)
+		-Add: refine event comments on which event is called when (meta change vs. fn change)
+
+	[scconfig]
+		-Cleanup: rename /local/pcb to /local/rnd in public templates
+		-Cleanup: get rid of hidlib leftover in public templates
+		-Cleanup: rename _PCB_DEP_ to _RND_DEP_in public templates
+		-Cleanup: get rid of unused /local/pcb/fungw_system from public API; fungw is detected and used only in librnd, apps rely on script plugin provided with librnd
+		-Fix: error messages used in apps don't hardwire "pcb-rnd"
+		-Change: host applications must define APP in their scconfig hooks.c; not defining APP is an #error
+
+	[script]
+		-Fix: perma script conf loader: accept root node if it's either pcb-rnd-perma-script-v1 or librnd-perma-script-v1 (typo caused every root look invalid)
+
+	[tests]
+		-Add: include fontlib in the testing
+
+	[util]
+		-Del: devhelpers/subst - mainline-to-pcb-rnd converter; keep a copy in pcb-rnd only, just in case some hidden gem plugin pops up
+		-Del: deblist.sh - not used by anything anymore
+		-Fix: 404.sh: exclude releases, can't fix past doc broken links
+		-Fix: gen_formats prints $APP instead of hardwired pcb-rnd
+		-Add: 404.sh crawls all Ringdove projects not only pcb-rnd
+		-Add: install devhelper awk_on_formats.sh, apps need it for packager's doc and datasheet
+		-Add: import pcb-rnd's list_dialogs that features reusable shell functions and the html generator
+		-Add: install list_dialogs.sh
+		-Add: import font2c from pcb-rnd (now that the font engine is in librnd)
+		-Add: import action compiler from pcb-rnd (all Ringdove apps need this for their doc)
+		-Add: convert action_compiler.sh into a shell lib so the configuration can be provided from a per project wrapper
+		-Add: import dump_actions_to_html from pcb-rnd
+		-Add: convert dump_actions_to_html.sh to a reusable, app-agnostic shell lib
+		-Add: import file format list generator from pcb-rnd
+		-Add: missing copyright header in gen_formats; explain the API
+		-Add: install gen_formats
+		-Add: devhelper: gimp-exported xmc to C source converter (for mouse cursors)
+		-Change: generalize list_dialogs more: function for generating table header but do not close html (caller may embed the table in some more complex page)
+		-Change: keylist.sh: we do not have per HID menus anymore but plugin supplied menu extras; instead of listing them in columns, have a single "source" column

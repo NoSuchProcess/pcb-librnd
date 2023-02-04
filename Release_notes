@@ -1,6 +1,28 @@
-librnd 3.2.2
+librnd 4.0.0
 ~~~~~~~~~~~~
 
-Minor bugfix release. Bugs fixed are listed in the Changelog. There's
-no especially notable bugfix or feature.
+Major, API breaking release that implements pending API fixes, extensions
+and cleanups that could not be done within librnd3 without breaking
+compatibility.
+
+Feature highlights:
+
+- support for handling multiple designs
+- support for tracking design-project relation
+- import pcb-rnd's generalized font lib into librnd API
+- split core from hid; it is possible to link to the core part of librnd
+  without linking to any of the hid API
+- dynamic unit system: applications can register their units and unti families
+- relax drawing area assumptions/limitations: drawing area is defined with
+  a box and accepts negative coords
+- DAD: it is mandatory to name panes; saving and restoring window geometry
+  always includes panes
+- clean up terminology in API names: use "design" instead of hidlib or pcb or
+  board
+- HID API simplification: remove beep() and always assume textual data
+  on clipboard, centralized mouse cursor management, centralized busy(),
+  remove faded drawing (callee can just use different color)
+- import utils from pcb-rnd and install them so that apps don't need to
+  keep local copies (mainly build related scripts)
+
 
