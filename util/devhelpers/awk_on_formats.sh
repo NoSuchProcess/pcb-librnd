@@ -95,7 +95,7 @@ function flush_pends(    n)
 	disabled = 0
 }
 
-(mode == 1) && ($1 == "$fmt-feature-r") {
+(mode == 1) && (($1 == "$fmt-feature-r") || ($1 == "$fmt-feature-i")) {
 	$1=""
 	PENDING1[pends] = $0
 	PENDING2[pends] = "import"
@@ -103,7 +103,7 @@ function flush_pends(    n)
 	next
 }
 
-(mode == 1) && ($1 == "$fmt-feature-w") {
+(mode == 1) && (($1 == "$fmt-feature-w") || ($1 == "$fmt-feature-e")) {
 	$1=""
 	PENDING1[pends] = $0
 	PENDING2[pends] = "export"
