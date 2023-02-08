@@ -1,4 +1,16 @@
 1. For the upcoming release ===============================================================================
+	- FEATURE: font -v2 support:
+		- test-parse call or some other way to avoid font load error on valid lihata fonts
+		- baseline?
+		- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
+		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
+		- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
+			- custom &name; -> integer translation table
+			- as a convention &amp; should be added to point to &
+			- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
+			- GUI text edit could auto-replace unicode with &unicode_name;
+			- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
+
 
 2. For later releases ===============================================================================
 
@@ -11,15 +23,3 @@
 		- multi preview widget: implement gtk's r34242, r34773
 		- lesstif: vertical text, truncated text support
 	- bitmap object export in png, ps, eps, svg
-	- FEATURE: font -v2 support:
-		- test-parse call or some other way to avoid font load error on valid lihata fonts
-		- baseline?
-		- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
-		- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
-		- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
-			- custom &name; -> integer translation table
-			- as a convention &amp; should be added to point to &
-			- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
-			- GUI text edit could auto-replace unicode with &unicode_name;
-			- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
-	
