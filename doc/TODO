@@ -10,7 +10,7 @@
 			- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
 			- GUI text edit could auto-replace unicode with &unicode_name;
 			- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
-
+	- BUG: pick up packaging diffs from Bdale's 4.0.0 upload
 
 2. For later releases ===============================================================================
 
