@@ -3,6 +3,12 @@
 # Read and parse all pups, make an array of file formats of
 # FMTS[import|export, type] then read stdin and execute the awk
 # script specified in $1 on it
+#
+# Can be extended with awk commands from global variables:
+#  $type_detect_begin - should append to types
+#  $type_detect_awk - should override type
+#
+
 awk_on_formats()
 {
 (for n in $proot/*/*.pup
@@ -17,6 +23,7 @@ cat
 BEGIN {
 	osep = " <br> "
 	types="board footprint netlist image misc"
+'"$type_detect_begin"'
 	pends = 0
 	disabled = 0
 }
@@ -64,7 +71,11 @@ function add(name, dir   ,type,lname)
 		type = "image"
 	else
 		type = "misc"
+
 # DO NOT FORGET TO UDPATE types IN BEGIN ^^^
+
+'"$type_detect_awk"'
+
 
 	if (FMTS[dir, type] == "")
 		FMTS[dir, type] = name
