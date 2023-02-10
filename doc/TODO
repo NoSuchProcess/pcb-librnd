@@ -13,6 +13,13 @@
 	- BUG: pick up packaging diffs from Bdale's 4.0.0 upload
 
 2. For later releases ===============================================================================
+	- BUG: perma scripts are initialized too late
+		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
+		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
+		- can't easily change this without breaking existing scripts that depend on GUI availability
+		- can add a new flag in scripts.lht to load a script earlier
+			- "earlier" should be a new event probably, that runs after loading all plugins and doing all initialization but before loading anything
+			- check if we have GUI for editing permascript; if so, add this there too
 
 3. Long term ===============================================================================
 
