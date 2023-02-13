@@ -1282,7 +1282,7 @@ lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role
 			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->loadname);
 			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
 			if (fn == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file: can't determine project file name\nIs your design saved so it has a parent directory?\n");
 				return NULL;
 			}
 			rnd_conf_reset(role, fn);
@@ -1290,10 +1290,10 @@ lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role
 			rnd_conf_save_file(hidlib, fn, pcb_fn, role, NULL);
 			m = rnd_conf_lht_get_first(role, 0);
 			if (m == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file %s\n", fn);
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file '%s'\n", fn);
 				return NULL;
 			}
-				rnd_message(RND_MSG_INFO, "Created the project file\n");
+			rnd_message(RND_MSG_INFO, "Created the project file '%s'\n", fn);
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "Failed to create config file for role %s\n", rnd_conf_role_name(role));

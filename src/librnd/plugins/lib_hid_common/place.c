@@ -264,7 +264,7 @@ static void place_maybe_save(rnd_design_t *hidlib, rnd_conf_role_t role, int for
 
 	nroot = rnd_pref_ensure_conf_root(hidlib, role);
 	if (nroot == NULL) {
-		rnd_message(RND_MSG_ERROR, "Internal error: failed to create conf root lht\n");
+		rnd_message(RND_MSG_ERROR, "(As a consequence window geometry not saved)\n");
 		return;
 	}
 
