@@ -6,7 +6,10 @@
        and faster computation. The license for this modified copy was
        switched to the GPL per term (3) of the original LGPL license.
        Copyright (C) 2006 harry eaton
- 
+
+       English translation of the original paper:
+       https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+
    based on:
        poly_Boolean: a polygon clip library
        Copyright (C) 1997  Alexey Nikitin, Michael Leonov
