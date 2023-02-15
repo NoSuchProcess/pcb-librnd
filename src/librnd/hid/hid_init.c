@@ -749,9 +749,12 @@ extern void rnd_menu_uninit(void);
 extern void rnd_anyload_uninit(void);
 extern void rnd_hid_cfg_keys_uninit_module(void);
 extern void rnd_tool_act_uninit(void);
+extern void rnd_hid_cursor_uninit(void);
+
 
 void rnd_hidlib_uninit(void)
 {
+	rnd_hid_cursor_uninit();
 	rnd_hid_menu_merge_inhibit_inc(); /* make sure no menu merging happens during the uninitialization */
 	rnd_grid_uninit();
 	rnd_menu_uninit();

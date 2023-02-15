@@ -35,6 +35,8 @@
 
 int rnd_ps_faded = 0; /* ugly workaround for compatibility ps export in pcb-rnd - DO NOT USE FOR ANYTHING ELSE */
 
+static const char hid_cursor_cookie[] = "hid.c";
+
 void rnd_hid_notify_crosshair_change(rnd_design_t *hl, rnd_bool changes_complete)
 {
 	if (rnd_render->notify_crosshair_change)
@@ -123,7 +125,7 @@ void rnd_hid_override_mouse_cursor(int id)
 		if (rnd_gui != NULL) {
 			if (last_normal_cursor < 0) {
 				if (normal_id < 0)
-					normal_id = rnd_tool_reg(&pcb_tool_normal, "hid.c");
+					normal_id = rnd_tool_reg(&pcb_tool_normal, hid_cursor_cookie);
 				last_normal_cursor = normal_id;
 			}
 			rnd_gui->set_mouse_cursor(rnd_gui, last_normal_cursor);
@@ -159,10 +161,15 @@ void rnd_hid_busy(rnd_design_t *design, rnd_bool is_busy)
 	if (is_busy) {
 		last_busy_override = cursor_override; /* remember what override we override */
 		if (busy_id < 0)
-			busy_id = rnd_tool_reg(&pcb_tool_point, "hid.c");
+			busy_id = rnd_tool_reg(&pcb_tool_point, hid_cursor_cookie);
 		rnd_hid_override_mouse_cursor(busy_id);
 	}
 	else
 		rnd_hid_override_mouse_cursor(last_busy_override);
 	busy_state = !!is_busy;
+}
+
+void rnd_hid_cursor_uninit(void)
+{
+	rnd_tool_unreg_by_cookie(hid_cursor_cookie);
 }
