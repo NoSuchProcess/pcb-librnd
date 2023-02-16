@@ -302,8 +302,15 @@ void rnd_hid_usage(const rnd_export_opt_t *a, int numa)
 			if (fnc != NULL)
 				fnc(RND_HIDEOF_USAGE, stderr, a, NULL);
 		}
-		else
+		else {
 			rnd_hid_usage_option(a->name, help);
+			if ((a->type == RND_HATT_ENUM) && (a->enumerations != NULL)) {
+				const char **s;
+				fprintf(stderr, "  %-20s Possible enum values:\n", "");
+				for(s = a->enumerations; *s != NULL; s++)
+					fprintf(stderr, "  %-22s %s\n", "", *s);
+			}
+		}
 	}
 }
 
