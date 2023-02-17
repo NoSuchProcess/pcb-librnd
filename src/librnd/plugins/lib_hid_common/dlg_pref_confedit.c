@@ -478,15 +478,13 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		return;
 	}
 
-	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
-		rnd_message(RND_MSG_ERROR, "Internal error: array index out of bounds\n");
-		return;
-	}
-
 	if (rnd_conf_is_read_only(r->user_data2.lng)) {
 		rnd_message(RND_MSG_ERROR, "Role is read-only, can not remove item\n");
 		return;
 	}
 
-	rnd_conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, pctx->conf.selected_idx);
+	rnd_conf_del(r->user_data2.lng, pctx->conf.selected_nat->hash_path, -1);
+
+	/* refresh the right side tree */
+	dlg_conf_select_node(pctx, NULL, pctx->conf.selected_nat, pctx->conf.selected_idx);
 }

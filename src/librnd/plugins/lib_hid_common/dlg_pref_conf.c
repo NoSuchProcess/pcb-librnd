@@ -31,6 +31,7 @@
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 
 static const char *pref_conf_get_val(const lht_node_t *nd, const rnd_conf_native_t *nat, int idx);
+static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_native_t *nat, int idx);
 #include "dlg_pref_confedit.c"
 
 /* how many chars per line in conf node description (determines window width vs.
