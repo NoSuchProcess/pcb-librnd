@@ -1696,7 +1696,10 @@ int rnd_conf_set_dry(rnd_conf_role_t target, const char *path_, int arr_idx, con
 			nn = lht_dom_node_alloc(LHT_TEXT, "");
 
 		if (pol == RND_POL_OVERWRITE) {
-			if (idx == -1) {
+			if (new_val == NULL) {
+				lht_tree_del(cwd); /* overwrite with NULL means: remove the whole list */
+			}
+			else if (idx == -1) {
 				/* empty the list so that we insert to an empty list which is overwriting the list */
 				while(cwd->data.list.first != NULL)
 					lht_tree_del(cwd->data.list.first);
