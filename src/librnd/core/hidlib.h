@@ -48,7 +48,7 @@ struct rnd_design_s {
 	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
 	rnd_box_t dwg;                     /* drawing area extents (or design dimensions) */
 	char *name;                        /* name of the design */
-	char *loadname;                    /* name of the file (from load) */
+	char *loadname;                    /* name of the file (from load; full path after save-as, written in by the app) */
 	char *fullpath;                    /* loadname resolved with realpath() - the actual full path file name on the file system */
 
 	rnd_project_t *project;            /* if the design is appended to any project */
