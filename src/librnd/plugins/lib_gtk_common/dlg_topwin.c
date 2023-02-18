@@ -200,11 +200,24 @@ static void v_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 }
 
 /* Save size of top window changes so PCB can restart at its size at exit. */
-static gint top_window_configure_event_cb(GtkWidget *widget, long x, long y, long z, void *tw_)
+static gint top_window_configure_event_cb(GtkWidget *widget, long x, long y, long z, void *ctx_)
 {
-	rnd_gtk_topwin_t *tw = tw_;
+	rnd_gtk_t *gctx = ctx_;
+	rnd_gtk_topwin_t *tw = &gctx->topwin;
+	double maxx, maxy;
+
 	if (!tw->placed)
 		return FALSE;
+
+
+	/* window with max zoomout could be resized so much that it causes
+	   coord overflow. Zoom in a bit to avoid that */
+	maxx = gctx->port.view.coord_per_px * gctx->port.view.canvas_width;
+	if (maxx > RND_COORD_MAX)
+		gctx->port.view.coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)gctx->port.view.canvas_width;
+	maxy = gctx->port.view.coord_per_px * gctx->port.view.canvas_height;
+	if (maxy > RND_COORD_MAX)
+		gctx->port.view.coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)gctx->port.view.canvas_height;
 
 	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }
@@ -438,7 +451,7 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 	gtkc_box_pack_append(tw->bottom_hbox, tw->cmd.command_combo_box, FALSE, 0);
 
 	gtkc_bind_mouse_enter(tw->drawing_area, rnd_gtkc_xy_ev(&ghidgui->wtop_enter, drawing_area_enter_cb, tw));
-	gtk2c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, tw));
+	gtk2c_bind_win_resize(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_rs, top_window_configure_event_cb, ctx));
 	gtkc_bind_win_delete(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_del, delete_chart_cb, ctx));
 	gtkc_bind_win_destroy(ghidgui->wtop_window, rnd_gtkc_xy_ev(&ghidgui->wtop_destr, destroy_chart_cb, ctx));
 
