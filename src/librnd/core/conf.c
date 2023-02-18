@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2019..2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019..2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1279,15 +1279,15 @@ lht_node_t *rnd_pref_ensure_conf_root(rnd_design_t *hidlib, rnd_conf_role_t role
 	m = rnd_conf_lht_get_first(role, 0);
 	if (m == NULL) {
 		if (role == RND_CFR_PROJECT) {
-			const char *pcb_fn = (hidlib == NULL ? NULL : hidlib->loadname);
-			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
+			const char *design_fn = (hidlib == NULL ? NULL : hidlib->loadname);
+			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, design_fn, &try);
 			if (fn == NULL) {
 				rnd_message(RND_MSG_ERROR, "Failed to create the project file: can't determine project file name\nIs your design saved so it has a parent directory?\n");
 				return NULL;
 			}
 			rnd_conf_reset(role, fn);
 			rnd_conf_makedirty(role);
-			rnd_conf_save_file(hidlib, fn, pcb_fn, role, NULL);
+			rnd_conf_save_file(hidlib, fn, design_fn, role, NULL);
 			m = rnd_conf_lht_get_first(role, 0);
 			if (m == NULL) {
 				rnd_message(RND_MSG_ERROR, "Failed to create the project file '%s'\n", fn);
