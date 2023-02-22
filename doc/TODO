@@ -13,6 +13,8 @@
 	- BUG: pick up packaging diffs from Bdale's 4.0.0 upload
 
 2. For later releases ===============================================================================
+	- API additions (4.1.0)
+		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
