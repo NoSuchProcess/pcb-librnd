@@ -305,6 +305,12 @@ append /local/librnd/SRCS ?/local/librnd/OBJS_CORELIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_HIDLIB
 gsub /local/librnd/SRCS {.o } {.c }
 
+#TODO: temporary, remove when POLYBOOLLIB replaces POLYLIB
+#put /local/librnd/POLYBOOLLIB_SRCS ?/local/librnd/OBJS_POLYBOOLLIB
+#gsub /local/librnd/POLYBOOLLIB_SRCS {.o } {.c }
+append /local/librnd/DEPSRCS /local/librnd/OBJS_POLYBOOLLIB
+
+
 # apple requires multiple "-framework something" instead of -lsomething
 # we need to keep all -frameworks but uniq would keep only the first if it
 # is a word on its own
