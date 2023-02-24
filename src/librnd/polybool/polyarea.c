@@ -69,19 +69,7 @@
 #define min(x, y) ((x) < (y) ? (x) : (y))
 #define max(x, y) ((x) > (y) ? (x) : (y))
 
-/*********************************************************************/
-/*              L o n g   V e c t o r   S t u f f                    */
-/*********************************************************************/
-
-#define Vcopy(a,b) {(a)[0]=(b)[0];(a)[1]=(b)[1];}
-int vect_equal(rnd_vector_t v1, rnd_vector_t v2);
-void vect_sub(rnd_vector_t res, rnd_vector_t v2, rnd_vector_t v3);
-
-double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
-double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2);
-double rnd_vect_len2(rnd_vector_t v1);
-
-int rnd_vect_inters2(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D, rnd_vector_t S1, rnd_vector_t S2);
+#include "pa_vect.c"
 
 /* note that a vertex v's Flags.status represents the edge defined by
  * v to v->next (i.e. the edge is forward of v)
@@ -123,18 +111,6 @@ RND_INLINE void DEBUGP(const char *fmt, ...)
 #else
 RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #endif
-
-/* ///////////////////////////////////////////////////////////////////////////// * /
-/ *  2-Dimensional stuff
-/ * ///////////////////////////////////////////////////////////////////////////// */
-
-#define Vsub2(r,a,b)	{(r)[0] = (a)[0] - (b)[0]; (r)[1] = (a)[1] - (b)[1];}
-#define Vcpy2(r,a)		{(r)[0] = (a)[0]; (r)[1] = (a)[1];}
-#define Vequ2(a,b)		((a)[0] == (b)[0] && (a)[1] == (b)[1])
-#define Vswp2(a,b) { long t; \
-	t = (a)[0], (a)[0] = (b)[0], (b)[0] = t; \
-	t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
-}
 
 #ifdef DEBUG
 static char *theState(rnd_vnode_t * v);
@@ -2670,68 +2646,6 @@ static rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
 }
 #endif
 
-static double dot(rnd_vector_t A, rnd_vector_t B)
-{
-	return (double) A[0] * (double) B[0] + (double) A[1] * (double) B[1];
-}
-
-/* Compute whether point is inside a triangle formed by 3 other points */
-/* Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
-static int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P)
-{
-	rnd_vector_t v0, v1, v2;
-	double dot00, dot01, dot02, dot11, dot12;
-	double invDenom;
-	double u, v;
-
-	/* Compute vectors */
-	v0[0] = C[0] - A[0];
-	v0[1] = C[1] - A[1];
-	v1[0] = B[0] - A[0];
-	v1[1] = B[1] - A[1];
-	v2[0] = P[0] - A[0];
-	v2[1] = P[1] - A[1];
-
-	/* Compute dot products */
-	dot00 = dot(v0, v0);
-	dot01 = dot(v0, v1);
-	dot02 = dot(v0, v2);
-	dot11 = dot(v1, v1);
-	dot12 = dot(v1, v2);
-
-	/* Compute barycentric coordinates */
-	invDenom = 1. / (dot00 * dot11 - dot01 * dot01);
-	u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-	v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-	/* Check if point is in triangle */
-	return (u > 0.0) && (v > 0.0) && (u + v < 1.0);
-}
-
-/* wrapper to keep the original name short and original function inline */
-int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P)
-{
-	return point_in_triangle(A, B, C, P);
-}
-
-
-/* Returns the dot product of rnd_vector_t A->B, and a vector
- * orthogonal to rnd_vector_t C->D. The result is not normalised, so will be
- * weighted by the magnitude of the C->D vector.
- */
-static double dot_orthogonal_to_direction(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D)
-{
-	rnd_vector_t l1, l2, l3;
-	l1[0] = B[0] - A[0];
-	l1[1] = B[1] - A[1];
-	l2[0] = D[0] - C[0];
-	l2[1] = D[1] - C[1];
-
-	l3[0] = -l2[1];
-	l3[1] = l2[0];
-
-	return dot(l1, l3);
-}
 
 /* Algorithm from http://www.exaflop.org/docs/cgafaq/cga2.html
  *
@@ -3160,7 +3074,6 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 	return rnd_true;
 }
 
-#include "pa_vect.c"
 
 /*
  * rnd_pline_isect_line()
@@ -3365,16 +3278,6 @@ rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 		return rnd_true;
 
 	return rnd_pline_embraces_circ(pl, cx, cy, r);
-}
-
-
-/*
- * rnd_is_point_in_convex_quad()
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
-rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
-{
-	return point_in_triangle(q[0], q[1], q[2], p) || point_in_triangle(q[0], q[3], q[2], p);
 }
 
 
