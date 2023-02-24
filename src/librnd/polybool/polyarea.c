@@ -60,15 +60,7 @@
 
 #include "polyconf.h"
 
-#define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
-
-#define EPSILON (1E-8)
-
-#undef min
-#undef max
-#define min(x, y) ((x) < (y) ? (x) : (y))
-#define max(x, y) ((x) > (y) ? (x) : (y))
-
+#include "pa_math.c"
 #include "pa_vect.c"
 
 /* note that a vertex v's Flags.status represents the edge defined by
