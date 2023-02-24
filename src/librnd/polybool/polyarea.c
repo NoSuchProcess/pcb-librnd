@@ -2193,184 +2193,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 	return code;
 } /* poly_AndSubtract_free */
 
-static inline int cntrbox_pointin(const rnd_pline_t *c, const rnd_vector_t p)
-{
-	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
-}
-
-static inline int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
-{
-	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
-}
-
-rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v)
-{
-	rnd_vnode_t *res;
-	rnd_coord_t *c;
-
-	assert(v);
-	res = (rnd_vnode_t *) calloc(1, sizeof(rnd_vnode_t));
-	if (res == NULL)
-		return NULL;
-	/* bzero (res, sizeof (rnd_vnode_t) - sizeof(rnd_vector_t)); */
-	c = res->point;
-	*c++ = *v++;
-	*c = *v;
-	return res;
-}
-
-void rnd_poly_contour_init(rnd_pline_t * c)
-{
-	if (c == NULL)
-		return;
-	/* bzero (c, sizeof(rnd_pline_t)); */
-	if (c->head == NULL)
-		c->head = calloc(sizeof(rnd_vnode_t), 1);
-	c->head->next = c->head->prev = c->head;
-	c->xmin = c->ymin = RND_COORD_MAX;
-	c->xmax = c->ymax = -RND_COORD_MAX-1;
-	c->is_round = rnd_false;
-	c->cx = 0;
-	c->cy = 0;
-	c->radius = 0;
-}
-
-rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v)
-{
-	rnd_pline_t *res;
-
-	res = (rnd_pline_t *) calloc(1, sizeof(rnd_pline_t));
-	if (res == NULL)
-		return NULL;
-
-	rnd_poly_contour_init(res);
-
-	if (v != NULL) {
-/*		res->head = calloc(sizeof(rnd_vnode_t), 1); - no need to alloc, countour_init() did so */
-		res->head->next = res->head->prev = res->head;
-		Vcopy(res->head->point, v);
-		cntrbox_adjust(res, v);
-	}
-
-	return res;
-}
-
-void rnd_poly_contour_clear(rnd_pline_t * c)
-{
-	rnd_vnode_t *cur;
-
-	assert(c != NULL);
-	while ((cur = c->head->next) != c->head) {
-		rnd_poly_vertex_exclude(NULL, cur);
-		free(cur);
-	}
-	free(c->head);
-	c->head = NULL;
-	rnd_poly_contour_init(c);
-}
-
-void rnd_poly_contour_del(rnd_pline_t ** c)
-{
-	rnd_vnode_t *cur, *prev;
-
-	if (*c == NULL)
-		return;
-	for (cur = (*c)->head->prev; cur != (*c)->head; cur = prev) {
-		prev = cur->prev;
-		if (cur->cvc_next != NULL) {
-			free(cur->cvc_next);
-			free(cur->cvc_prev);
-		}
-		free(cur);
-	}
-	if ((*c)->head->cvc_next != NULL) {
-		free((*c)->head->cvc_next);
-		free((*c)->head->cvc_prev);
-	}
-	/* FIXME -- strict aliasing violation.  */
-	if ((*c)->tree) {
-		rnd_rtree_t *r = (*c)->tree;
-		rnd_r_free_tree_data(r, free);
-		rnd_r_destroy_tree(&r);
-	}
-	free((*c)->head);
-	free(*c), *c = NULL;
-}
-
-void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
-{
-	double area = 0;
-	rnd_vnode_t *p, *c;
-	rnd_vector_t p1, p2;
-
-	assert(C != NULL);
-
-	if (optimize) {
-		for (c = (p = C->head)->next; c != C->head; c = (p = c)->next) {
-			/* if the previous node is on the same line with this one, we should remove it */
-			Vsub2(p1, c->point, p->point);
-			Vsub2(p2, c->next->point, c->point);
-			/* If the product below is zero then
-			 * the points on either side of c 
-			 * are on the same line!
-			 * So, remove the point c
-			 */
-
-			if (rnd_vect_det2(p1, p2) == 0) {
-				rnd_poly_vertex_exclude(C, c);
-				free(c);
-				c = p;
-			}
-		}
-	}
-	C->Count = 0;
-	C->xmin = C->xmax = C->head->point[0];
-	C->ymin = C->ymax = C->head->point[1];
-
-	p = (c = C->head)->prev;
-	if (c != p) {
-		do {
-			/* calculate area for orientation */
-			area += (double) (p->point[0] - c->point[0]) * (p->point[1] + c->point[1]);
-			cntrbox_adjust(C, c->point);
-			C->Count++;
-		}
-		while ((c = (p = c)->next) != C->head);
-	}
-	C->area = RND_ABS(area);
-	if (C->Count > 2)
-		C->Flags.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
-	C->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(C);
-}																/* poly_PreContour */
-
-static rnd_r_dir_t flip_cb(const rnd_box_t * b, void *cl)
-{
-	struct seg *s = (struct seg *) b;
-	s->v = s->v->prev;
-	return RND_R_DIR_FOUND_CONTINUE;
-}
-
-void rnd_poly_contour_inv(rnd_pline_t * c)
-{
-	rnd_vnode_t *cur, *next;
-	int r;
-
-	assert(c != NULL);
-	cur = c->head;
-	do {
-		next = cur->next;
-		cur->next = cur->prev;
-		cur->prev = next;
-		/* fix the segment tree */
-	}
-	while ((cur = next) != c->head);
-	c->Flags.orient ^= 1;
-	if (c->tree) {
-		rnd_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
-		assert(r == c->Count);
-	}
-}
-
+/********************* vertex ***********************/
 void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t * node)
 {
 	assert(node != NULL);
@@ -2427,113 +2250,8 @@ void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node)
 	}
 }
 
-rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
-{
-	rnd_vnode_t *cur, *newnode;
-
-	assert(src != NULL);
-	*dst = NULL;
-	*dst = rnd_poly_contour_new(src->head->point);
-	if (*dst == NULL)
-		return rnd_false;
-
-	(*dst)->Count = src->Count;
-	(*dst)->Flags.orient = src->Flags.orient;
-	(*dst)->xmin = src->xmin, (*dst)->xmax = src->xmax;
-	(*dst)->ymin = src->ymin, (*dst)->ymax = src->ymax;
-	(*dst)->area = src->area;
-
-	for (cur = src->head->next; cur != src->head; cur = cur->next) {
-		if ((newnode = rnd_poly_node_create(cur->point)) == NULL)
-			return rnd_false;
-		/* newnode->Flags = cur->Flags; */
-		rnd_poly_vertex_include((*dst)->head->prev, newnode);
-	}
-	(*dst)->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(*dst);
-	return rnd_true;
-}
-
 /**********************************************************************/
-/* polygon routines */
 
-rnd_bool rnd_polyarea_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * src)
-{
-	*dst = NULL;
-	if (src != NULL)
-		*dst = (rnd_polyarea_t *) calloc(1, sizeof(rnd_polyarea_t));
-	if (*dst == NULL)
-		return rnd_false;
-	(*dst)->contour_tree = rnd_r_create_tree();
-
-	return rnd_polyarea_copy1(*dst, src);
-}
-
-rnd_bool rnd_polyarea_copy1(rnd_polyarea_t * dst, const rnd_polyarea_t * src)
-{
-	rnd_pline_t *cur, **last = &dst->contours;
-
-	*last = NULL;
-	dst->f = dst->b = dst;
-
-	for (cur = src->contours; cur != NULL; cur = cur->next) {
-		if (!rnd_poly_contour_copy(last, cur))
-			return rnd_false;
-		rnd_r_insert_entry(dst->contour_tree, (rnd_box_t *) * last);
-		last = &(*last)->next;
-	}
-	return rnd_true;
-}
-
-void rnd_polyarea_m_include(rnd_polyarea_t ** list, rnd_polyarea_t * a)
-{
-	if (*list == NULL)
-		a->f = a->b = a, *list = a;
-	else {
-		a->f = *list;
-		a->b = (*list)->b;
-		(*list)->b = (*list)->b->f = a;
-	}
-}
-
-rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * srcfst)
-{
-	const rnd_polyarea_t *src = srcfst;
-	rnd_polyarea_t *di;
-
-	*dst = NULL;
-	if (src == NULL)
-		return rnd_false;
-	do {
-		if ((di = rnd_polyarea_create()) == NULL || !rnd_polyarea_copy1(di, src))
-			return rnd_false;
-		rnd_polyarea_m_include(dst, di);
-	}
-	while ((src = src->f) != srcfst);
-	return rnd_true;
-}
-
-rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t * p, rnd_pline_t * c)
-{
-	rnd_pline_t *tmp;
-
-	if ((c == NULL) || (p == NULL))
-		return rnd_false;
-	if (c->Flags.orient == RND_PLF_DIR) {
-		if (p->contours != NULL)
-			return rnd_false;
-		p->contours = c;
-	}
-	else {
-		if (p->contours == NULL)
-			return rnd_false;
-		/* link at front of hole list */
-		tmp = p->contours->next;
-		p->contours->next = c;
-		c->next = tmp;
-	}
-	rnd_r_insert_entry(p->contour_tree, (rnd_box_t *) c);
-	return rnd_true;
-}
 
 typedef struct pip {
 	int f;
@@ -2585,41 +2303,9 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
-{
-	struct pip info;
-	rnd_box_t ray;
 
-	if (!cntrbox_pointin(c, p))
-		return rnd_false;
-
-	/* run a horizontal ray from the point to x->infinity and count (in info.f)
-	   how it crosses poly edges with different winding */
-	info.f = 0;
-	info.p[0] = ray.X1 = p[0];
-	info.p[1] = ray.Y1 = p[1];
-	ray.X2 = RND_COORD_MAX;
-	ray.Y2 = p[1] + 1;
-	if (setjmp(info.env) == 0)
-		rnd_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
-	return info.f;
-}
-
-rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t * p, rnd_vector_t v0)
-{
-	rnd_pline_t *cur;
-
-	if ((p == NULL) || (v0 == NULL) || (p->contours == NULL))
-		return rnd_false;
-	cur = p->contours;
-	if (rnd_poly_contour_inside(cur, v0)) {
-		for (cur = cur->next; cur != NULL; cur = cur->next)
-			if (rnd_poly_contour_inside(cur, v0))
-				return rnd_false;
-		return rnd_true;
-	}
-	return rnd_false;
-}
+#include "pa_api_pline.c"
+#include "pa_api_polyarea.c"
 
 #if 0
 static rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
@@ -2734,49 +2420,6 @@ int rnd_poly_contour_in_contour(rnd_pline_t * poly, rnd_pline_t * inner)
 	return 0;
 }
 
-void rnd_polyarea_init(rnd_polyarea_t * p)
-{
-	p->f = p->b = p;
-	p->contours = NULL;
-	p->contour_tree = rnd_r_create_tree();
-}
-
-rnd_polyarea_t *rnd_polyarea_create(void)
-{
-	rnd_polyarea_t *res;
-
-	if ((res = (rnd_polyarea_t *) malloc(sizeof(rnd_polyarea_t))) != NULL)
-		rnd_polyarea_init(res);
-	return res;
-}
-
-void rnd_poly_contours_free(rnd_pline_t ** pline)
-{
-	rnd_pline_t *pl;
-
-	while ((pl = *pline) != NULL) {
-		*pline = pl->next;
-		rnd_poly_contour_del(&pl);
-	}
-}
-
-void rnd_polyarea_free(rnd_polyarea_t ** p)
-{
-	rnd_polyarea_t *cur;
-
-	if (*p == NULL)
-		return;
-	for (cur = (*p)->f; cur != *p; cur = (*p)->f) {
-		rnd_poly_contours_free(&cur->contours);
-		rnd_r_destroy_tree(&cur->contour_tree);
-		cur->f->b = cur->b;
-		cur->b->f = cur->f;
-		free(cur);
-	}
-	rnd_poly_contours_free(&cur->contours);
-	rnd_r_destroy_tree(&cur->contour_tree);
-	free(*p), *p = NULL;
-}
 
 static rnd_bool inside_sector(rnd_vnode_t * pn, rnd_vector_t p2)
 {
@@ -2931,29 +2574,6 @@ rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a)
 	return rnd_polyarea_contour_check_(a, &res);
 }
 
-void rnd_polyarea_bbox(rnd_polyarea_t * p, rnd_box_t * b)
-{
-	rnd_pline_t *n;
-	/*int cnt;*/
-
-	n = p->contours;
-	b->X1 = b->X2 = n->xmin;
-	b->Y1 = b->Y2 = n->ymin;
-
-	for (/*cnt = 0*/; /*cnt < 2 */ n != NULL; n = n->next) {
-		if (n->xmin < b->X1)
-			b->X1 = n->xmin;
-		if (n->ymin < b->Y1)
-			b->Y1 = n->ymin;
-		if (n->xmax > b->X2)
-			b->X2 = n->xmax;
-		if (n->ymax > b->Y2)
-			b->Y2 = n->ymax;
-/*		if (n == p->contours)
-			cnt++;*/
-	}
-}
-
 #ifndef NDEBUG
 static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t *chk)
 {
@@ -3066,53 +2686,8 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 	return rnd_true;
 }
 
-#include "pa_api_pline.c"
 
-/*
- * rnd_polyarea_move()
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
-void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy)
-{
-	int cnt;
-	rnd_polyarea_t *pa;
 
-	for (pa = pa1, cnt = 0; pa != NULL; pa = pa->f) {
-		rnd_pline_t *pl;
-		if (pa == pa1) {
-			cnt++;
-			if (cnt > 1)
-				break;
-		}
-		if (pa->contour_tree != NULL)
-			rnd_r_destroy_tree(&pa->contour_tree);
-		pa->contour_tree = rnd_r_create_tree();
-		for(pl = pa->contours; pl != NULL; pl = pl->next) {
-			rnd_vnode_t *v;
-			int cnt2 = 0;
-			for(v = pl->head; v != NULL; v = v->next) {
-				if (v == pl->head) {
-					cnt2++;
-					if (cnt2 > 1)
-						break;
-				}
-				v->point[0] += dx;
-				v->point[1] += dy;
-			}
-			pl->xmin += dx;
-			pl->ymin += dy;
-			pl->xmax += dx;
-			pl->ymax += dy;
-			if (pl->tree != NULL) {
-				rnd_r_free_tree_data(pl->tree, free);
-				rnd_r_destroy_tree(&pl->tree);
-			}
-			pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
-
-			rnd_r_insert_entry(pa->contour_tree, (rnd_box_t *)pl);
-		}
-	}
-}
 
 void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2)
 {
