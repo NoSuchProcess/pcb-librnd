@@ -63,7 +63,6 @@
 #define ROUND(a) (long)((a) > 0 ? ((a) + 0.5) : ((a) - 0.5))
 
 #define EPSILON (1E-8)
-#define IsZero(a, b) (fabs((a) - (b)) < EPSILON)
 
 #undef min
 #undef max
@@ -76,11 +75,7 @@
 
 #define Vcopy(a,b) {(a)[0]=(b)[0];(a)[1]=(b)[1];}
 int vect_equal(rnd_vector_t v1, rnd_vector_t v2);
-void vect_init(rnd_vector_t v, double x, double y);
 void vect_sub(rnd_vector_t res, rnd_vector_t v2, rnd_vector_t v3);
-
-void vect_min(rnd_vector_t res, rnd_vector_t v2, rnd_vector_t v3);
-void vect_max(rnd_vector_t res, rnd_vector_t v2, rnd_vector_t v3);
 
 double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2);
@@ -134,11 +129,8 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 / * ///////////////////////////////////////////////////////////////////////////// */
 
 #define Vsub2(r,a,b)	{(r)[0] = (a)[0] - (b)[0]; (r)[1] = (a)[1] - (b)[1];}
-#define Vadd2(r,a,b)	{(r)[0] = (a)[0] + (b)[0]; (r)[1] = (a)[1] + (b)[1];}
-#define Vsca2(r,a,s)	{(r)[0] = (a)[0] * (s); (r)[1] = (a)[1] * (s);}
 #define Vcpy2(r,a)		{(r)[0] = (a)[0]; (r)[1] = (a)[1];}
 #define Vequ2(a,b)		((a)[0] == (b)[0] && (a)[1] == (b)[1])
-#define Vadds(r,a,b,s)	{(r)[0] = ((a)[0] + (b)[0]) * (s); (r)[1] = ((a)[1] + (b)[1]) * (s);}
 #define Vswp2(a,b) { long t; \
 	t = (a)[0], (a)[0] = (b)[0], (b)[0] = t; \
 	t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
@@ -207,9 +199,6 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
 	p->Flags.status = UNKNWN;
 	return p;
 }																/* node_add */
-
-#define ISECT_BAD_PARAM (-1)
-#define ISECT_NO_MEMORY (-2)
 
 
 /*
@@ -477,6 +466,7 @@ typedef struct seg {
 	int intersected;
 } seg;
 
+/* used by pcb-rnd */
 rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 {
 	seg *seg = box;
@@ -2040,7 +2030,7 @@ static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_pol
 	while ((a = a->f) != afst);
 }
 
-/* determine if two polygons touch or overlap */
+/* determine if two polygons touch or overlap; used in pcb-rnd */
 rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
 {
 	jmp_buf e;
@@ -2663,7 +2653,8 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t * p, rnd_vector_t v0)
 	return rnd_false;
 }
 
-rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
+#if 0
+static rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
 {
 	rnd_polyarea_t *cur;
 
@@ -2677,6 +2668,7 @@ rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
 	while ((cur = cur->f) != p);
 	return rnd_false;
 }
+#endif
 
 static double dot(rnd_vector_t A, rnd_vector_t B)
 {
@@ -3175,12 +3167,6 @@ rnd_vector_t rnd_vect_zero = { (long) 0, (long) 0 };
 /*             L o n g   V e c t o r   S t u f f                     */
 /*********************************************************************/
 
-void vect_init(rnd_vector_t v, double x, double y)
-{
-	v[0] = (long) x;
-	v[1] = (long) y;
-}																/* vect_init */
-
 #define Vzero(a)   ((a)[0] == 0. && (a)[1] == 0.)
 
 #define Vsub(a,b,c) {(a)[0]=(b)[0]-(c)[0];(a)[1]=(b)[1]-(c)[1];}
@@ -3195,21 +3181,9 @@ void vect_sub(rnd_vector_t res, rnd_vector_t v1, rnd_vector_t v2)
 {
 Vsub(res, v1, v2)}							/* vect_sub */
 
-void vect_min(rnd_vector_t v1, rnd_vector_t v2, rnd_vector_t v3)
-{
-	v1[0] = (v2[0] < v3[0]) ? v2[0] : v3[0];
-	v1[1] = (v2[1] < v3[1]) ? v2[1] : v3[1];
-}																/* vect_min */
-
-void vect_max(rnd_vector_t v1, rnd_vector_t v2, rnd_vector_t v3)
-{
-	v1[0] = (v2[0] > v3[0]) ? v2[0] : v3[0];
-	v1[1] = (v2[1] > v3[1]) ? v2[1] : v3[1];
-}																/* vect_max */
-
 double rnd_vect_len2(rnd_vector_t v)
 {
-	return ((double) v[0] * v[0] + (double) v[1] * v[1]);	/* why sqrt? only used for compares */
+	return ((double) v[0] * v[0] + (double) v[1] * v[1]);
 }
 
 double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2)
