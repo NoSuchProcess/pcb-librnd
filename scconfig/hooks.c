@@ -480,6 +480,7 @@ static int rnd_hook_generate()
 	printf("Generating opengl.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "opengl.h.in", "opengl.h"));
 	printf("Generating draw_INIT.h (%d)\n", generr |= tmpasm(LIBRND_PLUGIN_ROOT "/lib_hid_gl", "draw_INIT.h.in", "draw_INIT.h"));
 	printf("Generating poly conf h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/poly", "polyconf.h.in", "polyconf.h"));
+	printf("Generating polybool conf h (%d)\n", generr |= tmpasm(LIBRND_ROOT "/polybool", "polyconf.h.in", "polyconf.h"));
 
 	return generr;
 }

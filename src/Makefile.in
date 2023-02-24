@@ -131,6 +131,14 @@ put /local/librnd/OBJS_POLYLIB [@
 	$(LIBRND)/poly/rtree.o
 @]
 
+put /local/librnd/OBJS_POLYBOOLLIB [@
+	$(LIBRND)/polybool/polyarea.o
+	$(LIBRND)/polybool/polygon1_gen.o
+	$(LIBRND)/polybool/offset.o
+	$(LIBRND)/polybool/self_isc.o
+	$(LIBRND)/polybool/rtree.o
+@]
+
 put /local/librnd/OBJS_FONTLIB [@
 	$(LIBRND)/font/font.o
 	$(LIBRND)/font/vtgla.o
@@ -221,6 +229,7 @@ put /local/librnd/OBJS_C99 /local/librnd/OBJS_C99_CORELIB
 put /local/librnd/OBJS /local/librnd/OBJS_CORELIB
 append /local/librnd/OBJS /local/librnd/OBJS_3RDLIB
 append /local/librnd/OBJS /local/librnd/OBJS_POLYLIB
+#append /local/librnd/OBJS /local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/OBJS /local/librnd/OBJS_FONTLIB
 append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 
@@ -269,6 +278,7 @@ uniq /local/librnd/OBJS_C99
 uniq /local/librnd/OBJS_3RDLIB
 uniq /local/librnd/OBJS_3RDLIB_NOAUTO
 uniq /local/librnd/OBJS_POLYLIB
+uniq /local/librnd/OBJS_POLYBOOLLIB
 uniq /local/librnd/OBJS_FONTLIB
 uniq /local/librnd/OBJS_CORELIB
 uniq /local/librnd/OBJS_HIDLIB
@@ -289,6 +299,7 @@ put /local/librnd/SRCS /local/librnd/OBJS
 append /local/librnd/SRCS ?/local/librnd/OBJS_C99
 append /local/librnd/SRCS ?/local/librnd/OBJS_3RDLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_POLYLIB
+#append /local/librnd/SRCS ?/local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_FONTLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_CORELIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_HIDLIB
@@ -336,6 +347,7 @@ INST_DUMMY=/tmp/librnd-dummy
 OBJS=@/local/librnd/OBJS@ @/local/librnd/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/librnd/OBJS_C99@
 OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
+OBJS_POLYBOOLLIB=@/local/librnd/OBJS_POLYBOOLLIB@
 OBJS_FONTLIB=@/local/librnd/OBJS_FONTLIB@
 OBJS_3RDLIB=@/local/librnd/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
 OBJS_CORELIB=@/local/librnd/OBJS_CORELIB@
@@ -371,6 +383,7 @@ all:
 	$(MAKE) revcheck
 	$(MAKE) all_exe
 	$(MAKE) librnd
+	$(MAKE) librnd-polybool.a
 
 include $(ROOT)/Makefile.conf
 
@@ -423,6 +436,10 @@ librnd-poly.a: $(OBJS_POLYLIB)
 	$(ARU) $(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
 	$(RANLIB) librnd-poly.a
 
+librnd-polybool.a: $(OBJS_POLYBOOLLIB)
+	$(ARU) $(AR) rvu librnd-polybool.a $(OBJS_POLYBOOLLIB)
+	$(RANLIB) librnd-polybool.a
+
 librnd-font.a: $(OBJS_FONTLIB)
 	$(ARU) $(AR) rvu librnd-font.a $(OBJS_FONTLIB)
 	$(RANLIB) librnd-font.a
@@ -442,6 +459,9 @@ librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB) librnd-3rd.a
 
 librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB) librnd-poly.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) $(LDFLAGS) -lm
+
+librnd-polybool.so.$(PCB_RND_VER): $(OBJS_POLYBOOLLIB) librnd-polybool.a
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLYBOOL) -o librnd-polybool.so.$(PCB_RND_VER) $(OBJS_POLYBOOLLIB) $(LDFLAGS) -lm
 
 librnd-font.so.$(PCB_RND_VER): $(OBJS_FONTLIB) librnd-font.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_FONT) -o librnd-font.so.$(PCB_RND_VER) $(OBJS_FONTLIB) $(LDFLAGS) -lm
@@ -627,6 +647,7 @@ end
 put /local/librnd/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
 put /local/librnd/HDRS_CORELIB /local/librnd/OBJS_CORELIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYLIB
+#append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONTLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_HIDLIB
 uniq /local/librnd/HDRS_3RDLIB

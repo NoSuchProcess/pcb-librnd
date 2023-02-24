@@ -1,0 +1,8 @@
+print [@
+
+/* Polygon internal configuration - not installed */
+
+/* Autodetected types */
+typedef @/local/librnd/long64@    rnd_long64_t;
+
+@]
