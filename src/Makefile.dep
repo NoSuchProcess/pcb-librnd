@@ -670,7 +670,8 @@
  ../src_3rd/genvector/vtp0.h ../src/librnd/poly/polyarea.h ../src/librnd/core/box.h \
  ../src/librnd/core/misc_util.h ../src/librnd/poly/rtree2_compat.h \
  ../src/librnd/polybool/polyconf.h ../src/librnd/polybool/pa_math.c \
- ../src/librnd/polybool/pa_vect.c ../src/librnd/polybool/pa_api_pline.c \
+ ../src/librnd/polybool/pa_vect.c ../src/librnd/polybool/pa_api_vertex.c \
+ ../src/librnd/polybool/pa_api_pline.c \
  ../src/librnd/polybool/pa_api_polyarea.c \
  ../src/librnd/polybool/pa_check.c
 ../src/librnd/polybool/polygon1_gen.o: \
