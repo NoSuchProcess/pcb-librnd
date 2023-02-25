@@ -18,16 +18,25 @@
  * probably work as well.
  *
  */
+TODO("Maybe use Bentley-Ottman here instead of building trees?");
+
+typedef struct pa_contour_info_s {
+	rnd_pline_t *pa;
+	jmp_buf restart;
+	jmp_buf *getout;
+	int need_restart;
+	pa_insert_node_task_t *node_insert_list;
+} pa_contour_info_t;
 
 static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 {
-	contour_info *c_info = (contour_info *) cl;
+	pa_contour_info_t *c_info = (pa_contour_info_t *) cl;
 	rnd_pline_t *pa = c_info->pa;
 	rnd_pline_t *pb = (rnd_pline_t *) b;
 	rnd_pline_t *rtree_over;
 	rnd_pline_t *looping_over;
 	rnd_vnode_t *av;										/* node iterators */
-	struct info info;
+	pa_seg_seg_t info;
 	rnd_box_t box;
 	jmp_buf restart;
 
@@ -95,14 +104,13 @@ static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-TODO("Maybe use Bentley-Ottman here instead of building trees?");
 static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
 {
 	rnd_polyarea_t *t;
 	rnd_pline_t *pa;
-	contour_info c_info;
+	pa_contour_info_t c_info;
 	int need_restart = 0;
-	insert_node_task *task;
+	pa_insert_node_task_t *task;
 	c_info.need_restart = 0;
 	c_info.node_insert_list = NULL;
 
@@ -146,7 +154,7 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 	/* Process any deferred node insertions */
 	task = c_info.node_insert_list;
 	while (task != NULL) {
-		insert_node_task *next = task->next;
+		pa_insert_node_task_t *next = task->next;
 
 		/* Do insertion */
 		task->new_node->prev = task->node_seg->v;
