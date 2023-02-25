@@ -53,7 +53,7 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
 	if (p == NULL)
 		return NULL;
 	p->cvc_prev = p->cvc_next = NULL;
-	p->Flags.status = UNKNWN;
+	p->Flags.pstatus = PA_PTS_UNKNWN;
 	return p;
 }																/* node_add */
 

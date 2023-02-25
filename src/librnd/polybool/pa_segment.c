@@ -176,8 +176,8 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
 		longjmp(*i->touch, TOUCHES);
-	i->s->p->Flags.status = ISECTED;
-	s->p->Flags.status = ISECTED;
+	i->s->p->Flags.lstatus = PA_PLS_ISECTED;
+	s->p->Flags.lstatus = PA_PLS_ISECTED;
 	for (; cnt; cnt--) {
 		rnd_bool done_insert_on_i = rnd_false;
 		new_node = node_add_single_point(i->v, cnt > 1 ? s2 : s1);

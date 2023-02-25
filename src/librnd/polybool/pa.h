@@ -7,16 +7,24 @@ struct rnd_cvc_list_s {
 	char poly, side;
 };
 
-#define ISECTED 3
-#define UNKNWN  0
-#define INSIDE  1
-#define OUTSIDE 2
-#define SHARED 3
-#define SHARED2 4
+typedef enum {
+	PA_PLS_UNKNWN  = 0,
+	PA_PLS_INSIDE  = 1,
+	PA_PLS_OUTSIDE = 2,
+	PA_PLS_ISECTED = 3
+} pa_pline_status_t;
+
+typedef enum {
+	PA_PTS_UNKNWN  = 0,
+	PA_PTS_INSIDE  = 1,
+	PA_PTS_OUTSIDE = 2,
+	PA_PTS_SHARED  = 3,
+	PA_PTS_SHARED2 = 4
+} pa_plinept_status_t;
 
 #define TOUCHES 99
 
-#define NODE_LABEL(n)  ((n)->Flags.status)
-#define LABEL_NODE(n,l) ((n)->Flags.status = (l))
+#define NODE_LABEL(n)  ((n)->Flags.pstatus)
+#define LABEL_NODE(n,l) ((n)->Flags.pstatus = (l))
 
 
