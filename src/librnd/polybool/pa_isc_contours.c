@@ -133,7 +133,7 @@ static void pa_intersect(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int 
 	while(pa_intersect_impl(jb, b, a, add)) ;
 }
 
-static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_polyarea_t * bfst, int add)
+static void pa_polyarea_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_polyarea_t * bfst, int add)
 {
 	rnd_polyarea_t *a = afst, *b = bfst;
 	rnd_pline_t *curcA, *curcB;
@@ -167,4 +167,4 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 			}
 	}
 	while (add && (a = a->f) != afst);
-}																/* M_rnd_polyarea_t_intersect */
+}

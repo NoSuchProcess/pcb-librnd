@@ -88,7 +88,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 #endif
 
 		/* intersect needs to make a list of the contours in a and b which are intersected */
-		M_rnd_polyarea_t_intersect(&e, a, b, rnd_true);
+		pa_polyarea_intersect(&e, a, b, rnd_true);
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
 		/* NB: Relevant parts of a are labeled below */
@@ -163,7 +163,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 		if (!rnd_poly_valid(b))
 			return -1;
 #endif
-		M_rnd_polyarea_t_intersect(&e, a, b, rnd_true);
+		pa_polyarea_intersect(&e, a, b, rnd_true);
 
 		M_rnd_polyarea_t_label(a, b, rnd_false);
 		M_rnd_polyarea_t_label(b, a, rnd_false);

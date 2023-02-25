@@ -199,7 +199,7 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
 		if (!rnd_poly_valid(b))
 			return -1;
 #endif
-		M_rnd_polyarea_t_intersect(&e, a, b, rnd_false);
+		pa_polyarea_intersect(&e, a, b, rnd_false);
 
 		if (M_rnd_polyarea_t_label(a, b, rnd_true))
 			return rnd_true;
