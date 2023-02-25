@@ -46,7 +46,7 @@ typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {
 	rnd_vnode_t *next, *prev, *shared;
 	struct {
-		unsigned int status:3;
+		unsigned int status:3; /* for the edge {v to v->next} (the edge forward of v) */
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 	} Flags;

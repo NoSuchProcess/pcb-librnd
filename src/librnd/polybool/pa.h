@@ -7,9 +7,6 @@ struct rnd_cvc_list_s {
 	char poly, side;
 };
 
-/* note that a vertex v's Flags.status represents the edge defined by
- * v to v->next (i.e. the edge is forward of v)
- */
 #define ISECTED 3
 #define UNKNWN  0
 #define INSIDE  1
