@@ -197,7 +197,7 @@ RND_INLINE void rnd_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 /* Convert a struct seg *obj extracted from a pline->tree into coords */
 void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2);
 
-/* create a (rnd_rtree_t *) of each seg derived from src */
+/* create a (rnd_rtree_t *) of each segment derived from a contour object of src */
 void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
 

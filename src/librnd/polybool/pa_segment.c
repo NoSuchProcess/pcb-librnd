@@ -94,37 +94,21 @@ static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 	return 0;
 }
 
-void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
+void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
 {
-	pa_seg_t *s;
-	rnd_vnode_t *bv;
-	rnd_rtree_t *ans = rnd_r_create_tree();
-	bv = pb->head;
+	rnd_vnode_t *bv = pl->head;
+	rnd_rtree_t *res = rnd_r_create_tree();
+
 	do {
-		s = malloc(sizeof(pa_seg_t));
+		pa_seg_t *s = malloc(sizeof(pa_seg_t));
 		s->intersected = 0;
-		if (bv->point[0] < bv->next->point[0]) {
-			s->box.X1 = bv->point[0];
-			s->box.X2 = bv->next->point[0] + 1;
-		}
-		else {
-			s->box.X2 = bv->point[0] + 1;
-			s->box.X1 = bv->next->point[0];
-		}
-		if (bv->point[1] < bv->next->point[1]) {
-			s->box.Y1 = bv->point[1];
-			s->box.Y2 = bv->next->point[1] + 1;
-		}
-		else {
-			s->box.Y2 = bv->point[1] + 1;
-			s->box.Y1 = bv->next->point[1];
-		}
 		s->v = bv;
-		s->p = pb;
-		rnd_r_insert_entry(ans, (const rnd_box_t *) s);
-	}
-	while ((bv = bv->next) != pb->head);
-	return (void *) ans;
+		s->p = pl;
+		pa_seg_update_bbox(s);
+		rnd_r_insert_entry(res, (const rnd_box_t *)s);
+	} while ((bv = bv->next) != pl->head);
+
+	return (void *)res;
 }
 
 /*** seg-in-seg search helpers */
