@@ -246,3 +246,26 @@ static rnd_r_dir_t pa_get_seg_cb(const rnd_box_t *b, void *ctx_)
 	}
 	return RND_R_DIR_NOT_FOUND;
 }
+
+/* Find the segment for pt in tree; result is filled in segctx. Caller should
+   initialize the following fields of segctx: env, touch, need_restart,
+   node_insert_list */
+RND_INLINE void pa_find_seg_for_pt(rnd_rtree_t *tree, rnd_vnode_t *pt, pa_seg_seg_t *segctx)
+{
+	rnd_r_dir_t rres;
+	rnd_box_t box;
+	double dx = pt->next->point[0] - pt->point[0]; /* compute the slant for region trimming */
+
+	segctx->v = pt;
+	if (dx != 0) {
+		segctx->m = (pt->next->point[1] - pt->point[1]) / dx;
+		segctx->b = pt->point[1] - segctx->m * pt->point[0];
+	}
+	else
+		segctx->m = 0;
+
+	box.X1 = pt->point[0];    box.Y1 = pt->point[1];
+	box.X2 = box.X1 + 1;      box.Y2 = box.Y1 + 1;
+	rres = rnd_r_search(tree, &box, NULL, pa_get_seg_cb, segctx, NULL);
+	assert(rres == RND_R_DIR_CANCEL);
+}

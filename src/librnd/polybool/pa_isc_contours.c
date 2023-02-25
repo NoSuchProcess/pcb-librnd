@@ -1,23 +1,18 @@
 /* Map intersections between contours, using pa_segment; the actual low level
    intersection code is in pa_segment, this is the high level part. */
 
-/*
- * intersect() (and helpers)
- * (C) 2006, harry eaton
- * This uses an rtree to find A-B intersections. Whenever a new vertex is
- * added, the search for intersections is re-started because the rounding
- * could alter the topology otherwise. 
- * This should use a faster algorithm for snap rounding intersection finding.
- * The best algorithm is probably found in:
- *
- * "Improved output-sensitive snap rounding," John Hershberger, Proceedings
- * of the 22nd annual symposium on Computational geometry, 2006, pp 357-366.
- * http://doi.acm.org/10.1145/1137856.1137909
- *
- * Algorithms described by de Berg, or Goodrich or Halperin, or Hobby would
- * probably work as well.
- *
- */
+/* Use rtree to find A-B polyline intersections. Whenever a new vertex is
+   added, the search for intersections is re-started because the rounding
+   could alter the topology otherwise.
+   This vould use a faster algorithm for snap rounding intersection finding.
+   The best algorithm is probably found in:
+
+   "Improved output-sensitive snap rounding," John Hershberger, Proceedings
+   of the 22nd annual symposium on Computational geometry, 2006, pp 357-366.
+   http://doi.acm.org/10.1145/1137856.1137909
+
+   Algorithms described by de Berg, or Goodrich or Halperin, or Hobby would
+   probably work as well. */
 TODO("Maybe use Bentley-Ottman here instead of building trees?");
 
 typedef struct pa_contour_info_s {
@@ -28,79 +23,60 @@ typedef struct pa_contour_info_s {
 	pa_insert_node_task_t *node_insert_list;
 } pa_contour_info_t;
 
-static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
+static rnd_r_dir_t contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 {
-	pa_contour_info_t *c_info = (pa_contour_info_t *) cl;
-	rnd_pline_t *pa = c_info->pa;
-	rnd_pline_t *pb = (rnd_pline_t *) b;
-	rnd_pline_t *rtree_over;
-	rnd_pline_t *looping_over;
-	rnd_vnode_t *av;										/* node iterators */
-	pa_seg_seg_t info;
-	rnd_box_t box;
+	pa_contour_info_t *ctr_ctx = (pa_contour_info_t *)ctx_;
+	rnd_pline_t *pla = ctr_ctx->pa, *plb = (rnd_pline_t *)b;
+	rnd_pline_t *rtree_over, *looping_over;
+	rnd_vnode_t *loop_pt;
+	pa_seg_seg_t segctx;
 	jmp_buf restart;
 
 	/* Have seg_in_seg_cb return to our desired location if it touches */
-	info.env = &restart;
-	info.touch = c_info->getout;
-	info.need_restart = 0;
-	info.node_insert_list = c_info->node_insert_list;
+	segctx.env = &restart;
+	segctx.touch = ctr_ctx->getout;
+	segctx.need_restart = 0;
+	segctx.node_insert_list = ctr_ctx->node_insert_list;
 
 	/* Pick which contour has the fewer points, and do the loop
-	 * over that. The r_tree makes hit-testing against a contour
-	 * faster, so we want to do that on the bigger contour.
-	 */
-	if (pa->Count < pb->Count) {
-		rtree_over = pb;
-		looping_over = pa;
+	   over that. The r_tree makes hit-testing against a contour
+	   faster, so we want to do that on the bigger contour. */
+	if (pla->Count < plb->Count) {
+		rtree_over = plb;
+		looping_over = pla;
 	}
 	else {
-		rtree_over = pa;
-		looping_over = pb;
+		rtree_over = pla;
+		looping_over = plb;
 	}
 
-	av = looping_over->head;
-	do {													/* Loop over the nodes in the smaller contour */
-		rnd_r_dir_t rres;
-		/* check this edge for any insertions */
-		double dx;
-		info.v = av;
-		/* compute the slant for region trimming */
-		dx = av->next->point[0] - av->point[0];
-		if (dx == 0)
-			info.m = 0;
-		else {
-			info.m = (av->next->point[1] - av->point[1]) / dx;
-			info.b = av->point[1] - info.m * av->point[0];
-		}
-		box.X2 = (box.X1 = av->point[0]) + 1;
-		box.Y2 = (box.Y1 = av->point[1]) + 1;
-
-		/* fill in the segment in info corresponding to this node */
-		rres = rnd_r_search(looping_over->tree, &box, NULL, pa_get_seg_cb, &info, NULL);
-		assert(rres == RND_R_DIR_CANCEL);
+	/* Loop over the nodes in the smaller contour */
+	loop_pt = looping_over->head;
+	do {
+		pa_find_seg_for_pt(looping_over->tree, loop_pt, &segctx); /* fills in segctx */
 
 		/* If we're going to have another pass anyway, skip this */
-		if (info.s->intersected && info.node_insert_list != NULL)
+		if (segctx.s->intersected && (segctx.node_insert_list != NULL))
 			continue;
 
 		if (setjmp(restart))
 			continue;
 
 		/* NB: If this actually hits anything, we are teleported back to the beginning */
-		info.tree = rtree_over->tree;
-		if (info.tree) {
+		segctx.tree = rtree_over->tree;
+		if (segctx.tree != NULL) {
 			int seen;
-			rnd_r_search(info.tree, &info.s->box, seg_in_region_cb, seg_in_seg_cb, &info, &seen);
-			if (RND_UNLIKELY(seen))
-				assert(0);							/* XXX: Memory allocation failure */
+			rnd_r_search(segctx.tree, &segctx.s->box, seg_in_region_cb, seg_in_seg_cb, &segctx, &seen);
+			if (RND_UNLIKELY(seen)) {
+				assert(0); /* failed to allocate memory */
+			}
 		}
 	}
-	while ((av = av->next) != looping_over->head);
+	while((loop_pt = loop_pt->next) != looping_over->head);
 
-	c_info->node_insert_list = info.node_insert_list;
-	if (info.need_restart)
-		c_info->need_restart = 1;
+	ctr_ctx->node_insert_list = segctx.node_insert_list;
+	if (segctx.need_restart)
+		ctr_ctx->need_restart = 1;
 	return RND_R_DIR_NOT_FOUND;
 }
 
@@ -108,11 +84,11 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 {
 	rnd_polyarea_t *t;
 	rnd_pline_t *pa;
-	pa_contour_info_t c_info;
+	pa_contour_info_t ctr_ctx;
 	int need_restart = 0;
 	pa_insert_node_task_t *task;
-	c_info.need_restart = 0;
-	c_info.node_insert_list = NULL;
+	ctr_ctx.need_restart = 0;
+	ctr_ctx.node_insert_list = NULL;
 
 	/* Search the r-tree of the object with most contours
 	 * We loop over the contours of "a". Swap if necessary.
@@ -128,8 +104,8 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 		jmp_buf out;
 		int retval;
 
-		c_info.getout = NULL;
-		c_info.pa = pa;
+		ctr_ctx.getout = NULL;
+		ctr_ctx.pa = pa;
 
 		if (!add) {
 			retval = setjmp(out);
@@ -138,7 +114,7 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 				 * we need to clean up, then longjmp to jb */
 				longjmp(*jb, retval);
 			}
-			c_info.getout = &out;
+			ctr_ctx.getout = &out;
 		}
 
 		sb.X1 = pa->xmin;
@@ -146,13 +122,13 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 		sb.X2 = pa->xmax + 1;
 		sb.Y2 = pa->ymax + 1;
 
-		rnd_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
-		if (c_info.need_restart)
+		rnd_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch_cb, &ctr_ctx, NULL);
+		if (ctr_ctx.need_restart)
 			need_restart = 1;
 	}
 
 	/* Process any deferred node insertions */
-	task = c_info.node_insert_list;
+	task = ctr_ctx.node_insert_list;
 	while (task != NULL) {
 		pa_insert_node_task_t *next = task->next;
 
