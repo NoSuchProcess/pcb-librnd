@@ -77,11 +77,6 @@ node_add
  (C) 1993 Klamer Schutte
  (C) 1997 Alexey Nikitin, Michael Leonov
  (C) 2006 harry eaton
-
- returns a bit field in new_point that indicates where the
- point was.
- 1 means a new node was created and inserted
- 4 means the intersection was not on the dest point
 */
 rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
 {
