@@ -91,6 +91,11 @@ static double vect_m_dist2(rnd_vector_t v1, rnd_vector_t v2)
 	/* (dy < 0) */ return -dd;
 }
 
+RND_INLINE double Vdot2(rnd_vector_t A, rnd_vector_t B)
+{
+	return (double)A[0] * (double)B[0] + (double)A[1] * (double)B[1];
+}
+
 #define SWAP(type, a, b) \
 do { \
 	type __tmp__ = a; \
@@ -250,10 +255,6 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 	return 1;
 }
 
-static double dot(rnd_vector_t A, rnd_vector_t B)
-{
-	return (double) A[0] * (double) B[0] + (double) A[1] * (double) B[1];
-}
 
 /* Compute whether point is inside a triangle formed by 3 other points */
 /* Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
@@ -273,11 +274,11 @@ static int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd
 	v2[1] = P[1] - A[1];
 
 	/* Compute dot products */
-	dot00 = dot(v0, v0);
-	dot01 = dot(v0, v1);
-	dot02 = dot(v0, v2);
-	dot11 = dot(v1, v1);
-	dot12 = dot(v1, v2);
+	dot00 = Vdot2(v0, v0);
+	dot01 = Vdot2(v0, v1);
+	dot02 = Vdot2(v0, v2);
+	dot11 = Vdot2(v1, v1);
+	dot12 = Vdot2(v1, v2);
 
 	/* Compute barycentric coordinates */
 	invDenom = 1. / (dot00 * dot11 - dot01 * dot01);
@@ -310,7 +311,7 @@ static double dot_orthogonal_to_direction(rnd_vector_t A, rnd_vector_t B, rnd_ve
 	l3[0] = -l2[1];
 	l3[1] = l2[0];
 
-	return dot(l1, l3);
+	return Vdot2(l1, l3);
 }
 
 /*
