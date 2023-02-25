@@ -36,15 +36,8 @@
 /* 2D vector utilities */
 
 /* These work only because rnd_vector_t is an array so it is packed. */
-#define rnd_vertex_equ(a,b)  (memcmp((a), (b), sizeof(rnd_vector_t)) == 0)
-#define rnd_vertex_cpy(a,b)   memcpy((a), (b), sizeof(rnd_vector_t))
-
-TODO("remove this: it's the same as as Vsub");
-#define Vsub2(r, a, b) \
-	do { \
-		(r)[0] = (a)[0] - (b)[0]; \
-		(r)[1] = (a)[1] - (b)[1]; \
-	} while(0)
+#define Vcpy2(dst, src)   memcpy((dst), (src), sizeof(rnd_vector_t))
+#define Vequ2(a,b)       (memcmp((a),   (b),   sizeof(rnd_vector_t)) == 0)
 
 #define Vsub(r, a, b) \
 	do { \
@@ -52,8 +45,6 @@ TODO("remove this: it's the same as as Vsub");
 		(r)[1] = (a)[1] - (b)[1]; \
 	} while(0)
 
-#define Vcpy2(dst, src)  rnd_vertex_cpy(dst, src)
-#define Vequ2(a,b)       rnd_vertex_equ(a, b)
 
 #define Vswp2(a,b) \
 	do { \
@@ -62,29 +53,10 @@ TODO("remove this: it's the same as as Vsub");
 		t = (a)[1]; (a)[1] = (b)[1]; (b)[1] = t; \
 	} while(0)
 
-rnd_vector_t rnd_vect_zero = { 0, 0 };
-
 #define Vzero(a)   ((a)[0] == 0 && (a)[1] == 0)
 
-TODO("remove this: this is the same as Vcpy()");
-#define Vcopy(a,b) \
-	do { \
-		(a)[0] = (b)[0]; \
-		(a)[1] = (b)[1]; \
-	} while(0)
+rnd_vector_t rnd_vect_zero = { 0, 0 };
 
-TODO("remove this: this is the same as Vequ2()");
-int vect_equal(rnd_vector_t v1, rnd_vector_t v2)
-{
-	return (v1[0] == v2[0] && v1[1] == v2[1]);
-}																/* vect_equal */
-
-
-TODO("remove this: this is the same as Vsub()");
-void vect_sub(rnd_vector_t res, rnd_vector_t v1, rnd_vector_t v2)
-{
-	Vsub(res, v1, v2);
-}							/* vect_sub */
 
 double rnd_vect_len2(rnd_vector_t v)
 {
@@ -146,8 +118,8 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 		double dc1, dc2, d1, d2, h;	/* Check to see whether p1-p2 and q1-q2 are on the same line */
 		rnd_vector_t hp1, hq1, hp2, hq2, q1p1, q1q2;
 
-		Vsub2(q1p1, q1, p1);
-		Vsub2(q1q2, q1, q2);
+		Vsub(q1p1, q1, p1);
+		Vsub(q1q2, q1, q2);
 
 
 		/* If this product is not zero then p1-p2 and q1-q2 are not on same line! */

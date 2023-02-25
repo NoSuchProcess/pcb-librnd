@@ -45,9 +45,9 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
 {
 	rnd_vnode_t *p;
 
-	if (vect_equal(po, dest->point))
+	if (Vequ2(po, dest->point))
 		return dest;
-	if (vect_equal(po, dest->next->point))
+	if (Vequ2(po, dest->next->point))
 		return dest->next;
 	p = rnd_poly_node_create(po);
 	if (p == NULL)
