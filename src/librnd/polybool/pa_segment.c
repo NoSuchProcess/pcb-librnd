@@ -94,6 +94,39 @@ static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 	return 0;
 }
 
+void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
+{
+	pa_seg_t *s;
+	rnd_vnode_t *bv;
+	rnd_rtree_t *ans = rnd_r_create_tree();
+	bv = pb->head;
+	do {
+		s = malloc(sizeof(pa_seg_t));
+		s->intersected = 0;
+		if (bv->point[0] < bv->next->point[0]) {
+			s->box.X1 = bv->point[0];
+			s->box.X2 = bv->next->point[0] + 1;
+		}
+		else {
+			s->box.X2 = bv->point[0] + 1;
+			s->box.X1 = bv->next->point[0];
+		}
+		if (bv->point[1] < bv->next->point[1]) {
+			s->box.Y1 = bv->point[1];
+			s->box.Y2 = bv->next->point[1] + 1;
+		}
+		else {
+			s->box.Y2 = bv->point[1] + 1;
+			s->box.Y1 = bv->next->point[1];
+		}
+		s->v = bv;
+		s->p = pb;
+		rnd_r_insert_entry(ans, (const rnd_box_t *) s);
+	}
+	while ((bv = bv->next) != pb->head);
+	return (void *) ans;
+}
+
 /*** seg-in-seg search helpers */
 
 typedef struct pa_insert_node_task_s pa_insert_node_task_t;
@@ -205,39 +238,6 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 			longjmp(*i->env, 1);
 	}
 	return RND_R_DIR_NOT_FOUND;
-}
-
-void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
-{
-	pa_seg_t *s;
-	rnd_vnode_t *bv;
-	rnd_rtree_t *ans = rnd_r_create_tree();
-	bv = pb->head;
-	do {
-		s = malloc(sizeof(pa_seg_t));
-		s->intersected = 0;
-		if (bv->point[0] < bv->next->point[0]) {
-			s->box.X1 = bv->point[0];
-			s->box.X2 = bv->next->point[0] + 1;
-		}
-		else {
-			s->box.X2 = bv->point[0] + 1;
-			s->box.X1 = bv->next->point[0];
-		}
-		if (bv->point[1] < bv->next->point[1]) {
-			s->box.Y1 = bv->point[1];
-			s->box.Y2 = bv->next->point[1] + 1;
-		}
-		else {
-			s->box.Y2 = bv->point[1] + 1;
-			s->box.Y1 = bv->next->point[1];
-		}
-		s->v = bv;
-		s->p = pb;
-		rnd_r_insert_entry(ans, (const rnd_box_t *) s);
-	}
-	while ((bv = bv->next) != pb->head);
-	return (void *) ans;
 }
 
 static rnd_r_dir_t get_seg(const rnd_box_t * b, void *cl)
