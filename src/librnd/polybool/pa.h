@@ -24,7 +24,5 @@ typedef enum {
 
 #define TOUCHES 99
 
-#define NODE_LABEL(n)  ((n)->Flags.pstatus)
-#define LABEL_NODE(n,l) ((n)->Flags.pstatus = (l))
 
 

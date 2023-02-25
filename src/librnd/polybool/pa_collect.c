@@ -48,19 +48,19 @@ typedef int (*J_Rule) (char, rnd_vnode_t *, DIRECTION *);
 static int UniteS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (NODE_LABEL(cur) == PA_PTS_OUTSIDE) || (NODE_LABEL(cur) == PA_PTS_SHARED);
+	return (cur->Flags.pstatus == PA_PTS_OUTSIDE) || (cur->Flags.pstatus == PA_PTS_SHARED);
 }
 
 static int IsectS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (NODE_LABEL(cur) == PA_PTS_INSIDE) || (NODE_LABEL(cur) == PA_PTS_SHARED);
+	return (cur->Flags.pstatus == PA_PTS_INSIDE) || (cur->Flags.pstatus == PA_PTS_SHARED);
 }
 
 static int SubS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (NODE_LABEL(cur) == PA_PTS_OUTSIDE) || (NODE_LABEL(cur) == PA_PTS_SHARED2);
+	return (cur->Flags.pstatus == PA_PTS_OUTSIDE) || (cur->Flags.pstatus == PA_PTS_SHARED2);
 }
 
 static int XorS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)

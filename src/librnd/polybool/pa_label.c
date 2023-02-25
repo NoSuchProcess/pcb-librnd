@@ -45,7 +45,7 @@ static char *theState(rnd_vnode_t * v)
 	static char s[] = "SHARED";
 	static char s2[] = "SHARED2";
 
-	switch (NODE_LABEL(v)) {
+	switch (v->Flags.pstatus) {
 	case INSIDE:
 		return i;
 	case OUTSIDE:
@@ -132,8 +132,8 @@ static pa_plinept_status_t node_label(rnd_vnode_t * pn)
 		}
 	}
 	assert(region != PA_PTS_UNKNWN);
-	assert(NODE_LABEL(pn) == PA_PTS_UNKNWN || NODE_LABEL(pn) == region);
-	LABEL_NODE(pn, region);
+	assert(pn->Flags.pstatus == PA_PTS_UNKNWN || pn->Flags.pstatus == region);
+	pn->Flags.pstatus = region;
 	if (region == PA_PTS_SHARED || region == PA_PTS_SHARED2)
 		return PA_PTS_UNKNWN;
 	return region;
@@ -166,7 +166,7 @@ static rnd_bool label_contour(rnd_pline_t * a)
 
 		/* This labels nodes which aren't cross-connected */
 		assert(label == PA_PTS_INSIDE || label == PA_PTS_OUTSIDE);
-		LABEL_NODE(cur, label);
+		cur->Flags.pstatus = label;
 	}
 	while ((cur = cur->next) != first_labelled);
 #ifdef DEBUG_ALL_LABELS
