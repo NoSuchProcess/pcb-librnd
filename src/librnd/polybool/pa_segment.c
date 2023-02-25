@@ -1,37 +1,39 @@
 /*
-       Copyright (C) 2006 harry eaton
-
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
 /* some structures for handling segment intersections using the rtrees */
 
@@ -161,65 +163,72 @@ RND_INLINE pa_insert_node_task_t *prepend_node_task(pa_insert_node_task_t *list,
 	return res;
 }
 
-/*
- * seg_in_seg()
- * (C) 2006 harry eaton
- * This routine checks if the segment in the tree intersect the search segment.
- * If it does, the plines are marked as intersected and the point is marked for
- * the cvclist. If the point is not already a vertex, a new vertex is inserted
- * and the search for intersections starts over at the beginning.
- * That is potentially a significant time penalty, but it does solve the snap rounding
- * problem. There are efficient algorithms for finding intersections with snap
- * rounding, but I don't have time to implement them right now.
+/* This callback checks if the segment "s" in the tree intersect
+   the search segment "i". If it does, both plines are marked as intersected
+   and the point is marked for the connectivity list. If the point is not
+   already a vertex, a new vertex is inserted and the search for intersections
+   starts over at the beginning.
+
+   (That is potentially a significant time penalty, but it does solve the snap
+   rounding problem. There are efficient algorithms for finding intersections
+   with snap rounding, but I don't have time to implement them right now.)
  */
-static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
+static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 {
-	pa_seg_seg_t *i = (pa_seg_seg_t *) cl;
-	pa_seg_t *s = (pa_seg_t *) b;
-	rnd_vector_t s1, s2;
-	int cnt;
-	rnd_vnode_t *new_node;
+	pa_seg_seg_t *ctx = (pa_seg_seg_t *)cl;
+	pa_seg_t *s = (pa_seg_t *)b;
+	rnd_vector_t isc1, isc2;
+	int num_isc;
 
 	/* When new nodes are added at the end of a pass due to an intersection
-	 * the segments may be altered. If either segment we're looking at has
-	 * already been intersected this pass, skip it until the next pass.
-	 */
-	if (s->intersected || i->s->intersected)
+	   the segments may be altered. If either segment we're looking at has
+	   already been intersected this pass, skip it until the next pass. */
+	if (s->intersected || ctx->s->intersected)
 		return RND_R_DIR_NOT_FOUND;
 
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
-	cnt = rnd_vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
-	if (!cnt)
+	num_isc = rnd_vect_inters2(s->v->point, s->v->next->point, ctx->v->point, ctx->v->next->point, isc1, isc2);
+	if (!num_isc)
 		return RND_R_DIR_NOT_FOUND;
-	if (i->touch)									/* if checking touches one find and we're done */
-		longjmp(*i->touch, PA_ISC_TOUCHES);
-	i->s->p->flg.llabel = PA_PLL_ISECTED;
+
+ /* if checking touches the first intersection decides the result */
+	if (ctx->touch != NULL)
+		longjmp(*ctx->touch, PA_ISC_TOUCHES);
+
+	ctx->s->p->flg.llabel = PA_PLL_ISECTED;
 	s->p->flg.llabel = PA_PLL_ISECTED;
-	for (; cnt; cnt--) {
+
+	for (; num_isc > 0; num_isc--) {
 		rnd_bool done_insert_on_i = rnd_false;
-		new_node = node_add_single_point(i->v, cnt > 1 ? s2 : s1);
+		rnd_vector_t *my_s = (num_isc == 1 ? &isc1 : &isc2);
+		rnd_vnode_t *new_node;
+
+		/* add new node on "i" */
+		new_node = node_add_single_point(ctx->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
-			DEBUGP("new intersection on segment \"i\" at %#mD\n", cnt > 1 ? s2[0] : s1[0], cnt > 1 ? s2[1] : s1[1]);
+			DEBUGP("new intersection on segment \"i\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
 #endif
-			i->node_insert_list = prepend_node_task(i->node_insert_list, i->s, new_node);
-			i->s->intersected = 1;
+			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, ctx->s, new_node);
+			ctx->s->intersected = 1;
 			done_insert_on_i = rnd_true;
 		}
-		new_node = node_add_single_point(s->v, cnt > 1 ? s2 : s1);
+
+		/* add new node on "s" */
+		new_node = node_add_single_point(s->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
-			DEBUGP("new intersection on segment \"s\" at %#mD\n", cnt > 1 ? s2[0] : s1[0], cnt > 1 ? s2[1] : s1[1]);
+			DEBUGP("new intersection on segment \"s\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
 #endif
-			i->node_insert_list = prepend_node_task(i->node_insert_list, s, new_node);
+			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, s, new_node);
 			s->intersected = 1;
-			return RND_R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
+			return RND_R_DIR_NOT_FOUND; /* Keep looking for intersections with segment "i" */
 		}
-		/* Skip any remaining r_search hits against segment i, as any further
-		 * intersections will be rejected until the next pass anyway.
-		 */
+
+		/* Skip any remaining r_search hits against segment "i", as any further
+		   intersections will be rejected until the next pass anyway. */
 		if (done_insert_on_i)
-			longjmp(*i->env, 1);
+			longjmp(*ctx->env, 1);
 	}
 	return RND_R_DIR_NOT_FOUND;
 }

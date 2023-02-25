@@ -40,7 +40,7 @@ static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 	rnd_box_t box;
 	jmp_buf restart;
 
-	/* Have seg_in_seg return to our desired location if it touches */
+	/* Have seg_in_seg_cb return to our desired location if it touches */
 	info.env = &restart;
 	info.touch = c_info->getout;
 	info.need_restart = 0;
@@ -91,7 +91,7 @@ static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 		info.tree = rtree_over->tree;
 		if (info.tree) {
 			int seen;
-			rnd_r_search(info.tree, &info.s->box, seg_in_region_cb, seg_in_seg, &info, &seen);
+			rnd_r_search(info.tree, &info.s->box, seg_in_region_cb, seg_in_seg_cb, &info, &seen);
 			if (RND_UNLIKELY(seen))
 				assert(0);							/* XXX: Memory allocation failure */
 		}
