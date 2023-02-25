@@ -45,7 +45,7 @@ static char *theState(rnd_vnode_t * v)
 	static char s[] = "SHARED";
 	static char s2[] = "SHARED2";
 
-	switch (v->Flags.pstatus) {
+	switch (v->Flags.plabel) {
 	case INSIDE:
 		return i;
 	case OUTSIDE:
@@ -76,11 +76,11 @@ static void print_labels(rnd_pline_t * a)
 node_label
  (C) 2006 harry eaton
 */
-static pa_plinept_status_t node_label(rnd_vnode_t * pn)
+static pa_plinept_label_t node_label(rnd_vnode_t * pn)
 {
 	rnd_cvc_list_t *first_l, *l;
 	char this_poly;
-	pa_plinept_status_t region = PA_PTS_UNKNWN;
+	pa_plinept_label_t region = PA_PTL_UNKNWN;
 
 	assert(pn);
 	assert(pn->cvc_next);
@@ -104,38 +104,38 @@ static pa_plinept_status_t node_label(rnd_vnode_t * pn)
 	if (l->poly != this_poly) {
 		if (l->side == 'P') {
 			if (l->parent->prev->point[0] == pn->next->point[0] && l->parent->prev->point[1] == pn->next->point[1]) {
-				region = PA_PTS_SHARED2;
+				region = PA_PTL_SHARED2;
 				pn->shared = l->parent->prev;
 			}
 			else
-				region = PA_PTS_INSIDE;
+				region = PA_PTL_INSIDE;
 		}
 		else {
 			if (l->angle == pn->cvc_next->angle) {
 				assert(l->parent->next->point[0] == pn->next->point[0] && l->parent->next->point[1] == pn->next->point[1]);
-				region = PA_PTS_SHARED;
+				region = PA_PTL_SHARED;
 				pn->shared = l->parent;
 			}
 			else
-				region = PA_PTS_OUTSIDE;
+				region = PA_PTL_OUTSIDE;
 		}
 	}
-	if (region == PA_PTS_UNKNWN) {
+	if (region == PA_PTL_UNKNWN) {
 		for (l = l->next; l != pn->cvc_next; l = l->next) {
 			if (l->poly != this_poly) {
 				if (l->side == 'P')
-					region = PA_PTS_INSIDE;
+					region = PA_PTL_INSIDE;
 				else
-					region = PA_PTS_OUTSIDE;
+					region = PA_PTL_OUTSIDE;
 				break;
 			}
 		}
 	}
-	assert(region != PA_PTS_UNKNWN);
-	assert(pn->Flags.pstatus == PA_PTS_UNKNWN || pn->Flags.pstatus == region);
-	pn->Flags.pstatus = region;
-	if (region == PA_PTS_SHARED || region == PA_PTS_SHARED2)
-		return PA_PTS_UNKNWN;
+	assert(region != PA_PTL_UNKNWN);
+	assert(pn->Flags.plabel == PA_PTL_UNKNWN || pn->Flags.plabel == region);
+	pn->Flags.plabel = region;
+	if (region == PA_PTL_SHARED || region == PA_PTL_SHARED2)
+		return PA_PTL_UNKNWN;
 	return region;
 }																/* node_label */
 
@@ -151,7 +151,7 @@ static rnd_bool label_contour(rnd_pline_t * a)
 {
 	rnd_vnode_t *cur = a->head;
 	rnd_vnode_t *first_labelled = NULL;
-	pa_plinept_status_t label = PA_PTS_UNKNWN;
+	pa_plinept_label_t label = PA_PTL_UNKNWN;
 
 	do {
 		if (cur->cvc_next) {				/* examine cross vertex */
@@ -165,8 +165,8 @@ static rnd_bool label_contour(rnd_pline_t * a)
 			continue;
 
 		/* This labels nodes which aren't cross-connected */
-		assert(label == PA_PTS_INSIDE || label == PA_PTS_OUTSIDE);
-		cur->Flags.pstatus = label;
+		assert(label == PA_PTL_INSIDE || label == PA_PTL_OUTSIDE);
+		cur->Flags.plabel = label;
 	}
 	while ((cur = cur->next) != first_labelled);
 #ifdef DEBUG_ALL_LABELS
@@ -179,18 +179,18 @@ static rnd_bool label_contour(rnd_pline_t * a)
 static rnd_bool cntr_label_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
-	if (poly->Flags.lstatus == PA_PLS_ISECTED) {
+	if (poly->Flags.llabel == PA_PLL_ISECTED) {
 		label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
 	}
 	else if (cntr_in_M_rnd_polyarea_t(poly, ppl, test)) {
 		if (test)
 			return rnd_true;
-		poly->Flags.lstatus = PA_PLS_INSIDE;
+		poly->Flags.llabel = PA_PLL_INSIDE;
 	}
 	else {
 		if (test)
 			return rnd_false;
-		poly->Flags.lstatus = PA_PLS_OUTSIDE;
+		poly->Flags.llabel = PA_PLL_OUTSIDE;
 	}
 	return rnd_false;
 }																/* cntr_label_rnd_polyarea_t */

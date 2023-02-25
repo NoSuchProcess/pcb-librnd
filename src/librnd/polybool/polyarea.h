@@ -46,7 +46,7 @@ typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {
 	rnd_vnode_t *next, *prev, *shared;
 	struct {
-		unsigned int pstatus:3; /* one of pa_plinept_status_t; for the edge {v to v->next} (the edge forward of v) */
+		unsigned int plabel:3; /* one of pa_plinept_label_t; for the edge {v to v->next} (the edge forward of v) */
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 	} Flags;
@@ -67,7 +67,7 @@ struct rnd_pline_s {
 	rnd_coord_t cx, cy;
 	rnd_coord_t radius;
 	struct {
-		unsigned int lstatus:3; /* one of pa_pline_status_t */
+		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
 	} Flags;
 };
