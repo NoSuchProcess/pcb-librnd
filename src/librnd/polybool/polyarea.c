@@ -859,70 +859,11 @@ static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
 	return ((c1->xmin >= c2->xmin) && (c1->ymin >= c2->ymin) && (c1->xmax <= c2->xmax) && (c1->ymax <= c2->ymax));
 }
 
-/*****************************************************************/
-/* Routines for making labels */
-
-static rnd_r_dir_t count_contours_i_am_inside(const rnd_box_t * b, void *cl)
-{
-	rnd_pline_t *me = (rnd_pline_t *) cl;
-	rnd_pline_t *check = (rnd_pline_t *) b;
-
-	if (rnd_poly_contour_in_contour(check, me))
-		return RND_R_DIR_FOUND_CONTINUE;
-	return RND_R_DIR_NOT_FOUND;
-}
-
-/* cntr_in_M_rnd_polyarea_t
-returns poly is inside outfst ? rnd_true : rnd_false */
-static int cntr_in_M_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * outfst, rnd_bool test)
-{
-	rnd_polyarea_t *outer = outfst;
-	rnd_heap_t *heap;
-
-	assert(poly != NULL);
-	assert(outer != NULL);
-
-	heap = rnd_heap_create();
-	do {
-		if (cntrbox_inside(poly, outer->contours))
-			rnd_heap_insert(heap, outer->contours->area, (void *) outer);
-	}
-	/* if checking touching, use only the first polygon */
-	while (!test && (outer = outer->f) != outfst);
-	/* we need only check the smallest poly container
-	 * but we must loop in case the box container is not
-	 * the poly container */
-	do {
-		int cnt;
-
-		if (rnd_heap_is_empty(heap))
-			break;
-		outer = (rnd_polyarea_t *) rnd_heap_remove_smallest(heap);
-
-		rnd_r_search(outer->contour_tree, (rnd_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
-		switch (cnt) {
-		case 0:										/* Didn't find anything in this piece, Keep looking */
-			break;
-		case 1:										/* Found we are inside this piece, and not any of its holes */
-			rnd_heap_destroy(&heap);
-			return rnd_true;
-		case 2:										/* Found inside a hole in the smallest polygon so far. No need to check the other polygons */
-			rnd_heap_destroy(&heap);
-			return rnd_false;
-		default:
-			printf("Something strange here\n");
-			break;
-		}
-	}
-	while (1);
-	rnd_heap_destroy(&heap);
-	return rnd_false;
-}																/* cntr_in_M_rnd_polyarea_t */
-
-
+#include "pa_polyarea.c"
 #include "pa_lab_contour.c"
 #include "pa_collect_tmp.c"
 #include "pa_collect.c"
+
 #include "pa_api_bool.c"
 #include "pa_api_vertex.c"
 #include "pa_api_pline.c"
