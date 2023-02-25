@@ -29,7 +29,9 @@
 #define RND_PLF_INV 0
 #define RND_PLF_MARK 1
 
-typedef rnd_coord_t rnd_vertex_t[2]; /* longing point representation of coordinates */
+/* x;y point coordinates; it's an array instead of a struct so it's
+   guaranteed to be "packed", no padding, so that memcpy/memcmp work */
+typedef rnd_coord_t rnd_vertex_t[2];
 typedef rnd_vertex_t rnd_vector_t;
 
 extern rnd_vector_t rnd_vect_zero;
