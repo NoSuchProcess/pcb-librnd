@@ -805,17 +805,8 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 #include "pa_api_pline.c"
 #include "pa_api_polyarea.c"
 #include "pa_api_check.c"
+#include "pa_api_misc.c"
 
-
-
-void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2)
-{
-	struct seg *s = obj;
-	*x1 = s->v->point[0];
-	*x2 = s->v->next->point[0];
-	*y1 = s->v->point[1];
-	*y2 = s->v->next->point[1];
-}
 
 /* how about expanding polygons so that edges can be arcs rather than
  * lines. Consider using the third coordinate to store the radius of the

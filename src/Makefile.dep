@@ -678,7 +678,8 @@
  ../src/librnd/polybool/pa_api_vertex.c \
  ../src/librnd/polybool/pa_api_pline.c \
  ../src/librnd/polybool/pa_api_polyarea.c \
- ../src/librnd/polybool/pa_api_check.c
+ ../src/librnd/polybool/pa_api_check.c \
+ ../src/librnd/polybool/pa_api_misc.c
 ../src/librnd/polybool/polygon1_gen.o: \
  ../src/librnd/polybool/polygon1_gen.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/global_typedefs.h ../src/librnd/config.h \
