@@ -49,7 +49,7 @@ struct rnd_vnode_s {
 		unsigned int plabel:3; /* one of pa_plinept_label_t; for the edge {v to v->next} (the edge forward of v) */
 		unsigned int mark:1;
 		unsigned int in_hub:1;
-	} Flags;
+	} flg;
 	rnd_cvc_list_t *cvc_prev;
 	rnd_cvc_list_t *cvc_next;
 	rnd_vector_t point;
@@ -69,7 +69,7 @@ struct rnd_pline_s {
 	struct {
 		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
-	} Flags;
+	} flg;
 };
 
 rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);

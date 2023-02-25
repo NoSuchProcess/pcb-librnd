@@ -134,7 +134,7 @@ static void clear_marks(rnd_polyarea_t * p)
 		for (c = n->contours; c; c = c->next) {
 			v = c->head;
 			do {
-				v->Flags.mark = 0;
+				v->flg.mark = 0;
 			}
 			while ((v = v->next) != c->head);
 		}

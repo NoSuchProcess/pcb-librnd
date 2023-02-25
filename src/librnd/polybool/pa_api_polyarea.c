@@ -95,7 +95,7 @@ rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t * p, rnd_pline_t * c)
 
 	if ((c == NULL) || (p == NULL))
 		return rnd_false;
-	if (c->Flags.orient == RND_PLF_DIR) {
+	if (c->flg.orient == RND_PLF_DIR) {
 		if (p->contours != NULL)
 			return rnd_false;
 		p->contours = c;

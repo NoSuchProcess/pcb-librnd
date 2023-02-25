@@ -27,9 +27,10 @@
 #include <librnd/rnd_config.h>
 #include <math.h>
 #include <assert.h>
-#include <librnd/poly/rtree.h>
-#include <librnd/poly/polyarea.h>
-#include <librnd/poly/self_isc.h>
+#include "rtree.h"
+#include "polyarea.h"
+#include "self_isc.h"
+#include "pa.h"
 
 /* expect no more than this number of hubs in a complex polygon */
 #define MAX_HUB_TRIES 1024
@@ -55,7 +56,7 @@ static rnd_vnode_t *rnd_pline_split(rnd_vnode_t *v, rnd_vector_t at)
 	v2 = rnd_poly_node_create(at);
 	assert(v2 != NULL);
 	v2->cvc_prev = v2->cvc_next = NULL;
-	v2->Flags.status = UNKNWN;
+	v2->flg.plabel = PA_PTL_UNKNWN;
 
 	/* link in */
 	v->next->prev = v2;
@@ -123,7 +124,7 @@ static void remove_from_hub(vhub_t *h, rnd_vnode_t *v)
 		if (stored == v) {
 			vtp0_remove(&h->node, m, 1);
 			m--;
-			v->Flags.in_hub = 0;
+			v->flg.in_hub = 0;
 		}
 	}
 	
@@ -131,7 +132,7 @@ static void remove_from_hub(vhub_t *h, rnd_vnode_t *v)
 	if (h->node.used == 1) {
 		stored = *vtp0_get(&h->node, 0, 0); /* the previous loop guarantees it can not be NULL */
 		vtp0_remove(&h->node, 0, 1);
-		stored->Flags.in_hub = 0;
+		stored->flg.in_hub = 0;
 	}
 }
 
@@ -142,7 +143,7 @@ static int rnd_pline_add_isectp(vtp0_t *hubs, rnd_vnode_t *v)
 
 	assert(v != NULL);
 
-	v->Flags.in_hub = 1;
+	v->flg.in_hub = 1;
 	if (hubs->array != NULL) {
 		if (hub_find(hubs, v, rnd_true) != NULL) /* already on the list (... by now) */
 				return 0;
@@ -183,7 +184,7 @@ static int pline_split_off_loop(rnd_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	rnd_cardinal_t cnt;
 
 	for(v = start->next, cnt = 0;; v = v->next) {
-		if (v->Flags.in_hub) {
+		if (v->flg.in_hub) {
 			if (rnd_vect_dist2(start->point, v->point) < RND_POLY_ENDP_EPSILON)
 				break; /* found a matching hub point */
 			goto skip_to_backward; /* found a different hub point, skip */
@@ -197,7 +198,7 @@ static int pline_split_off_loop(rnd_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 
 	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
-		if (v->Flags.in_hub) {
+		if (v->flg.in_hub) {
 			if (rnd_vect_dist2(start->point, v->point) < RND_POLY_ENDP_EPSILON) {
 				start = v;
 				break; /* found a matching hub point */
@@ -241,7 +242,7 @@ void rnd_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
 	rnd_poly_contour_copy(&pl, pl_in);
 	va = (rnd_vnode_t *)pl->head;
 	do {
-		va->Flags.in_hub = 0;
+		va->flg.in_hub = 0;
 		va = va->next;
 	} while (va != pl->head);
 
@@ -315,7 +316,7 @@ rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa)
 			for(n = 0; n < pls.used; n++) {
 				pln = (rnd_pline_t *)pls.array[n];
 				rnd_poly_contour_pre(pln, rnd_true);
-				if (pln->Flags.orient != pl->Flags.orient)
+				if (pln->flg.orient != pl->flg.orient)
 					rnd_poly_contour_inv(pln);
 				rnd_poly_contour_pre(pln, 0);
 				pln->tree = rnd_poly_make_edge_tree(pln);

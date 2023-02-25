@@ -194,7 +194,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 		}
 		while (add && (a = a->f) != afst);
 		for (curcB = b->contours; curcB != NULL; curcB = curcB->next)
-			if (curcB->Flags.llabel == PA_PLL_ISECTED) {
+			if (curcB->flg.llabel == PA_PLL_ISECTED) {
 				the_list = add_descriptors(curcB, 'B', the_list);
 				if (RND_UNLIKELY(the_list == NULL))
 					error(rnd_err_no_memory);
@@ -203,7 +203,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 	while (add && (b = b->f) != bfst);
 	do {
 		for (curcA = a->contours; curcA != NULL; curcA = curcA->next)
-			if (curcA->Flags.llabel == PA_PLL_ISECTED) {
+			if (curcA->flg.llabel == PA_PLL_ISECTED) {
 				the_list = add_descriptors(curcA, 'A', the_list);
 				if (RND_UNLIKELY(the_list == NULL))
 					error(rnd_err_no_memory);

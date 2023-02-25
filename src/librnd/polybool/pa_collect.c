@@ -48,28 +48,28 @@ typedef int (*J_Rule) (char, rnd_vnode_t *, DIRECTION *);
 static int UniteS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (cur->Flags.plabel == PA_PTL_OUTSIDE) || (cur->Flags.plabel == PA_PTL_SHARED);
+	return (cur->flg.plabel == PA_PTL_OUTSIDE) || (cur->flg.plabel == PA_PTL_SHARED);
 }
 
 static int IsectS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (cur->Flags.plabel == PA_PTL_INSIDE) || (cur->Flags.plabel == PA_PTL_SHARED);
+	return (cur->flg.plabel == PA_PTL_INSIDE) || (cur->flg.plabel == PA_PTL_SHARED);
 }
 
 static int SubS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
 	*initdir = FORW;
-	return (cur->Flags.plabel == PA_PTL_OUTSIDE) || (cur->Flags.plabel == PA_PTL_SHARED2);
+	return (cur->flg.plabel == PA_PTL_OUTSIDE) || (cur->flg.plabel == PA_PTL_SHARED2);
 }
 
 static int XorS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 {
-	if (cur->Flags.plabel == PA_PTL_INSIDE) {
+	if (cur->flg.plabel == PA_PTL_INSIDE) {
 		*initdir = BACKW;
 		return rnd_true;
 	}
-	if (cur->Flags.plabel == PA_PTL_OUTSIDE) {
+	if (cur->flg.plabel == PA_PTL_OUTSIDE) {
 		*initdir = FORW;
 		return rnd_true;
 	}
@@ -79,22 +79,22 @@ static int XorS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
 static int IsectJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
 {
 	assert(*cdir == FORW);
-	return (v->Flags.plabel == PA_PTL_INSIDE || v->Flags.plabel == PA_PTL_SHARED);
+	return (v->flg.plabel == PA_PTL_INSIDE || v->flg.plabel == PA_PTL_SHARED);
 }
 
 static int UniteJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
 {
 	assert(*cdir == FORW);
-	return (v->Flags.plabel == PA_PTL_OUTSIDE || v->Flags.plabel == PA_PTL_SHARED);
+	return (v->flg.plabel == PA_PTL_OUTSIDE || v->flg.plabel == PA_PTL_SHARED);
 }
 
 static int XorJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
 {
-	if (v->Flags.plabel == PA_PTL_INSIDE) {
+	if (v->flg.plabel == PA_PTL_INSIDE) {
 		*cdir = BACKW;
 		return rnd_true;
 	}
-	if (v->Flags.plabel == PA_PTL_OUTSIDE) {
+	if (v->flg.plabel == PA_PTL_OUTSIDE) {
 		*cdir = FORW;
 		return rnd_true;
 	}
@@ -103,15 +103,15 @@ static int XorJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
 
 static int SubJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
 {
-	if (p == 'B' && v->Flags.plabel == PA_PTL_INSIDE) {
+	if (p == 'B' && v->flg.plabel == PA_PTL_INSIDE) {
 		*cdir = BACKW;
 		return rnd_true;
 	}
-	if (p == 'A' && v->Flags.plabel == PA_PTL_OUTSIDE) {
+	if (p == 'A' && v->flg.plabel == PA_PTL_OUTSIDE) {
 		*cdir = FORW;
 		return rnd_true;
 	}
-	if (v->Flags.plabel == PA_PTL_SHARED2) {
+	if (v->flg.plabel == PA_PTL_SHARED2) {
 		if (p == 'A')
 			*cdir = FORW;
 		else
@@ -134,7 +134,7 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 	DIRECTION newone;
 
 	if (!(*cur)->cvc_prev) {			/* not a cross-vertex */
-		if (*cdir == FORW ? (*cur)->Flags.mark : (*cur)->prev->Flags.mark)
+		if (*cdir == FORW ? (*cur)->flg.mark : (*cur)->prev->flg.mark)
 			return rnd_false;
 		return rnd_true;
 	}
@@ -151,7 +151,7 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 		if (d->side == 'P')
 			e = e->prev;
 		newone = *cdir;
-		if (!e->Flags.mark && rule(d->poly, e, &newone)) {
+		if (!e->flg.mark && rule(d->poly, e, &newone)) {
 			if ((d->side == 'N' && newone == FORW) || (d->side == 'P' && newone == BACKW)) {
 #ifdef DEBUG_JUMP
 				if (newone == FORW)
@@ -197,10 +197,10 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIR
 #endif
 		/* Now mark the edge as included.  */
 		newn = (dir == FORW ? cur : cur->prev);
-		newn->Flags.mark = 1;
+		newn->flg.mark = 1;
 		/* for SHARED edge mark both */
 		if (newn->shared)
-			newn->shared->Flags.mark = 1;
+			newn->shared->flg.mark = 1;
 
 		/* Advance to the next edge.  */
 		cur = (dir == FORW ? cur->next : cur->prev);
@@ -223,7 +223,7 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 	rnd_poly_contour_pre(p, rnd_true);
 	if (p->Count > 2) {
 #ifdef DEBUG_GATHER
-		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->Flags.orient ? 'F' : 'B');
+		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->flg.orient ? 'F' : 'B');
 #endif
 		PutContour(e, p, contours, holes, NULL, NULL, NULL);
 	}
@@ -243,7 +243,7 @@ static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rn
 
 	cur = a->head;
 	do {
-		if (s_rule(cur, &dir) && cur->Flags.mark == 0)
+		if (s_rule(cur, &dir) && cur->flg.mark == 0)
 			Collect1(e, cur, dir, contours, holes, j_rule);
 		other = cur;
 		if ((other->cvc_prev && jump(&other, &dir, j_rule)))
@@ -259,7 +259,7 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 {
 	rnd_pline_t *tmprev;
 
-	if ((*A)->Flags.llabel == PA_PLL_ISECTED) {
+	if ((*A)->flg.llabel == PA_PLL_ISECTED) {
 		switch (action) {
 		case RND_PBO_UNITE:
 			Collect(e, *A, contours, holes, UniteS_Rule, UniteJ_Rule);
@@ -278,7 +278,7 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 	else {
 		switch (action) {
 		case RND_PBO_ISECT:
-			if ((*A)->Flags.llabel == PA_PLL_INSIDE) {
+			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
 				*A = tmprev->next;
@@ -288,7 +288,7 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 			}
 			break;
 		case RND_PBO_XOR:
-			if ((*A)->Flags.llabel == PA_PLL_INSIDE) {
+			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
 				*A = tmprev->next;
@@ -300,7 +300,7 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 			/* break; *//* Fall through (I think this is correct! pcjc2) */
 		case RND_PBO_UNITE:
 		case RND_PBO_SUB:
-			if ((*A)->Flags.llabel == PA_PLL_OUTSIDE) {
+			if ((*A)->flg.llabel == PA_PLL_OUTSIDE) {
 				tmprev = *A;
 				/* disappear this contour (rtree entry removed in PutContour) */
 				*A = tmprev->next;
@@ -323,10 +323,10 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 	do {
 		for (cur = &b->contours; *cur != NULL; cur = next) {
 			next = &((*cur)->next);
-			if ((*cur)->Flags.llabel == PA_PLL_ISECTED)
+			if ((*cur)->flg.llabel == PA_PLL_ISECTED)
 				continue;
 
-			if ((*cur)->Flags.llabel == PA_PLL_INSIDE)
+			if ((*cur)->flg.llabel == PA_PLL_INSIDE)
 				switch (action) {
 				case RND_PBO_XOR:
 				case RND_PBO_SUB:
@@ -336,13 +336,13 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 					*cur = tmp->next;
 					next = cur;
 					tmp->next = NULL;
-					tmp->Flags.llabel = PA_PLL_UNKNWN;
+					tmp->flg.llabel = PA_PLL_UNKNWN;
 					PutContour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
 				case RND_PBO_UNITE:
 					break;								/* nothing to do - already included */
 				}
-			else if ((*cur)->Flags.llabel == PA_PLL_OUTSIDE)
+			else if ((*cur)->flg.llabel == PA_PLL_OUTSIDE)
 				switch (action) {
 				case RND_PBO_XOR:
 				case RND_PBO_UNITE:
@@ -351,7 +351,7 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 					*cur = tmp->next;
 					next = cur;
 					tmp->next = NULL;
-					tmp->Flags.llabel = PA_PLL_UNKNWN;
+					tmp->flg.llabel = PA_PLL_UNKNWN;
 					PutContour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
 				case RND_PBO_ISECT:
@@ -415,15 +415,15 @@ static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** piece
 		for (curc = a->contours; curc != NULL; curc = next, is_outline = 0) {
 			int is_first = contour_is_first(a, curc);
 			int is_last = contour_is_last(curc);
-			int isect_contour = (curc->Flags.llabel == PA_PLL_ISECTED);
+			int isect_contour = (curc->flg.llabel == PA_PLL_ISECTED);
 
 			next = curc->next;
 
 			if (isect_contour || hole_contour) {
 
 				/* Reset the intersection flags, since we keep these pieces */
-				if (curc->Flags.llabel != PA_PLL_ISECTED)
-					curc->Flags.llabel = PA_PLL_UNKNWN;
+				if (curc->flg.llabel != PA_PLL_ISECTED)
+					curc->flg.llabel = PA_PLL_UNKNWN;
 
 				remove_contour(a, prev, curc, !(is_first && is_last));
 
@@ -478,10 +478,10 @@ static rnd_r_dir_t find_inside_m_pa(const rnd_box_t * b, void *cl)
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	rnd_pline_t *check = (rnd_pline_t *) b;
 	/* Don't report for the main contour */
-	if (check->Flags.orient == RND_PLF_DIR)
+	if (check->flg.orient == RND_PLF_DIR)
 		return RND_R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
-	if (check->Flags.llabel == PA_PLL_ISECTED)
+	if (check->flg.llabel == PA_PLL_ISECTED)
 		return RND_R_DIR_NOT_FOUND;
 	if (cntr_in_M_rnd_polyarea_t(check, info->want_inside, rnd_false)) {
 		info->result = check;
@@ -539,7 +539,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 			/* Test the outer contour first, as we may need to remove all children */
 
 			/* We've not yet split intersected contours out, just ignore them */
-			if (a->contours->Flags.llabel != PA_PLL_ISECTED &&
+			if (a->contours->flg.llabel != PA_PLL_ISECTED &&
 					/* Pre-filter on bounding box */
 					((a->contours->xmin >= box.X1) && (a->contours->ymin >= box.Y1)
 					 && (a->contours->xmax <= box.X2)
@@ -634,16 +634,16 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 			next = curc->next;
 
 			if (del_outside)
-				del_contour = curc->Flags.llabel != PA_PLL_ISECTED && !cntr_in_M_rnd_polyarea_t(curc, bpa, rnd_false);
+				del_contour = curc->flg.llabel != PA_PLL_ISECTED && !cntr_in_M_rnd_polyarea_t(curc, bpa, rnd_false);
 
 			/* Skip intersected contours */
-			if (curc->Flags.llabel == PA_PLL_ISECTED) {
+			if (curc->flg.llabel == PA_PLL_ISECTED) {
 				prev = curc;
 				continue;
 			}
 
 			/* Reset the intersection flags, since we keep these pieces */
-			curc->Flags.llabel = PA_PLL_UNKNWN;
+			curc->flg.llabel = PA_PLL_UNKNWN;
 
 			if (del_contour || hole_contour) {
 
@@ -710,7 +710,7 @@ static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_pol
 	while ((a = a->f) != afst);
 	/* now the non-intersect parts are collected in temp/holes */
 	do {
-		if (maybe && a->contours->Flags.llabel != PA_PLL_ISECTED)
+		if (maybe && a->contours->flg.llabel != PA_PLL_ISECTED)
 			parent_contour = a->contours;
 		else
 			parent_contour = NULL;

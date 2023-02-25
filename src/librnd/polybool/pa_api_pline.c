@@ -179,7 +179,7 @@ void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
 	}
 	C->area = RND_ABS(area);
 	if (C->Count > 2)
-		C->Flags.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
+		C->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
 	C->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(C);
 }																/* poly_PreContour */
 
@@ -204,7 +204,7 @@ rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
 		return rnd_false;
 
 	(*dst)->Count = src->Count;
-	(*dst)->Flags.orient = src->Flags.orient;
+	(*dst)->flg.orient = src->flg.orient;
 	(*dst)->xmin = src->xmin, (*dst)->xmax = src->xmax;
 	(*dst)->ymin = src->ymin, (*dst)->ymax = src->ymax;
 	(*dst)->area = src->area;
@@ -212,7 +212,7 @@ rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
 	for (cur = src->head->next; cur != src->head; cur = cur->next) {
 		if ((newnode = rnd_poly_node_create(cur->point)) == NULL)
 			return rnd_false;
-		/* newnode->Flags = cur->Flags; */
+		/* newnode->flg = cur->flg; */
 		rnd_poly_vertex_include((*dst)->head->prev, newnode);
 	}
 	(*dst)->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(*dst);
@@ -287,7 +287,7 @@ void rnd_poly_contour_inv(rnd_pline_t * c)
 		/* fix the segment tree */
 	}
 	while ((cur = next) != c->head);
-	c->Flags.orient ^= 1;
+	c->flg.orient ^= 1;
 	if (c->tree) {
 		rnd_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
 		assert(r == c->Count);
@@ -389,7 +389,7 @@ static void poly_ComputeInteriorPoint(rnd_pline_t * poly, rnd_vector_t v)
 	rnd_vnode_t *min_q = NULL;
 	double dist;
 	double min_dist = 0.0;
-	double dir = (poly->Flags.orient == RND_PLF_DIR) ? 1. : -1;
+	double dir = (poly->flg.orient == RND_PLF_DIR) ? 1. : -1;
 
 	/* Find a convex node on the polygon */
 	pt1 = poly->head;

@@ -64,7 +64,7 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 	assert(cntr->Count > 2);
 	cntr->next = NULL;
 
-	if (cntr->Flags.orient == RND_PLF_DIR) {
+	if (cntr->flg.orient == RND_PLF_DIR) {
 		if (owner != NULL)
 			rnd_r_delete_entry(owner->contour_tree, (rnd_box_t *) cntr);
 		InsCntr(e, cntr, contours);
@@ -135,7 +135,7 @@ static rnd_r_dir_t find_inside(const rnd_box_t * b, void *cl)
 	rnd_pline_t *check = (rnd_pline_t *) b;
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
-	if (check->Flags.orient == RND_PLF_DIR) {
+	if (check->flg.orient == RND_PLF_DIR) {
 		return RND_R_DIR_NOT_FOUND;
 	}
 	if (rnd_poly_contour_in_contour(info->want_inside, check)) {

@@ -45,7 +45,7 @@ static char *theState(rnd_vnode_t * v)
 	static char s[] = "SHARED";
 	static char s2[] = "SHARED2";
 
-	switch (v->Flags.plabel) {
+	switch (v->flg.plabel) {
 	case INSIDE:
 		return i;
 	case OUTSIDE:
@@ -132,8 +132,8 @@ static pa_plinept_label_t node_label(rnd_vnode_t * pn)
 		}
 	}
 	assert(region != PA_PTL_UNKNWN);
-	assert(pn->Flags.plabel == PA_PTL_UNKNWN || pn->Flags.plabel == region);
-	pn->Flags.plabel = region;
+	assert(pn->flg.plabel == PA_PTL_UNKNWN || pn->flg.plabel == region);
+	pn->flg.plabel = region;
 	if (region == PA_PTL_SHARED || region == PA_PTL_SHARED2)
 		return PA_PTL_UNKNWN;
 	return region;
@@ -166,7 +166,7 @@ static rnd_bool label_contour(rnd_pline_t * a)
 
 		/* This labels nodes which aren't cross-connected */
 		assert(label == PA_PTL_INSIDE || label == PA_PTL_OUTSIDE);
-		cur->Flags.plabel = label;
+		cur->flg.plabel = label;
 	}
 	while ((cur = cur->next) != first_labelled);
 #ifdef DEBUG_ALL_LABELS
@@ -179,18 +179,18 @@ static rnd_bool label_contour(rnd_pline_t * a)
 static rnd_bool cntr_label_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
-	if (poly->Flags.llabel == PA_PLL_ISECTED) {
+	if (poly->flg.llabel == PA_PLL_ISECTED) {
 		label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
 	}
 	else if (cntr_in_M_rnd_polyarea_t(poly, ppl, test)) {
 		if (test)
 			return rnd_true;
-		poly->Flags.llabel = PA_PLL_INSIDE;
+		poly->flg.llabel = PA_PLL_INSIDE;
 	}
 	else {
 		if (test)
 			return rnd_false;
-		poly->Flags.llabel = PA_PLL_OUTSIDE;
+		poly->flg.llabel = PA_PLL_OUTSIDE;
 	}
 	return rnd_false;
 }																/* cntr_label_rnd_polyarea_t */

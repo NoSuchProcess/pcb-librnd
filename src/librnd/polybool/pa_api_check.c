@@ -258,7 +258,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 		return rnd_false;
 	}
 
-	if (p->contours->Flags.orient == RND_PLF_INV) {
+	if (p->contours->flg.orient == RND_PLF_INV) {
 #ifndef NDEBUG
 		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed orient\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, NULL);
@@ -275,9 +275,9 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 	}
 
 	for (c = p->contours->next; c != NULL; c = c->next) {
-		if (c->Flags.orient == RND_PLF_DIR) {
+		if (c->flg.orient == RND_PLF_DIR) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner: rnd_pline_t orient = %d\n", c->Flags.orient);
+			rnd_fprintf(stderr, "Invalid Inner: rnd_pline_t orient = %d\n", c->flg.orient);
 			rnd_poly_valid_report(c, c->head, NULL);
 #endif
 			return rnd_false;
