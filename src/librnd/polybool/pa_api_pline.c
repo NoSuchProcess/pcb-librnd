@@ -232,7 +232,7 @@ typedef struct {
 static rnd_r_dir_t pline_isect_line_cb(const rnd_box_t * b, void *cl)
 {
 	pline_isect_line_t *ctx = (pline_isect_line_t *)cl;
-	struct seg *s = (struct seg *)b;
+	pa_seg_t *s = (pa_seg_t *)b;
 	rnd_vector_t S1, S2;
 
 	if (rnd_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2)) {
@@ -268,7 +268,7 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 
 static rnd_r_dir_t flip_cb(const rnd_box_t * b, void *cl)
 {
-	struct seg *s = (struct seg *) b;
+	pa_seg_t *s = (pa_seg_t *) b;
 	s->v = s->v->prev;
 	return RND_R_DIR_FOUND_CONTINUE;
 }
@@ -303,7 +303,7 @@ typedef struct pip {
 
 static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 {
-	struct seg *s = (struct seg *) b;   /* polygon edge, line segment */
+	pa_seg_t *s = (pa_seg_t *) b;   /* polygon edge, line segment */
 	struct pip *p = (struct pip *) cl;  /* horizontal cutting line */
 
 	/* the horizontal cutting line is between vectors s->v and s->v->next, but
@@ -476,7 +476,7 @@ typedef struct {
 static rnd_r_dir_t pline_isect_circ_cb(const rnd_box_t * b, void *cl)
 {
 	pline_isect_circ_t *ctx = (pline_isect_circ_t *)cl;
-	struct seg *s = (struct seg *)b;
+	pa_seg_t *s = (pa_seg_t *)b;
 	rnd_vector_t S1, S2;
 	rnd_vector_t ray1, ray2;
 	double ox, oy, dx, dy, l;
@@ -536,7 +536,7 @@ typedef struct {
 static rnd_r_dir_t pline_embraces_circ_cb(const rnd_box_t * b, void *cl)
 {
 	pline_embrace_t *e = cl;
-	struct seg *s = (struct seg *)b;
+	pa_seg_t *s = (pa_seg_t *)b;
 	double dx;
 	rnd_coord_t lx;
 	rnd_coord_t x1 = s->v->point[0];

@@ -35,17 +35,17 @@
 
 /* some structures for handling segment intersections using the rtrees */
 
-typedef struct seg {
+typedef struct pa_seg_s {
 	rnd_box_t box;
 	rnd_vnode_t *v; /* segment spans from v to v->next */
 	rnd_pline_t *p;
 	int intersected;
-} seg_t;
+} pa_seg_t;
 
 /* used by pcb-rnd */
 rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 {
-	seg_t *seg = box;
+	pa_seg_t *seg = box;
 	return seg->v;
 }
 
@@ -53,7 +53,7 @@ typedef struct _insert_node_task insert_node_task;
 
 struct _insert_node_task {
 	insert_node_task *next;
-	seg_t *node_seg;
+	pa_seg_t *node_seg;
 	rnd_vnode_t *new_node;
 };
 
@@ -61,7 +61,7 @@ typedef struct info {
 	double m, b;
 	rnd_rtree_t *tree;
 	rnd_vnode_t *v;
-	seg_t *s;
+	pa_seg_t *s;
 	jmp_buf *env, sego, *touch;
 	int need_restart;
 	insert_node_task *node_insert_list;
@@ -76,7 +76,7 @@ typedef struct contour_info {
 } contour_info;
 
 /* Recalculate bbox of the segment from current coords */
-RND_INLINE void pa_seg_update_bbox(seg_t *s)
+RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 {
 	TODO("arc: the code below works only for lines");
 	s->box.X1 = min(s->v->point[0], s->v->next->point[0]);
@@ -87,12 +87,12 @@ RND_INLINE void pa_seg_update_bbox(seg_t *s)
 
 /* Replace sg with two new segments in tree ; called after a vertex has
    been added. Return 0 on success. */
-static int adjust_tree(rnd_rtree_t *tree, seg_t *sg)
+static int adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 {
-	seg_t *newseg;
+	pa_seg_t *newseg;
 	rnd_vnode_t *sg_v_next = sg->v->next; /* remember original sg field because sg will be repurposed */
 
-	newseg = malloc(sizeof(seg_t));
+	newseg = malloc(sizeof(pa_seg_t));
 	if (newseg == NULL)
 		return 1;
 
@@ -139,7 +139,7 @@ static rnd_r_dir_t seg_in_region(const rnd_box_t * b, void *cl)
 }
 
 /* Prepend a deferred node-insertion task to a list */
-static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg_t * seg, rnd_vnode_t * new_node)
+static insert_node_task *prepend_insert_node_task(insert_node_task * list, pa_seg_t * seg, rnd_vnode_t * new_node)
 {
 	insert_node_task *task = (insert_node_task *) malloc(sizeof(*task));
 	task->node_seg = seg;
@@ -162,7 +162,7 @@ static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg_t
 static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
-	struct seg *s = (struct seg *) b;
+	pa_seg_t *s = (pa_seg_t *) b;
 	rnd_vector_t s1, s2;
 	int cnt;
 	rnd_vnode_t *new_node;
@@ -213,12 +213,12 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 
 void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
 {
-	struct seg *s;
+	pa_seg_t *s;
 	rnd_vnode_t *bv;
 	rnd_rtree_t *ans = rnd_r_create_tree();
 	bv = pb->head;
 	do {
-		s = malloc(sizeof(struct seg));
+		s = malloc(sizeof(pa_seg_t));
 		s->intersected = 0;
 		if (bv->point[0] < bv->next->point[0]) {
 			s->box.X1 = bv->point[0];
@@ -247,7 +247,7 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
 static rnd_r_dir_t get_seg(const rnd_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
-	struct seg *s = (struct seg *) b;
+	pa_seg_t *s = (pa_seg_t *) b;
 	if (i->v == s->v) {
 		i->s = s;
 		return RND_R_DIR_CANCEL; /* found */
