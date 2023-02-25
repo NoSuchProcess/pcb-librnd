@@ -35,65 +35,86 @@
 
 /* 2D vector utilities */
 
-#define Vsub2(r,a,b)	{(r)[0] = (a)[0] - (b)[0]; (r)[1] = (a)[1] - (b)[1];}
-#define Vcpy2(r,a)		{(r)[0] = (a)[0]; (r)[1] = (a)[1];}
-#define Vequ2(a,b)		((a)[0] == (b)[0] && (a)[1] == (b)[1])
-#define Vswp2(a,b) { long t; \
-	t = (a)[0], (a)[0] = (b)[0], (b)[0] = t; \
-	t = (a)[1], (a)[1] = (b)[1], (b)[1] = t; \
-}
+/* These work only because rnd_vector_t is an array so it is packed. */
+#define rnd_vertex_equ(a,b)  (memcmp((a), (b), sizeof(rnd_vector_t)) == 0)
+#define rnd_vertex_cpy(a,b)   memcpy((a), (b), sizeof(rnd_vector_t))
 
-rnd_vector_t rnd_vect_zero = { (long) 0, (long) 0 };
+TODO("remove this: it's the same as as Vsub");
+#define Vsub2(r, a, b) \
+	do { \
+		(r)[0] = (a)[0] - (b)[0]; \
+		(r)[1] = (a)[1] - (b)[1]; \
+	} while(0)
 
-#define Vzero(a)   ((a)[0] == 0. && (a)[1] == 0.)
+#define Vsub(r, a, b) \
+	do { \
+		(r)[0] = (a)[0] - (b)[0]; \
+		(r)[1] = (a)[1] - (b)[1]; \
+	} while(0)
 
-#define Vsub(a,b,c) {(a)[0]=(b)[0]-(c)[0];(a)[1]=(b)[1]-(c)[1];}
+#define Vcpy2(dst, src)  rnd_vertex_cpy(dst, src)
+#define Vequ2(a,b)       rnd_vertex_equ(a, b)
 
-#define Vcopy(a,b) {(a)[0]=(b)[0];(a)[1]=(b)[1];}
+#define Vswp2(a,b) \
+	do { \
+		rnd_coord_t t; \
+		t = (a)[0]; (a)[0] = (b)[0]; (b)[0] = t; \
+		t = (a)[1]; (a)[1] = (b)[1]; (b)[1] = t; \
+	} while(0)
 
+rnd_vector_t rnd_vect_zero = { 0, 0 };
+
+#define Vzero(a)   ((a)[0] == 0 && (a)[1] == 0)
+
+TODO("remove this: this is the same as Vcpy()");
+#define Vcopy(a,b) \
+	do { \
+		(a)[0] = (b)[0]; \
+		(a)[1] = (b)[1]; \
+	} while(0)
+
+TODO("remove this: this is the same as Vequ2()");
 int vect_equal(rnd_vector_t v1, rnd_vector_t v2)
 {
 	return (v1[0] == v2[0] && v1[1] == v2[1]);
 }																/* vect_equal */
 
 
+TODO("remove this: this is the same as Vsub()");
 void vect_sub(rnd_vector_t res, rnd_vector_t v1, rnd_vector_t v2)
 {
-Vsub(res, v1, v2)}							/* vect_sub */
+	Vsub(res, v1, v2);
+}							/* vect_sub */
 
 double rnd_vect_len2(rnd_vector_t v)
 {
-	return ((double) v[0] * v[0] + (double) v[1] * v[1]);
+	double x = v[0], y = v[1];
+	return x*x + y*y;
 }
 
 double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2)
 {
-	double dx = v1[0] - v2[0];
-	double dy = v1[1] - v2[1];
-
-	return (dx * dx + dy * dy);		/* why sqrt */
+	double dx = v1[0] - v2[0], dy = v1[1] - v2[1];
+	return dx*dx + dy*dy;
 }
 
 /* value has sign of angle between vectors */
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2)
 {
-	return (((double) v1[0] * v2[1]) - ((double) v2[0] * v1[1]));
+	return (((double)v1[0] * (double)v2[1]) - ((double) v2[0] * (double)v1[1]));
 }
 
 static double vect_m_dist(rnd_vector_t v1, rnd_vector_t v2)
 {
 	double dx = v1[0] - v2[0];
 	double dy = v1[1] - v2[1];
-	double dd = (dx * dx + dy * dy);	/* sqrt */
+	double dd = (dx * dx + dy * dy);
 
-	if (dx > 0)
-		return +dd;
-	if (dx < 0)
-		return -dd;
-	if (dy > 0)
-		return +dd;
-	return -dd;
-}																/* vect_m_dist */
+	if (dx > 0)    return +dd;
+	if (dx < 0)    return -dd;
+	if (dy > 0)    return +dd;
+	/* (dy < 0) */ return -dd;
+}
 
 /*
 vect_inters2

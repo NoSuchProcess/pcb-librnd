@@ -35,10 +35,6 @@
  *
  */
 
-/* These work only because rnd_vector_t is an array so it is packed. */
-#define rnd_vertex_equ(a,b)  (memcmp((a), (b), sizeof(rnd_vector_t)) == 0)
-#define rnd_vertex_cpy(a,b)   memcpy((a), (b), sizeof(rnd_vector_t))
-
 void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node)
 {
 	assert(node != NULL);
