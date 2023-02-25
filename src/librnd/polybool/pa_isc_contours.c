@@ -95,6 +95,7 @@ static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
+TODO("Maybe use Bentley-Ottman here instead of building trees?");
 static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
 {
 	rnd_polyarea_t *t;
