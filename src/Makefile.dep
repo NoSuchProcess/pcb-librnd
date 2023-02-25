@@ -674,7 +674,8 @@
  ../src/librnd/polybool/pa.h ../src/librnd/polybool/pa_math.c \
  ../src/librnd/polybool/pa_vect.c ../src/librnd/polybool/pa_debug.c \
  ../src/librnd/polybool/pa_pline.c ../src/librnd/polybool/pa_polyarea.c \
- ../src/librnd/polybool/pa_cvc.c ../src/librnd/polybool/pa_label.c \
+ ../src/librnd/polybool/pa_cvc.c ../src/librnd/polybool/pa_segment.c \
+ ../src/librnd/polybool/pa_label.c \
  ../src/librnd/polybool/pa_collect_tmp.c \
  ../src/librnd/polybool/pa_collect.c ../src/librnd/polybool/pa_api_bool.c \
  ../src/librnd/polybool/pa_api_vertex.c \
