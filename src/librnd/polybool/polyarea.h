@@ -34,7 +34,7 @@
 typedef rnd_coord_t rnd_vertex_t[2];
 typedef rnd_vertex_t rnd_vector_t;
 
-extern rnd_vector_t rnd_vect_zero;
+extern const rnd_vector_t rnd_vect_zero;
 
 enum {
 	rnd_err_no_memory = 2,

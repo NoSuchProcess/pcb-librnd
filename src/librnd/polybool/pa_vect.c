@@ -55,7 +55,7 @@
 
 #define Vzero2(a)   ((a)[0] == 0 && (a)[1] == 0)
 
-rnd_vector_t rnd_vect_zero = { 0, 0 };
+const rnd_vector_t rnd_vect_zero = {0, 0};
 
 
 double rnd_vect_len2(rnd_vector_t v)
