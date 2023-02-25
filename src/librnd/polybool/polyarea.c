@@ -417,13 +417,7 @@ static rnd_cvc_list_t *add_descriptors(rnd_pline_t * pl, char poly, rnd_cvc_list
 	return list;
 }
 
-static inline void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
-{
-	c->xmin = min(c->xmin, p[0]);
-	c->xmax = max(c->xmax, p[0] + 1);
-	c->ymin = min(c->ymin, p[1]);
-	c->ymax = max(c->ymax, p[1] + 1);
-}
+#include "pa_pline.c"
 
 /* some structures for handling segment intersections using the rtrees */
 
@@ -852,12 +846,6 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 	}
 	while (add && (a = a->f) != afst);
 }																/* M_rnd_polyarea_t_intersect */
-
-static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
-{
-	assert(c1 != NULL && c2 != NULL);
-	return ((c1->xmin >= c2->xmin) && (c1->ymin >= c2->ymin) && (c1->xmax <= c2->xmax) && (c1->ymax <= c2->ymax));
-}
 
 #include "pa_polyarea.c"
 #include "pa_lab_contour.c"
