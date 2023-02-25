@@ -170,6 +170,7 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 	if (s->intersected || i->s->intersected)
 		return RND_R_DIR_NOT_FOUND;
 
+	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
 	cnt = rnd_vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
 	if (!cnt)
 		return RND_R_DIR_NOT_FOUND;
