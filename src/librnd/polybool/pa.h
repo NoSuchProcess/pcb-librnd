@@ -22,7 +22,7 @@ typedef enum {
 	PA_PTL_SHARED2 = 4
 } pa_plinept_label_t;
 
-#define TOUCHES 99
+#define PA_ISC_TOUCHES 99
 
 
 

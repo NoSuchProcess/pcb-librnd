@@ -175,7 +175,7 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 	if (!cnt)
 		return RND_R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
-		longjmp(*i->touch, TOUCHES);
+		longjmp(*i->touch, PA_ISC_TOUCHES);
 	i->s->p->flg.llabel = PA_PLL_ISECTED;
 	s->p->flg.llabel = PA_PLL_ISECTED;
 	for (; cnt; cnt--) {

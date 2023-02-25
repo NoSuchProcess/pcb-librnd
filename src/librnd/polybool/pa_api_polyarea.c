@@ -206,7 +206,7 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
 		if (M_rnd_polyarea_t_label(b, a, rnd_true))
 			return rnd_true;
 	}
-	else if (code == TOUCHES)
+	else if (code == PA_ISC_TOUCHES)
 		return rnd_true;
 	return rnd_false;
 }
