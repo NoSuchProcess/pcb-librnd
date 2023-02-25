@@ -1,4 +1,6 @@
 /*
+       Copyright (C) 2006 harry eaton
+
    based on:
        poly_Boolean: a polygon clip library
        Copyright (C) 1997  Alexey Nikitin, Michael Leonov
