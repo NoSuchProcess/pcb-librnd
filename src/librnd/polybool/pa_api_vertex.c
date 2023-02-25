@@ -1,61 +1,70 @@
 /*
-       Copyright (C) 2006 harry eaton
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
+/* These work only because rnd_vector_t is an array so it is packed. */
+#define rnd_vertex_equ(a,b)  (memcmp((a), (b), sizeof(rnd_vector_t)) == 0)
+#define rnd_vertex_cpy(a,b)   memcpy((a), (b), sizeof(rnd_vector_t))
 
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
-
-#define rnd_vertex_equ(a,b) (memcmp((a),(b),sizeof(rnd_vector_t))==0)
-#define rnd_vertex_cpy(a,b) memcpy((a),(b),sizeof(rnd_vector_t))
-
-void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t * node)
+void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node)
 {
 	assert(node != NULL);
-	if (parent != NULL) {
-		if (parent->head == node) /* if node is excluded from a pline, it can not remain the head */
-			parent->head = node->next;
-	}
-	if (node->cvc_next) {
-		free(node->cvc_next);
-		free(node->cvc_prev);
+
+	/* remove point from the parent pline  */
+	if ((parent != NULL) && (parent->head == node)) {
+		/* if node is excluded from a pline, it can not remain the head */
+		parent->head = node->next;
 	}
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
 
-	if (parent != NULL) {
-		if (parent->head == node) /* special case: removing head which was the last node in pline  */
-			parent->head = NULL;
+	/* remove from connectivity list */
+	if (node->cvc_next != NULL) {
+		free(node->cvc_next);
+		free(node->cvc_prev);
+	}
+
+	if ((parent != NULL) && (parent->head == node)) {
+		/* when removing head which was the last node in pline */
+		parent->head = NULL;
 	}
 }
 
+/* Add node without side effects/optimization (add even if it's colinear with
+   existing points) */
 RND_INLINE void rnd_poly_vertex_include_force_(rnd_vnode_t *after, rnd_vnode_t *node)
 {
 	assert(after != NULL);
@@ -71,20 +80,33 @@ void rnd_poly_vertex_include_force(rnd_vnode_t *after, rnd_vnode_t *node)
 	rnd_poly_vertex_include_force_(after, node);
 }
 
+/* Returns whether node lies on the same line as its 2 previous nodes */
+RND_INLINE int pa_vertices_are_coaxial(rnd_vnode_t *node)
+{
+	double dx, dy, a, b;
+
+	if ((node->prev->prev == node) || (node->prev == node))
+		return 0; /* less than 3 points in the polyline, can't be coaxial */
+
+	dy = node->point[1] - node->prev->prev->point[1];
+	dx = node->prev->point[0] - node->prev->prev->point[0];
+	a = dx * dy;
+
+	dx = node->point[0] - node->prev->prev->point[0];
+	dy = node->prev->point[1] - node->prev->prev->point[1];
+	b = dx * dy;
+
+	return fabs(a - b) < EPSILON;
+}
+
+TODO("rename: it's a pline function");
 void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node)
 {
-	double a, b;
-
 	rnd_poly_vertex_include_force_(after, node);
 
-	/* remove points on same line */
-	if (node->prev->prev == node)
-		return;											/* we don't have 3 points in the poly yet */
-	a = (node->point[1] - node->prev->prev->point[1]);
-	a *= (node->prev->point[0] - node->prev->prev->point[0]);
-	b = (node->point[0] - node->prev->prev->point[0]);
-	b *= (node->prev->point[1] - node->prev->prev->point[1]);
-	if (fabs(a - b) < EPSILON) {
+	/* If node is coaxial with the previous two, remove the previous node
+	   (which is the middle node of 3 nodes on the same line) */
+	if (pa_vertices_are_coaxial(node)) {
 		rnd_vnode_t *t = node->prev;
 		t->prev->next = node;
 		node->prev = t->prev;
