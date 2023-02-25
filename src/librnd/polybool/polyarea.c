@@ -69,7 +69,7 @@
 #include "pa_pline.c"
 #include "pa_polyarea.c"
 
-#include "pa_cvc.c"
+#include "pa_conn_desc.c"
 #include "pa_segment.c"
 #include "pa_isc_contours.c"
 #include "pa_label.c"

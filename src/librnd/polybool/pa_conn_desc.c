@@ -33,7 +33,8 @@
       are marked
 */
 
-/* Intersection descriptors (also known as cvc in the original code) */
+/* Connection (intersection) descriptors making up a connectivity list.
+   Low level helper functions. (It was "cvc" in the original code.) */
 
 /*
 new_descriptor
