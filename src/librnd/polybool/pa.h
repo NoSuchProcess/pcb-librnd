@@ -1,9 +1,10 @@
 /* internals */
 
-struct rnd_cvc_list_s {
+/* "connectivity list" in the paper */
+struct pa_conn_list_s {
 	double angle;
 	rnd_vnode_t *parent;
-	rnd_cvc_list_t *prev, *next, *head;
+	pa_conn_list_t *prev, *next, *head;
 	char poly, side;
 };
 

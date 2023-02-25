@@ -39,9 +39,9 @@
 new_descriptor
   (C) 2006 harry eaton
 */
-static rnd_cvc_list_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
+static pa_conn_list_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
 {
-	rnd_cvc_list_t *l = (rnd_cvc_list_t *) malloc(sizeof(rnd_cvc_list_t));
+	pa_conn_list_t *l = (pa_conn_list_t *) malloc(sizeof(pa_conn_list_t));
 	rnd_vector_t v;
 	register double ang, dx, dy;
 
@@ -62,13 +62,13 @@ static rnd_cvc_list_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
 	 */
 	if (vect_equal(v, rnd_vect_zero)) {
 		if (side == 'P') {
-			if (a->prev->cvc_prev == (rnd_cvc_list_t *) - 1)
+			if (a->prev->cvc_prev == (pa_conn_list_t *) - 1)
 				a->prev->cvc_prev = a->prev->cvc_next = NULL;
 			rnd_poly_vertex_exclude(NULL, a->prev);
 			vect_sub(v, a->prev->point, a->point);
 		}
 		else {
-			if (a->next->cvc_prev == (rnd_cvc_list_t *) - 1)
+			if (a->next->cvc_prev == (pa_conn_list_t *) - 1)
 				a->next->cvc_prev = a->next->cvc_next = NULL;
 			rnd_poly_vertex_exclude(NULL, a->next);
 			vect_sub(v, a->next->point, a->point);
@@ -103,13 +103,13 @@ insert_descriptor
    'N' for next.
    argument start is the head of the list of cvclists
 */
-static rnd_cvc_list_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, rnd_cvc_list_t * start)
+static pa_conn_list_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, pa_conn_list_t * start)
 {
-	rnd_cvc_list_t *l, *newone, *big, *small;
+	pa_conn_list_t *l, *newone, *big, *small;
 
 	if (!(newone = new_descriptor(a, poly, side)))
 		return NULL;
-	/* search for the rnd_cvc_list_t for this point */
+	/* search for the pa_conn_list_t for this point */
 	if (!start) {
 		start = newone;							/* return is also new, so we know where start is */
 		start->head = newone;				/* circular list */
@@ -120,7 +120,7 @@ static rnd_cvc_list_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, 
 		do {
 			assert(l->head);
 			if (l->parent->point[0] == a->point[0]
-					&& l->parent->point[1] == a->point[1]) {	/* this rnd_cvc_list_t is at our point */
+					&& l->parent->point[1] == a->point[1]) {	/* this pa_conn_list_t is at our point */
 				start = l;
 				newone->head = l->head;
 				break;
@@ -172,13 +172,13 @@ static rnd_cvc_list_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, 
  add_descriptors
  (C) 2006 harry eaton
 */
-static rnd_cvc_list_t *add_descriptors(rnd_pline_t * pl, char poly, rnd_cvc_list_t * list)
+static pa_conn_list_t *add_descriptors(rnd_pline_t * pl, char poly, pa_conn_list_t * list)
 {
 	rnd_vnode_t *node = pl->head;
 
 	do {
 		if (node->cvc_prev) {
-			assert(node->cvc_prev == (rnd_cvc_list_t *) - 1 && node->cvc_next == (rnd_cvc_list_t *) - 1);
+			assert(node->cvc_prev == (pa_conn_list_t *) - 1 && node->cvc_next == (pa_conn_list_t *) - 1);
 			list = node->cvc_prev = insert_descriptor(node, poly, 'P', list);
 			if (!node->cvc_prev)
 				return NULL;

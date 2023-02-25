@@ -41,7 +41,7 @@ enum {
 };
 
 
-typedef struct rnd_cvc_list_s rnd_cvc_list_t;
+typedef struct pa_conn_list_s pa_conn_list_t; /* "connectivity list" in the paper */
 typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {
 	rnd_vnode_t *next, *prev, *shared;
@@ -50,8 +50,8 @@ struct rnd_vnode_s {
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 	} flg;
-	rnd_cvc_list_t *cvc_prev;
-	rnd_cvc_list_t *cvc_next;
+	pa_conn_list_t *cvc_prev;
+	pa_conn_list_t *cvc_next;
 	rnd_vector_t point;
 };
 
