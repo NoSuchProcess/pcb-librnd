@@ -62,7 +62,7 @@ static rnd_r_dir_t pa_contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 		if (setjmp(restart))
 			continue;
 
-		/* NB: If this actually hits anything, we are teleported back to the beginning */
+		/* If this actually hits anything, we are long-jumped back to the beginning */
 		segctx.tree = rtree_over->tree;
 		if (segctx.tree != NULL) {
 			int seen;
