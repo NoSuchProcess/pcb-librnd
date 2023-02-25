@@ -1998,30 +1998,6 @@ static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_pol
 	while ((a = a->f) != afst);
 }
 
-/* determine if two polygons touch or overlap; used in pcb-rnd */
-rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
-{
-	jmp_buf e;
-	int code;
-
-	if ((code = setjmp(e)) == 0) {
-#ifdef DEBUG
-		if (!rnd_poly_valid(a))
-			return -1;
-		if (!rnd_poly_valid(b))
-			return -1;
-#endif
-		M_rnd_polyarea_t_intersect(&e, a, b, rnd_false);
-
-		if (M_rnd_polyarea_t_label(a, b, rnd_true))
-			return rnd_true;
-		if (M_rnd_polyarea_t_label(b, a, rnd_true))
-			return rnd_true;
-	}
-	else if (code == TOUCHES)
-		return rnd_true;
-	return rnd_false;
-}
 
 #include "pa_api_bool.c"
 #include "pa_api_vertex.c"

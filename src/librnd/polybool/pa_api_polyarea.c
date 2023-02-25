@@ -186,6 +186,31 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t * p, rnd_vector_t v0)
 	return rnd_false;
 }
 
+/* determine if two polygons touch or overlap; used in pcb-rnd */
+rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
+{
+	jmp_buf e;
+	int code;
+
+	if ((code = setjmp(e)) == 0) {
+#ifdef DEBUG
+		if (!rnd_poly_valid(a))
+			return -1;
+		if (!rnd_poly_valid(b))
+			return -1;
+#endif
+		M_rnd_polyarea_t_intersect(&e, a, b, rnd_false);
+
+		if (M_rnd_polyarea_t_label(a, b, rnd_true))
+			return rnd_true;
+		if (M_rnd_polyarea_t_label(b, a, rnd_true))
+			return rnd_true;
+	}
+	else if (code == TOUCHES)
+		return rnd_true;
+	return rnd_false;
+}
+
 
 /*
  * rnd_polyarea_move()
