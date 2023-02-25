@@ -37,15 +37,15 @@
 
 typedef struct seg {
 	rnd_box_t box;
-	rnd_vnode_t *v;
+	rnd_vnode_t *v; /* segment spans from v to v->next */
 	rnd_pline_t *p;
 	int intersected;
-} seg;
+} seg_t;
 
 /* used by pcb-rnd */
 rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 {
-	seg *seg = box;
+	seg_t *seg = box;
 	return seg->v;
 }
 
@@ -53,7 +53,7 @@ typedef struct _insert_node_task insert_node_task;
 
 struct _insert_node_task {
 	insert_node_task *next;
-	seg *node_seg;
+	seg_t *node_seg;
 	rnd_vnode_t *new_node;
 };
 
@@ -61,7 +61,7 @@ typedef struct info {
 	double m, b;
 	rnd_rtree_t *tree;
 	rnd_vnode_t *v;
-	struct seg *s;
+	seg_t *s;
 	jmp_buf *env, sego, *touch;
 	int need_restart;
 	insert_node_task *node_insert_list;
@@ -75,41 +75,45 @@ typedef struct contour_info {
 	insert_node_task *node_insert_list;
 } contour_info;
 
-
-/*
- * adjust_tree()
- * (C) 2006 harry eaton
- * This replaces the segment in the tree with the two new segments after
- * a vertex has been added
- */
-static int adjust_tree(rnd_rtree_t * tree, struct seg *s)
+/* Recalculate bbox of the segment from current coords */
+RND_INLINE void pa_seg_update_bbox(seg_t *s)
 {
-	struct seg *q;
+	TODO("arc: the code below works only for lines");
+	s->box.X1 = min(s->v->point[0], s->v->next->point[0]);
+	s->box.X2 = max(s->v->point[0], s->v->next->point[0]) + 1;
+	s->box.Y1 = min(s->v->point[1], s->v->next->point[1]);
+	s->box.Y2 = max(s->v->point[1], s->v->next->point[1]) + 1;
+}
 
-	q = (seg *) malloc(sizeof(struct seg));
-	if (!q)
+/* Replace sg with two new segments in tree ; called after a vertex has
+   been added. Return 0 on success. */
+static int adjust_tree(rnd_rtree_t *tree, seg_t *sg)
+{
+	seg_t *newseg;
+	rnd_vnode_t *sg_v_next = sg->v->next; /* remember original sg field because sg will be repurposed */
+
+	newseg = malloc(sizeof(seg_t));
+	if (newseg == NULL)
 		return 1;
-	q->intersected = 0;
-	q->v = s->v;
-	q->p = s->p;
-	q->box.X1 = min(q->v->point[0], q->v->next->point[0]);
-	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
-	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
-	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	rnd_r_insert_entry(tree, (const rnd_box_t *) q);
-	q = (seg *) malloc(sizeof(struct seg));
-	if (!q)
-		return 1;
-	q->intersected = 0;
-	q->v = s->v->next;
-	q->p = s->p;
-	q->box.X1 = min(q->v->point[0], q->v->next->point[0]);
-	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
-	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
-	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	rnd_r_insert_entry(tree, (const rnd_box_t *) q);
-	rnd_r_delete_entry(tree, (const rnd_box_t *) s);
-	free(s);
+
+	/* remove as we are replacing it with two objects */
+	rnd_r_delete_entry(tree, (const rnd_box_t *)sg);
+
+	/* init and insert newly allocated seg from v */
+	newseg->intersected = 0;
+	newseg->v = sg->v;
+	newseg->p = sg->p;
+	pa_seg_update_bbox(newseg);
+	rnd_r_insert_entry(tree, (const rnd_box_t *)newseg);
+
+	/* instead of free(sg) and malloc() newseg, repurpose sg as newseg for v->next */
+	newseg = sg;
+	newseg->intersected = 0;
+	newseg->v = sg_v_next;
+/*	newseg->p = sg->p; - it's still the same*/
+	pa_seg_update_bbox(newseg);
+	rnd_r_insert_entry(tree, (const rnd_box_t *)newseg);
+
 	return 0;
 }
 
@@ -135,7 +139,7 @@ static rnd_r_dir_t seg_in_region(const rnd_box_t * b, void *cl)
 }
 
 /* Prepend a deferred node-insertion task to a list */
-static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg * seg, rnd_vnode_t * new_node)
+static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg_t * seg, rnd_vnode_t * new_node)
 {
 	insert_node_task *task = (insert_node_task *) malloc(sizeof(*task));
 	task->node_seg = seg;
@@ -214,7 +218,7 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
 	rnd_rtree_t *ans = rnd_r_create_tree();
 	bv = pb->head;
 	do {
-		s = (seg *) malloc(sizeof(struct seg));
+		s = malloc(sizeof(struct seg));
 		s->intersected = 0;
 		if (bv->point[0] < bv->next->point[0]) {
 			s->box.X1 = bv->point[0];
