@@ -148,8 +148,8 @@ void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
 	if (optimize) {
 		for (c = (p = C->head)->next; c != C->head; c = (p = c)->next) {
 			/* if the previous node is on the same line with this one, we should remove it */
-			Vsub(p1, c->point, p->point);
-			Vsub(p2, c->next->point, c->point);
+			Vsub2(p1, c->point, p->point);
+			Vsub2(p2, c->next->point, c->point);
 			/* If the product below is zero then
 			 * the points on either side of c 
 			 * are on the same line!
@@ -314,8 +314,8 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
 			rnd_vector_t v1, v2;
 			rnd_long64_t cross;
-			Vsub(v1, s->v->next->point, s->v->point);
-			Vsub(v2, p->p, s->v->point);
+			Vsub2(v1, s->v->next->point, s->v->point);
+			Vsub2(v2, p->p, s->v->point);
 			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
@@ -329,8 +329,8 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 		if (s->v->next->point[1] <= p->p[1]) {
 			rnd_vector_t v1, v2;
 			rnd_long64_t cross;
-			Vsub(v1, s->v->next->point, s->v->point);
-			Vsub(v2, p->p, s->v->point);
+			Vsub2(v1, s->v->next->point, s->v->point);
+			Vsub2(v2, p->p, s->v->point);
 			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;

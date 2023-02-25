@@ -41,9 +41,9 @@ static rnd_bool inside_sector(rnd_vnode_t * pn, rnd_vector_t p2)
 	int p_c, n_c, p_n;
 
 	assert(pn != NULL);
-	Vsub(cdir, p2, pn->point);
-	Vsub(pdir, pn->point, pn->prev->point);
-	Vsub(ndir, pn->next->point, pn->point);
+	Vsub2(cdir, p2, pn->point);
+	Vsub2(pdir, pn->point, pn->prev->point);
+	Vsub2(ndir, pn->next->point, pn->point);
 
 	p_c = rnd_vect_det2(pdir, cdir) >= 0;
 	n_c = rnd_vect_det2(ndir, cdir) >= 0;

@@ -54,9 +54,9 @@ static pa_conn_desc_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
 	l->side = side;
 	l->next = l->prev = l;
 	if (side == 'P')							/* previous */
-		Vsub(v, a->prev->point, a->point);
+		Vsub2(v, a->prev->point, a->point);
 	else													/* next */
-		Vsub(v, a->next->point, a->point);
+		Vsub2(v, a->next->point, a->point);
 	/* Uses slope/(slope+1) in quadrant 1 as a proxy for the angle.
 	 * It still has the same monotonic sort result
 	 * and is far less expensive to compute than the real angle.
@@ -66,13 +66,13 @@ static pa_conn_desc_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
 			if (a->prev->cvc_prev == (pa_conn_desc_t *) - 1)
 				a->prev->cvc_prev = a->prev->cvc_next = NULL;
 			rnd_poly_vertex_exclude(NULL, a->prev);
-			Vsub(v, a->prev->point, a->point);
+			Vsub2(v, a->prev->point, a->point);
 		}
 		else {
 			if (a->next->cvc_prev == (pa_conn_desc_t *) - 1)
 				a->next->cvc_prev = a->next->cvc_next = NULL;
 			rnd_poly_vertex_exclude(NULL, a->next);
-			Vsub(v, a->next->point, a->point);
+			Vsub2(v, a->next->point, a->point);
 		}
 	}
 	assert(!Vequ2(v, rnd_vect_zero));
