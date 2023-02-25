@@ -120,25 +120,23 @@ static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 	return 0;
 }
 
-/*
- * seg_in_region()
- * (C) 2006, harry eaton
- * This prunes the search for boxes that don't intersect the segment.
- */
-static rnd_r_dir_t seg_in_region(const rnd_box_t * b, void *cl)
+/* Prune the search for boxes that don't intersect the segment's box. */
+static rnd_r_dir_t seg_in_region_cb(const rnd_box_t *b, void *cl)
 {
-	struct info *i = (struct info *) cl;
+	struct info *ctx = (struct info *)cl;
 	double y1, y2;
-	/* for zero slope the search is aligned on the axis so it is already pruned */
-	if (i->m == 0.)
-		return RND_R_DIR_FOUND_CONTINUE;
-	y1 = i->m * b->X1 + i->b;
-	y2 = i->m * b->X2 + i->b;
-	if (min(y1, y2) >= b->Y2)
-		return RND_R_DIR_NOT_FOUND;
-	if (max(y1, y2) < b->Y1)
-		return RND_R_DIR_NOT_FOUND;
-	return RND_R_DIR_FOUND_CONTINUE;											/* might intersect */
+
+	/* zero slope means axis aligned so it is already pruned */
+	if (ctx->m == 0.0)         return RND_R_DIR_FOUND_CONTINUE;
+
+	y1 = ctx->m * b->X1 + ctx->b;
+	y2 = ctx->m * b->X2 + ctx->b;
+
+	/* check if y1 or y2 is out of range */
+	if (min(y1, y2) >= b->Y2)  return RND_R_DIR_NOT_FOUND;
+	if (max(y1, y2) < b->Y1)   return RND_R_DIR_NOT_FOUND;
+
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 /* Prepend a deferred node-insertion task to a list */
