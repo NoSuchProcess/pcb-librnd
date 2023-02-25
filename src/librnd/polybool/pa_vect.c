@@ -109,7 +109,7 @@ do { \
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
 RND_INLINE int rnd_vect_inters2_par(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2, rnd_vector_t S1, rnd_vector_t S2)
 {
-	double dc1, dc2, d1, d2, h;
+	double dc1, dc2, d1, d2;
 	rnd_vector_t tmp1, tmp2, tmq1, tmq2, q1p1, q1q2;
 
 	Vsub2(q1p1, q1, p1);
