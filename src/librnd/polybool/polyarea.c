@@ -501,7 +501,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 	while (add && (a = a->f) != afst);
 }																/* M_rnd_polyarea_t_intersect */
 
-#include "pa_lab_contour.c"
+#include "pa_label.c"
 #include "pa_collect_tmp.c"
 #include "pa_collect.c"
 
