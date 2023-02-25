@@ -9,14 +9,14 @@ struct pa_conn_desc_s {
 	char side;                           /* 'P' for previous 'N' for next */
 };
 
-typedef enum {
+typedef enum pa_pline_label_e {
 	PA_PLL_UNKNWN  = 0,
 	PA_PLL_INSIDE  = 1,
 	PA_PLL_OUTSIDE = 2,
 	PA_PLL_ISECTED = 3
 } pa_pline_label_t;
 
-typedef enum {
+typedef enum pa_plinept_label_e {
 	PA_PTL_UNKNWN  = 0,
 	PA_PTL_INSIDE  = 1,
 	PA_PTL_OUTSIDE = 2,
