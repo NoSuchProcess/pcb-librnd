@@ -79,7 +79,7 @@ double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2)
 
 /* Signed distance square between v1 and v2; positive if v1.x > v2.x or
    when x components are equal, if v1.y > v2.y */
-static double vect_m_dist(rnd_vector_t v1, rnd_vector_t v2)
+static double vect_m_dist2(rnd_vector_t v1, rnd_vector_t v2)
 {
 	double dx = v1[0] - v2[0];
 	double dy = v1[1] - v2[1];
@@ -130,9 +130,9 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 			return 0;
 		dc1 = 0;										/* m_len(p1 - p1) */
 
-		dc2 = vect_m_dist(p1, p2);
-		d1 = vect_m_dist(p1, q1);
-		d2 = vect_m_dist(p1, q2);
+		dc2 = vect_m_dist2(p1, p2);
+		d1 = vect_m_dist2(p1, q1);
+		d2 = vect_m_dist2(p1, q2);
 
 /* Sorting the independent points from small to large */
 		Vcpy2(hp1, p1);
