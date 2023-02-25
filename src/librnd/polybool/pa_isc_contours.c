@@ -156,7 +156,7 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 		task->node_seg->p->Count++;
 
 		cntrbox_adjust(task->node_seg->p, task->new_node->point);
-		if (adjust_tree(task->node_seg->p->tree, task->node_seg))
+		if (pa_adjust_tree(task->node_seg->p->tree, task->node_seg))
 			assert(0);								/* XXX: Memory allocation failure */
 
 		need_restart = 1;						/* Any new nodes could intersect */

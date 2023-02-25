@@ -90,7 +90,7 @@ RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 
 /* Replace sg with two new segments in tree ; called after a vertex has
    been added. Return 0 on success. */
-static int adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
+static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 {
 	pa_seg_t *newseg;
 	rnd_vnode_t *sg_v_next = sg->v->next; /* remember original sg field because sg will be repurposed */
