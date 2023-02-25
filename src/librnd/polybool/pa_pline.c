@@ -35,6 +35,54 @@
 
 /* rnd_pline_t internal/low level */
 
+/*
+node_add
+ (C) 1993 Klamer Schutte
+ (C) 1997 Alexey Nikitin, Michael Leonov
+ (C) 2006 harry eaton
+*/
+rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
+{
+	rnd_vnode_t *p;
+
+	if (vect_equal(po, dest->point))
+		return dest;
+	if (vect_equal(po, dest->next->point))
+		return dest->next;
+	p = rnd_poly_node_create(po);
+	if (p == NULL)
+		return NULL;
+	p->cvc_prev = p->cvc_next = NULL;
+	p->Flags.status = UNKNWN;
+	return p;
+}																/* node_add */
+
+/*
+node_add_point
+ (C) 1993 Klamer Schutte
+ (C) 1997 Alexey Nikitin, Michael Leonov
+
+ return 1 if new node in b, 2 if new node in a and 3 if new node in both
+*/
+
+static rnd_vnode_t *node_add_single_point(rnd_vnode_t * a, rnd_vector_t p)
+{
+	rnd_vnode_t *next_a, *new_node;
+
+	next_a = a->next;
+
+	new_node = rnd_poly_node_add_single(a, p);
+	assert(new_node != NULL);
+
+	new_node->cvc_prev = new_node->cvc_next = (rnd_cvc_list_t *) - 1;
+
+	if (new_node == a || new_node == next_a)
+		return NULL;
+
+	return new_node;
+}																/* node_add_point */
+
+
 static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
 {
 	assert(c1 != NULL && c2 != NULL);
