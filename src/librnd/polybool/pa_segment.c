@@ -224,12 +224,15 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static rnd_r_dir_t get_seg(const rnd_box_t * b, void *cl)
+/* Cancels the search and sets ctx->s if b is the same as ctx->v. Usefule
+   for finding the segment for a node */
+static rnd_r_dir_t pa_get_seg_cb(const rnd_box_t *b, void *ctx_)
 {
-	pa_seg_seg_t *i = (pa_seg_seg_t *) cl;
-	pa_seg_t *s = (pa_seg_t *) b;
-	if (i->v == s->v) {
-		i->s = s;
+	pa_seg_seg_t *ctx = (pa_seg_seg_t *)ctx_;
+	pa_seg_t *s = (pa_seg_t *)b;
+
+	if (ctx->v == s->v) {
+		ctx->s = s;
 		return RND_R_DIR_CANCEL; /* found */
 	}
 	return RND_R_DIR_NOT_FOUND;

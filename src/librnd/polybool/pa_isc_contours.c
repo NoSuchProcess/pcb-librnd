@@ -77,7 +77,7 @@ static rnd_r_dir_t contour_bounds_touch(const rnd_box_t * b, void *cl)
 		box.Y2 = (box.Y1 = av->point[1]) + 1;
 
 		/* fill in the segment in info corresponding to this node */
-		rres = rnd_r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
+		rres = rnd_r_search(looping_over->tree, &box, NULL, pa_get_seg_cb, &info, NULL);
 		assert(rres == RND_R_DIR_CANCEL);
 
 		/* If we're going to have another pass anyway, skip this */
