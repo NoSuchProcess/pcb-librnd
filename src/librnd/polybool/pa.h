@@ -1,10 +1,10 @@
 /* internals */
 
 /* A "descriptor" that makes up a "connectivity list" in the paper */
-struct pa_conn_list_s {
+struct pa_conn_desc_s {
 	double angle;
 	rnd_vnode_t *parent;                 /* the point this descriptor is for */
-	pa_conn_list_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
+	pa_conn_desc_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
 	char poly;                           /* 'A' or 'B' */
 	char side;                           /* 'P' for previous 'N' for next */
 };

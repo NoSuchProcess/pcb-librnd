@@ -129,7 +129,7 @@ static int SubJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
  */
 static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 {
-	pa_conn_list_t *d, *start;
+	pa_conn_desc_t *d, *start;
 	rnd_vnode_t *e;
 	DIRECTION newone;
 

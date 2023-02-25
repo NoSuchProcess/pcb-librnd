@@ -179,7 +179,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 {
 	rnd_polyarea_t *a = afst, *b = bfst;
 	rnd_pline_t *curcA, *curcB;
-	pa_conn_list_t *the_list = NULL;
+	pa_conn_desc_t *the_list = NULL;
 
 	if (a == NULL || b == NULL)
 		error(rnd_err_bad_parm);

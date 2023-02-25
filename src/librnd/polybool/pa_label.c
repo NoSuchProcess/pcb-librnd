@@ -78,7 +78,7 @@ node_label
 */
 static pa_plinept_label_t node_label(rnd_vnode_t * pn)
 {
-	pa_conn_list_t *first_l, *l;
+	pa_conn_desc_t *first_l, *l;
 	char this_poly;
 	pa_plinept_label_t region = PA_PTL_UNKNWN;
 
