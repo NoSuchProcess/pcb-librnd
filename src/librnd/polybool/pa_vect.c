@@ -1,37 +1,39 @@
 /*
-       Copyright (C) 2006 harry eaton
-
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2017, 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
 /* 2D vector utilities */
 
@@ -256,22 +258,19 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 }
 
 
-/* Compute whether point is inside a triangle formed by 3 other points */
-/* Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
-static int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P)
+/* Compute whether point is inside a triangle formed by 3 other points
+   Algorithm from http://www.blackpawn.com/texts/pointinpoly/default.html */
+RND_INLINE int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P)
 {
 	rnd_vector_t v0, v1, v2;
 	double dot00, dot01, dot02, dot11, dot12;
-	double invDenom;
+	double inv_denom;
 	double u, v;
 
 	/* Compute vectors */
-	v0[0] = C[0] - A[0];
-	v0[1] = C[1] - A[1];
-	v1[0] = B[0] - A[0];
-	v1[1] = B[1] - A[1];
-	v2[0] = P[0] - A[0];
-	v2[1] = P[1] - A[1];
+	v0[0] = C[0] - A[0];    v0[1] = C[1] - A[1];
+	v1[0] = B[0] - A[0];    v1[1] = B[1] - A[1];
+	v2[0] = P[0] - A[0];    v2[1] = P[1] - A[1];
 
 	/* Compute dot products */
 	dot00 = Vdot2(v0, v0);
@@ -281,12 +280,12 @@ static int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd
 	dot12 = Vdot2(v1, v2);
 
 	/* Compute barycentric coordinates */
-	invDenom = 1. / (dot00 * dot11 - dot01 * dot01);
-	u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-	v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+	inv_denom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+	u = (dot11 * dot02 - dot01 * dot12) * inv_denom;
+	v = (dot00 * dot12 - dot01 * dot02) * inv_denom;
 
 	/* Check if point is in triangle */
-	return (u > 0.0) && (v > 0.0) && (u + v < 1.0);
+	return (u > 0.0) && (v > 0.0) && ((u + v) < 1.0);
 }
 
 /* wrapper to keep the original name short and original function inline */
@@ -296,28 +295,23 @@ int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_ve
 }
 
 
-/* Returns the dot product of rnd_vector_t A->B, and a vector
- * orthogonal to rnd_vector_t C->D. The result is not normalised, so will be
- * weighted by the magnitude of the C->D vector.
- */
+/* Returns the dot product of vector A->B, and a vector
+   orthogonal to rnd_vector_t C->D. The result is not normalised, so will be
+   weighted by the magnitude of the C->D vector. */
 static double dot_orthogonal_to_direction(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D)
 {
-	rnd_vector_t l1, l2, l3;
-	l1[0] = B[0] - A[0];
-	l1[1] = B[1] - A[1];
-	l2[0] = D[0] - C[0];
-	l2[1] = D[1] - C[1];
+	rnd_vector_t l1, l2, ort;
 
-	l3[0] = -l2[1];
-	l3[1] = l2[0];
+	/* input line vectors */
+	l1[0] = B[0] - A[0];     l1[1] = B[1] - A[1];
+	l2[0] = D[0] - C[0];     l2[1] = D[1] - C[1];
 
-	return Vdot2(l1, l3);
+	/* orthogonal vector of l2 */
+	ort[0] = -l2[1];         ort[1] = l2[0];
+
+	return Vdot2(l1, ort);
 }
 
-/*
- * rnd_is_point_in_convex_quad()
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
 rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
 {
 	return point_in_triangle(q[0], q[1], q[2], p) || point_in_triangle(q[0], q[3], q[2], p);
