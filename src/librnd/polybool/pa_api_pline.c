@@ -292,6 +292,56 @@ void rnd_poly_contour_inv(rnd_pline_t * c)
 	}
 }
 
+typedef struct pip {
+	int f;
+	rnd_vector_t p;
+	jmp_buf env;
+} pip;
+
+
+static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
+{
+	struct seg *s = (struct seg *) b;   /* polygon edge, line segment */
+	struct pip *p = (struct pip *) cl;  /* horizontal cutting line */
+
+	/* the horizontal cutting line is between vectors s->v and s->v->next, but
+	   these two can be in any order; because poly contour is CCW, this means if
+	   the edge is going up, we went from inside to outside, else we went
+	   from outside to inside */
+	if (s->v->point[1] <= p->p[1]) {
+		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
+			rnd_vector_t v1, v2;
+			rnd_long64_t cross;
+			Vsub2(v1, s->v->next->point, s->v->point);
+			Vsub2(v2, p->p, s->v->point);
+			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
+			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
+				p->f = 1;
+				longjmp(p->env, 1);
+			}
+			if (cross > 0)
+				p->f += 1;
+		}
+	}
+	else { /* since the other side was <=, when we get here we also blocked horizontal lines of the negative direction */
+		if (s->v->next->point[1] <= p->p[1]) {
+			rnd_vector_t v1, v2;
+			rnd_long64_t cross;
+			Vsub2(v1, s->v->next->point, s->v->point);
+			Vsub2(v2, p->p, s->v->point);
+			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
+			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
+				p->f = 1;
+				longjmp(p->env, 1);
+			}
+			if (cross < 0)
+				p->f -= 1;
+		}
+	}
+
+	return RND_R_DIR_FOUND_CONTINUE;
+}
+
 int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
 {
 	struct pip info;
