@@ -49,16 +49,19 @@
 #include	<string.h>
 
 #include <librnd/rnd_config.h>
-#include <librnd/poly/rtree.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/heap.h>
 #include <librnd/core/compat_cc.h>
 #include <librnd/core/rnd_printf.h>
-#include <librnd/poly/polyarea.h>
 #include <librnd/core/box.h>
-#include <librnd/poly/rtree2_compat.h>
+
 
 #include "polyconf.h"
+
+#include "polyarea.h"
+#include "rtree.h"
+#include "rtree2_compat.h"
+#include "pa.h"
 
 #include "pa_math.c"
 #include "pa_vect.c"

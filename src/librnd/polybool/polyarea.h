@@ -32,10 +32,6 @@
 typedef rnd_coord_t rnd_vertex_t[2]; /* longing point representation of coordinates */
 typedef rnd_vertex_t rnd_vector_t;
 
-#define rnd_vertex_equ(a,b) (memcmp((a),(b),sizeof(rnd_vector_t))==0)
-#define rnd_vertex_cpy(a,b) memcpy((a),(b),sizeof(rnd_vector_t))
-
-
 extern rnd_vector_t rnd_vect_zero;
 
 enum {
@@ -47,12 +43,6 @@ enum {
 
 typedef struct rnd_cvc_list_s rnd_cvc_list_t;
 typedef struct rnd_vnode_s rnd_vnode_t;
-struct rnd_cvc_list_s {
-	double angle;
-	rnd_vnode_t *parent;
-	rnd_cvc_list_t *prev, *next, *head;
-	char poly, side;
-};
 struct rnd_vnode_s {
 	rnd_vnode_t *next, *prev, *shared;
 	struct {
