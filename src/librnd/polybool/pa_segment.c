@@ -132,14 +132,16 @@ static rnd_r_dir_t seg_in_region_cb(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-/* Prepend a deferred node-insertion task to a list */
-static pa_insert_node_task_t *prepend_insert_node_task(pa_insert_node_task_t * list, pa_seg_t * seg, rnd_vnode_t * new_node)
+/* Allocate and prepend a deferred node-insertion task to a task list */
+RND_INLINE pa_insert_node_task_t *prepend_node_task(pa_insert_node_task_t *list, pa_seg_t *seg, rnd_vnode_t *new_node)
 {
-	pa_insert_node_task_t *task = (pa_insert_node_task_t *) malloc(sizeof(*task));
-	task->node_seg = seg;
-	task->new_node = new_node;
-	task->next = list;
-	return task;
+	pa_insert_node_task_t *res = malloc(sizeof(pa_insert_node_task_t));
+
+	res->next = list;
+	res->node_seg = seg;
+	res->new_node = new_node;
+
+	return res;
 }
 
 /*
@@ -183,7 +185,7 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"i\" at %#mD\n", cnt > 1 ? s2[0] : s1[0], cnt > 1 ? s2[1] : s1[1]);
 #endif
-			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, i->s, new_node);
+			i->node_insert_list = prepend_node_task(i->node_insert_list, i->s, new_node);
 			i->s->intersected = 1;
 			done_insert_on_i = rnd_true;
 		}
@@ -192,7 +194,7 @@ static rnd_r_dir_t seg_in_seg(const rnd_box_t * b, void *cl)
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"s\" at %#mD\n", cnt > 1 ? s2[0] : s1[0], cnt > 1 ? s2[1] : s1[1]);
 #endif
-			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, s, new_node);
+			i->node_insert_list = prepend_node_task(i->node_insert_list, s, new_node);
 			s->intersected = 1;
 			return RND_R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
 		}
