@@ -143,7 +143,10 @@ double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2);
 double rnd_vect_len2(rnd_vector_t v1);
 
-int rnd_vect_inters2(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D, rnd_vector_t S1, rnd_vector_t S2);
+/* Calculate the intersection(s) of two lines A..B and C..D; return number
+   of intersections (0, 1 or 2) and load R1 and R2 with the intersection coords
+   accordingly */
+int rnd_vect_inters2(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D, rnd_vector_t R1, rnd_vector_t R2);
 
 int rnd_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
 int rnd_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
