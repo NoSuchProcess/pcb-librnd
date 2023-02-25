@@ -41,7 +41,7 @@ enum {
 };
 
 
-typedef struct pa_conn_list_s pa_conn_list_t; /* "connectivity list" in the paper */
+typedef struct pa_conn_list_s pa_conn_list_t; /* A "descriptor" that makes up a "connectivity list" in the paper */
 typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {
 	rnd_vnode_t *next, *prev, *shared;
