@@ -49,3 +49,22 @@ static rnd_bool poly_M_CheckInside(rnd_polyarea_t * p, rnd_vector_t v0)
 	return rnd_false;
 }
 #endif
+
+
+/* how about expanding polygons so that edges can be arcs rather than
+ * lines. Consider using the third coordinate to store the radius of the
+ * arc. The arc would pass through the vertex points. Positive radius
+ * would indicate the arc bows left (center on right of P1-P2 path)
+ * negative radius would put the center on the other side. 0 radius
+ * would mean the edge is a line instead of arc
+ * The intersections of the two circles centered at the vertex points
+ * would determine the two possible arc centers. If P2.x > P1.x then
+ * the center with smaller Y is selected for positive r. If P2.y > P1.y
+ * then the center with greater X is selected for positive r.
+ *
+ * the vec_inters2() routine would then need to handle line-line
+ * line-arc and arc-arc intersections.
+ *
+ * perhaps reverse tracing the arc would require look-ahead to check
+ * for arcs
+ */
