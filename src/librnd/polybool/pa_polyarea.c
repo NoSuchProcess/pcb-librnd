@@ -35,6 +35,28 @@
 
 /* rnd_polyarea_t internal/low level */
 
+#define error(code)  longjmp(*(e), code)
+
+#define MemGet(ptr, type) \
+  if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
+    error(rnd_err_no_memory);
+
+/* note that a vertex v's Flags.status represents the edge defined by
+ * v to v->next (i.e. the edge is forward of v)
+ */
+#define ISECTED 3
+#define UNKNWN  0
+#define INSIDE  1
+#define OUTSIDE 2
+#define SHARED 3
+#define SHARED2 4
+
+#define TOUCHES 99
+
+#define NODE_LABEL(n)  ((n)->Flags.status)
+#define LABEL_NODE(n,l) ((n)->Flags.status = (l))
+
+
 static rnd_r_dir_t count_contours_i_am_inside(const rnd_box_t * b, void *cl)
 {
 	rnd_pline_t *me = (rnd_pline_t *) cl;

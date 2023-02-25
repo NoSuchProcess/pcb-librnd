@@ -62,29 +62,9 @@
 
 #include "pa_math.c"
 #include "pa_vect.c"
-
-/* note that a vertex v's Flags.status represents the edge defined by
- * v to v->next (i.e. the edge is forward of v)
- */
-#define ISECTED 3
-#define UNKNWN  0
-#define INSIDE  1
-#define OUTSIDE 2
-#define SHARED 3
-#define SHARED2 4
-
-#define TOUCHES 99
-
-#define NODE_LABEL(n)  ((n)->Flags.status)
-#define LABEL_NODE(n,l) ((n)->Flags.status = (l))
-
-#define error(code)  longjmp(*(e), code)
-
-#define MemGet(ptr, type) \
-  if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
-    error(rnd_err_no_memory);
-
 #include "pa_debug.c"
+#include "pa_pline.c"
+#include "pa_polyarea.c"
 
 /***************************************************************/
 /* routines for processing intersections */
@@ -365,7 +345,6 @@ static rnd_cvc_list_t *add_descriptors(rnd_pline_t * pl, char poly, rnd_cvc_list
 	return list;
 }
 
-#include "pa_pline.c"
 
 /* some structures for handling segment intersections using the rtrees */
 
@@ -795,7 +774,6 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 	while (add && (a = a->f) != afst);
 }																/* M_rnd_polyarea_t_intersect */
 
-#include "pa_polyarea.c"
 #include "pa_lab_contour.c"
 #include "pa_collect_tmp.c"
 #include "pa_collect.c"
