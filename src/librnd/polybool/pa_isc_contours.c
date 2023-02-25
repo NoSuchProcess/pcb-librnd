@@ -80,74 +80,45 @@ static rnd_r_dir_t pa_contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static int pa_intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
+
+static int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
 {
-	rnd_polyarea_t *t;
-	rnd_pline_t *pa;
 	pa_contour_info_t ctr_ctx;
 	int need_restart = 0;
-	pa_insert_node_task_t *task;
+
 	ctr_ctx.need_restart = 0;
 	ctr_ctx.node_insert_list = NULL;
 
 	/* Search the r-tree of the object with most contours
-	 * We loop over the contours of "a". Swap if necessary.
-	 */
-	if (a->contour_tree->size > b->contour_tree->size) {
-		t = b;
-		b = a;
-		a = t;
-	}
+	   We loop over the contours of "a". Swap if necessary. */
+	if (a->contour_tree->size > b->contour_tree->size)
+		SWAP(rnd_polyarea_t *, a, b);
 
-	for (pa = a->contours; pa; pa = pa->next) {	/* Loop over the contours of rnd_polyarea_t "a" */
-		rnd_box_t sb;
+	/* loop over the contours of polyarea "a" */
+	for(ctr_ctx.pa = a->contours; ctr_ctx.pa != NULL; ctr_ctx.pa = ctr_ctx.pa->next) {
+		rnd_box_t box;
 		jmp_buf out;
-		int retval;
 
 		ctr_ctx.getout = NULL;
-		ctr_ctx.pa = pa;
 
 		if (!add) {
-			retval = setjmp(out);
-			if (retval) {
-				/* The intersection test short-circuited back here,
-				 * we need to clean up, then longjmp to jb */
-				longjmp(*jb, retval);
-			}
+			int res = setjmp(out);
+			if (res != 0) /* The intersection test short-circuited back here, we need to clean up, then longjmp to jb */
+				longjmp(*jb, res);
 			ctr_ctx.getout = &out;
 		}
 
-		sb.X1 = pa->xmin;
-		sb.Y1 = pa->ymin;
-		sb.X2 = pa->xmax + 1;
-		sb.Y2 = pa->ymax + 1;
+		box.X1 = ctr_ctx.pa->xmin;       box.Y1 = ctr_ctx.pa->ymin;
+		box.X2 = ctr_ctx.pa->xmax + 1;   box.Y2 = ctr_ctx.pa->ymax + 1;
 
-		rnd_r_search(b->contour_tree, &sb, NULL, pa_contour_bounds_touch_cb, &ctr_ctx, NULL);
+		rnd_r_search(b->contour_tree, &box, NULL, pa_contour_bounds_touch_cb, &ctr_ctx, NULL);
 		if (ctr_ctx.need_restart)
 			need_restart = 1;
 	}
 
 	/* Process any deferred node insertions */
-	task = ctr_ctx.node_insert_list;
-	while (task != NULL) {
-		pa_insert_node_task_t *next = task->next;
-
-		/* Do insertion */
-		task->new_node->prev = task->node_seg->v;
-		task->new_node->next = task->node_seg->v->next;
-		task->node_seg->v->next->prev = task->new_node;
-		task->node_seg->v->next = task->new_node;
-		task->node_seg->p->Count++;
-
-		cntrbox_adjust(task->node_seg->p, task->new_node->point);
-		if (pa_adjust_tree(task->node_seg->p->tree, task->node_seg))
-			assert(0);								/* XXX: Memory allocation failure */
-
-		need_restart = 1;						/* Any new nodes could intersect */
-
-		free(task);
-		task = next;
-	}
+	if (pa_exec_node_tasks(ctr_ctx.node_insert_list) > 0)
+		need_restart = 1; /* Any new nodes could intersect */
 
 	return need_restart;
 }

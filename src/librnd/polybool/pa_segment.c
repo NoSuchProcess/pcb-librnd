@@ -163,6 +163,37 @@ RND_INLINE pa_insert_node_task_t *prepend_node_task(pa_insert_node_task_t *list,
 	return res;
 }
 
+/* Execute pending tasks from the tasklist (creating new nodes) and free
+   tasklist. Return number of tasks executed. */
+RND_INLINE long pa_exec_node_tasks(pa_insert_node_task_t *tasklist)
+{
+	pa_insert_node_task_t *t, *next;
+	long modified = 0;
+
+	for(t = tasklist; t != NULL; t = next) {
+		next = t->next;
+
+		/* perform the insertion */
+		t->new_node->prev = t->node_seg->v;
+		t->new_node->next = t->node_seg->v->next;
+		t->node_seg->v->next->prev = t->new_node;
+		t->node_seg->v->next = t->new_node;
+		t->node_seg->p->Count++;
+
+		cntrbox_adjust(t->node_seg->p, t->new_node->point);
+
+		if (pa_adjust_tree(t->node_seg->p->tree, t->node_seg) != 0)
+			assert(0); /* failed memory allocation */
+
+		modified++;
+
+		free(t);
+	}
+
+	return modified;
+}
+
+
 /* This callback checks if the segment "s" in the tree intersect
    the search segment "i". If it does, both plines are marked as intersected
    and the point is marked for the connectivity list. If the point is not
