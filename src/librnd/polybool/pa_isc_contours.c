@@ -80,8 +80,10 @@ static rnd_r_dir_t pa_contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-
-static int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
+/* Find first new intersections between a and b and create new nodes there and
+   mark everything intersected; returns non-zero if it should be re-run with
+   the same args because there are potentially more intersections to map */
+RND_INLINE int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
 {
 	pa_contour_info_t ctr_ctx;
 	int need_restart = 0;
@@ -123,12 +125,12 @@ static int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, 
 	return need_restart;
 }
 
-static int pa_intersect(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
+/* Find all intersections between a and b and create new nodes there and mark
+   them intersected */
+static void pa_intersect(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
 {
-	int call_count = 1;
-	while (pa_intersect_impl(jb, b, a, add))
-		call_count++;
-	return 0;
+	/* restart the search as many times as the implementation asks for the restart */
+	while(pa_intersect_impl(jb, b, a, add)) ;
 }
 
 static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_polyarea_t * bfst, int add)
@@ -144,8 +146,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 			if (a->contours->xmax >= b->contours->xmin &&
 					a->contours->ymax >= b->contours->ymin &&
 					a->contours->xmin <= b->contours->xmax && a->contours->ymin <= b->contours->ymax) {
-				if (RND_UNLIKELY(pa_intersect(e, a, b, add)))
-					error(rnd_err_no_memory);
+				pa_intersect(e, a, b, add);
 			}
 		}
 		while (add && (a = a->f) != afst);
