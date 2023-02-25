@@ -2198,7 +2198,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 #include "pa_api_vertex.c"
 #include "pa_api_pline.c"
 #include "pa_api_polyarea.c"
-#include "pa_check.c"
+#include "pa_api_check.c"
 
 
 
