@@ -23,7 +23,7 @@ typedef struct pa_contour_info_s {
 	pa_insert_node_task_t *node_insert_list;
 } pa_contour_info_t;
 
-static rnd_r_dir_t contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
+static rnd_r_dir_t pa_contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 {
 	pa_contour_info_t *ctr_ctx = (pa_contour_info_t *)ctx_;
 	rnd_pline_t *pla = ctr_ctx->pa, *plb = (rnd_pline_t *)b;
@@ -80,7 +80,7 @@ static rnd_r_dir_t contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
+static int pa_intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
 {
 	rnd_polyarea_t *t;
 	rnd_pline_t *pa;
@@ -122,7 +122,7 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 		sb.X2 = pa->xmax + 1;
 		sb.Y2 = pa->ymax + 1;
 
-		rnd_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch_cb, &ctr_ctx, NULL);
+		rnd_r_search(b->contour_tree, &sb, NULL, pa_contour_bounds_touch_cb, &ctr_ctx, NULL);
 		if (ctr_ctx.need_restart)
 			need_restart = 1;
 	}
@@ -152,10 +152,10 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 	return need_restart;
 }
 
-static int intersect(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
+static int pa_intersect(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
 {
 	int call_count = 1;
-	while (intersect_impl(jb, b, a, add))
+	while (pa_intersect_impl(jb, b, a, add))
 		call_count++;
 	return 0;
 }
@@ -173,7 +173,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 			if (a->contours->xmax >= b->contours->xmin &&
 					a->contours->ymax >= b->contours->ymin &&
 					a->contours->xmin <= b->contours->xmax && a->contours->ymin <= b->contours->ymax) {
-				if (RND_UNLIKELY(intersect(e, a, b, add)))
+				if (RND_UNLIKELY(pa_intersect(e, a, b, add)))
 					error(rnd_err_no_memory);
 			}
 		}
