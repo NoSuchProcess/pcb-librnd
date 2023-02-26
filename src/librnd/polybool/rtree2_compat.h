@@ -77,19 +77,5 @@ rnd_r_dir_t rnd_r_search(rnd_rtree_t *rtree, const rnd_box_t *query,
 	rnd_r_dir_t (*rectangle_in_region)(const rnd_box_t *box, void *closure),
 	void *closure, int *num_found);
 
-/* return 0 if there are any rectangles in the given region. */
-int rnd_r_region_is_empty(rnd_rtree_t *rtree, const rnd_box_t *region);
-
-void rnd_r_dump_tree(rnd_rtree_t *root, int unused);
-
-#define RND_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
-
-/* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
-
-/* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
-rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
-
-/* Get the next item, return can be casted to an object; returns NULL if no more items */
-rnd_box_t *rnd_r_next(rnd_rtree_it_t *it);
 
 #endif

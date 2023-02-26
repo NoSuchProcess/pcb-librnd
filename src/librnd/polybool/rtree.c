@@ -131,21 +131,6 @@ rnd_r_dir_t rnd_r_search(rnd_rtree_t *rtree, const rnd_box_t *query,
 	return res;
 }
 
-int rnd_r_region_is_empty(rnd_rtree_t *rtree, const rnd_box_t *region)
-{
-	return rnd_rtree_is_box_empty(rtree, (const rnd_rtree_box_t *)region);
-}
-
-static void r_print_obj(FILE *f, void *obj)
-{
-	fprintf(f, "<obj %p>\n", obj);
-}
-
-void rnd_r_dump_tree(rnd_rtree_t *root, int unused)
-{
-	rnd_rtree_dump_text(stdout, root, r_print_obj);
-}
-
 void rnd_r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr))
 {
 	rnd_rtree_it_t it;
@@ -153,16 +138,4 @@ void rnd_r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr))
 
 	for(o = rnd_rtree_all_first(&it, rtree); o != NULL; o = rnd_rtree_all_next(&it))
 		free(o);
-}
-
-rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it)
-{
-	if (tree == NULL)
-		return NULL;
-	return (rnd_box_t *)rnd_rtree_all_first(it, tree);
-}
-
-rnd_box_t *rnd_r_next(rnd_rtree_it_t *it)
-{
-	return (rnd_box_t *)rnd_rtree_all_next(it);
 }
