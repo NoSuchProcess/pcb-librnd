@@ -36,29 +36,6 @@
 /* Contour labelling */
 
 #ifdef DEBUG
-
-static char *theState(rnd_vnode_t * v)
-{
-	static char u[] = "UNKNOWN";
-	static char i[] = "INSIDE";
-	static char o[] = "OUTSIDE";
-	static char s[] = "SHARED";
-	static char s2[] = "SHARED2";
-
-	switch (v->flg.plabel) {
-	case INSIDE:
-		return i;
-	case OUTSIDE:
-		return o;
-	case SHARED:
-		return s;
-	case SHARED2:
-		return s2;
-	default:
-		return u;
-	}
-}
-
 #ifdef DEBUG_ALL_LABELS
 static void print_labels(rnd_pline_t * a)
 {
