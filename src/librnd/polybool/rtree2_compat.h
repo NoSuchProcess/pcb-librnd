@@ -41,7 +41,7 @@
 #ifndef RND_RTREE2_COMPAT_H
 #define RND_RTREE2_COMPAT_H
 
-#include <librnd/poly/rtree.h>
+#include "rtree.h"
 
 /* callback direction to the search engine */
 typedef enum rnd_r_dir_e {

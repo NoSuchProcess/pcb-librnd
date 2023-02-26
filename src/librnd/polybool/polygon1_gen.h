@@ -2,7 +2,7 @@
 #define RND_POLYGON1_GEN_H
 
 #include <librnd/core/global_typedefs.h>
-#include <librnd/poly/polyarea.h>
+#include <librnd/polybool/polyarea.h>
 
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl);
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);

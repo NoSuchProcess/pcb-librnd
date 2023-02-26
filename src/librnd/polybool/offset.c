@@ -27,10 +27,10 @@
 /* Polygon contour offset calculation */
 
 #include <librnd/core/compat_misc.h>
-#include <librnd/poly/rtree.h>
-#include <librnd/poly/polyarea.h>
-#include <librnd/poly/self_isc.h>
-#include <librnd/poly/offset.h>
+#include "rtree.h"
+#include "polyarea.h"
+#include "self_isc.h"
+#include "offset.h"
 
 #if 0
 #define rndo_trace rnd_trace
