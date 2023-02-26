@@ -33,11 +33,6 @@
       are marked
 */
 
-static inline int cntrbox_pointin(const rnd_pline_t *c, const rnd_vector_t p)
-{
-	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
-}
-
 static inline int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
 {
 	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
@@ -333,7 +328,7 @@ int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
 	struct pip info;
 	rnd_box_t ray;
 
-	if (!cntrbox_pointin(c, p))
+	if (!pa_is_point_in_pline_box(c, p))
 		return rnd_false;
 
 	/* run a horizontal ray from the point to x->infinity and count (in info.f)

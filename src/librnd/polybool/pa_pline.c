@@ -108,3 +108,14 @@ RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 	if (pt[1]     < pl->ymin) pl->ymin = pt[1];
 	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
+
+/* Returns whether pt is within the bbox of pl */
+RND_INLINE rnd_bool pa_is_point_in_pline_box(const rnd_pline_t *pl, const rnd_vector_t pt)
+{
+	if (pt[0] < pl->xmin) return 0;
+	if (pt[1] < pl->ymin) return 0;
+	if (pt[0] > pl->xmax) return 0;
+	if (pt[1] > pl->ymax) return 0;
+
+	return 1;
+}
