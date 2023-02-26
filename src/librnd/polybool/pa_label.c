@@ -42,7 +42,7 @@ static void print_labels(rnd_pline_t * a)
 	rnd_vnode_t *c = a->head;
 
 	do {
-		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], theState(c));
+		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], node_label_to_str(c));
 	}
 	while ((c = c->next) != a->head);
 }

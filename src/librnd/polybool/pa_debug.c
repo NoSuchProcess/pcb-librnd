@@ -1,37 +1,39 @@
 /*
-       Copyright (C) 2006 harry eaton
-
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
 #undef DEBUG_LABEL
 #undef DEBUG_ALL_LABELS
@@ -54,55 +56,44 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #endif
 
 #ifdef DEBUG
-static char *theState(rnd_vnode_t * v)
+static const char *node_label_to_str(rnd_vnode_t *v)
 {
-	static char u[] = "UNKNOWN";
-	static char i[] = "INSIDE";
-	static char o[] = "OUTSIDE";
-	static char s[] = "SHARED";
-	static char s2[] = "SHARED2";
-
 	switch (v->flg.plabel) {
-	case INSIDE:
-		return i;
-	case OUTSIDE:
-		return o;
-	case SHARED:
-		return s;
-	case SHARED2:
-		return s2;
-	default:
-		return u;
+		case PA_PTL_INSIDE:   return "INSIDE";
+		case PA_PTL_OUTSIDE:  return "OUTSIDE";
+		case PA_PTL_SHARED:   return "SHARED";
+		case PA_PTL_SHARED2:  return "SHARED2";
+		case PA_PTL_UNKNWN:   break;
 	}
+	return "UNKNOWN";
 }
 
-static void pline_dump(rnd_vnode_t * v)
+static void pa_pline_dump(rnd_vnode_t *v)
 {
-	rnd_vnode_t *s, *n;
+	rnd_vnode_t *start = v;
 
-	s = v;
 	do {
-		n = v->next;
-		rnd_fprintf(stderr, "Line [%#mS %#mS %#mS %#mS 10 10 \"%s\"]\n",
-								v->point[0], v->point[1], n->point[0], n->point[1], theState(v));
-	}
-	while ((v = v->next) != s);
+		rnd_fprintf(stderr,
+			"Line [%#mS %#mS %#mS %#mS 10 10 \"%s\"]\n",
+			v->point[0], v->point[1],
+			v->next->point[0], v->next->point[1],
+			node_label_to_str(v));
+	} while((v = v->next) != start);
 }
 
-static void poly_dump(rnd_polyarea_t * p)
+static void pa_poly_dump(rnd_polyarea_t *p)
 {
-	rnd_polyarea_t *f = p;
-	rnd_pline_t *pl;
+	rnd_polyarea_t *start = p;
 
 	do {
-		pl = p->contours;
+		rnd_pline_t *pl = p->contours;
 		do {
-			pline_dump(pl->head);
+			pa_pline_dump(pl->head);
 			fprintf(stderr, "NEXT rnd_pline_t\n");
 		}
-		while ((pl = pl->next) != NULL);
+		while((pl = pl->next) != NULL);
 		fprintf(stderr, "NEXT POLY\n");
 	}
-	while ((p = p->f) != f);
+	while((p = p->f) != start);
 }
 #endif

@@ -195,7 +195,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 		if (rnd_heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
-			poly_dump(dest);
+			pa_poly_dump(dest);
 #endif
 #endif
 			rnd_poly_contour_del(&curh);
@@ -227,7 +227,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 			/* bad input polygons were given */
 #ifndef NDEBUG
 #ifdef DEBUG
-			poly_dump(dest);
+			pa_poly_dump(dest);
 #endif
 #endif
 			curh->next = NULL;
