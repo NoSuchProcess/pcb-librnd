@@ -33,11 +33,6 @@
       are marked
 */
 
-static inline int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
-{
-	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
-}
-
 void rnd_poly_contour_init(rnd_pline_t * c)
 {
 	if (c == NULL)

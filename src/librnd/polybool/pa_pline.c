@@ -119,3 +119,13 @@ RND_INLINE rnd_bool pa_is_point_in_pline_box(const rnd_pline_t *pl, const rnd_ve
 
 	return 1;
 }
+
+/* Returns true if node a and b are neighbours or are the same node */
+RND_INLINE rnd_bool pa_are_nodes_neighbours(rnd_vnode_t *a, rnd_vnode_t *b)
+{
+	if (a == b) return 1;
+	if ((a->next == b) || (b->next == a)) return 1;
+	if (a->next == b->next) return 1; /* when could this even happen?! */
+
+	return 0;
+}

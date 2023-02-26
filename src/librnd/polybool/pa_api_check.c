@@ -118,7 +118,7 @@ rnd_bool rnd_polyarea_contour_check_(rnd_pline_t *a, pa_chk_res_t *res)
 	do {
 		a2 = a1;
 		do {
-			if (!node_neighbours(a1, a2) && (icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
+			if (!pa_are_nodes_neighbours(a1, a2) && (icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
 				if (icnt > 1) {
 					PA_CHK_MARK(a1->point[0], a1->point[1]);
 					PA_CHK_MARK(a2->point[0], a2->point[1]);
