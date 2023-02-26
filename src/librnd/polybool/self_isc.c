@@ -324,7 +324,7 @@ rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa)
 				cnt++;
 			}
 
-			rnd_poly_contour_del(&pl);
+			pa_pline_free(&pl);
 			cnt--;
 
 			vtp0_uninit(&pls);

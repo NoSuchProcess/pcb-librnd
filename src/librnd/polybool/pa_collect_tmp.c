@@ -202,7 +202,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 			pa_poly_dump(dest);
 #endif
 #endif
-			rnd_poly_contour_del(&curh);
+			pa_pline_free(&curh);
 			pa_error(pa_err_bad_parm);
 		}
 		/* Now search the heap for the container. If there was only one item
@@ -235,7 +235,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 #endif
 #endif
 			curh->next = NULL;
-			rnd_poly_contour_del(&curh);
+			pa_pline_free(&curh);
 			pa_error(pa_err_bad_parm);
 		}
 		else {

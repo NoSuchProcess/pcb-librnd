@@ -70,7 +70,7 @@ rnd_pline_t *pa_pline_new(const rnd_vector_t v);
 
 void pa_pline_init(rnd_pline_t *c);
 void rnd_poly_contour_clear(rnd_pline_t *c); /* clears list of vertices */
-void rnd_poly_contour_del(rnd_pline_t **c);
+void pa_pline_free(rnd_pline_t **c);
 
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 
@@ -208,5 +208,7 @@ int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_ve
 
 rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
 void rnd_poly_contour_init(rnd_pline_t *c);
+void rnd_poly_contour_del(rnd_pline_t **c);
+
 
 #endif /* RND_POLYAREA_H */

@@ -215,7 +215,7 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 	int errc = pa_err_ok;
 	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
 		if (p != NULL)
-			rnd_poly_contour_del(&p);
+			pa_pline_free(&p);
 		pa_error(errc);
 	}
 	if (!p)
@@ -232,7 +232,7 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 #ifdef DEBUG_GATHER
 		DEBUGP("Bad contour! Not enough points!!\n");
 #endif
-		rnd_poly_contour_del(&p);
+		pa_pline_free(&p);
 	}
 }
 
@@ -553,7 +553,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 				curc = a->contours;
 				remove_contour(a, NULL, curc, rnd_false);	/* Rtree deleted in poly_Free below */
 				/* a->contours now points to the remaining holes */
-				rnd_poly_contour_del(&curc);
+				pa_pline_free(&curc);
 
 				if (a->contours != NULL) {
 					/* Find the end of the list of holes */
@@ -604,7 +604,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 
 				/* Remove hole from the contour */
 				remove_contour(a, prev, info.result, rnd_true);
-				rnd_poly_contour_del(&info.result);
+				pa_pline_free(&info.result);
 			}
 			/* End check for deleted holes */
 
@@ -651,7 +651,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 
 				if (del_contour) {
 					/* Delete the contour */
-					rnd_poly_contour_del(&curc);	/* NB: Sets curc to NULL */
+					pa_pline_free(&curc);	/* NB: Sets curc to NULL */
 				}
 				else if (hole_contour) {
 					/* Link into the list of holes */

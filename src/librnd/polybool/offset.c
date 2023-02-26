@@ -178,7 +178,7 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 	from = dst->used;
 	if (rnd_pline_is_selfint(res)) {
 		rnd_pline_split_selfint(res, dst);
-		rnd_poly_contour_del(&res);
+		pa_pline_free(&res);
 	}
 	else
 		vtp0_append(dst, res);
@@ -213,7 +213,7 @@ rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs)
 	for(n = 0; n < selfi.used; n++) {
 		rnd_pline_t *pl = selfi.array[n];
 		if (res != pl)
-			rnd_poly_contour_del(&pl);
+			pa_pline_free(&pl);
 	}
 	vtp0_uninit(&selfi);
 	return res;

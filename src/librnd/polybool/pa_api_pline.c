@@ -33,6 +33,8 @@
       are marked
 */
 
+/* High level API functions (called mostly or only from outside) */
+
 void rnd_poly_contour_clear(rnd_pline_t * c)
 {
 	rnd_vnode_t *cur;
@@ -45,34 +47,6 @@ void rnd_poly_contour_clear(rnd_pline_t * c)
 	free(c->head);
 	c->head = NULL;
 	pa_pline_init(c);
-}
-
-void rnd_poly_contour_del(rnd_pline_t ** c)
-{
-	rnd_vnode_t *cur, *prev;
-
-	if (*c == NULL)
-		return;
-	for (cur = (*c)->head->prev; cur != (*c)->head; cur = prev) {
-		prev = cur->prev;
-		if (cur->cvclst_next != NULL) {
-			free(cur->cvclst_next);
-			free(cur->cvclst_prev);
-		}
-		free(cur);
-	}
-	if ((*c)->head->cvclst_next != NULL) {
-		free((*c)->head->cvclst_next);
-		free((*c)->head->cvclst_prev);
-	}
-	/* FIXME -- strict aliasing violation.  */
-	if ((*c)->tree) {
-		rnd_rtree_t *r = (*c)->tree;
-		rnd_r_free_tree_data(r, free);
-		rnd_r_destroy_tree(&r);
-	}
-	free((*c)->head);
-	free(*c), *c = NULL;
 }
 
 void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
@@ -127,7 +101,7 @@ void rnd_poly_contours_free(rnd_pline_t ** pline)
 
 	while ((pl = *pline) != NULL) {
 		*pline = pl->next;
-		rnd_poly_contour_del(&pl);
+		pa_pline_free(&pl);
 	}
 }
 

@@ -105,7 +105,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		/* free a_isected */
 		while ((p = a_isected) != NULL) {
 			a_isected = p->next;
-			rnd_poly_contour_del(&p);
+			pa_pline_free(&p);
 		}
 
 		rnd_poly_insert_holes(&e, *res, &holes);
@@ -113,7 +113,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 	/* delete holes if any left */
 	while ((p = holes) != NULL) {
 		holes = p->next;
-		rnd_poly_contour_del(&p);
+		pa_pline_free(&p);
 	}
 
 	if (code) {
@@ -174,7 +174,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 		/* delete holes if any left */
 		while ((p = holes) != NULL) {
 			holes = p->next;
-			rnd_poly_contour_del(&p);
+			pa_pline_free(&p);
 		}
 		holes = NULL;
 		clear_marks(a);
@@ -188,7 +188,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 	/* delete holes if any left */
 	while ((p = holes) != NULL) {
 		holes = p->next;
-		rnd_poly_contour_del(&p);
+		pa_pline_free(&p);
 	}
 
 

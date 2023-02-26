@@ -162,3 +162,41 @@ rnd_pline_t *pa_pline_new(const rnd_vector_t pt)
 
 	return res;
 }
+
+void pa_pline_free_fields(rnd_pline_t *pl)
+{
+	rnd_vnode_t *n, *prev;
+
+	/* free cross-vertex-connectin list for all nodes in pl; free all nodes too */
+	for(n = pl->head->prev; n != pl->head; n = prev) {
+		prev = n->prev;
+		if (n->cvclst_next != NULL) {
+			free(n->cvclst_next);
+			free(n->cvclst_prev);
+		}
+		free(n);
+	}
+
+	if (pl->head->cvclst_next != NULL) {
+		free(pl->head->cvclst_next);
+		free(pl->head->cvclst_prev);
+	}
+	free(pl->head);
+
+	if (pl->tree) {
+		rnd_rtree_t *r = pl->tree;
+		rnd_r_free_tree_data(r, free);
+		rnd_r_destroy_tree(&r);
+	}
+}
+
+void pa_pline_free(rnd_pline_t **pl)
+{
+	if (*pl == NULL)
+		return;
+
+	pa_pline_free_fields(*pl);
+
+	free(*pl);
+	*pl = NULL;
+}
