@@ -74,7 +74,10 @@ void pa_pline_free(rnd_pline_t **c);
 
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 
-void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize); /* prepare contour */
+/* Recalculate bounding box, area, number-of-nodes and rebuuld the rtree. If
+   optimize is true also remove excess colinear points. */
+void pa_pline_update(rnd_pline_t *c, rnd_bool optimize);
+
 void rnd_poly_contour_inv(rnd_pline_t *c); /* invert contour */
 
 rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v);
@@ -209,6 +212,6 @@ int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_ve
 rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
 void rnd_poly_contour_init(rnd_pline_t *c);
 void rnd_poly_contour_del(rnd_pline_t **c);
-
+void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
 
 #endif /* RND_POLYAREA_H */

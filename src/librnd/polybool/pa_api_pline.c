@@ -49,52 +49,6 @@ void rnd_poly_contour_clear(rnd_pline_t * c)
 	pa_pline_init(c);
 }
 
-void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
-{
-	double area = 0;
-	rnd_vnode_t *p, *c;
-	rnd_vector_t p1, p2;
-
-	assert(C != NULL);
-
-	if (optimize) {
-		for (c = (p = C->head)->next; c != C->head; c = (p = c)->next) {
-			/* if the previous node is on the same line with this one, we should remove it */
-			Vsub2(p1, c->point, p->point);
-			Vsub2(p2, c->next->point, c->point);
-			/* If the product below is zero then
-			 * the points on either side of c 
-			 * are on the same line!
-			 * So, remove the point c
-			 */
-
-			if (rnd_vect_det2(p1, p2) == 0) {
-				rnd_poly_vertex_exclude(C, c);
-				free(c);
-				c = p;
-			}
-		}
-	}
-	C->Count = 0;
-	C->xmin = C->xmax = C->head->point[0];
-	C->ymin = C->ymax = C->head->point[1];
-
-	p = (c = C->head)->prev;
-	if (c != p) {
-		do {
-			/* calculate area for orientation */
-			area += (double) (p->point[0] - c->point[0]) * (p->point[1] + c->point[1]);
-			pa_pline_box_bump(C, c->point);
-			C->Count++;
-		}
-		while ((c = (p = c)->next) != C->head);
-	}
-	C->area = RND_ABS(area);
-	if (C->Count > 2)
-		C->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
-	C->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(C);
-}																/* poly_PreContour */
-
 void rnd_poly_contours_free(rnd_pline_t ** pline)
 {
 	rnd_pline_t *pl;

@@ -196,3 +196,55 @@ void pa_pline_free(rnd_pline_t **pl)
 	free(*pl);
 	*pl = NULL;
 }
+
+void pa_pline_optimize(rnd_pline_t *pl)
+{
+	rnd_vnode_t *p = pl->head, *c; /* previous and current node in the iteration */
+
+	for(c = p->next; c != pl->head; c = (p = c)->next) {
+		rnd_vector_t p1, p2;
+
+		Vsub2(p1, c->point, p->point);
+		Vsub2(p2, c->next->point, c->point);
+
+		/* If det2 is zero then the points on either side of c are on the same line! */
+		if (rnd_vect_det2(p1, p2) == 0) {
+			rnd_poly_vertex_exclude(pl, c);
+			free(c);
+			c = p;
+		}
+	}
+}
+
+void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
+{
+	double area = 0;
+	rnd_vnode_t *p, *c; /* previous and current node in the iteration */
+
+	assert(pl != NULL);
+
+	if (optimize)
+		pa_pline_optimize(pl);
+
+	/* Update count and bbox and calculate area */
+	pl->Count = 0;
+	pl->xmin = pl->xmax = pl->head->point[0];
+	pl->ymin = pl->ymax = pl->head->point[1];
+	p = (c = pl->head)->prev;
+	if (c != p) {
+		do {
+			/* calculate area for orientation */
+			area += (double)(p->point[0] - c->point[0]) * (double)(p->point[1] + c->point[1]);
+			pa_pline_box_bump(pl, c->point);
+			pl->Count++;
+		}
+		while ((c = (p = c)->next) != pl->head);
+	}
+	pl->area = RND_ABS(area);
+
+	/* inverse orientation results in negative area */
+	if (pl->Count > 2)
+		pl->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
+
+	pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
+}

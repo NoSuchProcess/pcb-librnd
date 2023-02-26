@@ -185,7 +185,7 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 
 	for(n = from; n < dst->used; n++) {
 		res = dst->array[n];
-		rnd_poly_contour_pre(res, 1);
+		pa_pline_update(res, 1);
 		rnd_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
 		res->tree = rnd_poly_make_edge_tree(res);
 		dst->array[n] = res;

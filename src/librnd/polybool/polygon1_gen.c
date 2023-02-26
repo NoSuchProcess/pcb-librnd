@@ -62,7 +62,7 @@ static void init_rotate_cache(void)
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
 {
 	rnd_polyarea_t *p;
-	rnd_poly_contour_pre(contour, rnd_true);
+	pa_pline_update(contour, rnd_true);
 	assert(contour->flg.orient == RND_PLF_DIR);
 	if (!(p = rnd_polyarea_create()))
 		return NULL;
@@ -74,7 +74,7 @@ rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *contour)
 {
 	rnd_polyarea_t *p;
-	rnd_poly_contour_pre(contour, rnd_true);
+	pa_pline_update(contour, rnd_true);
 	if (contour->flg.orient != RND_PLF_DIR)
 		rnd_poly_contour_inv(contour);
 	if (!(p = rnd_polyarea_create()))

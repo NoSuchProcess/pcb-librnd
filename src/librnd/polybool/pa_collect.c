@@ -220,7 +220,7 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 	}
 	if (!p)
 		return;
-	rnd_poly_contour_pre(p, rnd_true);
+	pa_pline_update(p, rnd_true);
 	if (p->Count > 2) {
 #ifdef DEBUG_GATHER
 		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->flg.orient ? 'F' : 'B');
