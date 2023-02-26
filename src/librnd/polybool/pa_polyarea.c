@@ -71,7 +71,7 @@ static int pa_is_pline_in_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, rnd_bool
 	assert(outer != NULL);
 
 	do {
-		if (cntrbox_inside(pl, outer->contours))
+		if (pa_pline_box_inside(pl, outer->contours))
 			rnd_heap_insert(heap, outer->contours->area, (void *)outer);
 	}	while(!first_only && (outer = outer->f) != pa);
 

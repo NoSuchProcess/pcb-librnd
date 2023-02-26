@@ -432,7 +432,7 @@ int rnd_poly_contour_in_contour(rnd_pline_t * poly, rnd_pline_t * inner)
 	rnd_vector_t point;
 	assert(poly != NULL);
 	assert(inner != NULL);
-	if (cntrbox_inside(inner, poly)) {
+	if (pa_pline_box_inside(inner, poly)) {
 		/* We need to prove the "inner" contour is not outside
 		 * "poly" contour. If it is outside, we can return.
 		 */

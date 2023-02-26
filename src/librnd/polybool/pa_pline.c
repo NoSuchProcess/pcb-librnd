@@ -85,11 +85,17 @@ static rnd_vnode_t *pa_ensure_point_and_reset_cvc(rnd_vnode_t *dst, rnd_vector_t
 	return newnd;
 }
 
-
-static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
+/* Returns whether pl1's bbox can overlap/intersect pl2's bbox */
+RND_INLINE rnd_bool pa_pline_box_inside(rnd_pline_t *pl1, rnd_pline_t *pl2)
 {
-	assert(c1 != NULL && c2 != NULL);
-	return ((c1->xmin >= c2->xmin) && (c1->ymin >= c2->ymin) && (c1->xmax <= c2->xmax) && (c1->ymax <= c2->ymax));
+	assert((pl1 != NULL) && (pl2 != NULL));
+
+	if (pl1->xmin < pl2->xmin) return 0;
+	if (pl1->ymin < pl2->ymin) return 0;
+	if (pl1->xmax > pl2->xmax) return 0;
+	if (pl1->ymax > pl2->ymax) return 0;
+
+	return 1;
 }
 
 static inline void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
