@@ -185,11 +185,11 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIR
 		if (!*result) {
 			*result = rnd_poly_contour_new(cur->point);
 			if (*result == NULL)
-				return rnd_err_no_memory;
+				return pa_err_no_memory;
 		}
 		else {
 			if ((newn = rnd_poly_node_create(cur->point)) == NULL)
-				return rnd_err_no_memory;
+				return pa_err_no_memory;
 			rnd_poly_vertex_include((*result)->head->prev, newn);
 		}
 #ifdef DEBUG_GATHER
@@ -206,17 +206,17 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIR
 		cur = (dir == FORW ? cur->next : cur->prev);
 	}
 	while (1);
-	return rnd_err_ok;
+	return pa_err_ok;
 }																/* Gather */
 
 static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea_t ** contours, rnd_pline_t ** holes, J_Rule j_rule)
 {
 	rnd_pline_t *p = NULL;							/* start making contour */
-	int errc = rnd_err_ok;
-	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != rnd_err_ok) {
+	int errc = pa_err_ok;
+	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
 		if (p != NULL)
 			rnd_poly_contour_del(&p);
-		error(errc);
+		pa_error(errc);
 	}
 	if (!p)
 		return;

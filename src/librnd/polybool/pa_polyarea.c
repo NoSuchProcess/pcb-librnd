@@ -35,11 +35,9 @@
 
 /* rnd_polyarea_t internal/low level */
 
-#define error(code)  longjmp(*(e), code)
-
 #define MemGet(ptr, type) \
   if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
-    error(rnd_err_no_memory);
+    pa_error(pa_err_no_memory);
 
 /* Return whether a and b has any chance to intersect comparing their bboxes */
 RND_INLINE int pa_polyarea_box_overlap(rnd_polyarea_t *a, rnd_polyarea_t *b)

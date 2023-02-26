@@ -36,13 +36,6 @@ typedef rnd_vertex_t rnd_vector_t;
 
 extern const rnd_vector_t rnd_vect_zero;
 
-enum {
-	rnd_err_no_memory = 2,
-	rnd_err_bad_parm = 3,
-	rnd_err_ok = 0
-};
-
-
 typedef struct pa_conn_desc_s pa_conn_desc_t; /* A "descriptor" that makes up a "connectivity list" in the paper */
 typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {

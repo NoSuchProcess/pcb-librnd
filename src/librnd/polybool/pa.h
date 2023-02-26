@@ -67,4 +67,15 @@ typedef enum pa_plinept_label_e {
 #define PA_ISC_TOUCHES 99
 
 
+/* ugly hack: long-jump out to the error handler e (assumed to exist in
+   current scope, normally received as a function argument) with a
+   non-zero error code */
+#define pa_error(code)  longjmp(*(e), code)
+
+/* standard error codes for pa_error() */
+enum {
+	pa_err_no_memory = 2,
+	pa_err_bad_parm = 3,
+	pa_err_ok = 0
+};
 

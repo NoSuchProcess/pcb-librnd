@@ -158,7 +158,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 	if (*src == NULL)
 		return;											/* empty hole list */
 	if (dest == NULL)
-		error(rnd_err_bad_parm);				/* empty contour list */
+		pa_error(pa_err_bad_parm);				/* empty contour list */
 
 	/* Count dest polyareas */
 	curc = dest;
@@ -199,7 +199,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 #endif
 #endif
 			rnd_poly_contour_del(&curh);
-			error(rnd_err_bad_parm);
+			pa_error(pa_err_bad_parm);
 		}
 		/* Now search the heap for the container. If there was only one item
 		 * in the heap, assume it is the container without the expense of
@@ -232,7 +232,7 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 #endif
 			curh->next = NULL;
 			rnd_poly_contour_del(&curh);
-			error(rnd_err_bad_parm);
+			pa_error(pa_err_bad_parm);
 		}
 		else {
 			/* Need to check if this new hole means we need to kick out any old ones for reprocessing */

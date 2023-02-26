@@ -180,7 +180,7 @@ static pa_conn_desc_t *pa_polyarea_list_intersected(jmp_buf *e, pa_conn_desc_t *
 		if (n->flg.llabel == PA_PLL_ISECTED) {
 			conn_list = pa_add_conn_desc(n, poly_label, conn_list);
 			if (RND_UNLIKELY(conn_list == NULL))
-				error(rnd_err_no_memory);
+				pa_error(pa_err_no_memory);
 		}
 	}
 	return conn_list;
@@ -195,7 +195,7 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 	pa_conn_desc_t *conn_list = NULL;
 
 	if ((pa_a == NULL) || (pa_b == NULL))
-		error(rnd_err_bad_parm);
+		pa_error(pa_err_bad_parm);
 
 	/* calculate all intersections between pa_a and pa_b, iterating over the
 	   islands if pa_b; also add all of pa_b's intersections in conn_list */

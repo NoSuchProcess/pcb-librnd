@@ -38,7 +38,7 @@ int rnd_polyarea_boolean(const rnd_polyarea_t * a_org, const rnd_polyarea_t * b_
 	rnd_polyarea_t *a = NULL, *b = NULL;
 
 	if (!rnd_polyarea_m_copy0(&a, a_org) || !rnd_polyarea_m_copy0(&b, b_org))
-		return rnd_err_no_memory;
+		return pa_err_no_memory;
 
 	return rnd_polyarea_boolean_free(a, b, res, action);
 }																/* poly_Boolean */
@@ -59,12 +59,12 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		case RND_PBO_XOR:
 		case RND_PBO_UNITE:
 			*res = bi;
-			return rnd_err_ok;
+			return pa_err_ok;
 		case RND_PBO_SUB:
 		case RND_PBO_ISECT:
 			if (b != NULL)
 				rnd_polyarea_free(&b);
-			return rnd_err_ok;
+			return pa_err_ok;
 		}
 	}
 	if (!b) {
@@ -73,11 +73,11 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		case RND_PBO_XOR:
 		case RND_PBO_UNITE:
 			*res = ai;
-			return rnd_err_ok;
+			return pa_err_ok;
 		case RND_PBO_ISECT:
 			if (a != NULL)
 				rnd_polyarea_free(&a);
-			return rnd_err_ok;
+			return pa_err_ok;
 		}
 	}
 
