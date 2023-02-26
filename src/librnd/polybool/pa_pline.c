@@ -67,30 +67,23 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 	return newnd;
 }
 
-/*
-node_add_point
- (C) 1993 Klamer Schutte
- (C) 1997 Alexey Nikitin, Michael Leonov
-
- return 1 if new node in b, 2 if new node in a and 3 if new node in both
-*/
-
-static rnd_vnode_t *node_add_single_point(rnd_vnode_t * a, rnd_vector_t p)
+/* Return a new node for a point next to dst, or NULL if pt falls on an existing
+   node. Crashes/asserts if allocation fails.
+   Side effect: cvclst of the node at pt is reset, even for existing nodes. */
+static rnd_vnode_t *pa_ensure_point_and_reset_cvc(rnd_vnode_t *dst, rnd_vector_t pt)
 {
-	rnd_vnode_t *next_a, *new_node;
+	rnd_vnode_t *dnext = dst->next, *newnd;
 
-	next_a = a->next;
+	newnd = rnd_poly_node_add_single(dst, pt);
+	assert(newnd != NULL);
 
-	new_node = rnd_poly_node_add_single(a, p);
-	assert(new_node != NULL);
+	newnd->cvclst_prev = newnd->cvclst_next = PA_CONN_DESC_INVALID;
 
-	new_node->cvclst_prev = new_node->cvclst_next = PA_CONN_DESC_INVALID;
+	if ((newnd == dst) || (newnd == dnext))
+		return NULL; /* no new allocation */
 
-	if (new_node == a || new_node == next_a)
-		return NULL;
-
-	return new_node;
-}																/* node_add_point */
+	return newnd;
+}
 
 
 static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)

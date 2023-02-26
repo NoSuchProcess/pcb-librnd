@@ -235,7 +235,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		rnd_vnode_t *new_node;
 
 		/* add new node on "i" */
-		new_node = node_add_single_point(ctx->v, *my_s);
+		new_node = pa_ensure_point_and_reset_cvc(ctx->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"i\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
@@ -246,7 +246,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		}
 
 		/* add new node on "s" */
-		new_node = node_add_single_point(s->v, *my_s);
+		new_node = pa_ensure_point_and_reset_cvc(s->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"s\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
