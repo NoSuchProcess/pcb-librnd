@@ -96,4 +96,15 @@ static void pa_poly_dump(rnd_polyarea_t *p)
 	}
 	while((p = p->f) != start);
 }
+
+#ifdef DEBUG_ALL_LABELS
+static void pa_print_pline_labels(rnd_pline_t *a)
+{
+	rnd_vnode_t *c = a->head;
+	do {
+		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], node_label_to_str(c));
+	} while((c = c->next) != a->head);
+}
+#endif
+
 #endif

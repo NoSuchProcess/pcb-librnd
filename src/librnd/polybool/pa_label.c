@@ -35,20 +35,6 @@
 
 /* Contour labelling */
 
-#ifdef DEBUG
-#ifdef DEBUG_ALL_LABELS
-static void print_labels(rnd_pline_t * a)
-{
-	rnd_vnode_t *c = a->head;
-
-	do {
-		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], node_label_to_str(c));
-	}
-	while ((c = c->next) != a->head);
-}
-#endif
-#endif
-
 /*
 node_label
  (C) 2006 harry eaton
@@ -147,7 +133,7 @@ static rnd_bool label_contour(rnd_pline_t * a)
 	}
 	while ((cur = cur->next) != first_labelled);
 #ifdef DEBUG_ALL_LABELS
-	print_labels(a);
+	pa_print_pline_labels(a);
 	DEBUGP("\n\n");
 #endif
 	return rnd_false;
