@@ -92,7 +92,7 @@ RND_INLINE int pa_vertices_are_coaxial(rnd_vnode_t *node)
 	dy = node->prev->point[1] - node->prev->prev->point[1];
 	b = dx * dy;
 
-	return fabs(a - b) < EPSILON;
+	return fabs(a - b) < PA_EPSILON;
 }
 
 TODO("rename: it's a pline function");

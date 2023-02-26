@@ -40,7 +40,7 @@
 #include "polygon1_gen.h"
 
 /* kept to ensure nanometer compatibility */
-#define ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))
+#define PA_ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))
 
 static double rotate_circle_seg[4];
 int rotate_circle_seg_inited = 0;
@@ -220,14 +220,14 @@ static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y,
 		t1 = rotate_circle_seg[0] * e1 + rotate_circle_seg[1] * e2;
 		e2 = rotate_circle_seg[2] * e1 + rotate_circle_seg[3] * e2;
 		e1 = t1;
-		v[0] = X + ROUND(e1);
-		v[1] = Y + ROUND(e2);
+		v[0] = X + PA_ROUND(e1);
+		v[1] = Y + PA_ROUND(e2);
 		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 	}
 
 	if ((add_last) && (orange == 4)) {
-		v[0] = X - ROUND(oe2);
-		v[1] = Y + ROUND(oe1);
+		v[0] = X - PA_ROUND(oe2);
+		v[1] = Y + PA_ROUND(oe1);
 		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 	}
 }

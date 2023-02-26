@@ -91,8 +91,8 @@ static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
 
 static inline void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
 {
-	c->xmin = min(c->xmin, p[0]);
-	c->xmax = max(c->xmax, p[0] + 1);
-	c->ymin = min(c->ymin, p[1]);
-	c->ymax = max(c->ymax, p[1] + 1);
+	c->xmin = pa_min(c->xmin, p[0]);
+	c->xmax = pa_max(c->xmax, p[0] + 1);
+	c->ymin = pa_min(c->ymin, p[1]);
+	c->ymax = pa_max(c->ymax, p[1] + 1);
 }

@@ -58,10 +58,10 @@ rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 {
 	TODO("arc: the code below works only for lines");
-	s->box.X1 = min(s->v->point[0], s->v->next->point[0]);
-	s->box.X2 = max(s->v->point[0], s->v->next->point[0]) + 1;
-	s->box.Y1 = min(s->v->point[1], s->v->next->point[1]);
-	s->box.Y2 = max(s->v->point[1], s->v->next->point[1]) + 1;
+	s->box.X1 = pa_min(s->v->point[0], s->v->next->point[0]);
+	s->box.X2 = pa_max(s->v->point[0], s->v->next->point[0]) + 1;
+	s->box.Y1 = pa_min(s->v->point[1], s->v->next->point[1]);
+	s->box.Y2 = pa_max(s->v->point[1], s->v->next->point[1]) + 1;
 }
 
 /* Replace sg with two new segments in tree ; called after a vertex has
@@ -145,8 +145,8 @@ static rnd_r_dir_t seg_in_region_cb(const rnd_box_t *b, void *cl)
 	y2 = ctx->m * b->X2 + ctx->b;
 
 	/* check if y1 or y2 is out of range */
-	if (min(y1, y2) >= b->Y2)  return RND_R_DIR_NOT_FOUND;
-	if (max(y1, y2) < b->Y1)   return RND_R_DIR_NOT_FOUND;
+	if (pa_min(y1, y2) >= b->Y2)  return RND_R_DIR_NOT_FOUND;
+	if (pa_max(y1, y2) < b->Y1)   return RND_R_DIR_NOT_FOUND;
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }

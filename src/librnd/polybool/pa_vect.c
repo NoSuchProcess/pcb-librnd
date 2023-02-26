@@ -197,10 +197,10 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 	double pdx, pdy, qdx, qdy;
 
 	/* if bounding boxes don't overlap, no need to check, they can't intersect */
-	if (max(p1[0], p2[0]) < min(q1[0], q2[0])) return 0;
-	if (max(q1[0], q2[0]) < min(p1[0], p2[0])) return 0;
-	if (max(p1[1], p2[1]) < min(q1[1], q2[1])) return 0;
-	if (max(q1[1], q2[1]) < min(p1[1], p2[1])) return 0;
+	if (pa_max(p1[0], p2[0]) < pa_min(q1[0], q2[0])) return 0;
+	if (pa_max(q1[0], q2[0]) < pa_min(p1[0], p2[0])) return 0;
+	if (pa_max(p1[1], p2[1]) < pa_min(q1[1], q2[1])) return 0;
+	if (pa_max(q1[1], q2[1]) < pa_min(p1[1], p2[1])) return 0;
 
 	/* calculate and cache delta_x/delta_y for p and q */
 	pdx = p2[0] - p1[0]; pdy = p2[1] - p1[1];
@@ -252,8 +252,8 @@ int rnd_vect_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vect
 	if (t < 0.0 || t > 1.0)
 		return 0;
 
-	S1[0] = q1[0] + ROUND(t * qdx);
-	S1[1] = q1[1] + ROUND(t * qdy);
+	S1[0] = q1[0] + PA_ROUND(t * qdx);
+	S1[1] = q1[1] + PA_ROUND(t * qdy);
 	return 1;
 }
 
