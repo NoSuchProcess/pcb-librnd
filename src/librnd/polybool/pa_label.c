@@ -101,7 +101,8 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 }
 
 
-/* Label all nodes on a contour */
+/* Label all nodes on a contour. Must NOT be called on a pl that is not
+   intersected (would lead to infinite loop) */
 static void pa_label_contour(rnd_pline_t *pl)
 {
 	rnd_vnode_t *nd, *first_isected = NULL;
