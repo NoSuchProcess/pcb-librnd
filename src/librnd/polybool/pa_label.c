@@ -150,17 +150,19 @@ static rnd_bool pa_label_pline_vs_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, 
 
 	if (pl->flg.llabel == PA_PLL_ISECTED) {
 		pa_label_pline(pl); /* should never get here when first_only is rnd_true */
+		return rnd_false;
 	}
-	else if (pa_is_pline_in_polyarea(pl, pa, first_only)) {
+
+	if (pa_is_pline_in_polyarea(pl, pa, first_only)) {
 		if (first_only)
 			return rnd_true;
 		pl->flg.llabel = PA_PLL_INSIDE;
+		return rnd_false;
 	}
-	else {
-		if (first_only)
-			return rnd_false;
-		pl->flg.llabel = PA_PLL_OUTSIDE;
-	}
+
+	if (first_only)
+		return rnd_false;
+	pl->flg.llabel = PA_PLL_OUTSIDE;
 	return rnd_false;
 }
 
@@ -189,12 +191,10 @@ static rnd_bool pa_polyarea_label(rnd_polyarea_t *A, rnd_polyarea_t *B, rnd_bool
 	a = A;
 	do {
 		rnd_pline_t *pn;
-		for(pn = a->contours; pn != NULL; pn = pn->next) {
-			if (pa_label_pline_vs_polyarea(pn, B, first_only)) {
+		for(pn = a->contours; pn != NULL; pn = pn->next)
+			if (pa_label_pline_vs_polyarea(pn, B, first_only))
 				if (first_only)
 					return rnd_true;
-			}
-		}
 	} while (!first_only && (a = a->f) != A);
 	return rnd_false;
 }
