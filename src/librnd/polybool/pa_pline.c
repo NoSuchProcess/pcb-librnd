@@ -129,3 +129,19 @@ RND_INLINE rnd_bool pa_are_nodes_neighbours(rnd_vnode_t *a, rnd_vnode_t *b)
 
 	return 0;
 }
+
+void pa_pline_init(rnd_pline_t *pl)
+{
+	if (pl == NULL)
+		return;
+
+	if (pl->head == NULL)
+		pl->head = calloc(sizeof(rnd_vnode_t), 1);
+
+	pl->head->next = pl->head->prev = pl->head;
+	pl->xmin = pl->ymin = RND_COORD_MAX;
+	pl->xmax = pl->ymax = -RND_COORD_MAX-1;
+	pl->is_round = rnd_false;
+	pl->cx = pl->cy = 0;
+	pl->radius = 0;
+}

@@ -68,7 +68,7 @@ struct rnd_pline_s {
 
 rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
 
-void rnd_poly_contour_init(rnd_pline_t *c);
+void pa_pline_init(rnd_pline_t *c);
 void rnd_poly_contour_clear(rnd_pline_t *c); /* clears list of vertices */
 void rnd_poly_contour_del(rnd_pline_t **c);
 
@@ -201,5 +201,11 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
 /*** generic geo ***/
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
+
+
+/*** COMPATIBILITY ***/
+/* These macros provide compatibility with librnd's poly lib */
+
+#define rnd_poly_contour_init(pl) pa_pline_init(pl)
 
 #endif /* RND_POLYAREA_H */

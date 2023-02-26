@@ -33,22 +33,6 @@
       are marked
 */
 
-void rnd_poly_contour_init(rnd_pline_t * c)
-{
-	if (c == NULL)
-		return;
-	/* bzero (c, sizeof(rnd_pline_t)); */
-	if (c->head == NULL)
-		c->head = calloc(sizeof(rnd_vnode_t), 1);
-	c->head->next = c->head->prev = c->head;
-	c->xmin = c->ymin = RND_COORD_MAX;
-	c->xmax = c->ymax = -RND_COORD_MAX-1;
-	c->is_round = rnd_false;
-	c->cx = 0;
-	c->cy = 0;
-	c->radius = 0;
-}
-
 rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v)
 {
 	rnd_pline_t *res;
@@ -57,7 +41,7 @@ rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v)
 	if (res == NULL)
 		return NULL;
 
-	rnd_poly_contour_init(res);
+	pa_pline_init(res);
 
 	if (v != NULL) {
 /*		res->head = calloc(sizeof(rnd_vnode_t), 1); - no need to alloc, countour_init() did so */
@@ -80,7 +64,7 @@ void rnd_poly_contour_clear(rnd_pline_t * c)
 	}
 	free(c->head);
 	c->head = NULL;
-	rnd_poly_contour_init(c);
+	pa_pline_init(c);
 }
 
 void rnd_poly_contour_del(rnd_pline_t ** c)
