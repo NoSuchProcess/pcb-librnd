@@ -36,66 +36,67 @@
 /* Connection (intersection) descriptors making up a connectivity list.
    Low level helper functions. (It was "cvc" in the original code.) */
 
-/*
-new_descriptor
-  (C) 2006 harry eaton
-*/
-static pa_conn_desc_t *new_descriptor(rnd_vnode_t * a, char poly, char side)
+static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 {
-	pa_conn_desc_t *l = (pa_conn_desc_t *) malloc(sizeof(pa_conn_desc_t));
 	rnd_vector_t v;
-	register double ang, dx, dy;
+	double ang, dx, dy;
+	pa_conn_desc_t *cd;
 
-	if (!l)
+	cd = malloc(sizeof(pa_conn_desc_t));
+	if (cd == NULL)
 		return NULL;
-	l->head = NULL;
-	l->parent = a;
-	l->poly = poly;
-	l->side = side;
-	l->next = l->prev = l;
-	if (side == 'P')							/* previous */
-		Vsub2(v, a->prev->point, a->point);
-	else													/* next */
-		Vsub2(v, a->next->point, a->point);
-	/* Uses slope/(slope+1) in quadrant 1 as a proxy for the angle.
-	 * It still has the same monotonic sort result
-	 * and is far less expensive to compute than the real angle.
-	 */
+
+	cd->head = NULL;
+	cd->parent = pt;
+	cd->poly = poly;
+	cd->side = side;
+	cd->next = cd->prev = cd;
+
+	if (side == 'P') /* previous */
+		Vsub2(v, pt->prev->point, pt->point);
+	else /* next */
+		Vsub2(v, pt->next->point, pt->point);
+
+
+	/* Uses slope/(slope+1) in quadrant 1 as a proxy for the angle. It has the same
+	   monotonic sort result and is less expensive to compute than the real angle. */
 	if (Vequ2(v, rnd_vect_zero)) {
 		if (side == 'P') {
-			if (a->prev->cvc_prev == (pa_conn_desc_t *) - 1)
-				a->prev->cvc_prev = a->prev->cvc_next = NULL;
-			rnd_poly_vertex_exclude(NULL, a->prev);
-			Vsub2(v, a->prev->point, a->point);
+			if (pt->prev->cvc_prev == PA_CONN_DESC_INVALID)
+				pt->prev->cvc_prev = pt->prev->cvc_next = NULL;
+			rnd_poly_vertex_exclude(NULL, pt->prev);
+			Vsub2(v, pt->prev->point, pt->point);
 		}
 		else {
-			if (a->next->cvc_prev == (pa_conn_desc_t *) - 1)
-				a->next->cvc_prev = a->next->cvc_next = NULL;
-			rnd_poly_vertex_exclude(NULL, a->next);
-			Vsub2(v, a->next->point, a->point);
+			if (pt->next->cvc_prev == PA_CONN_DESC_INVALID)
+				pt->next->cvc_prev = pt->next->cvc_next = NULL;
+			rnd_poly_vertex_exclude(NULL, pt->next);
+			Vsub2(v, pt->next->point, pt->point);
 		}
 	}
+
 	assert(!Vequ2(v, rnd_vect_zero));
-	dx = fabs((double) v[0]);
-	dy = fabs((double) v[1]);
+
+	dx = fabs((double)v[0]);
+	dy = fabs((double)v[1]);
 	ang = dy / (dy + dx);
+
 	/* now move to the actual quadrant */
-	if (v[0] < 0 && v[1] >= 0)
-		ang = 2.0 - ang;						/* 2nd quadrant */
-	else if (v[0] < 0 && v[1] < 0)
-		ang += 2.0;									/* 3rd quadrant */
-	else if (v[0] >= 0 && v[1] < 0)
-		ang = 4.0 - ang;						/* 4th quadrant */
-	l->angle = ang;
-	assert(ang >= 0.0 && ang <= 4.0);
+	if ((v[0] < 0) && (v[1] >= 0))         cd->angle = 2.0 - ang; /* 2nd quadrant */
+	else if ((v[0] < 0) && (v[1] < 0))     cd->angle = 2.0 + ang; /* 3rd quadrant */
+	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
+	else                                   cd->angle = ang;       /* 1st quadrant */
+
+	assert((ang >= 0.0) && (ang <= 4.0));
 #ifdef DEBUG_ANGLE
-	DEBUGP("node on %c at %#mD assigned angle %g on side %c\n", poly, a->point[0], a->point[1], ang, side);
+	DEBUGP("point on %c at %#mD assigned angle %g on side %c\n", poly, pt->point[0], pt->point[1], ang, side);
 #endif
-	return l;
+
+	return cd;
 }
 
 /*
-insert_descriptor
+pa_insert_conn_desc
   (C) 2006 harry eaton
 
    argument a is a cross-vertex node.
@@ -104,11 +105,11 @@ insert_descriptor
    'N' for next.
    argument start is the head of the list of cvclists
 */
-static pa_conn_desc_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, pa_conn_desc_t * start)
+static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t * a, char poly, char side, pa_conn_desc_t * start)
 {
 	pa_conn_desc_t *l, *newone, *big, *small;
 
-	if (!(newone = new_descriptor(a, poly, side)))
+	if (!(newone = pa_new_conn_desc(a, poly, side)))
 		return NULL;
 	/* search for the pa_conn_desc_t for this point */
 	if (!start) {
@@ -178,11 +179,11 @@ static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t * pl, char poly, pa_conn_des
 
 	do {
 		if (node->cvc_prev) {
-			assert(node->cvc_prev == (pa_conn_desc_t *) - 1 && node->cvc_next == (pa_conn_desc_t *) - 1);
-			list = node->cvc_prev = insert_descriptor(node, poly, 'P', list);
+			assert(node->cvc_prev == PA_CONN_DESC_INVALID && node->cvc_next == PA_CONN_DESC_INVALID);
+			list = node->cvc_prev = pa_insert_conn_desc(node, poly, 'P', list);
 			if (!node->cvc_prev)
 				return NULL;
-			list = node->cvc_next = insert_descriptor(node, poly, 'N', list);
+			list = node->cvc_next = pa_insert_conn_desc(node, poly, 'N', list);
 			if (!node->cvc_next)
 				return NULL;
 		}

@@ -46,6 +46,9 @@ struct pa_conn_desc_s {
 	char side;                           /* 'P' for previous 'N' for next */
 };
 
+#define PA_CONN_DESC_INVALID ((pa_conn_desc_t *)-1)
+
+
 typedef enum pa_pline_label_e {
 	PA_PLL_UNKNWN  = 0,
 	PA_PLL_INSIDE  = 1,

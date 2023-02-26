@@ -74,7 +74,7 @@ static rnd_vnode_t *node_add_single_point(rnd_vnode_t * a, rnd_vector_t p)
 	new_node = rnd_poly_node_add_single(a, p);
 	assert(new_node != NULL);
 
-	new_node->cvc_prev = new_node->cvc_next = (pa_conn_desc_t *) - 1;
+	new_node->cvc_prev = new_node->cvc_next = PA_CONN_DESC_INVALID;
 
 	if (new_node == a || new_node == next_a)
 		return NULL;
