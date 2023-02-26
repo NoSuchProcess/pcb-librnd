@@ -33,10 +33,24 @@
       are marked
 */
 
-/* rnd_pline_t internal/low level */
+/* rnd_pline_t low level and internal */
+
+/* Allocate a new node for a given location. Returns NULL if allocationf fails. */
+rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v)
+{
+	rnd_vnode_t *res = calloc(sizeof(rnd_vnode_t), 1);
+
+	assert(v != NULL);
+	if (res == NULL)
+		return NULL;
+
+	Vcpy2(res->point, v);
+	return res;
+}
 
 /* Return node for a point next to dst. Returns existing node on coord
-   match else allocates a new node. */
+   match else allocates a new node. Returns NULL if new node can't be
+   allocated. */
 rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 {
 	rnd_vnode_t *newnd;
@@ -47,10 +61,8 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 
 	/* have to allocate a new node */
 	newnd = rnd_poly_node_create(ptv);
-	if (newnd != NULL) {
-		newnd->cvclst_prev = newnd->cvclst_next = NULL;
+	if (newnd != NULL)
 		newnd->flg.plabel = PA_PTL_UNKNWN;
-	}
 
 	return newnd;
 }

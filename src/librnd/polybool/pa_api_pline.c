@@ -43,22 +43,6 @@ static inline int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
 	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
 }
 
-rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v)
-{
-	rnd_vnode_t *res;
-	rnd_coord_t *c;
-
-	assert(v);
-	res = (rnd_vnode_t *) calloc(1, sizeof(rnd_vnode_t));
-	if (res == NULL)
-		return NULL;
-	/* bzero (res, sizeof (rnd_vnode_t) - sizeof(rnd_vector_t)); */
-	c = res->point;
-	*c++ = *v++;
-	*c = *v;
-	return res;
-}
-
 void rnd_poly_contour_init(rnd_pline_t * c)
 {
 	if (c == NULL)
