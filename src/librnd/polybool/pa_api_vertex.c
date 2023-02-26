@@ -48,9 +48,9 @@ void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node)
 	node->next->prev = node->prev;
 
 	/* remove from connectivity list */
-	if (node->cnlst_next != NULL) {
-		free(node->cnlst_next);
-		free(node->cnlst_prev);
+	if (node->cvclst_next != NULL) {
+		free(node->cvclst_next);
+		free(node->cvclst_prev);
 	}
 
 	if ((parent != NULL) && (parent->head == node)) {

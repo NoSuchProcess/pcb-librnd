@@ -64,14 +64,14 @@ static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 	   monotonic sort result and is less expensive to compute than the real angle. */
 	if (Vequ2(v, rnd_vect_zero)) {
 		if (side == 'P') {
-			if (pt->prev->cnlst_prev == PA_CONN_DESC_INVALID)
-				pt->prev->cnlst_prev = pt->prev->cnlst_next = NULL;
+			if (pt->prev->cvclst_prev == PA_CONN_DESC_INVALID)
+				pt->prev->cvclst_prev = pt->prev->cvclst_next = NULL;
 			rnd_poly_vertex_exclude(NULL, pt->prev);
 			Vsub2(v, pt->prev->point, pt->point);
 		}
 		else {
-			if (pt->next->cnlst_prev == PA_CONN_DESC_INVALID)
-				pt->next->cnlst_prev = pt->next->cnlst_next = NULL;
+			if (pt->next->cvclst_prev == PA_CONN_DESC_INVALID)
+				pt->next->cvclst_prev = pt->next->cvclst_next = NULL;
 			rnd_poly_vertex_exclude(NULL, pt->next);
 			Vsub2(v, pt->next->point, pt->point);
 		}
@@ -190,16 +190,16 @@ static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc
 	rnd_vnode_t *node = pl->head;
 
 	do {
-		if (node->cnlst_prev != NULL) { /* node had an intersection if it's on cnlst */
+		if (node->cvclst_prev != NULL) { /* node had an intersection if it's on cnlst */
 
-			assert((node->cnlst_prev == PA_CONN_DESC_INVALID) && (node->cnlst_next == PA_CONN_DESC_INVALID));
+			assert((node->cvclst_prev == PA_CONN_DESC_INVALID) && (node->cvclst_next == PA_CONN_DESC_INVALID));
 
-			list = node->cnlst_prev = pa_insert_conn_desc(node, poly, 'P', list);
-			if (node->cnlst_prev == NULL)
+			list = node->cvclst_prev = pa_insert_conn_desc(node, poly, 'P', list);
+			if (node->cvclst_prev == NULL)
 				return NULL;
 
-			list = node->cnlst_next = pa_insert_conn_desc(node, poly, 'N', list);
-			if (node->cnlst_next == NULL)
+			list = node->cvclst_next = pa_insert_conn_desc(node, poly, 'N', list);
+			if (node->cvclst_next == NULL)
 				return NULL;
 		}
 	} while((node = node->next) != pl->head);

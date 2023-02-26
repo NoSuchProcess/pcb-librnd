@@ -133,7 +133,7 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 	rnd_vnode_t *e;
 	DIRECTION newone;
 
-	if (!(*cur)->cnlst_prev) {			/* not a cross-vertex */
+	if (!(*cur)->cvclst_prev) {			/* not a cross-vertex */
 		if (*cdir == FORW ? (*cur)->flg.mark : (*cur)->prev->flg.mark)
 			return rnd_false;
 		return rnd_true;
@@ -142,9 +142,9 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 	DEBUGP("jump entering node at %$mD\n", (*cur)->point[0], (*cur)->point[1]);
 #endif
 	if (*cdir == FORW)
-		d = (*cur)->cnlst_prev->prev;
+		d = (*cur)->cvclst_prev->prev;
 	else
-		d = (*cur)->cnlst_next->prev;
+		d = (*cur)->cvclst_next->prev;
 	start = d;
 	do {
 		e = d->parent;
@@ -246,7 +246,7 @@ static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rn
 		if (s_rule(cur, &dir) && cur->flg.mark == 0)
 			Collect1(e, cur, dir, contours, holes, j_rule);
 		other = cur;
-		if ((other->cnlst_prev && jump(&other, &dir, j_rule)))
+		if ((other->cvclst_prev && jump(&other, &dir, j_rule)))
 			Collect1(e, other, dir, contours, holes, j_rule);
 	}
 	while ((cur = cur->next) != a->head);

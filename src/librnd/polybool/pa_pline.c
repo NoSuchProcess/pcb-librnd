@@ -52,7 +52,7 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
 	p = rnd_poly_node_create(po);
 	if (p == NULL)
 		return NULL;
-	p->cnlst_prev = p->cnlst_next = NULL;
+	p->cvclst_prev = p->cvclst_next = NULL;
 	p->flg.plabel = PA_PTL_UNKNWN;
 	return p;
 }																/* node_add */
@@ -74,7 +74,7 @@ static rnd_vnode_t *node_add_single_point(rnd_vnode_t * a, rnd_vector_t p)
 	new_node = rnd_poly_node_add_single(a, p);
 	assert(new_node != NULL);
 
-	new_node->cnlst_prev = new_node->cnlst_next = PA_CONN_DESC_INVALID;
+	new_node->cvclst_prev = new_node->cvclst_next = PA_CONN_DESC_INVALID;
 
 	if (new_node == a || new_node == next_a)
 		return NULL;

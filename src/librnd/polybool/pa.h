@@ -37,7 +37,7 @@
 
 /* poly bool internals */
 
-/* A "descriptor" that makes up a "connectivity list" in the paper */
+/* A "descriptor" that makes up a "(cross vertex) connectivity list" in the paper */
 struct pa_conn_desc_s {
 	double angle;
 	rnd_vnode_t *parent;                 /* the point this descriptor is for */

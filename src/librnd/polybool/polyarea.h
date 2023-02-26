@@ -52,7 +52,7 @@ struct rnd_vnode_s {
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 	} flg;
-	pa_conn_desc_t *cnlst_prev, *cnlst_next;
+	pa_conn_desc_t *cvclst_prev, *cvclst_next; /* "cross vertex connection list" */
 	rnd_vector_t point;
 };
 

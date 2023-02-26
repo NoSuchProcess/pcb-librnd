@@ -43,18 +43,18 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 	pa_plinept_label_t region = PA_PTL_UNKNWN;
 
 	assert(pn != NULL);
-	assert(pn->cnlst_next != NULL);
+	assert(pn->cvclst_next != NULL);
 
-	this_poly = pn->cnlst_next->poly;
+	this_poly = pn->cvclst_next->poly;
 
 	/* search counter-clockwise in the cross-vertex connectivity list, check
 	   for shared edges (that could be prev or next in the list since the
 	   angles are equal) and check if this edge (pn -> pn->next) is found
 	   between the other poly's entry and exit */
-	if (pn->cnlst_next->angle == pn->cnlst_next->prev->angle)
-		l = pn->cnlst_next->prev;
+	if (pn->cvclst_next->angle == pn->cvclst_next->prev->angle)
+		l = pn->cvclst_next->prev;
 	else
-		l = pn->cnlst_next->next;
+		l = pn->cvclst_next->next;
 
 	for(l1 = l; (l->poly == this_poly) && (l != l1->prev); l = l->next) ;
 
@@ -72,7 +72,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 				region = PA_PTL_INSIDE;
 		}
 		else {
-			if (l->angle == pn->cnlst_next->angle) {
+			if (l->angle == pn->cvclst_next->angle) {
 				assert(Vequ2(l->parent->next->point, pn->next->point));
 				region = PA_PTL_SHARED;
 				pn->shared = l->parent;
@@ -83,7 +83,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 	}
 
 	if (region == PA_PTL_UNKNWN) {
-		for (l = l->next; l != pn->cnlst_next; l = l->next) {
+		for (l = l->next; l != pn->cvclst_next; l = l->next) {
 			if (l->poly != this_poly) {
 				region = (l->side == 'P') ? PA_PTL_INSIDE : PA_PTL_OUTSIDE;
 				break;
@@ -115,7 +115,7 @@ static rnd_bool label_contour(rnd_pline_t * a)
 	pa_plinept_label_t label = PA_PTL_UNKNWN;
 
 	do {
-		if (cur->cnlst_next) {				/* examine cross vertex */
+		if (cur->cvclst_next) {				/* examine cross vertex */
 			label = pa_node_label(cur);
 			if (first_labelled == NULL)
 				first_labelled = cur;
