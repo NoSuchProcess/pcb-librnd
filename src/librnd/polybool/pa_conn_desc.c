@@ -95,79 +95,91 @@ static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 	return cd;
 }
 
-/*
-pa_insert_conn_desc
-  (C) 2006 harry eaton
-
-   argument a is a cross-vertex node.
-   argument poly is the polygon it comes from ('A' or 'B')
-   argument side is the side this descriptor goes on ('P' for previous
-   'N' for next.
-   argument start is the head of the list of cnlst
-*/
-static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t * a, char poly, char side, pa_conn_desc_t * start)
+/* Internal call for linking in a newd before or after pos */
+static pa_conn_desc_t *pa_link_before_conn_desc(pa_conn_desc_t *newd, pa_conn_desc_t *pos)
 {
-	pa_conn_desc_t *l, *newone, *big, *small;
+	newd->next = pos;
+	newd->prev = pos->prev;
+	pos->prev = pos->prev->next = newd;
+	return newd;
+}
+static pa_conn_desc_t *pa_link_after_conn_desc(pa_conn_desc_t *newd, pa_conn_desc_t *pos)
+{
+	newd->prev = pos;
+	newd->next = pos->next;
+	pos->next = pos->next->prev = newd;
+	return newd;
+}
 
-	if (!(newone = pa_new_conn_desc(a, poly, side)))
-		return NULL;
+/* Allocate a new conn_desc fot an intersection point and insert it in the
+   right lists.
+   Arguments:
+    - a is an intersection node.
+    - poly is the polygon it comes from ('A' or 'B')
+    - side is the side this descriptor goes on ('P'=previous 'N'=next.
+    - start is the head of the list of cnlst */
+static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t *a, char poly, char side, pa_conn_desc_t *start)
+{
+	pa_conn_desc_t *l, *newd, *big, *small;
+
+	newd = pa_new_conn_desc(a, poly, side);
+	if (newd == NULL)
+		return NULL; /* failed to allocate */
+
 	/* search for the pa_conn_desc_t for this point */
-	if (!start) {
-		start = newone;							/* return is also new, so we know where start is */
-		start->head = newone;				/* circular list */
-		return newone;
+	if (start == NULL) {
+		/* start was empty, create a new list */
+		start = newd;
+		start->head = newd; /* circular list */
+		return newd;
 	}
-	else {
-		l = start;
-		do {
-			assert(l->head);
-			if (l->parent->point[0] == a->point[0]
-					&& l->parent->point[1] == a->point[1]) {	/* this pa_conn_desc_t is at our point */
-				start = l;
-				newone->head = l->head;
-				break;
-			}
-			if (l->head->parent->point[0] == start->parent->point[0]
-					&& l->head->parent->point[1] == start->parent->point[1]) {
-				/* this seems to be a new point */
-				/* link this connlist to the list of all connlists */
-				for (; l->head != newone; l = l->next)
-					l->head = newone;
-				newone->head = start;
-				return newone;
-			}
-			l = l->head;
+
+	l = start;
+	for(;;) {
+		assert(l->head != NULL);
+
+		if (Vequ2(l->parent->point, a->point)) {
+			/* this conn_desc is at our point */
+			start = l;
+			newd->head = l->head;
+			break;
 		}
-		while (1);
+
+		if (Vequ2(l->head->parent->point, start->parent->point)) {
+			/* we are back at start, so our input is a new point;
+		     link this connlist to the list of all connlists */
+			for(; l->head != newd; l = l->next)
+				l->head = newd;
+			newd->head = start;
+			return newd;
+		}
+
+		l = l->head;
 	}
-	assert(start);
+
+	/* got here by finding a conn desc (start) on the same geometrical point;
+	   insert new node keeping the list sorted by angle */
+
+	/* find two existing conn descs to link in between (by angle) */
 	l = big = small = start;
 	do {
-		if (l->next->angle < l->angle) {	/* find start/end of list */
+		if (l->next->angle < l->angle) {
+			/* found start/end of list */
 			small = l->next;
 			big = l;
 		}
-		else if (newone->angle >= l->angle && newone->angle <= l->next->angle) {
-			/* insert new conn desc if it lies between existing points */
-			newone->prev = l;
-			newone->next = l->next;
-			l->next = l->next->prev = newone;
-			return newone;
-		}
-	}
-	while ((l = l->next) != start);
-	/* didn't find it between points, it must go on an end */
-	if (big->angle <= newone->angle) {
-		newone->prev = big;
-		newone->next = big->next;
-		big->next = big->next->prev = newone;
-		return newone;
-	}
-	assert(small->angle >= newone->angle);
-	newone->next = small;
-	newone->prev = small->prev;
-	small->prev = small->prev->next = newone;
-	return newone;
+		else if ((newd->angle >= l->angle) && (newd->angle <= l->next->angle))
+			return pa_link_after_conn_desc(newd, l); /* insert new conn desc if it lies between existing points */
+	} while((l = l->next) != start);
+
+	/* didn't find it between points, it must go on an end, depending on the angle */
+	if (big->angle <= newd->angle)
+		return pa_link_after_conn_desc(newd, big);
+
+	assert(small->angle >= newd->angle);
+
+	/* link in at small end */
+	return pa_link_before_conn_desc(newd, small);
 }
 
 /*
