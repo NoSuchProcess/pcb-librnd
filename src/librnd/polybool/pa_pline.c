@@ -35,27 +35,25 @@
 
 /* rnd_pline_t internal/low level */
 
-/*
-node_add
- (C) 1993 Klamer Schutte
- (C) 1997 Alexey Nikitin, Michael Leonov
- (C) 2006 harry eaton
-*/
-rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po)
+/* Return node for a point next to dst. Returns existing node on coord
+   match else allocates a new node. */
+rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 {
-	rnd_vnode_t *p;
+	rnd_vnode_t *newnd;
 
-	if (Vequ2(po, dest->point))
-		return dest;
-	if (Vequ2(po, dest->next->point))
-		return dest->next;
-	p = rnd_poly_node_create(po);
-	if (p == NULL)
-		return NULL;
-	p->cvclst_prev = p->cvclst_next = NULL;
-	p->flg.plabel = PA_PTL_UNKNWN;
-	return p;
-}																/* node_add */
+  /* no new allocation for redundant node around dst */
+	if (Vequ2(ptv, dst->point))        return dst;
+	if (Vequ2(ptv, dst->next->point))  return dst->next;
+
+	/* have to allocate a new node */
+	newnd = rnd_poly_node_create(ptv);
+	if (newnd != NULL) {
+		newnd->cvclst_prev = newnd->cvclst_next = NULL;
+		newnd->flg.plabel = PA_PTL_UNKNWN;
+	}
+
+	return newnd;
+}
 
 /*
 node_add_point
