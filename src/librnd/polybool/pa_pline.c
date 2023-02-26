@@ -165,23 +165,19 @@ rnd_pline_t *pa_pline_new(const rnd_vector_t pt)
 
 void pa_pline_free_fields(rnd_pline_t *pl)
 {
-	rnd_vnode_t *n, *prev;
+	rnd_vnode_t *n, *next;
 
 	/* free cross-vertex-connectin list for all nodes in pl; free all nodes too */
-	for(n = pl->head->prev; n != pl->head; n = prev) {
-		prev = n->prev;
+	n = pl->head;
+	do {
+		next = n->next;
 		if (n->cvclst_next != NULL) {
 			free(n->cvclst_next);
 			free(n->cvclst_prev);
 		}
 		free(n);
-	}
-
-	if (pl->head->cvclst_next != NULL) {
-		free(pl->head->cvclst_next);
-		free(pl->head->cvclst_prev);
-	}
-	free(pl->head);
+		n = next;
+	} while(n != pl->head);
 
 	if (pl->tree) {
 		rnd_rtree_t *r = pl->tree;
