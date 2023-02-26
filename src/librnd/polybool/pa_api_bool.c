@@ -92,12 +92,12 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
 		/* NB: Relevant parts of a are labeled below */
-		M_rnd_polyarea_t_label(b, a, rnd_false);
+		pa_polyarea_label(b, a, rnd_false);
 
 		*res = a;
 		M_rnd_polyarea_t_update_primary(&e, res, &holes, action, b);
 		M_rnd_polyarea_separate_isected(&e, res, &holes, &a_isected);
-		M_rnd_polyarea_t_label_separated(a_isected, b, rnd_false);
+		pa_polyarea_label_separated(a_isected, b, rnd_false);
 		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, rnd_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
 		rnd_polyarea_free(&b);
@@ -165,8 +165,8 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 #endif
 		pa_polyarea_intersect(&e, a, b, rnd_true);
 
-		M_rnd_polyarea_t_label(a, b, rnd_false);
-		M_rnd_polyarea_t_label(b, a, rnd_false);
+		pa_polyarea_label(a, b, rnd_false);
+		pa_polyarea_label(b, a, rnd_false);
 
 		M_rnd_polyarea_t_Collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
 		rnd_poly_insert_holes(&e, *aandb, &holes);

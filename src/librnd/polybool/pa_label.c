@@ -139,7 +139,7 @@ static void pa_label_contour(rnd_pline_t *pl)
 #endif
 }
 
-static rnd_bool cntr_label_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
+static rnd_bool pa_cntr_label_polyarea(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->flg.llabel == PA_PLL_ISECTED) {
@@ -156,20 +156,20 @@ static rnd_bool cntr_label_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * p
 		poly->flg.llabel = PA_PLL_OUTSIDE;
 	}
 	return rnd_false;
-}																/* cntr_label_rnd_polyarea_t */
+}
 
-static rnd_bool M_rnd_polyarea_t_label_separated(rnd_pline_t * afst, rnd_polyarea_t * b, rnd_bool touch)
+static rnd_bool pa_polyarea_label_separated(rnd_pline_t * afst, rnd_polyarea_t * b, rnd_bool touch)
 {
 	rnd_pline_t *curc = afst;
 
 	for (curc = afst; curc != NULL; curc = curc->next) {
-		if (cntr_label_rnd_polyarea_t(curc, b, touch) && touch)
+		if (pa_cntr_label_polyarea(curc, b, touch) && touch)
 			return rnd_true;
 	}
 	return rnd_false;
 }
 
-static rnd_bool M_rnd_polyarea_t_label(rnd_polyarea_t * afst, rnd_polyarea_t * b, rnd_bool touch)
+static rnd_bool pa_polyarea_label(rnd_polyarea_t * afst, rnd_polyarea_t * b, rnd_bool touch)
 {
 	rnd_polyarea_t *a = afst;
 	rnd_pline_t *curc;
@@ -177,7 +177,7 @@ static rnd_bool M_rnd_polyarea_t_label(rnd_polyarea_t * afst, rnd_polyarea_t * b
 	assert(a != NULL);
 	do {
 		for (curc = a->contours; curc != NULL; curc = curc->next)
-			if (cntr_label_rnd_polyarea_t(curc, b, touch)) {
+			if (pa_cntr_label_polyarea(curc, b, touch)) {
 				if (touch)
 					return rnd_true;
 			}

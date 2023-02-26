@@ -201,9 +201,9 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
 #endif
 		pa_polyarea_intersect(&e, a, b, rnd_false);
 
-		if (M_rnd_polyarea_t_label(a, b, rnd_true))
+		if (pa_polyarea_label(a, b, rnd_true))
 			return rnd_true;
-		if (M_rnd_polyarea_t_label(b, a, rnd_true))
+		if (pa_polyarea_label(b, a, rnd_true))
 			return rnd_true;
 	}
 	else if (code == PA_ISC_TOUCHES)
