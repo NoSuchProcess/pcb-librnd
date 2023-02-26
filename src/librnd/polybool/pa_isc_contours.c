@@ -191,7 +191,7 @@ static pa_conn_desc_t *pa_polyarea_list_intersected(jmp_buf *e, pa_conn_desc_t *
    (usefule if only the fact of the intersection is interesting) */
 static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea_t *pa_b, int all_iscs)
 {
-	rnd_polyarea_t *a, *b;
+	rnd_polyarea_t *a = pa_a, *b = pa_b;
 	pa_conn_desc_t *conn_list = NULL;
 
 	if ((pa_a == NULL) || (pa_b == NULL))
@@ -199,7 +199,6 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 
 	/* calculate all intersections between pa_a and pa_b, iterating over the
 	   islands if pa_b; also add all of pa_b's intersections in conn_list */
-	b = pa_b;
 	do {
 		do {
 			if (pa_polyarea_box_overlap(a, b))
@@ -210,7 +209,6 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 	} while (all_iscs && (b = b->f) != pa_b);
 
 	/* add all intersections of all of pa_a's islands to the conn list */
-	a = pa_a;
 	do {
 		conn_list = pa_polyarea_list_intersected(e, conn_list, a, 'A');
 	} while (all_iscs && ((a = a->f) != pa_a));
