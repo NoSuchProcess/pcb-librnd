@@ -83,7 +83,7 @@ static rnd_r_dir_t pa_contour_bounds_touch_cb(const rnd_box_t *b, void *ctx_)
 /* Find first new intersections between a and b and create new nodes there and
    mark everything intersected; returns non-zero if it should be re-run with
    the same args because there are potentially more intersections to map */
-RND_INLINE int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
+RND_INLINE int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int all_iscs)
 {
 	pa_contour_info_t ctr_ctx;
 	int need_restart = 0;
@@ -103,7 +103,7 @@ RND_INLINE int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t 
 
 		ctr_ctx.getout = NULL;
 
-		if (!add) {
+		if (!all_iscs) {
 			int res = setjmp(out);
 			if (res != 0) /* The intersection test short-circuited back here, we need to clean up, then longjmp to jb */
 				longjmp(*jb, res);
@@ -127,44 +127,55 @@ RND_INLINE int pa_intersect_impl(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t 
 
 /* Find all intersections between a and b and create new nodes there and mark
    them intersected */
-static void pa_intersect(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int add)
+static void pa_intersect(jmp_buf *jb, rnd_polyarea_t *b, rnd_polyarea_t *a, int all_iscs)
 {
 	/* restart the search as many times as the implementation asks for the restart */
-	while(pa_intersect_impl(jb, b, a, add)) ;
+	while(pa_intersect_impl(jb, b, a, all_iscs)) ;
 }
 
-static void pa_polyarea_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_polyarea_t * bfst, int add)
+/* Collect all intersections from pa onto conn_list */
+static pa_conn_desc_t *pa_polyarea_list_intersected(jmp_buf *e, pa_conn_desc_t *conn_list, rnd_polyarea_t *pa, char poly_label)
 {
-	rnd_polyarea_t *a = afst, *b = bfst;
-	rnd_pline_t *curcA, *curcB;
-	pa_conn_desc_t *the_list = NULL;
+	rnd_pline_t *n;
 
-	if (a == NULL || b == NULL)
+	for (n = pa->contours; n != NULL; n = n->next) {
+		if (n->flg.llabel == PA_PLL_ISECTED) {
+			conn_list = pa_add_conn_desc(n, poly_label, conn_list);
+			if (RND_UNLIKELY(conn_list == NULL))
+				error(rnd_err_no_memory);
+		}
+	}
+	return conn_list;
+}
+
+/* Compute intersections between all islands of pa_a and pa_b. If all_iscs is
+   true, collect and label all intersections, else stop after the first
+   (usefule if only the fact of the intersection is interesting) */
+static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea_t *pa_b, int all_iscs)
+{
+	rnd_polyarea_t *a, *b;
+	pa_conn_desc_t *conn_list = NULL;
+
+	if ((pa_a == NULL) || (pa_b == NULL))
 		error(rnd_err_bad_parm);
+
+	/* calculate all intersections between pa_a and pa_b, iterating over the
+	   islands if pa_b; also add all of pa_b's intersections in conn_list */
+	b = pa_b;
 	do {
 		do {
-			if (a->contours->xmax >= b->contours->xmin &&
-					a->contours->ymax >= b->contours->ymin &&
-					a->contours->xmin <= b->contours->xmax && a->contours->ymin <= b->contours->ymax) {
-				pa_intersect(e, a, b, add);
-			}
-		}
-		while (add && (a = a->f) != afst);
-		for (curcB = b->contours; curcB != NULL; curcB = curcB->next)
-			if (curcB->flg.llabel == PA_PLL_ISECTED) {
-				the_list = add_descriptors(curcB, 'B', the_list);
-				if (RND_UNLIKELY(the_list == NULL))
-					error(rnd_err_no_memory);
-			}
-	}
-	while (add && (b = b->f) != bfst);
+			if (pa_polyarea_box_overlap(a, b))
+				pa_intersect(e, a, b, all_iscs);
+		} while (all_iscs && ((a = a->f) != pa_a));
+
+		conn_list = pa_polyarea_list_intersected(e, conn_list, b, 'B');
+	} while (all_iscs && (b = b->f) != pa_b);
+
+	/* add all intersections of all of pa_a's islands to the conn list */
+	a = pa_a;
 	do {
-		for (curcA = a->contours; curcA != NULL; curcA = curcA->next)
-			if (curcA->flg.llabel == PA_PLL_ISECTED) {
-				the_list = add_descriptors(curcA, 'A', the_list);
-				if (RND_UNLIKELY(the_list == NULL))
-					error(rnd_err_no_memory);
-			}
-	}
-	while (add && (a = a->f) != afst);
+		conn_list = pa_polyarea_list_intersected(e, conn_list, a, 'A');
+	} while (all_iscs && ((a = a->f) != pa_a));
+
+	/* Note: items of conn_list are stored plines of pa_a and pa_b */
 }

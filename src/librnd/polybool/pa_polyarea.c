@@ -41,6 +41,17 @@
   if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
     error(rnd_err_no_memory);
 
+/* Return whether a and b has any chance to intersect comparing their bboxes */
+RND_INLINE int pa_polyarea_box_overlap(rnd_polyarea_t *a, rnd_polyarea_t *b)
+{
+	if (a->contours->xmax < b->contours->xmin) return 0;
+	if (a->contours->ymax < b->contours->ymin) return 0;
+	if (a->contours->xmin > b->contours->xmax) return 0;
+	if (a->contours->ymin > b->contours->ymax) return 0;
+
+	return 1;
+}
+
 static rnd_r_dir_t count_contours_i_am_inside(const rnd_box_t * b, void *cl)
 {
 	rnd_pline_t *me = (rnd_pline_t *) cl;

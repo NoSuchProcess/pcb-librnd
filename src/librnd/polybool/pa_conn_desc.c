@@ -170,10 +170,9 @@ static pa_conn_desc_t *insert_descriptor(rnd_vnode_t * a, char poly, char side, 
 }
 
 /*
- add_descriptors
  (C) 2006 harry eaton
 */
-static pa_conn_desc_t *add_descriptors(rnd_pline_t * pl, char poly, pa_conn_desc_t * list)
+static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t * pl, char poly, pa_conn_desc_t * list)
 {
 	rnd_vnode_t *node = pl->head;
 
