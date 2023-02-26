@@ -83,6 +83,7 @@ void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node);
 void rnd_poly_vertex_include_force(rnd_vnode_t *after, rnd_vnode_t *node); /* do not remove nodes even if on the same line */
 void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node);
 
+/* this should be an internal function but it's also used in self-isc code */
 rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po);
 
 /* pline->tree boxes are opaq seg structs; this call converts them to vnode */
