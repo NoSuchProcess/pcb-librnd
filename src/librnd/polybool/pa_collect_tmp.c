@@ -35,6 +35,10 @@
 
 /* routines for temporary storing resulting contours */
 
+#define MemGet(ptr, type) \
+  if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
+    pa_error(pa_err_no_memory);
+
 static void InsCntr(jmp_buf * e, rnd_pline_t * c, rnd_polyarea_t ** dst)
 {
 	rnd_polyarea_t *newp;
