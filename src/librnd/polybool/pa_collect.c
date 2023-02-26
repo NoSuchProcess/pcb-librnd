@@ -483,7 +483,7 @@ static rnd_r_dir_t find_inside_m_pa(const rnd_box_t * b, void *cl)
 	/* Don't look at contours marked as being intersected */
 	if (check->flg.llabel == PA_PLL_ISECTED)
 		return RND_R_DIR_NOT_FOUND;
-	if (cntr_in_M_rnd_polyarea_t(check, info->want_inside, rnd_false)) {
+	if (pa_is_pline_in_polyarea(check, info->want_inside, rnd_false)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
@@ -545,7 +545,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 					 && (a->contours->xmax <= box.X2)
 					 && (a->contours->ymax <= box.Y2)) &&
 					/* Then test properly */
-					cntr_in_M_rnd_polyarea_t(a->contours, bpa, rnd_false)) {
+					pa_is_pline_in_polyarea(a->contours, bpa, rnd_false)) {
 
 				/* Delete this contour, all children -> holes queue */
 
@@ -634,7 +634,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 			next = curc->next;
 
 			if (del_outside)
-				del_contour = curc->flg.llabel != PA_PLL_ISECTED && !cntr_in_M_rnd_polyarea_t(curc, bpa, rnd_false);
+				del_contour = curc->flg.llabel != PA_PLL_ISECTED && !pa_is_pline_in_polyarea(curc, bpa, rnd_false);
 
 			/* Skip intersected contours */
 			if (curc->flg.llabel == PA_PLL_ISECTED) {

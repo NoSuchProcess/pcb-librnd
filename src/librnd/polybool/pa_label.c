@@ -139,49 +139,56 @@ static void pa_label_contour(rnd_pline_t *pl)
 #endif
 }
 
-static rnd_bool pa_cntr_label_polyarea(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
+static rnd_bool pa_label_pline_vs_polyarea(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool first_only)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->flg.llabel == PA_PLL_ISECTED) {
 		pa_label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
 	}
-	else if (cntr_in_M_rnd_polyarea_t(poly, ppl, test)) {
-		if (test)
+	else if (pa_is_pline_in_polyarea(poly, ppl, first_only)) {
+		if (first_only)
 			return rnd_true;
 		poly->flg.llabel = PA_PLL_INSIDE;
 	}
 	else {
-		if (test)
+		if (first_only)
 			return rnd_false;
 		poly->flg.llabel = PA_PLL_OUTSIDE;
 	}
 	return rnd_false;
 }
 
-static rnd_bool pa_polyarea_label_separated(rnd_pline_t * afst, rnd_polyarea_t * b, rnd_bool touch)
+/* Label a single pline of A (if first_only is true, return
+   as soon as possible if there's any intersection between A and B). Returns
+   true if first_only found an intersection */
+static rnd_bool pa_polyarea_label_pline(rnd_pline_t *A, rnd_polyarea_t *B, rnd_bool first_only)
 {
-	rnd_pline_t *curc = afst;
+	rnd_pline_t *pn;
 
-	for (curc = afst; curc != NULL; curc = curc->next) {
-		if (pa_cntr_label_polyarea(curc, b, touch) && touch)
+	for (pn = A; pn != NULL; pn = pn->next)
+		if (pa_label_pline_vs_polyarea(pn, B, first_only) && first_only)
 			return rnd_true;
-	}
+
 	return rnd_false;
 }
 
-static rnd_bool pa_polyarea_label(rnd_polyarea_t * afst, rnd_polyarea_t * b, rnd_bool touch)
+/* Label all islands of A (unless first_only is true, in which case return
+   as soon as possible if there's any intersection between A and B). Returns
+   true if first_only found an intersection */
+static rnd_bool pa_polyarea_label(rnd_polyarea_t *A, rnd_polyarea_t *B, rnd_bool first_only)
 {
-	rnd_polyarea_t *a = afst;
-	rnd_pline_t *curc;
+	rnd_polyarea_t *a;
 
-	assert(a != NULL);
+	assert(A != NULL);
+	a = A;
 	do {
-		for (curc = a->contours; curc != NULL; curc = curc->next)
-			if (pa_cntr_label_polyarea(curc, b, touch)) {
-				if (touch)
+		rnd_pline_t *pn;
+		for(pn = a->contours; pn != NULL; pn = pn->next) {
+			if (pa_label_pline_vs_polyarea(pn, B, first_only)) {
+				if (first_only)
 					return rnd_true;
 			}
-	}
-	while (!touch && (a = a->f) != afst);
+		}
+	} while (!first_only && (a = a->f) != A);
 	return rnd_false;
 }

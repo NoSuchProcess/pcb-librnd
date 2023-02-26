@@ -97,7 +97,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		*res = a;
 		M_rnd_polyarea_t_update_primary(&e, res, &holes, action, b);
 		M_rnd_polyarea_separate_isected(&e, res, &holes, &a_isected);
-		pa_polyarea_label_separated(a_isected, b, rnd_false);
+		pa_polyarea_label_pline(a_isected, b, rnd_false); /* label a_isected */
 		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, rnd_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
 		rnd_polyarea_free(&b);

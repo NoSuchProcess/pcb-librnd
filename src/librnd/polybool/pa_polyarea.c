@@ -62,9 +62,9 @@ static rnd_r_dir_t count_contours_i_am_inside(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-/* cntr_in_M_rnd_polyarea_t
+/* pa_is_pline_in_polyarea
 returns poly is inside outfst ? rnd_true : rnd_false */
-static int cntr_in_M_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * outfst, rnd_bool test)
+static int pa_is_pline_in_polyarea(rnd_pline_t * poly, rnd_polyarea_t * outfst, rnd_bool test)
 {
 	rnd_polyarea_t *outer = outfst;
 	rnd_heap_t *heap;
@@ -107,4 +107,4 @@ static int cntr_in_M_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * outfst,
 	while (1);
 	rnd_heap_destroy(&heap);
 	return rnd_false;
-}																/* cntr_in_M_rnd_polyarea_t */
+}																/* pa_is_pline_in_polyarea */
