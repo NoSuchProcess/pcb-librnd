@@ -101,47 +101,48 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 }
 
 
-/*
-label_contour
- (C) 2006 harry eaton
- (C) 1993 Klamer Schutte
- (C) 1997 Alexey Nikitin, Michael Leonov
-*/
-
-static rnd_bool label_contour(rnd_pline_t * a)
+/* Label all nodes on a contour */
+static void pa_label_contour(rnd_pline_t *pl)
 {
-	rnd_vnode_t *cur = a->head;
-	rnd_vnode_t *first_labelled = NULL;
+	rnd_vnode_t *nd, *first_isected = NULL;
 	pa_plinept_label_t label = PA_PTL_UNKNWN;
 
+	/* loop from head until the first intersection node; label that node and
+	   carry the label to mark all non-intersecting nodes until the next
+	   intersecting node. Repeat until we are back at the first intersected
+	   node.
+	   This means initially, before the first intersection, we can't label
+	   non-intersected nodes because we don't yet have a label; but the loop
+	   terminates only after reaching the first intersection point again,
+	   giving a second visit to those pre-first-intersection nodes. */
+	nd = pl->head;
 	do {
-		if (cur->cvclst_next) {				/* examine cross vertex */
-			label = pa_node_label(cur);
-			if (first_labelled == NULL)
-				first_labelled = cur;
+		if (nd->cvclst_next != NULL) {
+			/* nd is intersected, need to label it */
+			label = pa_node_label(nd);
+			if (first_isected == NULL)
+				first_isected = nd;
 			continue;
 		}
 
-		if (first_labelled == NULL)
-			continue;
+		if (first_isected != NULL) {
+			/* nd is between two intersected nodes, on a non-intersected node */
+			assert((label == PA_PTL_INSIDE) || (label == PA_PTL_OUTSIDE));
+			nd->flg.plabel = label;
+		}
+	} while((nd = nd->next) != first_isected);
 
-		/* This labels nodes which aren't cross-connected */
-		assert(label == PA_PTL_INSIDE || label == PA_PTL_OUTSIDE);
-		cur->flg.plabel = label;
-	}
-	while ((cur = cur->next) != first_labelled);
 #ifdef DEBUG_ALL_LABELS
 	pa_print_pline_labels(a);
 	DEBUGP("\n\n");
 #endif
-	return rnd_false;
-}																/* label_contour */
+}
 
 static rnd_bool cntr_label_rnd_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool test)
 {
 	assert(ppl != NULL && ppl->contours != NULL);
 	if (poly->flg.llabel == PA_PLL_ISECTED) {
-		label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
+		pa_label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
 	}
 	else if (cntr_in_M_rnd_polyarea_t(poly, ppl, test)) {
 		if (test)
