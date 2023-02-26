@@ -73,7 +73,7 @@ rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v)
 /*		res->head = calloc(sizeof(rnd_vnode_t), 1); - no need to alloc, countour_init() did so */
 		res->head->next = res->head->prev = res->head;
 		Vcpy2(res->head->point, v);
-		cntrbox_adjust(res, v);
+		pa_pline_box_bump(res, v);
 	}
 
 	return res;
@@ -156,7 +156,7 @@ void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
 		do {
 			/* calculate area for orientation */
 			area += (double) (p->point[0] - c->point[0]) * (p->point[1] + c->point[1]);
-			cntrbox_adjust(C, c->point);
+			pa_pline_box_bump(C, c->point);
 			C->Count++;
 		}
 		while ((c = (p = c)->next) != C->head);

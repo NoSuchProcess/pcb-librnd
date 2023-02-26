@@ -180,7 +180,7 @@ RND_INLINE long pa_exec_node_tasks(pa_insert_node_task_t *tasklist)
 		t->node_seg->v->next = t->new_node;
 		t->node_seg->p->Count++;
 
-		cntrbox_adjust(t->node_seg->p, t->new_node->point);
+		pa_pline_box_bump(t->node_seg->p, t->new_node->point);
 
 		if (pa_adjust_tree(t->node_seg->p->tree, t->node_seg) != 0)
 			assert(0); /* failed memory allocation */

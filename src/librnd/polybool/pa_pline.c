@@ -98,10 +98,11 @@ RND_INLINE rnd_bool pa_pline_box_inside(rnd_pline_t *pl1, rnd_pline_t *pl2)
 	return 1;
 }
 
-static inline void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
+/* Update the bbox of pl using pt's coords */
+RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 {
-	c->xmin = pa_min(c->xmin, p[0]);
-	c->xmax = pa_max(c->xmax, p[0] + 1);
-	c->ymin = pa_min(c->ymin, p[1]);
-	c->ymax = pa_max(c->ymax, p[1] + 1);
+	if (pt[0]     < pl->xmin) pl->xmin = pt[0];
+	if ((pt[0]+1) > pl->xmax) pl->xmax = pt[0]+1;
+	if (pt[1]     < pl->ymin) pl->ymin = pt[1];
+	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
