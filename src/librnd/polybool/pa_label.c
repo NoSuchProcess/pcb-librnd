@@ -1,37 +1,39 @@
 /*
-       Copyright (C) 2006 harry eaton
-
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
 /* Contour labelling */
 
@@ -101,9 +103,9 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 }
 
 
-/* Label all nodes on a contour. Must NOT be called on a pl that is not
-   intersected (would lead to infinite loop) */
-static void pa_label_contour(rnd_pline_t *pl)
+/* Label all nodes on a polyline contour. Must NOT be called on a pl that is
+   not intersected (would lead to infinite loop) */
+static void pa_label_pline(rnd_pline_t *pl)
 {
 	rnd_vnode_t *nd, *first_isected = NULL;
 	pa_plinept_label_t label = PA_PTL_UNKNWN;
@@ -139,21 +141,25 @@ static void pa_label_contour(rnd_pline_t *pl)
 #endif
 }
 
-static rnd_bool pa_label_pline_vs_polyarea(rnd_pline_t * poly, rnd_polyarea_t * ppl, rnd_bool first_only)
+/* Internal implementation of "label a pline of A"; if first_only is true,
+   return as soon as possible if there's any intersection or overlap between
+   pl and pa). Returns true if first_only found an intersection */
+static rnd_bool pa_label_pline_vs_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, rnd_bool first_only)
 {
-	assert(ppl != NULL && ppl->contours != NULL);
-	if (poly->flg.llabel == PA_PLL_ISECTED) {
-		pa_label_contour(poly);				/* should never get here when rnd_bool is rnd_true */
+	assert((pa != NULL) && (pa->contours != NULL));
+
+	if (pl->flg.llabel == PA_PLL_ISECTED) {
+		pa_label_pline(pl); /* should never get here when first_only is rnd_true */
 	}
-	else if (pa_is_pline_in_polyarea(poly, ppl, first_only)) {
+	else if (pa_is_pline_in_polyarea(pl, pa, first_only)) {
 		if (first_only)
 			return rnd_true;
-		poly->flg.llabel = PA_PLL_INSIDE;
+		pl->flg.llabel = PA_PLL_INSIDE;
 	}
 	else {
 		if (first_only)
 			return rnd_false;
-		poly->flg.llabel = PA_PLL_OUTSIDE;
+		pl->flg.llabel = PA_PLL_OUTSIDE;
 	}
 	return rnd_false;
 }
@@ -161,11 +167,11 @@ static rnd_bool pa_label_pline_vs_polyarea(rnd_pline_t * poly, rnd_polyarea_t * 
 /* Label a single pline of A (if first_only is true, return
    as soon as possible if there's any intersection between A and B). Returns
    true if first_only found an intersection */
-static rnd_bool pa_polyarea_label_pline(rnd_pline_t *A, rnd_polyarea_t *B, rnd_bool first_only)
+static rnd_bool pa_polyarea_label_pline(rnd_pline_t *Apl, rnd_polyarea_t *B, rnd_bool first_only)
 {
 	rnd_pline_t *pn;
 
-	for (pn = A; pn != NULL; pn = pn->next)
+	for (pn = Apl; pn != NULL; pn = pn->next)
 		if (pa_label_pline_vs_polyarea(pn, B, first_only) && first_only)
 			return rnd_true;
 
