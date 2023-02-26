@@ -117,15 +117,15 @@ void rnd_poly_contour_del(rnd_pline_t ** c)
 		return;
 	for (cur = (*c)->head->prev; cur != (*c)->head; cur = prev) {
 		prev = cur->prev;
-		if (cur->cvc_next != NULL) {
-			free(cur->cvc_next);
-			free(cur->cvc_prev);
+		if (cur->cnlst_next != NULL) {
+			free(cur->cnlst_next);
+			free(cur->cnlst_prev);
 		}
 		free(cur);
 	}
-	if ((*c)->head->cvc_next != NULL) {
-		free((*c)->head->cvc_next);
-		free((*c)->head->cvc_prev);
+	if ((*c)->head->cnlst_next != NULL) {
+		free((*c)->head->cnlst_next);
+		free((*c)->head->cnlst_prev);
 	}
 	/* FIXME -- strict aliasing violation.  */
 	if ((*c)->tree) {

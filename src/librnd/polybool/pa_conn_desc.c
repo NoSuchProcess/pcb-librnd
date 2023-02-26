@@ -62,14 +62,14 @@ static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 	   monotonic sort result and is less expensive to compute than the real angle. */
 	if (Vequ2(v, rnd_vect_zero)) {
 		if (side == 'P') {
-			if (pt->prev->cvc_prev == PA_CONN_DESC_INVALID)
-				pt->prev->cvc_prev = pt->prev->cvc_next = NULL;
+			if (pt->prev->cnlst_prev == PA_CONN_DESC_INVALID)
+				pt->prev->cnlst_prev = pt->prev->cnlst_next = NULL;
 			rnd_poly_vertex_exclude(NULL, pt->prev);
 			Vsub2(v, pt->prev->point, pt->point);
 		}
 		else {
-			if (pt->next->cvc_prev == PA_CONN_DESC_INVALID)
-				pt->next->cvc_prev = pt->next->cvc_next = NULL;
+			if (pt->next->cnlst_prev == PA_CONN_DESC_INVALID)
+				pt->next->cnlst_prev = pt->next->cnlst_next = NULL;
 			rnd_poly_vertex_exclude(NULL, pt->next);
 			Vsub2(v, pt->next->point, pt->point);
 		}
@@ -103,7 +103,7 @@ pa_insert_conn_desc
    argument poly is the polygon it comes from ('A' or 'B')
    argument side is the side this descriptor goes on ('P' for previous
    'N' for next.
-   argument start is the head of the list of cvclists
+   argument start is the head of the list of cnlst
 */
 static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t * a, char poly, char side, pa_conn_desc_t * start)
 {
@@ -130,7 +130,7 @@ static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t * a, char poly, char side
 			if (l->head->parent->point[0] == start->parent->point[0]
 					&& l->head->parent->point[1] == start->parent->point[1]) {
 				/* this seems to be a new point */
-				/* link this cvclist to the list of all cvclists */
+				/* link this connlist to the list of all connlists */
 				for (; l->head != newone; l = l->next)
 					l->head = newone;
 				newone->head = start;
@@ -148,7 +148,7 @@ static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t * a, char poly, char side
 			big = l;
 		}
 		else if (newone->angle >= l->angle && newone->angle <= l->next->angle) {
-			/* insert new cvc if it lies between existing points */
+			/* insert new conn desc if it lies between existing points */
 			newone->prev = l;
 			newone->next = l->next;
 			l->next = l->next->prev = newone;
@@ -178,13 +178,13 @@ static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t * pl, char poly, pa_conn_des
 	rnd_vnode_t *node = pl->head;
 
 	do {
-		if (node->cvc_prev) {
-			assert(node->cvc_prev == PA_CONN_DESC_INVALID && node->cvc_next == PA_CONN_DESC_INVALID);
-			list = node->cvc_prev = pa_insert_conn_desc(node, poly, 'P', list);
-			if (!node->cvc_prev)
+		if (node->cnlst_prev) {
+			assert(node->cnlst_prev == PA_CONN_DESC_INVALID && node->cnlst_next == PA_CONN_DESC_INVALID);
+			list = node->cnlst_prev = pa_insert_conn_desc(node, poly, 'P', list);
+			if (!node->cnlst_prev)
 				return NULL;
-			list = node->cvc_next = pa_insert_conn_desc(node, poly, 'N', list);
-			if (!node->cvc_next)
+			list = node->cnlst_next = pa_insert_conn_desc(node, poly, 'N', list);
+			if (!node->cnlst_next)
 				return NULL;
 		}
 	}

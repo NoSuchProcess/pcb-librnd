@@ -55,7 +55,7 @@ static rnd_vnode_t *rnd_pline_split(rnd_vnode_t *v, rnd_vector_t at)
 
 	v2 = rnd_poly_node_create(at);
 	assert(v2 != NULL);
-	v2->cvc_prev = v2->cvc_next = NULL;
+	v2->cnlst_prev = v2->cnlst_next = NULL;
 	v2->flg.plabel = PA_PTL_UNKNWN;
 
 	/* link in */
