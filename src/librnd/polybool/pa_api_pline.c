@@ -33,26 +33,6 @@
       are marked
 */
 
-rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v)
-{
-	rnd_pline_t *res;
-
-	res = (rnd_pline_t *) calloc(1, sizeof(rnd_pline_t));
-	if (res == NULL)
-		return NULL;
-
-	pa_pline_init(res);
-
-	if (v != NULL) {
-/*		res->head = calloc(sizeof(rnd_vnode_t), 1); - no need to alloc, countour_init() did so */
-		res->head->next = res->head->prev = res->head;
-		Vcpy2(res->head->point, v);
-		pa_pline_box_bump(res, v);
-	}
-
-	return res;
-}
-
 void rnd_poly_contour_clear(rnd_pline_t * c)
 {
 	rnd_vnode_t *cur;
@@ -157,7 +137,7 @@ rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
 
 	assert(src != NULL);
 	*dst = NULL;
-	*dst = rnd_poly_contour_new(src->head->point);
+	*dst = pa_pline_new(src->head->point);
 	if (*dst == NULL)
 		return rnd_false;
 

@@ -66,7 +66,7 @@ struct rnd_pline_s {
 	} flg;
 };
 
-rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
+rnd_pline_t *pa_pline_new(const rnd_vector_t v);
 
 void pa_pline_init(rnd_pline_t *c);
 void rnd_poly_contour_clear(rnd_pline_t *c); /* clears list of vertices */
@@ -207,5 +207,6 @@ int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_ve
 /* These macros provide compatibility with librnd's poly lib */
 
 #define rnd_poly_contour_init(pl) pa_pline_init(pl)
+#define rnd_poly_contour_new(pt)  pa_pline_new(pt)
 
 #endif /* RND_POLYAREA_H */

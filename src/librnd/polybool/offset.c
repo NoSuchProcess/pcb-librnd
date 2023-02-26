@@ -166,7 +166,7 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 	/* create a new pline by copying the cache */
 	tmp[0] = rnd_round(pcsh[0].x);
 	tmp[1] = rnd_round(pcsh[0].y);
-	res = rnd_poly_contour_new(tmp);
+	res = pa_pline_new(tmp);
 	for(n = 1; n < num_pts; n++) {
 		tmp[0] = rnd_round(pcsh[n].x);
 		tmp[1] = rnd_round(pcsh[n].y);

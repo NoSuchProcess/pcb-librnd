@@ -145,3 +145,20 @@ void pa_pline_init(rnd_pline_t *pl)
 	pl->cx = pl->cy = 0;
 	pl->radius = 0;
 }
+
+rnd_pline_t *pa_pline_new(const rnd_vector_t pt)
+{
+	rnd_pline_t *res = calloc(sizeof(rnd_pline_t), 1);
+	if (res == NULL)
+		return NULL;
+
+	pa_pline_init(res);
+
+	if (pt != NULL) {
+		res->head->next = res->head->prev = res->head;
+		Vcpy2(res->head->point, pt);
+		pa_pline_box_bump(res, pt);
+	}
+
+	return res;
+}

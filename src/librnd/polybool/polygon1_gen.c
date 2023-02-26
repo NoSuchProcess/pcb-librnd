@@ -122,7 +122,7 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
 	v[0] = cx - rx * cos(ang * RND_M180);
 	v[1] = cy + ry * sin(ang * RND_M180);
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
+	if ((contour = pa_pline_new(v)) == NULL)
 		return 0;
 	for (i = 0; i < segs - 1; i++) {
 		ang += da;
@@ -183,7 +183,7 @@ rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 
 	v[0] = x1;
 	v[1] = y1;
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
+	if ((contour = pa_pline_new(v)) == NULL)
 		return NULL;
 	v[0] = x2;
 	v[1] = y1;
@@ -262,7 +262,7 @@ rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t r
 		return NULL;
 	v[0] = x + radius;
 	v[1] = y;
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
+	if ((contour = pa_pline_new(v)) == NULL)
 		return NULL;
 	rnd_poly_frac_circle(contour, x, y, v, 1);
 	contour->is_round = rnd_true;
@@ -282,7 +282,7 @@ rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coo
 	assert(y2 > y1);
 	v[0] = x1 - t;
 	v[1] = y1;
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
+	if ((contour = pa_pline_new(v)) == NULL)
 		return NULL;
 	rnd_poly_frac_circle_end(contour, x1, y1, v, 4);
 	v[0] = x2;
@@ -333,7 +333,7 @@ rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 	}
 	v[0] = x1 - dx;
 	v[1] = y1 - dy;
-	if ((contour = rnd_poly_contour_new(v)) == NULL)
+	if ((contour = pa_pline_new(v)) == NULL)
 		return 0;
 	v[0] = x2 - dx;
 	v[1] = y2 - dy;

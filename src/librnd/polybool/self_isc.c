@@ -161,7 +161,7 @@ static int pline_split_off_loop_new(rnd_pline_t *pl, vtp0_t *out, vhub_t *h, rnd
 	rnd_pline_t *newpl = NULL;
 	rnd_vnode_t *v, *next, *tmp;
 
-	newpl = rnd_poly_contour_new(start->point);
+	newpl = pa_pline_new(start->point);
 	next = start->next;
 	remove_from_hub(h, start);
 	rnd_poly_vertex_exclude(pl, start);

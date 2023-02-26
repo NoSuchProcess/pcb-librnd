@@ -183,7 +183,7 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIR
 			break;
 		/* add edge to polygon */
 		if (!*result) {
-			*result = rnd_poly_contour_new(cur->point);
+			*result = pa_pline_new(cur->point);
 			if (*result == NULL)
 				return pa_err_no_memory;
 		}
