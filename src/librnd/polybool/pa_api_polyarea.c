@@ -136,13 +136,13 @@ void rnd_polyarea_free(rnd_polyarea_t ** p)
 	if (*p == NULL)
 		return;
 	for (cur = (*p)->f; cur != *p; cur = (*p)->f) {
-		rnd_poly_contours_free(&cur->contours);
+		rnd_poly_plines_free(&cur->contours);
 		rnd_r_destroy_tree(&cur->contour_tree);
 		cur->f->b = cur->b;
 		cur->b->f = cur->f;
 		free(cur);
 	}
-	rnd_poly_contours_free(&cur->contours);
+	rnd_poly_plines_free(&cur->contours);
 	rnd_r_destroy_tree(&cur->contour_tree);
 	free(*p), *p = NULL;
 }

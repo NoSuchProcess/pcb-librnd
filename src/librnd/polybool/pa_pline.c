@@ -248,3 +248,12 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 
 	pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 }
+
+void rnd_poly_plines_free(rnd_pline_t **pline)
+{
+	while(*pline != NULL) {
+		rnd_pline_t *pl = *pline;
+		*pline = pl->next;
+		pa_pline_free(&pl);
+	}
+}

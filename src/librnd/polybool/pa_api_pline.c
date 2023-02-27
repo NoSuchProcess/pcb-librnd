@@ -49,16 +49,6 @@ void rnd_poly_contour_clear(rnd_pline_t * c)
 	pa_pline_init(c);
 }
 
-void rnd_poly_contours_free(rnd_pline_t ** pline)
-{
-	rnd_pline_t *pl;
-
-	while ((pl = *pline) != NULL) {
-		*pline = pl->next;
-		pa_pline_free(&pl);
-	}
-}
-
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
 {
 	rnd_vnode_t *cur, *newnode;

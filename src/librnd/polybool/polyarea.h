@@ -125,7 +125,7 @@ rnd_polyarea_t *rnd_polyarea_create(void);
 
 void rnd_polyarea_free(rnd_polyarea_t **p);
 void rnd_polyarea_init(rnd_polyarea_t *p);
-void rnd_poly_contours_free(rnd_pline_t **pl);
+void rnd_poly_plines_free(rnd_pline_t **pl);
 rnd_bool rnd_poly_valid(rnd_polyarea_t *p);
 
 enum rnd_poly_bool_op_e {
@@ -213,5 +213,6 @@ rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
 void rnd_poly_contour_init(rnd_pline_t *c);
 void rnd_poly_contour_del(rnd_pline_t **c);
 void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
+void rnd_poly_contours_free(rnd_pline_t **pl);
 
 #endif /* RND_POLYAREA_H */
