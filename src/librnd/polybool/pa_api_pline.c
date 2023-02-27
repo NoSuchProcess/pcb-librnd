@@ -1,37 +1,40 @@
 /*
-       Copyright (C) 2006 harry eaton
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2017, 2018, 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
 
 /* High level API functions (called mostly or only from outside) */
 
@@ -51,10 +54,8 @@ void rnd_poly_contour_clear(rnd_pline_t *pl)
 	pa_pline_init(pl);
 }
 
-/*
- * rnd_pline_isect_line()
- * (C) 2017, 2018 Tibor 'Igor2' Palinkas
-*/
+/***/
+
 
 typedef struct {
 	rnd_vector_t l1, l2;
@@ -249,10 +250,7 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	return pa_pline_is_point_inside(outer, ipt);
 }
 
-/*
- * rnd_pline_isect_circle()
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
+/***/
 
 typedef struct {
 	rnd_coord_t cx, cy, r;
@@ -303,16 +301,13 @@ rnd_bool rnd_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
 	return rnd_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == RND_R_DIR_CANCEL;
 }
 
+/***/
 
-/*
- * rnd_pline_embraces_circle()
- * If the circle does not intersect the polygon (the caller needs to check this)
- * return whether the circle is fully within the polygon or not.
- * Shoots a ray to the right from center+radius, then one to the left from
- * center-radius; if both ray cross odd number of pline segments, we are in
- * (or intersecting).
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
+/* If the circle does not intersect the polygon (the caller needs to check this)
+   return whether the circle is fully within the polygon or not.
+   Shoots a ray to the right from center+radius, then one to the left from
+   center-radius; if both ray cross odd number of pline segments, we are in
+   (or intersecting). */
 typedef struct {
 	int cnt;
 	rnd_coord_t cx, cy;
@@ -382,10 +377,8 @@ rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	return rnd_true;
 }
 
-/*
- * rnd_pline_isect_circle()
- * (C) 2017 Tibor 'Igor2' Palinkas
-*/
+/***/
+
 rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	rnd_box_t cbx, pbx;
