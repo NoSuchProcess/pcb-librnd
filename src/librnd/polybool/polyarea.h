@@ -109,7 +109,7 @@ rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst
 void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
 
 rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
-rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
+rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 
 rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c);
 rnd_bool rnd_polyarea_contour_exclude(rnd_polyarea_t *p, rnd_pline_t *c);
@@ -228,5 +228,7 @@ rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 void rnd_poly_contour_inv(rnd_pline_t *c);
 int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v);
 int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner);
+
+rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 
 #endif /* RND_POLYAREA_H */

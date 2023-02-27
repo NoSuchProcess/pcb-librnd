@@ -42,24 +42,9 @@ rnd_bool rnd_polyarea_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * src)
 		return rnd_false;
 	(*dst)->contour_tree = rnd_r_create_tree();
 
-	return rnd_polyarea_copy1(*dst, src);
+	return pa_polyarea_copy_plines(*dst, src);
 }
 
-rnd_bool rnd_polyarea_copy1(rnd_polyarea_t * dst, const rnd_polyarea_t * src)
-{
-	rnd_pline_t *cur, **last = &dst->contours;
-
-	*last = NULL;
-	dst->f = dst->b = dst;
-
-	for (cur = src->contours; cur != NULL; cur = cur->next) {
-		if (!pa_pline_alloc_copy(last, cur))
-			return rnd_false;
-		rnd_r_insert_entry(dst->contour_tree, (rnd_box_t *) * last);
-		last = &(*last)->next;
-	}
-	return rnd_true;
-}
 
 void rnd_polyarea_m_include(rnd_polyarea_t ** list, rnd_polyarea_t * a)
 {
@@ -81,7 +66,7 @@ rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * srcf
 	if (src == NULL)
 		return rnd_false;
 	do {
-		if ((di = rnd_polyarea_create()) == NULL || !rnd_polyarea_copy1(di, src))
+		if ((di = rnd_polyarea_create()) == NULL || !pa_polyarea_copy_plines(di, src))
 			return rnd_false;
 		rnd_polyarea_m_include(dst, di);
 	}

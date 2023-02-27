@@ -103,3 +103,27 @@ static int pa_is_pline_in_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, rnd_bool
 	rnd_heap_destroy(&heap);
 	return rnd_true;
 }
+
+rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src)
+{
+	rnd_pline_t *n, *last, *newpl;
+
+	dst->f = dst->b = dst;
+
+	for(n = src->contours, last = NULL; n != NULL; n = n->next) {
+		newpl = pa_pline_dup(n);
+		if (newpl == NULL)
+			return rnd_false; /* allocation failure */
+
+		/* link newpl in */
+		if (last == NULL)
+			dst->contours = newpl;
+		else
+			last->next = newpl;
+		last = newpl;
+
+		rnd_r_insert_entry(dst->contour_tree, (rnd_box_t *)newpl);
+	}
+
+	return rnd_true;
+}
