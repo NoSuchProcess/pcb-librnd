@@ -54,7 +54,7 @@ static rnd_r_dir_t pa_pline_count_inside_cb(const rnd_box_t *b, void *cl)
 	rnd_pline_t *me = (rnd_pline_t *)cl;
 	rnd_pline_t *check = (rnd_pline_t *)b;
 
-	if (rnd_poly_contour_in_contour(check, me))
+	if (pa_pline_inside_pline(check, me))
 		return RND_R_DIR_FOUND_CONTINUE;
 
 	return RND_R_DIR_NOT_FOUND;

@@ -168,8 +168,6 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	return ctx.f;
 }
 
-/***/
-
 /* Algorithm from http://www.exaflop.org/docs/cgafaq/cga2.html
 
    "Given a simple polygon, find some point inside it. Here is a method based
@@ -230,32 +228,26 @@ RND_INLINE void pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
 	}
 }
 
-
-/* NB: This function assumes the caller _knows_ the contours do not
- *     intersect. If the contours intersect, the result is undefined.
- *     It will return the correct result if the two contours share
- *     common points between their contours. (Identical contours
- *     are treated as being inside each other).
- */
-int rnd_poly_contour_in_contour(rnd_pline_t * poly, rnd_pline_t * inner)
+rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 {
-	rnd_vector_t point;
-	assert(poly != NULL);
-	assert(inner != NULL);
-	if (pa_pline_box_inside(inner, poly)) {
-		/* We need to prove the "inner" contour is not outside
-		 * "poly" contour. If it is outside, we can return.
-		 */
-		if (!pa_pline_is_point_inside(poly, inner->head->point))
-			return 0;
+	rnd_vector_t ipt;
 
-		pa_pline_interior_pt(inner, point);
-		return pa_pline_is_point_inside(poly, point);
-	}
-	return 0;
+	assert((outer != NULL) && (inner != NULL));
+
+	/* cheapest test: if inner's bbox is not in outer's bbox */
+	if (!pa_pline_box_inside(inner, outer))
+		return 0;
+
+	/* if there is a point in inner that's not within outer... */
+	if (!pa_pline_is_point_inside(outer, inner->head->point))
+		return 0;
+
+	/* ...but that may still be only a shared point while the rest of inner
+	   is simply all outside. Since they are not intersecting if a random
+	   internal point of inner is inside outer, the whole inner is inside outer */
+	pa_pline_interior_pt(inner, ipt);
+	return pa_pline_is_point_inside(outer, ipt);
 }
-
-
 
 /*
  * rnd_pline_isect_circle()

@@ -142,7 +142,7 @@ static rnd_r_dir_t find_inside(const rnd_box_t * b, void *cl)
 	if (check->flg.orient == RND_PLF_DIR) {
 		return RND_R_DIR_NOT_FOUND;
 	}
-	if (rnd_poly_contour_in_contour(info->want_inside, check)) {
+	if (pa_pline_inside_pline(info->want_inside, check)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
@@ -211,12 +211,12 @@ void rnd_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 		 */
 		pa_info = (struct polyarea_info *) rnd_heap_remove_smallest(heap);
 		if (rnd_heap_is_empty(heap)) {	/* only one possibility it must be the right one */
-			assert(rnd_poly_contour_in_contour(pa_info->pa->contours, curh));
+			assert(pa_pline_inside_pline(pa_info->pa->contours, curh));
 			container = pa_info->pa->contours;
 		}
 		else {
 			do {
-				if (rnd_poly_contour_in_contour(pa_info->pa->contours, curh)) {
+				if (pa_pline_inside_pline(pa_info->pa->contours, curh)) {
 					container = pa_info->pa->contours;
 					break;
 				}

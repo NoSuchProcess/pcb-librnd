@@ -289,7 +289,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 #endif
 			return rnd_false;
 		}
-		if (!rnd_poly_contour_in_contour(p->contours, c)) {
+		if (!pa_pline_inside_pline(p->contours, c)) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner: overlap with outer\n");
 			rnd_poly_valid_report(c, c->head, NULL);

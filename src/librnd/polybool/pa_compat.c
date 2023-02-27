@@ -6,3 +6,4 @@ void rnd_poly_contours_free(rnd_pline_t **pl) { rnd_poly_plines_free(pl); }
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src) { return pa_pline_alloc_copy(dst, src); }
 void rnd_poly_contour_inv(rnd_pline_t *c) { pa_pline_invert(c); }
 int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v) { return pa_pline_is_point_inside(c, v); }
+int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner) { return pa_pline_inside_pline(outer, inner); }
