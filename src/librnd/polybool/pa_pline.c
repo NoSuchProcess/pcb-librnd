@@ -264,9 +264,10 @@ rnd_pline_t *pa_pline_dup(const rnd_pline_t *src)
 	rnd_vnode_t *n;
 
 	assert(src != NULL);
+
 	dst = pa_pline_new(src->head->point);
 	if (dst == NULL)
-		return rnd_false;
+		return NULL;
 
 	dst->Count = src->Count;
 	dst->flg.orient = src->flg.orient;
