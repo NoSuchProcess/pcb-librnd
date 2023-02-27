@@ -53,7 +53,7 @@ rnd_bool rnd_polyarea_copy1(rnd_polyarea_t * dst, const rnd_polyarea_t * src)
 	dst->f = dst->b = dst;
 
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
-		if (!rnd_poly_contour_copy(last, cur))
+		if (!pa_pline_alloc_copy(last, cur))
 			return rnd_false;
 		rnd_r_insert_entry(dst->contour_tree, (rnd_box_t *) * last);
 		last = &(*last)->next;

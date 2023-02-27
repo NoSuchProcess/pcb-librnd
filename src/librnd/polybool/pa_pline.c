@@ -257,3 +257,39 @@ void rnd_poly_plines_free(rnd_pline_t **pline)
 		pa_pline_free(&pl);
 	}
 }
+
+rnd_pline_t *pa_pline_dup(const rnd_pline_t *src)
+{
+	rnd_pline_t *dst;
+	rnd_vnode_t *n;
+
+	assert(src != NULL);
+	dst = pa_pline_new(src->head->point);
+	if (dst == NULL)
+		return rnd_false;
+
+	dst->Count = src->Count;
+	dst->flg.orient = src->flg.orient;
+	dst->xmin = src->xmin; dst->xmax = src->xmax;
+	dst->ymin = src->ymin; dst->ymax = src->ymax;
+	dst->area = src->area;
+
+	for(n = src->head->next; n != src->head; n = n->next) {
+		rnd_vnode_t *newnd = rnd_poly_node_create(n->point);
+		if (newnd == NULL) {
+			pa_pline_free(&dst);
+			return NULL;
+		}
+		rnd_poly_vertex_include(dst->head->prev, newnd);
+	}
+
+	dst->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(dst);
+	return dst;
+}
+
+rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src)
+{
+	*dst = pa_pline_dup(src);
+	return dst != NULL;
+}
+

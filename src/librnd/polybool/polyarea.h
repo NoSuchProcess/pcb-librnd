@@ -72,7 +72,12 @@ void pa_pline_init(rnd_pline_t *c);
 void rnd_poly_contour_clear(rnd_pline_t *c); /* clears list of vertices */
 void pa_pline_free(rnd_pline_t **c);
 
-rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
+/* Allocate a new polyline and copy src into it (losing labels). The dup()
+   variant simply returns the new polyline or returns NULL on allocation
+   error. The alloc_copy() variant places the result in dst and returns true
+   on success. */
+rnd_pline_t *pa_pline_dup(const rnd_pline_t *src);
+rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 
 /* Recalculate bounding box, area, number-of-nodes and rebuuld the rtree. If
    optimize is true also remove excess colinear points. */
@@ -214,5 +219,6 @@ void rnd_poly_contour_init(rnd_pline_t *c);
 void rnd_poly_contour_del(rnd_pline_t **c);
 void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
 void rnd_poly_contours_free(rnd_pline_t **pl);
+rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 
 #endif /* RND_POLYAREA_H */

@@ -49,32 +49,6 @@ void rnd_poly_contour_clear(rnd_pline_t * c)
 	pa_pline_init(c);
 }
 
-rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src)
-{
-	rnd_vnode_t *cur, *newnode;
-
-	assert(src != NULL);
-	*dst = NULL;
-	*dst = pa_pline_new(src->head->point);
-	if (*dst == NULL)
-		return rnd_false;
-
-	(*dst)->Count = src->Count;
-	(*dst)->flg.orient = src->flg.orient;
-	(*dst)->xmin = src->xmin, (*dst)->xmax = src->xmax;
-	(*dst)->ymin = src->ymin, (*dst)->ymax = src->ymax;
-	(*dst)->area = src->area;
-
-	for (cur = src->head->next; cur != src->head; cur = cur->next) {
-		if ((newnode = rnd_poly_node_create(cur->point)) == NULL)
-			return rnd_false;
-		/* newnode->flg = cur->flg; */
-		rnd_poly_vertex_include((*dst)->head->prev, newnode);
-	}
-	(*dst)->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(*dst);
-	return rnd_true;
-}
-
 /*
  * rnd_pline_isect_line()
  * (C) 2017, 2018 Tibor 'Igor2' Palinkas

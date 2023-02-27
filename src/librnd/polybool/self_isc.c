@@ -239,7 +239,7 @@ void rnd_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
 	vtp0_init(&hubs);
 
 	/* copy the pline and reset the in_hub flag */
-	rnd_poly_contour_copy(&pl, pl_in);
+	pa_pline_alloc_copy(&pl, pl_in);
 	va = (rnd_vnode_t *)pl->head;
 	do {
 		va->flg.in_hub = 0;
