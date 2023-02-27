@@ -35,18 +35,20 @@
 
 /* High level API functions (called mostly or only from outside) */
 
-void rnd_poly_contour_clear(rnd_pline_t * c)
+void rnd_poly_contour_clear(rnd_pline_t *pl)
 {
-	rnd_vnode_t *cur;
+	rnd_vnode_t *n;
 
-	assert(c != NULL);
-	while ((cur = c->head->next) != c->head) {
-		rnd_poly_vertex_exclude(NULL, cur);
-		free(cur);
+	assert(pl != NULL);
+
+	while((n = pl->head->next) != pl->head) {
+		rnd_poly_vertex_exclude(NULL, n);
+		free(n);
 	}
-	free(c->head);
-	c->head = NULL;
-	pa_pline_init(c);
+
+	free(pl->head); pl->head = NULL;
+
+	pa_pline_init(pl);
 }
 
 /*
