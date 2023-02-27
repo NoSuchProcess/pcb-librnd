@@ -33,18 +33,6 @@
       are marked
 */
 
-rnd_bool rnd_polyarea_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * src)
-{
-	*dst = NULL;
-	if (src != NULL)
-		*dst = (rnd_polyarea_t *) calloc(1, sizeof(rnd_polyarea_t));
-	if (*dst == NULL)
-		return rnd_false;
-	(*dst)->contour_tree = rnd_r_create_tree();
-
-	return pa_polyarea_copy_plines(*dst, src);
-}
-
 
 void rnd_polyarea_m_include(rnd_polyarea_t ** list, rnd_polyarea_t * a)
 {

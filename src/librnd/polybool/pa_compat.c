@@ -10,3 +10,5 @@ int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner) { return
 
 
 rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src) { return pa_polyarea_copy_plines(dst, src); }
+rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src) { return pa_polyarea_alloc_copy(dst, src); }
+

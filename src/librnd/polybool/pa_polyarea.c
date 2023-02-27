@@ -127,3 +127,24 @@ rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src)
 
 	return rnd_true;
 }
+
+rnd_polyarea_t *rnd_polyarea_dup(const rnd_polyarea_t *src)
+{
+	rnd_polyarea_t *res = NULL;
+	if (src != NULL)
+		res = (rnd_polyarea_t *) calloc(1, sizeof(rnd_polyarea_t));
+
+	if (res == NULL)
+		return NULL;
+
+	res->contour_tree = rnd_r_create_tree();
+	pa_polyarea_copy_plines(res, src);
+	return res;
+}
+
+rnd_bool pa_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *src)
+{
+	*dst = rnd_polyarea_dup(src);
+	return (*dst != NULL);
+}
+
