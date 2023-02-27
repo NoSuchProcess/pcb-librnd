@@ -293,7 +293,7 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 				/* disappear this contour (rtree entry removed in PutContour) */
 				*A = tmprev->next;
 				tmprev->next = NULL;
-				rnd_poly_contour_inv(tmprev);
+				pa_pline_invert(tmprev);
 				PutContour(e, tmprev, contours, holes, owner, NULL, NULL);
 				return rnd_true;
 			}
@@ -330,7 +330,7 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 				switch (action) {
 				case RND_PBO_XOR:
 				case RND_PBO_SUB:
-					rnd_poly_contour_inv(*cur);
+					pa_pline_invert(*cur);
 				case RND_PBO_ISECT:
 					tmp = *cur;
 					*cur = tmp->next;

@@ -37,16 +37,6 @@
 
 /* some structures for handling segment intersections using the rtrees */
 
-/* A segment is an object of the pline between ->v and ->v->next, upgraded
-   with a bounding box so that it can be added to an rtree. Also remembers
-   its parent pline, plus random temporary fields used in the calculations */
-typedef struct pa_seg_s {
-	rnd_box_t box;
-	rnd_vnode_t *v;
-	rnd_pline_t *p;
-	int intersected;
-} pa_seg_t;
-
 /* used by pcb-rnd */
 rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 {

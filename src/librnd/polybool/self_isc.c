@@ -317,7 +317,7 @@ rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa)
 				pln = (rnd_pline_t *)pls.array[n];
 				pa_pline_update(pln, rnd_true);
 				if (pln->flg.orient != pl->flg.orient)
-					rnd_poly_contour_inv(pln);
+					pa_pline_invert(pln);
 				pa_pline_update(pln, 0);
 				pln->tree = rnd_poly_make_edge_tree(pln);
 				rnd_polyarea_contour_include(pa, pln);

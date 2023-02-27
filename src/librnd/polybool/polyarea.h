@@ -83,7 +83,7 @@ rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src);
    optimize is true also remove excess colinear points. */
 void pa_pline_update(rnd_pline_t *c, rnd_bool optimize);
 
-void rnd_poly_contour_inv(rnd_pline_t *c); /* invert contour */
+void pa_pline_invert(rnd_pline_t *c); /* invert contour */
 
 rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v);
 
@@ -220,5 +220,6 @@ void rnd_poly_contour_del(rnd_pline_t **c);
 void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
 void rnd_poly_contours_free(rnd_pline_t **pl);
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
+void rnd_poly_contour_inv(rnd_pline_t *c);
 
 #endif /* RND_POLYAREA_H */

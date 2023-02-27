@@ -294,3 +294,34 @@ rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src)
 	return dst != NULL;
 }
 
+static rnd_r_dir_t pa_invert_cb(const rnd_box_t *b, void *cl)
+{
+	pa_seg_t *s = (pa_seg_t *)b;
+	s->v = s->v->prev;
+	return RND_R_DIR_FOUND_CONTINUE;
+}
+
+void pa_pline_invert(rnd_pline_t *pl)
+{
+	rnd_vnode_t *n, *next;
+
+	assert(pl != NULL);
+
+	/* flip order on the node list */
+	n = pl->head;
+	do {
+		next = n->next;
+		n->next = n->prev;
+		n->prev = next;
+		n = next;
+	} while(n != pl->head);
+
+	/* flip segment ->prev references in the tree */
+	if (pl->tree != NULL) {
+		int cnt;
+		rnd_r_search(pl->tree, NULL, NULL, pa_invert_cb, NULL, &cnt);
+		assert(cnt == pl->Count);
+	}
+
+	pl->flg.orient ^= 1;
+}

@@ -98,34 +98,6 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 	return rnd_false;
 }
 
-static rnd_r_dir_t flip_cb(const rnd_box_t * b, void *cl)
-{
-	pa_seg_t *s = (pa_seg_t *) b;
-	s->v = s->v->prev;
-	return RND_R_DIR_FOUND_CONTINUE;
-}
-
-void rnd_poly_contour_inv(rnd_pline_t * c)
-{
-	rnd_vnode_t *cur, *next;
-	int r;
-
-	assert(c != NULL);
-	cur = c->head;
-	do {
-		next = cur->next;
-		cur->next = cur->prev;
-		cur->prev = next;
-		/* fix the segment tree */
-	}
-	while ((cur = next) != c->head);
-	c->flg.orient ^= 1;
-	if (c->tree) {
-		rnd_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
-		assert(r == c->Count);
-	}
-}
-
 typedef struct pip {
 	int f;
 	rnd_vector_t p;
