@@ -124,7 +124,7 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
 /* checks whether point lies within contour independently of its orientation */
 
-int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v);
+int pa_pline_is_point_inside(const rnd_pline_t *c, rnd_vector_t v);
 int rnd_poly_contour_in_contour(rnd_pline_t *poly, rnd_pline_t *inner);
 rnd_polyarea_t *rnd_polyarea_create(void);
 
@@ -221,5 +221,6 @@ void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
 void rnd_poly_contours_free(rnd_pline_t **pl);
 rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 void rnd_poly_contour_inv(rnd_pline_t *c);
+int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v);
 
 #endif /* RND_POLYAREA_H */

@@ -146,7 +146,7 @@ static rnd_r_dir_t pa_cin_crossing(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-int rnd_poly_contour_inside(const rnd_pline_t *pl, rnd_vector_t pt)
+int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 {
 	pa_cin_ctx_t ctx;
 	rnd_box_t ray;
@@ -256,11 +256,11 @@ int rnd_poly_contour_in_contour(rnd_pline_t * poly, rnd_pline_t * inner)
 		/* We need to prove the "inner" contour is not outside
 		 * "poly" contour. If it is outside, we can return.
 		 */
-		if (!rnd_poly_contour_inside(poly, inner->head->point))
+		if (!pa_pline_is_point_inside(poly, inner->head->point))
 			return 0;
 
 		poly_ComputeInteriorPoint(inner, point);
-		return rnd_poly_contour_inside(poly, point);
+		return pa_pline_is_point_inside(poly, point);
 	}
 	return 0;
 }

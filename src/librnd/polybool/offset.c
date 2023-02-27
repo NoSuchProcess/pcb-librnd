@@ -333,7 +333,7 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 		pb.x1 = v->point[0] - offs+1; pb.y1 = v->point[1] - offs+1;
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
 		if (!negoffs)
-			inside = rnd_poly_contour_inside(src, v->point);
+			inside = pa_pline_is_point_inside(src, v->point);
 
 		for(seg = rnd_rtree_first(&it, src->tree, &pb); seg != NULL; seg = rnd_rtree_next(&it)) {
 			rnd_coord_t x1, y1, x2, y2;

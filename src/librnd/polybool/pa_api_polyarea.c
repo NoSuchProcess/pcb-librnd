@@ -177,9 +177,9 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t * p, rnd_vector_t v0)
 	if ((p == NULL) || (v0 == NULL) || (p->contours == NULL))
 		return rnd_false;
 	cur = p->contours;
-	if (rnd_poly_contour_inside(cur, v0)) {
+	if (pa_pline_is_point_inside(cur, v0)) {
 		for (cur = cur->next; cur != NULL; cur = cur->next)
-			if (rnd_poly_contour_inside(cur, v0))
+			if (pa_pline_is_point_inside(cur, v0))
 				return rnd_false;
 		return rnd_true;
 	}
