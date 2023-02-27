@@ -33,23 +33,6 @@
       are marked
 */
 
-rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * srcfst)
-{
-	const rnd_polyarea_t *src = srcfst;
-	rnd_polyarea_t *di;
-
-	*dst = NULL;
-	if (src == NULL)
-		return rnd_false;
-	do {
-		if ((di = rnd_polyarea_create()) == NULL || !pa_polyarea_copy_plines(di, src))
-			return rnd_false;
-		rnd_polyarea_m_include(dst, di);
-	}
-	while ((src = src->f) != srcfst);
-	return rnd_true;
-}
-
 rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t * p, rnd_pline_t * c)
 {
 	rnd_pline_t *tmp;

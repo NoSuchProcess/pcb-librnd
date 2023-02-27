@@ -162,3 +162,29 @@ void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a)
 		*list = a;
 	}
 }
+
+rnd_polyarea_t *pa_polyarea_dup_all(const rnd_polyarea_t *src)
+{
+	rnd_polyarea_t *dst = NULL;
+	const rnd_polyarea_t *s = src;
+
+	do {
+		rnd_polyarea_t *dpa = rnd_polyarea_dup(s);
+		if (dpa == NULL)
+			return NULL;
+
+		rnd_polyarea_m_include(&dst, dpa);
+	} while((s = s->f) != src);
+
+	return dst;
+}
+
+rnd_bool rnd_polyarea_alloc_copy_all(rnd_polyarea_t **dst, const rnd_polyarea_t *src)
+{
+	*dst = NULL;
+	if (src == NULL)
+		return rnd_false;
+
+	*dst = pa_polyarea_dup_all(src);
+	return (dst != NULL);
+}

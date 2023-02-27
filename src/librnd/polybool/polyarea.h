@@ -105,7 +105,7 @@ struct rnd_polyarea_s {
 	rnd_rtree_t *contour_tree;
 };
 
-rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
+rnd_bool rnd_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
 void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
 
 /* Allocate a new polyarea and copy src into it; returns NULL on error */
@@ -239,5 +239,6 @@ int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner);
 
 rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
+rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
 
 #endif /* RND_POLYAREA_H */

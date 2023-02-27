@@ -37,7 +37,7 @@ int rnd_polyarea_boolean(const rnd_polyarea_t * a_org, const rnd_polyarea_t * b_
 {
 	rnd_polyarea_t *a = NULL, *b = NULL;
 
-	if (!rnd_polyarea_m_copy0(&a, a_org) || !rnd_polyarea_m_copy0(&b, b_org))
+	if (!rnd_polyarea_alloc_copy_all(&a, a_org) || !rnd_polyarea_alloc_copy_all(&b, b_org))
 		return pa_err_no_memory;
 
 	return rnd_polyarea_boolean_free(a, b, res, action);
