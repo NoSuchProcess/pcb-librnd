@@ -171,72 +171,62 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 /***/
 
 /* Algorithm from http://www.exaflop.org/docs/cgafaq/cga2.html
- *
- * "Given a simple polygon, find some point inside it. Here is a method based
- * on the proof that there exists an internal diagonal, in [O'Rourke, 13-14].
- * The idea is that the midpoint of a diagonal is interior to the polygon.
- *
- * 1.  Identify a convex vertex v; let its adjacent vertices be a and b.
- * 2.  For each other vertex q do:
- * 2a. If q is inside avb, compute distance to v (orthogonal to ab).
- * 2b. Save point q if distance is a new min.
- * 3.  If no point is inside, return midpoint of ab, or centroid of avb.
- * 4.  Else if some point inside, qv is internal: return its midpoint."
- *
- * [O'Rourke]: Computational Geometry in C (2nd Ed.)
- *             Joseph O'Rourke, Cambridge University Press 1998,
- *             ISBN 0-521-64010-5 Pbk, ISBN 0-521-64976-5 Hbk
- */
-static void poly_ComputeInteriorPoint(rnd_pline_t * poly, rnd_vector_t v)
-{
-	rnd_vnode_t *pt1, *pt2, *pt3, *q;
-	rnd_vnode_t *min_q = NULL;
-	double dist;
-	double min_dist = 0.0;
-	double dir = (poly->flg.orient == RND_PLF_DIR) ? 1. : -1;
 
-	/* Find a convex node on the polygon */
+   "Given a simple polygon, find some point inside it. Here is a method based
+   on the proof that there exists an internal diagonal, in [O'Rourke, 13-14].
+   The idea is that the midpoint of a diagonal is interior to the polygon.
+
+   1.  Identify a convex vertex v; let its adjacent vertices be a and b.
+   2.  For each other vertex n do:
+   2a. If n is inside avb, compute distance to v (orthogonal to ab).
+   2b. Save point n if distance is a new min.
+   3.  If no point is inside, return midpoint of ab, or centroid of avb.
+   4.  Else if some point inside, nv is internal: return its midpoint."
+
+   [O'Rourke]: Computational Geometry in C (2nd Ed.)
+               Joseph O'Rourke, Cambridge University Press 1998,
+               ISBN 0-521-64010-5 Pbk, ISBN 0-521-64976-5 Hbk */
+RND_INLINE void pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
+{
+	rnd_vnode_t *pt1, *pt2, *pt3, *n, *min_n = NULL;
+	double dist, min_dist = 0.0, dir = (poly->flg.orient == RND_PLF_DIR) ? 1.0 : -1.0;
+
+	/* Step 1: find a convex node on the polygon; result is pt1, pt2 and pt3
+	   loaded with adjacent nodes; pt1 is "a", pt3 is "b" and pt2 is "v". */
 	pt1 = poly->head;
 	do {
-		double dot_product;
+		pt2 = pt1->next; pt3 = pt2->next;
+		double dot_product = dot_orthogonal_to_direction(pt1->point, pt2->point, pt3->point, pt2->point);
 
-		pt2 = pt1->next;
-		pt3 = pt2->next;
-
-		dot_product = dot_orthogonal_to_direction(pt1->point, pt2->point, pt3->point, pt2->point);
-
-		if (dot_product * dir > 0.)
+		if (dot_product * dir > 0.0)
 			break;
-	}
-	while ((pt1 = pt1->next) != poly->head);
+	} while((pt1 = pt1->next) != poly->head);
 
-	/* Loop over remaining vertices */
-	q = pt3;
+	/* Step 2: loop over remaining vertices (from pt3 to pt2) */
+	n = pt3;
 	do {
-		/* Is current vertex "q" outside pt1 pt2 pt3 triangle? */
-		if (!point_in_triangle(pt1->point, pt2->point, pt3->point, q->point))
-			continue;
+		if (!point_in_triangle(pt1->point, pt2->point, pt3->point, n->point))
+			continue; /* 2.a. current node "n" is outside pt1 pt2 pt3 triangle */
 
-		/* NO: compute distance to pt2 (v) orthogonal to pt1 - pt3) */
-		/*     Record minimum */
-		dist = dot_orthogonal_to_direction(q->point, pt2->point, pt1->point, pt3->point);
-		if (min_q == NULL || dist < min_dist) {
+		/* 2.b. "n" is inside; compute distance to pt2 (v) orthogonal
+		   to pt1 - pt3) and record minimum */
+		dist = dot_orthogonal_to_direction(n->point, pt2->point, pt1->point, pt3->point);
+		if ((min_n == NULL) || (dist < min_dist)) {
 			min_dist = dist;
-			min_q = q;
+			min_n = n;
 		}
-	}
-	while ((q = q->next) != pt2);
+	} while((n = n->next) != pt2);
 
-	/* Were any "q" found inside pt1 pt2 pt3? */
-	if (min_q == NULL) {
-		/* NOT FOUND: Return midpoint of pt1 pt3 */
+	/* Were any "n" found inside pt1 pt2 pt3? */
+	if (min_n == NULL) {
+		/* Step 3. not found: return midpoint of pt1 pt3 */
 		v[0] = (pt1->point[0] + pt3->point[0]) / 2;
 		v[1] = (pt1->point[1] + pt3->point[1]) / 2;
 	}
 	else {
-		/* FOUND: Return mid point of min_q, pt2 */
-		v[0] = (pt2->point[0] + min_q->point[0]) / 2;
-		v[1] = (pt2->point[1] + min_q->point[1]) / 2;
+		/* Step 4. found: return mid point of min_q, pt2 */
+		v[0] = (pt2->point[0] + min_n->point[0]) / 2;
+		v[1] = (pt2->point[1] + min_n->point[1]) / 2;
 	}
 }
 
@@ -259,7 +249,7 @@ int rnd_poly_contour_in_contour(rnd_pline_t * poly, rnd_pline_t * inner)
 		if (!pa_pline_is_point_inside(poly, inner->head->point))
 			return 0;
 
-		poly_ComputeInteriorPoint(inner, point);
+		pa_pline_interior_pt(inner, point);
 		return pa_pline_is_point_inside(poly, point);
 	}
 	return 0;
