@@ -64,7 +64,7 @@ rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
 	rnd_polyarea_t *p;
 	pa_pline_update(contour, rnd_true);
 	assert(contour->flg.orient == RND_PLF_DIR);
-	if (!(p = rnd_polyarea_create()))
+	if (!(p = pa_polyarea_alloc()))
 		return NULL;
 	pa_polyarea_insert_pline(p, contour);
 	assert(rnd_poly_valid(p));
@@ -77,7 +77,7 @@ rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *contour)
 	pa_pline_update(contour, rnd_true);
 	if (contour->flg.orient != RND_PLF_DIR)
 		pa_pline_invert(contour);
-	if (!(p = rnd_polyarea_create()))
+	if (!(p = pa_polyarea_alloc()))
 		return NULL;
 	pa_polyarea_insert_pline(p, contour);
 	assert(rnd_poly_valid(p));

@@ -13,3 +13,5 @@ rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src) { re
 rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src) { return pa_polyarea_alloc_copy(dst, src); }
 rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst) { return rnd_polyarea_alloc_copy_all(dst, srcfst); }
 rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c) { return pa_polyarea_insert_pline(p, c); }
+void rnd_polyarea_init(rnd_polyarea_t *p) { pa_polyarea_init(p); }
+rnd_polyarea_t *rnd_polyarea_create(void) { return pa_polyarea_alloc(); }

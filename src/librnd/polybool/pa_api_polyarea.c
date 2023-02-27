@@ -33,23 +33,6 @@
       are marked
 */
 
-void rnd_polyarea_init(rnd_polyarea_t * p)
-{
-	p->f = p->b = p;
-	p->contours = NULL;
-	p->contour_tree = rnd_r_create_tree();
-}
-
-rnd_polyarea_t *rnd_polyarea_create(void)
-{
-	rnd_polyarea_t *res;
-
-	if ((res = (rnd_polyarea_t *) malloc(sizeof(rnd_polyarea_t))) != NULL)
-		rnd_polyarea_init(res);
-	return res;
-}
-
-
 void rnd_polyarea_free(rnd_polyarea_t ** p)
 {
 	rnd_polyarea_t *cur;

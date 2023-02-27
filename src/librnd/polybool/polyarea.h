@@ -143,10 +143,11 @@ int pa_pline_is_point_inside(const rnd_pline_t *c, rnd_vector_t v);
    other). */
 rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner);
 
-rnd_polyarea_t *rnd_polyarea_create(void);
+/* Allocate and initialize an empty polyarea (single island initially) */
+rnd_polyarea_t *pa_polyarea_alloc(void);
 
 void rnd_polyarea_free(rnd_polyarea_t **p);
-void rnd_polyarea_init(rnd_polyarea_t *p);
+void pa_polyarea_init(rnd_polyarea_t *p); /* reset/initialize p's fields (call after malloc) */
 void rnd_poly_plines_free(rnd_pline_t **pl);
 rnd_bool rnd_poly_valid(rnd_polyarea_t *p);
 
@@ -245,5 +246,7 @@ rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
 rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
 rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c);
+void rnd_polyarea_init(rnd_polyarea_t *p);
+rnd_polyarea_t *rnd_polyarea_create(void);
 
 #endif /* RND_POLYAREA_H */

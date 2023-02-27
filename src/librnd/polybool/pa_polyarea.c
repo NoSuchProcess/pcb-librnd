@@ -217,3 +217,20 @@ rnd_bool pa_polyarea_insert_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
 	rnd_r_insert_entry(pa->contour_tree, (rnd_box_t *)pl);
 	return rnd_true;
 }
+
+void pa_polyarea_init(rnd_polyarea_t *pa)
+{
+	pa->f = pa->b = pa; /* single island */
+	pa->contours = NULL;
+	pa->contour_tree = rnd_r_create_tree();
+}
+
+rnd_polyarea_t *pa_polyarea_alloc(void)
+{
+	rnd_polyarea_t *res =malloc(sizeof(rnd_polyarea_t));
+
+	if (res != NULL)
+		pa_polyarea_init(res);
+
+	return res;
+}
