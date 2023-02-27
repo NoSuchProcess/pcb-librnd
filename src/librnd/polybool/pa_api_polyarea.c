@@ -33,29 +33,6 @@
       are marked
 */
 
-rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t * p, rnd_pline_t * c)
-{
-	rnd_pline_t *tmp;
-
-	if ((c == NULL) || (p == NULL))
-		return rnd_false;
-	if (c->flg.orient == RND_PLF_DIR) {
-		if (p->contours != NULL)
-			return rnd_false;
-		p->contours = c;
-	}
-	else {
-		if (p->contours == NULL)
-			return rnd_false;
-		/* link at front of hole list */
-		tmp = p->contours->next;
-		p->contours->next = c;
-		c->next = tmp;
-	}
-	rnd_r_insert_entry(p->contour_tree, (rnd_box_t *) c);
-	return rnd_true;
-}
-
 void rnd_polyarea_init(rnd_polyarea_t * p)
 {
 	p->f = p->b = p;

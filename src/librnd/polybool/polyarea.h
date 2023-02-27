@@ -118,8 +118,12 @@ rnd_bool pa_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *src)
    pline list. Caller needs to make sure dst is empty */
 rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 
+/* Insert pl (outer contour or hole) in pa. Returns true on success. pl's
+   direction matters: positive means outer, negative means hole. Fails
+   when inserting an outer in a pa that already has outer, or inserting a hole
+   in a pa that doesn't have an outer. */
+rnd_bool pa_polyarea_insert_pline(rnd_polyarea_t *pa, rnd_pline_t *pl);
 
-rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c);
 rnd_bool rnd_polyarea_contour_exclude(rnd_polyarea_t *p, rnd_pline_t *c);
 
 
@@ -240,5 +244,6 @@ int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner);
 rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
 rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
+rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c);
 
 #endif /* RND_POLYAREA_H */

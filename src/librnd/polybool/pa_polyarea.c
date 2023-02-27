@@ -188,3 +188,32 @@ rnd_bool rnd_polyarea_alloc_copy_all(rnd_polyarea_t **dst, const rnd_polyarea_t 
 	*dst = pa_polyarea_dup_all(src);
 	return (dst != NULL);
 }
+
+rnd_bool pa_polyarea_insert_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
+{
+	if ((pa == NULL) || (pl == NULL))
+		return rnd_false;
+
+	if (pl->flg.orient == RND_PLF_DIR) {
+		/* outer (positive) contour */
+		if (pa->contours != NULL)
+			return rnd_false;
+
+		pa->contours = pl;
+	}
+	else {
+		rnd_pline_t *tmp;
+
+		/* inner (nagative, hole) contour */
+		if (pa->contours == NULL)
+			return rnd_false;
+
+		/* link at front of hole list */
+		tmp = pa->contours->next;
+		pa->contours->next = pl;
+		pl->next = tmp;
+	}
+
+	rnd_r_insert_entry(pa->contour_tree, (rnd_box_t *)pl);
+	return rnd_true;
+}
