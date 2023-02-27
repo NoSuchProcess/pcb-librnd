@@ -98,17 +98,23 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 	return rnd_false;
 }
 
-typedef struct pip {
+typedef struct pa_cin_ctx_s {
 	int f;
 	rnd_vector_t p;
-	jmp_buf env;
-} pip;
+} pa_cin_ctx_t;
 
+#define PA_CIN_CROSS \
+	rnd_vector_t v1, v2; \
+	rnd_long64_t cross; \
+	Vsub2(v1, s->v->next->point, s->v->point); \
+	Vsub2(v2, p->p, s->v->point); \
+	TODO("this can easily overflow with 64 bit coords"); \
+	cross = (rnd_long64_t)v1[0] * (rnd_long64_t)v2[1] - (rnd_long64_t)v2[0] * (rnd_long64_t)v1[1];
 
-static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
+static rnd_r_dir_t pa_cin_crossing(const rnd_box_t * b, void *cl)
 {
-	pa_seg_t *s = (pa_seg_t *) b;   /* polygon edge, line segment */
-	struct pip *p = (struct pip *) cl;  /* horizontal cutting line */
+	pa_seg_t *s = (pa_seg_t *)b;   /* polygon edge, line segment */
+	pa_cin_ctx_t *p = cl;          /* horizontal cutting line */
 
 	/* the horizontal cutting line is between vectors s->v and s->v->next, but
 	   these two can be in any order; because poly contour is CCW, this means if
@@ -116,56 +122,50 @@ static rnd_r_dir_t crossing(const rnd_box_t * b, void *cl)
 	   from outside to inside */
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
-			rnd_vector_t v1, v2;
-			rnd_long64_t cross;
-			Vsub2(v1, s->v->next->point, s->v->point);
-			Vsub2(v2, p->p, s->v->point);
-			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
+			PA_CIN_CROSS;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
-				longjmp(p->env, 1);
+				return RND_R_DIR_CANCEL;
 			}
 			if (cross > 0)
-				p->f += 1;
+				p->f++;
 		}
 	}
 	else { /* since the other side was <=, when we get here we also blocked horizontal lines of the negative direction */
 		if (s->v->next->point[1] <= p->p[1]) {
-			rnd_vector_t v1, v2;
-			rnd_long64_t cross;
-			Vsub2(v1, s->v->next->point, s->v->point);
-			Vsub2(v2, p->p, s->v->point);
-			cross = (rnd_long64_t) v1[0] * v2[1] - (rnd_long64_t) v2[0] * v1[1];
+			PA_CIN_CROSS;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
-				longjmp(p->env, 1);
+				return RND_R_DIR_CANCEL;
 			}
 			if (cross < 0)
-				p->f -= 1;
+				p->f--;
 		}
 	}
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
+int rnd_poly_contour_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 {
-	struct pip info;
+	pa_cin_ctx_t ctx;
 	rnd_box_t ray;
 
-	if (!pa_is_point_in_pline_box(c, p))
+	/* quick exit if point has not even in th bbox of pl*/
+	if (!pa_is_point_in_pline_box(pl, pt))
 		return rnd_false;
 
-	/* run a horizontal ray from the point to x->infinity and count (in info.f)
+	/* run a horizontal ray from the point to x->infinity and count (in ctx.f)
 	   how it crosses poly edges with different winding */
-	info.f = 0;
-	info.p[0] = ray.X1 = p[0];
-	info.p[1] = ray.Y1 = p[1];
+	ctx.f = 0;
+	ctx.p[0] = ray.X1 = pt[0];
+	ctx.p[1] = ray.Y1 = pt[1];
 	ray.X2 = RND_COORD_MAX;
-	ray.Y2 = p[1] + 1;
-	if (setjmp(info.env) == 0)
-		rnd_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
-	return info.f;
+	ray.Y2 = pt[1] + 1;
+
+	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
+
+	return ctx.f;
 }
 
 /***/
