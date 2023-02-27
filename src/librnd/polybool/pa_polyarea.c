@@ -148,3 +148,17 @@ rnd_bool pa_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *src)
 	return (*dst != NULL);
 }
 
+void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a)
+{
+	if (*list != NULL) {
+		/* insert at *list */
+		a->f = *list;
+		a->b = (*list)->b;
+		(*list)->b = (*list)->b->f = a;
+	}
+	else {
+		/* create new list */
+		a->f = a->b = a;
+		*list = a;
+	}
+}

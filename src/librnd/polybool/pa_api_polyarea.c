@@ -33,18 +33,6 @@
       are marked
 */
 
-
-void rnd_polyarea_m_include(rnd_polyarea_t ** list, rnd_polyarea_t * a)
-{
-	if (*list == NULL)
-		a->f = a->b = a, *list = a;
-	else {
-		a->f = *list;
-		a->b = (*list)->b;
-		(*list)->b = (*list)->b->f = a;
-	}
-}
-
 rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * srcfst)
 {
 	const rnd_polyarea_t *src = srcfst;
