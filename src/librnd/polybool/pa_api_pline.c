@@ -36,7 +36,7 @@
  */
 
 
-/* High level API functions (called mostly or only from outside) */
+/* High level pline API functions (called mostly or only from outside) */
 
 void rnd_poly_contour_clear(rnd_pline_t *pl)
 {
