@@ -76,19 +76,15 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
 	jmp_buf e;
 	int code;
 
-	if ((code = setjmp(e)) == 0) {
+	code = setjmp(e);
+	if (code == 0) {
 #ifdef DEBUG
-		if (!rnd_poly_valid(a))
-			return -1;
-		if (!rnd_poly_valid(b))
-			return -1;
+		if (!rnd_poly_valid(a) || !rnd_poly_valid(b)) return -1;
 #endif
 		pa_polyarea_intersect(&e, a, b, rnd_false);
 
-		if (pa_polyarea_label(a, b, rnd_true))
-			return rnd_true;
-		if (pa_polyarea_label(b, a, rnd_true))
-			return rnd_true;
+		if (pa_polyarea_label(a, b, rnd_true)) return rnd_true;
+		if (pa_polyarea_label(b, a, rnd_true)) return rnd_true;
 	}
 	else if (code == PA_ISC_TOUCHES)
 		return rnd_true;
