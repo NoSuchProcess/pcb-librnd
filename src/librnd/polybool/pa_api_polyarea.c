@@ -71,7 +71,7 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *pa, rnd_vector_t pt)
 }
 
 /* determine if two polygons touch or overlap; used in pcb-rnd */
-rnd_bool rnd_polyarea_touching(rnd_polyarea_t * a, rnd_polyarea_t * b)
+rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
 {
 	jmp_buf e;
 	int code;
