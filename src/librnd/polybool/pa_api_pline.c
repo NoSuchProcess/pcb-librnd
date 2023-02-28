@@ -89,7 +89,7 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 	lbx.Y2 = MAX(ly1, ly2);
 
 	if (pl->tree == NULL)
-		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
+		pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 
 	if (rnd_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == RND_R_DIR_CANCEL) {
 		if (cx != NULL) *cx = ctx.cx;
