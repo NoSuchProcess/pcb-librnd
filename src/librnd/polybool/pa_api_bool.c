@@ -33,15 +33,20 @@
       are marked
 */
 
-int rnd_polyarea_boolean(const rnd_polyarea_t * a_org, const rnd_polyarea_t * b_org, rnd_polyarea_t ** res, int action)
+int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd_polyarea_t **res, int action)
 {
 	rnd_polyarea_t *a = NULL, *b = NULL;
 
-	if (!rnd_polyarea_alloc_copy_all(&a, a_org) || !rnd_polyarea_alloc_copy_all(&b, b_org))
+	if (!rnd_polyarea_alloc_copy_all(&a, a_))
 		return pa_err_no_memory;
 
+	if (!rnd_polyarea_alloc_copy_all(&b, b_)) {
+		pa_polyarea_free_all(&a);
+		return pa_err_no_memory;
+	}
+
 	return rnd_polyarea_boolean_free(a, b, res, action);
-}																/* poly_Boolean */
+}
 
 /* just like poly_Boolean but frees the input polys */
 int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_polyarea_t ** res, int action)
