@@ -175,7 +175,12 @@ int rnd_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_p
 int rnd_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int op);
 
 
+/* compute the intersection and subtraction (divides "a" into two pieces)
+   and frees the input polys. This assumes that bi is a single simple polygon.
+   Runs faster than calling rnd_polyarea_boolean_free() twice because
+   some mapping needs to be done only once. */
 int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb);
+
 int rnd_polyarea_save(rnd_polyarea_t *PA, char *fname);
 
 /* calculate the bounding box of a rnd_polyarea_t and save result in b */

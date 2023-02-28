@@ -1,37 +1,39 @@
 /*
-       Copyright (C) 2006 harry eaton
-
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
 int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
 {
@@ -139,62 +141,53 @@ RND_INLINE void pa_polyarea_clear_marks(rnd_polyarea_t *pa)
 	} while((pan = pan->f) != pa);
 }
 
-/* compute the intersection and subtraction (divides "a" into two pieces)
- * and frees the input polys. This assumes that bi is a single simple polygon.
- */
-int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_polyarea_t ** aandb, rnd_polyarea_t ** aminusb)
+int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb)
 {
-	rnd_polyarea_t *a = ai, *b = bi;
-	rnd_pline_t *p, *holes = NULL;
+	rnd_pline_t *holes = NULL;
 	jmp_buf e;
 	int code;
 
-	*aandb = NULL;
-	*aminusb = NULL;
-
-	if ((code = setjmp(e)) == 0) {
+	*aandb = *aminusb = NULL;
 
 #ifdef DEBUG
-		if (!rnd_poly_valid(a))
-			return -1;
-		if (!rnd_poly_valid(b))
+		if (!rnd_poly_valid(a) || !rnd_poly_valid(b))
 			return -1;
 #endif
-		pa_polyarea_intersect(&e, a, b, rnd_true);
 
+
+	code = setjmp(e);
+	if (code == 0) {
+		/* map and label */
+		pa_polyarea_intersect(&e, a, b, rnd_true);
 		pa_polyarea_label(a, b, rnd_false);
 		pa_polyarea_label(b, a, rnd_false);
 
+		/* calculate aandb */
 		M_rnd_polyarea_t_Collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
 		rnd_poly_insert_holes(&e, *aandb, &holes);
 		assert(rnd_poly_valid(*aandb));
-		/* delete holes if any left */
-		while ((p = holes) != NULL) {
-			holes = p->next;
-			pa_pline_free(&p);
-		}
-		holes = NULL;
+
+		/* clean up temporary marks and hole list */
+		rnd_poly_plines_free(&holes); /* delete holes if any left (not inserted) */
 		pa_polyarea_clear_marks(a);
 		pa_polyarea_clear_marks(b);
+
+		/* calculate aminusb */
 		M_rnd_polyarea_t_Collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
 		rnd_poly_insert_holes(&e, *aminusb, &holes);
+		assert(rnd_poly_valid(*aminusb));
+
 		pa_polyarea_free_all(&a);
 		pa_polyarea_free_all(&b);
-		assert(rnd_poly_valid(*aminusb));
-	}
-	/* delete holes if any left */
-	while ((p = holes) != NULL) {
-		holes = p->next;
-		pa_pline_free(&p);
 	}
 
+	rnd_poly_plines_free(&holes); /* delete holes if any left (not inserted) */
 
-	if (code) {
+	if (code != 0) {
 		pa_polyarea_free_all(aandb);
 		pa_polyarea_free_all(aminusb);
 		return code;
 	}
-	assert(!*aandb || rnd_poly_valid(*aandb));
-	assert(!*aminusb || rnd_poly_valid(*aminusb));
+
 	return code;
-} /* poly_AndSubtract_free */
+}
