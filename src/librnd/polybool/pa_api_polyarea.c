@@ -48,20 +48,26 @@ void rnd_polyarea_bbox(rnd_polyarea_t *pa, rnd_box_t *b)
 	}
 }
 
-rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t * p, rnd_vector_t v0)
+/* Checks only the first island */
+rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *pa, rnd_vector_t pt)
 {
-	rnd_pline_t *cur;
+	rnd_pline_t *n;
 
-	if ((p == NULL) || (v0 == NULL) || (p->contours == NULL))
+	if ((pa == NULL) || (pt == NULL) || (pa->contours == NULL))
 		return rnd_false;
-	cur = p->contours;
-	if (pa_pline_is_point_inside(cur, v0)) {
-		for (cur = cur->next; cur != NULL; cur = cur->next)
-			if (pa_pline_is_point_inside(cur, v0))
-				return rnd_false;
-		return rnd_true;
-	}
-	return rnd_false;
+
+	n = pa->contours;
+
+	/* if pt is outside the outer contour of pa */
+	if (!pa_pline_is_point_inside(n, pt))
+		return rnd_false;
+
+	/* if pt is in any of the holes */
+	for(n = n->next; n != NULL; n = n->next)
+		if (pa_pline_is_point_inside(n, pt))
+			return rnd_false;
+
+	return rnd_true;
 }
 
 /* determine if two polygons touch or overlap; used in pcb-rnd */
