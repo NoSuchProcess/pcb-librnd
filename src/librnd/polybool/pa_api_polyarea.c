@@ -33,26 +33,18 @@
       are marked
 */
 
-void rnd_polyarea_bbox(rnd_polyarea_t * p, rnd_box_t * b)
+void rnd_polyarea_bbox(rnd_polyarea_t *pa, rnd_box_t *b)
 {
-	rnd_pline_t *n;
-	/*int cnt;*/
+	rnd_pline_t *n = pa->contours;
 
-	n = p->contours;
 	b->X1 = b->X2 = n->xmin;
 	b->Y1 = b->Y2 = n->ymin;
 
-	for (/*cnt = 0*/; /*cnt < 2 */ n != NULL; n = n->next) {
-		if (n->xmin < b->X1)
-			b->X1 = n->xmin;
-		if (n->ymin < b->Y1)
-			b->Y1 = n->ymin;
-		if (n->xmax > b->X2)
-			b->X2 = n->xmax;
-		if (n->ymax > b->Y2)
-			b->Y2 = n->ymax;
-/*		if (n == p->contours)
-			cnt++;*/
+	for(;n != NULL; n = n->next) {
+		if (n->xmin < b->X1) b->X1 = n->xmin;
+		if (n->ymin < b->Y1) b->Y1 = n->ymin;
+		if (n->xmax > b->X2) b->X2 = n->xmax;
+		if (n->ymax > b->Y2) b->Y2 = n->ymax;
 	}
 }
 
