@@ -156,7 +156,7 @@ enum rnd_poly_bool_op_e {
 	RND_PBO_ISECT,
 	RND_PBO_SUB,
 	RND_PBO_XOR
-};
+} rnd_poly_bool_op_t;
 
 double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2);
@@ -167,8 +167,14 @@ double rnd_vect_len2(rnd_vector_t v1);
    accordingly */
 int rnd_vect_inters2(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D, rnd_vector_t R1, rnd_vector_t R2);
 
-int rnd_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
-int rnd_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
+/* Generic polyarea boolean operation between a and b with resulting polyarea
+   put in res; op is one of rnd_poly_bool_op_t. The _free() variant frees a
+   and b and is faster. The non-_free variant makes a copy of a and b to preserve
+   them. Return 0 on success. */
+int rnd_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int op);
+int rnd_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int op);
+
+
 int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb);
 int rnd_polyarea_save(rnd_polyarea_t *PA, char *fname);
 

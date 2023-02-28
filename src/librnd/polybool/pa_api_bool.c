@@ -33,7 +33,7 @@
       are marked
 */
 
-int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd_polyarea_t **res, int action)
+int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
 {
 	rnd_polyarea_t *a = NULL, *b = NULL;
 
@@ -45,11 +45,10 @@ int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd
 		return pa_err_no_memory;
 	}
 
-	return rnd_polyarea_boolean_free(a, b, res, action);
+	return rnd_polyarea_boolean_free(a, b, res, op);
 }
 
-/* just like poly_Boolean but frees the input polys */
-int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int action)
+int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
 {
 	rnd_polyarea_t *a = a_, *b = b_;
 	rnd_pline_t *a_isected = NULL, *holes = NULL;
@@ -60,7 +59,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 
 	/* handle the case when either input is empty */
 	if (a == NULL) {
-		switch (action) {
+		switch (op) {
 			case RND_PBO_XOR:
 			case RND_PBO_UNITE:
 				*res = b_;
@@ -73,7 +72,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 		}
 	}
 	if (b == NULL) {
-		switch (action) {
+		switch (op) {
 			case RND_PBO_SUB:
 			case RND_PBO_XOR:
 			case RND_PBO_UNITE:
@@ -102,11 +101,11 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 		pa_polyarea_label(b, a, rnd_false);
 
 		*res = a;
-		M_rnd_polyarea_t_update_primary(&e, res, &holes, action, b);
+		M_rnd_polyarea_t_update_primary(&e, res, &holes, op, b);
 		M_rnd_polyarea_separate_isected(&e, res, &holes, &a_isected);
 		pa_polyarea_label_pline(a_isected, b, rnd_false);
-		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, rnd_false);
-		M_B_AREA_Collect(&e, b, res, &holes, action);
+		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, op, rnd_false);
+		M_B_AREA_Collect(&e, b, res, &holes, op);
 
 		pa_polyarea_free_all(&b);
 		rnd_poly_plines_free(&a_isected);
