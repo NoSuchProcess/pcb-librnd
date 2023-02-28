@@ -49,85 +49,81 @@ int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd
 }
 
 /* just like poly_Boolean but frees the input polys */
-int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_polyarea_t ** res, int action)
+int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int action)
 {
-	rnd_polyarea_t *a = ai, *b = bi;
-	rnd_pline_t *a_isected = NULL;
-	rnd_pline_t *p, *holes = NULL;
+	rnd_polyarea_t *a = a_, *b = b_;
+	rnd_pline_t *a_isected = NULL, *holes = NULL;
 	jmp_buf e;
 	int code;
 
 	*res = NULL;
 
-	if (!a) {
+	/* handle the case when either input is empty */
+	if (a == NULL) {
 		switch (action) {
-		case RND_PBO_XOR:
-		case RND_PBO_UNITE:
-			*res = bi;
-			return pa_err_ok;
-		case RND_PBO_SUB:
-		case RND_PBO_ISECT:
-			if (b != NULL)
-				pa_polyarea_free_all(&b);
-			return pa_err_ok;
+			case RND_PBO_XOR:
+			case RND_PBO_UNITE:
+				*res = b_;
+				return pa_err_ok;
+			case RND_PBO_SUB:
+			case RND_PBO_ISECT:
+				if (b != NULL)
+					pa_polyarea_free_all(&b);
+				return pa_err_ok;
 		}
 	}
-	if (!b) {
+	if (b == NULL) {
 		switch (action) {
-		case RND_PBO_SUB:
-		case RND_PBO_XOR:
-		case RND_PBO_UNITE:
-			*res = ai;
-			return pa_err_ok;
-		case RND_PBO_ISECT:
-			if (a != NULL)
-				pa_polyarea_free_all(&a);
-			return pa_err_ok;
+			case RND_PBO_SUB:
+			case RND_PBO_XOR:
+			case RND_PBO_UNITE:
+				*res = a_;
+				return pa_err_ok;
+			case RND_PBO_ISECT:
+				if (a != NULL)
+					pa_polyarea_free_all(&a);
+				return pa_err_ok;
 		}
 	}
 
-	if ((code = setjmp(e)) == 0) {
+	/* Need to calculate intersections, label contours, etc. */
+
+	code = setjmp(e);
+	if (code == 0) {
 #ifdef DEBUG
-		assert(rnd_poly_valid(a));
-		assert(rnd_poly_valid(b));
+		assert(rnd_poly_valid(a) && rnd_poly_valid(b));
 #endif
 
 		/* intersect needs to make a list of the contours in a and b which are intersected */
 		pa_polyarea_intersect(&e, a, b, rnd_true);
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
-		/* NB: Relevant parts of a are labeled below */
+		/* (Relevant parts of a are labeled below) */
 		pa_polyarea_label(b, a, rnd_false);
 
 		*res = a;
 		M_rnd_polyarea_t_update_primary(&e, res, &holes, action, b);
 		M_rnd_polyarea_separate_isected(&e, res, &holes, &a_isected);
-		pa_polyarea_label_pline(a_isected, b, rnd_false); /* label a_isected */
+		pa_polyarea_label_pline(a_isected, b, rnd_false);
 		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, rnd_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
-		pa_polyarea_free_all(&b);
 
-		/* free a_isected */
-		while ((p = a_isected) != NULL) {
-			a_isected = p->next;
-			pa_pline_free(&p);
-		}
+		pa_polyarea_free_all(&b);
+		rnd_poly_plines_free(&a_isected);
 
 		rnd_poly_insert_holes(&e, *res, &holes);
 	}
-	/* delete holes if any left */
-	while ((p = holes) != NULL) {
-		holes = p->next;
-		pa_pline_free(&p);
-	}
 
-	if (code) {
+	rnd_poly_plines_free(&holes); /* delete holes if any left (they are already inserted) */
+
+	if (code != 0) {
 		pa_polyarea_free_all(res);
 		return code;
 	}
+
 	assert(!*res || rnd_poly_valid(*res));
 	return code;
-}																/* poly_Boolean_free */
+}
 
 static void clear_marks(rnd_polyarea_t * p)
 {
