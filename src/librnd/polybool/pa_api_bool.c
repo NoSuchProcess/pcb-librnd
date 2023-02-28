@@ -124,22 +124,19 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 	return code;
 }
 
-static void clear_marks(rnd_polyarea_t * p)
+RND_INLINE void pa_polyarea_clear_marks(rnd_polyarea_t *pa)
 {
-	rnd_polyarea_t *n = p;
-	rnd_pline_t *c;
-	rnd_vnode_t *v;
+	rnd_polyarea_t *pan = pa;
 
 	do {
-		for (c = n->contours; c; c = c->next) {
-			v = c->head;
+		rnd_pline_t *pln;
+		for(pln = pan->contours; pln != NULL; pln = pln->next) {
+			rnd_vnode_t *vn = pln->head;
 			do {
-				v->flg.mark = 0;
-			}
-			while ((v = v->next) != c->head);
+				vn->flg.mark = 0;
+			} while((vn = vn->next) != pln->head);
 		}
-	}
-	while ((n = n->f) != p);
+	} while((pan = pan->f) != pa);
 }
 
 /* compute the intersection and subtraction (divides "a" into two pieces)
@@ -177,8 +174,8 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 			pa_pline_free(&p);
 		}
 		holes = NULL;
-		clear_marks(a);
-		clear_marks(b);
+		pa_polyarea_clear_marks(a);
+		pa_polyarea_clear_marks(b);
 		M_rnd_polyarea_t_Collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
 		rnd_poly_insert_holes(&e, *aminusb, &holes);
 		pa_polyarea_free_all(&a);
