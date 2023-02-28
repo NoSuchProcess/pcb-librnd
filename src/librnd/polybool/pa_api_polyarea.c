@@ -33,24 +33,6 @@
       are marked
 */
 
-void rnd_polyarea_free(rnd_polyarea_t ** p)
-{
-	rnd_polyarea_t *cur;
-
-	if (*p == NULL)
-		return;
-	for (cur = (*p)->f; cur != *p; cur = (*p)->f) {
-		rnd_poly_plines_free(&cur->contours);
-		rnd_r_destroy_tree(&cur->contour_tree);
-		cur->f->b = cur->b;
-		cur->b->f = cur->f;
-		free(cur);
-	}
-	rnd_poly_plines_free(&cur->contours);
-	rnd_r_destroy_tree(&cur->contour_tree);
-	free(*p), *p = NULL;
-}
-
 void rnd_polyarea_bbox(rnd_polyarea_t * p, rnd_box_t * b)
 {
 	rnd_pline_t *n;

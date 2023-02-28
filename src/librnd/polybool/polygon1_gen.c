@@ -411,7 +411,7 @@ static void r_NoHolesPolygonDicer(rnd_polyarea_t * pa, void (*emit) (rnd_pline_t
 		/* Don't bother removing it from the rnd_polyarea_t's rtree
 		   since we're going to free the rnd_polyarea_t below anyway */
 		emit(p, user_data);
-		rnd_polyarea_free(&pa);
+		pa_polyarea_free_all(&pa);
 		return;
 	}
 	else {

@@ -63,7 +63,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		case RND_PBO_SUB:
 		case RND_PBO_ISECT:
 			if (b != NULL)
-				rnd_polyarea_free(&b);
+				pa_polyarea_free_all(&b);
 			return pa_err_ok;
 		}
 	}
@@ -76,7 +76,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 			return pa_err_ok;
 		case RND_PBO_ISECT:
 			if (a != NULL)
-				rnd_polyarea_free(&a);
+				pa_polyarea_free_all(&a);
 			return pa_err_ok;
 		}
 	}
@@ -100,7 +100,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 		pa_polyarea_label_pline(a_isected, b, rnd_false); /* label a_isected */
 		M_rnd_polyarea_t_Collect_separated(&e, a_isected, res, &holes, action, rnd_false);
 		M_B_AREA_Collect(&e, b, res, &holes, action);
-		rnd_polyarea_free(&b);
+		pa_polyarea_free_all(&b);
 
 		/* free a_isected */
 		while ((p = a_isected) != NULL) {
@@ -117,7 +117,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd_poly
 	}
 
 	if (code) {
-		rnd_polyarea_free(res);
+		pa_polyarea_free_all(res);
 		return code;
 	}
 	assert(!*res || rnd_poly_valid(*res));
@@ -181,8 +181,8 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 		clear_marks(b);
 		M_rnd_polyarea_t_Collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
 		rnd_poly_insert_holes(&e, *aminusb, &holes);
-		rnd_polyarea_free(&a);
-		rnd_polyarea_free(&b);
+		pa_polyarea_free_all(&a);
+		pa_polyarea_free_all(&b);
 		assert(rnd_poly_valid(*aminusb));
 	}
 	/* delete holes if any left */
@@ -193,8 +193,8 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 
 
 	if (code) {
-		rnd_polyarea_free(aandb);
-		rnd_polyarea_free(aminusb);
+		pa_polyarea_free_all(aandb);
+		pa_polyarea_free_all(aminusb);
 		return code;
 	}
 	assert(!*aandb || rnd_poly_valid(*aandb));

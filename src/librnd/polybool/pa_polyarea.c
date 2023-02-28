@@ -234,3 +234,32 @@ rnd_polyarea_t *pa_polyarea_alloc(void)
 
 	return res;
 }
+
+/* free a single polyarea, a single island (does NOT unlink it from the
+   island list) */
+RND_INLINE void pa_polyarea_free(rnd_polyarea_t *pa)
+{
+	rnd_poly_plines_free(&pa->contours);
+	rnd_r_destroy_tree(&pa->contour_tree);
+	free(pa);
+}
+
+void pa_polyarea_free_all(rnd_polyarea_t **pa)
+{
+	rnd_polyarea_t *n, *head = *pa;
+
+	if (*pa == NULL)
+		return;
+
+	for(n = head->f; n != head; n = head->f) {
+		n->f->b = n->b;
+		n->b->f = n->f;
+		pa_polyarea_free(n);
+	}
+
+	/* the above loop did not run on head because we started on head->f */
+	assert(n == head);
+	pa_polyarea_free(n);
+
+	*pa = NULL;
+}

@@ -15,3 +15,5 @@ rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst
 rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c) { return pa_polyarea_insert_pline(p, c); }
 void rnd_polyarea_init(rnd_polyarea_t *p) { pa_polyarea_init(p); }
 rnd_polyarea_t *rnd_polyarea_create(void) { return pa_polyarea_alloc(); }
+void rnd_polyarea_free(rnd_polyarea_t **p) { pa_polyarea_free_all(p); }
+

@@ -443,7 +443,7 @@ static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** piece
 
 				if (is_first && is_last) {
 					remove_polyarea(pieces, a);
-					rnd_polyarea_free(&a);				/* NB: Sets a to NULL */
+					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
 				}
 
 			}
@@ -568,7 +568,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 				}
 
 				remove_polyarea(pieces, a);
-				rnd_polyarea_free(&a);					/* NB: Sets a to NULL */
+				pa_polyarea_free_all(&a);					/* NB: Sets a to NULL */
 
 				continue;
 			}
@@ -664,7 +664,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 
 				if (is_first && is_last) {
 					remove_polyarea(pieces, a);
-					rnd_polyarea_free(&a);				/* NB: Sets a to NULL */
+					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
 				}
 
 			}
