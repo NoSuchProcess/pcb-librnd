@@ -263,3 +263,14 @@ void pa_polyarea_free_all(rnd_polyarea_t **pa)
 
 	*pa = NULL;
 }
+
+/* Returns the number of polyareas on the list of src */
+RND_INLINE long pa_polyarea_count(rnd_polyarea_t *src)
+{
+	rnd_polyarea_t *n = src;
+	long cnt = 0;
+
+	do { cnt++; } while((n = n->f) != src);
+
+	return cnt;
+}
