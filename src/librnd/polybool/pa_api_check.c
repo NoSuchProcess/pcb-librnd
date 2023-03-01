@@ -35,25 +35,39 @@
 
 /* Check validity/integrity */
 
-static rnd_bool inside_sector(rnd_vnode_t * pn, rnd_vector_t p2)
+/* Consider the previous and next edge around pn; consider a vector from pn
+   to p2 called cdir. Return true if cdir is between the two edge vectors,
+   inside the poligon. In other words, return if the direction from pn to
+   p2 is going inside the polygon from pn. */
+static rnd_bool pa_vect_inside_sect(rnd_vnode_t *pn, rnd_vector_t p2)
 {
 	rnd_vector_t cdir, ndir, pdir;
-	int p_c, n_c, p_n;
+	int cdir_above_prev, cdir_above_next, poly_edge_pos;
 
 	assert(pn != NULL);
-	Vsub2(cdir, p2, pn->point);
-	Vsub2(pdir, pn->point, pn->prev->point);
-	Vsub2(ndir, pn->next->point, pn->point);
 
-	p_c = rnd_vect_det2(pdir, cdir) >= 0;
-	n_c = rnd_vect_det2(ndir, cdir) >= 0;
-	p_n = rnd_vect_det2(pdir, ndir) >= 0;
+	Vsub2(cdir, p2,              pn->point);            /* p2 to pn */
+	Vsub2(pdir, pn->point,       pn->prev->point);      /* pn to pn prev */
+	Vsub2(ndir, pn->next->point, pn->point);            /* pn next to pn */
 
-	if ((p_n && p_c && n_c) || ((!p_n) && (p_c || n_c)))
-		return rnd_true;
+	/* Whether target vector (cdir) is "above" previous and next edge vectors */
+	cdir_above_prev = rnd_vect_det2(pdir, cdir) >= 0;
+	cdir_above_next = rnd_vect_det2(ndir, cdir) >= 0;
+
+	/* Whetner next is "above" previous on the poly edge at pn */
+	poly_edge_pos = rnd_vect_det2(pdir, ndir) >= 0;
+
+	/* See doc/developer/polybool/pa_vect_inside_sect.svg; the code below
+	   checks if cdir is on the right combination of the thin arcs on the
+	   bottom row drawings; the right combination is the one that overlaps
+	   the in==true thick arc. */
+	if (poly_edge_pos)
+		return (cdir_above_prev && cdir_above_next);
 	else
-		return rnd_false;
-}																/* inside_sector */
+		return (cdir_above_prev || cdir_above_next);
+
+	return rnd_false; /* can't get here */
+}
 
 /* returns rnd_true if bad contour */
 typedef struct {
@@ -151,7 +165,7 @@ TODO(": ugly workaround: test where exactly the intersection happens and tune th
 				else if (hit1 == NULL) {
 					/* An end-point of the second line touched somewhere along the
 					   length of the first line. Check where the second line leads. */
-					if (inside_sector(hit2, a1->point) != inside_sector(hit2, a1->next->point)) {
+					if (pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) {
 						PA_CHK_MARK(a1->point[0], a1->point[1]);
 						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
 						return PA_CHK_ERROR(res, "lines is inside sector (1) at %mm;%mm", a1->point[0], a1->point[1]);
@@ -160,7 +174,7 @@ TODO(": ugly workaround: test where exactly the intersection happens and tune th
 				else if (hit2 == NULL) {
 					/* An end-point of the first line touched somewhere along the
 					   length of the second line. Check where the first line leads. */
-					if (inside_sector(hit1, a2->point) != inside_sector(hit1, a2->next->point)) {
+					if (pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) {
 						PA_CHK_MARK(a2->point[0], a2->point[1]);
 						PA_CHK_MARK(hit1->point[0], hit1->point[1]);
 						return PA_CHK_ERROR(res, "lines is inside sector (2) at %mm;%mm", a2->point[0], a2->point[1]);
@@ -168,7 +182,7 @@ TODO(": ugly workaround: test where exactly the intersection happens and tune th
 				}
 				else {
 					/* Both lines intersect at an end-point. Check where they lead. */
-					if (inside_sector(hit1, hit2->prev->point) != inside_sector(hit1, hit2->next->point)) {
+					if (pa_vect_inside_sect(hit1, hit2->prev->point) != pa_vect_inside_sect(hit1, hit2->next->point)) {
 						PA_CHK_MARK(hit1->point[0], hit2->point[1]);
 						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
 						return PA_CHK_ERROR(res, "lines is inside sector (3) at %mm;%mm or %mm;%mm", hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1]);
