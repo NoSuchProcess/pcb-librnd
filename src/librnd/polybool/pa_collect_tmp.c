@@ -100,19 +100,22 @@ static void put_contour(jmp_buf *e, rnd_pline_t *pl, rnd_polyarea_t **contours, 
 	}
 }
 
-static inline void remove_contour(rnd_polyarea_t * piece, rnd_pline_t * prev_contour, rnd_pline_t * contour, int remove_rtree_entry)
+RND_INLINE void remove_contour(rnd_polyarea_t *pa, rnd_pline_t *prev_contour, rnd_pline_t *contour, int remove_from_rtree)
 {
-	if (piece->contours == contour)
-		piece->contours = contour->next;
+	if (pa->contours == contour) {
+		/* remove from the front of the list */
+		pa->contours = contour->next;
+	}
 	else if (prev_contour != NULL) {
+		/* remove from the middle of the list */
 		assert(prev_contour->next == contour);
 		prev_contour->next = contour->next;
 	}
 
 	contour->next = NULL;
 
-	if (remove_rtree_entry)
-		rnd_r_delete_entry(piece->contour_tree, (rnd_box_t *) contour);
+	if (remove_from_rtree)
+		rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)contour);
 }
 
 struct polyarea_info {
