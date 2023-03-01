@@ -128,13 +128,13 @@ typedef struct pa_insert_holes_s {
 static rnd_r_dir_t pa_inshole_heap_it_cb(const rnd_box_t *b, void *ctx)
 {
 	rnd_heap_t *heap = (rnd_heap_t *)ctx;
-	pa_insert_holes_t *pa_info = (pa_insert_holes_t *)b;
-	rnd_pline_t *p = pa_info->pa->contours;
+	pa_insert_holes_t *insh_ctx = (pa_insert_holes_t *)b;
+	rnd_pline_t *p = insh_ctx->pa->contours;
 
 	if (p->Count == 0)
 		return RND_R_DIR_NOT_FOUND; /* shouldn't happen */
 
-	rnd_heap_insert(heap, p->area, pa_info);
+	rnd_heap_insert(heap, p->area, insh_ctx);
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
@@ -161,23 +161,23 @@ static rnd_r_dir_t pa_inshole_find_inside(const rnd_box_t *b, void *cl)
 }
 
 /* Builds an rtree and an insert-holes array of all polyeares of src */
-RND_INLINE void pa_inshole_build_rtree(rnd_polyarea_t *src, pa_insert_holes_t *all_pa_info, rnd_rtree_t *tree)
+RND_INLINE void pa_inshole_build_rtree(rnd_polyarea_t *src, pa_insert_holes_t *all_insh_ctx, rnd_rtree_t *tree)
 {
 	int i = 0;
 	rnd_polyarea_t *pa = src;
 
 	do {
-		all_pa_info[i].bbox.X1 = pa->contours->xmin; all_pa_info[i].bbox.Y1 = pa->contours->ymin;
-		all_pa_info[i].bbox.X2 = pa->contours->xmax; all_pa_info[i].bbox.Y2 = pa->contours->ymax;
-		all_pa_info[i].pa = pa;
-		rnd_r_insert_entry(tree, &all_pa_info[i].bbox);
+		all_insh_ctx[i].bbox.X1 = pa->contours->xmin; all_insh_ctx[i].bbox.Y1 = pa->contours->ymin;
+		all_insh_ctx[i].bbox.X2 = pa->contours->xmax; all_insh_ctx[i].bbox.Y2 = pa->contours->ymax;
+		all_insh_ctx[i].pa = pa;
+		rnd_r_insert_entry(tree, &all_insh_ctx[i].bbox);
 		i++;
 	} while((pa = pa->f) != src);
 }
 
 
-/* Search for the container of pl. Also loads pa_info as a side effect */
-RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **pa_info)
+/* Search for the container of pl. Also loads insh_ctx as a side effect */
+RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **insh_ctx)
 {
 	rnd_heap_t *heap;
 	rnd_pline_t *container;
@@ -196,22 +196,22 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 	}
 
 	/* Search the heap for the container. */
-	*pa_info = (pa_insert_holes_t *)rnd_heap_remove_smallest(heap);
+	*insh_ctx = (pa_insert_holes_t *)rnd_heap_remove_smallest(heap);
 
 	if (rnd_heap_is_empty(heap)) {
 		/* only one possibility it must be the right one */
-		assert(pa_pline_inside_pline((*pa_info)->pa->contours, pl));
-		container = (*pa_info)->pa->contours;
+		assert(pa_pline_inside_pline((*insh_ctx)->pa->contours, pl));
+		container = (*insh_ctx)->pa->contours;
 	}
 	else {
 		for(;;) {
-			if (pa_pline_inside_pline((*pa_info)->pa->contours, pl)) {
-				container = (*pa_info)->pa->contours;
+			if (pa_pline_inside_pline((*insh_ctx)->pa->contours, pl)) {
+				container = (*insh_ctx)->pa->contours;
 				break;
 			}
 			if (rnd_heap_is_empty(heap))
 				break;
-			*pa_info = (pa_insert_holes_t *)rnd_heap_remove_smallest(heap);
+			*insh_ctx = (pa_insert_holes_t *)rnd_heap_remove_smallest(heap);
 		}
 	}
 	rnd_heap_destroy(&heap);
@@ -225,7 +225,7 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 	rnd_pline_t *pl, *container;
 	rnd_rtree_t *tree;
 	int num_polyareas = 0;
-	pa_insert_holes_t *all_pa_info, *pa_info;
+	pa_insert_holes_t *all_insh_ctx, *insh_ctx;
 
 	if (*src == NULL) return; /* empty hole list */
 	if (dst == NULL) pa_error(pa_err_bad_parm); /* empty contour list */
@@ -233,15 +233,15 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 	num_polyareas = pa_polyarea_count(dst);
 
 	/* build an rtree of all the contours in dst and remember them in an array as well */
-	all_pa_info = malloc(sizeof(pa_insert_holes_t) * num_polyareas);
+	all_insh_ctx = malloc(sizeof(pa_insert_holes_t) * num_polyareas);
 	tree = rnd_r_create_tree();
-	pa_inshole_build_rtree(dst, all_pa_info, tree);
+	pa_inshole_build_rtree(dst, all_insh_ctx, tree);
 
 	/* loop through the holes and put them where they belong */
 	while((pl = *src) != NULL) {
 		*src = pl->next;
 
-		container = pa_inshole_find_container(e, dst, tree, pl, &pa_info);
+		container = pa_inshole_find_container(e, dst, tree, pl, &insh_ctx);
 		if (container == NULL) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -264,7 +264,7 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 
 				if (!setjmp(info.jb)) {
 					/* this shouldn't find the outer contour */
-					rnd_r_search(pa_info->pa->contour_tree, (rnd_box_t *)pl, NULL, pa_inshole_find_inside, &info, NULL);
+					rnd_r_search(insh_ctx->pa->contour_tree, (rnd_box_t *)pl, NULL, pa_inshole_find_inside, &info, NULL);
 					break; /* if there was no longjump, there was nothing found, quit from the for() */
 				}
 
@@ -277,7 +277,7 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 					prev = prev->next;
 
 				/* Remove hole from the contour and put it on the to-be-processed list */
-				remove_contour(pa_info->pa, prev, info.result, rnd_true);
+				remove_contour(insh_ctx->pa, prev, info.result, rnd_true);
 				info.result->next = *src;
 				*src = info.result;
 			}
@@ -285,10 +285,10 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 			/* link at front of hole list */
 			pl->next = container->next;
 			container->next = pl;
-			rnd_r_insert_entry(pa_info->pa->contour_tree, (rnd_box_t *)pl);
+			rnd_r_insert_entry(insh_ctx->pa->contour_tree, (rnd_box_t *)pl);
 		}
 	}
 
 	rnd_r_destroy_tree(&tree);
-	free(all_pa_info);
+	free(all_insh_ctx);
 }
