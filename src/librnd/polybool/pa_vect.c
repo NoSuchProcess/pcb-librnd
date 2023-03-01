@@ -80,7 +80,7 @@ double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2)
    270 degrees (-90 degrees). */
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2)
 {
-	return (((double)v1[0] * (double)v2[1]) - ((double) v2[0] * (double)v1[1]));
+	return (((double)v1[0] * (double)v2[1]) - ((double)v2[0] * (double)v1[1]));
 }
 
 /* Signed distance square between v1 and v2; positive if v1.x > v2.x or
