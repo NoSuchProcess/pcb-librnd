@@ -35,30 +35,29 @@
 
 /* routines for temporary storing resulting contours */
 
-#define MemGet(ptr, type) \
-  if (RND_UNLIKELY(((ptr) = (type *)malloc(sizeof(type))) == NULL))	\
-    pa_error(pa_err_no_memory);
 
-static void InsCntr(jmp_buf * e, rnd_pline_t * c, rnd_polyarea_t ** dst)
+RND_INLINE void insert_pline(jmp_buf *e, rnd_polyarea_t **dst, rnd_pline_t *pl)
 {
-	rnd_polyarea_t *newp;
+	rnd_polyarea_t *newp = malloc(sizeof(rnd_polyarea_t));
+
+	if (RND_UNLIKELY(newp == NULL))
+		pa_error(pa_err_no_memory);
 
 	if (*dst == NULL) {
-		MemGet(*dst, rnd_polyarea_t);
+		*dst = newp;
 		(*dst)->f = (*dst)->b = *dst;
-		newp = *dst;
 	}
 	else {
-		MemGet(newp, rnd_polyarea_t);
 		newp->f = *dst;
 		newp->b = (*dst)->b;
 		newp->f->b = newp->b->f = newp;
 	}
-	newp->contours = c;
+
+	newp->contours = pl;
 	newp->contour_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(newp->contour_tree, (rnd_box_t *) c);
-	c->next = NULL;
-}																/* InsCntr */
+	rnd_r_insert_entry(newp->contour_tree, (rnd_box_t *)pl);
+	pl->next = NULL;
+}
 
 static void
 PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_pline_t ** holes,
@@ -71,7 +70,7 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 	if (cntr->flg.orient == RND_PLF_DIR) {
 		if (owner != NULL)
 			rnd_r_delete_entry(owner->contour_tree, (rnd_box_t *) cntr);
-		InsCntr(e, cntr, contours);
+		insert_pline(e, contours, cntr);
 	}
 	/* put hole into temporary list */
 	else {
