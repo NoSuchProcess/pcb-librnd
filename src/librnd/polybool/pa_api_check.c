@@ -1,39 +1,41 @@
 /*
-       Copyright (C) 2006 harry eaton
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
-
-/* Check validity/integrity */
+/* Check validity/integrity of polyareas and polylines */
 
 /* Consider the previous and next edge around pn; consider a vector from pn
    to p2 called cdir. Return true if cdir is between the two edge vectors,
@@ -269,24 +271,19 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 #endif
 
 
-rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
+rnd_bool rnd_poly_valid(rnd_polyarea_t *p)
 {
-	rnd_pline_t *c;
+	rnd_pline_t *n;
 	pa_chk_res_t chk;
 
 	if ((p == NULL) || (p->contours == NULL)) {
-#if 0
-(disabled for too many false positive)
-#ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid polyarea: no contours\n");
-#endif
-#endif
+		/* technically an empty polyarea should be valid, tho */
 		return rnd_false;
 	}
 
 	if (p->contours->flg.orient == RND_PLF_INV) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed orient\n");
+		rnd_fprintf(stderr, "Invalid Outer pline: wrong orientation (shall be positive)\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, NULL);
 #endif
 		return rnd_false;
@@ -294,31 +291,32 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 
 	if (pa_pline_check_(p->contours, &chk)) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed contour check\n");
+		rnd_fprintf(stderr, "Invalid Outer pline: self-intersection\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, &chk);
 #endif
 		return rnd_false;
 	}
 
-	for (c = p->contours->next; c != NULL; c = c->next) {
-		if (c->flg.orient == RND_PLF_DIR) {
+	/* check all holes */
+	for(n = p->contours->next; n != NULL; n = n->next) {
+		if (n->flg.orient == RND_PLF_DIR) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner: rnd_pline_t orient = %d\n", c->flg.orient);
-			rnd_poly_valid_report(c, c->head, NULL);
+			rnd_fprintf(stderr, "Invalid Inner (hole): pline orient (shall be negative)\n");
+			rnd_poly_valid_report(n, n->head, NULL);
 #endif
 			return rnd_false;
 		}
-		if (pa_pline_check_(c, &chk)) {
+		if (pa_pline_check_(n, &chk)) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner: failed contour check\n");
-			rnd_poly_valid_report(c, c->head, &chk);
+			rnd_fprintf(stderr, "Invalid Inner (hole): self-intersection\n");
+			rnd_poly_valid_report(n, n->head, &chk);
 #endif
 			return rnd_false;
 		}
-		if (!pa_pline_inside_pline(p->contours, c)) {
+		if (!pa_pline_inside_pline(p->contours, n)) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner: overlap with outer\n");
-			rnd_poly_valid_report(c, c->head, NULL);
+			rnd_fprintf(stderr, "Invalid Inner (hole): overlap with outer\n");
+			rnd_poly_valid_report(n, n->head, NULL);
 #endif
 			return rnd_false;
 		}
