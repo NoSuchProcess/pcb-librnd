@@ -59,41 +59,46 @@ RND_INLINE void insert_pline(jmp_buf *e, rnd_polyarea_t **dst, rnd_pline_t *pl)
 	pl->next = NULL;
 }
 
-static void
-PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_pline_t ** holes,
-					 rnd_polyarea_t * owner, rnd_polyarea_t * parent, rnd_pline_t * parent_contour)
+/* Put pl on a list:
+    - if it's an outer contour, on contours;
+    - if it's a hole with a known new_parent, on the pline list of the new parent
+    - if it's a hole with a unknown new_parent, on the temporary holes list
+   Arguments:
+    - old_parent is the current parent of pl (or NULL).
+    - new_parent is where pl is inserted (or NULL)
+    - new_parent_contour is the outer contour of new_parent (or NULL)
+*/
+static void put_contour(jmp_buf *e, rnd_pline_t *pl, rnd_polyarea_t **contours, rnd_pline_t **holes, rnd_polyarea_t *old_parent, rnd_polyarea_t *new_parent, rnd_pline_t *new_parent_contour)
 {
-	assert(cntr != NULL);
-	assert(cntr->Count > 2);
-	cntr->next = NULL;
+	assert((pl != NULL) && (pl->Count > 2));
 
-	if (cntr->flg.orient == RND_PLF_DIR) {
-		if (owner != NULL)
-			rnd_r_delete_entry(owner->contour_tree, (rnd_box_t *) cntr);
-		insert_pline(e, contours, cntr);
+	pl->next = NULL; /* unlink from its original list of plines */
+
+	if (pl->flg.orient == RND_PLF_DIR) { /* outer contour */
+		if (old_parent != NULL)
+			rnd_r_delete_entry(old_parent->contour_tree, (rnd_box_t *)pl);
+		insert_pline(e, contours, pl);
 	}
-	/* put hole into temporary list */
-	else {
-		/* if we know this belongs inside the parent, put it there now */
-		if (parent_contour) {
-			cntr->next = parent_contour->next;
-			parent_contour->next = cntr;
-			if (owner != parent) {
-				if (owner != NULL)
-					rnd_r_delete_entry(owner->contour_tree, (rnd_box_t *) cntr);
-				rnd_r_insert_entry(parent->contour_tree, (rnd_box_t *) cntr);
+	else { /* inner: hole */
+		if (new_parent_contour != NULL) { /* known parent */
+			pl->next = new_parent_contour->next;
+			new_parent_contour->next = pl;
+			if (old_parent != new_parent) { /* parent changed, move from one rtree to another */
+				if (old_parent != NULL)
+					rnd_r_delete_entry(old_parent->contour_tree, (rnd_box_t *)pl);
+				rnd_r_insert_entry(new_parent->contour_tree, (rnd_box_t *)pl);
 			}
 		}
-		else {
-			cntr->next = *holes;
-			*holes = cntr;						/* let cntr be 1st hole in list */
-			/* We don't insert the holes into an r-tree,
-			 * they just form a linked list */
-			if (owner != NULL)
-				rnd_r_delete_entry(owner->contour_tree, (rnd_box_t *) cntr);
+		else { /* no known parent - put hole into temporary list */
+			/* prepend pl in holes */
+			pl->next = *holes;
+			*holes = pl;
+			/* don't insert temporary holes into an r-tree, just on a linked list */
+			if (old_parent != NULL)
+				rnd_r_delete_entry(old_parent->contour_tree, (rnd_box_t *)pl);
 		}
 	}
-}																/* PutContour */
+}
 
 static inline void remove_contour(rnd_polyarea_t * piece, rnd_pline_t * prev_contour, rnd_pline_t * contour, int remove_rtree_entry)
 {

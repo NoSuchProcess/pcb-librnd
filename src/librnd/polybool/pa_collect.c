@@ -225,7 +225,7 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 #ifdef DEBUG_GATHER
 		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->flg.orient ? 'F' : 'B');
 #endif
-		PutContour(e, p, contours, holes, NULL, NULL, NULL);
+		put_contour(e, p, contours, holes, NULL, NULL, NULL);
 	}
 	else {
 		/* some sort of computation error ? */
@@ -280,21 +280,21 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 		case RND_PBO_ISECT:
 			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
 				tmprev = *A;
-				/* disappear this contour (rtree entry removed in PutContour) */
+				/* disappear this contour (rtree entry removed in put_contour) */
 				*A = tmprev->next;
 				tmprev->next = NULL;
-				PutContour(e, tmprev, contours, holes, owner, NULL, NULL);
+				put_contour(e, tmprev, contours, holes, owner, NULL, NULL);
 				return rnd_true;
 			}
 			break;
 		case RND_PBO_XOR:
 			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
 				tmprev = *A;
-				/* disappear this contour (rtree entry removed in PutContour) */
+				/* disappear this contour (rtree entry removed in put_contour) */
 				*A = tmprev->next;
 				tmprev->next = NULL;
 				pa_pline_invert(tmprev);
-				PutContour(e, tmprev, contours, holes, owner, NULL, NULL);
+				put_contour(e, tmprev, contours, holes, owner, NULL, NULL);
 				return rnd_true;
 			}
 			/* break; *//* Fall through (I think this is correct! pcjc2) */
@@ -302,10 +302,10 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 		case RND_PBO_SUB:
 			if ((*A)->flg.llabel == PA_PLL_OUTSIDE) {
 				tmprev = *A;
-				/* disappear this contour (rtree entry removed in PutContour) */
+				/* disappear this contour (rtree entry removed in put_contour) */
 				*A = tmprev->next;
 				tmprev->next = NULL;
-				PutContour(e, tmprev, contours, holes, owner, parent, parent_contour);
+				put_contour(e, tmprev, contours, holes, owner, parent, parent_contour);
 				return rnd_true;
 			}
 			break;
@@ -337,7 +337,7 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 					next = cur;
 					tmp->next = NULL;
 					tmp->flg.llabel = PA_PLL_UNKNWN;
-					PutContour(e, tmp, contours, holes, b, NULL, NULL);
+					put_contour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
 				case RND_PBO_UNITE:
 					break;								/* nothing to do - already included */
@@ -352,7 +352,7 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 					next = cur;
 					tmp->next = NULL;
 					tmp->flg.llabel = PA_PLL_UNKNWN;
-					PutContour(e, tmp, contours, holes, b, NULL, NULL);
+					put_contour(e, tmp, contours, holes, b, NULL, NULL);
 					break;
 				case RND_PBO_ISECT:
 				case RND_PBO_SUB:
