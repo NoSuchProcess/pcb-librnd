@@ -69,7 +69,7 @@ static rnd_bool pa_vect_inside_sect(rnd_vnode_t *pn, rnd_vector_t p2)
 	return rnd_false; /* can't get here */
 }
 
-/* returns rnd_true if bad contour */
+/*** pa_chk: remember coords where the contour broke to ease debugging ***/
 typedef struct {
 	int marks, lines;
 #ifndef NDEBUG
@@ -116,7 +116,23 @@ RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
 	return rnd_true;
 }
 
-rnd_bool rnd_polyarea_contour_check_(rnd_pline_t *a, pa_chk_res_t *res)
+
+/* If an intersection happens close to endpoints of a pline edge, return
+   the node involved, else return NULL */
+rnd_vnode_t *pa_check_find_close_node(rnd_vector_t intersection, rnd_vnode_t *pn)
+{
+	if (rnd_vect_dist2(intersection, pn->point) < RND_POLY_ENDP_EPSILON)
+		return pn;
+	if (rnd_vect_dist2(intersection, pn->next->point) < RND_POLY_ENDP_EPSILON)
+		return pn->next;
+	return NULL;
+}
+
+/*** Contour check ***/
+
+/* returns rnd_true if contour is invalid: a self-touching contour is valid, but
+   a self-intersecting contour is not. */
+RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 {
 	rnd_vnode_t *a1, *a2, *hit1, *hit2;
 	rnd_vector_t i1, i2;
@@ -128,78 +144,74 @@ rnd_bool rnd_polyarea_contour_check_(rnd_pline_t *a, pa_chk_res_t *res)
 	res->marks = res->lines = 0;
 
 	assert(a != NULL);
+
 	a1 = a->head;
 	do {
 		a2 = a1;
 		do {
-			if (!pa_are_nodes_neighbours(a1, a2) && (icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2)) > 0) {
-				if (icnt > 1) {
+
+			/* count invalid intersections */
+			if (pa_are_nodes_neighbours(a1, a2)) continue; /* neighbors are okay to intersect */
+			icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2);
+			if (icnt == 0) continue;
+
+			if (icnt > 1) { /* two intersections; must be overlapping lines */
+				PA_CHK_MARK(a1->point[0], a1->point[1]);
+				PA_CHK_MARK(a2->point[0], a2->point[1]);
+				return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+			}
+
+			/* we have one intersection; figure if it happens on a node next to a1
+			   or a2 and store them in hit1 and hit2 */
+			hit1 = pa_check_find_close_node(i1, a1);
+			hit2 = pa_check_find_close_node(i1, a2);
+
+			if ((hit1 == NULL) && (hit2 == NULL)) {
+				/* intersection in the middle of two lines */
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+				PA_CHK_LINE(a2->point[0], a2->point[1], a2->next->point[0], a2->next->point[1]);
+				return PA_CHK_ERROR(res, "lines cross between %mm;%mm and %mm;%mm", a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+			}
+			else if (hit1 == NULL) {
+				/* An end-point of a2 touched somewhere along the length of a1. Check
+				   two edges of a1, one before and one after the intersection; if one
+				   is inside and one is outside, that's a1 crossing a2 (else it only
+				   touches and bounces back) */
+				if (pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) {
 					PA_CHK_MARK(a1->point[0], a1->point[1]);
-					PA_CHK_MARK(a2->point[0], a2->point[1]);
-					return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
-				}
-
-TODO(": ugly workaround: test where exactly the intersection happens and tune the endpoint of the line")
-				if (rnd_vect_dist2(i1, a1->point) < RND_POLY_ENDP_EPSILON)
-					hit1 = a1;
-				else if (rnd_vect_dist2(i1, a1->next->point) < RND_POLY_ENDP_EPSILON)
-					hit1 = a1->next;
-				else
-					hit1 = NULL;
-
-				if (rnd_vect_dist2(i1, a2->point) < RND_POLY_ENDP_EPSILON)
-					hit2 = a2;
-				else if (rnd_vect_dist2(i1, a2->next->point) < RND_POLY_ENDP_EPSILON)
-					hit2 = a2->next;
-				else
-					hit2 = NULL;
-
-				if ((hit1 == NULL) && (hit2 == NULL)) {
-					/* If the intersection didn't land on an end-point of either
-					 * line, we know the lines cross and we return rnd_true.
-					 */
-					PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-					PA_CHK_LINE(a2->point[0], a2->point[1], a2->next->point[0], a2->next->point[1]);
-					return PA_CHK_ERROR(res, "lines cross between %mm;%mm and %mm;%mm", a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
-				}
-				else if (hit1 == NULL) {
-					/* An end-point of the second line touched somewhere along the
-					   length of the first line. Check where the second line leads. */
-					if (pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) {
-						PA_CHK_MARK(a1->point[0], a1->point[1]);
-						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-						return PA_CHK_ERROR(res, "lines is inside sector (1) at %mm;%mm", a1->point[0], a1->point[1]);
-					}
-				}
-				else if (hit2 == NULL) {
-					/* An end-point of the first line touched somewhere along the
-					   length of the second line. Check where the first line leads. */
-					if (pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) {
-						PA_CHK_MARK(a2->point[0], a2->point[1]);
-						PA_CHK_MARK(hit1->point[0], hit1->point[1]);
-						return PA_CHK_ERROR(res, "lines is inside sector (2) at %mm;%mm", a2->point[0], a2->point[1]);
-					}
-				}
-				else {
-					/* Both lines intersect at an end-point. Check where they lead. */
-					if (pa_vect_inside_sect(hit1, hit2->prev->point) != pa_vect_inside_sect(hit1, hit2->next->point)) {
-						PA_CHK_MARK(hit1->point[0], hit2->point[1]);
-						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-						return PA_CHK_ERROR(res, "lines is inside sector (3) at %mm;%mm or %mm;%mm", hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1]);
-					}
+					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (1) at %mm;%mm", a1->point[0], a1->point[1]);
 				}
 			}
-		}
-		while ((a2 = a2->next) != a->head);
-	}
-	while ((a1 = a1->next) != a->head);
+			else if (hit2 == NULL) {
+				/* An end-point of a1 touched somewhere along the length of a2. Check
+				   two edges of a2, one before and one after the intersection; if one
+				   is inside and one is outside, that's a2 crossing a1 (else it only
+				   touches and bounces back) */
+				if (pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) {
+					PA_CHK_MARK(a2->point[0], a2->point[1]);
+					PA_CHK_MARK(hit1->point[0], hit1->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (2) at %mm;%mm", a2->point[0], a2->point[1]);
+				}
+			}
+			else {
+				/* Same as the above two cases, but compare hit1 to hit2 to find if it's a crossing */
+				if (pa_vect_inside_sect(hit1, hit2->prev->point) != pa_vect_inside_sect(hit1, hit2->next->point)) {
+					PA_CHK_MARK(hit1->point[0], hit2->point[1]);
+					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (3) at %mm;%mm or %mm;%mm", hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1]);
+				}
+			}
+		} while((a2 = a2->next) != a->head);
+	} while((a1 = a1->next) != a->head);
+
 	return rnd_false;
 }
 
 rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a)
 {
 	pa_chk_res_t res;
-	return rnd_polyarea_contour_check_(a, &res);
+	return pa_pline_check_(a, &res);
 }
 
 #ifndef NDEBUG
@@ -280,7 +292,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 		return rnd_false;
 	}
 
-	if (rnd_polyarea_contour_check_(p->contours, &chk)) {
+	if (pa_pline_check_(p->contours, &chk)) {
 #ifndef NDEBUG
 		rnd_fprintf(stderr, "Invalid Outer rnd_pline_t: failed contour check\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, &chk);
@@ -296,7 +308,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t * p)
 #endif
 			return rnd_false;
 		}
-		if (rnd_polyarea_contour_check_(c, &chk)) {
+		if (pa_pline_check_(c, &chk)) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner: failed contour check\n");
 			rnd_poly_valid_report(c, c->head, &chk);
