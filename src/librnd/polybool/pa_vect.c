@@ -77,7 +77,8 @@ double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2)
    the cross product increases, then from 90 to 180 decreases back to 0 then
    from 180 to 270 decreases further into negative and from 270 to 360 increases
    back to 0. Maximum is when v1-to-v2 is 90 degrees; minimum is when v1-to-v2 is
-   270 degrees (-90 degrees). */
+   270 degrees (-90 degrees).
+   Visual example: https://web.archive.org/web/20211026000030/https://engineeringstatics.org/cross-product-math.html */
 double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2)
 {
 	return (((double)v1[0] * (double)v2[1]) - ((double)v2[0] * (double)v1[1]));
