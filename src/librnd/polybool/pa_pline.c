@@ -325,3 +325,14 @@ void pa_pline_invert(rnd_pline_t *pl)
 
 	pl->flg.orient ^= 1;
 }
+
+RND_INLINE int pa_pline_is_first(rnd_polyarea_t *pa, rnd_pline_t *pl)
+{
+	return (pa->contours == pl);
+}
+
+
+RND_INLINE int pa_pline_is_last(rnd_pline_t *pl)
+{
+	return (pl->next == NULL);
+}

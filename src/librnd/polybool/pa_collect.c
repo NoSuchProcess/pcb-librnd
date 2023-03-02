@@ -365,18 +365,6 @@ RND_INLINE void pa_collect_b_area(jmp_buf *e, rnd_polyarea_t *B, rnd_polyarea_t 
 }
 
 
-static inline int contour_is_first(rnd_polyarea_t * a, rnd_pline_t * cur)
-{
-	return (a->contours == cur);
-}
-
-
-static inline int contour_is_last(rnd_pline_t * cur)
-{
-	return (cur->next == NULL);
-}
-
-
 static inline void remove_polyarea(rnd_polyarea_t ** list, rnd_polyarea_t * piece)
 {
 	/* If this item was the start of the list, advance that pointer */
@@ -414,8 +402,8 @@ static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** piece
 
 		prev = NULL;
 		for (curc = a->contours; curc != NULL; curc = next, is_outline = 0) {
-			int is_first = contour_is_first(a, curc);
-			int is_last = contour_is_last(curc);
+			int is_first = pa_pline_is_first(a, curc);
+			int is_last = pa_pline_is_last(curc);
 			int isect_contour = (curc->flg.llabel == PA_PLL_ISECTED);
 
 			next = curc->next;
@@ -628,8 +616,8 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 
 		prev = NULL;
 		for (curc = a->contours; curc != NULL; curc = next, is_outline = 0) {
-			int is_first = contour_is_first(a, curc);
-			int is_last = contour_is_last(curc);
+			int is_first = pa_pline_is_first(a, curc);
+			int is_last = pa_pline_is_last(curc);
 			int del_contour = 0;
 
 			next = curc->next;
