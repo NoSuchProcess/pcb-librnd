@@ -33,7 +33,9 @@
       are marked
 */
 
-/* collect the result */
+/* collect the resultint plines and polyareas */
+
+#define PB_OPTIMIZE
 
 typedef enum pa_direction_e { PA_FORWARD, PA_BACKWARD } pa_direction_t;
 typedef int (*pa_start_rule_t)(rnd_vnode_t *, pa_direction_t *);
@@ -419,225 +421,198 @@ RND_INLINE void pa_polyarea_separate_intersected(jmp_buf *e, rnd_polyarea_t **is
 	}
 }
 
+/*** update primary ***/
 
-struct find_inside_m_pa_info {
+typedef struct pa_find_pl_inside_pa_s {
 	jmp_buf jb;
 	rnd_polyarea_t *want_inside;
 	rnd_pline_t *result;
-};
+} pa_find_pl_inside_pa_t;
 
-static rnd_r_dir_t find_inside_m_pa(const rnd_box_t * b, void *cl)
+/* check if a polyline is within the swarch polyarea */
+static rnd_r_dir_t pa_find_pl_inside_pa(const rnd_box_t *b, void *cl)
 {
-	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
-	rnd_pline_t *check = (rnd_pline_t *) b;
-	/* Don't report for the main contour */
-	if (check->flg.orient == RND_PLF_DIR)
+	pa_find_pl_inside_pa_t *info = (pa_find_pl_inside_pa_t *)cl;
+	rnd_pline_t *pl = (rnd_pline_t *)b;
+
+	/* ignore main contour (positive means outer), ignore intersecteds */
+	if ((pl->flg.orient == RND_PLF_DIR) || (pl->flg.llabel == PA_PLL_ISECTED))
 		return RND_R_DIR_NOT_FOUND;
-	/* Don't look at contours marked as being intersected */
-	if (check->flg.llabel == PA_PLL_ISECTED)
-		return RND_R_DIR_NOT_FOUND;
-	if (pa_is_pline_in_polyarea(check, info->want_inside, rnd_false)) {
-		info->result = check;
+
+	if (pa_is_pline_in_polyarea(pl, info->want_inside, rnd_false)) {
+		info->result = pl;
 		longjmp(info->jb, 1);
 	}
+
 	return RND_R_DIR_NOT_FOUND;
 }
 
-
-static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** pieces, rnd_pline_t ** holes, int action, rnd_polyarea_t * bpa)
+/* returns whether pl overlaps box */
+RND_INLINE rnd_bool pa_contour_in_box(rnd_pline_t *pl, rnd_box_t box)
 {
-	rnd_polyarea_t *a = *pieces;
-	rnd_polyarea_t *b;
-	rnd_polyarea_t *anext;
-	rnd_pline_t *curc, *next, *prev;
-	rnd_box_t box;
-	/* int inv_inside = 0; */
-	int del_inside = 0;
-	int del_outside = 0;
-	int finished;
+	if (pl->xmin < box.X1) return 0;
+	if (pl->ymin < box.Y1) return 0;
+	if (pl->xmax > box.X2) return 0;
+	if (pl->ymax > box.Y2) return 0;
+	return 1;
+}
 
-	if (a == NULL)
-		return;
+RND_INLINE void pa_polyarea_update_primary_del_inside(jmp_buf *e, rnd_box_t box, rnd_polyarea_t **islands, rnd_pline_t **holes, rnd_polyarea_t *bpa)
+{
+	rnd_polyarea_t *pa, *panext;
+	rnd_pline_t *pl;
+	int finished = 0;
 
-	switch (action) {
-	case RND_PBO_ISECT:
-		del_outside = 1;
-		break;
-	case RND_PBO_UNITE:
-	case RND_PBO_SUB:
-		del_inside = 1;
-		break;
-	case RND_PBO_XOR:								/* NOT IMPLEMENTED OR USED */
-		/* inv_inside = 1; */
-		assert(0);
-		break;
-	}
+	for(pa = *islands; !finished && (*islands != NULL); pa = panext) {
+		panext = pa->f;
+		finished = (panext == *islands); /* reached where we started, stop next iteration */
 
-	box = *((rnd_box_t *) bpa->contours);
-	b = bpa;
-	while ((b = b->f) != bpa) {
-		rnd_box_t *b_box = (rnd_box_t *) b->contours;
-		RND_MAKE_MIN(box.X1, b_box->X1);
-		RND_MAKE_MIN(box.Y1, b_box->Y1);
-		RND_MAKE_MAX(box.X2, b_box->X2);
-		RND_MAKE_MAX(box.Y2, b_box->Y2);
-	}
+		/* Test the outer contour first, as we may need to remove all children;
+		   ignore intersected contours (bbox check is an optimization) */
+		if ((pa->contours->flg.llabel != PA_PLL_ISECTED) && pa_contour_in_box(pa->contours, box) && pa_is_pline_in_polyarea(pa->contours, bpa, rnd_false)) {
+			/* Delete this contour, move all children to the pending holes list */
 
-	if (del_inside) {
+			pl = pa->contours;
+			remove_contour(pa, NULL, pl, rnd_false);
+			pa_pline_free(&pl);
+			/* rtree deleted in pa_polyarea_free_all() */
 
-		do {
-			anext = a->f;
-			finished = (anext == *pieces);
+			/* a->contours now points to the remaining holes */
+			if (pa->contours != NULL) {
+				rnd_pline_t *end;
+	
+				/* Find the end of the list of holes so holes cna be prepended in *holes */
+				for(end = pa->contours; end->next != NULL; end = end->next) ;
 
-			/* Test the outer contour first, as we may need to remove all children */
-
-			/* We've not yet split intersected contours out, just ignore them */
-			if (a->contours->flg.llabel != PA_PLL_ISECTED &&
-					/* Pre-filter on bounding box */
-					((a->contours->xmin >= box.X1) && (a->contours->ymin >= box.Y1)
-					 && (a->contours->xmax <= box.X2)
-					 && (a->contours->ymax <= box.Y2)) &&
-					/* Then test properly */
-					pa_is_pline_in_polyarea(a->contours, bpa, rnd_false)) {
-
-				/* Delete this contour, all children -> holes queue */
-
-				/* Delete the outer contour */
-				curc = a->contours;
-				remove_contour(a, NULL, curc, rnd_false);	/* Rtree deleted in poly_Free below */
-				/* a->contours now points to the remaining holes */
-				pa_pline_free(&curc);
-
-				if (a->contours != NULL) {
-					/* Find the end of the list of holes */
-					curc = a->contours;
-					while (curc->next != NULL)
-						curc = curc->next;
-
-					/* Take the holes and prepend to the holes queue */
-					curc->next = *holes;
-					*holes = a->contours;
-					a->contours = NULL;
-				}
-
-				pa_polyarea_unlink(pieces, a);
-				pa_polyarea_free_all(&a);					/* NB: Sets a to NULL */
-
-				continue;
+				end->next = *holes;
+				*holes = pa->contours;
+				pa->contours = NULL;
 			}
 
-			/* Loop whilst we find INSIDE contours to delete */
-			while (1) {
-				struct find_inside_m_pa_info info;
-				rnd_pline_t *prev;
-
-				info.want_inside = bpa;
-
-				/* Set jump return */
-				if (setjmp(info.jb)) {
-					/* Returned here! */
-				}
-				else {
-					info.result = NULL;
-					/* r-tree search, calling back a routine to longjmp back with
-					 * data about any hole inside the B polygon.
-					 * NB: Does not jump back to report the main contour!
-					 */
-					rnd_r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
-
-					/* Nothing found? */
-					break;
-				}
-
-				/* We need to find the contour before it, so we can update its next pointer */
-				prev = a->contours;
-				while (prev->next != info.result) {
-					prev = prev->next;
-				}
-
-				/* Remove hole from the contour */
-				remove_contour(a, prev, info.result, rnd_true);
-				pa_pline_free(&info.result);
-			}
-			/* End check for deleted holes */
-
-			/* If we deleted all the pieces of the polyarea, *pieces is NULL */
+			pa_polyarea_unlink(islands, pa);
+			pa_polyarea_free_all(&pa);
+			continue;
 		}
-		while ((a = anext), *pieces != NULL && !finished);
 
-		return;
+		/* Loop whilst we find INSIDE contours to delete */
+		for(;;) {
+			pa_find_pl_inside_pa_t ictx;
+			rnd_pline_t *prev;
+
+			ictx.want_inside = bpa;
+			ictx.result = NULL;
+
+			/* Set jump return */
+			if (!setjmp(ictx.jb)) {
+				/* find a hole that's inside bpa */
+				rnd_r_search(pa->contour_tree, &box, NULL, pa_find_pl_inside_pa, &ictx, NULL);
+				break; /* nothing found */
+			}
+			/* succesful r_search jumps here */
+
+			/* singly linked list; find ->prev */
+			for(prev = pa->contours; prev->next != ictx.result; prev = prev->next) ;
+
+			/* Remove hole from the contour */
+			remove_contour(pa, prev, ictx.result, rnd_true);
+			pa_pline_free(&ictx.result);
+		}
 	}
-	else {
-		/* This path isn't optimised for speed */
-	}
+}
 
-	do {
-		int hole_contour = 0;
-		int is_outline = 1;
+/* prepend pl in list */
+RND_INLINE void pa_prim_delo_link_in(rnd_pline_t *pl, rnd_pline_t **list)
+{
+	/* prepend in holes */
+	pl->next = *list;
+	*list = pl;
+}
 
-		anext = a->f;
-		finished = (anext == *pieces);
+RND_INLINE void pa_polyarea_update_primary_del_outside(jmp_buf *e, rnd_box_t box, rnd_polyarea_t **islands, rnd_pline_t **holes, rnd_polyarea_t *bpa, int del_outside)
+{
+	rnd_polyarea_t *pa, *panext;
+	rnd_pline_t *pl, *plnext, *plprev;
+	int finished = 0;
 
-		prev = NULL;
-		for (curc = a->contours; curc != NULL; curc = next, is_outline = 0) {
-			int is_first = pa_pline_is_first(a, curc);
-			int is_last = pa_pline_is_last(curc);
+	for(pa = *islands; !finished && (*islands != NULL); pa = panext) {
+		int hole_contour = 0, is_outline = 1;
+
+		panext = pa->f;
+		finished = (panext == *islands); /* reached where we started, stop next iteration */
+
+		plprev = NULL;
+		for(pl = pa->contours; pl != NULL; pl = plnext, is_outline = 0) {
+			int is_first = pa_pline_is_first(pa, pl), is_last = pa_pline_is_last(pl);
 			int del_contour = 0;
 
-			next = curc->next;
+			plnext = pl->next;
 
-			if (del_outside)
-				del_contour = curc->flg.llabel != PA_PLL_ISECTED && !pa_is_pline_in_polyarea(curc, bpa, rnd_false);
+			if (del_outside) {
+#ifdef PB_OPTIMIZE
+				del_contour = (pl->flg.llabel != PA_PLL_ISECTED) && (!pa_contour_in_box(pa->contours, box) || !pa_is_pline_in_polyarea(pl, bpa, rnd_false));
+#else
+				del_contour = (pl->flg.llabel != PA_PLL_ISECTED) && !pa_is_pline_in_polyarea(pl, bpa, rnd_false);
+#endif
+			}
 
-			/* Skip intersected contours */
-			if (curc->flg.llabel == PA_PLL_ISECTED) {
-				prev = curc;
+			/* ignore intersected contours */
+			if (pl->flg.llabel == PA_PLL_ISECTED) {
+				plprev = pl;
 				continue;
 			}
 
-			/* Reset the intersection flags, since we keep these pieces */
-			curc->flg.llabel = PA_PLL_UNKNWN;
+			/* Reset the intersection flags, (going to keep these islands) */
+			pl->flg.llabel = PA_PLL_UNKNWN;
 
 			if (del_contour || hole_contour) {
+				remove_contour(pa, plprev, pl, !(is_first && is_last));
 
-				remove_contour(a, prev, curc, !(is_first && is_last));
+				if (del_contour)       pa_pline_free(&pl);
+				else if (hole_contour) pa_prim_delo_link_in(pl, holes);
 
-				if (del_contour) {
-					/* Delete the contour */
-					pa_pline_free(&curc);	/* NB: Sets curc to NULL */
+				if (is_first && is_last) { /* was the only item on the list */
+					pa_polyarea_unlink(islands, pa);
+					pa_polyarea_free_all(&pa);
 				}
-				else if (hole_contour) {
-					/* Link into the list of holes */
-					curc->next = *holes;
-					*holes = curc;
-				}
-				else {
-					assert(0);
-				}
-
-				if (is_first && is_last) {
-					pa_polyarea_unlink(pieces, a);
-					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
-				}
-
 			}
-			else {
-				/* Note the item we just didn't delete as the next
-				   candidate for having its "next" pointer adjusted.
-				   Saves walking the contour list when we delete one. */
-				prev = curc;
-			}
+			else
+				plprev = pl; /* optimization: singly linked list, remember ->prev so it won't need to be recalculated */
 
-			/* If we move or delete an outer contour, we need to move any holes
-			   we wish to keep within that contour to the holes list. */
+			/* When moving or deleting an outer contour, also move related holes */
 			if (is_outline && del_contour)
 				hole_contour = 1;
-
 		}
-
-		/* If we deleted all the pieces of the polyarea, *pieces is NULL */
 	}
-	while ((a = anext), *pieces != NULL && !finished);
+}
+
+RND_INLINE void pa_polyarea_update_primary(jmp_buf *e, rnd_polyarea_t **islands, rnd_pline_t **holes, int op, rnd_polyarea_t *bpa)
+{
+	rnd_box_t box;
+
+	if (*islands == NULL)
+		return;
+
+	pa_polyarea_bbox(&box, bpa);
+
+	switch(op) {
+		case RND_PBO_ISECT:
+			pa_polyarea_update_primary_del_outside(e, box, islands, holes, bpa, 1);
+			return;
+
+		case RND_PBO_UNITE:
+		case RND_PBO_SUB:
+			pa_polyarea_update_primary_del_inside(e, box, islands, holes, bpa);
+			return;
+
+		case RND_PBO_XOR:
+			/* not implemented or used (yet); would call
+			pa_polyarea_update_primary_del_outside() with del_outside == 0?
+			Also inv_inside? */
+			break;
+	}
+
+	/* invalid op */
+	assert(0);
 }
 
 static void
