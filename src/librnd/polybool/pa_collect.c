@@ -1,39 +1,41 @@
 /*
-       Copyright (C) 2006 harry eaton
+ *                            COPYRIGHT
+ *
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *
+ *  (Supported by NLnet NGI0 Entrust in 2023)
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  Contact:
+ *    Project page: http://www.repo.hu/projects/librnd
+ *    lead developer: http://www.repo.hu/projects/librnd/contact.html
+ *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
+ *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
+ */
 
-   based on:
-       poly_Boolean: a polygon clip library
-       Copyright (C) 1997  Alexey Nikitin, Michael Leonov
-       (also the authors of the paper describing the actual algorithm)
-       leonov@propro.iis.nsk.su
-
-   in turn based on:
-       nclip: a polygon clip library
-       Copyright (C) 1993  Klamer Schutte
- 
-       This program is free software; you can redistribute it and/or
-       modify it under the terms of the GNU General Public
-       License as published by the Free Software Foundation; either
-       version 2 of the License, or (at your option) any later version.
- 
-       This program is distributed in the hope that it will be useful,
-       but WITHOUT ANY WARRANTY; without even the implied warranty of
-       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-       General Public License for more details.
- 
-       You should have received a copy of the GNU General Public
-       License along with this program; if not, write to the Free
-       Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- 
-      polygon1.c
-      (C) 1997 Alexey Nikitin, Michael Leonov
-      (C) 1993 Klamer Schutte
-
-      all cases where original (Klamer Schutte) code is present
-      are marked
-*/
-
-/* collect the resultint plines and polyareas */
+/* collect the resulting plines and polyareas */
 
 #define PB_OPTIMIZE
 
@@ -626,42 +628,44 @@ RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_po
 	}
 }
 
-static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_polyarea_t ** contours, rnd_pline_t ** holes, int action, rnd_bool maybe)
+static void pa_polyarea_collect(jmp_buf *e, rnd_polyarea_t *A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_bool maybe)
 {
-	rnd_polyarea_t *a = afst;
-	rnd_polyarea_t *parent = NULL;			/* Quiet compiler warning */
-	rnd_pline_t **cur, **next, *parent_contour;
+	rnd_polyarea_t *pa = A, *parent = NULL;
+	rnd_pline_t **pl, **plnext, *parent_contour;
 
-	assert(a != NULL);
-	while ((a = a->f) != afst);
-	/* now the non-intersect parts are collected in temp/holes */
+	assert(pa != NULL);
+
+#ifndef PB_OPTIMIZE
+	/* verify that pa is on a cyclic list */
+	while((pa = pa->f) != A);
+#endif
+
+	/* collect non-intersect parts in "holes" */
 	do {
-		if (maybe && a->contours->flg.llabel != PA_PLL_ISECTED)
-			parent_contour = a->contours;
+		if (maybe && (pa->contours->flg.llabel != PA_PLL_ISECTED))
+			parent_contour = pa->contours;
 		else
 			parent_contour = NULL;
 
-		/* Take care of the first contour - so we know if we
-		 * can shortcut reparenting some of its children
-		 */
-		cur = &a->contours;
-		if (*cur != NULL) {
-			next = &((*cur)->next);
-			/* if we disappear a contour, don't advance twice */
-			if (pa_collect_contour(e, cur, contours, holes, action, a, NULL, NULL)) {
-				parent = (*contours)->b;	/* InsCntr inserts behind the head */
-				next = cur;
+		/* first contour: may be possible to shortcut reparenting some of its children */
+		pl = &pa->contours;
+		if (*pl != NULL) {
+			plnext = &((*pl)->next);
+			
+			if (pa_collect_contour(e, pl, contours, holes, op, pa, NULL, NULL)) {
+				parent = (*contours)->b; /* inserted behind the head */
+				plnext = pl; /* removed a contour, don't advance "plnext" twice */
 			}
 			else
-				parent = a;
-			cur = next;
+				parent = pa;
+			pl = plnext;
 		}
-		for (; *cur != NULL; cur = next) {
-			next = &((*cur)->next);
-			/* if we disappear a contour, don't advance twice */
-			if (pa_collect_contour(e, cur, contours, holes, action, a, parent, parent_contour))
-				next = cur;
+
+		for(; *pl != NULL; pl = plnext) {
+			plnext = &((*pl)->next);
+			if (pa_collect_contour(e, pl, contours, holes, op, pa, parent, parent_contour))
+				plnext = pl; /* removed a contour, don't advance "plnext" twice */
 		}
 	}
-	while ((a = a->f) != afst);
+	while((pa = pa->f) != A);
 }
