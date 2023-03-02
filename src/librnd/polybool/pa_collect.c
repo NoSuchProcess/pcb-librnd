@@ -166,51 +166,52 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 	return rnd_false;
 }
 
-static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, pa_jump_rule_t v_rule, pa_direction_t initdir)
+#define PA_NEXT_NODE(nd, dir) (((dir) == PA_FORWARD) ? (nd)->next : (nd)->prev)
+
+RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
-	rnd_vnode_t *cur = start, *newn;
-	pa_direction_t dir = initdir;
+	rnd_vnode_t *nd, *newnd;
+
 #ifdef DEBUG_GATHER
 	DEBUGP("gather direction = %d\n", dir);
 #endif
 	assert(*result == NULL);
-	do {
-		/* see where to go next */
-		if (!pa_coll_jump(&cur, &dir, v_rule))
-			break;
-		/* add edge to polygon */
-		if (!*result) {
-			*result = pa_pline_new(cur->point);
+
+	/* Run nd from start hopping to next node */
+	for(nd = start; pa_coll_jump(&nd, &dir, v_rule); nd = PA_NEXT_NODE(nd, dir)) {
+
+		/* add edge to pline */
+		if (*result == NULL) { /* create first */
+			*result = pa_pline_new(nd->point);
 			if (*result == NULL)
 				return pa_err_no_memory;
 		}
-		else {
-			if ((newn = rnd_poly_node_create(cur->point)) == NULL)
+		else { /* insert subsequent */
+			newnd = rnd_poly_node_create(nd->point);
+			if (newnd == NULL)
 				return pa_err_no_memory;
-			rnd_poly_vertex_include((*result)->head->prev, newn);
+			rnd_poly_vertex_include((*result)->head->prev, newnd);
 		}
-#ifdef DEBUG_GATHER
-		DEBUGP("gather vertex at %#mD\n", cur->point[0], cur->point[1]);
-#endif
-		/* Now mark the edge as included.  */
-		newn = (dir == PA_FORWARD ? cur : cur->prev);
-		newn->flg.mark = 1;
-		/* for SHARED edge mark both */
-		if (newn->shared)
-			newn->shared->flg.mark = 1;
 
-		/* Advance to the next edge.  */
-		cur = (dir == PA_FORWARD ? cur->next : cur->prev);
+#ifdef DEBUG_GATHER
+		DEBUGP("gather vertex at %#mD\n", nd->point[0], nd->point[1]);
+#endif
+
+		/* mark the edge as included; mark both if SHARED edge */
+		newnd = (dir == PA_FORWARD) ? nd : nd->prev;
+		newnd->flg.mark = 1;
+		if (newnd->shared != NULL)
+			newnd->shared->flg.mark = 1;
 	}
-	while (1);
+
 	return pa_err_ok;
-}																/* Gather */
+}
 
 static void Collect1(jmp_buf * e, rnd_vnode_t * cur, pa_direction_t dir, rnd_polyarea_t ** contours, rnd_pline_t ** holes, pa_jump_rule_t j_rule)
 {
 	rnd_pline_t *p = NULL;							/* start making contour */
 	int errc = pa_err_ok;
-	if ((errc = Gather(dir == PA_FORWARD ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
+	if ((errc = pa_coll_gather(dir == PA_FORWARD ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
 		if (p != NULL)
 			pa_pline_free(&p);
 		pa_error(errc);
