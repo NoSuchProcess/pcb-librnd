@@ -35,113 +35,114 @@
 
 /* collect the result */
 
-typedef enum {
-	FORW, BACKW
-} DIRECTION;
+typedef enum pa_direction_e { PA_FORWARD, PA_BACKWARD } pa_direction_t;
+typedef int (*pa_start_rule_t)(rnd_vnode_t *, pa_direction_t *);
+typedef int (*pa_jump_rule_t)(char poly, rnd_vnode_t *, pa_direction_t *);
 
-/* Start Rule */
-typedef int (*S_Rule) (rnd_vnode_t *, DIRECTION *);
+/*** Per operation start/jump rules ***/
 
-/* Jump Rule  */
-typedef int (*J_Rule) (char, rnd_vnode_t *, DIRECTION *);
-
-static int UniteS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
+static int pa_rule_unite_start(rnd_vnode_t *cur, pa_direction_t *initdir)
 {
-	*initdir = FORW;
+	*initdir = PA_FORWARD;
 	return (cur->flg.plabel == PA_PTL_OUTSIDE) || (cur->flg.plabel == PA_PTL_SHARED);
 }
 
-static int IsectS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
+static int pa_rule_unite_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
 {
-	*initdir = FORW;
+	assert(*cdir == PA_FORWARD);
+	return (v->flg.plabel == PA_PTL_OUTSIDE) || (v->flg.plabel == PA_PTL_SHARED);
+}
+
+static int pa_rule_isect_start(rnd_vnode_t *cur, pa_direction_t *initdir)
+{
+	*initdir = PA_FORWARD;
 	return (cur->flg.plabel == PA_PTL_INSIDE) || (cur->flg.plabel == PA_PTL_SHARED);
 }
 
-static int SubS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
+static int pa_rule_isect_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
 {
-	*initdir = FORW;
+	assert(*cdir == PA_FORWARD);
+	return (v->flg.plabel == PA_PTL_INSIDE) || (v->flg.plabel == PA_PTL_SHARED);
+}
+
+static int pa_rule_sub_start(rnd_vnode_t *cur, pa_direction_t *initdir)
+{
+	*initdir = PA_FORWARD;
 	return (cur->flg.plabel == PA_PTL_OUTSIDE) || (cur->flg.plabel == PA_PTL_SHARED2);
 }
 
-static int XorS_Rule(rnd_vnode_t * cur, DIRECTION * initdir)
+static int pa_rule_sub_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
+{
+	if ((p == 'B') && (v->flg.plabel == PA_PTL_INSIDE)) {
+		*cdir = PA_BACKWARD;
+		return rnd_true;
+	}
+
+	if ((p == 'A') && (v->flg.plabel == PA_PTL_OUTSIDE)) {
+		*cdir = PA_FORWARD;
+		return rnd_true;
+	}
+
+	if (v->flg.plabel == PA_PTL_SHARED2) {
+		*cdir = (p == 'A') ? PA_FORWARD : PA_BACKWARD;
+		return rnd_true;
+	}
+
+	return rnd_false;
+}
+
+static int pa_rule_xor_start(rnd_vnode_t *cur, pa_direction_t *initdir)
 {
 	if (cur->flg.plabel == PA_PTL_INSIDE) {
-		*initdir = BACKW;
+		*initdir = PA_BACKWARD;
 		return rnd_true;
 	}
+
 	if (cur->flg.plabel == PA_PTL_OUTSIDE) {
-		*initdir = FORW;
+		*initdir = PA_FORWARD;
 		return rnd_true;
 	}
+
 	return rnd_false;
 }
 
-static int IsectJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
-{
-	assert(*cdir == FORW);
-	return (v->flg.plabel == PA_PTL_INSIDE || v->flg.plabel == PA_PTL_SHARED);
-}
-
-static int UniteJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
-{
-	assert(*cdir == FORW);
-	return (v->flg.plabel == PA_PTL_OUTSIDE || v->flg.plabel == PA_PTL_SHARED);
-}
-
-static int XorJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
+static int pa_rule_xor_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
 {
 	if (v->flg.plabel == PA_PTL_INSIDE) {
-		*cdir = BACKW;
+		*cdir = PA_BACKWARD;
 		return rnd_true;
 	}
+
 	if (v->flg.plabel == PA_PTL_OUTSIDE) {
-		*cdir = FORW;
+		*cdir = PA_FORWARD;
 		return rnd_true;
 	}
+
 	return rnd_false;
 }
 
-static int SubJ_Rule(char p, rnd_vnode_t * v, DIRECTION * cdir)
-{
-	if (p == 'B' && v->flg.plabel == PA_PTL_INSIDE) {
-		*cdir = BACKW;
-		return rnd_true;
-	}
-	if (p == 'A' && v->flg.plabel == PA_PTL_OUTSIDE) {
-		*cdir = FORW;
-		return rnd_true;
-	}
-	if (v->flg.plabel == PA_PTL_SHARED2) {
-		if (p == 'A')
-			*cdir = FORW;
-		else
-			*cdir = BACKW;
-		return rnd_true;
-	}
-	return rnd_false;
-}
 
 /* return the edge that comes next.
- * if the direction is BACKW, then we return the next vertex
+ * if the direction is PA_BACKWARD, then we return the next vertex
  * so that prev vertex has the flags for the edge
  *
  * returns rnd_true if an edge is found, rnd_false otherwise
  */
-static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
+static int jump(rnd_vnode_t ** cur, pa_direction_t * cdir, pa_jump_rule_t rule)
 {
 	pa_conn_desc_t *d, *start;
 	rnd_vnode_t *e;
-	DIRECTION newone;
+	pa_direction_t newone;
 
 	if (!(*cur)->cvclst_prev) {			/* not a cross-vertex */
-		if (*cdir == FORW ? (*cur)->flg.mark : (*cur)->prev->flg.mark)
+		if (*cdir == PA_FORWARD ? (*cur)->flg.mark : (*cur)->prev->flg.mark)
 			return rnd_false;
 		return rnd_true;
 	}
 #ifdef DEBUG_JUMP
 	DEBUGP("jump entering node at %$mD\n", (*cur)->point[0], (*cur)->point[1]);
 #endif
-	if (*cdir == FORW)
+	if (*cdir == PA_FORWARD)
 		d = (*cur)->cvclst_prev->prev;
 	else
 		d = (*cur)->cvclst_next->prev;
@@ -152,9 +153,9 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 			e = e->prev;
 		newone = *cdir;
 		if (!e->flg.mark && rule(d->poly, e, &newone)) {
-			if ((d->side == 'N' && newone == FORW) || (d->side == 'P' && newone == BACKW)) {
+			if ((d->side == 'N' && newone == PA_FORWARD) || (d->side == 'P' && newone == PA_BACKWARD)) {
 #ifdef DEBUG_JUMP
-				if (newone == FORW)
+				if (newone == PA_FORWARD)
 					DEBUGP("jump leaving node at %#mD\n", e->next->point[0], e->next->point[1]);
 				else
 					DEBUGP("jump leaving node at %#mD\n", e->point[0], e->point[1]);
@@ -169,10 +170,10 @@ static int jump(rnd_vnode_t ** cur, DIRECTION * cdir, J_Rule rule)
 	return rnd_false;
 }
 
-static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIRECTION initdir)
+static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, pa_jump_rule_t v_rule, pa_direction_t initdir)
 {
 	rnd_vnode_t *cur = start, *newn;
-	DIRECTION dir = initdir;
+	pa_direction_t dir = initdir;
 #ifdef DEBUG_GATHER
 	DEBUGP("gather direction = %d\n", dir);
 #endif
@@ -196,24 +197,24 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, J_Rule v_rule, DIR
 		DEBUGP("gather vertex at %#mD\n", cur->point[0], cur->point[1]);
 #endif
 		/* Now mark the edge as included.  */
-		newn = (dir == FORW ? cur : cur->prev);
+		newn = (dir == PA_FORWARD ? cur : cur->prev);
 		newn->flg.mark = 1;
 		/* for SHARED edge mark both */
 		if (newn->shared)
 			newn->shared->flg.mark = 1;
 
 		/* Advance to the next edge.  */
-		cur = (dir == FORW ? cur->next : cur->prev);
+		cur = (dir == PA_FORWARD ? cur->next : cur->prev);
 	}
 	while (1);
 	return pa_err_ok;
 }																/* Gather */
 
-static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea_t ** contours, rnd_pline_t ** holes, J_Rule j_rule)
+static void Collect1(jmp_buf * e, rnd_vnode_t * cur, pa_direction_t dir, rnd_polyarea_t ** contours, rnd_pline_t ** holes, pa_jump_rule_t j_rule)
 {
 	rnd_pline_t *p = NULL;							/* start making contour */
 	int errc = pa_err_ok;
-	if ((errc = Gather(dir == FORW ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
+	if ((errc = Gather(dir == PA_FORWARD ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
 		if (p != NULL)
 			pa_pline_free(&p);
 		pa_error(errc);
@@ -236,10 +237,10 @@ static void Collect1(jmp_buf * e, rnd_vnode_t * cur, DIRECTION dir, rnd_polyarea
 	}
 }
 
-static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rnd_pline_t ** holes, S_Rule s_rule, J_Rule j_rule)
+static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rnd_pline_t ** holes, pa_start_rule_t s_rule, pa_jump_rule_t j_rule)
 {
 	rnd_vnode_t *cur, *other;
-	DIRECTION dir;
+	pa_direction_t dir;
 
 	cur = a->head;
 	do {
@@ -262,16 +263,16 @@ cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_plin
 	if ((*A)->flg.llabel == PA_PLL_ISECTED) {
 		switch (action) {
 		case RND_PBO_UNITE:
-			Collect(e, *A, contours, holes, UniteS_Rule, UniteJ_Rule);
+			Collect(e, *A, contours, holes, pa_rule_unite_start, pa_rule_unite_jump);
 			break;
 		case RND_PBO_ISECT:
-			Collect(e, *A, contours, holes, IsectS_Rule, IsectJ_Rule);
+			Collect(e, *A, contours, holes, pa_rule_isect_start, pa_rule_isect_jump);
 			break;
 		case RND_PBO_XOR:
-			Collect(e, *A, contours, holes, XorS_Rule, XorJ_Rule);
+			Collect(e, *A, contours, holes, pa_rule_xor_start, pa_rule_xor_jump);
 			break;
 		case RND_PBO_SUB:
-			Collect(e, *A, contours, holes, SubS_Rule, SubJ_Rule);
+			Collect(e, *A, contours, holes, pa_rule_sub_start, pa_rule_sub_jump);
 			break;
 		};
 	}
