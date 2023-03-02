@@ -364,79 +364,59 @@ RND_INLINE void pa_collect_b_area(jmp_buf *e, rnd_polyarea_t *B, rnd_polyarea_t 
 	} while((pa = pa->f) != B);
 }
 
-static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** pieces, rnd_pline_t ** holes, rnd_pline_t ** isected)
+/* Prepend pl in list */
+RND_INLINE void pa_coll_sepisc_link_in(rnd_pline_t *pl, rnd_pline_t **list)
 {
-	rnd_polyarea_t *a = *pieces;
-	rnd_polyarea_t *anext;
-	rnd_pline_t *curc, *next, *prev;
-	int finished;
+	pl->next = *list;
+	*list = pl;
+}
 
-	if (a == NULL)
-		return;
+/* Move out intersected polylines of islands (among with their holes) into
+   isected/holes */
+RND_INLINE void pa_polyarea_separate_intersected(jmp_buf *e, rnd_polyarea_t **islands, rnd_pline_t **holes, rnd_pline_t **isected)
+{
+	rnd_polyarea_t *pa, *panext;
+	int finished = 0;
 
-	/* TODO: STASH ENOUGH INFORMATION EARLIER ON, SO WE CAN REMOVE THE INTERSECTED
-	   CONTOURS WITHOUT HAVING TO WALK THE FULL DATA-STRUCTURE LOOKING FOR THEM. */
+	for(pa = *islands; !finished && (*islands != NULL); pa = panext) {
+		rnd_pline_t *pl, *plnext, *plprev = NULL;
+		int hole_contour = 0, is_outline = 1;
 
-	do {
-		int hole_contour = 0;
-		int is_outline = 1;
+		panext = pa->f;
+		finished = (panext == *islands); /* reached back to the starting point, exit before next iteration */
 
-		anext = a->f;
-		finished = (anext == *pieces);
+		for(pl = pa->contours; pl != NULL; pl = plnext, is_outline = 0) {
+			int is_first = pa_pline_is_first(pa, pl), is_last = pa_pline_is_last(pl);
+			int isect_contour = (pl->flg.llabel == PA_PLL_ISECTED);
 
-		prev = NULL;
-		for (curc = a->contours; curc != NULL; curc = next, is_outline = 0) {
-			int is_first = pa_pline_is_first(a, curc);
-			int is_last = pa_pline_is_last(curc);
-			int isect_contour = (curc->flg.llabel == PA_PLL_ISECTED);
-
-			next = curc->next;
+			plnext = pl->next;
 
 			if (isect_contour || hole_contour) {
+				if (pl->flg.llabel != PA_PLL_ISECTED)
+					pl->flg.llabel = PA_PLL_UNKNWN;
 
-				/* Reset the intersection flags, since we keep these pieces */
-				if (curc->flg.llabel != PA_PLL_ISECTED)
-					curc->flg.llabel = PA_PLL_UNKNWN;
+				remove_contour(pa, plprev, pl, !(is_first && is_last));
 
-				remove_contour(a, prev, curc, !(is_first && is_last));
+				if (isect_contour)       pa_coll_sepisc_link_in(pl, isected);
+				else if (hole_contour)   pa_coll_sepisc_link_in(pl, holes);
 
-				if (isect_contour) {
-					/* Link into the list of intersected contours */
-					curc->next = *isected;
-					*isected = curc;
-				}
-				else if (hole_contour) {
-					/* Link into the list of holes */
-					curc->next = *holes;
-					*holes = curc;
-				}
-				else {
-					assert(0);
-				}
-
+				/* pl was the only polyline in pa, so pa must be empty now that pl is removed */
 				if (is_first && is_last) {
-					pa_polyarea_unlink(pieces, a);
-					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
+					pa_polyarea_unlink(islands, pa);
+					pa_polyarea_free_all(&pa);
 				}
-
 			}
 			else {
-				/* Note the item we just didn't delete as the next
-				   candidate for having its "next" pointer adjusted.
-				   Saves walking the contour list when we delete one. */
-				prev = curc;
+				/* Optimization: remember previous line on the singly linked list
+				   (needed in removal) */
+				plprev = pl;
 			}
 
-			/* If we move or delete an outer contour, we need to move any holes
-			   we wish to keep within that contour to the holes list. */
+			/* When moving or deleting an outer contour, also move related holes */
 			if (is_outline && isect_contour)
 				hole_contour = 1;
-
 		}
-
-		/* If we deleted all the pieces of the polyarea, *pieces is NULL */
 	}
-	while ((a = anext), *pieces != NULL && !finished);
 }
 
 
