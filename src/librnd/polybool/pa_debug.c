@@ -38,7 +38,7 @@
 #undef DEBUG_LABEL
 #undef DEBUG_ALL_LABELS
 #define DEBUG_JUMP 0
-#undef DEBUG_GATHER
+#define DEBUG_GATHER 0
 #undef DEBUG_ANGLE
 #undef DEBUG
 
@@ -62,6 +62,14 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #else
 #	undef DEBUG_JUMP
 #	define DEBUG_JUMP PA_DEBUGP_DUMMY
+#endif
+
+#if DEBUG_GATHER
+#	undef DEBUG_GATHER
+#	define DEBUG_GATHER DEBUGP
+#else
+#	undef DEBUG_GATHER
+#	define DEBUG_GATHER PA_DEBUGP_DUMMY
 #endif
 
 #ifdef DEBUG

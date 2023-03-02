@@ -171,9 +171,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 {
 	rnd_vnode_t *nd, *newnd;
 
-#ifdef DEBUG_GATHER
-	DEBUGP("gather direction = %d\n", dir);
-#endif
+	DEBUG_GATHER("gather direction = %d\n", dir);
 	*result = NULL;
 
 	/* Run nd from start hopping to next node */
@@ -192,9 +190,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
 		}
 
-#ifdef DEBUG_GATHER
-		DEBUGP("gather vertex at %#mD\n", nd->point[0], nd->point[1]);
-#endif
+		DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
 
 		/* mark the edge as included; mark both if SHARED edge */
 		newnd = (dir == PA_FORWARD) ? nd : nd->prev;
@@ -226,15 +222,11 @@ RND_INLINE void pa_collect_gather(jmp_buf *e, rnd_vnode_t *cur, pa_direction_t d
 	pa_pline_update(pl, rnd_true);
 
 	if (pl->Count > 2) {
-#ifdef DEBUG_GATHER
-		DEBUGP("adding contour with %d vertices and direction %c\n", pl->Count, (pl->flg.orient ? 'F' : 'B'));
-#endif
+		DEBUG_GATHER("adding contour with %d vertices and direction %c\n", pl->Count, (pl->flg.orient ? 'F' : 'B'));
 		put_contour(e, pl, contours, holes, NULL, NULL, NULL);
 	}
 	else {
-#ifdef DEBUG_GATHER
-		DEBUGP("Bad contour! Not enough points!!\n");
-#endif
+		DEBUG_GATHER("Bad contour! Not enough points!!\n");
 		pa_pline_free(&pl);
 	}
 }
