@@ -307,53 +307,61 @@ RND_INLINE int pa_collect_contour(jmp_buf *e, rnd_pline_t **A, rnd_polyarea_t **
 	return rnd_false;
 }
 
-static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t ** contours, rnd_pline_t ** holes, int action)
+/* remove pl's head and add it in the contours/holes list; returns next pline
+   of pl (new head) */
+RND_INLINE rnd_pline_t **pa_coll_b_area_add(jmp_buf *e, rnd_pline_t **pl, rnd_polyarea_t **contours, rnd_pline_t **holes, rnd_polyarea_t *old_parent)
 {
-	rnd_polyarea_t *b = bfst;
-	rnd_pline_t **cur, **next, *tmp;
+	rnd_pline_t *tmp = *pl, **next;
 
-	assert(b != NULL);
+	*pl = tmp->next;
+	next = pl;
+	tmp->next = NULL;
+	tmp->flg.llabel = PA_PLL_UNKNWN;
+	put_contour(e, tmp, contours, holes, old_parent, NULL, NULL);
+
+	return next;
+}
+
+/* Collect contours of polygon 'B' in some binop */
+RND_INLINE void pa_collect_b_area(jmp_buf *e, rnd_polyarea_t *B, rnd_polyarea_t **contours, rnd_pline_t **holes, int op)
+{
+	rnd_polyarea_t *pa = B;
+
+	assert(pa != NULL);
+
 	do {
-		for (cur = &b->contours; *cur != NULL; cur = next) {
-			next = &((*cur)->next);
-			if ((*cur)->flg.llabel == PA_PLL_ISECTED)
+		rnd_pline_t **pl, **next;
+
+		for(pl = &pa->contours; *pl != NULL; pl = next) {
+			next = &((*pl)->next);
+			if ((*pl)->flg.llabel == PA_PLL_ISECTED)
 				continue;
 
-			if ((*cur)->flg.llabel == PA_PLL_INSIDE)
-				switch (action) {
+			if ((*pl)->flg.llabel == PA_PLL_INSIDE)
+				switch (op) {
 				case RND_PBO_XOR:
 				case RND_PBO_SUB:
-					pa_pline_invert(*cur);
+					pa_pline_invert(*pl);
+					/* fall thru to add */
+
 				case RND_PBO_ISECT:
-					tmp = *cur;
-					*cur = tmp->next;
-					next = cur;
-					tmp->next = NULL;
-					tmp->flg.llabel = PA_PLL_UNKNWN;
-					put_contour(e, tmp, contours, holes, b, NULL, NULL);
+					next = pa_coll_b_area_add(e, pl, contours, holes, pa);
 					break;
 				case RND_PBO_UNITE:
-					break;								/* nothing to do - already included */
+					break; /* do not add, already included */
 				}
-			else if ((*cur)->flg.llabel == PA_PLL_OUTSIDE)
-				switch (action) {
+			else if ((*pl)->flg.llabel == PA_PLL_OUTSIDE)
+				switch (op) {
 				case RND_PBO_XOR:
 				case RND_PBO_UNITE:
-					/* include */
-					tmp = *cur;
-					*cur = tmp->next;
-					next = cur;
-					tmp->next = NULL;
-					tmp->flg.llabel = PA_PLL_UNKNWN;
-					put_contour(e, tmp, contours, holes, b, NULL, NULL);
+					next = pa_coll_b_area_add(e, pl, contours, holes, pa);
 					break;
 				case RND_PBO_ISECT:
 				case RND_PBO_SUB:
-					break;								/* do nothing, not included */
+					break; /* do not add, not to be included */
 				}
 		}
-	}
-	while ((b = b->f) != bfst);
+	} while((pa = pa->f) != B);
 }
 
 
