@@ -90,9 +90,9 @@ static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 	else                                   cd->angle = ang;       /* 1st quadrant */
 
 	assert((ang >= 0.0) && (ang <= 4.0));
-#ifdef DEBUG_ANGLE
-	DEBUGP("point on %c at %#mD assigned angle %g on side %c\n", poly, pt->point[0], pt->point[1], ang, side);
-#endif
+
+	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], ang, side);
+
 
 	return cd;
 }

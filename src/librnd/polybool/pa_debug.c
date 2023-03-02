@@ -35,12 +35,14 @@
  *
  */
 
-#undef DEBUG_LABEL
-#undef DEBUG_ALL_LABELS
+/* debug control */
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
-#undef DEBUG_ANGLE
+#define DEBUG_ANGLE 0
 #undef DEBUG
+
+/* only when DEBUG is enabled */
+#define DEBUG_ALL_LABELS 1
 
 RND_INLINE void PA_DEBUGP_DUMMY(const char *fmt, ...) { }
 #ifndef NDEBUG
@@ -70,6 +72,14 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #else
 #	undef DEBUG_GATHER
 #	define DEBUG_GATHER PA_DEBUGP_DUMMY
+#endif
+
+#if DEBUG_ANGLE
+#	undef DEBUG_ANGLE
+#	define DEBUG_ANGLE DEBUGP
+#else
+#	undef DEBUG_ANGLE
+#	define DEBUG_ANGLE PA_DEBUGP_DUMMY
 #endif
 
 #ifdef DEBUG
@@ -113,15 +123,23 @@ static void pa_poly_dump(rnd_polyarea_t *p)
 	}
 	while((p = p->f) != start);
 }
+#else
+#	undef DEBUG_ALL_LABELS
+#	define DEBUG_ALL_LABELS 0
+#endif
 
-#ifdef DEBUG_ALL_LABELS
-static void pa_print_pline_labels(rnd_pline_t *a)
+
+#if DEBUG_ALL_LABELS
+RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a)
 {
 	rnd_vnode_t *c = a->head;
 	do {
-		DEBUGP("%#mD->%#mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], node_label_to_str(c));
+		DEBUGP("%$mD->%$mD labeled %s\n", c->point[0], c->point[1], c->next->point[0], c->next->point[1], node_label_to_str(c));
 	} while((c = c->next) != a->head);
+	DEBUGP("\n\n");
 }
+#else
+RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
-#endif
+

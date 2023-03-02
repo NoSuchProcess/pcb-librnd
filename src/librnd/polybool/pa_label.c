@@ -135,10 +135,7 @@ static void pa_label_pline(rnd_pline_t *pl)
 		}
 	} while((nd = nd->next) != first_isected);
 
-#ifdef DEBUG_ALL_LABELS
-	pa_print_pline_labels(a);
-	DEBUGP("\n\n");
-#endif
+	pa_debug_print_pline_labels(pl);
 }
 
 /* Internal implementation of "label a pline of A"; if first_only is true,
