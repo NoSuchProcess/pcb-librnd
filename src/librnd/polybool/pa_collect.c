@@ -122,51 +122,47 @@ static int pa_rule_xor_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
 }
 
 
-/* return the edge that comes next.
- * if the direction is PA_BACKWARD, then we return the next vertex
- * so that prev vertex has the flags for the edge
- *
- * returns rnd_true if an edge is found, rnd_false otherwise
- */
-static int jump(rnd_vnode_t ** cur, pa_direction_t * cdir, pa_jump_rule_t rule)
+/* Jump to next edge to consider; returns whether an edge is found.
+   (For direction PA_BACKWARD, return the next vertex so that prev vertex has
+   the flags for the edge.) */
+static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t rule)
 {
 	pa_conn_desc_t *d, *start;
-	rnd_vnode_t *e;
-	pa_direction_t newone;
 
-	if (!(*cur)->cvclst_prev) {			/* not a cross-vertex */
-		if (*cdir == PA_FORWARD ? (*cur)->flg.mark : (*cur)->prev->flg.mark)
-			return rnd_false;
-		return rnd_true;
+	if ((*cur)->cvclst_prev == NULL) { /* not a cross-vertex, proceed normally */
+		int marked = ((*cdir == PA_FORWARD) ? (*cur)->flg.mark : (*cur)->prev->flg.mark);
+		return !marked;
 	}
+
+	/* cross-vertex means we are at an intersection and have to decide which
+	   edge to continue at */
 #ifdef DEBUG_JUMP
 	DEBUGP("jump entering node at %$mD\n", (*cur)->point[0], (*cur)->point[1]);
 #endif
-	if (*cdir == PA_FORWARD)
-		d = (*cur)->cvclst_prev->prev;
-	else
-		d = (*cur)->cvclst_next->prev;
-	start = d;
+
+	start = d = (*cdir == PA_FORWARD) ? (*cur)->cvclst_prev->prev : (*cur)->cvclst_next->prev;
 	do {
-		e = d->parent;
+		pa_direction_t newdir = *cdir;
+		rnd_vnode_t *e = d->parent;
+
 		if (d->side == 'P')
 			e = e->prev;
-		newone = *cdir;
-		if (!e->flg.mark && rule(d->poly, e, &newone)) {
-			if ((d->side == 'N' && newone == PA_FORWARD) || (d->side == 'P' && newone == PA_BACKWARD)) {
+
+		if (!e->flg.mark && rule(d->poly, e, &newdir)) {
+			if (((d->side == 'N') && (newdir == PA_FORWARD)) || ((d->side == 'P') && (newdir == PA_BACKWARD))) {
 #ifdef DEBUG_JUMP
-				if (newone == PA_FORWARD)
-					DEBUGP("jump leaving node at %#mD\n", e->next->point[0], e->next->point[1]);
-				else
-					DEBUGP("jump leaving node at %#mD\n", e->point[0], e->point[1]);
+				{
+					rnd_vnode_t *nnd = (newdir == PA_FORWARD) ? e->next : e;
+					DEBUGP("jump leaving node at %#mD\n", nnd->point[0], nnd->point[1]);
+				}
 #endif
 				*cur = d->parent;
-				*cdir = newone;
+				*cdir = newdir;
 				return rnd_true;
 			}
 		}
-	}
-	while ((d = d->prev) != start);
+	} while((d = d->prev) != start);
+
 	return rnd_false;
 }
 
@@ -180,7 +176,7 @@ static int Gather(rnd_vnode_t * start, rnd_pline_t ** result, pa_jump_rule_t v_r
 	assert(*result == NULL);
 	do {
 		/* see where to go next */
-		if (!jump(&cur, &dir, v_rule))
+		if (!pa_coll_jump(&cur, &dir, v_rule))
 			break;
 		/* add edge to polygon */
 		if (!*result) {
@@ -247,7 +243,7 @@ static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rn
 		if (s_rule(cur, &dir) && cur->flg.mark == 0)
 			Collect1(e, cur, dir, contours, holes, j_rule);
 		other = cur;
-		if ((other->cvclst_prev && jump(&other, &dir, j_rule)))
+		if ((other->cvclst_prev && pa_coll_jump(&other, &dir, j_rule)))
 			Collect1(e, other, dir, contours, holes, j_rule);
 	}
 	while ((cur = cur->next) != a->head);
