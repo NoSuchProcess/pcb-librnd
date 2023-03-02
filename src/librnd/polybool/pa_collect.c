@@ -364,22 +364,6 @@ RND_INLINE void pa_collect_b_area(jmp_buf *e, rnd_polyarea_t *B, rnd_polyarea_t 
 	} while((pa = pa->f) != B);
 }
 
-
-static inline void remove_polyarea(rnd_polyarea_t ** list, rnd_polyarea_t * piece)
-{
-	/* If this item was the start of the list, advance that pointer */
-	if (*list == piece)
-		*list = (*list)->f;
-
-	/* But reset it to NULL if it wraps around and hits us again */
-	if (*list == piece)
-		*list = NULL;
-
-	piece->b->f = piece->f;
-	piece->f->b = piece->b;
-	piece->f = piece->b = piece;
-}
-
 static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** pieces, rnd_pline_t ** holes, rnd_pline_t ** isected)
 {
 	rnd_polyarea_t *a = *pieces;
@@ -431,7 +415,7 @@ static void M_rnd_polyarea_separate_isected(jmp_buf * e, rnd_polyarea_t ** piece
 				}
 
 				if (is_first && is_last) {
-					remove_polyarea(pieces, a);
+					pa_polyarea_unlink(pieces, a);
 					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
 				}
 
@@ -556,7 +540,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 					a->contours = NULL;
 				}
 
-				remove_polyarea(pieces, a);
+				pa_polyarea_unlink(pieces, a);
 				pa_polyarea_free_all(&a);					/* NB: Sets a to NULL */
 
 				continue;
@@ -652,7 +636,7 @@ static void M_rnd_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 				}
 
 				if (is_first && is_last) {
-					remove_polyarea(pieces, a);
+					pa_polyarea_unlink(pieces, a);
 					pa_polyarea_free_all(&a);				/* NB: Sets a to NULL */
 				}
 
