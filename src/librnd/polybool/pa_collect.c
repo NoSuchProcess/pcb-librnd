@@ -615,16 +615,14 @@ RND_INLINE void pa_polyarea_update_primary(jmp_buf *e, rnd_polyarea_t **islands,
 	assert(0);
 }
 
-static void
-M_rnd_polyarea_t_Collect_separated(jmp_buf * e, rnd_pline_t * afst, rnd_polyarea_t ** contours, rnd_pline_t ** holes, int action, rnd_bool maybe)
+RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_bool maybe)
 {
-	rnd_pline_t **cur, **next;
+	rnd_pline_t **pl, **next;
 
-	for (cur = &afst; *cur != NULL; cur = next) {
-		next = &((*cur)->next);
-		/* if we disappear a contour, don't advance twice */
-		if (pa_collect_contour(e, cur, contours, holes, action, NULL, NULL, NULL))
-			next = cur;
+	for(pl = &A; *pl != NULL; pl = next) {
+		next = &((*pl)->next);
+		if (pa_collect_contour(e, pl, contours, holes, op, NULL, NULL, NULL))
+			next = pl; /* if a contour is removed, don't advance "next" twice */
 	}
 }
 
