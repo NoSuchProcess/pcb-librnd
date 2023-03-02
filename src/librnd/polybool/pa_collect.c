@@ -240,83 +240,72 @@ RND_INLINE void pa_collect_gather(jmp_buf *e, rnd_vnode_t *cur, pa_direction_t d
 	}
 }
 
-static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rnd_pline_t ** holes, pa_start_rule_t s_rule, pa_jump_rule_t j_rule)
+RND_INLINE rnd_bool pa_collect_pline(jmp_buf *e, rnd_pline_t *a, rnd_polyarea_t **contours, rnd_pline_t **holes, pa_start_rule_t s_rule, pa_jump_rule_t j_rule)
 {
-	rnd_vnode_t *cur, *other;
+	rnd_vnode_t *vn, *other;
 	pa_direction_t dir;
 
-	cur = a->head;
+	vn = a->head;
 	do {
-		if (s_rule(cur, &dir) && cur->flg.mark == 0)
-			pa_collect_gather(e, cur, dir, contours, holes, j_rule);
-		other = cur;
+		if (s_rule(vn, &dir) && (vn->flg.mark == 0))
+			pa_collect_gather(e, vn, dir, contours, holes, j_rule);
+
+		other = vn;
 		if ((other->cvclst_prev && pa_coll_jump(&other, &dir, j_rule)))
 			pa_collect_gather(e, other, dir, contours, holes, j_rule);
-	}
-	while ((cur = cur->next) != a->head);
-}																/* Collect */
+	} while((vn = vn->next) != a->head);
 
+	return rnd_false;
+}
 
-static int
-cntr_Collect(jmp_buf * e, rnd_pline_t ** A, rnd_polyarea_t ** contours, rnd_pline_t ** holes,
-						 int action, rnd_polyarea_t * owner, rnd_polyarea_t * parent, rnd_pline_t * parent_contour)
+/* Remove head of *pl and add it in contours or holes; if invert is true
+   invert direction before adding. Always returns true. */
+RND_INLINE rnd_bool pa_coll_move_cnt(jmp_buf *e, rnd_pline_t **pl, rnd_polyarea_t **contours, rnd_pline_t **holes, rnd_polyarea_t *old_parent, rnd_polyarea_t *new_parent, rnd_pline_t *new_parent_contour, rnd_bool invert)
 {
-	rnd_pline_t *tmprev;
+	rnd_pline_t *tmp = *pl;
 
+	/* remove head of pl to put it in contours or holes (rtree entry removed in put_contour) */
+	*pl = tmp->next;
+	tmp->next = NULL;
+
+	if (invert)
+		pa_pline_invert(tmp);
+
+	put_contour(e, tmp, contours, holes, old_parent, NULL, NULL);
+	return rnd_true;
+}
+
+
+RND_INLINE int pa_collect_contour(jmp_buf *e, rnd_pline_t **A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_polyarea_t *old_parent, rnd_polyarea_t *parent, rnd_pline_t *parent_contour)
+{
 	if ((*A)->flg.llabel == PA_PLL_ISECTED) {
-		switch (action) {
-		case RND_PBO_UNITE:
-			Collect(e, *A, contours, holes, pa_rule_unite_start, pa_rule_unite_jump);
-			break;
-		case RND_PBO_ISECT:
-			Collect(e, *A, contours, holes, pa_rule_isect_start, pa_rule_isect_jump);
-			break;
-		case RND_PBO_XOR:
-			Collect(e, *A, contours, holes, pa_rule_xor_start, pa_rule_xor_jump);
-			break;
-		case RND_PBO_SUB:
-			Collect(e, *A, contours, holes, pa_rule_sub_start, pa_rule_sub_jump);
-			break;
-		};
-	}
-	else {
-		switch (action) {
-		case RND_PBO_ISECT:
-			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
-				tmprev = *A;
-				/* disappear this contour (rtree entry removed in put_contour) */
-				*A = tmprev->next;
-				tmprev->next = NULL;
-				put_contour(e, tmprev, contours, holes, owner, NULL, NULL);
-				return rnd_true;
-			}
-			break;
-		case RND_PBO_XOR:
-			if ((*A)->flg.llabel == PA_PLL_INSIDE) {
-				tmprev = *A;
-				/* disappear this contour (rtree entry removed in put_contour) */
-				*A = tmprev->next;
-				tmprev->next = NULL;
-				pa_pline_invert(tmprev);
-				put_contour(e, tmprev, contours, holes, owner, NULL, NULL);
-				return rnd_true;
-			}
-			/* break; *//* Fall through (I think this is correct! pcjc2) */
-		case RND_PBO_UNITE:
-		case RND_PBO_SUB:
-			if ((*A)->flg.llabel == PA_PLL_OUTSIDE) {
-				tmprev = *A;
-				/* disappear this contour (rtree entry removed in put_contour) */
-				*A = tmprev->next;
-				tmprev->next = NULL;
-				put_contour(e, tmprev, contours, holes, owner, parent, parent_contour);
-				return rnd_true;
-			}
-			break;
+		switch(op) {
+			case RND_PBO_UNITE: return pa_collect_pline(e, *A, contours, holes, pa_rule_unite_start, pa_rule_unite_jump);
+			case RND_PBO_ISECT: return pa_collect_pline(e, *A, contours, holes, pa_rule_isect_start, pa_rule_isect_jump);
+			case RND_PBO_XOR:   return pa_collect_pline(e, *A, contours, holes, pa_rule_xor_start, pa_rule_xor_jump);
+			case RND_PBO_SUB:   return pa_collect_pline(e, *A, contours, holes, pa_rule_sub_start, pa_rule_sub_jump);
 		}
 	}
+	else {
+		switch (op) {
+			case RND_PBO_ISECT:
+				if ((*A)->flg.llabel == PA_PLL_INSIDE)
+					return pa_coll_move_cnt(e, A, contours, holes, old_parent, NULL, NULL, 0);
+				break;
+			case RND_PBO_XOR:
+				if ((*A)->flg.llabel == PA_PLL_INSIDE)
+					return pa_coll_move_cnt(e, A, contours, holes, old_parent, NULL, NULL, 1);
+				/* else: fall through to collect all outside areas */
+			case RND_PBO_UNITE:
+			case RND_PBO_SUB:
+				if ((*A)->flg.llabel == PA_PLL_OUTSIDE)
+					return pa_coll_move_cnt(e, A, contours, holes, old_parent, parent, parent_contour, 0);
+				break;
+		}
+	}
+
 	return rnd_false;
-}																/* cntr_Collect */
+}
 
 static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t ** contours, rnd_pline_t ** holes, int action)
 {
@@ -699,7 +688,7 @@ M_rnd_polyarea_t_Collect_separated(jmp_buf * e, rnd_pline_t * afst, rnd_polyarea
 	for (cur = &afst; *cur != NULL; cur = next) {
 		next = &((*cur)->next);
 		/* if we disappear a contour, don't advance twice */
-		if (cntr_Collect(e, cur, contours, holes, action, NULL, NULL, NULL))
+		if (pa_collect_contour(e, cur, contours, holes, action, NULL, NULL, NULL))
 			next = cur;
 	}
 }
@@ -726,7 +715,7 @@ static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_pol
 		if (*cur != NULL) {
 			next = &((*cur)->next);
 			/* if we disappear a contour, don't advance twice */
-			if (cntr_Collect(e, cur, contours, holes, action, a, NULL, NULL)) {
+			if (pa_collect_contour(e, cur, contours, holes, action, a, NULL, NULL)) {
 				parent = (*contours)->b;	/* InsCntr inserts behind the head */
 				next = cur;
 			}
@@ -737,7 +726,7 @@ static void M_rnd_polyarea_t_Collect(jmp_buf * e, rnd_polyarea_t * afst, rnd_pol
 		for (; *cur != NULL; cur = next) {
 			next = &((*cur)->next);
 			/* if we disappear a contour, don't advance twice */
-			if (cntr_Collect(e, cur, contours, holes, action, a, parent, parent_contour))
+			if (pa_collect_contour(e, cur, contours, holes, action, a, parent, parent_contour))
 				next = cur;
 		}
 	}
