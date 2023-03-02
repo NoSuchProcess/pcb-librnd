@@ -175,7 +175,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 #ifdef DEBUG_GATHER
 	DEBUGP("gather direction = %d\n", dir);
 #endif
-	assert(*result == NULL);
+	*result = NULL;
 
 	/* Run nd from start hopping to next node */
 	for(nd = start; pa_coll_jump(&nd, &dir, v_rule); nd = PA_NEXT_NODE(nd, dir)) {
@@ -207,30 +207,36 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 	return pa_err_ok;
 }
 
-static void Collect1(jmp_buf * e, rnd_vnode_t * cur, pa_direction_t dir, rnd_polyarea_t ** contours, rnd_pline_t ** holes, pa_jump_rule_t j_rule)
+RND_INLINE void pa_collect_gather(jmp_buf *e, rnd_vnode_t *cur, pa_direction_t dir, rnd_polyarea_t ** contours, rnd_pline_t **holes, pa_jump_rule_t j_rule)
 {
-	rnd_pline_t *p = NULL;							/* start making contour */
-	int errc = pa_err_ok;
-	if ((errc = pa_coll_gather(dir == PA_FORWARD ? cur : cur->next, &p, j_rule, dir)) != pa_err_ok) {
-		if (p != NULL)
-			pa_pline_free(&p);
-		pa_error(errc);
+	rnd_vnode_t *vn;
+	rnd_pline_t *pl;
+	int res;
+
+	/* gather a polyline in pl */
+	vn = (dir == PA_FORWARD) ? cur : cur->next;
+	res = pa_coll_gather(vn, &pl, j_rule, dir);
+	if (res != pa_err_ok) {
+		pa_pline_free(&pl);
+		pa_error(res);
 	}
-	if (!p)
+
+	if (pl == NULL)
 		return;
-	pa_pline_update(p, rnd_true);
-	if (p->Count > 2) {
+
+	pa_pline_update(pl, rnd_true);
+
+	if (pl->Count > 2) {
 #ifdef DEBUG_GATHER
-		DEBUGP("adding contour with %d vertices and direction %c\n", p->Count, p->flg.orient ? 'F' : 'B');
+		DEBUGP("adding contour with %d vertices and direction %c\n", pl->Count, (pl->flg.orient ? 'F' : 'B'));
 #endif
-		put_contour(e, p, contours, holes, NULL, NULL, NULL);
+		put_contour(e, pl, contours, holes, NULL, NULL, NULL);
 	}
 	else {
-		/* some sort of computation error ? */
 #ifdef DEBUG_GATHER
 		DEBUGP("Bad contour! Not enough points!!\n");
 #endif
-		pa_pline_free(&p);
+		pa_pline_free(&pl);
 	}
 }
 
@@ -242,10 +248,10 @@ static void Collect(jmp_buf * e, rnd_pline_t * a, rnd_polyarea_t ** contours, rn
 	cur = a->head;
 	do {
 		if (s_rule(cur, &dir) && cur->flg.mark == 0)
-			Collect1(e, cur, dir, contours, holes, j_rule);
+			pa_collect_gather(e, cur, dir, contours, holes, j_rule);
 		other = cur;
 		if ((other->cvclst_prev && pa_coll_jump(&other, &dir, j_rule)))
-			Collect1(e, other, dir, contours, holes, j_rule);
+			pa_collect_gather(e, other, dir, contours, holes, j_rule);
 	}
 	while ((cur = cur->next) != a->head);
 }																/* Collect */
