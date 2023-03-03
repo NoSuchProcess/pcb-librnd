@@ -180,7 +180,7 @@ RND_INLINE void pa_inshole_build_rtree(rnd_polyarea_t *src, pa_insert_holes_t *a
 RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **insh_ctx)
 {
 	rnd_heap_t *heap;
-	rnd_pline_t *container;
+	rnd_pline_t *container = NULL;
 
 	/* build a heap of all of the polys that the hole is inside its bounding box */
 	heap = rnd_heap_create();
