@@ -404,70 +404,72 @@ rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 }
 
 
-/* NB: This function will free the passed rnd_polyarea_t.
-       It must only be passed a single rnd_polyarea_t (pa->f == pa->b == pa) */
-static void r_NoHolesPolygonDicer(rnd_polyarea_t * pa, void (*emit) (rnd_pline_t *, void *), void *user_data)
+
+static void pa_polyarea_dicer_no_hole_1(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data);
+
+static void pa_polyarea_dicer_recurse(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data)
+{
+	rnd_polyarea_t *pan = pa, *next;
+
+	do {
+		next = pan->f;
+
+		/* remove pan from the list and recurse; when pan has no holes anymore, it gets freed */
+		pan->f = pan->b = pan;
+		pa_polyarea_dicer_no_hole_1(pan, emit, user_data);
+
+	} while((pan = next) != pa);
+}
+
+/* Recursively split up a single-island pa into no-hole contours and call
+   emit on each. Frees pa. */
+static void pa_polyarea_dicer_no_hole_1(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data)
 {
 	rnd_pline_t *p = pa->contours;
+	rnd_polyarea_t *poly2, *left, *right;
 
-	if (!pa->contours->next) {		/* no holes */
-		pa->contours = NULL;				/* The callback now owns the contour */
-		/* Don't bother removing it from the rnd_polyarea_t's rtree
-		   since we're going to free the rnd_polyarea_t below anyway */
+	assert((pa != NULL) && (pa->f == pa) && (pa->b == pa));
+
+	/* optimization: simpler no holes */
+	if (pa->contours->next == NULL) {
+		pa->contours = NULL; /* take over allocation ownership; not removed from rtree because rtree is destroyed soon */
 		emit(p, user_data);
 		pa_polyarea_free_all(&pa);
 		return;
 	}
-	else {
-		rnd_polyarea_t *poly2, *left, *right;
 
-		/* make a rectangle of the left region slicing through the middle of the first hole */
-		poly2 = rnd_poly_from_rect(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
-		rnd_polyarea_and_subtract_free(pa, poly2, &left, &right);
-		if (left) {
-			rnd_polyarea_t *cur, *next;
-			cur = left;
-			do {
-				next = cur->f;
-				cur->f = cur->b = cur;	/* Detach this polygon piece */
-				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
-			}
-			while ((cur = next) != left);
-		}
-		if (right) {
-			rnd_polyarea_t *cur, *next;
-			cur = right;
-			do {
-				next = cur->f;
-				cur->f = cur->b = cur;	/* Detach this polygon piece */
-				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
-			}
-			while ((cur = next) != right);
-		}
-	}
+	/* make a rectangle of the left region slicing through the middle of the first hole */
+	poly2 = rnd_poly_from_rect(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
+	rnd_polyarea_and_subtract_free(pa, poly2, &left, &right);
+
+	if (left != NULL)
+		pa_polyarea_dicer_recurse(left, emit, user_data);
+
+	if (right != NULL)
+		pa_polyarea_dicer_recurse(right, emit, user_data);
 }
 
-void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data)
+void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data)
 {
-	rnd_polyarea_t *cur, *next;
+	rnd_polyarea_t *pan, *next;
 
 	/* clip to the bounding box */
 	if ((clipX1 != clipX2) || (clipY1 != clipY2)) {
-		rnd_polyarea_t *cbox = rnd_poly_from_rect(clipX1, clipX2, clipY1, clipY2);
-		rnd_polyarea_boolean_free(main_contour, cbox, &main_contour, RND_PBO_ISECT);
+		rnd_polyarea_t *clip_box = rnd_poly_from_rect(clipX1, clipX2, clipY1, clipY2);
+		rnd_polyarea_boolean_free(pa, clip_box, &pa, RND_PBO_ISECT);
 	}
-	if (main_contour == NULL)
-		return;
-	/* Now dice it up.
-	 * NB: Could be more than one piece (because of the clip above) */
-	cur = main_contour;
+
+	if (pa == NULL)
+		return; /* happens easily when pa is outside of the clipping area */
+
+	/* iterate over the islands to call the recursive single-island dicer */
+	pan = pa;
 	do {
-		next = cur->f;
-		cur->f = cur->b = cur;			/* Detach this polygon piece */
-		r_NoHolesPolygonDicer(cur, emit, user_data);
-		/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
+		next = pan->f;
+
+		/* remove pan from the list and recurse; when pan has no holes anymore, it gets freed */
+		pan->f = pan->b = pan;
+		pa_polyarea_dicer_no_hole_1(pan, emit, user_data);
 	}
-	while ((cur = next) != main_contour);
+	while((pan = next) != pa);
 }

@@ -26,7 +26,7 @@ rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 /* Slice up a polyarea-with-holes into a set of polygon islands with no
    holes, within the clip area. If the clip area is all-zero, do not clip.
    Free's main_contour. */
-void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data);
+void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data);
 
 /* Add vertices in a fractional-circle starting from v centered at cx, cy and
    going counter-clockwise. Does not include the first and last point. Range:
