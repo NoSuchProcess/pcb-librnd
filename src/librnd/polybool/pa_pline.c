@@ -141,9 +141,6 @@ void pa_pline_init(rnd_pline_t *pl)
 	pl->head->next = pl->head->prev = pl->head;
 	pl->xmin = pl->ymin = RND_COORD_MAX;
 	pl->xmax = pl->ymax = -RND_COORD_MAX-1;
-	pl->is_round = rnd_false;
-	pl->cx = pl->cy = 0;
-	pl->radius = 0;
 }
 
 rnd_pline_t *pa_pline_new(const rnd_vector_t pt)

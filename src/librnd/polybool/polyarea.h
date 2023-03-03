@@ -57,9 +57,12 @@ struct rnd_pline_s {
 	unsigned int Count;
 	double area;
 	rnd_rtree_t *tree;
-	rnd_bool is_round;  /* unused */
-	rnd_coord_t cx, cy; /* unused */
-	rnd_coord_t radius; /* unused */
+
+	/* these were an attempt to introduce arc-in-pline */
+	rnd_bool unused_is_round;
+	rnd_coord_t unused_cx, unused_cy;
+	rnd_coord_t unused_radius;
+
 	struct {
 		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
