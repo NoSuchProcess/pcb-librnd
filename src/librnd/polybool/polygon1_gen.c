@@ -98,26 +98,34 @@ rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl)
 	return pa;
 }
 
+static void pa_poly_from_arc_stroke(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, double rx, double ry, double ang, double da, long num_segs)
+{
+	long n;
+
+	for(n = 0; n < num_segs; n++, ang += da) {
+		rnd_vector_t v;
+		v[0] = cx - rx * cos(ang * RND_M180);
+		v[1] = cy + ry * sin(ang * RND_M180);
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+	}
+}
 
 #define ARC_ANGLE 5
-static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick, int end_caps)
+static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick, int end_caps)
 {
-	rnd_pline_t *contour = NULL;
-	rnd_polyarea_t *np = NULL;
+	rnd_pline_t *pl = NULL;
 	rnd_vector_t v, v2;
-	int i, segs;
-	double ang, da, rx, ry;
-	long half;
-	double radius_adj;
+	long segs, half = (thick + 1) / 2;
+	double ang, da, rx, ry, radius_adj;
 	rnd_coord_t edx, edy, endx1, endx2, endy1, endy2;
 
 	if (thick <= 0)
 		return NULL;
+
 	if (adelta < 0) {
 		astart += adelta;
 		adelta = -adelta;
 	}
-	half = (thick + 1) / 2;
 
 	rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &endx1, &endy1);
 	rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &endx2, &endy2);
@@ -125,25 +133,25 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	/* start with inner radius */
 	rx = MAX(width - half, 0);
 	ry = MAX(height - half, 0);
+
 	segs = 1;
 	if (thick > 0)
-		segs = MAX(segs, adelta * M_PI / 360 *
-							 sqrt(sqrt((double) rx * rx + (double) ry * ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
+		segs = MAX(segs, adelta * M_PI / 360 * sqrt(sqrt((double)rx * (double)rx + (double)ry * (double)ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
 	segs = MAX(segs, adelta / ARC_ANGLE);
 
 	ang = astart;
-	da = (1.0 * adelta) / segs;
+	da = (double)adelta / (double)segs;
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
+
 	v[0] = cx - rx * cos(ang * RND_M180);
 	v[1] = cy + ry * sin(ang * RND_M180);
-	if ((contour = pa_pline_new(v)) == NULL)
+
+	pl = pa_pline_new(v);
+	if (pl == NULL)
 		return 0;
-	for (i = 0; i < segs - 1; i++) {
-		ang += da;
-		v[0] = cx - rx * cos(ang * RND_M180);
-		v[1] = cy + ry * sin(ang * RND_M180);
-		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	}
+
+	pa_poly_from_arc_stroke(pl, cx, cy, rx, ry, ang+da, da, segs - 1);
+
 	/* find last point */
 	ang = astart + adelta;
 	v[0] = cx - rx * cos(ang * RND_M180) * (1 - radius_adj);
@@ -151,18 +159,13 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 
 	/* add the round cap at the end */
 	if (end_caps)
-		rnd_poly_frac_circle(contour, endx2, endy2, v, 2);
+		rnd_poly_frac_circle(pl, endx2, endy2, v, 2);
 
 	/* and now do the outer arc (going backwards) */
 	rx = (width + half) * (1 + radius_adj);
 	ry = (width + half) * (1 + radius_adj);
-	da = -da;
-	for (i = 0; i < segs; i++) {
-		v[0] = cx - rx * cos(ang * RND_M180);
-		v[1] = cy + ry * sin(ang * RND_M180);
-		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-		ang += da;
-	}
+	pa_poly_from_arc_stroke(pl, cx, cy, rx, ry, ang, -da, segs);
+
 
 	/* explicitly draw the last point if the manhattan-distance is large enough */
 	ang = astart;
@@ -173,18 +176,59 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	if (edx < 0) edx = -edx;
 	if (edy < 0) edy = -edy;
 	if (edx+edy > RND_MM_TO_COORD(0.001))
-		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v2));
-
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v2));
 
 	/* now add other round cap */
 	if (end_caps)
-		rnd_poly_frac_circle(contour, endx1, endy1, v2, 2);
+		rnd_poly_frac_circle(pl, endx1, endy1, v2, 2);
 
-	/* now we have the whole contour */
-	if (!(np = rnd_poly_from_contour(contour)))
-		return NULL;
-	return np;
+	return rnd_poly_from_contour(pl);
 }
+
+#define MIN_CLEARANCE_BEFORE_BISECT 10.0
+rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick)
+{
+	double delta;
+	rnd_coord_t half;
+
+	delta = (adelta < 0) ? -adelta : adelta;
+
+	half = (thick + 1) / 2;
+
+	/* corner case: can't even calculate the end cap properly because radius
+	   is so small that there's no inner arc of the clearance */
+	if ((width - half <= 0) || (height - half <= 0)) {
+		rnd_coord_t lx1, ly1;
+		rnd_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
+
+		tmp_arc = pa_poly_from_arc_no_isc(cx, cy, width, height, astart, adelta, thick, 0);
+
+		rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &lx1, &ly1);
+		tmp1 = rnd_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
+
+		rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &lx1, &ly1);
+		tmp2 = rnd_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
+
+		rnd_polyarea_boolean_free(tmp1, tmp2, &ends, RND_PBO_UNITE);
+		rnd_polyarea_boolean_free(ends, tmp_arc, &res, RND_PBO_UNITE);
+		return res;
+	}
+
+	/* If the arc segment would self-intersect, build it as the union of
+	   two non-intersecting segments */
+	if (2 * M_PI * width * (1.0 - (double)delta / 360.0) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
+		rnd_polyarea_t *tmp1, *tmp2, *res;
+		int half_delta = adelta / 2;
+
+		tmp1 = pa_poly_from_arc_no_isc(cx, cy, width, height, astart, half_delta, thick, 1);
+		tmp2 = pa_poly_from_arc_no_isc(cx, cy, width, height, astart+half_delta, adelta-half_delta, thick, 1);
+		rnd_polyarea_boolean_free(tmp1, tmp2, &res, RND_PBO_UNITE);
+		return res;
+	}
+
+	return pa_poly_from_arc_no_isc(cx, cy, width, height, astart, adelta, thick, 1);
+}
+
 
 rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2)
 {
@@ -370,49 +414,6 @@ rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 	return np;
 }
 
-#define MIN_CLEARANCE_BEFORE_BISECT 10.
-rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick)
-{
-	double delta;
-	rnd_coord_t half;
-
-	delta = (adelta < 0) ? -adelta : adelta;
-
-	half = (thick + 1) / 2;
-
-	/* corner case: can't even calculate the end cap properly because radius
-	   is so small that there's no inner arc of the clearance */
-	if ((width - half <= 0) || (height - half <= 0)) {
-		rnd_coord_t lx1, ly1;
-		rnd_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
-
-		tmp_arc = ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 0);
-
-		rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 0, &lx1, &ly1);
-		tmp1 = rnd_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
-
-		rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &lx1, &ly1);
-		tmp2 = rnd_poly_from_line(lx1, ly1, lx1, ly1, thick, 0);
-
-		rnd_polyarea_boolean_free(tmp1, tmp2, &ends, RND_PBO_UNITE);
-		rnd_polyarea_boolean_free(ends, tmp_arc, &res, RND_PBO_UNITE);
-		return res;
-	}
-
-	/* If the arc segment would self-intersect, we need to construct it as the union of
-	   two non-intersecting segments */
-	if (2 * M_PI * width * (1. - (double) delta / 360.) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
-		rnd_polyarea_t *tmp1, *tmp2, *res;
-		int half_delta = adelta / 2;
-
-		tmp1 = ArcPolyNoIntersect(cx, cy, width, height, astart, half_delta, thick, 1);
-		tmp2 = ArcPolyNoIntersect(cx, cy, width, height, astart+half_delta, adelta-half_delta, thick, 1);
-		rnd_polyarea_boolean_free(tmp1, tmp2, &res, RND_PBO_UNITE);
-		return res;
-	}
-
-	return ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 1);
-}
 
 /* NB: This function will free the passed rnd_polyarea_t.
        It must only be passed a single rnd_polyarea_t (pa->f == pa->b == pa) */
