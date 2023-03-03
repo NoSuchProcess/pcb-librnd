@@ -1,30 +1,41 @@
 /*
  *                            COPYRIGHT
  *
- *  pcb-rnd, interactive printed circuit board design
- *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 1994,1995,1996,2010 Thomas Nau
+ *  libpolybool, 2D polygon bool operations
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  (Supported by NLnet NGI0 Entrust in 2023)
  *
- *  This program is distributed in the hope that it will be useful,
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.*
+ *
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *  Contact:
  *    Project page: http://www.repo.hu/projects/librnd
  *    lead developer: http://www.repo.hu/projects/librnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
+ *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
+ *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
+ *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
+ *  "nclip: a polygon clip library" Klamer Schutte from 1993.
+ *
+ *  English translation of the original paper the lib is largely based on:
+ *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
+ *
  */
+
+/* functions for generating polygons or polygon slices */
 
 #include <librnd/rnd_config.h>
 
@@ -37,10 +48,9 @@
 #include <librnd/core/math_helper.h>
 #include <librnd/core/unit.h>
 
-#include "polygon1_gen.h"
+#include "pa_math.c"
 
-/* kept to ensure nanometer compatibility */
-#define PA_ROUND(x) ((long)(((x) >= 0 ? (x) + 0.5  : (x) - 0.5)))
+#include "polygon1_gen.h"
 
 static double rotate_circle_seg[4];
 int rotate_circle_seg_inited = 0;
@@ -403,7 +413,7 @@ rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 	return rnd_poly_from_contour(pl);
 }
 
-
+/*** recursive polygon dicer ***/
 
 static void pa_polyarea_dicer_no_hole_1(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data);
 
