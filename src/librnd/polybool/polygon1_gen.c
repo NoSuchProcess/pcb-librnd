@@ -351,57 +351,56 @@ rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coo
 
 rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square)
 {
-	rnd_pline_t *contour = NULL;
-	rnd_polyarea_t *np = NULL;
+	rnd_pline_t *pl = NULL;
 	rnd_vector_t v;
 	double d, dx, dy;
-	long half;
+	rnd_coord_t half = (thick + 1) / 2;
 
 	if (thick <= 0)
 		return NULL;
-	half = (thick + 1) / 2;
-	d = sqrt(RND_SQUARE(x1 - x2) + RND_SQUARE(y1 - y2));
-	if (!square)
-		if (d == 0)									/* line is a point */
+
+	dx = x2 - x1; dy = y1 - y2;
+	d = dx * dx + dy * dy;
+
+	if (!square && (d == 0)) /* degenerate: single point line */
 			return rnd_poly_from_circle(x1, y1, half);
+
 	if (d != 0) {
-		d = half / d;
-		dx = (y1 - y2) * d;
-		dy = (x2 - x1) * d;
+		double nx, ny;
+		d = half / sqrt(d);
+		nx = dy * d; ny = dx * d;
+		dx = nx; dy = ny;
 	}
 	else {
-		dx = half;
-		dy = 0;
+		dx = half; dy = 0;
 	}
-	if (square) {	/* take into account the ends */
-		x1 -= dy;
-		y1 += dx;
-		x2 += dy;
-		y2 -= dx;
+
+	if (square) { /* adjust (make line longer) for quarey end caps */
+		x1 -= dy; y1 += dx;
+		x2 += dy; y2 -= dx;
 	}
-	v[0] = x1 - dx;
-	v[1] = y1 - dy;
-	if ((contour = pa_pline_new(v)) == NULL)
+
+	v[0] = x1 - dx; v[1] = y1 - dy;
+	pl = pa_pline_new(v);
+	if (pl == NULL)
 		return 0;
-	v[0] = x2 - dx;
-	v[1] = y2 - dy;
+
+	v[0] = x2 - dx; v[1] = y2 - dy;
 	if (square)
-		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
 	else
-		rnd_poly_frac_circle(contour, x2, y2, v, 2);
-	v[0] = x2 + dx;
-	v[1] = y2 + dy;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	v[0] = x1 + dx;
-	v[1] = y1 + dy;
+		rnd_poly_frac_circle(pl, x2, y2, v, 2);
+
+	v[0] = x2 + dx; v[1] = y2 + dy;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+
+	v[0] = x1 + dx; v[1] = y1 + dy;
 	if (square)
-		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
 	else
-		rnd_poly_frac_circle(contour, x1, y1, v, 2);
-	/* now we have the line contour */
-	if (!(np = rnd_poly_from_contour(contour)))
-		return NULL;
-	return np;
+		rnd_poly_frac_circle(pl, x1, y1, v, 2);
+
+	return rnd_poly_from_contour(pl);
 }
 
 
