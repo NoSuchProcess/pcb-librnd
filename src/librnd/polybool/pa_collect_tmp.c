@@ -144,7 +144,7 @@ typedef struct pa_inshole_find_inside_s {
 	rnd_pline_t *result;
 } pa_inshole_find_inside_t;
 
-static rnd_r_dir_t pa_inshole_find_inside(const rnd_box_t *b, void *cl)
+static rnd_r_dir_t pa_inshole_find_inside_cb(const rnd_box_t *b, void *cl)
 {
 	pa_inshole_find_inside_t *info = (pa_inshole_find_inside_t *)cl;
 	rnd_pline_t *check = (rnd_pline_t *)b;
@@ -264,7 +264,7 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 
 				if (!setjmp(info.jb)) {
 					/* this shouldn't find the outer contour */
-					rnd_r_search(insh_ctx->pa->contour_tree, (rnd_box_t *)pl, NULL, pa_inshole_find_inside, &info, NULL);
+					rnd_r_search(insh_ctx->pa->contour_tree, (rnd_box_t *)pl, NULL, pa_inshole_find_inside_cb, &info, NULL);
 					break; /* if there was no longjump, there was nothing found, quit from the for() */
 				}
 
