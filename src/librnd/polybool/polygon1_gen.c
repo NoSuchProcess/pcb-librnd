@@ -297,26 +297,24 @@ rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 	return rnd_poly_from_contour(pl);
 }
 
-
-
-/* create a circle approximation from lines */
-rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius)
+rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
-	rnd_pline_t *contour;
+	rnd_pline_t *pl;
 	rnd_vector_t v;
 
-	if (radius <= 0)
+	if (r <= 0)
 		return NULL;
-	v[0] = x + radius;
-	v[1] = y;
-	if ((contour = pa_pline_new(v)) == NULL)
+
+/* v is the start point */
+	v[0] = cx + r; v[1] = cy;
+
+	pl = pa_pline_new(v);
+	if (pl == NULL)
 		return NULL;
-	rnd_poly_frac_circle(contour, x, y, v, 1);
-	contour->is_round = rnd_true;
-	contour->cx = x;
-	contour->cy = y;
-	contour->radius = radius;
-	return rnd_poly_from_contour(contour);
+
+	rnd_poly_frac_circle(pl, cx, cy, v, 1);
+
+	return rnd_poly_from_contour(pl);
 }
 
 /* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */

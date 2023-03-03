@@ -57,9 +57,9 @@ struct rnd_pline_s {
 	unsigned int Count;
 	double area;
 	rnd_rtree_t *tree;
-	rnd_bool is_round;
-	rnd_coord_t cx, cy;
-	rnd_coord_t radius;
+	rnd_bool is_round;  /* unused */
+	rnd_coord_t cx, cy; /* unused */
+	rnd_coord_t radius; /* unused */
 	struct {
 		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
