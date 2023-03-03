@@ -296,7 +296,7 @@ rnd_bool rnd_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
 	cbx.X2 = cx + r; cbx.Y2 = cy + r;
 
 	if (pl->tree == NULL)
-		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
+		pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 
 	return rnd_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == RND_R_DIR_CANCEL;
 }
@@ -354,7 +354,7 @@ rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	bx.Y1 = cy; bx.Y2 = cy+1;
 	e.cy = cy;
 	if (pl->tree == NULL)
-		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
+		pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 
 	/* ray to the right */
 	bx.X1 = e.cx = cx + r;
@@ -392,7 +392,7 @@ rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 		return rnd_false;
 
 	if (pl->tree == NULL)
-		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
+		pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 
 	if (rnd_pline_isect_circ(pl, cx, cy, r))
 		return rnd_true;

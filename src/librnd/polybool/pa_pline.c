@@ -160,7 +160,7 @@ rnd_pline_t *pa_pline_new(const rnd_vector_t pt)
 	return res;
 }
 
-void pa_pline_free_fields(rnd_pline_t *pl)
+RND_INLINE void pa_pline_free_fields(rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *next;
 
