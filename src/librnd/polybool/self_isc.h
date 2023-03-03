@@ -34,7 +34,7 @@ rnd_bool rnd_pline_is_selfint(rnd_pline_t *pl);
 
 /* Assume pl is self-intersecting split it up into a list of freshly allocated
    plines in out. O(n^2) */
-void rnd_pline_split_selfint(const rnd_pline_t *pl, vtp0_t *out);
+void rnd_pline_split_selfint(rnd_pline_t *pl, vtp0_t *out);
 
 
 rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa);

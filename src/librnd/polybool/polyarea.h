@@ -79,8 +79,8 @@ void pa_pline_free(rnd_pline_t **c);
    variant simply returns the new polyline or returns NULL on allocation
    error. The alloc_copy() variant places the result in dst and returns true
    on success. */
-rnd_pline_t *pa_pline_dup(const rnd_pline_t *src);
-rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src);
+rnd_pline_t *pa_pline_dup(rnd_pline_t *src);
+rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, rnd_pline_t *src);
 
 /* Recalculate bounding box, area, number-of-nodes and rebuuld the rtree. If
    optimize is true also remove excess colinear points. */
@@ -251,7 +251,7 @@ void rnd_poly_contour_init(rnd_pline_t *c);
 void rnd_poly_contour_del(rnd_pline_t **c);
 void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize);
 void rnd_poly_contours_free(rnd_pline_t **pl);
-rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
+rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, rnd_pline_t *src);
 void rnd_poly_contour_inv(rnd_pline_t *c);
 int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v);
 int rnd_poly_contour_in_contour(rnd_pline_t *outer, rnd_pline_t *inner);

@@ -229,7 +229,7 @@ rnd_bool rnd_pline_is_selfint(rnd_pline_t *pl)
 }
 
 
-void rnd_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
+void rnd_pline_split_selfint(rnd_pline_t *pl_in, vtp0_t *out)
 {
 	int n;
 	vtp0_t hubs;

@@ -103,6 +103,59 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
 	return res;
 }
 
+/* Copy the structure of an rtree, without dummy leaf nodes that have the
+   bbox and non-pointer content filled in but pointers left empty */
+static void rnd_poly_copy_edge_tree_(rnd_rtree_t *dst, rnd_rtree_t *parent, const rnd_rtree_t *src, rnd_pline_t *dst_pline)
+{
+	int n;
+
+	dst->bbox = src->bbox;
+	dst->parent = parent;
+	dst->size = src->size;
+	dst->is_leaf = src->is_leaf;
+	dst->used = src->used;
+
+	if (src->is_leaf) {
+		for(n = 0; n < src->used; n++) {
+			pa_seg_t *ds = malloc(sizeof(pa_seg_t)), *ss = src->child.obj[n].obj;
+			rnd_vnode_t *src_node = ss->v;
+			rnd_vnode_t *dst_node = src_node->shared;
+
+			memcpy(ds, ss, sizeof(pa_seg_t));
+
+			ds->box.X1 = src->child.obj[n].box->x1;
+			ds->box.Y1 = src->child.obj[n].box->y1;
+			ds->box.X2 = src->child.obj[n].box->x2;
+			ds->box.Y2 = src->child.obj[n].box->y2;
+			ds->p = dst_pline;
+			ds->v = dst_node;
+			dst->child.obj[n].box = (rnd_rtree_box_t *)ds;
+			dst->child.obj[n].obj = ds;
+
+			/* undo the temporary link hack done in pa_pline_dup() */
+			src_node->shared = dst_node->shared;
+			dst_node->shared = NULL;
+/*printf("put    %d %d %d %d\n", dst->child.obj[n].box->x1, dst->child.obj[n].box->y1, dst->child.obj[n].box->x2, dst->child.obj[n].box->y2);*/
+		}
+	}
+	else {
+		for(n = 0; n < src->used; n++) {
+			dst->child.node[n] = malloc(sizeof(rnd_rtree_t));
+			rnd_poly_copy_edge_tree_(dst->child.node[n], dst, src->child.node[n], dst_pline);
+		}
+	}
+}
+
+void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src)
+{
+	rnd_vnode_t *nv;
+
+	/* copy the tree recursively */
+	dst->tree = rnd_r_create_tree();
+	rnd_poly_copy_edge_tree_(dst->tree, NULL, src->tree, dst);
+}
+
+
 /*** seg-in-seg search helpers */
 
 typedef struct pa_insert_node_task_s pa_insert_node_task_t;

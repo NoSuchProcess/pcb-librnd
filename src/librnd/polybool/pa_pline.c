@@ -255,7 +255,8 @@ void rnd_poly_plines_free(rnd_pline_t **pline)
 	}
 }
 
-rnd_pline_t *pa_pline_dup(const rnd_pline_t *src)
+/* src can't be const because of PB_OPTIMIZE_TREE_COPY */
+rnd_pline_t *pa_pline_dup(rnd_pline_t *src)
 {
 	rnd_pline_t *dst;
 	rnd_vnode_t *n;
@@ -272,20 +273,39 @@ rnd_pline_t *pa_pline_dup(const rnd_pline_t *src)
 	dst->ymin = src->ymin; dst->ymax = src->ymax;
 	dst->area = src->area;
 
+#ifdef PB_OPTIMIZE_TREE_COPY
+	/* ugly hack:see below where newnd->shared is loaded */
+	dst->head->shared = src->head->shared;
+	src->head->shared = dst->head;
+#endif
+
+
 	for(n = src->head->next; n != src->head; n = n->next) {
 		rnd_vnode_t *newnd = rnd_poly_node_create(n->point);
 		if (newnd == NULL) {
 			pa_pline_free(&dst);
 			return NULL;
 		}
+
+#ifdef PB_OPTIMIZE_TREE_COPY
+		/* ugly hack: remember which node is copied from src and save n->shared
+		   in newnd->shared; this is for rnd_poly_copy_edge_tree() */
+		newnd->shared = n->shared;
+		n->shared = newnd;
+#endif
+
 		rnd_poly_vertex_include(dst->head->prev, newnd);
 	}
 
+#ifdef PB_OPTIMIZE_TREE_COPY
+	rnd_poly_copy_edge_tree(dst, src);
+#else
 	dst->tree = rnd_poly_make_edge_tree(dst);
+#endif
 	return dst;
 }
 
-rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, const rnd_pline_t *src)
+rnd_bool pa_pline_alloc_copy(rnd_pline_t **dst, rnd_pline_t *src)
 {
 	*dst = pa_pline_dup(src);
 	return dst != NULL;

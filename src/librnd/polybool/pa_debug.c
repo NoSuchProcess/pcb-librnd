@@ -35,6 +35,9 @@
  *
  */
 
+/* Copy edge tree on pline_dup() instead of re-creating the tree on geometric basis */
+#define PB_OPTIMIZE_TREE_COPY
+
 /* debug control */
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
