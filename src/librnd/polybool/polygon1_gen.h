@@ -10,8 +10,11 @@ rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);
 /* create a circle approximation from lines */
 rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
+/* make a sharp corner rectangle */
 rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2);
-rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t);
+
+/* make a rounded-corner rectangle bloated with radius r beyond x1,x2,y1,y2 */
+rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t r);
 
 
 /* generate a polygon of a round or square cap line of a given thickness */

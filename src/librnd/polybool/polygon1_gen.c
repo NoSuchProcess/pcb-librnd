@@ -317,32 +317,35 @@ rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t
 	return rnd_poly_from_contour(pl);
 }
 
-/* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */
 rnd_polyarea_t *rnd_poly_from_round_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t)
 {
-	rnd_pline_t *contour = NULL;
+	rnd_pline_t *pl = NULL;
 	rnd_vector_t v;
 
-	assert(x2 > x1);
-	assert(y2 > y1);
-	v[0] = x1 - t;
-	v[1] = y1;
-	if ((contour = pa_pline_new(v)) == NULL)
+	/* refuse zero or negative size to avoid self-intersecting polygons */
+	if ((x2 <= x1) || (y2 <= y1))
 		return NULL;
-	rnd_poly_frac_circle_end(contour, x1, y1, v, 4);
-	v[0] = x2;
-	v[1] = y1 - t;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	rnd_poly_frac_circle_end(contour, x2, y1, v, 4);
-	v[0] = x2 + t;
-	v[1] = y2;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	rnd_poly_frac_circle_end(contour, x2, y2, v, 4);
-	v[0] = x1;
-	v[1] = y2 + t;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	rnd_poly_frac_circle_end(contour, x1, y2, v, 4);
-	return rnd_poly_from_contour(contour);
+
+	v[0] = x1 - t; v[1] = y1;
+	pl = pa_pline_new(v);
+	if (pl == NULL)
+		return NULL;
+
+	rnd_poly_frac_circle_end(pl, x1, y1, v, 4);
+
+	v[0] = x2; v[1] = y1 - t;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+	rnd_poly_frac_circle_end(pl, x2, y1, v, 4);
+
+	v[0] = x2 + t; v[1] = y2;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+	rnd_poly_frac_circle_end(pl, x2, y2, v, 4);
+
+	v[0] = x1; v[1] = y2 + t;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+	rnd_poly_frac_circle_end(pl, x1, y2, v, 4);
+
+	return rnd_poly_from_contour(pl);
 }
 
 
