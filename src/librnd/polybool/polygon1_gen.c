@@ -59,6 +59,47 @@ static void init_rotate_cache(void)
 	}
 }
 
+static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range, int add_last)
+{
+	double ex, ey, rad1_x = (v[0]-cx), rad1_y = (v[1]-cy);
+	int n, end;
+
+	init_rotate_cache();
+
+	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
+
+	/* move vector to origin */
+	ex = (v[0]-cx) * RND_POLY_CIRC_RADIUS_ADJ; ey = (v[1]-cy) * RND_POLY_CIRC_RADIUS_ADJ;
+
+	end = RND_POLY_CIRC_SEGS / range - 1; /* -1 so the last vertex is not added in the loop */
+	for(n = 0; n < end; n++) {
+		double tmp;
+
+		/* rotate e */
+		tmp = rotate_circle_seg[0] * ex + rotate_circle_seg[1] * ey;
+		ey = rotate_circle_seg[2] * ex + rotate_circle_seg[3] * ey;
+		ex = tmp;
+
+		v[0] = cx + PA_ROUND(ex); v[1] = cy + PA_ROUND(ey);
+		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
+	}
+
+	if (add_last && (range == 4)) {
+		v[0] = cx - PA_ROUND(rad1_y); v[1] = cy + PA_ROUND(rad1_x);
+		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
+	}
+}
+
+void rnd_poly_frac_circle(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range)
+{
+	rnd_poly_frac_circle_(c, cx, cy, v, range, 0);
+}
+
+void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range)
+{
+	rnd_poly_frac_circle_(c, cx, cy, v, range, 1);
+}
+
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
 {
 	rnd_polyarea_t *pa;
@@ -256,59 +297,6 @@ rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 	return rnd_poly_from_contour(pl);
 }
 
-static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range, int add_last)
-{
-	double oe1, oe2, e1, e2, t1;
-	int i, orange = range;
-
-	init_rotate_cache();
-
-	oe1 = (v[0] - X);
-	oe2 = (v[1] - Y);
-
-	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
-
-	/* move vector to origin */
-	e1 = (v[0] - X) * RND_POLY_CIRC_RADIUS_ADJ;
-	e2 = (v[1] - Y) * RND_POLY_CIRC_RADIUS_ADJ;
-
-	/* NB: the caller adds the last vertex, hence the -1 */
-	range = RND_POLY_CIRC_SEGS / range - 1;
-	for (i = 0; i < range; i++) {
-		/* rotate the vector */
-		t1 = rotate_circle_seg[0] * e1 + rotate_circle_seg[1] * e2;
-		e2 = rotate_circle_seg[2] * e1 + rotate_circle_seg[3] * e2;
-		e1 = t1;
-		v[0] = X + PA_ROUND(e1);
-		v[1] = Y + PA_ROUND(e2);
-		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
-	}
-
-	if ((add_last) && (orange == 4)) {
-		v[0] = X - PA_ROUND(oe2);
-		v[1] = Y + PA_ROUND(oe1);
-		rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
-	}
-}
-
-
-/* add vertices in a fractional-circle starting from v
- * centered at X, Y and going counter-clockwise
- * does not include the first point
- * last argument is 1 for a full circle
- * 2 for a half circle
- * or 4 for a quarter circle
- */
-void rnd_poly_frac_circle(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range)
-{
-	rnd_poly_frac_circle_(c, X, Y, v, range, 0);
-}
-
-/* same but adds the last vertex */
-void rnd_poly_frac_circle_end(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range)
-{
-	rnd_poly_frac_circle_(c, X, Y, v, range, 1);
-}
 
 
 /* create a circle approximation from lines */

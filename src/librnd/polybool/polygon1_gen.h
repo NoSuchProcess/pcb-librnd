@@ -23,14 +23,14 @@ rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
    Free's main_contour. */
 void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data);
 
-/* Add vertices in a fractional-circle starting from v centered at X, Y and
-   going counter-clockwise. Does not include the first point. Last argument is:
-   1 for a full circle
-   2 for a half circle
-   4 for a quarter circle */
-void rnd_poly_frac_circle(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range);
+/* Add vertices in a fractional-circle starting from v centered at cx, cy and
+   going counter-clockwise. Does not include the first and last point. Range:
+    - 1 for a full circle
+    - 2 for a half circle
+    - 4 for a quarter circle */
+void rnd_poly_frac_circle(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range);
 
-/* same but adds the last vertex */
-void rnd_poly_frac_circle_end(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range);
+/* same but adds the last vertex as well, if range==4 */
+void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range);
 
 #endif
