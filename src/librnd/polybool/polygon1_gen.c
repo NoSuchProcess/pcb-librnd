@@ -59,29 +59,43 @@ static void init_rotate_cache(void)
 	}
 }
 
-rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
+rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
 {
-	rnd_polyarea_t *p;
-	pa_pline_update(contour, rnd_true);
-	assert(contour->flg.orient == RND_PLF_DIR);
-	if (!(p = pa_polyarea_alloc()))
+	rnd_polyarea_t *pa;
+
+	pa_pline_update(pl, rnd_true);
+
+	assert(pl->flg.orient == RND_PLF_DIR);
+
+	pa = pa_polyarea_alloc();
+	if (pa == NULL)
 		return NULL;
-	pa_polyarea_insert_pline(p, contour);
-	assert(rnd_poly_valid(p));
-	return p;
+
+	pa_polyarea_insert_pline(pa, pl);
+
+	assert(rnd_poly_valid(pa));
+
+	return pa;
 }
 
-rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *contour)
+rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl)
 {
-	rnd_polyarea_t *p;
-	pa_pline_update(contour, rnd_true);
-	if (contour->flg.orient != RND_PLF_DIR)
-		pa_pline_invert(contour);
-	if (!(p = pa_polyarea_alloc()))
+	rnd_polyarea_t *pa;
+
+	pa_pline_update(pl, rnd_true);
+
+	if (pl->flg.orient != RND_PLF_DIR)
+		pa_pline_invert(pl);
+
+	pa = pa_polyarea_alloc();
+	if (pa == NULL)
 		return NULL;
-	pa_polyarea_insert_pline(p, contour);
-	assert(rnd_poly_valid(p));
-	return p;
+
+	pa_polyarea_insert_pline(pa, pl);
+
+	assert(rnd_poly_valid(pa));
+
+	return pa;
 }
 
 
