@@ -232,27 +232,28 @@ rnd_polyarea_t *rnd_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 
 rnd_polyarea_t *rnd_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2)
 {
-	rnd_pline_t *contour = NULL;
+	rnd_pline_t *pl = NULL;
 	rnd_vector_t v;
 
-	/* Return NULL for zero or negatively sized rectangles */
-	if (x2 <= x1 || y2 <= y1)
+	/* refuse zero or negative size to avoid self-intersecting polygons */
+	if ((x2 <= x1) || (y2 <= y1))
 		return NULL;
 
-	v[0] = x1;
-	v[1] = y1;
-	if ((contour = pa_pline_new(v)) == NULL)
+	v[0] = x1; v[1] = y1;
+	pl = pa_pline_new(v);
+	if (pl == NULL)
 		return NULL;
-	v[0] = x2;
-	v[1] = y1;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	v[0] = x2;
-	v[1] = y2;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	v[0] = x1;
-	v[1] = y2;
-	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
-	return rnd_poly_from_contour(contour);
+
+	v[0] = x2; v[1] = y1;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+
+	v[0] = x2; v[1] = y2;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+
+	v[0] = x1; v[1] = y2;
+	rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+
+	return rnd_poly_from_contour(pl);
 }
 
 static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t X, rnd_coord_t Y, rnd_vector_t v, int range, int add_last)
