@@ -100,7 +100,7 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
 		rnd_r_insert_entry(res, (const rnd_box_t *)s);
 	} while((bv = bv->next) != pl->head);
 
-	return (void *)res;
+	return res;
 }
 
 /*** seg-in-seg search helpers */

@@ -243,7 +243,7 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 	if (pl->Count > 2)
 		pl->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
 
-	pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
+	pl->tree = rnd_poly_make_edge_tree(pl);
 }
 
 void rnd_poly_plines_free(rnd_pline_t **pline)
@@ -281,7 +281,7 @@ rnd_pline_t *pa_pline_dup(const rnd_pline_t *src)
 		rnd_poly_vertex_include(dst->head->prev, newnd);
 	}
 
-	dst->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(dst);
+	dst->tree = rnd_poly_make_edge_tree(dst);
 	return dst;
 }
 

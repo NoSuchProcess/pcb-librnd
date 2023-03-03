@@ -131,7 +131,7 @@ void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy)
 				rnd_r_free_tree_data(pl->tree, free);
 				rnd_r_destroy_tree(&pl->tree);
 			}
-			pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
+			pl->tree = rnd_poly_make_edge_tree(pl);
 
 			rnd_r_insert_entry(pa->contour_tree, (rnd_box_t *)pl);
 		}
