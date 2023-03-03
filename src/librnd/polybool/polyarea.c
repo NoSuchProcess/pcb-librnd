@@ -1,4 +1,4 @@
-/* include all fiels of the implementation (so inlining works without depending
+/* include all files of the implementation (so inlining works without depending
    on link time optimization */
 
 #include <assert.h>
