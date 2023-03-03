@@ -419,7 +419,7 @@ typedef struct pa_find_pl_inside_pa_s {
 } pa_find_pl_inside_pa_t;
 
 /* check if a polyline is within the swarch polyarea */
-static rnd_r_dir_t pa_find_pl_inside_pa(const rnd_box_t *b, void *cl)
+static rnd_r_dir_t pa_find_pl_inside_pa_cb(const rnd_box_t *b, void *cl)
 {
 	pa_find_pl_inside_pa_t *info = (pa_find_pl_inside_pa_t *)cl;
 	rnd_pline_t *pl = (rnd_pline_t *)b;
@@ -430,7 +430,7 @@ static rnd_r_dir_t pa_find_pl_inside_pa(const rnd_box_t *b, void *cl)
 
 	if (pa_is_pline_in_polyarea(pl, info->want_inside, rnd_false)) {
 		info->result = pl;
-		longjmp(info->jb, 1);
+		return RND_R_DIR_CANCEL;
 	}
 
 	return RND_R_DIR_NOT_FOUND;
@@ -491,13 +491,10 @@ RND_INLINE void pa_polyarea_update_primary_del_inside(jmp_buf *e, rnd_box_t box,
 			ictx.want_inside = bpa;
 			ictx.result = NULL;
 
-			/* Set jump return */
-			if (!setjmp(ictx.jb)) {
-				/* find a hole that's inside bpa */
-				rnd_r_search(pa->contour_tree, &box, NULL, pa_find_pl_inside_pa, &ictx, NULL);
+			/* find a hole that's inside bpa */
+			rnd_r_search(pa->contour_tree, &box, NULL, pa_find_pl_inside_pa_cb, &ictx, NULL);
+			if (ictx.result == NULL)
 				break; /* nothing found */
-			}
-			/* succesful r_search jumps here */
 
 			/* singly linked list; find ->prev */
 			for(prev = pa->contours; prev->next != ictx.result; prev = prev->next) ;
