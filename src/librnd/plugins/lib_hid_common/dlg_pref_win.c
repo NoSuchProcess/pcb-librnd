@@ -148,6 +148,8 @@ void rnd_dlg_pref_win_create(pref_ctx_t *ctx)
 				RND_DAD_BOOL(ctx->dlg);
 					ctx->win.wboard = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_CHANGE_CB(ctx->dlg, pref_win_board_cb);
+				RND_DAD_LABEL(ctx->dlg, "[LIMITATIONS tooltip]");
+					RND_DAD_HELP(ctx->dlg, "Loading the geometry of the top window (main window) from the design is not supported because the top window is created before the design is loaded.\nIf the app supports loading multiple designs, and more than one design has window geometry config saved, one design will be picked randomly to load window geometry from.");
 			RND_DAD_END(ctx->dlg);
 
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
