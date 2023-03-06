@@ -107,7 +107,9 @@ Naming convention: this document will name vertices as V or Vsomething,
 edges as E or Esomthing, and index them starting from 0 from an
 arbitrarily chosen vertex on the polyline, so that (for example) Efoo[5]
 is the edge that starts at Vfoo[0] and ends at Vfoo[1]. The last edge of
-a polyline of n vertices, E[n-1] is between V[n-1] and V[0].
+a polyline of n vertices, E[n-1] is between V[n-1] and V[0]. Polylines
+are named Psomething; when indexed, Pfoo[0] is the outline, indices starting
+from 1 refer to cutouts.
 
 <h3> The algorithm </h3>
 <p>
@@ -160,7 +162,7 @@ the polyline. There will be a <i>previous edge</i> Ep that
 ends on that vertex and a <i>next edge</i> En that starts at that vertex.
 Allocate two <i>cross-vertex descriptors</i> (CVD), Dp and Dn, and assign them
 to Ep and En respectively (cross-linking the corresponding E and D with pointers
-in both directions). A CVD contains angle<sup><a href="#note3">5</a> information and flags.
+in both directions). A CVD contains angle<sup><a href="#note5">5</a></sup> information and flags.
 <p>
 For every intersection point, collecd all CVDs into a cyclic list called
 the <i>connectivity list [of that point]</i>. The connectivity list is ordered
@@ -173,6 +175,70 @@ TODO: the paragraph under figure 6 on page 8.
 
 <h3> Step 2. Edge and contour labeling </h3>
 <p>
+Let Pc be the outer contour of either input region A or input region B. Let Pm
+be the outer contour of the other input region.
+<p>
+(Predicate 1.) After the first step:
+<ul>
+	<li> Any par of edges of A and B intersect at their endpoints (and
+	     may or may not overlap, but if they overlap, they overlap in full
+	     length)
+	<li> Every edge of Pc:
+		<ul>
+			<li> either overlaps with an edge in Pm (and is called a <i>shared edge</i>)
+			<li> or lies fully inside Pm (except for an endpoint maybe)
+			<li> or lies fully outside Pm (except for an endpoint maybe)
+		</ul>
+	<li> if Pc does not have any cross-vertex, it is either fully inside Pm or
+	     is outside of Pm
+</ul>
+<p>
+The label on an edge E of Pc is one of:
+<ul>
+	<li> INSIDE: when E is inside Pm
+	<li> OUTSIDE: when E is outside Pm
+	<li> SHARED1: when E overlaps with an edge from Pm that, and the two edges have the same direction
+	<li> SHARED2: when E overlaps with an edge from Pm that, and the two edges have different direction
+</ul>
+<p>
+The label of Pc is one of:
+<ul>
+	<li> ISECTED: if it contains at least one cross-vertex
+	<li> INSIDE: if it has no cross-vertex and it is fully inside Pm
+	<li> OUTSIDE: if it has no cross-vertex and is outside of Pm
+</ul>
+
+<h4>Algorithm for edge (and polyline) labeling</h4>
+<ul>
+	<li> 1. If Pc does not contain any cross-vertice: label Pc INSIDE or OUTSIDE<sup><a href="#note6">6</a></sup>. Do not label edges of Pc.
+	<li> 2. If Pc contains at least one cross-vertex: label Pc ISECTED, and label
+	     its each edge E[i] (i is between 0 and n, n is the number of vertices in Pc):
+	<ul>
+		<li> 2.1. if E does not contain cross-vertices at its endpoints:
+			<ul>
+				<li> 2.1.2. if i == 0: if starting vertex lies inside Pm label E[i] INSIDE, else label E[i] OUTSIDE
+				<li> 2.1.1. if i != 0: copy label value from E[i-1]
+			</ul>
+		<li> 2.2. if E contains 1 or 2 cross-vertices at its endpoints:
+			<ul>
+				<li> 2.2.1. there is an overlapping edge in Pm that has the same starting point as E and the same ending point as E: label E as SHARED1
+				<li> 2.2.2. there is an overlapping edge in Pm that has the same starting point as the endpoint of E and the same ending point as the start point of E: label E as SHARED2
+				<li> 2.2.3. Pc's cross-vertices connectivity lists do not contain any vertex from Pm: C touches itself but doesn't intersect M; jump to 2.1
+				<li> 2.2.4. Pc's cross-vertices connectivity lists contains vertices (called Vm[j]) from Pm:
+					<ul>
+						<li> take the <i>sector<i> defined by Vm[j-1], Vm[j] and Vm[j+1]
+						<li> check, using the angle of E: if E is inside that <i>sector</i>, label E as INSIDE, else label E as OUTSIDE (see Fig. 7).
+					</ul>
+			</ul>
+	</ul>
+</ul>
+<p>
+TODO: Fig. 7
+
+<h3> Step 3. Collecting the resulting contours </h3>
+<p>
+An essential idea is that the polylines of R are collected using edge and
+polyline labels instead of using coordinates<sup><a href="#note7">7</a></sup>.
 
 
 
@@ -205,14 +271,26 @@ because there are finite numbers that can be represented, so the intersection
 will likely fall in between two such numbers and the same rounding has to be done,
 and the same type of error is introduced.
 
-<p id="note3">4. The error introduced in note 3 can be significant: sligtly
+<p id="note4">4. The error introduced in note 3 can be significant: sligtly
 changing the slope of (a section of) an edge that had a touching vertex
 from another island can convert that touching into a full intersection or
 no touching, and this does change the topology of the problem.
 
-<p id="note3">5. This does not have to be a real angle; anything that yields
+<p id="note5">5. This does not have to be a real angle; anything that yields
 the same ordering for a set of edges at a cross-vertex's point as if the
 edges were ordered by true angle will work the same. A suitable cheaper
 metric is the 0..1 normalized slope of the edge (e.g. dx/dy) combined
 with the quadrant in which the edge falls, so that the result is between 0..4.
+
+<p id="note6">6. It is enough to determine if one random vertex of Pc is
+inside or outside, the rest of the vertices must be the same, because
+no cross vertex means no intersection between Pc and Pm.
+
+<p id="note7">7. This means the algorithm is <i>topological</i>: in step 1 it deals
+with coordinates to determine intersections and it inserts new vertices
+at them. After that step the whole algorithm is only about linearly iterating
+over lists and sometimes deciding where to go at intersections, but all these
+are done purely on the topological infromation (<i>order</i> of points, CVDs, 
+left-of/right-of, previous-of/next-of, inside/outside concepts).
+
 
