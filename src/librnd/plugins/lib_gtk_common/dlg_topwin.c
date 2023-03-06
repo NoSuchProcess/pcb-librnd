@@ -204,20 +204,11 @@ static gint top_window_configure_event_cb(GtkWidget *widget, long x, long y, lon
 {
 	rnd_gtk_t *gctx = ctx_;
 	rnd_gtk_topwin_t *tw = &gctx->topwin;
-	double maxx, maxy;
 
 	if (!tw->placed)
 		return FALSE;
 
-
-	/* window with max zoomout could be resized so much that it causes
-	   coord overflow. Zoom in a bit to avoid that */
-	maxx = gctx->port.view.coord_per_px * gctx->port.view.canvas_width;
-	if (maxx > RND_COORD_MAX)
-		gctx->port.view.coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)gctx->port.view.canvas_width;
-	maxy = gctx->port.view.coord_per_px * gctx->port.view.canvas_height;
-	if (maxy > RND_COORD_MAX)
-		gctx->port.view.coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)gctx->port.view.canvas_height;
+	rnd_gtk_zoom_clamp_overflow(&gctx->port.view);
 
 	return rnd_gtk_winplace_cfg(ghidgui->hidlib, widget, NULL, "top");
 }

@@ -116,11 +116,24 @@ rnd_bool rnd_gtk_coords_event2design(const rnd_gtk_view_t *v, int event_x, int e
 	return rnd_true;
 }
 
+void rnd_gtk_zoom_clamp_overflow(rnd_gtk_view_t *v)
+{
+	double maxx, maxy;
+
+	maxx = v->coord_per_px * v->canvas_width;
+	if (maxx > RND_COORD_MAX)
+		v->coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)v->canvas_width;
+	maxy = v->coord_per_px * v->canvas_height;
+	if (maxy > RND_COORD_MAX)
+		v->coord_per_px = ((double)RND_COORD_MAX * 0.99) / (double)v->canvas_height;
+}
+
 void rnd_gtk_zoom_post(rnd_gtk_view_t *v)
 {
 	v->coord_per_px = rnd_gtk_clamp_zoom(v, v->coord_per_px);
 	v->width = v->canvas_width * v->coord_per_px;
 	v->height = v->canvas_height * v->coord_per_px;
+	rnd_gtk_zoom_clamp_overflow(v);
 }
 
 /* gport->view.coord_per_px:
