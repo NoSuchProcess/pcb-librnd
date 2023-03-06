@@ -1,0 +1,142 @@
+<html>
+<body>
+<center>
+<H1> A CLOSED SET OF ALGORITHMS FOR PERFORMING SET OPERATIONS ON POLYGONAL REGIONS IN THE PLANE... </H1>
+<h2> ... for coders </h2>
+</center>
+<h3> Preface to this interpretation </h3>
+<dl>
+<p>
+<a href="https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf">
+The excellent paper</a>by <i>Michael V. Leonov and Alexey G. Nikitin</i> at the
+<i>A. P. Ershov Institute of Information Systems, Siberian Branch of Russian</i>
+back from the 1990s clearly and precisely presents a surprisingly simple
+algorithm for the problem also called <i>polygon clipping</i>. Besides describing
+the algorithm, the paper also gives accurate definitions and an estimation on
+runtime.
+<p>
+While the paper, in its original form, is already rather useful, I've found
+that as a coder, I have hard time processing some parts of it, because
+of the following factors:
+<ul>
+	<li> mathematically precise, but often complex wording for expressing otherwise simple concepts
+	<li> condensed mathematical expressions
+	<li> file format: the original pdf seems to be broken (I had two different pdf reader implementation choke on it)
+	<li> while figures and example cases are chosen very wisely to present interesting cases, labeling and coloring could make it easier to understand them
+</ul>
+<p>
+This document is an English-to-English translation of the original paper, with
+the intended target audience being coders who want to undertsand and implement
+the algorith but do not wish to prove or verify the maths begind it.
+In fact, this document is more of <i>my personal interpretation</i>
+than a translation.
+<p>
+This document closely follows the structure of the original document, so
+that the two can be read in parallel.
+<p>
+I heavily simplified or even skipped parts that are very important for
+mathematical correctness but not required for implementing the algorithm in
+code. Instead of the mathematical notations,  beyond the real
+basic operators I use named operator function; instead of single letter
+variables, I use multiple-letter ASCII-only variable names (no greek letters).
+Instead of condensing the formulas, I rather make them more verbose, explaining
+what each variable is for. These modifications may degrade pedantic mathematical
+correctness, but I believe it makes it easier to digest the information on
+first pass.
+<p>
+I've also redrawn all illustrations so they have more labels, more colors;
+more information explicitly encoded in them that otherwise could have been
+implied or figured from context.
+<p>
+Finally, this document is plain, hand written html, which is much more portable
+than pdf.
+</dl>
+
+
+<h3> Abstract </h3>
+<p>
+See the original paper.
+
+<h3> Introduction </h3>
+<p>
+See the original paper.
+
+<h3> Basic definitions </h3>
+<p>
+(Definition 1 and 2)
+<p>
+A [polygon]<i>region</i> consists of zero or more <i>islands</i>.
+(The original paper calls this <i>polygon</i>; this document will call it
+island to reduce confusion with similar terms.)
+An island is an outer polyline and zero or more inner polylines (which act
+as cutouts). A <i>polyline</i> is an ordererd, cyclic list of x;y vertices
+on the 2D plane, containing at least 3 vertices.
+<p>
+An <i>edge</i> is a straight line segment<sup><a href="#note1">1</a></sup>
+that starts from such a vertex and ends at the next vertex; an edge is
+referenced by its starting vertex. This also means edges are directed from
+start vertex to end vertex.
+<p>
+Given such a directed edge, there is a left neighborhood and a right neighborhood
+(of imaginary points) next to the edge. (This concept is used only to decide
+if something is left or right to the edge.)
+<p>
+The <i>straight</i> ordering of vertices or edges within a polyline is
+counter-clockwise (CCW), the <i>reverse</i> ordering is CW.
+<p>
+TODO: figure 2 (extended)
+<p>
+A <i>high degree</i> vertex is shared by the endpoints of more than edges.
+<p>
+(Definition 3)
+<p>
+Give a polyline, there's an <i>inner neighborhood<i> (all points inside
+the polyline) and an <i>outer neighborhood<i> (all points outside).
+A valid polyline can be self touching (a vertex between
+two edges falling ona 3rd edge of the polyline) but can not be self
+intersecting.
+<p>
+The outline of an island is always <i>straight</i> (CCW) while cutouts
+are always <i>reversed</i> (CW). Each island has exactly one outline.
+<p>
+TODO: figure 3 (colored)
+
+
+<h3> The algorithm </h3>
+<p>
+Input:
+<ul>
+	<li> A and B: two regions
+	<li> op: an operation (one of: <i>union</i>, <i>intersection</i>, <i>difference</i>, <i>xor</i><sup><a href="#note1">2</a></sup>)
+</ul>
+Output: a region R; R = op(A, B).
+<p>
+The algorihm is split up in four steps:
+<ul>
+	<li> Step 1. Processing of the edge intersections.
+	<li> Step 2. Edge and contour labeling.
+	<li> Step 3. Collecting the resulting contours.
+	<li> Step 4. Placing the resulting contours in R.
+</ul>
+
+<p>
+TODO: figure 4 (colored)
+
+
+<h3> Step 1: processing edge intersections </h3>
+<p>
+
+
+
+<h3> Notes </h3>
+<p id="note1">1. While the original paper deals with lines only,
+I belive the algorithm would work with any non-self-intersecting curve
+object in place of a straight line segment. Some parts of the algorithm
+depends on having at least 3 vertices in a valid polyline. This assumption
+could be violated by using non-linear objects. For example with circular arcs
+it's easily possible to have a 2-object "polyline", or even a single-object
+one (a full circle). These corner cases can easily be avoided by splitting up
+such, at arbitrary points, into 2 or 3 edges.
+
+<p id="note2">2. The xor operation is called "symmetrical difference" in
+the original paper.
