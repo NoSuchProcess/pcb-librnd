@@ -75,7 +75,7 @@ on the 2D plane, containing at least 3 vertices.
 An <i>edge</i> is a straight line segment<sup><a href="#note1">1</a></sup>
 that starts from such a vertex and ends at the next vertex; an edge is
 referenced by its starting vertex. This also means edges are directed from
-start vertex to end vertex.
+start vertex to end vertex. There are no zero-legth edges.
 <p>
 Given such a directed edge, there is a left neighborhood and a right neighborhood
 (of imaginary points) next to the edge. (This concept is used only to decide
@@ -90,17 +90,24 @@ A <i>high degree</i> vertex is shared by the endpoints of more than edges.
 <p>
 (Definition 3)
 <p>
-Give a polyline, there's an <i>inner neighborhood<i> (all points inside
-the polyline) and an <i>outer neighborhood<i> (all points outside).
+Give a polyline, there's an <i>inner neighborhood</i> (all points inside
+the polyline) and an <i>outer neighborhood</i> (all points outside).
 A valid polyline can be self touching (a vertex between
 two edges falling ona 3rd edge of the polyline) but can not be self
 intersecting.
 <p>
 The outline of an island is always <i>straight</i> (CCW) while cutouts
-are always <i>reversed</i> (CW). Each island has exactly one outline.
+are always <i>reversed</i> (CW). Each island has exactly one outline, and that is
+the outmost polyline of the island. Polylines of an island do not touch or
+intersect other polylines within the island.
 <p>
 TODO: figure 3 (colored)
-
+<p>
+Naming convention: this document will name vertices as V or Vsomething,
+edges as E or Esomthing, and index them starting from 0 from an
+arbitrarily chosen vertex on the polyline, so that (for example) Efoo[5]
+is the edge that starts at Vfoo[0] and ends at Vfoo[1]. The last edge of
+a polyline of n vertices, E[n-1] is between V[n-1] and V[0].
 
 <h3> The algorithm </h3>
 <p>
@@ -125,10 +132,56 @@ TODO: figure 4 (colored)
 
 <h3> Step 1: processing edge intersections </h3>
 <p>
+Find all intersections between edge objects of A and B (ignoring the
+shared endpoint of adjacent edges within a polyline but not ignoring
+other intersections happening between edges of the same polyline):
+<ul>
+	<li> for an edge-edge mid intersection, insert a new vertex in both regions, at the intersection point, splitting edge both objects
+	<li> if a vertex of an island is on the edge of another, split that edge inserting a new vertex in the intersection point
+	<li> if two edges overlap, split them ensuring there's a vertex on the start and end of the overlap
+	<li> (if two vertices fall on the same point, don't do anything)
+</ul>
+<p>
+By now any intersection has an explicit vertex on all related polylines.
+If there are multiple vertices falling on the same point, that means there is
+an intersection/touching there and all vertices on that point are called <i>
+cross-verticles</i>.
+<p>
+Comment: for each such point of intersection there are at least two
+cross-verticles for such a point.
+<p>
+Comment: this process <b>does change the structure of input regions</b>, when it is creating new vertices,
+which means if the original regions are to be preserved, a copy needs to be made.
+However, this process (<b>in theory</b><sup><a href="#note3">3</a>, <a href="#note4">4</a></sup>)
+does not change the shape/meaning/topology of the input regions.)
+<p>
+Take each cross-vertex V[i], where i is the index of the given vertex within
+the polyline. There will be a <i>previous edge</i> Ep that
+ends on that vertex and a <i>next edge</i> En that starts at that vertex.
+Allocate two <i>cross-vertex descriptors</i> (CVD), Dp and Dn, and assign them
+to Ep and En respectively (cross-linking the corresponding E and D with pointers
+in both directions). A CVD contains angle<sup><a href="#note3">5</a> information and flags.
+<p>
+For every intersection point, collecd all CVDs into a cyclic list called
+the <i>connectivity list [of that point]</i>. The connectivity list is ordered
+by the angle of the CVDs (fig. 6). Order of equal angles is unspecified.
+<p>
+TODO: figure 6
+<p>
+TODO: the paragraph under figure 6 on page 8.
+
+
+<h3> Step 2. Edge and contour labeling </h3>
+<p>
 
 
 
 <h3> Notes </h3>
+<p>
+These notes are not in the original paper, but are collected by the author
+of this document on the basis of interpretation of the original paper and
+experience with an implementation of this algorithm in pcb-rnd.
+
 <p id="note1">1. While the original paper deals with lines only,
 I belive the algorithm would work with any non-self-intersecting curve
 object in place of a straight line segment. Some parts of the algorithm
@@ -140,3 +193,26 @@ such, at arbitrary points, into 2 or 3 edges.
 
 <p id="note2">2. The xor operation is called "symmetrical difference" in
 the original paper.
+
+<p id="note3">3. In practice it does, due to finite precision/resolution of
+number representation in the common programming practices. If vertex
+coordinates are integers, intersection of two sloped edges will rarely fall
+onto integer coordinates. Inserting a new vertex at the nearest integer coords
+will slightly change the input region because instead of a single straight line
+at a specific slope, the result is two slightly differently sloped lines. Using
+floating point numbers instead of integers does not solve the problem either,
+because there are finite numbers that can be represented, so the intersection
+will likely fall in between two such numbers and the same rounding has to be done,
+and the same type of error is introduced.
+
+<p id="note3">4. The error introduced in note 3 can be significant: sligtly
+changing the slope of (a section of) an edge that had a touching vertex
+from another island can convert that touching into a full intersection or
+no touching, and this does change the topology of the problem.
+
+<p id="note3">5. This does not have to be a real angle; anything that yields
+the same ordering for a set of edges at a cross-vertex's point as if the
+edges were ordered by true angle will work the same. A suitable cheaper
+metric is the 0..1 normalized slope of the edge (e.g. dx/dy) combined
+with the quadrant in which the edge falls, so that the result is between 0..4.
+
