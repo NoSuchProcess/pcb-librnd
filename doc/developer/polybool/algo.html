@@ -63,6 +63,8 @@ See the original paper.
 
 <h3> Basic definitions </h3>
 <p>
+TODO: what's a contour, can we kill it from this doc in favor of polyline?
+<p>
 (Definition 1 and 2)
 <p>
 A [polygon]<i>region</i> consists of zero or more <i>islands</i>.
@@ -240,7 +242,19 @@ TODO: Fig. 7
 An essential idea is that the polylines of R are collected using edge and
 polyline labels instead of using coordinates<sup><a href="#note7">7</a></sup>.
 
-
+<h4> rules for edge inclusion in result <h4>
+<p>
+Consider an edge E belonging to a pline in either input region A or B. Let NL(E)
+be the left neighborhood of E and NR(E) be the right neighborhood of E, where
+neighborhood is a theoretical constrution and as a simplifiation can
+be considered to consists of arbitrary points very close to the edge. Such a
+neighborhood is either fully inside or fully outside of A (or B).
+<p>
+Inclusion of E into the result R:
+<p>
+TODO: points 1, 2, 3, 4: what do these mean, especially when they belong to R?
+<p>
+TODO: reproduce table 1 with more columns
 
 <h3> Notes </h3>
 <p>
