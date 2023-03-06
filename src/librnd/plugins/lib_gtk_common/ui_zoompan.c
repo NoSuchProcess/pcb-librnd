@@ -131,9 +131,9 @@ void rnd_gtk_zoom_clamp_overflow(rnd_gtk_view_t *v)
 void rnd_gtk_zoom_post(rnd_gtk_view_t *v)
 {
 	v->coord_per_px = rnd_gtk_clamp_zoom(v, v->coord_per_px);
+	rnd_gtk_zoom_clamp_overflow(v);
 	v->width = v->canvas_width * v->coord_per_px;
 	v->height = v->canvas_height * v->coord_per_px;
-	rnd_gtk_zoom_clamp_overflow(v);
 }
 
 /* gport->view.coord_per_px:
