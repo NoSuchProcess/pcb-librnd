@@ -16,7 +16,7 @@ the algorithm, the paper also gives accurate definitions and an estimation on
 runtime.
 <p>
 While the paper, in its original form, is already rather useful, I've found
-that as a coder, I have hard time processing some parts of it, because
+that as a coder, I have a hard time processing some parts of it, because
 of the following factors:
 <ul>
 	<li> mathematically precise, but often complex wording for expressing otherwise simple concepts
@@ -26,8 +26,8 @@ of the following factors:
 </ul>
 <p>
 This document is an English-to-English translation of the original paper, with
-the intended target audience being coders who want to undertsand and implement
-the algorith but do not wish to prove or verify the maths behind it.
+the intended target audience being coders who want to understand and implement
+the algorithm but do not wish to prove or verify the maths behind it.
 In fact, this document is more of <i>my personal interpretation</i>
 than a translation.
 <p>
@@ -37,14 +37,14 @@ that the two can be read in parallel.
 I heavily simplified or even skipped parts that are very important for
 mathematical correctness but not required for implementing the algorithm in
 code. Instead of the mathematical notations, beyond the most
-basic operators I use named operator function; instead of single letter
+basic operators I use a named operator function; instead of single letter
 variables, I use multiple-letter ASCII-only variable names (no greek letters).
 Instead of condensing the formulas, I rather make them more verbose, explaining
 what each variable is for. These modifications may degrade pedantic mathematical
 correctness, but I believe it makes it easier to digest the information on
 first pass.
 <p>
-I've also redrawn all illustrations so they have more labels, more colors;
+I've also redrawn all illustrations so that they have more labels, more colors;
 more information explicitly encoded in them that otherwise could have been
 implied or figured from context.
 <p>
@@ -65,16 +65,16 @@ See the original paper.
 <p>
 TODO: what's a contour, can we kill it from this doc in favor of polyline?
 <p>
-Our coordinate system is a 2d Eucledian plane with usual Cartesian system. A
-point is specified by its x;y coordinates, but points are not stored, only
-used as reference for this document. A vertex is also specified by its x;y
+Our coordinate system is a 2d Euclidian plane with the usual Cartesian system.
+A point is specified by its x;y coordinates, but points are not stored, only
+used as a reference for this document. A vertex is also specified by its x;y
 coordinates and is stored in polylines which are stored in regions in turn.
 <p>
 (Definition 1 and 2)
 <p>
 A [polygon]<i>region</i> consists of zero or more <i>islands</i>.
 (The original paper calls this <i>polygon</i>; this document will call it
-island to reduce confusion with similar terms.)
+an island to reduce confusion with similar terms.)
 An island is an outer polyline and zero or more inner polylines (which act
 as cutouts). A <i>polyline</i> is an ordererd, cyclic list of vertices,
 containing at least 3 vertices.
@@ -89,18 +89,18 @@ Given such a directed edge, there is a left neighborhood and a right neighborhoo
 if something is left or right to the edge.)
 <p>
 The <i>straight</i> ordering of vertices or edges within a polyline is
-counter-clockwise (CCW), the <i>reverse</i> ordering is CW.
+counter-clockwise (CCW), the <i>reverse</i> ordering is clockwise (CW).
 <p>
 TODO: figure 2 (extended)
 <p>
-A <i>high degree</i> vertex is shared by the endpoints of more than edges.
+A <i>high degree</i> vertex is shared by the endpoints of more than two edges.
 <p>
 (Definition 3)
 <p>
-Give a polyline, there's an <i>inner neighborhood</i> (all points inside
+Given a polyline, there's an <i>inner neighborhood</i> (all points inside
 the polyline) and an <i>outer neighborhood</i> (all points outside).
 A valid polyline can be self touching (a vertex between
-two edges falling ona 3rd edge of the polyline) but can not be self
+two edges falling on a 3rd edge of the polyline) but can not be self
 intersecting.
 <p>
 The outline of an island is always <i>straight</i> (CCW) while cutouts
@@ -111,7 +111,7 @@ intersect other polylines within the island.
 TODO: figure 3 (colored)
 <p>
 Naming convention: this document will name vertices as V or Vsomething,
-edges as E or Esomthing, and index them starting from 0 from an
+edges as E or Esomething, and index them starting from 0 from an
 arbitrarily chosen vertex on the polyline, so that (for example) Efoo[5]
 is the edge that starts at Vfoo[0] and ends at Vfoo[1]. The last edge of
 a polyline of n vertices, E[n-1] is between V[n-1] and V[0]. Polylines
@@ -127,7 +127,7 @@ Input:
 </ul>
 Output: a region R; R = op(A, B).
 <p>
-The algorihm is split up in four steps:
+The algorithm is split into four steps:
 <ul>
 	<li> Step 1. Processing of the edge intersections.
 	<li> Step 2. Edge and contour labeling.
@@ -145,7 +145,7 @@ Find all intersections between edge objects of A and B (ignoring the
 shared endpoint of adjacent edges within a polyline but not ignoring
 other intersections happening between edges of the same polyline):
 <ul>
-	<li> for an edge-edge mid intersection, insert a new vertex in both regions, at the intersection point, splitting edge both objects
+	<li> for an edge-edge mid intersection, insert a new vertex in both regions, at the intersection point, splitting the edge of both objects
 	<li> if a vertex of an island is on the edge of another, split that edge inserting a new vertex in the intersection point
 	<li> if two edges overlap, split them ensuring there's a vertex on the start and end of the overlap
 	<li> (if two vertices fall on the same point, don't do anything)
@@ -251,7 +251,7 @@ polyline labels instead of using coordinates<sup><a href="#note7">7</a></sup>.
 <p>
 Consider an edge E belonging to a pline in either input region A or B. Let NL(E)
 be the left neighborhood of E and NR(E) be the right neighborhood of E, where
-neighborhood is a theoretical constrution and as a simplifiation can
+neighborhood is a theoretical construction and as a simplifiation can
 be considered to consists of arbitrary points very close to the edge. Such a
 neighborhood is either fully inside or fully outside of A (or B).
 <p>
@@ -300,22 +300,22 @@ described in Table 1b.
 
 <h4> jumping rules at intersections </h4>
 <p>
-If the collect step reaches an cross-vertex, that means we have reached an
+If the collect step reaches a cross-vertex, that means we have reached an
 intersection where more than 2 vertices (4 or more edges) meet. The number
-of CVDs (descriptors from step 1) is twice the number of vertices in that
+of CVDs (descriptors from step 1) is twice the number of vertices at that
 point. Using the <i>connectivity list</i> of step 1, that also means we have
 a set of edges ordered by angle. Let each edge of this set be F(j), where
 j is between 0 and length of the point's <i>connectivity list</i> minus 1.
 <p>
 Points in the <i>sector</i> between F[j] and F[j+1] are either all inside
-or outside of region A and/or B. If the points of two neigbour sectors
+or outside of region A and/or B. If the points of two neigbouring sectors
 are in the result R, by definition 3 their outer polyline contour will be
 the same.
 <p>
 TODO: draw a figure about the above.
 <p>
 Using this rule, we loop over cross-linked edges F[] with j until we find
-an edge that statisfies the above rule. In other words, we jump to the
+an edge that satisfies the above rule. In other words, we jump to the
 closest (in angle) edge that would make up a polyline that includes 
 all the same-polarity neighboring sectors, using the rules detailed below.
 <p>
@@ -331,29 +331,29 @@ of this document on the basis of interpretation of the original paper and
 experience with an implementation of this algorithm in pcb-rnd.
 
 <p id="note1">1. While the original paper deals with lines only,
-I belive the algorithm would work with any non-self-intersecting curve
+I believe the algorithm would work with any non-self-intersecting curve
 object in place of a straight line segment. Some parts of the algorithm
-depends on having at least 3 vertices in a valid polyline. This assumption
+depend on having at least 3 vertices in a valid polyline. This assumption
 could be violated by using non-linear objects. For example with circular arcs
 it's easily possible to have a 2-object "polyline", or even a single-object
 one (a full circle). These corner cases can easily be avoided by splitting up
-such, at arbitrary points, into 2 or 3 edges.
+such objects, at arbitrary points, into 2 or 3 edges.
 
 <p id="note2">2. The xor operation is called "symmetrical difference" in
 the original paper.
 
 <p id="note3">3. In practice it does, due to finite precision/resolution of
-number representation in the common programming practices. If vertex
+number representations with common programming practices. If vertex
 coordinates are integers, intersection of two sloped edges will rarely fall
 onto integer coordinates. Inserting a new vertex at the nearest integer coords
 will slightly change the input region because instead of a single straight line
 at a specific slope, the result is two slightly differently sloped lines. Using
 floating point numbers instead of integers does not solve the problem either,
-because there are finite numbers that can be represented, so the intersection
+because the numbers that can be represented are sill finite, so the intersection
 will likely fall in between two such numbers and the same rounding has to be done,
 and the same type of error is introduced.
 
-<p id="note4">4. The error introduced in note 3 can be significant: sligtly
+<p id="note4">4. The error introduced in note 3 can be significant: slightly
 changing the slope of (a section of) an edge that had a touching vertex
 from another island can convert that touching into a full intersection or
 no touching, and this does change the topology of the problem.
@@ -370,9 +370,9 @@ no cross vertex means no intersection between Pc and Pm.
 
 <p id="note7">7. This means the algorithm is <i>topological</i>: in step 1 it deals
 with coordinates to determine intersections and it inserts new vertices
-at them. After that step the whole algorithm is only about linearly iterating
-over lists and sometimes deciding where to go at intersections, but all these
-are done purely on the topological infromation (<i>order</i> of points, CVDs, 
+at the intersections. After that step the whole algorithm is only about linearly
+iterating over lists and sometimes deciding where to go at intersections, but all
+these are done purely on the topological information (<i>order</i> of points, CVDs, 
 left-of/right-of, previous-of/next-of, inside/outside concepts).
 
 <p id="note8">8. Since there can not be overlapping edges within a single
