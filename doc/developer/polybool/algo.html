@@ -298,6 +298,30 @@ described in Table 1b.
 <center><p><i>Table 1b.</i></p></center><br><br>
 
 
+<h4> jumping rules at intersections </h4>
+<p>
+If the collect step reaches an cross-vertex, that means we have reached an
+intersection where more than 2 vertices (4 or more edges) meet. The number
+of CVDs (descriptors from step 1) is twice the number of vertices in that
+point. Using the <i>connectivity list</i> of step 1, that also means we have
+a set of edges ordered by angle. Let each edge of this set be F(j), where
+j is between 0 and length of the point's <i>connectivity list</i> minus 1.
+<p>
+Points in the <i>sector</i> between F[j] and F[j+1] are either all inside
+or outside of region A and/or B. If the points of two neigbour sectors
+are in the result R, by definition 3 their outer polyline contour will be
+the same.
+<p>
+TODO: draw a figure about the above.
+<p>
+Using this rule, we loop over cross-linked edges F[] with j until we find
+an edge that statisfies the above rule. In other words, we jump to the
+closest (in angle) edge that would make up a polyline that includes 
+all the same-polarity neighboring sectors, using the rules detailed below.
+<p>
+<h4> The collecting algorithm </h4>
+
+
 
 
 <h3> Notes </h3>
