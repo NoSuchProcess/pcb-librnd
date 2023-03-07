@@ -65,14 +65,19 @@ See the original paper.
 <p>
 TODO: what's a contour, can we kill it from this doc in favor of polyline?
 <p>
+Our coordinate system is a 2d Eucledian plane with usual Cartesian system. A
+point is specified by its x;y coordinates, but points are not stored, only
+used as reference for this document. A vertex is also specified by its x;y
+coordinates and is stored in polylines which are stored in regions in turn.
+<p>
 (Definition 1 and 2)
 <p>
 A [polygon]<i>region</i> consists of zero or more <i>islands</i>.
 (The original paper calls this <i>polygon</i>; this document will call it
 island to reduce confusion with similar terms.)
 An island is an outer polyline and zero or more inner polylines (which act
-as cutouts). A <i>polyline</i> is an ordererd, cyclic list of x;y vertices
-on the 2D plane, containing at least 3 vertices.
+as cutouts). A <i>polyline</i> is an ordererd, cyclic list of vertices,
+containing at least 3 vertices.
 <p>
 An <i>edge</i> is a straight line segment<sup><a href="#note1">1</a></sup>
 that starts from such a vertex and ends at the next vertex; an edge is
@@ -228,7 +233,7 @@ The label of Pc is one of:
 				<li> 2.2.3. Pc's cross-vertices connectivity lists do not contain any vertex from Pm: C touches itself but doesn't intersect M; jump to 2.1
 				<li> 2.2.4. Pc's cross-vertices connectivity lists contains vertices (called Vm[j]) from Pm:
 					<ul>
-						<li> take the <i>sector<i> defined by Vm[j-1], Vm[j] and Vm[j+1]
+						<li> take the <i>sector</i> defined by Vm[j-1], Vm[j] and Vm[j+1]
 						<li> check, using the angle of E: if E is inside that <i>sector</i>, label E as INSIDE, else label E as OUTSIDE (see Fig. 7).
 					</ul>
 			</ul>
@@ -242,7 +247,7 @@ TODO: Fig. 7
 An essential idea is that the polylines of R are collected using edge and
 polyline labels instead of using coordinates<sup><a href="#note7">7</a></sup>.
 
-<h4> rules for edge inclusion in result <h4>
+<h4> rules for edge inclusion in result </h4>
 <p>
 Consider an edge E belonging to a pline in either input region A or B. Let NL(E)
 be the left neighborhood of E and NR(E) be the right neighborhood of E, where
@@ -254,7 +259,46 @@ Inclusion of E into the result R:
 <p>
 TODO: points 1, 2, 3, 4: what do these mean, especially when they belong to R?
 <p>
-TODO: reproduce table 1 with more columns
+The rules for inclusion of edge E is described in table 1 and actions
+described in Table 1b.
+<p>
+
+<table border=1 cellspacing=0>
+	<tr><th> &nbsp; <th colspan=2> Edge labels <th colspan=4> action per operator
+	<tr><th> &nbsp; <th colspan=2> &nbsp;      <th> union <th>inters. <th>diff. <th>xor
+
+	<tr><th> 1. <td> TODO: drawing <td> E is in input region A, E's label is OUTSIDE, NL(E) is inside input region A, NR(E) is not inside any region.
+      <td> A+S <td> O   <td> A+S <td> A+S
+
+	<tr><th> 2. <td> TODO: drawing <td> E is in input region B, E's label is OUTSIDE, NL(E) is inside input region B, NR(E) is not inside any region.
+      <td> A+S <td> O   <td> O   <td> A+S
+
+	<tr><th> 3. <td> TODO: drawing <td> E is in input region A, E's label is INSIDE, NL(E) is inside both input regions A and B, NR(E) is inside input region B.
+      <td> O   <td> A+S <td> O   <td> A+R
+
+	<tr><th> 4. <td> TODO: drawing <td> E is in input region B, E's label is INSIDE, NL(E) is inside both input regions A and B, NR(E) is inside input region A.
+      <td> O   <td> A+S <td> A+R <td> A+R
+
+	<tr><th> 5. <td> TODO: drawing <td> E from region A is overlapping edge F from region B and is labeled SHARED2; NL(E) is inside input region A, NR(F) is inside input region B. Pick either E or F for inclusion.<sup><a href="#note8">8</a></sup>
+      <td> O   <td> A+S <td> A+R <td> A+R
+
+	<tr><th> 6. <td> TODO: drawing <td> E from region A is overlapping edge F from region B and is labeled SHARED1; NL(E)==NL(F) is inside input both regions A and B, NR(E)==NR(F) is not inside either input region. Pick either E or F for inclusion.<sup><a href="#note8">8</a></sup>
+      <td> A+S <td> O   <td> A+S <td> O
+</table>
+<center><p><i>Table 1.</i></p></center><br><br>
+
+
+<table border=1 cellspacing=0>
+	<tr><th>action ID <th> description
+	<tr><td>A+S       <td> Add Straight: include edge in result region using its original direction
+	<tr><td>A+R       <td> Add Reverse:  include edge in result region inverting its original direction (swap start and end vertices)
+	<tr><td>O         <td> Omit: do not include edge in result region
+</table>
+
+<center><p><i>Table 1b.</i></p></center><br><br>
+
+
+
 
 <h3> Notes </h3>
 <p>
@@ -307,4 +351,9 @@ over lists and sometimes deciding where to go at intersections, but all these
 are done purely on the topological infromation (<i>order</i> of points, CVDs, 
 left-of/right-of, previous-of/next-of, inside/outside concepts).
 
+<p id="note8">8. Since there can not be overlapping edges within a single
+region, any overlap (any SHARED edge) can happen only between A and B edges,
+and there will always be exactly two participants, one edge from A and another
+edge from B. Since their endpoints are always the same, we are free to pick
+either one of them for inclusion in result.
 
