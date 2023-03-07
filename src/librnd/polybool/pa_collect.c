@@ -272,6 +272,7 @@ RND_INLINE rnd_bool pa_coll_move_cnt(jmp_buf *e, rnd_pline_t **pl, rnd_polyarea_
 RND_INLINE int pa_collect_contour(jmp_buf *e, rnd_pline_t **A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_polyarea_t *old_parent, rnd_polyarea_t *parent, rnd_pline_t *parent_contour)
 {
 	if ((*A)->flg.llabel == PA_PLL_ISECTED) {
+		/* As per table 3. in the original paper */
 		switch(op) {
 			case RND_PBO_UNITE: return pa_collect_pline(e, *A, contours, holes, pa_rule_unite_start, pa_rule_unite_jump);
 			case RND_PBO_ISECT: return pa_collect_pline(e, *A, contours, holes, pa_rule_isect_start, pa_rule_isect_jump);
@@ -286,13 +287,19 @@ RND_INLINE int pa_collect_contour(jmp_buf *e, rnd_pline_t **A, rnd_polyarea_t **
 				if ((*A)->flg.llabel == PA_PLL_INSIDE)
 					return pa_coll_move_cnt(e, A, contours, holes, old_parent, NULL, NULL, 0);
 				break;
+			case RND_PBO_UNITE:
+				if ((*A)->flg.llabel == PA_PLL_OUTSIDE)
+					return pa_coll_move_cnt(e, A, contours, holes, old_parent, parent, parent_contour, 0);
+				break;
+			case RND_PBO_SUB:
+				if ((*A)->flg.llabel == PA_PLL_OUTSIDE)
+					return pa_coll_move_cnt(e, A, contours, holes, old_parent, parent, parent_contour, 0);
+				/* the second rule that deals with the edge being in B is not implemented here as we are iterating over A */
+				break;
 			case RND_PBO_XOR:
 				if ((*A)->flg.llabel == PA_PLL_INSIDE)
 					return pa_coll_move_cnt(e, A, contours, holes, old_parent, NULL, NULL, 1);
-				/* else: fall through to collect all outside areas */
-			case RND_PBO_UNITE:
-			case RND_PBO_SUB:
-				if ((*A)->flg.llabel == PA_PLL_OUTSIDE)
+				else
 					return pa_coll_move_cnt(e, A, contours, holes, old_parent, parent, parent_contour, 0);
 				break;
 		}
