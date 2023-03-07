@@ -45,6 +45,8 @@ typedef int (*pa_jump_rule_t)(char poly, rnd_vnode_t *, pa_direction_t *);
 
 /*** Per operation start/jump rules ***/
 
+/* As per table 3 in the original paper */
+
 static int pa_rule_unite_start(rnd_vnode_t *cur, pa_direction_t *initdir)
 {
 	*initdir = PA_FORWARD;
@@ -278,6 +280,7 @@ RND_INLINE int pa_collect_contour(jmp_buf *e, rnd_pline_t **A, rnd_polyarea_t **
 		}
 	}
 	else {
+		/* As per table 2. in the original paper */
 		switch (op) {
 			case RND_PBO_ISECT:
 				if ((*A)->flg.llabel == PA_PLL_INSIDE)
