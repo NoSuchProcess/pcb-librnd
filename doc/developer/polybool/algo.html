@@ -65,8 +65,6 @@ TODO: external document to describe the basic concept on a simple union.
 
 <h3> Basic definitions </h3>
 <p>
-TODO: what's a contour, can we kill it from this doc in favor of polyline?
-<p>
 Our coordinate system is a 2d Euclidian plane with the usual Cartesian system.
 A point is specified by its x;y coordinates, but points are not stored, only
 used as a reference for this document. A vertex is also specified by its x;y
@@ -80,6 +78,12 @@ an island to reduce confusion with similar terms.)
 An island is an outer polyline and zero or more inner polylines (which act
 as cutouts). A <i>polyline</i> is an ordererd, cyclic list of vertices,
 containing at least 3 vertices.
+<p>
+A <i>contour</i> is a section of a polyline that contains 1 or more edges.
+(Unlike in the original paper, this document never uses contour as a synonym
+a whole polyline but only to reference a section of the polyline between two
+intersections. In the corner case when the polyline has no intersection,
+the contour is the whole polyline.)
 <p>
 An <i>edge</i> is a straight line segment<sup><a href="#note1">1</a></sup>
 that starts from such a vertex and ends at the next vertex; an edge is
@@ -322,6 +326,10 @@ closest (in angle) edge that would make up a polyline that includes
 all the same-polarity neighboring sectors, using the rules detailed below.
 <p>
 <h4> The collecting algorithm </h4>
+<p>
+The same algorithm is used for all operations, except for some differences
+in inclusion rules.
+<p>
 
 
 
