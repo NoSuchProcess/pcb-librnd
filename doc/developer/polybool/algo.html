@@ -157,6 +157,22 @@ other intersections happening between edges of the same polyline):
 	<li> (if two vertices fall on the same point, don't do anything)
 </ul>
 <p>
+Figuer 5 shows the result. Vertices inserted for intersections are marked
+with bold. Input regions A and B are arranged so that the circled vertex
+(a5, B2, B9), marked with y in the result, is a common point. Note: a5 is
+on an inner (cutout) polyline in A, while B consists of a single outer polyline
+in which B2 and B9 happens to be on the same point in space (self touching
+polyline).
+<p>
+<center>
+<img src="fig5.svg" width="800px">
+<br>
+Figure 5. The two input regions with inserted cross-vertices marked with bold
+and the protoype for result R, with all edges included.
+</center>
+
+
+<p>
 By now any intersection has an explicit vertex on all related polylines.
 If there are multiple vertices falling on the same point, that means there is
 an intersection/touching there and all vertices on that point are called <i>
