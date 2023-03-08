@@ -206,15 +206,15 @@ be the outer contour of the other input region.
 	     is outside of Pm
 </ul>
 <p>
-The label on an edge E of Pc is one of:
+The label on an edge E (stored as E.flags) of Pc is one of:
 <ul>
 	<li> INSIDE: when E is inside Pm
 	<li> OUTSIDE: when E is outside Pm
 	<li> SHARED1: when E overlaps with an edge from Pm that, and the two edges have the same direction
 	<li> SHARED2: when E overlaps with an edge from Pm that, and the two edges have different direction
 </ul>
-<p>
-The label of Pc is one of:
+<p id="pc_flags">
+The label of Pc (stored as Pc.flags) is one of:
 <ul>
 	<li> ISECTED: if it contains at least one cross-vertex
 	<li> INSIDE: if it has no cross-vertex and it is fully inside Pm
@@ -330,6 +330,30 @@ all the same-polarity neighboring sectors, using the rules detailed below.
 The same algorithm is used for all operations, except for some differences
 in inclusion rules.
 <p>
+Let Pc be the polyline currently being considered. The label of Pc is stored
+in Pc.flags and the label of an edge E is stored in E.flags. Direction
+FORWARD means the original direction (of E or Pc), BACKWARD means reversed
+direction.
+<p>
+1. The simpler case is when Pc.flags != <a href="#pc_flags">ISECTED<a>,
+which means the polyline has no intersection. In this case whether Pc
+is included in R and whether it is reversed depends on conditions described
+in Table 2.
+
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>op      <th> is Pc included?                               <th> direction
+	<tr><td>union   <td> Pc.flags == INSIDE                            <td> FORWARD
+	<tr><td>inters. <td> Pc.flags == OUTSIDE                           <td> FORWARD
+	<tr><td>diff.   <td> (Pc is in region A) && (Pc.flags == OUTSIDE)  <td> FORWARD
+	<tr><td>diff.   <td> (Pc is in region B) && (Pc.flags == INSIDE)   <td> BACKWARD
+	<tr><td>xor     <td> Pc.flags == OUTSIDE                           <td> FORWARD
+	<tr><td>xor     <td> Pc.flags == INSIDE                            <td> BACKWARD
+</table>
+
+<center><p><i>Table 2.</i></p></center><br><br>
+
+
 
 
 
