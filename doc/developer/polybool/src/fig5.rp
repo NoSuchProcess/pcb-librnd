@@ -1276,7 +1276,6 @@ ha:pcb-rnd-board-v8 {
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
            ha:text.640 {
@@ -1308,7 +1307,6 @@ ha:pcb-rnd-board-v8 {
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
            ha:text.644 {
@@ -1332,7 +1330,6 @@ ha:pcb-rnd-board-v8 {
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
            ha:text.647 {
@@ -1364,7 +1361,6 @@ ha:pcb-rnd-board-v8 {
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
            ha:text.651 {
@@ -1372,7 +1368,6 @@ ha:pcb-rnd-board-v8 {
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
            ha:text.652 {
@@ -1397,11 +1392,10 @@ ha:pcb-rnd-board-v8 {
             rot = 0.000000
            }
            ha:text.748 {
-            string=y; x=132.0mm; y=39.5mm; scale=100; fid=0;
+            string=y; x=138.0mm; y=40.5mm; scale=200; fid=0;
             ha:flags {
              clearline=1
             }
-            thickness = 2.0mil
             rot = 0.000000
            }
           }
