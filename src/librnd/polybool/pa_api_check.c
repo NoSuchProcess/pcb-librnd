@@ -123,9 +123,28 @@ RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
    the node involved, else return NULL */
 rnd_vnode_t *pa_check_find_close_node(rnd_vector_t intersection, rnd_vnode_t *pn)
 {
-	if (rnd_vect_dist2(intersection, pn->point) < RND_POLY_ENDP_EPSILON)
+	double d, dn;
+
+	/* cheap and precise: direct match */
+	if (Vequ2(pn->point, intersection))
 		return pn;
-	if (rnd_vect_dist2(intersection, pn->next->point) < RND_POLY_ENDP_EPSILON)
+	if (Vequ2(pn->next->point, intersection))
+		return pn->next;
+
+	/* no direct hit due to precision problems - calculate distance instead */
+	d = rnd_vect_dist2(intersection, pn->point);
+	dn = rnd_vect_dist2(intersection, pn->next->point);
+
+	if ((d < RND_POLY_ENDP_EPSILON) && (dn < RND_POLY_ENDP_EPSILON)) {
+		/* line segment too short both ends are close - return the closer one */
+		if (d < dn)
+			return pn;
+		return pn->next;
+	}
+
+	if (d < RND_POLY_ENDP_EPSILON)
+		return pn;
+	if (dn < RND_POLY_ENDP_EPSILON)
 		return pn->next;
 	return NULL;
 }
