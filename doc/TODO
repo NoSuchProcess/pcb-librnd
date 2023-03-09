@@ -16,6 +16,8 @@
 	- API additions (4.1.0)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 		- move sch-rnd's basename() call next to dirname()
+		- move camv-rnd's mx_extract_*() to the font xform lib
+		- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
@@ -26,6 +28,8 @@
 		- sch-rnd doc: trunk/doc/user/07_io/alien/index.html: look for <!--TODO#1--> and update it (from which version of librnd it works and how)
 
 3. Long term ===============================================================================
+	- API deletion (5.0.0)
+		- remove xform compatibility .h from font, it's been moved to core
 
 4. Low prio ===============================================================================
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
