@@ -175,6 +175,7 @@ void rnd_ps_begin_toc(rnd_ps_t *pctx)
 {
 	/* %%Page DSC requires both a label and an ordinal */
 	fprintf(pctx->outf, "%%%%Page: TableOfContents 1\n");
+	fprintf(pctx->outf, "matrix defaultmatrix setmatrix\n"); /* resets transformation so that catting multiple page files into one is meaningful */
 	fprintf(pctx->outf, "/Times-Roman findfont 24 scalefont setfont\n");
 	fprintf(pctx->outf, "/rightshow { /s exch def s stringwidth pop -1 mul 0 rmoveto s show } def\n");
 	fprintf(pctx->outf, "/y 72 9 mul def /toc { 100 y moveto show /y y 24 sub def } bind def\n");
@@ -295,6 +296,7 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 		gds_t tmp;
 		gds_init(&tmp);
 		fprintf(pctx->outf, "%%%%Page: %s %d\n", layer_fn, pctx->pagecount);
+		fprintf(pctx->outf, "matrix defaultmatrix setmatrix\n"); /* resets transformation so that catting multiple page files into one is meaningful */
 		gds_uninit(&tmp);
 	}
 
