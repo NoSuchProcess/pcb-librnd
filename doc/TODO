@@ -18,6 +18,7 @@
 		- move sch-rnd's basename() call next to dirname()
 		- move camv-rnd's mx_extract_*() to the font xform lib
 		- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
+	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
