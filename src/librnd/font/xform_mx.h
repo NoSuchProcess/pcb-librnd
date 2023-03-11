@@ -32,8 +32,8 @@ typedef double rnd_xform_mx_t[9];
 #define RND_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
 /* Standard 2d matrix transformation using mx as rnd_xform_mx_t */
-#define rnd_xform_x(mx, x_in, y_in) ((double)(x_in) * mx[0] + (double)(y_in) * mx[1] + mx[2])
-#define rnd_xform_y(mx, x_in, y_in) ((double)(x_in) * mx[3] + (double)(y_in) * mx[4] + mx[5])
+#define rnd_xform_x(mx, x_in, y_in) ((double)(x_in) * (mx)[0] + (double)(y_in) * (mx)[1] + (mx)[2])
+#define rnd_xform_y(mx, x_in, y_in) ((double)(x_in) * (mx)[3] + (double)(y_in) * (mx)[4] + (mx)[5])
 
 void rnd_xform_mx_rotate(rnd_xform_mx_t mx, double deg);
 void rnd_xform_mx_translate(rnd_xform_mx_t mx, double xt, double yt);
