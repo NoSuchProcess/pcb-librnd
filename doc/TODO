@@ -5,19 +5,23 @@
 	- API additions (4.1.0)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 		- move sch-rnd's basename() call next to dirname()
-		- move camv-rnd's mx_extract_*() to the font xform lib
-		- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
 		- FEATURE: font -v2 support:
-			- test-parse call or some other way to avoid font load error on valid lihata fonts
-			- baseline?
-			- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
-			- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
-			- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
-				- custom &name; -> integer translation table
-				- as a convention &amp; should be added to point to &
-				- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
-				- GUI text edit could auto-replace unicode with &unicode_name;
-				- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
+			- prepare for the new font lib
+				- move camv-rnd's mx_extract_*() to the font xform lib
+				- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
+				- copy font to font2
+				- add spares
+			- font upgrade:
+				- test-parse call or some other way to avoid font load error on valid lihata fonts
+				- baseline?
+				- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
+				- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
+				- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
+					- custom &name; -> integer translation table
+					- as a convention &amp; should be added to point to &
+					- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
+					- GUI text edit could auto-replace unicode with &unicode_name;
+					- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
 	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
@@ -30,7 +34,8 @@
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
-		- remove xform compatibility .h from font, it's been moved to core
+		- remove old font support
+			- remove xform compatibility .h from font, it's been moved to core
 
 4. Low prio ===============================================================================
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
