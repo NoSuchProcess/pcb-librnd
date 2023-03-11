@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1304.0000" height="572.0000" viewBox="-2.0000 -2.0000 168.0000 76.5000">
+<g id="layer_3_top-fab" opacity="0.75">
+<!--normal-->
+ <polygon points="11.5000,2.0000 11.5000,51.5000 3.5000,51.5000 3.5000,2.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="41.0000,2.0000 41.0000,51.5000 11.5000,51.5000 11.5000,41.5000 31.5000,41.5000 31.5000,6.5000 11.5000,6.5000 11.5000,2.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="115.0000,2.0000 115.0000,51.5000 107.0000,51.5000 107.0000,2.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="144.5000,2.0000 144.5000,51.5000 115.0000,51.5000 115.0000,41.5000 135.0000,41.5000 135.0000,6.5000 115.0000,6.5000 115.0000,2.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+</g>
+<g id="layer_4_top" opacity="0.75">
+<!--normal-->
+ <polygon points="99.5000,21.5000 99.5000,32.0000 72.5000,32.0000 72.5000,41.5000 52.5000,21.5000 " stroke-width="0.010" stroke="#00ff00" fill="#00ff00"/>
+ <polygon points="99.5000,69.0000 52.5000,69.0000 52.5000,41.5000 72.5000,41.5000 72.5000,65.0000 93.5000,65.0000 93.5000,32.0000 99.5000,32.0000 " stroke-width="0.010" stroke="#00ff00" fill="#00ff00"/>
+ <polygon points="162.0000,21.5000 162.0000,32.0000 135.0000,32.0000 135.0000,41.5000 115.0000,21.5000 " stroke-width="0.010" stroke="#00ff00" fill="#00ff00"/>
+ <polygon points="162.0000,69.0000 115.0000,69.0000 115.0000,41.5000 135.0000,41.5000 135.0000,65.0000 156.0000,65.0000 156.0000,32.0000 162.0000,32.0000 " stroke-width="0.010" stroke="#00ff00" fill="#00ff00"/>
+</g>
+<g id="layer_5_top" opacity="0.75">
+</g>
+<g id="layer_6_top" opacity="0.75">
+</g>
+<g id="layer_7_top" opacity="0.75">
+<!--normal-->
+ <polygon points="42.0000,7.0000 40.0000,7.0000 41.0000,2.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="8.5000,1.0000 8.5000,3.0000 3.5000,2.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="12.5000,11.5000 10.5000,11.5000 11.5000,6.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="26.5000,7.5000 26.5000,5.5000 31.5000,6.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="36.0000,52.5000 36.0000,50.5000 41.0000,51.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="2.5000,46.5000 4.5000,46.5000 3.5000,51.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="57.5000,40.5000 57.5000,42.5000 52.5000,41.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="16.5000,40.5000 16.5000,42.5000 11.5000,41.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="73.5000,37.0000 71.5000,37.0000 72.5000,32.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="68.2574,38.6716 69.6716,37.2574 72.5000,41.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="73.5000,46.5000 71.5000,46.5000 72.5000,41.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="30.5000,36.5000 32.5000,36.5000 31.5000,41.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="51.5000,64.0000 53.5000,64.0000 52.5000,69.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="77.5000,64.0000 77.5000,66.0000 72.5000,65.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="57.5000,20.5000 57.5000,22.5000 52.5000,21.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="88.5000,33.0000 88.5000,31.0000 93.5000,32.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="100.5000,26.5000 98.5000,26.5000 99.5000,21.5000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="92.5000,60.0000 94.5000,60.0000 93.5000,65.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <polygon points="94.5000,70.0000 94.5000,68.0000 99.5000,69.0000 " stroke-width="0.010" stroke="#000000" fill="#000000"/>
+ <line x1="5.5000" y1="2.0000" x2="41.0000" y2="2.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="3.5000" y1="2.0000" x2="3.5000" y2="49.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="31.5000" y1="6.5000" x2="31.5000" y2="39.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="11.5000" y1="6.5000" x2="29.5000" y2="6.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="39.0000" y1="51.5000" x2="3.5000" y2="51.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="41.0000" y1="51.5000" x2="41.0000" y2="4.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="13.5000" y1="41.5000" x2="31.5000" y2="41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="11.5000" y1="41.5000" x2="11.5000" y2="8.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="72.5000" y1="34.0000" x2="72.5000" y2="41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="93.5000" y1="32.0000" x2="93.5000" y2="63.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="74.5000" y1="65.0000" x2="93.5000" y2="65.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="99.5000" y1="23.5000" x2="99.5000" y2="69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="72.5000" y1="65.0000" x2="72.5000" y2="43.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="52.5000" y1="41.5000" x2="52.5000" y2="67.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="52.5000" y1="69.0000" x2="97.0000" y2="69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="54.5000" y1="41.5000" x2="72.5000" y2="41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="52.5000" y1="21.5000" x2="71.0858" y2="40.0858" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="54.5000" y1="21.5000" x2="99.5000" y2="21.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="72.5000" y1="32.0000" x2="91.5000" y2="32.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <path d="M 52.75000000 41.50000000 A 0.2500 0.2500 0 0 1 52.2500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 52.25000000 41.50000000 A 0.2500 0.2500 0 0 1 52.7500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 72.75000000 41.50000000 A 0.2500 0.2500 0 0 1 72.2500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 72.25000000 41.50000000 A 0.2500 0.2500 0 0 1 72.7500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 52.75000000 21.50000000 A 0.2500 0.2500 0 0 1 52.2500 21.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 52.25000000 21.50000000 A 0.2500 0.2500 0 0 1 52.7500 21.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 99.75000000 21.50000000 A 0.2500 0.2500 0 0 1 99.2500 21.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 99.25000000 21.50000000 A 0.2500 0.2500 0 0 1 99.7500 21.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 137.00000000 41.50000000 A 2.0000 2.0000 0 0 1 133.0000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 133.00000000 41.50000000 A 2.0000 2.0000 0 0 1 137.0000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 52.75000000 69.00000000 A 0.2500 0.2500 0 0 1 52.2500 69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 52.25000000 69.00000000 A 0.2500 0.2500 0 0 1 52.7500 69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 72.75000000 65.00000000 A 0.2500 0.2500 0 0 1 72.2500 65.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 72.25000000 65.00000000 A 0.2500 0.2500 0 0 1 72.7500 65.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 93.75000000 32.00000000 A 0.2500 0.2500 0 0 1 93.2500 32.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 93.25000000 32.00000000 A 0.2500 0.2500 0 0 1 93.7500 32.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 93.75000000 65.00000000 A 0.2500 0.2500 0 0 1 93.2500 65.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 93.25000000 65.00000000 A 0.2500 0.2500 0 0 1 93.7500 65.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 74.50000000 41.50000000 A 2.0000 2.0000 0 0 1 70.5000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 70.50000000 41.50000000 A 2.0000 2.0000 0 0 1 74.5000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 99.75000000 69.00000000 A 0.2500 0.2500 0 0 1 99.2500 69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 99.25000000 69.00000000 A 0.2500 0.2500 0 0 1 99.7500 69.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 41.25000000 51.50000000 A 0.2500 0.2500 0 0 1 40.7500 51.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 40.75000000 51.50000000 A 0.2500 0.2500 0 0 1 41.2500 51.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.75000000 51.50000000 A 0.2500 0.2500 0 0 1 3.2500 51.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.25000000 51.50000000 A 0.2500 0.2500 0 0 1 3.7500 51.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 33.50000000 41.50000000 A 2.0000 2.0000 0 0 1 29.5000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 29.50000000 41.50000000 A 2.0000 2.0000 0 0 1 33.5000 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 11.75000000 41.50000000 A 0.2500 0.2500 0 0 1 11.2500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 11.25000000 41.50000000 A 0.2500 0.2500 0 0 1 11.7500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 31.75000000 41.50000000 A 0.2500 0.2500 0 0 1 31.2500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 31.25000000 41.50000000 A 0.2500 0.2500 0 0 1 31.7500 41.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 31.75000000 6.50000000 A 0.2500 0.2500 0 0 1 31.2500 6.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 31.25000000 6.50000000 A 0.2500 0.2500 0 0 1 31.7500 6.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 11.75000000 6.50000000 A 0.2500 0.2500 0 0 1 11.2500 6.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 11.25000000 6.50000000 A 0.2500 0.2500 0 0 1 11.7500 6.5000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 41.25000000 2.00000000 A 0.2500 0.2500 0 0 1 40.7500 2.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 40.75000000 2.00000000 A 0.2500 0.2500 0 0 1 41.2500 2.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.75000000 2.00000000 A 0.2500 0.2500 0 0 1 3.2500 2.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <path d="M 3.25000000 2.00000000 A 0.2500 0.2500 0 0 1 3.7500 2.0000" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
+ <line x1="79.5000" y1="16.0800" x2="81.5320" y2="16.0800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="81.5320" y1="16.0800" x2="82.0400" y2="15.5720" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="82.0400" y1="14.3528" x2="82.0400" y2="15.5720" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="81.5320" y1="13.8448" x2="82.0400" y2="14.3528" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="80.0080" y1="13.8448" x2="81.5320" y2="13.8448" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="80.0080" y1="12.0160" x2="80.0080" y2="16.0800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="79.5000" y1="12.0160" x2="81.5320" y2="12.0160" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="81.5320" y1="12.0160" x2="82.0400" y2="12.5240" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="82.0400" y1="12.5240" x2="82.0400" y2="13.3368" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="81.5320" y1="13.8448" x2="82.0400" y2="13.3368" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="20.0000" y1="57.5320" x2="20.0000" y2="60.5800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="20.0000" y1="57.5320" x2="20.7112" y2="56.5160" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="20.7112" y1="56.5160" x2="21.8288" y2="56.5160" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="21.8288" y1="56.5160" x2="22.5400" y2="57.5320" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="22.5400" y1="57.5320" x2="22.5400" y2="60.5800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="20.0000" y1="58.5480" x2="22.5400" y2="58.5480" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="151.0000" y1="10.0160" x2="153.0320" y2="10.0160" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="153.0320" y1="10.0160" x2="153.5400" y2="10.5240" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="153.5400" y1="10.5240" x2="153.5400" y2="11.5400" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="153.0320" y1="12.0480" x2="153.5400" y2="11.5400" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="151.5080" y1="12.0480" x2="153.0320" y2="12.0480" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="151.5080" y1="10.0160" x2="151.5080" y2="14.0800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="152.3208" y1="12.0480" x2="153.5400" y2="14.0800" stroke-width="0.4064" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.0000" y1="42.0240" x2="138.0000" y2="42.7860" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.0000" y1="42.7860" x2="138.2540" y2="43.0400" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="139.0160" y1="42.0240" x2="139.0160" y2="43.5480" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.7620" y1="43.8020" x2="139.0160" y2="43.5480" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.2540" y1="43.8020" x2="138.7620" y2="43.8020" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.0000" y1="43.5480" x2="138.2540" y2="43.8020" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.2540" y1="43.0400" x2="138.7620" y2="43.0400" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="138.7620" y1="43.0400" x2="139.0160" y2="42.7860" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+</g>
+</svg>

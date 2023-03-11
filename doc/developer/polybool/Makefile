@@ -6,6 +6,7 @@ SVGS= \
 	t1_4.svg \
 	t1_5.svg \
 	t1_6.svg \
+	fig4.svg \
 	fig5.svg \
 	fig7.svg \
 
@@ -31,6 +32,9 @@ t1_5.svg:
 
 t1_6.svg:
 	pcb-rnd -x svg --opacity 66 --cam $@=top-doc src/t1_6.rp
+
+fig4.svg: src/fig4.rp
+	pcb-rnd -x svg --opacity 75 --cam $@=top-doc src/fig4.rp
 
 fig5.svg:
 	pcb-rnd -x svg --opacity 75 --cam $@=top-doc src/fig5.rp
