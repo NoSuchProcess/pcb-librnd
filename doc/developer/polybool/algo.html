@@ -78,7 +78,7 @@ to topology. A few simple properties can be defined, such as whether
 points left of a contour section are within 'A' or 'B'. A contour section is "boring",
 since it does not have any intersection thus properties can not change. All
 the algorithm needs to do is figuring which contour sections to include in
-the result (and whether to swap their direction so the result is
+the result (and whether to reverse their direction so the result is
 a continous loop of polyline). For example an union operator will keep CA1
 and CB1, an intersection will keep CA2 and CB2 and an "A-B" will keep
 CA1 and CB2 (with reversed direction).
