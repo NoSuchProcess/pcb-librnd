@@ -338,10 +338,6 @@ neighborhood is a theoretical construction and as a simplifiation can
 be considered to consists of arbitrary points very close to the edge. Such a
 neighborhood is either fully inside or fully outside of A (or B).
 <p>
-Inclusion of E into the result R:
-<p>
-TODO: points 1, 2, 3, 4: what do these mean, especially when they belong to R?
-<p>
 The rules for inclusion of edge E is described in table 1 and actions
 described in Table 1b.
 <p>
@@ -362,8 +358,8 @@ described in Table 1b.
 	<tr><th> 4. <td> <img src="t1_4.svg" width=250px> <td> E is in input region B, E's label is INSIDE, NL(E) is inside both input regions A and B, NR(E) is inside input region A.
       <td> O   <td> A+S <td> A+R <td> A+R
 
-	<tr><th> 5. <td> <img src="t1_5.svg" width=250px> <td> E from region A is overlapping edge F from region B and is labeled SHARED2; NL(E) is inside input region A, NR(F) is inside input region B. Pick either E or F for inclusion.<sup><a href="#note8">8</a></sup>
-      <td> O   <td> A+S <td> A+R <td> A+R
+	<tr><th> 5. <td> <img src="t1_5.svg" width=250px> <td> E from region A is overlapping edge F from region B and is labeled SHARED2; NL(E) is inside input region A, NR(F) is inside input region B. Pick either E or F for inclusion, use E's original direction for straight.<sup><a href="#note8">8</a></sup>
+      <td> O   <td> A+S <td> O <td> O
 
 	<tr><th> 6. <td> <img src="t1_6.svg" width=250px> <td> E from region A is overlapping edge F from region B and is labeled SHARED1; NL(E)==NL(F) is inside input both regions A and B, NR(E)==NR(F) is not inside either input region. Pick either E or F for inclusion.<sup><a href="#note8">8</a></sup>
       <td> A+S <td> O   <td> A+S <td> O
@@ -380,6 +376,16 @@ described in Table 1b.
 
 <center><p><i>Table 1b.</i></p></center><br><br>
 
+<p>
+Comment: In other words, according to the above table, E is added in the resulting R:
+<ul>
+	<li> 1. when NL(E) is inside R and NR(E) is outside of R, the E is added with its original direction (fig. 1. example: union, case 1: edge is part of CA1)
+	<li> 2. when NL(E) is outside R and NR(E) is inside of R, the E is added with reverse direction (fig. 1. example: xor, case 5: edge is part of CB2)
+	<li> 3. when both NL(E) and NR(E) are outside R, E is not added (fig. 1. example: difference, case 2: edge is part of CB1)
+	<li> 4. when both NL(E) and NR(E) are inside R, E is not added (fig. 1. example: union, case 5: edge is part of CB2)
+</ul>
+<p>
+Comment: For shared edges only one of the edges is added.
 
 <h4> jumping rules at intersections </h4>
 <p>
