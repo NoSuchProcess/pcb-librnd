@@ -11,6 +11,7 @@ SVGS= \
 	fig3.svg \
 	fig4.svg \
 	fig5.svg \
+	fig6.svg \
 	fig7.svg \
 
 all: $(SVGS)
@@ -50,6 +51,9 @@ fig4.svg: src/fig4.rp
 
 fig5.svg: src/fig5.rp
 	pcb-rnd -x svg --opacity 75 --cam $@=top-doc src/fig5.rp
+
+fig6.svg: src/fig6.rp
+	pcb-rnd -x svg --opacity 100 --cam $@=top-doc src/fig6.rp
 
 fig7.svg: src/fig7.rp
 	pcb-rnd -x svg --opacity 100 --cam $@=top-doc src/fig7.rp
