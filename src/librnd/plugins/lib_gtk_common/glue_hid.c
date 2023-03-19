@@ -437,6 +437,7 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 		return;
 
 	gctx->hidlib = hidlib;
+	rnd_gtk_tw_update_dock_hidlib(&gctx->topwin, hidlib);
 
 	if(!gctx->hid_active)
 		return;

@@ -21,6 +21,10 @@ void rnd_gtk_tw_interface_set_sensitive(rnd_gtk_topwin_t *tw, gboolean sensitive
 int rnd_gtk_tw_dock_enter(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub);
 
+/* set new_dsg as current hidlib for each docked subdialog of topwin */
+void rnd_gtk_tw_update_dock_hidlib(rnd_gtk_topwin_t *tw, rnd_design_t *new_dsg);
+
+
 void rnd_gtk_tw_set_title(rnd_gtk_topwin_t *tw, const char *title);
 
 gboolean rnd_gtk_idle_cb(void *topwin);

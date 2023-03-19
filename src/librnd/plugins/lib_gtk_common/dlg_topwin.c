@@ -173,6 +173,18 @@ void rnd_gtk_tw_dock_leave(rnd_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 	gtk_widget_hide(frame);
 }
 
+void rnd_gtk_tw_update_dock_hidlib(rnd_gtk_topwin_t *tw, rnd_design_t *new_dsg)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++) {
+		rnd_hid_dad_subdialog_t *sub;
+		for(sub = gdl_first(&tw->dock[n]); sub != NULL; sub = gdl_next(&tw->dock[n], sub)) {
+			docked_t *docked = sub->parent_ctx;
+			rnd_gtk_attr_sub_update_hidlib(docked->hid_ctx, new_dsg);
+		}
+	}
+}
+
 /*** static top window code ***/
 /* sync the menu checkboxes with actual pcb state */
 void rnd_gtk_update_toggle_flags(rnd_design_t *hidlib, rnd_gtk_topwin_t *tw, const char *cookie)

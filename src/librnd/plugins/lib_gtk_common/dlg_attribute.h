@@ -32,3 +32,5 @@ rnd_design_t *rnd_gtk_attr_get_dad_hidlib(void *hid_ctx);
 /* Close and free all open DAD dialogs */
 void rnd_gtk_attr_dlg_free_all(rnd_gtk_t *gctx);
 
+/* Replace a subdialog's ->hidlib with new_dsg */
+void rnd_gtk_attr_sub_update_hidlib(void *hid_ctx, rnd_design_t *new_dsg);

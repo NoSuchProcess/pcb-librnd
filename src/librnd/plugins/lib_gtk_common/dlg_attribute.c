@@ -959,6 +959,14 @@ void *rnd_gtk_attr_sub_new(rnd_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attri
 	return ctx;
 }
 
+void rnd_gtk_attr_sub_update_hidlib(void *hid_ctx, rnd_design_t *new_dsg)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	ctx->hidlib = new_dsg;
+}
+
+
 int rnd_gtk_attr_dlg_run(void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
