@@ -775,6 +775,13 @@ void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_
 	return ctx;
 }
 
+void lesstif_attr_sub_update_hidlib(void *hid_ctx, rnd_design_t *new_dsg)
+{
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+	ctx->hidlib = new_dsg;
+}
+
+
 int lesstif_attr_dlg_run(void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;

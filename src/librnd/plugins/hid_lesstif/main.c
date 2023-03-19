@@ -251,6 +251,17 @@ static void ltf_dock_leave(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub)
 	XtUnmanageChild(frame);
 }
 
+static void ltf_update_topwin_dock_hidlibs(rnd_design_t *new_dsg)
+{
+	int n;
+	for(n = 0; n < RND_HID_DOCK_max; n++) {
+		rnd_hid_dad_subdialog_t *sub;
+		for(sub = gdl_first(&ltf_dock[n]); sub != NULL; sub = gdl_next(&ltf_dock[n], sub)) {
+			docked_t *docked = sub->parent_ctx;
+			lesstif_attr_sub_update_hidlib(docked->hid_ctx, new_dsg);
+		}
+	}
+}
 
 typedef struct {
 	void *hid_ctx;
@@ -392,6 +403,7 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 {
 	rnd_coord_t siz;
 	ltf_hidlib = hidlib;
+	ltf_update_topwin_dock_hidlibs(hidlib);
 	if ((work_area == 0) || (hidlib == NULL))
 		return;
 	/*rnd_printf("PCB Changed! %$mD\n", rnd_dwg_get_size_x(ltf_hidlib), rnd_dwg_get_size_y(ltf_hidlib)); */
