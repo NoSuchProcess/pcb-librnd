@@ -73,6 +73,7 @@ static int pa_rule_isect_jump(char p, rnd_vnode_t *v, pa_direction_t *cdir)
 
 static int pa_rule_sub_start(rnd_vnode_t *cur, pa_direction_t *initdir)
 {
+	/* this is called only on poly A (in Table 3) */
 	*initdir = PA_FORWARD;
 	return (cur->flg.plabel == PA_PTL_OUTSIDE) || (cur->flg.plabel == PA_PTL_SHARED2);
 }
