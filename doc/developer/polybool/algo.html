@@ -466,8 +466,9 @@ for(i=0; i &lt; n; i++) {
 }
 </pre>
 
-Function <b>EdgeRule(E:edge; output dir:(FORWARD, BACKWARD)): boolean</b> is the
-edge inclusion rule for currently performed operation (see Table 3).
+Function <b>bool EdgeRule(edge E, enum *dir)</b> is the
+edge inclusion rule for currently performed operation (see Table 3). Argument
+dir is an output with value FORWARD or BACKWARD.
 
 <p>
 <table border=1 cellspacing=0>
@@ -482,7 +483,34 @@ edge inclusion rule for currently performed operation (see Table 3).
 
 <center><p><i>Table 3.</i> EdgeRule(E, dir)</p></center><br><br>
 
+<pre>
+contour Collect(vertex v, enum dir)
+{
+	edge E, Esh;
+	contour r = alloc_empty_contour();
 
+	do {
+		add_vertex_to_contour(r, v);
+		if (dir == FORWARD)
+			E = edge_next_to(v);
+		else
+			E = edge_prev_to(v);
+		E.mark = true;
+		if ((E.flags == SHARED1) || (E.flags == SHARED2)) {
+			Esh = get_edge_shared_with(E);
+			Esh.mark = true;
+		}
+		if (dir == FORWARD)
+			v = vertex_next_to(v);
+		else
+			v = vertex_prev_to(v);
+		if (is_cross_vertex(v))
+			Jump(v, dir);
+		/* TODO: isn't this E the new E from v? */
+	} while(!E.mark)
+	return r;
+}
+</pre>
 
 <h3> Notes </h3>
 <p>
