@@ -441,7 +441,42 @@ in Table 2.
 <center><p><i>Table 2.</i></p></center><br><br>
 
 
+<p>
+1. If Pc.flags == <a href="#pc_flags">ISECTED<a>, the polyline intersects
+with another polyline. We need to find all edges in Pc which resulting
+contour section can start from. n is the number of vertices in Pc,
+E[] are edges of Pc; each E has a field called Mark that inidicates if
+E has been included in a resulting contour already (it is set to false
+initially on all E[]); v[] is each vertex in the polyline.
+The algorithm for starting edges is:
+<pre>
+for(i=0; i &lt; n; i++) {
+	if (EdgeRule(E[i], &dir) && !E[i].Mark) {
+		contour r; /* a contour section is a list of edges */
+		if (dir == FORWARD)
+			r = Collect(v[i], dir);
+		else
+			r = Collect(v[i+1], dir);
+		include_into_a_set_of_resulting_contours(r);
+	}
+}
+</pre>
 
+Function <b>EdgeRule(E:edge; output dir:(FORWARD, BACKWARD)): boolean</b> is the
+edge inclusion rule for currently performed operation (see Table 3).
+
+<p>
+<table border=1 cellspacing=0>
+	<tr><th>op      <th> how to include E in the result R                           <th> direction
+	<tr><td>union   <td> (E.flags == OUTSIDE) || (E.flags == SHARED1)               <td> FORWARD
+	<tr><td>inters. <td> (E.flags == INSIDE) || (E.flags == SHARED1)                <td> FORWARD
+	<tr><td>diff.   <td> (E in A) && (E.flags == OUTSIDE) || (E.flags == SHARED2))  <td> FORWARD
+	<tr><td>diff.   <td> (E in B) && (E.flags == INSIDE) || (E.flags == SHARED2))   <td> BACKWARD
+	<tr><td>xor     <td> E.flags == OUTSIDE                                         <td> FORWARD
+	<tr><td>xor     <td> E.flags == INSIDE                                          <td> BACKWARD
+</table>
+
+<center><p><i>Table 3.</i> EdgeRule(E, dir)</p></center><br><br>
 
 
 
