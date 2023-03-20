@@ -486,7 +486,7 @@ dir is an output with value FORWARD or BACKWARD.
 <pre>
 contour Collect(vertex v, enum dir)
 {
-	edge E, Esh;
+	edge E, Esh, Enext;
 	contour r = alloc_empty_contour();
 
 	do {
@@ -506,8 +506,14 @@ contour Collect(vertex v, enum dir)
 			v = vertex_prev_to(v);
 		if (is_cross_vertex(v))
 			Jump(&amp;v, &amp;dir);
-		/* TODO: isn't this E the new E from v? */
-	} while(!E.mark)
+
+		/* look at the next edge to terminate; this part was not well specified
+		   in the psudo-code of the original paper */
+		if (dir == FORWARD)
+			Enext = edge_next_to(v);
+		else
+			Enext = edge_prev_to(v);
+	} while(!Enext.mark)
 	return r;
 }
 
