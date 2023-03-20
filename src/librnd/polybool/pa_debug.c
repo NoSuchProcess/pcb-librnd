@@ -172,6 +172,6 @@ RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t 
 	if (num_isc > 1) DEBUGP(" %$mD\n", isc2[0], isc2[1]);
 }
 #else
-RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t isc2) {}
+RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vector_t a1, rnd_vector_t a2, rnd_vector_t b1, rnd_vector_t b2) {}
 #endif
 
