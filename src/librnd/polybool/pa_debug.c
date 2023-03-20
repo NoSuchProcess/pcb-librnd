@@ -43,6 +43,7 @@
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
 #define DEBUG_CVC 0
+#define DEBUG_ISC 0
 #undef DEBUG
 
 /* only when DEBUG is enabled */
@@ -162,3 +163,15 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 #else
 RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
 #endif
+
+#if DEBUG_ISC
+RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vector_t a1, rnd_vector_t a2, rnd_vector_t b1, rnd_vector_t b2)
+{
+	DEBUGP("ISC between %$mD..%$mD and %$mD..%$mD\n", a1[0], a1[1], a2[0], a2[1], b1[0], b1[1], b2[0], b2[1]);
+	if (num_isc > 0) DEBUGP(" %$mD\n", isc1[0], isc1[1]);
+	if (num_isc > 1) DEBUGP(" %$mD\n", isc2[0], isc2[1]);
+}
+#else
+RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t isc2) {}
+#endif
+
