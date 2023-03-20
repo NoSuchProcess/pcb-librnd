@@ -505,12 +505,36 @@ contour Collect(vertex v, enum dir)
 		else
 			v = vertex_prev_to(v);
 		if (is_cross_vertex(v))
-			Jump(v, dir);
+			Jump(&amp;v, &amp;dir);
 		/* TODO: isn't this E the new E from v? */
 	} while(!E.mark)
 	return r;
 }
+
+void Jump(vertex *v, enum *dir)
+{
+	if (*dir == FORWARD)
+		d = prev_D_in_CW(Dp[v]);   /* DP[v] is the previous on the connectivity list of v */
+	else
+		d = prev_D_in_CW(Dn[v]);   /* DP[v] is the previous on the connectivity list of v */
+
+	for(;;) {
+		edge e = edge_of_descriptor(d);
+		if (!e.mark && EdgeRule(e, &newdir)) { /* EdgeRule(): see Table 3 */
+			*v = vertex_of_descriptor(d);
+			if (edge_is_next_to_vertex(e, *v) && (newdir == FORWARD)) ||
+			   (edge_is_prev_to_vertex(e, *v) && (newdir == BACKWARD)) {
+				*dir = newdir;
+				return;
+			}
+		}
+		d = prev_D_in_CW(d);
+	}
+}
+
+/* prev_D_in_CW(Din) is the neatest D to Din in clockwise direction */
 </pre>
+
 
 <h3> Notes </h3>
 <p>
