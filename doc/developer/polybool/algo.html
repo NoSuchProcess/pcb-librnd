@@ -159,6 +159,12 @@ is the edge that starts at Vfoo[0] and ends at Vfoo[1]. The last edge of
 a polyline of n vertices, E[n-1] is between V[n-1] and V[0]. Polylines
 are named Psomething; when indexed, Pfoo[0] is the outline, indices starting
 from 1 refer to cutouts.
+<p>
+A <i>sector</i> is an imaginary area, a  neighborhood of points between
+two adjacent edges of a polyline. It is roughly the points within the
+triangle formed by the two edges and a third, virtual line connecting
+their non-incident ends. (Sectors are not calculated but are used in the
+explanation and in conceptual relations between edges and polylines.)
 
 <h3> The algorithm </h3>
 <p>
@@ -401,13 +407,11 @@ or outside of region A and/or B. If the points of two neigbouring sectors
 are in the result R, by definition 3 their outer polyline contour will be
 the same.
 <p>
-TODO: draw a figure about the above.
-<p>
 Using this rule, we loop over cross-linked edges F[] with j until we find
 an edge that satisfies the above rule. In other words, we jump to the
 closest (in angle) edge that would make up a polyline that includes 
 all the same-polarity neighboring sectors, using the rules detailed below.
-<p>
+
 <h4> The collecting algorithm </h4>
 <p>
 The same algorithm is used for all operations, except for some differences
