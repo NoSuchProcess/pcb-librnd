@@ -206,11 +206,13 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 		} while (all_iscs && ((a = a->f) != pa_a));
 
 		conn_list = pa_polyarea_list_intersected(e, conn_list, b, 'B');
+		pa_debug_print_cvc(conn_list);
 	} while (all_iscs && (b = b->f) != pa_b);
 
 	/* add all intersections of all of pa_a's islands to the conn list */
 	do {
 		conn_list = pa_polyarea_list_intersected(e, conn_list, a, 'A');
+		pa_debug_print_cvc(conn_list);
 	} while (all_iscs && ((a = a->f) != pa_a));
 
 	/* Note: items of conn_list are stored plines of pa_a and pa_b */

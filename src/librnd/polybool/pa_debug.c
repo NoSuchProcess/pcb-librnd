@@ -42,6 +42,7 @@
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
+#define DEBUG_CVC 0
 #undef DEBUG
 
 /* only when DEBUG is enabled */
@@ -146,3 +147,18 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
 
+
+#if DEBUG_CVC
+RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
+{
+	pa_conn_desc_t *n = head;
+
+	DEBUGP("CVC:\n");
+
+	do {
+		DEBUGP(" %c %c %f %$mD\n", n->poly, n->side, n->angle, n->parent->point[0], n->parent->point[1]);
+	} while((n = n->next) != head);
+}
+#else
+RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
+#endif
