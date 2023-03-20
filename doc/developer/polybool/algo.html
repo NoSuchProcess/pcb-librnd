@@ -535,6 +535,28 @@ void Jump(vertex *v, enum *dir)
 /* prev_D_in_CW(Din) is the neatest D to Din in clockwise direction */
 </pre>
 
+<p>
+Figure 9 shows the resulting contour segments for the four operations on the
+example fom Figure 4:
+<ul>
+	<li> <i>union<i>: singe island (one outer pline) with two inner plines (holes)
+	<li> <i>intersection<i>: two islands (one outer plines), no inner plines (holes)
+	<li> <i>difference<i>: two islands (one outer plines), no inner plines (holes)
+	<li> <i>xor<i>: thre islands (one outer plines), no inner plines (holes)
+</ul>
+
+<p>
+TODO: fig 9
+
+<H3> Placing the resulting contours in R </H3>
+<p>
+After the steps above, we have a set of plines to be included in R. For each
+outer (CCW) pline a new island is created in R; then each inner (CW) pline,
+which are stored on a separate list, are placed within the smallest island
+they are within.
+
+
+<hr>
 
 <h3> Notes </h3>
 <p>
