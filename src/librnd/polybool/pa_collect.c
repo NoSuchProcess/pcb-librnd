@@ -138,7 +138,7 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 
 	if ((*cur)->cvclst_prev == NULL) { /* not a cross-vertex, proceed normally */
 		int marked = ((*cdir == PA_FORWARD) ? (*cur)->flg.mark : (*cur)->prev->flg.mark);
-		return !marked;
+		return !marked; /* This is the loop terminating condition in Collect() of the original paper */
 	}
 
 	/* cross-vertex means we are at an intersection and have to decide which
@@ -170,6 +170,7 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 
 #define PA_NEXT_NODE(nd, dir) (((dir) == PA_FORWARD) ? (nd)->next : (nd)->prev)
 
+/* This is Collect() in the original paper */
 RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
 	rnd_vnode_t *nd, *newnd;
