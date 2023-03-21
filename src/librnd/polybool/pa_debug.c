@@ -48,7 +48,7 @@
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
 #define DEBUG_CVC 0
-#define DEBUG_ISC 1
+#define DEBUG_ISC 0
 #undef DEBUG
 
 /* only when DEBUG is enabled */
