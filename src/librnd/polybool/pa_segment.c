@@ -236,13 +236,39 @@ RND_INLINE long pa_exec_node_tasks(pa_insert_node_task_t *tasklist)
 	return modified;
 }
 
+/* manhattan distance^2 */
+RND_INLINE int man_dist_2(rnd_vector_t a, rnd_vector_t b)
+{
+	rnd_coord_t dx = a[0] - b[0], dy = a[1] - b[1];
+	return dx*dx + dy*dy;
+}
+
+
+RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2a, rnd_vector_t v2b, rnd_vector_t isc)
+{
+#ifdef PA_TWEAK_ISC
+	/* See test case topo_pt_close.fawk: when an intersection point is very close
+	   to the endpoint of an edge, a very short edge would be created by edge
+	   splitting at isc. If there are multiple such very short edges
+	   nearby, that may change the topology. A cheap trick to avoid this is
+	   to round isc point to nearby edge endpoint if intersection is too close */
+	if (man_dist_2(isc, v1a) <= PA_TWEAK_ISC) { Vcpy2(isc, v1a); return; }
+	if (man_dist_2(isc, v2a) <= PA_TWEAK_ISC) { Vcpy2(isc, v2a); return; }
+	if (man_dist_2(isc, v1b) <= PA_TWEAK_ISC) { Vcpy2(isc, v1b); return; }
+	if (man_dist_2(isc, v2b) <= PA_TWEAK_ISC) { Vcpy2(isc, v2b); return; }
+#endif
+}
+
 RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t isc1, rnd_vector_t isc2)
 {
 	int res;
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
 
 	res = rnd_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, isc1, isc2);
-	TODO("isc coord tweak");
+
+	if (res > 0) pa_tweak_isc(v1a->point, v1b->point, v2a->point, v2b->point, isc1);
+	if (res > 1) pa_tweak_isc(v1a->point, v1b->point, v2a->point, v2b->point, isc2);
+
 	return res;
 }
 
