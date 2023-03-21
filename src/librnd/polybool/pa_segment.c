@@ -236,6 +236,15 @@ RND_INLINE long pa_exec_node_tasks(pa_insert_node_task_t *tasklist)
 	return modified;
 }
 
+RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t isc1, rnd_vector_t isc2)
+{
+	int res;
+	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
+
+	res = rnd_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, isc1, isc2);
+	TODO("isc coord tweak");
+	return res;
+}
 
 /* This callback checks if the segment "s" in the tree intersect
    the search segment "i". If it does, both plines are marked as intersected
@@ -260,8 +269,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	if (s->intersected || ctx->s->intersected)
 		return RND_R_DIR_NOT_FOUND;
 
-	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
-	num_isc = rnd_vect_inters2(s->v->point, s->v->next->point, ctx->v->point, ctx->v->next->point, isc1, isc2);
+	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, isc1, isc2);
 	if (!num_isc)
 		return RND_R_DIR_NOT_FOUND;
 
