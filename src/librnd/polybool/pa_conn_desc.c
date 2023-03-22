@@ -113,7 +113,7 @@ static pa_conn_desc_t *pa_link_after_conn_desc(pa_conn_desc_t *newd, pa_conn_des
 	return newd;
 }
 
-/* Allocate a new conn_desc fot an intersection point and insert it in the
+/* Allocate a new conn_desc for an intersection point and insert it in the
    right lists.
    Arguments:
     - a is an intersection node.
