@@ -260,8 +260,8 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 	   is moved to one endpoint, we still end up with an 1 long edge */
 	if (man_dist_2(v1a, v2a) <= PA_TWEAK_ISC) Vcpy2(v1a, v2a);
 	if (man_dist_2(v1a, v2b) <= PA_TWEAK_ISC) Vcpy2(v1a, v2b);
-	if (man_dist_2(v2a, v2a) <= PA_TWEAK_ISC) Vcpy2(v2a, v2a);
-	if (man_dist_2(v2a, v2b) <= PA_TWEAK_ISC) Vcpy2(v2a, v2b);
+	if (man_dist_2(v1b, v2a) <= PA_TWEAK_ISC) Vcpy2(v1b, v2a);
+	if (man_dist_2(v1b, v2b) <= PA_TWEAK_ISC) Vcpy2(v1b, v2b);
 
 
 	if (man_dist_2(isc, v1a) <= PA_TWEAK_ISC) { Vcpy2(isc, v1a); return; }
