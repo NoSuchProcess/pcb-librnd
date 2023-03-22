@@ -252,6 +252,18 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 	   splitting at isc. If there are multiple such very short edges
 	   nearby, that may change the topology. A cheap trick to avoid this is
 	   to round isc point to nearby edge endpoint if intersection is too close */
+
+
+	/* special case: if two endpoints are close, move them together first, to
+	   avoid the corner case topo_pt_close2.fawk, where one side of the X
+	   crossing has original endpoints close but not incident so when the crossing
+	   is moved to one endpoint, we still end up with an 1 long edge */
+	if (man_dist_2(v1a, v2a) <= PA_TWEAK_ISC) Vcpy2(v1a, v2a);
+	if (man_dist_2(v1a, v2b) <= PA_TWEAK_ISC) Vcpy2(v1a, v2b);
+	if (man_dist_2(v2a, v2a) <= PA_TWEAK_ISC) Vcpy2(v2a, v2a);
+	if (man_dist_2(v2a, v2b) <= PA_TWEAK_ISC) Vcpy2(v2a, v2b);
+
+
 	if (man_dist_2(isc, v1a) <= PA_TWEAK_ISC) { Vcpy2(isc, v1a); return; }
 	if (man_dist_2(isc, v2a) <= PA_TWEAK_ISC) { Vcpy2(isc, v2a); return; }
 	if (man_dist_2(isc, v1b) <= PA_TWEAK_ISC) { Vcpy2(isc, v1b); return; }
