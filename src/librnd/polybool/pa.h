@@ -43,7 +43,7 @@ struct pa_conn_desc_s {
 	rnd_vnode_t *parent;                 /* the point this descriptor is for */
 	pa_conn_desc_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
 	char poly;                           /* 'A' or 'B' */
-	char side;                           /* 'P' for previous 'N' for next */
+	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
 };
 
 #define PA_CONN_DESC_INVALID ((pa_conn_desc_t *)-1)
