@@ -47,7 +47,7 @@
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
-#define DEBUG_CVC 0
+#define DEBUG_CVC 1
 #define DEBUG_ISC 0
 #undef DEBUG
 
@@ -92,7 +92,8 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #	define DEBUG_ANGLE PA_DEBUGP_DUMMY
 #endif
 
-#ifdef DEBUG
+#if defined(DEBUG) || DEBUG_CVC
+
 static const char *node_label_to_str(rnd_vnode_t *v)
 {
 	switch (v->flg.plabel) {
@@ -104,6 +105,10 @@ static const char *node_label_to_str(rnd_vnode_t *v)
 	}
 	return "UNKNOWN";
 }
+
+#endif
+
+#ifdef DEBUG
 
 static void pa_pline_dump(rnd_vnode_t *v)
 {
@@ -162,7 +167,11 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 	DEBUGP("CVC:\n");
 
 	do {
-		DEBUGP(" %c %c %f %$mD\n", n->poly, n->side, n->angle, n->parent->point[0], n->parent->point[1]);
+		DEBUGP(" %c %c %f %$mD ", n->poly, n->side, n->angle, n->parent->point[0], n->parent->point[1]);
+		if (n->side == 'N')
+			DEBUGP("%$mD %s\n", n->parent->next->point[0], n->parent->next->point[1], node_label_to_str(n->parent));
+		else
+			DEBUGP("%$mD %s\n", n->parent->prev->point[0], n->parent->prev->point[1], node_label_to_str(n->parent->prev));
 	} while((n = n->next) != head);
 }
 #else
