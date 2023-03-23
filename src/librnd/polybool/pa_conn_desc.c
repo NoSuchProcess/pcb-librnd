@@ -118,7 +118,7 @@ static pa_conn_desc_t *pa_link_after_conn_desc(pa_conn_desc_t *newd, pa_conn_des
    Arguments:
     - a is an intersection node.
     - poly is the polygon it comes from ('A' or 'B')
-    - side is the side this descriptor goes on ('P'=previous 'N'=next.
+    - side is the side this descriptor goes on ('P'=previous 'N'=next)
     - start is the head of the list of cnlst */
 static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t *a, char poly, char side, pa_conn_desc_t *start)
 {
