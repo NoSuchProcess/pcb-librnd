@@ -88,3 +88,55 @@ do { \
 #include <genfip/rational.h>
 
 /*** implementation ***/
+
+#define W RND_BIGCRD_WIDTH
+
+/* Single intersection between non-parallel lines x1;y1->x2;y2 and x3;y3->x4;y4.
+   Returns 0 on success and loads x;y with the coords of the intersection */
+int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t x3, rnd_coord_t y3, rnd_coord_t x4, rnd_coord_t y4)
+{
+	rnd_big_coord_t tmp1, tmp2, dx1, dy1, dx3, dy3, a, b, denom;
+	rnd_big_coord_t X1 = {0}, Y1 = {0}, X2 = {0}, Y2 = {0};
+	rnd_big_coord_t X3 = {0}, Y3 = {0}, X4 = {0}, Y4 = {0};
+
+	X1[0] = x1; Y1[0] = y1; X2[0] = x2; Y2[0] = y2;
+	X3[0] = x3; Y3[0] = y3; X4[0] = x4; Y4[0] = y4;
+
+/* https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection as of 2023 March */
+
+	big_subn(dx1, X1, X2, W, 0);
+	big_subn(dy1, Y1, Y2, W, 0);
+	big_subn(dx3, X3, X4, W, 0);
+	big_subn(dy3, Y3, Y4, W, 0);
+
+	/* tmp1 = x1*y2 - y1*x2 */
+	big_mul(a, W, X1, Y2, W);
+	big_mul(b, W, Y1, X2, W);
+	big_subn(tmp1, a, b, W, 0);
+
+	/* tmp2 = x3*y4 - y3*x4 */
+	big_mul(a, W, X3, Y4, W);
+	big_mul(b, W, Y3, X4, W);
+	big_subn(tmp2, a, b, W, 0);
+
+	/* denom = dx1 * dy3 - dy1 * dx3 */
+	big_mul(a, W, dx1, dy3, W);
+	big_mul(b, W, dy1, dx3, W);
+	big_subn(x->denom, a, b, W, 0);
+	big_copy(y->denom, x->denom, W);
+
+	if (big_is_zero(denom, W))
+		return -1;
+
+	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
+	big_mul(a, W, tmp1, dx3, W);
+	big_mul(b, W, tmp2, dx1, W);
+	big_subn(x->num, a, b, W, 0);
+
+	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
+	big_mul(a, W, tmp1, dx3, W);
+	big_mul(b, W, tmp2, dx1, W);
+	big_subn(y->num, a, b, W, 0);
+
+	return 0;
+}
