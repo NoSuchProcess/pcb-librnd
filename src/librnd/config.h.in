@@ -207,6 +207,7 @@ print [@
 
 /* Coordinate type and properties, as detected by scconfig */
 typedef @/local/librnd/coord_type@ rnd_coord_t;
+typedef @/local/librnd/ucoord_type@ rnd_ucoord_t; /* [4.1.0] */
 #define RND_COORD_MAX @/local/librnd/coord_max@
 #define coord_abs rnd_coord_abs
 

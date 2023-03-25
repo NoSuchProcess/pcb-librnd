@@ -315,14 +315,14 @@ static void rnd_hook_detect_coord_bits(void)
 	int long_bits      = safe_atoi(get("sys/types/size/signed_long_int")) * 8;
 	int long_long_bits = safe_atoi(get("sys/types/size/signed_long_long_int")) * 8;
 	int int64_bits     = safe_atoi(get("sys/types/size/uint64_t")) * 8;
-	const char *chosen, *postfix;
+	const char *chosen, *uchosen, *postfix;
 	char tmp[64];
 	int need_stdint = 0;
 
-	if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           }
-	else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      }
-	else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       need_stdint = 1; }
-	else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; }
+	if (want_coord_bits == int_bits)             { postfix="U";   chosen = "int";           uchosen = "unsigned int";          }
+	else if (want_coord_bits == long_bits)       { postfix="UL";  chosen = "long int";      uchosen = "unsigned long int";     }
+	else if (want_coord_bits == int64_bits)      { postfix="ULL"; chosen = "int64_t";       uchosen = "unsigned int64_t";      need_stdint = 1; }
+	else if (want_coord_bits == long_long_bits)  { postfix="ULL"; chosen = "long long int"; uchosen = "unsigned long long int";}
 	else {
 		report("ERROR: can't find a suitable integer type for coord to be %d bits wide\n", want_coord_bits);
 		exit(1);
@@ -331,6 +331,7 @@ static void rnd_hook_detect_coord_bits(void)
 	sprintf(tmp, "((1%s<<%d)-1)", postfix, want_coord_bits - 1);
 	put("/local/pcb/coord_type", chosen);
 	put("/local/librnd/coord_type", chosen);
+	put("/local/librnd/ucoord_type", uchosen);
 	put("/local/pcb/coord_max", tmp);
 	put("/local/librnd/coord_max", tmp);
 
