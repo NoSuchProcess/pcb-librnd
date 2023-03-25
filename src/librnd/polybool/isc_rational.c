@@ -113,8 +113,8 @@ int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1
 	big_subn(x->num, a, b, W, 0);
 
 	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
-	big_mul(a, W, tmp1, dx3, W);
-	big_mul(b, W, tmp2, dx1, W);
+	big_mul(a, W, tmp1, dy3, W);
+	big_mul(b, W, tmp2, dy1, W);
 	big_subn(y->num, a, b, W, 0);
 
 	return 0;
