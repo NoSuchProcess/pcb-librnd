@@ -74,7 +74,7 @@ do { \
 
 int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t x3, rnd_coord_t y3, rnd_coord_t x4, rnd_coord_t y4)
 {
-	rnd_big_coord_t tmp1, tmp2, dx1, dy1, dx3, dy3, a, b, denom;
+	rnd_big_coord_t tmp1, tmp2, dx1, dy1, dx3, dy3, a, b;
 	rnd_big_coord_t X1 = {0}, Y1 = {0}, X2 = {0}, Y2 = {0};
 	rnd_big_coord_t X3 = {0}, Y3 = {0}, X4 = {0}, Y4 = {0};
 
@@ -104,7 +104,7 @@ int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1
 	big_subn(x->denom, a, b, W, 0);
 	big_copy(y->denom, x->denom, W);
 
-	if (big_is_zero(denom, W))
+	if (big_is_zero(x->denom, W))
 		return -1;
 
 	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
