@@ -132,6 +132,7 @@ put /local/librnd/OBJS_POLYLIB [@
 @]
 
 put /local/librnd/OBJS_POLYBOOLLIB [@
+	$(LIBRND)/polybool/isc_rational.o
 	$(LIBRND)/polybool/polyarea.o
 	$(LIBRND)/polybool/polygon1_gen.o
 	$(LIBRND)/polybool/offset.o
