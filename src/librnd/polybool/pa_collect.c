@@ -664,4 +664,6 @@ static void pa_polyarea_collect(jmp_buf *e, rnd_polyarea_t *A, rnd_polyarea_t **
 		}
 	}
 	while((pa = pa->f) != A);
+
+	pa_debug_dump(stderr, "collected", A, PA_DBG_DUMP_CVC);
 }
