@@ -47,8 +47,9 @@
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
-#define DEBUG_CVC 1
+#define DEBUG_CVC 0
 #define DEBUG_ISC 0
+#define DEBUG_DUMP 0
 #undef DEBUG
 
 /* only when DEBUG is enabled */
@@ -92,7 +93,7 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #	define DEBUG_ANGLE PA_DEBUGP_DUMMY
 #endif
 
-#if defined(DEBUG) || DEBUG_CVC
+#if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP
 
 static const char *node_label_to_str(rnd_vnode_t *v)
 {
@@ -159,7 +160,7 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 
 
 
-#if DEBUG_CVC
+#if DEBUG_CVC || DEBUG_DUMP
 RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 {
 	pa_conn_desc_t *n = head;
@@ -189,3 +190,52 @@ RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t 
 RND_INLINE void pa_debug_print_isc(int num_isc, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vector_t a1, rnd_vector_t a2, rnd_vector_t b1, rnd_vector_t b2) {}
 #endif
 
+typedef enum { /* bitfield of extra info the dump should contain */
+	PA_DBG_DUMP_CVC = 1,
+} pa_debug_dump_extra_t;
+
+#if DEBUG_DUMP
+RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extra_t extra)
+{
+	rnd_vnode_t *v = pl->head;
+	do {
+		fprintf(f, "   %ld %ld\n", (long)v->point[0], (long)v->point[1]);
+	} while(v != pl->head);
+}
+
+static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
+{
+	rnd_pline_t *pl;
+	rnd_polyarea_t *pn = pa;
+
+	if (title != NULL)
+		fprintf(f, "DUMP: %s\n", title);
+
+	if (pa == NULL) {
+		fprintf(f, " Polyarea\nEnd\n\n");
+		return;
+	}
+
+	fprintf(f, " Polyarea\n");
+	do {
+	/* check if we have a contour for the given island */
+		pl = pn->contours;
+		if (pl != NULL) {
+
+			fprintf(f, "  Contour\n");
+			pa_debug_dump_pline(f, pl, extra);
+
+			/* iterate over all holes within this island */
+			for(pl = pa->contours->next; pl != NULL; pl = pl->next) {
+				fprintf(f, "  Hole\n");
+				pa_debug_dump_pline(f, pl, extra);
+			}
+		}
+	} while ((pn = pn->f) != pa);
+	fprintf(f, " End\n\n");
+}
+
+#else
+static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra) {}
+
+#endif
