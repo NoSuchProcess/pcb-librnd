@@ -42,7 +42,7 @@
 
 #define FROM_ISC_RATIONAL_C
 
-typedef rnd_coord_t big_word;
+typedef rnd_ucoord_t big_word;
 
 
 #define RATIONAL_OP_ADD(r,a,b) big_addn((r), (a), (b), RND_BIGCRD_WIDTH, 0)

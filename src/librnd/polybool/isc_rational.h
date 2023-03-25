@@ -13,7 +13,7 @@
 #	endif
 
 #define RND_BIGCRD_WIDTH 3
-typedef rnd_coord_t rnd_big_coord_t[RND_BIGCRD_WIDTH];
+typedef rnd_ucoord_t rnd_big_coord_t[RND_BIGCRD_WIDTH];
 
 #define RATIONAL(x) rnd_bcr_ ## x
 #define RATIONAL_INT rnd_big_coord_t
