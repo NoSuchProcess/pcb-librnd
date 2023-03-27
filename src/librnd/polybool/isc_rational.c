@@ -33,7 +33,6 @@
 
 #include <librnd/config.h>
 
-
 /*** configure bigint and rational numbers ***/
 
 #define big_local      RND_INLINE
@@ -72,8 +71,124 @@ do { \
 
 #define W RND_BIGCRD_WIDTH
 
-int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t x3, rnd_coord_t y3, rnd_coord_t x4, rnd_coord_t y4)
+#define Vcpy2(dst, src)   memcpy((dst), (src), sizeof(rnd_vector_t))
+#define Vsub2(r, a, b) \
+	do { \
+		(r)[0] = (a)[0] - (b)[0]; \
+		(r)[1] = (a)[1] - (b)[1]; \
+	} while(0)
+
+/* Distance square between v1 and v2 in big coord */
+RND_INLINE void rnd_vect_dist2_big(rnd_big_coord_t dst, rnd_vector_t v1, rnd_vector_t v2)
 {
+	rnd_big_coord_t dx, dy, v1x = {0}, v1y = {0}, v2x = {0}, v2y = {0}, a, b;
+
+	v1x[0] = v1[0]; v1y[0] = v1[1];
+	v2x[0] = v2[0]; v2y[0] = v2[1];
+
+	big_subn(dx, v1x, v2x, W, 0);
+	big_subn(dy, v1y, v2y, W, 0);
+	big_mul(a, W, dx, dx, W);
+	big_mul(b, W, dy, dy, W);
+
+	big_addn(dst, a, b, W, 0);
+}
+
+/* Corner case handler: when p1..p2 and q1..q2 are parallel */
+RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+{
+	rnd_big_coord_t dc1, dc2, d1, d2;
+	rnd_vector_t tmp1, tmp2, tmq1, tmq2;
+
+	/* to easy conversion of coords to big coords - results are always on input coords */
+	memset(x, 0, sizeof(rnd_bcr_t) * 2);
+	memset(y, 0, sizeof(rnd_bcr_t) * 2);
+	x[0].denom[0] = 1; x[1].denom[0] = 1;
+	y[0].denom[0] = 1; y[1].denom[0] = 1;
+
+	/* Figure overlaps by distances:
+	
+	       p1-------------------p2
+	            q1--------q2
+	
+	   Distance vectors:
+	       dc1
+	       -------------------->dc2
+	       ---->d1
+	       -------------->d2
+	*/
+
+	memset(dc1, 0, sizeof(dc1));
+	rnd_vect_dist2_big(dc2, p1, q2);
+
+	rnd_vect_dist2_big(d1, p1, q1);
+	rnd_vect_dist2_big(d2, p1, q2);
+
+	/* Make sure dc1 is always the smaller one (always on the left);
+	   depends on p1..p2 direction */
+	if (big_cmpn(dc1, dc2, W) > 0) { /* dc1 > dc2 */
+		Vcpy2(tmp1, p2);
+		Vcpy2(tmp2, p1);
+		big_swap(dc1, dc2, W);
+	}
+	else {
+		Vcpy2(tmp1, p1);
+		Vcpy2(tmp2, p2);
+	}
+
+	/* Make sure d1 is always the smaller one (always on the left);
+	   depends on q1..q2 direction */
+	if (big_cmpn(d1, d2, W) > 0) { /* d1 > d2 */
+		Vcpy2(tmq1, q2);
+		Vcpy2(tmq2, q1);
+		big_swap(d1, d2, W);
+	}
+	else {
+		Vcpy2(tmq1, q1);
+		Vcpy2(tmq2, q2);
+	}
+
+	/* by now tmp* and tmq* are ordered p1..p2 and q1..q2 */
+
+	/* Compare distances to figure what overlaps */
+	if (big_cmpn(dc1, d1, W) < 0) { /* (dc1 < d1) */
+		if (big_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
+			return 0;
+		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+			x[0].num[0] = tmp2[0]; y[0].num[0] = tmp2[1];
+			x[1].num[0] = tmq1[0]; y[1].num[0] = tmq1[1];
+		}
+		else {
+			x[0].num[0] = tmq1[0]; y[0].num[0] = tmq1[1];
+			x[1].num[0] = tmq2[0]; y[1].num[0] = tmq2[1];
+		}
+	}
+	else {
+		if (big_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
+			return 0;
+		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+			x[0].num[0] = tmp1[0]; y[0].num[0] = tmp1[1];
+			x[1].num[0] = tmp2[0]; y[1].num[0] = tmp2[1];
+		}
+		else {
+			x[0].num[0] = tmp1[0]; y[0].num[0] = tmp1[1];
+			x[1].num[0] = tmq2[0]; y[1].num[0] = tmq2[1];
+		}
+	}
+
+	/* if the two intersections are the same, return only one; denominators are
+	   always 1, do not compare them */
+	if ((big_cmpn(x[0].num, x[1].num, W) == 0) && (big_cmpn(y[0].num, y[1].num, W) == 0))
+		return 1;
+
+	return 2;
+}
+
+
+int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+{
+	rnd_coord_t x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
+	rnd_coord_t x3 = q1[0], y3 = q1[1], x4 = q2[0], y4 = q2[1];
 	rnd_big_coord_t tmp1, tmp2, dx1, dy1, dx3, dy3, a, b;
 	rnd_big_coord_t X1 = {0}, Y1 = {0}, X2 = {0}, Y2 = {0};
 	rnd_big_coord_t X3 = {0}, Y3 = {0}, X4 = {0}, Y4 = {0};
@@ -88,6 +203,15 @@ int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1
 	big_subn(dx3, X3, X4, W, 0);
 	big_subn(dy3, Y3, Y4, W, 0);
 
+	/* denom = dx1 * dy3 - dy1 * dx3 */
+	big_mul(a, W, dx1, dy3, W);
+	big_mul(b, W, dy1, dx3, W);
+	big_subn(x->denom, a, b, W, 0);
+	big_copy(y->denom, x->denom, W);
+
+	if (big_is_zero(x->denom, W))
+		return rnd_big_coord_isc_par(x, y, p1, p2, q1, q2);
+
 	/* tmp1 = x1*y2 - y1*x2 */
 	big_mul(a, W, X1, Y2, W);
 	big_mul(b, W, Y1, X2, W);
@@ -97,15 +221,6 @@ int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1
 	big_mul(a, W, X3, Y4, W);
 	big_mul(b, W, Y3, X4, W);
 	big_subn(tmp2, a, b, W, 0);
-
-	/* denom = dx1 * dy3 - dy1 * dx3 */
-	big_mul(a, W, dx1, dy3, W);
-	big_mul(b, W, dy1, dx3, W);
-	big_subn(x->denom, a, b, W, 0);
-	big_copy(y->denom, x->denom, W);
-
-	if (big_is_zero(x->denom, W))
-		return -1;
 
 	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
 	big_mul(a, W, tmp1, dx3, W);
@@ -117,5 +232,5 @@ int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1
 	big_mul(b, W, tmp2, dy1, W);
 	big_subn(y->num, a, b, W, 0);
 
-	return 0;
+	return 1;
 }

@@ -26,11 +26,17 @@ typedef rnd_ucoord_t rnd_big_coord_t[RND_BIGCRD_WIDTH];
 
 #include <genfip/rational.h>
 
+#include <librnd/core/math_helper.h>
+#include <librnd/core/box.h>
+#include "polyarea.h"
+
 typedef struct pa_isc_s {
 	rnd_bcr_t x, y;  /* precise x;y coords of the isc expressed as rationals */
 	rnd_big_coord_t qx, qy, rx, ry; /* quotient and remainder of x;y rationals, for quick comparison */
 } pa_isc_t;
 
-/* Single intersection between non-parallel lines x1;y1->x2;y2 and x3;y3->x4;y4.
-   Returns 0 on success and loads x;y with the coords of the intersection */
-int rnd_big_coord_isc(rnd_bcr_t *x, rnd_bcr_t *y, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t x3, rnd_coord_t y3, rnd_coord_t x4, rnd_coord_t y4);
+/* Intersection(s) between lines p1->p2 and q1->q2.
+   Returns number of intersections (0, 1 or 2) and loads x;y with the
+   coords of the intersection */
+int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
+
