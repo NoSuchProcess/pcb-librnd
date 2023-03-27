@@ -220,6 +220,25 @@ void pa_div_to_big2(rnd_big2_coord_t dst, rnd_big_coord_t n, rnd_big_coord_t d)
 	big_signed_div(dst, r, N, W2, D, W2, NULL);
 }
 
+/* Returns if num is between a*denom and b*denom */
+RND_INLINE int pa_big_in_between(int ordered, rnd_big_coord_t a, rnd_big_coord_t b, rnd_big_coord_t num, rnd_big_coord_t denom)
+{
+	rnd_big_coord_t A, B;
+	if (ordered) {
+		big_mul(A, W, a, denom, W);
+		big_mul(B, W, b, denom, W);
+	}
+	else {
+		/* swap so A < B */
+		big_mul(B, W, a, denom, W);
+		big_mul(A, W, b, denom, W);
+	}
+
+	if (big_signed_cmpn(num, A, W) < 0) return 0;
+	if (big_signed_cmpn(num, B, W) > 0) return 0;
+	return 1;
+}
+
 int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
 	rnd_coord_t x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
@@ -269,11 +288,15 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	big_mul(a, W, tmp1, dx3, W);
 	big_mul(b, W, tmp2, dx1, W);
 	big_subn(x->num, a, b, W, 0);
+	if (!pa_big_in_between(x1 < x2, X1, X2, x->num, x->denom)) return 0;
+	if (!pa_big_in_between(x3 < x4, X3, X4, x->num, x->denom)) return 0;
 
 	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
 	big_mul(a, W, tmp1, dy3, W);
 	big_mul(b, W, tmp2, dy1, W);
 	big_subn(y->num, a, b, W, 0);
+	if (!pa_big_in_between(y1 < y2, Y1, Y2, y->num, y->denom)) return 0;
+	if (!pa_big_in_between(y3 < y4, Y3, Y4, y->num, y->denom)) return 0;
 
 	return 1;
 }
