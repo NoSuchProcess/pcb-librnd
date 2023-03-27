@@ -59,7 +59,7 @@ do { \
 
 /* returns 0 if a is 0, +1 if a is positive and -1 if a is negative */
 #define RATIONAL_OP_SGN(a)     (big_sgn((a), RND_BIGCRD_WIDTH))
-#define RATIONAL_OP_LESS(a, b) (big_cmpn((a), (b), RND_BIGCRD_WIDTH) < 0)
+#define RATIONAL_OP_LESS(a, b) (big_signed_cmpn((a), (b), RND_BIGCRD_WIDTH) < 0)
 #define RATIONAL_OP_EQU(a, b)  (big_cmpn((a), (b), RND_BIGCRD_WIDTH) == 0)
 #define RATIONAL_OP_GT0(a)     (big_sgn((a), RND_BIGCRD_WIDTH) > 0)
 #define RATIONAL_OP_LT0(a)     (big_is_neg((a), RND_BIGCRD_WIDTH))
@@ -147,7 +147,7 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 
 	/* Make sure dc1 is always the smaller one (always on the left);
 	   depends on p1..p2 direction */
-	if (big_cmpn(dc1, dc2, W) > 0) { /* dc1 > dc2 */
+	if (big_signed_cmpn(dc1, dc2, W) > 0) { /* dc1 > dc2 */
 		Vcpy2(tmp1, p2);
 		Vcpy2(tmp2, p1);
 		big_swap(dc1, dc2, W);
@@ -159,7 +159,7 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 
 	/* Make sure d1 is always the smaller one (always on the left);
 	   depends on q1..q2 direction */
-	if (big_cmpn(d1, d2, W) > 0) { /* d1 > d2 */
+	if (big_signed_cmpn(d1, d2, W) > 0) { /* d1 > d2 */
 		Vcpy2(tmq1, q2);
 		Vcpy2(tmq2, q1);
 		big_swap(d1, d2, W);
@@ -172,10 +172,10 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 	/* by now tmp* and tmq* are ordered p1..p2 and q1..q2 */
 
 	/* Compare distances to figure what overlaps */
-	if (big_cmpn(dc1, d1, W) < 0) { /* (dc1 < d1) */
-		if (big_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
+	if (big_signed_cmpn(dc1, d1, W) < 0) { /* (dc1 < d1) */
+		if (big_signed_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
 			return 0;
-		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
 			load_big(x[0].num, tmp2[0]); load_big(y[0].num, tmp2[1]);
 			load_big(x[1].num, tmq1[0]); load_big(y[1].num, tmq1[1]);
 		}
@@ -185,9 +185,9 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 		}
 	}
 	else {
-		if (big_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
+		if (big_signed_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
 			return 0;
-		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
 			load_big(x[0].num, tmp1[0]); load_big(y[0].num, tmp1[1]);
 			load_big(x[1].num, tmp2[0]); load_big(y[1].num, tmp2[1]);
 		}
@@ -199,7 +199,7 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 
 	/* if the two intersections are the same, return only one; denominators are
 	   always 1, do not compare them */
-	if ((big_cmpn(x[0].num, x[1].num, W) == 0) && (big_cmpn(y[0].num, y[1].num, W) == 0))
+	if ((big_signed_cmpn(x[0].num, x[1].num, W) == 0) && (big_cmpn(y[0].num, y[1].num, W) == 0))
 		return 1;
 
 	return 2;
