@@ -288,6 +288,7 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	big_mul(a, W, tmp1, dx3, W);
 	big_mul(b, W, tmp2, dx1, W);
 	big_subn(x->num, a, b, W, 0);
+	rnd_bcr_norm_sgn(x);
 	if (!pa_big_in_between(x1 < x2, X1, X2, x->num, x->denom)) return 0;
 	if (!pa_big_in_between(x3 < x4, X3, X4, x->num, x->denom)) return 0;
 
@@ -295,8 +296,8 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	big_mul(a, W, tmp1, dy3, W);
 	big_mul(b, W, tmp2, dy1, W);
 	big_subn(y->num, a, b, W, 0);
+	rnd_bcr_norm_sgn(y);
 	if (!pa_big_in_between(y1 < y2, Y1, Y2, y->num, y->denom)) return 0;
 	if (!pa_big_in_between(y3 < y4, Y3, Y4, y->num, y->denom)) return 0;
-
 	return 1;
 }
