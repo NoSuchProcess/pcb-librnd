@@ -37,6 +37,10 @@
 
 /* poly bool internals */
 
+#ifdef PB_RATIONAL_ISC
+#include "isc_rational.h"
+#endif
+
 /* A "descriptor" that makes up a "(cross vertex) connectivity list" in the paper */
 struct pa_conn_desc_s {
 	double angle;
@@ -44,6 +48,9 @@ struct pa_conn_desc_s {
 	pa_conn_desc_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
 	char poly;                           /* 'A' or 'B' */
 	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
+#ifdef PB_RATIONAL_ISC
+	pa_isc_t isc;                        /* precise coords of the intersection */
+#endif
 };
 
 #define PA_CONN_DESC_INVALID ((pa_conn_desc_t *)-1)
