@@ -13,7 +13,9 @@
 #	endif
 
 #define RND_BIGCRD_WIDTH 3
+#define RND_BIGCRD_WIDTH2 (RND_BIGCRD_WIDTH*2)
 typedef rnd_ucoord_t rnd_big_coord_t[RND_BIGCRD_WIDTH];
+typedef rnd_ucoord_t rnd_big2_coord_t[RND_BIGCRD_WIDTH2];
 
 #define RATIONAL(x) rnd_bcr_ ## x
 #define RATIONAL_INT rnd_big_coord_t
@@ -32,11 +34,14 @@ typedef rnd_ucoord_t rnd_big_coord_t[RND_BIGCRD_WIDTH];
 
 typedef struct pa_isc_s {
 	rnd_bcr_t x, y;  /* precise x;y coords of the isc expressed as rationals */
-	rnd_big_coord_t qx, qy, rx, ry; /* quotient and remainder of x;y rationals, for quick comparison */
+	rnd_big2_coord_t x2, y2; /* RND_BIGCRD_WIDTH.RND_BIGCRD_WIDTH fixed point representation */
 } pa_isc_t;
 
 /* Intersection(s) between lines p1->p2 and q1->q2.
    Returns number of intersections (0, 1 or 2) and loads x;y with the
    coords of the intersection */
 int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
+
+
+void pa_div_to_big2(rnd_big2_coord_t dst, rnd_big_coord_t n, rnd_big_coord_t d);
 

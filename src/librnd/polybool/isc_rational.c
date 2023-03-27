@@ -72,6 +72,7 @@ do { \
 /*** implementation ***/
 
 #define W RND_BIGCRD_WIDTH
+#define W2 RND_BIGCRD_WIDTH2
 
 #define Vcpy2(dst, src)   memcpy((dst), (src), sizeof(rnd_vector_t))
 #define Vsub2(r, a, b) \
@@ -205,6 +206,19 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 	return 2;
 }
 
+void pa_div_to_big2(rnd_big2_coord_t dst, rnd_big_coord_t n, rnd_big_coord_t d)
+{
+	rnd_big2_coord_t N, D;
+	rnd_big_coord_t r;
+
+	memset(((rnd_big_coord_t *)N)+0, (big_is_neg(n, W) ? 0xff : 0x00), sizeof(rnd_big_coord_t));
+	memset(((rnd_big_coord_t *)D)+1, (big_is_neg(d, W) ? 0xff : 0x00), sizeof(rnd_big_coord_t));
+	memcpy(((rnd_big_coord_t *)N)+1, n, sizeof(rnd_big_coord_t));
+	memcpy(D, d, sizeof(rnd_big_coord_t));
+
+	big_zero(dst, W2);
+	big_signed_div(dst, r, N, W2, D, W2, NULL);
+}
 
 int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
