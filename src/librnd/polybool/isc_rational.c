@@ -33,6 +33,8 @@
 
 #include <librnd/config.h>
 
+#include "pa_math.c"
+
 /*** configure bigint and rational numbers ***/
 
 #define big_local      RND_INLINE
@@ -78,20 +80,39 @@ do { \
 		(r)[1] = (a)[1] - (b)[1]; \
 	} while(0)
 
-/* Distance square between v1 and v2 in big coord */
-RND_INLINE void rnd_vect_dist2_big(rnd_big_coord_t dst, rnd_vector_t v1, rnd_vector_t v2)
+RND_INLINE void load_big(rnd_big_coord_t dst, rnd_coord_t src)
 {
-	rnd_big_coord_t dx, dy, v1x = {0}, v1y = {0}, v2x = {0}, v2y = {0}, a, b;
+	int n;
 
-	v1x[0] = v1[0]; v1y[0] = v1[1];
-	v2x[0] = v2[0]; v2y[0] = v2[1];
+	dst[0] = src;
+	if (src > 0) {
+		for(n = 1; n < W; n++)
+			dst[n] = 0;
+	}
+	else {
+		for(n = 1; n < W; n++)
+			dst[n] = -1;
+	}
+}
 
-	big_subn(dx, v1x, v2x, W, 0);
-	big_subn(dy, v1y, v2y, W, 0);
+/* Distance square between v1 and v2 in big coord */
+RND_INLINE void rnd_vect_m_dist2_big(rnd_big_coord_t dst, rnd_vector_t v1, rnd_vector_t v2)
+{
+	rnd_big_coord_t dx = {0}, dy = {0}, a, b;
+	rnd_coord_t vdx = v1[0] - v2[0];
+	rnd_coord_t vdy = v1[1] - v2[1];
+
+	load_big(dx, vdx);
+	load_big(dy, vdy);
 	big_mul(a, W, dx, dx, W);
 	big_mul(b, W, dy, dy, W);
 
 	big_addn(dst, a, b, W, 0);
+
+	if (vdx > 0)    {                       return /*+dd*/; }
+	if (vdx < 0)    { big_neg(dst, dst, W); return /*-dd*/; }
+	if (vdy > 0)    {                       return /*+dd*/; }
+	/* (vdy < 0) */ { big_neg(dst, dst, W); return /*-dd*/; }
 }
 
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
@@ -119,10 +140,10 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 	*/
 
 	memset(dc1, 0, sizeof(dc1));
-	rnd_vect_dist2_big(dc2, p1, q2);
+	rnd_vect_m_dist2_big(dc2, p1, q2);
 
-	rnd_vect_dist2_big(d1, p1, q1);
-	rnd_vect_dist2_big(d2, p1, q2);
+	rnd_vect_m_dist2_big(d1, p1, q1);
+	rnd_vect_m_dist2_big(d2, p1, q2);
 
 	/* Make sure dc1 is always the smaller one (always on the left);
 	   depends on p1..p2 direction */
@@ -155,24 +176,24 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 		if (big_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
 			return 0;
 		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
-			x[0].num[0] = tmp2[0]; y[0].num[0] = tmp2[1];
-			x[1].num[0] = tmq1[0]; y[1].num[0] = tmq1[1];
+			load_big(x[0].num, tmp2[0]); load_big(y[0].num, tmp2[1]);
+			load_big(x[1].num, tmq1[0]); load_big(y[1].num, tmq1[1]);
 		}
 		else {
-			x[0].num[0] = tmq1[0]; y[0].num[0] = tmq1[1];
-			x[1].num[0] = tmq2[0]; y[1].num[0] = tmq2[1];
+			load_big(x[0].num, tmq1[0]); load_big(y[0].num, tmq1[1]);
+			load_big(x[1].num, tmq2[0]); load_big(y[1].num, tmq2[1]);
 		}
 	}
 	else {
 		if (big_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
 			return 0;
 		if (big_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
-			x[0].num[0] = tmp1[0]; y[0].num[0] = tmp1[1];
-			x[1].num[0] = tmp2[0]; y[1].num[0] = tmp2[1];
+			load_big(x[0].num, tmp1[0]); load_big(y[0].num, tmp1[1]);
+			load_big(x[1].num, tmp2[0]); load_big(y[1].num, tmp2[1]);
 		}
 		else {
-			x[0].num[0] = tmp1[0]; y[0].num[0] = tmp1[1];
-			x[1].num[0] = tmq2[0]; y[1].num[0] = tmq2[1];
+			load_big(x[0].num, tmp1[0]); load_big(y[0].num, tmp1[1]);
+			load_big(x[1].num, tmq2[0]); load_big(y[1].num, tmq2[1]);
 		}
 	}
 
@@ -190,11 +211,19 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	rnd_coord_t x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
 	rnd_coord_t x3 = q1[0], y3 = q1[1], x4 = q2[0], y4 = q2[1];
 	rnd_big_coord_t tmp1, tmp2, dx1, dy1, dx3, dy3, a, b;
-	rnd_big_coord_t X1 = {0}, Y1 = {0}, X2 = {0}, Y2 = {0};
-	rnd_big_coord_t X3 = {0}, Y3 = {0}, X4 = {0}, Y4 = {0};
+	rnd_big_coord_t X1, Y1, X2, Y2, X3, Y3, X4, Y4;
 
-	X1[0] = x1; Y1[0] = y1; X2[0] = x2; Y2[0] = y2;
-	X3[0] = x3; Y3[0] = y3; X4[0] = x4; Y4[0] = y4;
+	/* if bounding boxes don't overlap, no need to check, they can't intersect */
+	if (pa_max(p1[0], p2[0]) < pa_min(q1[0], q2[0])) return 0;
+	if (pa_max(q1[0], q2[0]) < pa_min(p1[0], p2[0])) return 0;
+	if (pa_max(p1[1], p2[1]) < pa_min(q1[1], q2[1])) return 0;
+	if (pa_max(q1[1], q2[1]) < pa_min(p1[1], p2[1])) return 0;
+
+
+	load_big(X1, x1); load_big(Y1, y1);
+	load_big(X2, x2); load_big(Y2, y2);
+	load_big(X3, x3); load_big(Y3, y3);
+	load_big(X4, x4); load_big(Y4, y4);
 
 /* https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection as of 2023 March */
 
