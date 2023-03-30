@@ -31,6 +31,11 @@
 			- "earlier" should be a new event probably, that runs after loading all plugins and doing all initialization but before loading anything
 			- check if we have GUI for editing permascript; if so, add this there too
 		- sch-rnd doc: trunk/doc/user/07_io/alien/index.html: look for <!--TODO#1--> and update it (from which version of librnd it works and how)
+	- CLEANUP/BUG: separate static linking from dynamic linking
+		- librnd.mak: do not add hid deps in LDFLAGS_LIBRND and CFLAGS_LIBRND
+		- make sure hid.so has -l on them and ldd loads them
+		- create separate STATIC version of LDFLAGS_LIBRND and CFLAGS_LIBRND that still have these, for static linked test/example ode
+		- sovles the upgrade problem reported by Erich and Derek: librnd installed; then pango upgraded; sch-rnd compileation broke because of pre-upgrade LDFLAGS in librnd.mak
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
