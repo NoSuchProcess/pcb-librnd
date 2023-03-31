@@ -40,7 +40,7 @@
 #ifdef PB_RATIONAL_ISC
 #include "isc_rational.h"
 #else
-typedef rnd_vector_t pa_bcr_vector_t;
+typedef rnd_vector_t pa_big_vector_t;
 #endif
 
 /* A "descriptor" that makes up a "(cross vertex) connectivity list" in the paper */
@@ -50,7 +50,7 @@ struct pa_conn_desc_s {
 	pa_conn_desc_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
 	char poly;                           /* 'A' or 'B' */
 	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
-	pa_bcr_vector_t isc;                 /* (precise) coords of the intersection */
+	pa_big_vector_t isc;                 /* (precise) coords of the intersection */
 };
 
 #define PA_CONN_DESC_INVALID ((pa_conn_desc_t *)-1)

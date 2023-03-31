@@ -271,7 +271,7 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 #endif
 }
 
-RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_bcr_vector_t isc1, pa_bcr_vector_t isc2)
+RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t isc1, pa_big_vector_t isc2)
 {
 	int res;
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
@@ -287,7 +287,7 @@ RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t 
 	return res;
 }
 
-RND_INLINE rnd_vnode_t *pa_isc_ensure_point(rnd_vnode_t *dst, pa_bcr_vector_t pt)
+RND_INLINE rnd_vnode_t *pa_isc_ensure_point(rnd_vnode_t *dst, pa_big_vector_t pt)
 {
 #ifdef PB_RATIONAL_ISC
 	return rnd_bcr_ensure_point_and_reset_cvc(dst, pt);
