@@ -271,17 +271,29 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 #endif
 }
 
-RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t isc1, rnd_vector_t isc2)
+RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_isc_t isc1, pa_isc_t isc2)
 {
 	int res;
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
-
+#ifdef PB_RATIONAL_ISC
+	res = rnd_bcr_inters2(v1a, v1b, v2a, v2b, isc1, isc2);
+#else
 	res = rnd_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, isc1, isc2);
 
 	if (res > 0) pa_tweak_isc(v1a->point, v1b->point, v2a->point, v2b->point, isc1);
 	if (res > 1) pa_tweak_isc(v1a->point, v1b->point, v2a->point, v2b->point, isc2);
+#endif
 
 	return res;
+}
+
+RND_INLINE rnd_vnode_t *pa_isc_ensure_point(rnd_vnode_t *dst, pa_isc_t pt)
+{
+#ifdef PB_RATIONAL_ISC
+	return rnd_bcr_ensure_point_and_reset_cvc(dst, pt);
+#else
+	return pa_ensure_point_and_reset_cvc(dst, pt);
+#endif
 }
 
 /* This callback checks if the segment "s" in the tree intersect
@@ -326,7 +338,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		rnd_vnode_t *new_node;
 
 		/* add new node on "i" */
-		new_node = pa_ensure_point_and_reset_cvc(ctx->v, *my_s);
+		new_node = pa_isc_ensure_point(ctx->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"i\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
@@ -337,7 +349,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		}
 
 		/* add new node on "s" */
-		new_node = pa_ensure_point_and_reset_cvc(s->v, *my_s);
+		new_node = pa_isc_ensure_point(s->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"s\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
