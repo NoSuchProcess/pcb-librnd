@@ -37,19 +37,19 @@ typedef struct rnd_bcr_coord_s {
 	rnd_big2_coord_t f;  /* RND_BIGCRD_WIDTH.RND_BIGCRD_WIDTH fixed point representation for comparison */
 } rnd_bcr_coord_t;
 
-typedef struct pa_isc_s {
+typedef struct pa_bcr_vector_s {
 	rnd_bcr_coord_t x, y;
-} pa_isc_t;
+} pa_bcr_vector_t;
 
 /* Intersection(s) between lines p1->p2 and q1->q2.
    Returns number of intersections (0, 1 or 2) and loads x;y with the
    coords of the intersection */
-int rnd_big_coord_isc(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
+int rnd_big_coord_isc(pa_bcr_vector_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
 
 /* Intersection(s) between lines v1a->v1b and v2a->v2b.
    Returns number of intersections (0, 1 or 2) and loads isc1 and isc2 with the
    high resolution coords of the intersection */
-int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_isc_t isc1, pa_isc_t isc2);
+int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_bcr_vector_t isc1, pa_bcr_vector_t isc2);
 
 
 void pa_div_to_big2(rnd_big2_coord_t dst, rnd_big_coord_t n, rnd_big_coord_t d);

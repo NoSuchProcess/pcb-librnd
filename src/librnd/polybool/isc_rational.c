@@ -117,13 +117,13 @@ RND_INLINE void rnd_vect_m_dist2_big(rnd_big_coord_t dst, rnd_vector_t v1, rnd_v
 }
 
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
-RND_INLINE int rnd_big_coord_isc_par(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+RND_INLINE int rnd_big_coord_isc_par(pa_bcr_vector_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
 	rnd_big_coord_t dc1, dc2, d1, d2;
 	rnd_vector_t tmp1, tmp2, tmq1, tmq2;
 
 	/* to easy conversion of coords to big coords - results are always on input coords */
-	memset(res, 0, sizeof(pa_isc_t) * 2);
+	memset(res, 0, sizeof(pa_bcr_vector_t) * 2);
 	res[0].x.r.denom[0] = 1; res[1].x.r.denom[0] = 1;
 	res[0].y.r.denom[0] = 1; res[1].y.r.denom[0] = 1;
 
@@ -238,7 +238,7 @@ RND_INLINE int pa_big_in_between(int ordered, rnd_big_coord_t a, rnd_big_coord_t
 	return 1;
 }
 
-int rnd_big_coord_isc(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+int rnd_big_coord_isc(pa_bcr_vector_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
 	rnd_coord_t x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
 	rnd_coord_t x3 = q1[0], y3 = q1[1], x4 = q2[0], y4 = q2[1];
@@ -301,7 +301,7 @@ int rnd_big_coord_isc(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vec
 	return 1;
 }
 
-int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_isc_t isc1, pa_isc_t isc2)
+int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_bcr_vector_t isc1, pa_bcr_vector_t isc2)
 {
 	rnd_bcr_t x[2], y[2];
 	int res;
