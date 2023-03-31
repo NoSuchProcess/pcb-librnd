@@ -32,7 +32,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 /* Intersection(s) between lines v1a->v1b and v2a->v2b.
    Returns number of intersections (0, 1 or 2) and loads isc1 and isc2 with the
    high resolution coords of the intersection */
-int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t isc1, pa_big_vector_t isc2);
+int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t isc1, pa_big_vector_t isc2);
+
 
 
 
