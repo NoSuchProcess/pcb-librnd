@@ -44,7 +44,7 @@ typedef struct pa_isc_s {
 /* Intersection(s) between lines p1->p2 and q1->q2.
    Returns number of intersections (0, 1 or 2) and loads x;y with the
    coords of the intersection */
-int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
+int rnd_big_coord_isc(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2);
 
 /* Intersection(s) between lines v1a->v1b and v2a->v2b.
    Returns number of intersections (0, 1 or 2) and loads isc1 and isc2 with the

@@ -117,16 +117,15 @@ RND_INLINE void rnd_vect_m_dist2_big(rnd_big_coord_t dst, rnd_vector_t v1, rnd_v
 }
 
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
-RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+RND_INLINE int rnd_big_coord_isc_par(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
 	rnd_big_coord_t dc1, dc2, d1, d2;
 	rnd_vector_t tmp1, tmp2, tmq1, tmq2;
 
 	/* to easy conversion of coords to big coords - results are always on input coords */
-	memset(x, 0, sizeof(rnd_bcr_t) * 2);
-	memset(y, 0, sizeof(rnd_bcr_t) * 2);
-	x[0].denom[0] = 1; x[1].denom[0] = 1;
-	y[0].denom[0] = 1; y[1].denom[0] = 1;
+	memset(res, 0, sizeof(pa_isc_t) * 2);
+	res[0].x.r.denom[0] = 1; res[1].x.r.denom[0] = 1;
+	res[0].y.r.denom[0] = 1; res[1].y.r.denom[0] = 1;
 
 	/* Figure overlaps by distances:
 	
@@ -177,30 +176,30 @@ RND_INLINE int rnd_big_coord_isc_par(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_
 		if (big_signed_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
 			return 0;
 		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
-			load_big(x[0].num, tmp2[0]); load_big(y[0].num, tmp2[1]);
-			load_big(x[1].num, tmq1[0]); load_big(y[1].num, tmq1[1]);
+			load_big(res[0].x.r.num, tmp2[0]); load_big(res[0].y.r.num, tmp2[1]);
+			load_big(res[1].x.r.num, tmq1[0]); load_big(res[1].y.r.num, tmq1[1]);
 		}
 		else {
-			load_big(x[0].num, tmq1[0]); load_big(y[0].num, tmq1[1]);
-			load_big(x[1].num, tmq2[0]); load_big(y[1].num, tmq2[1]);
+			load_big(res[0].x.r.num, tmq1[0]); load_big(res[0].y.r.num, tmq1[1]);
+			load_big(res[1].x.r.num, tmq2[0]); load_big(res[1].y.r.num, tmq2[1]);
 		}
 	}
 	else {
 		if (big_signed_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
 			return 0;
 		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
-			load_big(x[0].num, tmp1[0]); load_big(y[0].num, tmp1[1]);
-			load_big(x[1].num, tmp2[0]); load_big(y[1].num, tmp2[1]);
+			load_big(res[0].x.r.num, tmp1[0]); load_big(res[0].y.r.num, tmp1[1]);
+			load_big(res[1].x.r.num, tmp2[0]); load_big(res[1].y.r.num, tmp2[1]);
 		}
 		else {
-			load_big(x[0].num, tmp1[0]); load_big(y[0].num, tmp1[1]);
-			load_big(x[1].num, tmq2[0]); load_big(y[1].num, tmq2[1]);
+			load_big(res[0].x.r.num, tmp1[0]); load_big(res[0].y.r.num, tmp1[1]);
+			load_big(res[1].x.r.num, tmq2[0]); load_big(res[1].y.r.num, tmq2[1]);
 		}
 	}
 
 	/* if the two intersections are the same, return only one; denominators are
 	   always 1, do not compare them */
-	if ((big_signed_cmpn(x[0].num, x[1].num, W) == 0) && (big_cmpn(y[0].num, y[1].num, W) == 0))
+	if ((big_signed_cmpn(res[0].x.r.num, res[1].x.r.num, W) == 0) && (big_cmpn(res[0].y.r.num, res[1].y.r.num, W) == 0))
 		return 1;
 
 	return 2;
@@ -239,7 +238,7 @@ RND_INLINE int pa_big_in_between(int ordered, rnd_big_coord_t a, rnd_big_coord_t
 	return 1;
 }
 
-int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+int rnd_big_coord_isc(pa_isc_t res[2], rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
 {
 	rnd_coord_t x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
 	rnd_coord_t x3 = q1[0], y3 = q1[1], x4 = q2[0], y4 = q2[1];
@@ -268,11 +267,11 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	/* denom = dx1 * dy3 - dy1 * dx3 */
 	big_mul(a, W, dx1, dy3, W);
 	big_mul(b, W, dy1, dx3, W);
-	big_subn(x->denom, a, b, W, 0);
-	big_copy(y->denom, x->denom, W);
+	big_subn(res[0].x.r.denom, a, b, W, 0);
+	big_copy(res[0].y.r.denom, res[0].x.r.denom, W);
 
-	if (big_is_zero(x->denom, W))
-		return rnd_big_coord_isc_par(x, y, p1, p2, q1, q2);
+	if (big_is_zero(res[0].x.r.denom, W))
+		return rnd_big_coord_isc_par(res, p1, p2, q1, q2);
 
 	/* tmp1 = x1*y2 - y1*x2 */
 	big_mul(a, W, X1, Y2, W);
@@ -287,18 +286,18 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
 	big_mul(a, W, tmp1, dx3, W);
 	big_mul(b, W, tmp2, dx1, W);
-	big_subn(x->num, a, b, W, 0);
-	rnd_bcr_norm_sgn(x);
-	if (!pa_big_in_between(x1 < x2, X1, X2, x->num, x->denom)) return 0;
-	if (!pa_big_in_between(x3 < x4, X3, X4, x->num, x->denom)) return 0;
+	big_subn(res[0].x.r.num, a, b, W, 0);
+	rnd_bcr_norm_sgn(&res[0].x.r);
+	if (!pa_big_in_between(x1 < x2, X1, X2, res[0].x.r.num, res[0].x.r.denom)) return 0;
+	if (!pa_big_in_between(x3 < x4, X3, X4, res[0].x.r.num, res[0].x.r.denom)) return 0;
 
 	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
 	big_mul(a, W, tmp1, dy3, W);
 	big_mul(b, W, tmp2, dy1, W);
-	big_subn(y->num, a, b, W, 0);
-	rnd_bcr_norm_sgn(y);
-	if (!pa_big_in_between(y1 < y2, Y1, Y2, y->num, y->denom)) return 0;
-	if (!pa_big_in_between(y3 < y4, Y3, Y4, y->num, y->denom)) return 0;
+	big_subn(res[0].y.r.num, a, b, W, 0);
+	rnd_bcr_norm_sgn(&res[0].y.r);
+	if (!pa_big_in_between(y1 < y2, Y1, Y2, res[0].y.r.num, res[0].y.r.denom)) return 0;
+	if (!pa_big_in_between(y3 < y4, Y3, Y4, res[0].y.r.num, res[0].y.r.denom)) return 0;
 	return 1;
 }
 
