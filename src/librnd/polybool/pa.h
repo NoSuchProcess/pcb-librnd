@@ -37,6 +37,8 @@
 
 /* poly bool internals */
 
+#include <librnd/polybool/pa_config.h>
+
 #ifdef PB_RATIONAL_ISC
 #include "isc_rational.h"
 #else
