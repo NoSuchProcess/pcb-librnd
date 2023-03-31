@@ -301,3 +301,16 @@ int rnd_big_coord_isc(rnd_bcr_t x[2], rnd_bcr_t y[2], rnd_vector_t p1, rnd_vecto
 	if (!pa_big_in_between(y3 < y4, Y3, Y4, y->num, y->denom)) return 0;
 	return 1;
 }
+
+int rnd_bcr_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_isc_t isc1, pa_isc_t isc2)
+{
+	rnd_bcr_t x[2], y[2];
+	int res;
+
+TODO("need to think over coords");
+#if 0
+	res = rnd_big_coord_isc(x, y, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+#endif
+
+	return res;
+}
