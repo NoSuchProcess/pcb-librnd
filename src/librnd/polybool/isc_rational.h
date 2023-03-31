@@ -32,9 +32,13 @@ typedef rnd_ucoord_t rnd_big2_coord_t[RND_BIGCRD_WIDTH2];
 #include <librnd/core/box.h>
 #include "polyarea.h"
 
+typedef struct rnd_bcr_coord_s {
+	rnd_bcr_t r;         /* precise coord expressed as rationals */
+	rnd_big2_coord_t f;  /* RND_BIGCRD_WIDTH.RND_BIGCRD_WIDTH fixed point representation for comparison */
+} rnd_bcr_coord_t;
+
 typedef struct pa_isc_s {
-	rnd_bcr_t x, y;  /* precise x;y coords of the isc expressed as rationals */
-	rnd_big2_coord_t x2, y2; /* RND_BIGCRD_WIDTH.RND_BIGCRD_WIDTH fixed point representation */
+	rnd_bcr_coord_t x, y;
 } pa_isc_t;
 
 /* Intersection(s) between lines p1->p2 and q1->q2.
