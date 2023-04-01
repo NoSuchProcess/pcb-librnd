@@ -69,6 +69,16 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 	return newnd;
 }
 
+static rnd_vnode_t *pa_node_add_single(rnd_vnode_t *dst, pa_big_vector_t pt)
+{
+#ifdef PB_RATIONAL_ISC
+	return pa_big_node_add_single(dst, pt);
+#else
+	return rnd_poly_node_add_single(dst, pt);
+#endif
+}
+
+
 static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
 
 /* Return a new node for a point next to dst, or NULL if pt falls on an existing
@@ -78,7 +88,7 @@ static rnd_vnode_t *pa_ensure_point_and_prealloc_cvc(rnd_vnode_t *dst, pa_big_ve
 {
 	rnd_vnode_t *dnext = dst->next, *newnd;
 
-	newnd = rnd_poly_node_add_single(dst, pt);
+	newnd = pa_node_add_single(dst, pt);
 	assert(newnd != NULL);
 
 	/* we may already have a pre-allocation to this point */

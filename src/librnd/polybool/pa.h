@@ -41,8 +41,11 @@
 
 #ifdef PB_RATIONAL_ISC
 #include "isc_rational.h"
+#define pa_big_copy(dst, src)  memcpy(&(dst), &(src), sizeof(pa_big_vector_t));
 #else
 typedef rnd_vector_t pa_big_vector_t;
+#define pa_big_copy(dst, src)  memcpy((dst), (src), sizeof(pa_big_vector_t));
+
 #endif
 
 /* A "descriptor" that makes up a "(cross vertex) connectivity list" in the paper */

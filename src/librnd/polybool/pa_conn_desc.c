@@ -48,7 +48,7 @@ static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 		return NULL;
 
 	cd->prelim = 1;
-	memcpy(cd->isc, isc, sizeof(pa_big_vector_t));
+	pa_big_copy(cd->isc, isc);
 
 	return cd;
 }

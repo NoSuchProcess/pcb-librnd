@@ -35,5 +35,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t isc1, pa_big_vector_t isc2);
 
 
-
+/* Return node for a point next to dst. Returns existing node on coord
+   match else allocates a new node. Returns NULL if new node can't be
+   allocated. */
+rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv);
 

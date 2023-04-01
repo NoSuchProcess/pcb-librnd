@@ -40,8 +40,11 @@
 
 typedef rnd_ucoord_t big_word;
 
-#include "isc_rational.h"
+#define PB_RATIONAL_ISC
+#include "pa.h"
+
 #include <genfip/big.h>
+
 
 /*** implementation ***/
 
@@ -52,6 +55,10 @@ RND_INLINE void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 	memset(dst, 0, PA_BIGCOORD_SIZEOF);
 	dst[W/2] = src;
 }
+
+/* Convert a fixed point big_coord to a small one using floor() */
+RND_INLINE rnd_coord_t pa_big2small(pa_big_coord_t src) { return src[W/2]; }
+
 
 /* Distance square between v1 and v2 in big coord */
 RND_INLINE void rnd_vect_m_dist2_big(pa_big_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
@@ -261,3 +268,45 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
 
 	return res;
 }
+
+#define pa_big_vect_equ(a, b) ((big_signed_cmpn((a).x, (b).x, W) == 0) && (big_signed_cmpn((a).y, (b).y, W) == 0))
+
+/* Compares pt's point to vn and returns 1 if they match (0 otherwise). If
+   vn has a cvc, use its high precision coords */
+RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
+{
+	/* high prec if available */
+	if (vn->cvclst_prev != NULL)
+		return pa_big_vect_equ(pt, vn->cvclst_prev->isc);
+
+	return (pa_big2small(pt.x) == vn->point[0]) && (pa_big2small(pt.y) == vn->point[1]);
+}
+
+rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
+{
+	rnd_vnode_t *newnd;
+	rnd_vector_t small;
+
+  /* no new allocation for redundant node around dst */
+	if (pa_big_vnode_vect_equ(dst, ptv))        return dst;
+	if (pa_big_vnode_vect_equ(dst->next, ptv))  return dst->next;
+
+	/* have to allocate a new node */
+	small[0] = pa_big2small(ptv.x);
+	small[1] = pa_big2small(ptv.y);
+	newnd = rnd_poly_node_create(small);
+	if (newnd != NULL)
+		newnd->flg.plabel = PA_PTL_UNKNWN;
+
+	return newnd;
+
+
+	/* suppress warnings for unused inlines */
+	(void)big_signed_tostr;
+	(void)big_signed_fromstr;
+	(void)big_sub1;
+	(void)big_add1;
+	(void)big_free;
+	(void)big_init;
+}
+
