@@ -53,9 +53,8 @@ struct pa_conn_desc_s {
 	char poly;                           /* 'A' or 'B' */
 	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
 	pa_big_vector_t isc;                 /* (precise) coords of the intersection */
+	unsigned prelim:1;                   /* preliminary allocation: isc is set but other fields are blank */
 };
-
-#define PA_CONN_DESC_INVALID ((pa_conn_desc_t *)-1)
 
 
 typedef enum pa_pline_label_e {

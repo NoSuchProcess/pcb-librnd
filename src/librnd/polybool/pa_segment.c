@@ -287,15 +287,6 @@ RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t 
 	return res;
 }
 
-RND_INLINE rnd_vnode_t *pa_isc_ensure_point(rnd_vnode_t *dst, pa_big_vector_t pt)
-{
-#ifdef PB_RATIONAL_ISC
-	return rnd_bcr_ensure_point_and_reset_cvc(dst, pt);
-#else
-	return pa_ensure_point_and_reset_cvc(dst, pt);
-#endif
-}
-
 /* This callback checks if the segment "s" in the tree intersect
    the search segment "i". If it does, both plines are marked as intersected
    and the point is marked for the connectivity list. If the point is not
@@ -310,7 +301,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 {
 	pa_seg_seg_t *ctx = (pa_seg_seg_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
-	rnd_vector_t isc1, isc2;
+	pa_big_vector_t isc1, isc2;
 	int num_isc;
 
 	/* When new nodes are added at the end of a pass due to an intersection
@@ -334,11 +325,11 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 
 	for (; num_isc > 0; num_isc--) {
 		rnd_bool done_insert_on_i = rnd_false;
-		rnd_vector_t *my_s = (num_isc == 1 ? &isc1 : &isc2);
+		pa_big_vector_t *my_s = (num_isc == 1 ? &isc1 : &isc2);
 		rnd_vnode_t *new_node;
 
 		/* add new node on "i" */
-		new_node = pa_isc_ensure_point(ctx->v, *my_s);
+		new_node = pa_ensure_point_and_prealloc_cvc(ctx->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"i\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
@@ -349,7 +340,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		}
 
 		/* add new node on "s" */
-		new_node = pa_isc_ensure_point(s->v, *my_s);
+		new_node = pa_ensure_point_and_prealloc_cvc(s->v, *my_s);
 		if (new_node != NULL) {
 #ifdef DEBUG_INTERSECT
 			DEBUGP("new intersection on segment \"s\" at %#mD\n", (*my_s)[0], (*my_s)[1]);

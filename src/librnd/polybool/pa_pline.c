@@ -69,17 +69,23 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 	return newnd;
 }
 
+static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
+
 /* Return a new node for a point next to dst, or NULL if pt falls on an existing
-   node. Crashes/asserts if allocation fails.
-   Side effect: cvclst of the node at pt is reset, even for existing nodes. */
-static rnd_vnode_t *pa_ensure_point_and_reset_cvc(rnd_vnode_t *dst, rnd_vector_t pt)
+   node. Crashes/asserts if allocation fails. Preallocates cross vertex
+   descriptor */
+static rnd_vnode_t *pa_ensure_point_and_prealloc_cvc(rnd_vnode_t *dst, pa_big_vector_t pt)
 {
 	rnd_vnode_t *dnext = dst->next, *newnd;
 
 	newnd = rnd_poly_node_add_single(dst, pt);
 	assert(newnd != NULL);
 
-	newnd->cvclst_prev = newnd->cvclst_next = PA_CONN_DESC_INVALID;
+	/* we may already have a pre-allocation to this point */
+	if (newnd->cvclst_prev == NULL)
+		newnd->cvclst_prev = pa_prealloc_conn_desc(pt);
+	if (newnd->cvclst_next == NULL)
+		newnd->cvclst_next = pa_prealloc_conn_desc(pt);
 
 	if ((newnd == dst) || (newnd == dnext))
 		return NULL; /* no new allocation */

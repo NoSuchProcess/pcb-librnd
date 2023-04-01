@@ -38,21 +38,32 @@
 /* Connection (intersection) descriptors making up a connectivity list.
    Low level helper functions. (It was "cvc" in the original code.) */
 
-static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
+
+/* preallocate a new, preliminary conn desc, yo store precise intersection
+   coords (isc) */
+static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
+{
+	pa_conn_desc_t *cd = malloc(sizeof(pa_conn_desc_t));
+	if (cd == NULL)
+		return NULL;
+
+	cd->prelim = 1;
+	memcpy(cd->isc, isc, sizeof(pa_big_vector_t));
+
+	return cd;
+}
+
+static pa_conn_desc_t *pa_new_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
 {
 	rnd_vector_t v;
 	double ang, dx, dy;
-	pa_conn_desc_t *cd;
-
-	cd = malloc(sizeof(pa_conn_desc_t));
-	if (cd == NULL)
-		return NULL;
 
 	cd->head = NULL;
 	cd->parent = pt;
 	cd->poly = poly;
 	cd->side = side;
 	cd->next = cd->prev = cd;
+	cd->prelim = 0;
 
 	if (side == 'P') /* previous */
 		Vsub2(v, pt->prev->point, pt->point);
@@ -64,14 +75,20 @@ static pa_conn_desc_t *pa_new_conn_desc(rnd_vnode_t *pt, char poly, char side)
 	   monotonic sort result and is less expensive to compute than the real angle. */
 	if (Vequ2(v, rnd_vect_zero)) {
 		if (side == 'P') {
-			if (pt->prev->cvclst_prev == PA_CONN_DESC_INVALID)
+			if (pt->prev->cvclst_prev->prelim) {
+				free(pt->prev->cvclst_prev);
+				free(pt->prev->cvclst_next);
 				pt->prev->cvclst_prev = pt->prev->cvclst_next = NULL;
+			}
 			rnd_poly_vertex_exclude(NULL, pt->prev);
 			Vsub2(v, pt->prev->point, pt->point);
 		}
 		else {
-			if (pt->next->cvclst_prev == PA_CONN_DESC_INVALID)
+			if (pt->next->cvclst_prev->prelim) {
+				free(pt->prev->cvclst_prev);
+				free(pt->prev->cvclst_next);
 				pt->next->cvclst_prev = pt->next->cvclst_next = NULL;
+			}
 			rnd_poly_vertex_exclude(NULL, pt->next);
 			Vsub2(v, pt->next->point, pt->point);
 		}
@@ -113,18 +130,19 @@ static pa_conn_desc_t *pa_link_after_conn_desc(pa_conn_desc_t *newd, pa_conn_des
 	return newd;
 }
 
-/* Allocate a new conn_desc for an intersection point and insert it in the
+/* Finalize preliminary conn_desc cd for an intersection point and insert it in the
    right lists.
    Arguments:
     - a is an intersection node.
     - poly is the polygon it comes from ('A' or 'B')
     - side is the side this descriptor goes on ('P'=previous 'N'=next)
-    - start is the head of the list of cnlst */
-static pa_conn_desc_t *pa_insert_conn_desc(rnd_vnode_t *a, char poly, char side, pa_conn_desc_t *start)
+    - start is the head of the list of cnlst
+    */
+static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, char poly, char side, pa_conn_desc_t *start)
 {
 	pa_conn_desc_t *l, *newd, *big, *small;
 
-	newd = pa_new_conn_desc(a, poly, side);
+	newd = pa_new_conn_desc(cd, a, poly, side);
 	if (newd == NULL)
 		return NULL; /* failed to allocate */
 
@@ -190,15 +208,17 @@ static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc
 	rnd_vnode_t *node = pl->head;
 
 	do {
-		if (node->cvclst_prev != NULL) { /* node had an intersection if it's on cnlst */
+		if (node->cvclst_prev != NULL) { /* node had an intersection if has a preliminary desc */
+			pa_conn_desc_t *p = node->cvclst_prev, *n = node->cvclst_next;
 
-			assert((node->cvclst_prev == PA_CONN_DESC_INVALID) && (node->cvclst_next == PA_CONN_DESC_INVALID));
+			/* must be preliminary allocation that we are finalizing here */
+			assert((p->prelim) && (n->prelim));
 
-			list = node->cvclst_prev = pa_insert_conn_desc(node, poly, 'P', list);
+			list = node->cvclst_prev = pa_insert_conn_desc(p, node, poly, 'P', list);
 			if (node->cvclst_prev == NULL)
 				return NULL;
 
-			list = node->cvclst_next = pa_insert_conn_desc(node, poly, 'N', list);
+			list = node->cvclst_next = pa_insert_conn_desc(n, node, poly, 'N', list);
 			if (node->cvclst_next == NULL)
 				return NULL;
 		}
