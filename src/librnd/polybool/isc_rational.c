@@ -310,3 +310,24 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 	(void)big_init;
 }
 
+
+double pa_big_double(pa_big_coord_t crd)
+{
+	double n = (double)crd[W/2] + (double)crd[W/2+1] * BIG_DBL_MULT + (double)crd[W/2+2] * BIG_DBL_MULT * BIG_DBL_MULT;
+	double d = (double)crd[0] / BIG_DBL_MULT + (double)crd[1] / (BIG_DBL_MULT * BIG_DBL_MULT);
+	return n/d;
+}
+
+double pa_big_vnxd(rnd_vnode_t *vn)
+{
+	if (vn->cvclst_prev != NULL)
+		return pa_big_double(vn->cvclst_prev->isc.x);
+	return (double)vn->point[0];
+}
+
+double pa_big_vnyd(rnd_vnode_t *vn)
+{
+	if (vn->cvclst_prev != NULL)
+		return pa_big_double(vn->cvclst_prev->isc.y);
+	return (double)vn->point[1];
+}

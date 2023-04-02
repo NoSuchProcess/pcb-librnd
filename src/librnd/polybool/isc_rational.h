@@ -3,11 +3,13 @@
 #		define BIG_DECIMAL_DIGITS 9
 #		define BIG_DECIMAL_BASE 1000000000UL
 #		define BIG_NEG_BASE 0x80000000UL
+#		define BIG_DBL_MULT ((double)((1UL<<32)-1))
 #	elif RND_COORD_MAX == ((1ULL<<63)-1)
 #		define BIG_BITS 64
 #		define BIG_DECIMAL_DIGITS 19
 #		define BIG_DECIMAL_BASE 10000000000000000000UL
 #		define BIG_NEG_BASE 0x8000000000000000UL
+#		define BIG_DBL_MULT ((double)((1ULL<<64)-1))
 #	else
 #		error "unsupported system: rnd_coord has to be 32 or 64 bits wide (checked: RND_COORD_MAX)"
 #	endif
@@ -40,3 +42,8 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
    allocated. */
 rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv);
 
+
+/* Approximation of big coords in double, for debug prints */
+double pa_big_double(pa_big_coord_t crd);
+double pa_big_vnxd(rnd_vnode_t *vn);
+double pa_big_vnyd(rnd_vnode_t *vn);

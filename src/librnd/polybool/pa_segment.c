@@ -321,7 +321,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	ctx->s->p->flg.llabel = PA_PLL_ISECTED;
 	s->p->flg.llabel = PA_PLL_ISECTED;
 
-	pa_debug_print_isc(num_isc, isc1, isc2, s->v->point, s->v->next->point, ctx->v->point, ctx->v->next->point);
+	pa_debug_print_isc(num_isc, isc1, isc2, s->v, s->v->next, ctx->v, ctx->v->next);
 
 	for (; num_isc > 0; num_isc--) {
 		rnd_bool done_insert_on_i = rnd_false;

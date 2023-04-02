@@ -160,11 +160,17 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
 #endif
 
 #if DEBUG_ISC
-RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vector_t a1, rnd_vector_t a2, rnd_vector_t b1, rnd_vector_t b2)
+RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
 {
-	DEBUGP("ISC between %$mD..%$mD and %$mD..%$mD\n", a1[0], a1[1], a2[0], a2[1], b1[0], b1[1], b2[0], b2[1]);
+#ifdef PB_RATIONAL_ISC
+	DEBUGP("ISC between %.03f;%.03f..%$f and %.03f;%.03f..%.03f;%.03f\n", pa_big_vnxd(a1), pa_big_vnyd(a1), pa_big_vnxd(a2), pa_big_vnyd(a2), pa_big_vnxd(b1), pa_big_vnyd(b1), pa_big_vnxd(b2), pa_big_vnyd(b2));
+	if (num_isc > 0) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc1.x), pa_big_double(isc1.y));
+	if (num_isc > 1) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
+#else
+	DEBUGP("ISC between %$mD..%$mD and %$mD..%$mD\n", a1->point[0], a1->point[1], a2->point[0], a2->point[1], b1->point[0], b1->point[1], b2->point[0], b2->point[1]);
 	if (num_isc > 0) DEBUGP(" %$mD\n", isc1[0], isc1[1]);
 	if (num_isc > 1) DEBUGP(" %$mD\n", isc2[0], isc2[1]);
+#endif
 }
 #else
 RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vector_t a1, rnd_vector_t a2, rnd_vector_t b1, rnd_vector_t b2) {}
