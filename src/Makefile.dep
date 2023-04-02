@@ -655,8 +655,14 @@
  ../src_3rd/genvector/genvector_undef.h
 ../src/librnd/polybool/isc_rational.o: \
  ../src/librnd/polybool/isc_rational.c ../src/librnd/config.h \
- ../src/librnd/polybool/isc_rational.h ../src_3rd/genfip/big.h \
- ../src_3rd/genfip/rational.h
+ ../src/librnd/polybool/pa_math.c ../src/librnd/polybool/pa.h \
+ ../src/librnd/polybool/pa_config.h ../src/librnd/polybool/isc_rational.h \
+ ../src/librnd/core/math_helper.h ../src/librnd/core/box.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool/polyarea.h \
+ ../src_3rd/genfip/big.h
 ../src/librnd/polybool/offset.o: ../src/librnd/polybool/offset.c \
  ../src/librnd/core/compat_misc.h ../src/librnd/config.h ../src/librnd/polybool/rtree.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
@@ -676,6 +682,7 @@
  ../src/librnd/polybool/polyconf.h ../src/librnd/polybool/polyarea.h \
  ../src/librnd/polybool/rtree.h ../src_3rd/genrtree/genrtree_api.h \
  ../src/librnd/polybool/rtree2_compat.h ../src/librnd/polybool/pa.h \
+ ../src/librnd/polybool/pa_config.h ../src/librnd/polybool/isc_rational.h \
  ../src/librnd/polybool/pa_math.c ../src/librnd/polybool/pa_vect.c \
  ../src/librnd/polybool/pa_debug.c ../src/librnd/polybool/pa_pline.c \
  ../src/librnd/polybool/pa_polyarea.c \
@@ -715,7 +722,9 @@
  ../src/librnd/polybool/self_isc.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool/polyarea.h \
- ../src/librnd/polybool/pa.h
+ ../src/librnd/polybool/pa.h ../src/librnd/polybool/pa_config.h \
+ ../src/librnd/polybool/isc_rational.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/box.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h
 ../src/librnd/plugins/diag_rnd/diag_rnd.o: \
  ../src/librnd/plugins/diag_rnd/diag_rnd.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
