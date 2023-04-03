@@ -356,7 +356,7 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 double pa_big_double(pa_big_coord_t crd)
 {
 	double n = (double)crd[W/2] + (double)crd[W/2+1] * BIG_DBL_MULT + (double)crd[W/2+2] * BIG_DBL_MULT * BIG_DBL_MULT;
-	double d = (double)crd[0] / BIG_DBL_MULT + (double)crd[1] / (BIG_DBL_MULT * BIG_DBL_MULT);
+	double d = (double)crd[2] / BIG_DBL_MULT + (double)crd[1] / (BIG_DBL_MULT * BIG_DBL_MULT) + (double)crd[0] / (BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT);
 	return n + d;
 }
 
