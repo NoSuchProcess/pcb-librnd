@@ -257,10 +257,10 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
 	pa_big_vector_t tmp[2], V1A, V1B, V2A, V2B;
 	int res;
 
-	pa_big_load(V1A.x, v1a->point[0]);
-	pa_big_load(V1B.x, v1b->point[0]);
-	pa_big_load(V2A.x, v2a->point[0]);
-	pa_big_load(V2B.x, v2b->point[0]);
+	pa_big_load(V1A.x, v1a->point[0]); pa_big_load(V1A.y, v1a->point[1]);
+	pa_big_load(V1B.x, v1b->point[0]); pa_big_load(V1B.y, v1b->point[1]);
+	pa_big_load(V2A.x, v2a->point[0]); pa_big_load(V2A.y, v2a->point[1]);
+	pa_big_load(V2B.x, v2b->point[0]); pa_big_load(V2B.y, v2b->point[1]);
 
 	res = rnd_big_coord_isc(tmp, V1A, V1B, V2A, V2B);
 	if (res > 0) memcpy(&isc1, &tmp[0], sizeof(pa_big_vector_t));
