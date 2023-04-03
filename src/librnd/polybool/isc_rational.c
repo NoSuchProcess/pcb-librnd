@@ -252,7 +252,7 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	return 1;
 }
 
-int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t isc1, pa_big_vector_t isc2)
+int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2)
 {
 	pa_big_vector_t tmp[2], V1A, V1B, V2A, V2B;
 	int res;
@@ -263,8 +263,8 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
 	pa_big_load(V2B.x, v2b->point[0]); pa_big_load(V2B.y, v2b->point[1]);
 
 	res = rnd_big_coord_isc(tmp, V1A, V1B, V2A, V2B);
-	if (res > 0) memcpy(&isc1, &tmp[0], sizeof(pa_big_vector_t));
-	if (res > 1) memcpy(&isc2, &tmp[1], sizeof(pa_big_vector_t));
+	if (res > 0) memcpy(isc1, &tmp[0], sizeof(pa_big_vector_t));
+	if (res > 1) memcpy(isc2, &tmp[1], sizeof(pa_big_vector_t));
 
 	return res;
 }

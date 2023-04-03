@@ -3,7 +3,7 @@
 
 /* If defined, use rational numbers with multi-word integers (bigint) to
    represent true coordinates of intersection points */
-/*#define PB_RATIONAL_ISC*/
+#define PB_RATIONAL_ISC
 
 /* If defined, intersection points close to edge endpoint is moved to edge
    endpoint; this removes the tiny edge corner case. The value is manhattan
@@ -14,9 +14,9 @@
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
 #define DEBUG_ANGLE 0
-#define DEBUG_CVC 0
-#define DEBUG_ISC 0
-#define DEBUG_DUMP 0
+#define DEBUG_CVC 1
+#define DEBUG_ISC 1
+#define DEBUG_DUMP 1
 #undef DEBUG
 
 /* only when DEBUG is enabled */
