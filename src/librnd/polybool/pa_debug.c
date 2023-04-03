@@ -173,7 +173,7 @@ RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vec
 #endif
 }
 #else
-void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2);
+RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2) {}
 #endif
 
 typedef enum { /* bitfield of extra info the dump should contain */
