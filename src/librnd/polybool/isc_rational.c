@@ -52,7 +52,7 @@ typedef rnd_ucoord_t big_word;
 #define W2 (PA_BIGCRD_WIDTH*2)
 #define W3 (PA_BIGCRD_WIDTH*3)
 
-RND_INLINE void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
+void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 {
 	TODO("sign extend");
 	memset(dst, 0, PA_BIGCOORD_SIZEOF);

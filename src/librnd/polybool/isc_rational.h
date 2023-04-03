@@ -46,6 +46,8 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
    allocated. */
 rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv);
 
+void pa_big_load(pa_big_coord_t dst, rnd_coord_t src);
+
 
 /* Approximation of big coords in double, for debug prints */
 double pa_big_double(pa_big_coord_t crd);
