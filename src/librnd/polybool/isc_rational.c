@@ -49,9 +49,12 @@ typedef rnd_ucoord_t big_word;
 /*** implementation ***/
 
 #define W PA_BIGCRD_WIDTH
+#define W2 (PA_BIGCRD_WIDTH*2)
+#define W3 (PA_BIGCRD_WIDTH*3)
 
 RND_INLINE void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 {
+	TODO("sign extend");
 	memset(dst, 0, PA_BIGCOORD_SIZEOF);
 	dst[W/2] = src;
 }
@@ -190,9 +193,28 @@ RND_INLINE int pa_big_in_between(int ordered, pa_big_coord_t A, pa_big_coord_t B
 #define pa_big_max(a, b)  ((big_signed_cmpn((a), (b), W) >= 0) ? (a) : (b))
 #define pa_big_less(a, b) (big_signed_cmpn((a), (b), W) < 0)
 
+RND_INLINE void pa_big_to_big2(pa_big2_coord_t dst, pa_big_coord_t src)
+{
+	int s, d;
+
+	for(d = 0; d < W/2; d++)
+		dst[d] = 0;
+	for(s = 0; s < W; s++,d++)
+		dst[d] = src[s];
+
+	memset(&dst[d], big_is_neg(src, W) ? 0xff : 0x00, sizeof(dst[0]) * W/2);
+}
+
+RND_INLINE void pa_big_to_from2(pa_big_coord_t dst, pa_big2_coord_t src)
+{
+	memcpy(dst, &src[W/2], sizeof(dst[0]) * W);
+}
+
 int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_t p2, pa_big_vector_t q1, pa_big_vector_t q2)
 {
-	pa_big_coord_t tmp1, tmp2, tmp3, r, dx1, dy1, dx3, dy3, a, b, denom;
+	pa_big_coord_t dx1, dy1, dx3, dy3;
+	pa_big2_coord_t tmp1, tmp2, a, b, denom, r, d2x1, d2y1, d2x3, d2y3, rtmp;
+	pa_big3_coord_t TMP3, A, B;
 
 	/* if bounding boxes don't overlap, no need to check, they can't intersect */
 	if (big_signed_cmpn(pa_big_max(p1.x, p2.x), pa_big_min(q1.x, q2.x), W) < 0) return 0;
@@ -205,10 +227,10 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 #define Y1 (p1.y)
 #define X2 (p2.x)
 #define Y2 (p2.y)
-#define X3 (p1.x)
-#define Y3 (p1.y)
-#define X4 (p2.x)
-#define Y4 (p2.y)
+#define X3 (q1.x)
+#define Y3 (q1.y)
+#define X4 (q2.x)
+#define Y4 (q2.y)
 
 	big_subn(dx1, X1, X2, W, 0);
 	big_subn(dy1, Y1, Y2, W, 0);
@@ -216,37 +238,43 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_subn(dy3, Y3, Y4, W, 0);
 
 	/* denom = dx1 * dy3 - dy1 * dx3 */
-	big_mul(a, W, dx1, dy3, W);
-	big_mul(b, W, dy1, dx3, W);
-	big_subn(denom, a, b, W, 0);
+	big_mul(a, W2, dx1, dy3, W);
+	big_mul(b, W2, dy1, dx3, W);
+	big_subn(denom, a, b, W2, 0);
 
-	if (big_is_zero(denom, W))
+	if (big_is_zero(denom, W2))
 		return rnd_big_coord_isc_par(res, p1, p2, q1, q2);
 
+	pa_big_to_big2(d2x1, dx1);
+	pa_big_to_big2(d2y1, dy1);
+	pa_big_to_big2(d2x3, dx3);
+	pa_big_to_big2(d2y3, dy3);
+
 	/* tmp1 = x1*y2 - y1*x2 */
-	big_mul(a, W, X1, Y2, W);
-	big_mul(b, W, Y1, X2, W);
-	big_subn(tmp1, a, b, W, 0);
+	big_mul(a, W2, X1, Y2, W);
+	big_mul(b, W2, Y1, X2, W);
+	big_subn(tmp1, a, b, W2, 0);
 
 	/* tmp2 = x3*y4 - y3*x4 */
-	big_mul(a, W, X3, Y4, W);
-	big_mul(b, W, Y3, X4, W);
-	big_subn(tmp2, a, b, W, 0);
+	big_mul(a, W2, X3, Y4, W);
+	big_mul(b, W2, Y3, X4, W);
+	big_subn(tmp2, a, b, W2, 0);
 
 	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
-	big_mul(a, W, tmp1, dx3, W);
-	big_mul(b, W, tmp2, dx1, W);
-	big_subn(tmp3, a, b, W, 0);
-	big_signed_div(res[0].x, r, tmp3, W, denom, W, NULL);
+	big_mul(A, W3, tmp1, d2x3, W2);
+	big_mul(B, W3, tmp2, d2x1, W2);
+	big_subn(TMP3, A, B, W3, 0);
+	big_signed_div(rtmp, r, TMP3, W3, denom, W2, NULL);
+	pa_big_to_from2(res[0].x, rtmp);
 	if (!pa_big_in_between(pa_big_less(X1, X2), X1, X2, res[0].x)) return 0;
 	if (!pa_big_in_between(pa_big_less(X3, X4), X3, X4, res[0].x)) return 0;
 
 	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
-	big_mul(a, W, tmp1, dy3, W);
-	big_mul(b, W, tmp2, dy1, W);
-	big_subn(tmp3, a, b, W, 0);
-	big_signed_div(res[0].y, r, tmp3, W, denom, W, NULL);
-
+	big_mul(A, W3, tmp1, d2y3, W2);
+	big_mul(B, W3, tmp2, d2y1, W2);
+	big_subn(TMP3, A, B, W3, 0);
+	big_signed_div(rtmp, r, TMP3, W3, denom, W2, NULL);
+	pa_big_to_from2(res[0].y, rtmp);
 	if (!pa_big_in_between(pa_big_less(Y1, Y2), Y1, Y2, res[0].y)) return 0;
 	if (!pa_big_in_between(pa_big_less(Y3, Y4), Y3, Y4, res[0].y)) return 0;
 	return 1;

@@ -16,6 +16,10 @@
 
 #define PA_BIGCRD_WIDTH 6
 typedef rnd_ucoord_t pa_big_coord_t[PA_BIGCRD_WIDTH];  /* signed PA_BIGCRD_WIDTH.PA_BIGCRD_WIDTH */
+
+typedef rnd_ucoord_t pa_big2_coord_t[PA_BIGCRD_WIDTH*2]; /* for internal calculations */
+typedef rnd_ucoord_t pa_big3_coord_t[PA_BIGCRD_WIDTH*3]; /* for internal calculations */
+
 #define PA_BIGCOORD_SIZEOF (sizeof(rnd_ucoord_t) * PA_BIGCRD_WIDTH)
 
 #include <librnd/core/math_helper.h>
