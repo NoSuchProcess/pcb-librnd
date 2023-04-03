@@ -205,6 +205,19 @@ RND_INLINE void pa_big_to_big2(pa_big2_coord_t dst, pa_big_coord_t src)
 	memset(&dst[d], big_is_neg(src, W) ? 0xff : 0x00, sizeof(dst[0]) * W/2);
 }
 
+RND_INLINE void pa_big2_to_big3(pa_big3_coord_t dst, pa_big2_coord_t src)
+{
+	int s, d;
+
+	for(d = 0; d < W/2; d++)
+		dst[d] = 0;
+
+	for(s = 0; s < W2; s++,d++)
+		dst[d] = src[s];
+
+	memset(&dst[d], big_is_neg(src, W2) ? 0xff : 0x00, sizeof(dst[0]) * W/2);
+}
+
 RND_INLINE void pa_big_to_from2(pa_big_coord_t dst, pa_big2_coord_t src)
 {
 	memcpy(dst, &src[W/2], sizeof(dst[0]) * W);
@@ -214,7 +227,7 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 {
 	pa_big_coord_t dx1, dy1, dx3, dy3;
 	pa_big2_coord_t tmp1, tmp2, a, b, denom, r, d2x1, d2y1, d2x3, d2y3, rtmp;
-	pa_big3_coord_t TMP3, A, B;
+	pa_big3_coord_t TMP3, A, B, DENOM;
 
 	/* if bounding boxes don't overlap, no need to check, they can't intersect */
 	if (big_signed_cmpn(pa_big_max(p1.x, p2.x), pa_big_min(q1.x, q2.x), W) < 0) return 0;
@@ -249,6 +262,7 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	pa_big_to_big2(d2y1, dy1);
 	pa_big_to_big2(d2x3, dx3);
 	pa_big_to_big2(d2y3, dy3);
+	pa_big2_to_big3(DENOM, denom);
 
 	/* tmp1 = x1*y2 - y1*x2 */
 	big_mul(a, W2, X1, Y2, W);
@@ -264,8 +278,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_mul(A, W3, tmp1, d2x3, W2);
 	big_mul(B, W3, tmp2, d2x1, W2);
 	big_subn(TMP3, A, B, W3, 0);
-	big_signed_div(rtmp, r, TMP3, W3, denom, W2, NULL);
-	pa_big_to_from2(res[0].x, rtmp);
+	big_zero(res[0].x, W3);
+	big_signed_div(res[0].x, r, TMP3, W3, DENOM, W3, NULL); /* result length is 1 */
 	if (!pa_big_in_between(pa_big_less(X1, X2), X1, X2, res[0].x)) return 0;
 	if (!pa_big_in_between(pa_big_less(X3, X4), X3, X4, res[0].x)) return 0;
 
@@ -273,8 +287,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_mul(A, W3, tmp1, d2y3, W2);
 	big_mul(B, W3, tmp2, d2y1, W2);
 	big_subn(TMP3, A, B, W3, 0);
-	big_signed_div(rtmp, r, TMP3, W3, denom, W2, NULL);
-	pa_big_to_from2(res[0].y, rtmp);
+	big_zero(res[0].y, W3);
+	big_signed_div(res[0].y, r, TMP3, W3, DENOM, W3, NULL); /* result length is 1 */
 	if (!pa_big_in_between(pa_big_less(Y1, Y2), Y1, Y2, res[0].y)) return 0;
 	if (!pa_big_in_between(pa_big_less(Y3, Y4), Y3, Y4, res[0].y)) return 0;
 	return 1;
