@@ -72,8 +72,8 @@ RND_INLINE void rnd_vect_m_dist2_big(pa_big_coord_t dst, pa_big_vector_t v1, pa_
 	big_subn(dx, v1.x, v2.x, W, 0);
 	big_subn(dy, v1.y, v2.y, W, 0);
 
-	big_mul(a, W, dx, dx, W);
-	big_mul(b, W, dy, dy, W);
+	big_signed_mul(a, W, dx, dx, W);
+	big_signed_mul(b, W, dy, dy, W);
 
 	big_addn(dst, a, b, W, 0);
 
@@ -251,8 +251,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_subn(dy3, Y3, Y4, W, 0);
 
 	/* denom = dx1 * dy3 - dy1 * dx3 */
-	big_mul(a, W2, dx1, dy3, W);
-	big_mul(b, W2, dy1, dx3, W);
+	big_signed_mul(a, W2, dx1, dy3, W);
+	big_signed_mul(b, W2, dy1, dx3, W);
 	big_subn(denom, a, b, W2, 0);
 
 	if (big_is_zero(denom, W2))
@@ -265,18 +265,18 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	pa_big2_to_big3(DENOM, denom);
 
 	/* tmp1 = x1*y2 - y1*x2 */
-	big_mul(a, W2, X1, Y2, W);
-	big_mul(b, W2, Y1, X2, W);
+	big_signed_mul(a, W2, X1, Y2, W);
+	big_signed_mul(b, W2, Y1, X2, W);
 	big_subn(tmp1, a, b, W2, 0);
 
 	/* tmp2 = x3*y4 - y3*x4 */
-	big_mul(a, W2, X3, Y4, W);
-	big_mul(b, W2, Y3, X4, W);
+	big_signed_mul(a, W2, X3, Y4, W);
+	big_signed_mul(b, W2, Y3, X4, W);
 	big_subn(tmp2, a, b, W2, 0);
 
 	/* Px = (tmp1 * dx3 - tmp2 * dx1)  /  denom */
-	big_mul(A, W3, tmp1, d2x3, W2);
-	big_mul(B, W3, tmp2, d2x1, W2);
+	big_signed_mul(A, W3, tmp1, d2x3, W2);
+	big_signed_mul(B, W3, tmp2, d2x1, W2);
 	big_subn(TMP3, A, B, W3, 0);
 	big_zero(res[0].x, W3);
 	big_signed_div(res[0].x, r, TMP3, W3, DENOM, W3, NULL); /* result length is 1 */
@@ -284,8 +284,8 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	if (!pa_big_in_between(pa_big_less(X3, X4), X3, X4, res[0].x)) return 0;
 
 	/* Py = (tmp1 * dy3 - tmp2 * dy1) / denom */
-	big_mul(A, W3, tmp1, d2y3, W2);
-	big_mul(B, W3, tmp2, d2y1, W2);
+	big_signed_mul(A, W3, tmp1, d2y3, W2);
+	big_signed_mul(B, W3, tmp2, d2y1, W2);
 	big_subn(TMP3, A, B, W3, 0);
 	big_zero(res[0].y, W3);
 	big_signed_div(res[0].y, r, TMP3, W3, DENOM, W3, NULL); /* result length is 1 */
