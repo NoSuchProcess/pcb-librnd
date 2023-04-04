@@ -64,32 +64,33 @@ RND_INLINE rnd_coord_t pa_big2small(pa_big_coord_t src) { return src[W/2]; }
 
 
 /* Distance square between v1 and v2 in big coord */
-RND_INLINE void rnd_vect_m_dist2_big(pa_big_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
+RND_INLINE void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
 {
-	pa_big_coord_t a, b, dx, dy;
+	pa_big_coord_t dx, dy;
+	pa_big2_coord_t a, b;
 	int dxs, dys;
 
 	big_subn(dx, v1.x, v2.x, W, 0);
 	big_subn(dy, v1.y, v2.y, W, 0);
 
-	big_signed_mul(a, W, dx, dx, W);
-	big_signed_mul(b, W, dy, dy, W);
+	big_signed_mul(a, W2, dx, dx, W);
+	big_signed_mul(b, W2, dy, dy, W);
 
-	big_addn(dst, a, b, W, 0);
+	big_addn(dst, a, b, W2, 0);
 
 	dxs = big_sgn(dx, W);
-	if (dxs > 0)    {                       return /*+dd*/; }
-	if (dxs < 0)    { big_neg(dst, dst, W); return /*-dd*/; }
+	if (dxs > 0)    {                        return /*+dd*/; }
+	if (dxs < 0)    { big_neg(dst, dst, W2); return /*-dd*/; }
 
 	dys = big_sgn(dy, W);
-	if (dys > 0)    {                       return /*+dd*/; }
-	if (dys < 0)    { big_neg(dst, dst, W); return /*-dd*/; }
+	if (dys > 0)    {                        return /*+dd*/; }
+	if (dys < 0)    { big_neg(dst, dst, W2); return /*-dd*/; }
 }
 
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
 RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_t p2, pa_big_vector_t q1, pa_big_vector_t q2)
 {
-	pa_big_coord_t dc1, dc2, d1, d2;
+	pa_big2_coord_t dc1, dc2, d1, d2;
 	pa_big_vector_t tmp1, tmp2, tmq1, tmq2;
 
 	/* to easy conversion of coords to big coords - results are always on input coords */
@@ -115,10 +116,10 @@ RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1,
 
 	/* Make sure dc1 is always the smaller one (always on the left);
 	   depends on p1..p2 direction */
-	if (big_signed_cmpn(dc1, dc2, W) > 0) { /* dc1 > dc2 */
+	if (big_signed_cmpn(dc1, dc2, W2) > 0) { /* dc1 > dc2 */
 		memcpy(&tmp1, &p2, sizeof(tmp1));
 		memcpy(&tmp2, &p1, sizeof(tmp2));
-		big_swap(dc1, dc2, W);
+		big_swap(dc1, dc2, W2);
 	}
 	else {
 		memcpy(&tmp1, &p1, sizeof(tmp1));
@@ -127,10 +128,10 @@ RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1,
 
 	/* Make sure d1 is always the smaller one (always on the left);
 	   depends on q1..q2 direction */
-	if (big_signed_cmpn(d1, d2, W) > 0) { /* d1 > d2 */
+	if (big_signed_cmpn(d1, d2, W2) > 0) { /* d1 > d2 */
 		memcpy(&tmq1, &q2, sizeof(tmq1));
 		memcpy(&tmq2, &q1, sizeof(tmq1));
-		big_swap(d1, d2, W);
+		big_swap(d1, d2, W2);
 	}
 	else {
 		memcpy(&tmq1, &q1, sizeof(tmq1));
@@ -140,10 +141,10 @@ RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1,
 	/* by now tmp* and tmq* are ordered p1..p2 and q1..q2 */
 
 	/* Compare distances to figure what overlaps */
-	if (big_signed_cmpn(dc1, d1, W) < 0) { /* (dc1 < d1) */
-		if (big_signed_cmpn(dc2, d1, W) < 0) /* (dc2 < d1) */
+	if (big_signed_cmpn(dc1, d1, W2) < 0) { /* (dc1 < d1) */
+		if (big_signed_cmpn(dc2, d1, W2) < 0) /* (dc2 < d1) */
 			return 0;
-		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+		if (big_signed_cmpn(dc2, d2, W2) < 0) { /* (dc2 < d2) */
 			memcpy(&res[0], &tmp2, sizeof(tmp2));
 			memcpy(&res[1], &tmq1, sizeof(tmq2));
 		}
@@ -153,9 +154,9 @@ RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1,
 		}
 	}
 	else {
-		if (big_signed_cmpn(dc1, d2, W) > 0) /* (dc1 > d2) */
+		if (big_signed_cmpn(dc1, d2, W2) > 0) /* (dc1 > d2) */
 			return 0;
-		if (big_signed_cmpn(dc2, d2, W) < 0) { /* (dc2 < d2) */
+		if (big_signed_cmpn(dc2, d2, W2) < 0) { /* (dc2 < d2) */
 			memcpy(&res[0], &tmp1, sizeof(tmp1));
 			memcpy(&res[1], &tmp2, sizeof(tmp2));
 		}
