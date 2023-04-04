@@ -54,9 +54,10 @@ typedef rnd_ucoord_t big_word;
 
 void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 {
-	TODO("sign extend");
 	memset(dst, 0, PA_BIGCOORD_SIZEOF);
 	dst[W/2] = src;
+	if (src < 0) /* sign extend */
+		memset(&dst[W/2+1], 0xff, sizeof(dst[0]) * (W/2 - 1));
 }
 
 /* Convert a fixed point big_coord to a small one using floor() */
