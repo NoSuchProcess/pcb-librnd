@@ -661,7 +661,8 @@
  ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool/polyarea.h \
- ../src_3rd/genfip/big.h ../src/librnd/polybool/big_coord_conv.c \
+ ../src_3rd/genfip/big.h ../src/librnd/polybool/big_coord_ang.c \
+ ../src/librnd/polybool/big_coord_conv.c \
  ../src/librnd/polybool/big_coord_vect.c \
  ../src/librnd/polybool/big_coord_isc.c
 ../src/librnd/polybool/offset.o: ../src/librnd/polybool/offset.c \
