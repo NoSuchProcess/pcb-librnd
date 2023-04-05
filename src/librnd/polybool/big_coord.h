@@ -22,6 +22,8 @@ typedef rnd_ucoord_t pa_big3_coord_t[PA_BIGCRD_WIDTH*3]; /* for internal calcula
 
 #define PA_BIGCOORD_SIZEOF (sizeof(rnd_ucoord_t) * PA_BIGCRD_WIDTH)
 
+typedef pa_big_coord_t pa_big_angle_t;
+
 #include <librnd/core/math_helper.h>
 #include <librnd/core/box.h>
 #include "polyarea.h"

@@ -46,6 +46,7 @@
 
 #else
 
+typedef double pa_big_angle_t;
 typedef rnd_vector_t pa_big_vector_t;
 #define pa_big_copy(dst, src)  memcpy((dst), (src), sizeof(pa_big_vector_t));
 #define pa_big_double(crd)  ((double)(crd))
@@ -56,7 +57,7 @@ typedef rnd_vector_t pa_big_vector_t;
 
 /* A "descriptor" that makes up a "(cross vertex) connectivity list" in the paper */
 struct pa_conn_desc_s {
-	double angle;
+	pa_big_angle_t angle;
 	rnd_vnode_t *parent;                 /* the point this descriptor is for */
 	pa_conn_desc_t *prev, *next, *head;  /* "connectivity list": a list of all the related descriptors */
 	char poly;                           /* 'A' or 'B' */
