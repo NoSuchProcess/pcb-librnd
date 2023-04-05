@@ -55,6 +55,7 @@ typedef rnd_ucoord_t big_word;
 #include "big_coord_conv.c"
 #include "big_coord_vect.c"
 #include "big_coord_isc.c"
+#include "big_coord_ang.c"
 
 
 /* suppress warnings for unused inlines; do not call this function, it's a nop */
