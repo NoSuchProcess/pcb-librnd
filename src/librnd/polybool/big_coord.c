@@ -27,7 +27,7 @@
  */
 
 /* Calculate and track intersections and edge angles using multi-precision
-   rational numbers with widths chosen so that they never overflow and do
+   fixed point numbers with widths chosen so that they never overflow and do
    not lose precision (assigns different coords to different intersection
    points even if they are very close) */
 
@@ -40,7 +40,7 @@
 
 typedef rnd_ucoord_t big_word;
 
-#define PB_RATIONAL_ISC
+#define PA_BIGCOORD_ISC
 #include "pa.h"
 
 #include <genfip/big.h>

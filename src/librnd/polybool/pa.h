@@ -39,7 +39,7 @@
 
 #include <librnd/polybool/pa_config.h>
 
-#ifdef PB_RATIONAL_ISC
+#ifdef PA_BIGCOORD_ISC
 
 #include "big_coord.h"
 #define pa_big_copy(dst, src)  memcpy(&(dst), &(src), sizeof(pa_big_vector_t));

@@ -71,7 +71,7 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 
 static rnd_vnode_t *pa_node_add_single(rnd_vnode_t *dst, pa_big_vector_t pt)
 {
-#ifdef PB_RATIONAL_ISC
+#ifdef PA_BIGCOORD_ISC
 	return pa_big_node_add_single(dst, pt);
 #else
 	return rnd_poly_node_add_single(dst, pt);

@@ -275,7 +275,7 @@ RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t 
 {
 	int res;
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
-#ifdef PB_RATIONAL_ISC
+#ifdef PA_BIGCOORD_ISC
 	res = pa_big_inters2(v1a, v1b, v2a, v2b, isc1, isc2);
 #else
 	res = rnd_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, *isc1, *isc2);
