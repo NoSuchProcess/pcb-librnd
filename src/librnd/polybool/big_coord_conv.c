@@ -113,3 +113,16 @@ double pa_big_vnyd(rnd_vnode_t *vn)
 		return pa_big_double(vn->cvclst_prev->isc.y);
 	return (double)vn->point[1];
 }
+
+/* Load the coords of src into dst; if there is high resolution coord
+   available because the src is an intersection, use the high res isc
+   coords, else use the input integer coords */
+RND_INLINE void pa_big_load_cvc(pa_big_vector_t dst, rnd_vnode_t *src)
+{
+	if (src->cvclst_next == NULL) {
+		pa_big_load(dst.x, src->point[0]);
+		pa_big_load(dst.y, src->point[1]);
+	}
+	else
+		memcpy(&dst, &src->cvclst_next->isc, sizeof(pa_big_vector_t));
+}
