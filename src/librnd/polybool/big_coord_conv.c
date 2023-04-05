@@ -26,6 +26,21 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+
+/*
+
+Numbers are stored in LSB so it's fraction.integer, or f.i, where both f an i
+are expressed as number of rnd_ucoord_t words. We have one native coord type
+and three static width bignums:
+
+  i.f   width  usage
+  ------------------------------------------------------------------
+  1     -      normal resolution coord (input, output): rnd_coord_t
+  3.3   W      stored high resolution coordinates
+  6.6   W2     result of a W*W
+  9.9   W3     result of a W*W*W (or more often a W2*W)
+*/
+
 void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 {
 	memset(dst, 0, PA_BIGCOORD_SIZEOF);
