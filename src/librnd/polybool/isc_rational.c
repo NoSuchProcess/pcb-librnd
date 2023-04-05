@@ -257,8 +257,30 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_signed_mul(b, W2, dy1, dx3, W);
 	big_subn(denom, a, b, W2, 0);
 
-	if (big_is_zero(denom, W2))
+	if (big_is_zero(denom, W2)) {
+		pa_big_coord_t dx0, dy0;
+
+		/* parallel, check if X1;Y1 is on the infinite line of q (dx3;dy3)
+		   Method:
+		   dx3=X3-X4; dy3=Y3-Y4
+		   dx0=X3-X1; dy0=Y3-Y1
+		   if point is on line, the three points form two similar triangles:
+		
+		   dx0/dy0 == dx3/dy3
+		
+		   or in other words:
+		
+		   dx0*dy3 == dx3*dy0
+		*/
+		big_subn(dx0, X3, X1, W, 0);
+		big_subn(dy0, Y3, Y1, W, 0);
+		big_signed_mul(a, W2, dx0, dy3, W);
+		big_signed_mul(b, W2, dy0, dx3, W);
+		if (big_signed_cmpn(a, b, W2) != 0)
+			return 0; /* point not on line */
+
 		return pa_big_coord_isc_par(res, p1, p2, q1, q2);
+	}
 
 	pa_big_to_big2(d2x1, dx1);
 	pa_big_to_big2(d2y1, dy1);
