@@ -41,7 +41,7 @@
 
 #ifdef PB_RATIONAL_ISC
 
-#include "isc_rational.h"
+#include "big_coord.h"
 #define pa_big_copy(dst, src)  memcpy(&(dst), &(src), sizeof(pa_big_vector_t));
 
 #else
