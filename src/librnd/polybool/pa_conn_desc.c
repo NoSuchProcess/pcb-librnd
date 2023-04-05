@@ -69,9 +69,9 @@ RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, ch
 	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
 	else                                   cd->angle = ang;       /* 1st quadrant */
 
-	assert((ang >= 0.0) && (ang <= 4.0));
+	assert((cd->angle >= 0.0) && (cd->angle <= 4.0));
 
-	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], ang, side);
+	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], cd->angle, side);
 }
 
 RND_INLINE void pa_conn_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
