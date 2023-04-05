@@ -53,7 +53,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 	   for shared edges (that could be prev or next in the list since the
 	   angles are equal) and check if this edge (pn -> pn->next) is found
 	   between the other poly's entry and exit */
-	if (pn->cvclst_next->angle == pn->cvclst_next->prev->angle)
+	if (pa_angle_equ(pn->cvclst_next->angle, pn->cvclst_next->prev->angle))
 		l = pn->cvclst_next->prev;
 	else
 		l = pn->cvclst_next->next;
@@ -62,7 +62,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 
 	assert(l != NULL);
 	assert(l->poly != this_poly);
-	assert((l->angle >= 0.0) && (l->angle <= 4.0));
+	assert(pa_angle_valid(l->angle));
 
 	if (l->poly != this_poly) {
 		if (l->side == 'P') {
@@ -74,7 +74,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 				region = PA_PTL_INSIDE;
 		}
 		else {
-			if (l->angle == pn->cvclst_next->angle) {
+			if (pa_angle_equ(l->angle, pn->cvclst_next->angle)) {
 				assert(Vequ2(l->parent->next->point, pn->next->point));
 				region = PA_PTL_SHARED;
 				pn->shared = l->parent;

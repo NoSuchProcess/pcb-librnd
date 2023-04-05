@@ -47,6 +47,12 @@
 #else
 
 typedef double pa_big_angle_t;
+#define pa_angle_equ(a, b)   ((a) == (b))
+#define pa_angle_lt(a, b)    ((a) < (b))
+#define pa_angle_gte(a, b)   ((a) >= (b))
+#define pa_angle_lte(a, b)   ((a) <= (b))
+#define pa_angle_valid(a)    (((a) >= 0.0) && ((a) <= 4.0))
+
 typedef rnd_vector_t pa_big_vector_t;
 #define pa_big_copy(dst, src)  memcpy((dst), (src), sizeof(pa_big_vector_t));
 #define pa_big_double(crd)  ((double)(crd))

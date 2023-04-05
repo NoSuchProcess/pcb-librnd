@@ -193,20 +193,20 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 	/* find two existing conn descs to link in between (by angle) */
 	l = big = small = start;
 	do {
-		if (l->next->angle < l->angle) {
+		if (pa_angle_lt(l->next->angle, l->angle)) {
 			/* found start/end of list */
 			small = l->next;
 			big = l;
 		}
-		else if ((newd->angle >= l->angle) && (newd->angle <= l->next->angle))
+		else if (pa_angle_gte(newd->angle, l->angle) && pa_angle_lte(newd->angle, l->next->angle))
 			return pa_link_after_conn_desc(newd, l); /* insert new conn desc if it lies between existing points */
 	} while((l = l->next) != start);
 
 	/* didn't find it between points, it must go on an end, depending on the angle */
-	if (big->angle <= newd->angle)
+	if pa_angle_lte(big->angle, newd->angle)
 		return pa_link_after_conn_desc(newd, big);
 
-	assert(small->angle >= newd->angle);
+	assert(pa_angle_gte(small->angle, newd->angle));
 
 	/* link in at small end */
 	return pa_link_before_conn_desc(newd, small);
