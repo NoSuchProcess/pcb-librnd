@@ -115,7 +115,7 @@ RND_INLINE int pa_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1, 
 int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_t p2, pa_big_vector_t q1, pa_big_vector_t q2)
 {
 	pa_big_coord_t dx1, dy1, dx3, dy3;
-	pa_big2_coord_t tmp1, tmp2, a, b, denom, r, d2x1, d2y1, d2x3, d2y3, rtmp;
+	pa_big2_coord_t tmp1, tmp2, a, b, denom, r, d2x1, d2y1, d2x3, d2y3;
 	pa_big3_coord_t TMP3, A, B, DENOM;
 
 	/* if bounding boxes don't overlap, no need to check, they can't intersect */
