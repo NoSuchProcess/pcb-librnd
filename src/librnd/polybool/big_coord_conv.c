@@ -77,7 +77,7 @@ RND_INLINE void pa_big2_to_big3(pa_big3_coord_t dst, pa_big2_coord_t src)
 	memset(&dst[d], big_is_neg(src, W2) ? 0xff : 0x00, sizeof(dst[0]) * W/2);
 }
 
-RND_INLINE void pa_big_to_from2(pa_big_coord_t dst, pa_big2_coord_t src)
+RND_INLINE void pa_big2_to_big(pa_big_coord_t dst, pa_big2_coord_t src)
 {
 	memcpy(dst, &src[W/2], sizeof(dst[0]) * W);
 }
