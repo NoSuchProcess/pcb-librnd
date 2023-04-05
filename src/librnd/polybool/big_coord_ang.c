@@ -55,29 +55,51 @@ int pa_angle_valid(pa_big_angle_t a)
 
 void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
 {
-#if 0
-	pa_big_angle_t ang, dx, dy;
+	pa_big_angle_t ang;
+	pa_big_vector_t D, PT, OTHER;
+	pa_big_coord_t dxdy, tmp;
+	pa_big2_coord_t dy2;
+	int xneg = 0, yneg = 0;
+	static const pa_big_angle_t a2 = {0, 0, 0, 2, 0, 0};
+	static const pa_big_angle_t a4 = {0, 0, 0, 4, 0, 0};
 
-figure high prec points
+	pa_big_load_cvc(PT, pt);
+
 	if (side == 'P') /* previous */
-		Vsub2(v, pt->prev->point, pt->point);
+		pa_big_load_cvc(OTHER, pt->prev);
 	else /* next */
-		Vsub2(v, pt->next->point, pt->point);
+		pa_big_load_cvc(OTHER, pt->next);
 
-	assert(!Vequ2(v, rnd_vect_zero));
+	big_subn(D.x, OTHER.x, PT.x, W, 0);
+	big_subn(D.y, OTHER.y, PT.y, W, 0);
 
-	dx = fabs((double)v[0]);
-	dy = fabs((double)v[1]);
-	ang = dy / (dy + dx);
+	assert(!big_is_zero(D.x, W) || !big_is_zero(D.y, W));
+
+	if (big_is_neg(D.x, W)) {
+		big_neg(D.x, D.x, W);
+		xneg = 1;
+	}
+	if (big_is_neg(D.y, W)) {
+		big_neg(D.y, D.y, W);
+		yneg = 1;
+	}
+
+	big_addn(dxdy, D.x, D.y, W, 0);
+
+	pa_big_to_big2(dy2, D.y);
+
+	big_zero(ang, W);
+	big_signed_div(ang, tmp, D.y, W, dxdy, W, NULL);
 
 	/* now move to the actual quadrant */
-	if ((v[0] < 0) && (v[1] >= 0))         cd->angle = 2.0 - ang; /* 2nd quadrant */
-	else if ((v[0] < 0) && (v[1] < 0))     cd->angle = 2.0 + ang; /* 3rd quadrant */
-	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
-	else                                   cd->angle = ang;       /* 1st quadrant */
+	if (xneg && !yneg)         big_subn(cd->angle, (big_word *)a2, ang, W, 0);  /* 2nd quadrant */
+	else if (xneg && yneg)     big_addn(cd->angle, (big_word *)a2, ang, W, 0);  /* 3rd quadrant */
+	else if (!xneg && yneg)    big_subn(cd->angle, (big_word *)a4, ang, W, 0);  /* 4th quadrant */
+	else                       memcpy(cd->angle, ang, sizeof(ang));             /* 1st quadrant */
 
-	assert((ang >= 0.0) && (ang <= 4.0));
+	assert(pa_angle_valid(cd->angle));
 
+#if 0
 	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], ang, side);
 #endif
 }
