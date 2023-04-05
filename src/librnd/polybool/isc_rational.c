@@ -89,7 +89,7 @@ RND_INLINE void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa
 }
 
 /* Corner case handler: when p1..p2 and q1..q2 are parallel */
-RND_INLINE int rnd_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_t p2, pa_big_vector_t q1, pa_big_vector_t q2)
+RND_INLINE int pa_big_coord_isc_par(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_t p2, pa_big_vector_t q1, pa_big_vector_t q2)
 {
 	pa_big2_coord_t dc1, dc2, d1, d2;
 	pa_big_vector_t tmp1, tmp2, tmq1, tmq2;
@@ -258,7 +258,7 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	big_subn(denom, a, b, W2, 0);
 
 	if (big_is_zero(denom, W2))
-		return rnd_big_coord_isc_par(res, p1, p2, q1, q2);
+		return pa_big_coord_isc_par(res, p1, p2, q1, q2);
 
 	pa_big_to_big2(d2x1, dx1);
 	pa_big_to_big2(d2y1, dy1);
