@@ -53,6 +53,7 @@ static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 	return cd;
 }
 
+#ifndef PA_BIGCOORD_ISC
 RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
 {
 	double ang, dx, dy;
@@ -73,10 +74,15 @@ RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, ch
 
 	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], cd->angle, side);
 }
+#endif
 
 RND_INLINE void pa_conn_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
 {
+#ifdef PA_BIGCOORD_ISC
+	pa_big_calc_angle(cd, pt, poly, side, v);
+#else
 	pa_conn_calc_angle_small(cd, pt, poly, side, v);
+#endif
 }
 
 static pa_conn_desc_t *pa_new_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
@@ -203,7 +209,7 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 	} while((l = l->next) != start);
 
 	/* didn't find it between points, it must go on an end, depending on the angle */
-	if pa_angle_lte(big->angle, newd->angle)
+	if (pa_angle_lte(big->angle, newd->angle))
 		return pa_link_after_conn_desc(newd, big);
 
 	assert(pa_angle_gte(small->angle, newd->angle));
