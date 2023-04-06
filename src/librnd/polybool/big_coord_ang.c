@@ -58,7 +58,7 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	pa_big_angle_t ang;
 	pa_big_vector_t D, PT, OTHER;
 	pa_big_coord_t dxdy, tmp;
-	pa_big2_coord_t dy2;
+	pa_big2_coord_t dy2, ang2;
 	int xneg = 0, yneg = 0;
 	static const pa_big_angle_t a2 = {0, 0, 0, 2, 0, 0};
 	static const pa_big_angle_t a4 = {0, 0, 0, 4, 0, 0};
@@ -88,14 +88,14 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 
 	pa_big_to_big2(dy2, D.y);
 
-	big_zero(ang, W);
-	big_signed_div(ang, tmp, D.y, W, dxdy, W, NULL);
+	big_zero(ang2, W2);
+	big_signed_div(ang2, tmp, dy2, W2, dxdy, W, NULL);
 
 	/* now move to the actual quadrant */
-	if (xneg && !yneg)         big_subn(cd->angle, (big_word *)a2, ang, W, 0);  /* 2nd quadrant */
-	else if (xneg && yneg)     big_addn(cd->angle, (big_word *)a2, ang, W, 0);  /* 3rd quadrant */
-	else if (!xneg && yneg)    big_subn(cd->angle, (big_word *)a4, ang, W, 0);  /* 4th quadrant */
-	else                       memcpy(cd->angle, ang, sizeof(ang));             /* 1st quadrant */
+	if (xneg && !yneg)         big_subn(cd->angle, (big_word *)a2, ang2, W, 0);  /* 2nd quadrant */
+	else if (xneg && yneg)     big_addn(cd->angle, (big_word *)a2, ang2, W, 0);  /* 3rd quadrant */
+	else if (!xneg && yneg)    big_subn(cd->angle, (big_word *)a4, ang2, W, 0);  /* 4th quadrant */
+	else                       memcpy(cd->angle, ang2, sizeof(ang2));             /* 1st quadrant */
 
 	assert(pa_angle_valid(cd->angle));
 
