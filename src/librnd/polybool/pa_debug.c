@@ -138,7 +138,16 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a)
 RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
-
+#if DEBUG_CVC || DEBUG_DUMP
+RND_INLINE void pa_debug_print_angle(pa_big_angle_t a)
+{
+#ifdef PA_BIGCOORD_ISC
+DEBUGP("%mI`%mI`%mI`%mI", a[3], a[2], a[1], a[0]);
+#else
+DEBUGP("%.09f", a);
+#endif
+}
+#endif
 
 #if DEBUG_CVC || DEBUG_DUMP
 RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
@@ -148,7 +157,9 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 	DEBUGP("CVC:\n");
 
 	do {
-		DEBUGP(" %c %c %f %$mD ", n->poly, n->side, n->angle, n->parent->point[0], n->parent->point[1]);
+		DEBUGP(" %c %c ", n->poly, n->side);
+		pa_debug_print_angle(n->angle);
+		DEBUGP(" %$mD ", n->parent->point[0], n->parent->point[1]);
 		if (n->side == 'N')
 			DEBUGP("%$mD %s\n", n->parent->next->point[0], n->parent->next->point[1], node_label_to_str(n->parent));
 		else
