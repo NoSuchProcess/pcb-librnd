@@ -210,10 +210,10 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
 	pa_big_vector_t tmp[2], V1A, V1B, V2A, V2B;
 	int res;
 
-	pa_big_load_cvc(V1A, v1a);
-	pa_big_load_cvc(V1B, v1b);
-	pa_big_load_cvc(V2A, v2a);
-	pa_big_load_cvc(V2B, v2b);
+	pa_big_load_cvc(&V1A, v1a);
+	pa_big_load_cvc(&V1B, v1b);
+	pa_big_load_cvc(&V2A, v2a);
+	pa_big_load_cvc(&V2B, v2b);
 
 	res = rnd_big_coord_isc(tmp, V1A, V1B, V2A, V2B);
 	if (res > 0) memcpy(isc1, &tmp[0], sizeof(pa_big_vector_t));

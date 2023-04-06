@@ -63,12 +63,12 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	static const pa_big_angle_t a2 = {0, 0, 0, 2, 0, 0};
 	static const pa_big_angle_t a4 = {0, 0, 0, 4, 0, 0};
 
-	pa_big_load_cvc(PT, pt);
+	pa_big_load_cvc(&PT, pt);
 
 	if (side == 'P') /* previous */
-		pa_big_load_cvc(OTHER, pt->prev);
+		pa_big_load_cvc(&OTHER, pt->prev);
 	else /* next */
-		pa_big_load_cvc(OTHER, pt->next);
+		pa_big_load_cvc(&OTHER, pt->next);
 
 	big_subn(D.x, OTHER.x, PT.x, W, 0);
 	big_subn(D.y, OTHER.y, PT.y, W, 0);
