@@ -55,6 +55,10 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
    allocated. */
 rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv);
 
+/* Fill ion cd->angle assuming big coord */
+void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v);
+
+
 void pa_big_load(pa_big_coord_t dst, rnd_coord_t src);
 
 
