@@ -146,6 +146,24 @@ static pa_conn_desc_t *pa_link_after_conn_desc(pa_conn_desc_t *newd, pa_conn_des
 	return newd;
 }
 
+RND_INLINE int pa_desc_node_incident(pa_conn_desc_t *d, rnd_vnode_t *n)
+{
+#ifdef PA_BIGCOORD_ISC
+	return pa_big_desc_node_incident(d, n);
+#else
+	return Vequ2(d->parent->point, n->point);
+#endif
+}
+
+RND_INLINE int pa_desc_desc_incident(pa_conn_desc_t *a, pa_conn_desc_t *b)
+{
+#ifdef PA_BIGCOORD_ISC
+	return pa_big_desc_desc_incident(a, b);
+#else
+	return Vequ2(a->parent->point, b->parent->point);
+#endif
+}
+
 /* Finalize preliminary conn_desc cd for an intersection point and insert it in the
    right lists.
    Arguments:
@@ -174,14 +192,14 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 	for(;;) {
 		assert(l->head != NULL);
 
-		if (Vequ2(l->parent->point, a->point)) {
+		if (pa_desc_node_incident(l, a)) {
 			/* this conn_desc is at our point */
 			start = l;
 			newd->head = l->head;
 			break;
 		}
 
-		if (Vequ2(l->head->parent->point, start->parent->point)) {
+		if (pa_desc_desc_incident(l->head, start)) {
 			/* we are back at start, so our input is a new point;
 		     link this connlist to the list of all connlists */
 			for(; l->head != newd; l = l->next)

@@ -240,3 +240,16 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 
 	return newnd;
 }
+
+int pa_big_desc_node_incident(pa_conn_desc_t *d, rnd_vnode_t *n)
+{
+	pa_big_vector_t nv;
+
+	pa_big_load_cvc(&nv, n);
+	return (big_signed_cmpn(nv.x, d->isc.x, W) == 0) && (big_signed_cmpn(nv.y, d->isc.y, W) == 0);
+}
+
+int pa_big_desc_desc_incident(pa_conn_desc_t *a, pa_conn_desc_t *b)
+{
+	return (big_signed_cmpn(a->isc.x, b->isc.x, W) == 0) && (big_signed_cmpn(a->isc.y, b->isc.y, W) == 0);
+}
