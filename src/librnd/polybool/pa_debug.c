@@ -155,6 +155,10 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 	pa_conn_desc_t *n = head;
 
 	DEBUGP("CVC:\n");
+	if (n == NULL) {
+		DEBUGP(" (empty cvc)\n");
+		return;
+	}
 
 	do {
 		DEBUGP(" %c %c ", n->poly, n->side);
