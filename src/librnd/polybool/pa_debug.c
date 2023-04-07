@@ -139,6 +139,17 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
 #if DEBUG_CVC || DEBUG_DUMP
+RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
+{
+#ifdef PA_BIGCOORD_ISC
+	if (n->cvclst_next != NULL) {
+		DEBUGP(" (%.012f, %.012f) ", pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y));
+		return;
+	}
+#endif
+	DEBUGP(" %$mD ", n->point[0], n->point[1]);
+}
+
 RND_INLINE void pa_debug_print_angle(pa_big_angle_t a)
 {
 #ifdef PA_BIGCOORD_ISC
@@ -163,11 +174,15 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 	do {
 		DEBUGP(" %c %c ", n->poly, n->side);
 		pa_debug_print_angle(n->angle);
-		DEBUGP(" %$mD ", n->parent->point[0], n->parent->point[1]);
-		if (n->side == 'N')
-			DEBUGP("%$mD %s\n", n->parent->next->point[0], n->parent->next->point[1], node_label_to_str(n->parent));
-		else
-			DEBUGP("%$mD %s\n", n->parent->prev->point[0], n->parent->prev->point[1], node_label_to_str(n->parent->prev));
+		pa_debug_print_vnode_coord(n->parent);
+		if (n->side == 'N') {
+			pa_debug_print_vnode_coord(n->parent->next);
+			DEBUGP("%s\n", node_label_to_str(n->parent));
+		}
+		else {
+			pa_debug_print_vnode_coord(n->parent->prev);
+			DEBUGP("%s\n", node_label_to_str(n->parent->prev));
+		}
 	} while((n = n->next) != head);
 }
 #else
