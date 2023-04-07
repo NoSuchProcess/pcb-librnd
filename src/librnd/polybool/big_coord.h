@@ -66,6 +66,10 @@ void pa_big_load(pa_big_coord_t dst, rnd_coord_t src);
 int pa_big_desc_node_incident(pa_conn_desc_t *d, rnd_vnode_t *n);
 int pa_big_desc_desc_incident(pa_conn_desc_t *a, pa_conn_desc_t *b);
 
+/* Convert big coord to native coord with rounding */
+rnd_coord_t pa_big_to_coord(pa_big_coord_t crd);
+
+
 /* Approximation of big coords in double, for debug prints */
 double pa_big_double(pa_big_coord_t crd);
 double pa_big_vnxd(rnd_vnode_t *vn);

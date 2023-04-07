@@ -82,6 +82,26 @@ RND_INLINE void pa_big2_to_big(pa_big_coord_t dst, pa_big2_coord_t src)
 	memcpy(dst, &src[W/2], sizeof(dst[0]) * W);
 }
 
+rnd_coord_t pa_big_to_coord(pa_big_coord_t crd)
+{
+	int above_half = crd[W/2-1] >= BIG_NEG_BASE;
+	rnd_coord_t res;
+
+	memcpy(&res, &crd[W/2], sizeof(rnd_coord_t));
+
+	if (res >= 0) {
+		if (above_half)
+			res++;
+	}
+	else {
+		if (above_half)
+			res++;
+	}
+	
+	return res;
+}
+
+
 RND_INLINE double pa_big_double_(pa_big_coord_t crd)
 {
 	double n = (double)crd[W/2] + (double)crd[W/2+1] * BIG_DBL_MULT + (double)crd[W/2+2] * BIG_DBL_MULT * BIG_DBL_MULT;
