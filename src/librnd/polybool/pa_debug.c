@@ -142,7 +142,7 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 RND_INLINE void pa_debug_print_angle(pa_big_angle_t a)
 {
 #ifdef PA_BIGCOORD_ISC
-DEBUGP("%mI`%mI`%mI`%mI", a[3], a[2], a[1], a[0]);
+DEBUGP("%lu`%lu`%lu`%lu", a[3], a[2], a[1], a[0]);
 #else
 DEBUGP("%.09f", a);
 #endif
