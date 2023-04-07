@@ -49,9 +49,6 @@ void pa_big_load(pa_big_coord_t dst, rnd_coord_t src)
 		memset(&dst[W/2+1], 0xff, sizeof(dst[0]) * (W/2 - 1));
 }
 
-/* Convert a fixed point big_coord to a small one using floor() */
-RND_INLINE rnd_coord_t pa_big2small(pa_big_coord_t src) { return src[W/2]; }
-
 RND_INLINE void pa_big_to_big2(pa_big2_coord_t dst, pa_big_coord_t src)
 {
 	int s, d;

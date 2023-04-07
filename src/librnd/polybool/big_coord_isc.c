@@ -232,8 +232,8 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 	if (pa_big_vnode_vect_equ(dst->next, ptv))  return dst->next;
 
 	/* have to allocate a new node */
-	small[0] = pa_big2small(ptv.x);
-	small[1] = pa_big2small(ptv.y);
+	small[0] = pa_big_to_coord(ptv.x);
+	small[1] = pa_big_to_coord(ptv.y);
 	newnd = rnd_poly_node_create(small);
 	if (newnd != NULL)
 		newnd->flg.plabel = PA_PTL_UNKNWN;

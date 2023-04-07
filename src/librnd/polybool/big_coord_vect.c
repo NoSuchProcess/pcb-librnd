@@ -80,5 +80,5 @@ RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
 	if (vn->cvclst_prev != NULL)
 		return pa_big_vect_equ(pt, vn->cvclst_prev->isc);
 
-	return (pa_big2small(pt.x) == vn->point[0]) && (pa_big2small(pt.y) == vn->point[1]);
+	return (pa_big_to_coord(pt.x) == vn->point[0]) && (pa_big_to_coord(pt.y) == vn->point[1]);
 }
