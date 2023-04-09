@@ -1,3 +1,45 @@
+librnd 4.0.1 (r35417)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Add: unsigned coord type generated from scconfig (would be part of the 4.1.0 API later on)
+
+	[conf]
+		-Fix: conf_del on list, which sets the list value to NULL, should get the list removed
+
+	[core]
+		-Fix: refine project file creatioin failure error messages so it's more clear what's happening and why
+		-Cleanup: internal vairable naming terminology: use design instead of pcb
+		-Add: API comment to clarify that design->loadname shall be overwritten by the app on save-as
+
+	[font]
+		-Fix: matrix transformation macros should wrap mx in parenthesis because it is a macro argument
+
+	[gtk]
+		-Fix: when top window is resized while zoomed out a lot make sure 32 bit coords won't overflow; if they would, zoom in enough to avoid that
+
+	[hid]
+		-Fix: do not leave registered temporary tools after switching on the busy-cursor (unreg that tool during uninit)
+		-Add: if enum values are available, "--help plugin" prints them
+
+	[hid_lesstif]
+		-Fix: update current design pointers within subdialogs of top window when design changes
+
+	[lib_exp_text]
+		-Fix: reset transformation matrix for every single page in ps so that ps files can be cat'd together
+
+	[lib_gtk_common]
+		-Fix: generalize the zoom overflow detection and clamping code and apply it after any zoom change
+		-Fix: update current design pointers within subdialogs of top window when design changes
+
+	[lib_hid_common]
+		-Fix: "remove selected" in the preferences config tab right side should be able to remove a whole list/array and update the dialog
+		-Add: preferences dialog: explain "save window geometry in design file" limitations in a tooltip
+
+	[util]
+		-Add: awk_on_formats: allow plugin type detection override awk script injection so the script is less pcb-rnd-specific
+		-Add: accept -i for import and -e for export in awk_on_formats when picking up features from pups
+
+
 librnd 4.0.0 (r34958)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
