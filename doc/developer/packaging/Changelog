@@ -13,7 +13,7 @@ none
 
 B. changes that probably DO need action
 
-none
+1. change in the main description: add gtk4 support (it's safe to advertise it)
 
 
 Packaging changes between 4.0.0 and 3.2.2

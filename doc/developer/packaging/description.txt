@@ -13,5 +13,6 @@ Supported via plugins:
   - CLI/batch frontend
   - gtk2 frontend with gdk software rendering
   - gtk2 frontend with gl hardware accelerated rendering
+  - gtk4 frontend with gl hardware accelerated rendering
   - lesstif/motif frontend
 
