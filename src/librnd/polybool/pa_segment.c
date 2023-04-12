@@ -321,7 +321,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	ctx->s->p->flg.llabel = PA_PLL_ISECTED;
 	s->p->flg.llabel = PA_PLL_ISECTED;
 
-	pa_debug_print_isc(num_isc, isc1, isc2, s->v, s->v->next, ctx->v, ctx->v->next);
+	pa_debug_print_isc(num_isc, "s, ctx", isc1, isc2, s->v, s->v->next, ctx->v, ctx->v->next);
 
 	for (; num_isc > 0; num_isc--) {
 		rnd_bool done_insert_on_i = rnd_false;
@@ -330,7 +330,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 
 		/* add new node on "i" */
 		new_node = pa_ensure_point_and_prealloc_cvc(ctx->v, *my_s);
-		pa_debug_print_isc2(num_isc, "ctx->v", my_s, new_node);
+		pa_debug_print_isc2(num_isc, "ctx", my_s, new_node);
 		if (new_node != NULL) {
 			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, ctx->s, new_node);
 			ctx->s->intersected = 1;
@@ -339,7 +339,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 
 		/* add new node on "s" */
 		new_node = pa_ensure_point_and_prealloc_cvc(s->v, *my_s);
-		pa_debug_print_isc2(num_isc, "s->v", my_s, new_node);
+		pa_debug_print_isc2(num_isc, "s", my_s, new_node);
 		if (new_node != NULL) {
 			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, s, new_node);
 			s->intersected = 1;

@@ -190,14 +190,14 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
 #endif
 
 #if DEBUG_ISC
-RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
+RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
 {
 #ifdef PA_BIGCOORD_ISC
-	DEBUGP("ISC between %.03f;%.03f..%.03f;%.03f and %.03f;%.03f..%.03f;%.03f\n", pa_big_vnxd(a1), pa_big_vnyd(a1), pa_big_vnxd(a2), pa_big_vnyd(a2), pa_big_vnxd(b1), pa_big_vnyd(b1), pa_big_vnxd(b2), pa_big_vnyd(b2));
+	DEBUGP("ISC %s: %.03f;%.03f..%.03f;%.03f and %.03f;%.03f..%.03f;%.03f\n", name, pa_big_vnxd(a1), pa_big_vnyd(a1), pa_big_vnxd(a2), pa_big_vnyd(a2), pa_big_vnxd(b1), pa_big_vnyd(b1), pa_big_vnxd(b2), pa_big_vnyd(b2));
 	if (num_isc > 0) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc1.x), pa_big_double(isc1.y));
 	if (num_isc > 1) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
 #else
-	DEBUGP("ISC between %$mD..%$mD and %$mD..%$mD\n", a1->point[0], a1->point[1], a2->point[0], a2->point[1], b1->point[0], b1->point[1], b2->point[0], b2->point[1]);
+	DEBUGP("ISC %s: %$mD..%$mD and %$mD..%$mD\n", name, a1->point[0], a1->point[1], a2->point[0], a2->point[1], b1->point[0], b1->point[1], b2->point[0], b2->point[1]);
 	if (num_isc > 0) DEBUGP(" %$mD\n", isc1[0], isc1[1]);
 	if (num_isc > 1) DEBUGP(" %$mD\n", isc2[0], isc2[1]);
 #endif
@@ -214,7 +214,7 @@ RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector
 }
 
 #else
-RND_INLINE void pa_debug_print_isc(int num_isc, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2) {}
+RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2) {}
 RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector_t *crd, rnd_vnode_t *nd);
 #endif
 
