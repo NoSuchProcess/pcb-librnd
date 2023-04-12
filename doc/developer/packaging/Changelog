@@ -1,9 +1,20 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=4.0.0
+  ver=4.0.1
   cd /tmp
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
+
+Packaging changes between 4.0.0 and 4.0.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+none
+
+B. changes that probably DO need action
+
+none
+
 
 Packaging changes between 4.0.0 and 3.2.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
