@@ -1,5 +1,4 @@
 1. For the upcoming release ===============================================================================
-	- BUG: pick up packaging diffs from Bdale's 4.0.0 upload
 
 2. For later releases ===============================================================================
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
