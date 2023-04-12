@@ -54,56 +54,16 @@ static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 }
 
 #ifndef PA_BIGCOORD_ISC
-RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
+RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
 {
 	double ang, dx, dy;
-
-	assert(!Vequ2(v, rnd_vect_zero));
-
-	dx = fabs((double)v[0]);
-	dy = fabs((double)v[1]);
-	ang = dy / (dy + dx);
-
-	/* now move to the actual quadrant */
-	if ((v[0] < 0) && (v[1] >= 0))         cd->angle = 2.0 - ang; /* 2nd quadrant */
-	else if ((v[0] < 0) && (v[1] < 0))     cd->angle = 2.0 + ang; /* 3rd quadrant */
-	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
-	else                                   cd->angle = ang;       /* 1st quadrant */
-
-	assert((cd->angle >= 0.0) && (cd->angle <= 4.0));
-
-	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], cd->angle, side);
-}
-#endif
-
-RND_INLINE void pa_conn_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
-{
-#ifdef PA_BIGCOORD_ISC
-	pa_big_calc_angle(cd, pt, poly, side, v);
-#else
-	pa_conn_calc_angle_small(cd, pt, poly, side, v);
-#endif
-}
-
-static pa_conn_desc_t *pa_new_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
-{
 	rnd_vector_t v;
-
-	cd->head = NULL;
-	cd->parent = pt;
-	cd->poly = poly;
-	cd->side = side;
-	cd->next = cd->prev = cd;
-	cd->prelim = 0;
 
 	if (side == 'P') /* previous */
 		Vsub2(v, pt->prev->point, pt->point);
 	else /* next */
 		Vsub2(v, pt->next->point, pt->point);
 
-
-	/* Uses slope/(slope+1) in quadrant 1 as a proxy for the angle. It has the same
-	   monotonic sort result and is less expensive to compute than the real angle. */
 	if (Vequ2(v, rnd_vect_zero)) {
 		if (side == 'P') {
 			if (pt->prev->cvclst_prev->prelim) {
@@ -125,7 +85,45 @@ static pa_conn_desc_t *pa_new_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *pt, cha
 		}
 	}
 
-	pa_conn_calc_angle(cd, pt, poly, side, v);
+	assert(!Vequ2(v, rnd_vect_zero));
+
+	dx = fabs((double)v[0]);
+	dy = fabs((double)v[1]);
+	ang = dy / (dy + dx);
+
+	/* now move to the actual quadrant */
+	if ((v[0] < 0) && (v[1] >= 0))         cd->angle = 2.0 - ang; /* 2nd quadrant */
+	else if ((v[0] < 0) && (v[1] < 0))     cd->angle = 2.0 + ang; /* 3rd quadrant */
+	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
+	else                                   cd->angle = ang;       /* 1st quadrant */
+
+	assert((cd->angle >= 0.0) && (cd->angle <= 4.0));
+
+	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], cd->angle, side);
+}
+#endif
+
+RND_INLINE void pa_conn_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
+{
+#ifdef PA_BIGCOORD_ISC
+	pa_big_calc_angle(cd, pt, poly, side);
+#else
+	pa_conn_calc_angle_small(cd, pt, poly, side);
+#endif
+}
+
+static pa_conn_desc_t *pa_new_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
+{
+	cd->head = NULL;
+	cd->parent = pt;
+	cd->poly = poly;
+	cd->side = side;
+	cd->next = cd->prev = cd;
+	cd->prelim = 0;
+
+	/* Uses slope/(slope+1) in quadrant 1 as a proxy for the angle. It has the same
+	   monotonic sort result and is less expensive to compute than the real angle. */
+	pa_conn_calc_angle(cd, pt, poly, side);
 
 	return cd;
 }

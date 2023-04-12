@@ -53,7 +53,7 @@ int pa_angle_valid(pa_big_angle_t a)
 }
 
 
-void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side, rnd_vector_t v)
+void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
 {
 	pa_big_vector_t D, PT, OTHER;
 	pa_big_coord_t dxdy, tmp;
