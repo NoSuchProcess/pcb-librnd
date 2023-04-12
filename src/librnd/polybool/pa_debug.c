@@ -211,11 +211,23 @@ typedef enum { /* bitfield of extra info the dump should contain */
 } pa_debug_dump_extra_t;
 
 #if DEBUG_DUMP
+
+RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n)
+{
+#ifdef PA_BIGCOORD_ISC
+	if (n->cvclst_next != NULL) {
+		fprintf(f, "   %.012f %.012f\n", pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y));
+		return;
+	}
+#endif
+	fprintf(f, "   %ld %ld\n", (long)n->point[0], (long)n->point[1]);
+}
+
 RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extra_t extra)
 {
 	rnd_vnode_t *v = pl->head;
 	do {
-		fprintf(f, "   %ld %ld\n", (long)v->point[0], (long)v->point[1]);
+		pa_debug_dump_vnode_coord(f, v);
 	} while(v != pl->head);
 }
 
