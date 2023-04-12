@@ -215,7 +215,7 @@ RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector
 
 #else
 RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2) {}
-RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector_t *crd, rnd_vnode_t *nd);
+RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector_t *crd, rnd_vnode_t *nd) {}
 #endif
 
 typedef enum { /* bitfield of extra info the dump should contain */
