@@ -228,7 +228,7 @@ RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extr
 	rnd_vnode_t *v = pl->head;
 	do {
 		pa_debug_dump_vnode_coord(f, v);
-	} while(v != pl->head);
+	} while((v = v->next) != pl->head);
 }
 
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
