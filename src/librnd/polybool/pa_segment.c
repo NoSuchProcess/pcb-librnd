@@ -330,10 +330,8 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 
 		/* add new node on "i" */
 		new_node = pa_ensure_point_and_prealloc_cvc(ctx->v, *my_s);
+		pa_debug_print_isc2(num_isc, "ctx->v", my_s, new_node);
 		if (new_node != NULL) {
-#ifdef DEBUG_INTERSECT
-			DEBUGP("new intersection on segment \"i\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
-#endif
 			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, ctx->s, new_node);
 			ctx->s->intersected = 1;
 			done_insert_on_i = rnd_true;
@@ -341,10 +339,8 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 
 		/* add new node on "s" */
 		new_node = pa_ensure_point_and_prealloc_cvc(s->v, *my_s);
+		pa_debug_print_isc2(num_isc, "s->v", my_s, new_node);
 		if (new_node != NULL) {
-#ifdef DEBUG_INTERSECT
-			DEBUGP("new intersection on segment \"s\" at %#mD\n", (*my_s)[0], (*my_s)[1]);
-#endif
 			ctx->node_insert_list = prepend_node_task(ctx->node_insert_list, s, new_node);
 			s->intersected = 1;
 			return RND_R_DIR_NOT_FOUND; /* Keep looking for intersections with segment "i" */
