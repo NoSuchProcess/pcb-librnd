@@ -194,6 +194,12 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 	rnd_polyarea_t *a = pa_a, *b = pa_b;
 	pa_conn_desc_t *conn_list = NULL;
 
+#ifdef DEBUG_PAISC_DUMP
+	pa_debug_dump(stderr, "pa_polyarea_intersect PRE pa_a", pa_a, 0);
+	pa_debug_dump(stderr, "pa_polyarea_intersect PRE pa_b", pa_b, 0);
+#endif
+
+
 	if ((pa_a == NULL) || (pa_b == NULL))
 		pa_error(pa_err_bad_parm);
 
@@ -214,6 +220,12 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 		conn_list = pa_polyarea_list_intersected(e, conn_list, a, 'A');
 		pa_debug_print_cvc(conn_list);
 	} while (all_iscs && ((a = a->f) != pa_a));
+
+#ifdef DEBUG_PAISC_DUMP
+	pa_debug_dump(stderr, "pa_polyarea_intersect POST pa_a", pa_a, 0);
+	pa_debug_dump(stderr, "pa_polyarea_intersect POST pa_b", pa_b, 0);
+#endif
+
 
 	/* Note: items of conn_list are stored plines of pa_a and pa_b */
 }

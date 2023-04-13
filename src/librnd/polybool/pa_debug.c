@@ -73,7 +73,7 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #	define DEBUG_ANGLE PA_DEBUGP_DUMMY
 #endif
 
-#if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP
+#if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
 
 static const char *node_label_to_str(rnd_vnode_t *v)
 {
@@ -138,7 +138,7 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a)
 RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
-#if DEBUG_CVC || DEBUG_DUMP
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
 RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 {
 #ifdef PA_BIGCOORD_ISC
@@ -160,7 +160,7 @@ DEBUGP("%.09f", a);
 }
 #endif
 
-#if DEBUG_CVC || DEBUG_DUMP
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
 RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 {
 	pa_conn_desc_t *n = head;
@@ -222,7 +222,7 @@ typedef enum { /* bitfield of extra info the dump should contain */
 	PA_DBG_DUMP_CVC = 1,
 } pa_debug_dump_extra_t;
 
-#if DEBUG_DUMP
+#if DEBUG_DUMP || DEBUG_PAISC_DUMP
 
 RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n)
 {
