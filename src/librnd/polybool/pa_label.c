@@ -66,7 +66,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 
 	if (l->poly != this_poly) {
 		if (l->side == 'P') {
-			if (Vequ2(l->parent->prev->point, pn->next->point)) {
+			if (pa_vnode_equ(l->parent->prev, pn->next)) {
 				region = PA_PTL_SHARED2;
 				pn->shared = l->parent->prev;
 			}
@@ -75,7 +75,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 		}
 		else {
 			if (pa_angle_equ(l->angle, pn->cvclst_next->angle)) {
-				assert(Vequ2(l->parent->next->point, pn->next->point));
+				assert(pa_vnode_equ(l->parent->next, pn->next));
 				region = PA_PTL_SHARED;
 				pn->shared = l->parent;
 			}

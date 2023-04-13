@@ -92,3 +92,22 @@ RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
 
 	return (pa_big_to_coord(pt.x) == vn->point[0]) && (pa_big_to_coord(pt.y) == vn->point[1]);
 }
+
+#define Vequ2(a,b)       (memcmp((a),   (b),   sizeof(rnd_vector_t)) == 0)
+int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb)
+{
+	/* all high prec */
+	if ((vna->cvclst_prev != NULL) && (vnb->cvclst_prev != NULL))
+		return pa_big_vect_equ(vna->cvclst_prev->isc, vnb->cvclst_prev->isc);
+
+	/* neither high prec */
+	if ((vna->cvclst_prev == NULL) && (vnb->cvclst_prev == NULL))
+		return Vequ2(vna->point, vnb->point);
+
+	/* mixed */
+	if (vna->cvclst_prev == NULL)
+		return pa_big_vnode_vect_equ(vna, vnb->cvclst_prev->isc);
+
+	assert(vnb->cvclst_prev == NULL);
+	return pa_big_vnode_vect_equ(vnb, vna->cvclst_prev->isc);
+}

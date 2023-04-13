@@ -43,6 +43,8 @@
 
 #include "big_coord.h"
 #define pa_big_copy(dst, src)  memcpy(&(dst), &(src), sizeof(pa_big_vector_t));
+#define pa_vnode_equ(vna, vnb) pa_big_vnode_vnode_equ(vna, vnb)
+
 
 #else
 
@@ -58,6 +60,8 @@ typedef rnd_vector_t pa_big_vector_t;
 #define pa_big_double(crd)  ((double)(crd))
 #define pa_big_vnxd(vn)     pa_big_double((vn)->point[0])
 #define pa_big_vnyd(vn)     pa_big_double((vn)->point[0])
+
+#define pa_vnode_equ(vna, vnb) Vequ2((vna)->point, (vnb)->point)
 
 #endif
 

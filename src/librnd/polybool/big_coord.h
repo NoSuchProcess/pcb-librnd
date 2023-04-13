@@ -72,6 +72,10 @@ rnd_coord_t pa_big_to_coord(pa_big_coord_t crd);
 /* returns whether a big coord is integer (fraction part is zero) */
 RND_INLINE int pa_big_is_int(pa_big_coord_t crd) { return (crd[0] == 0) && (crd[1] == 0) && (crd[2] == 0); }
 
+/* Compare the coords of vna and vnb and return true of they are equal. Use
+   high precision coords where available */
+int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb);
+
 /* Approximation of big coords in double, for debug prints */
 double pa_big_double(pa_big_coord_t crd);
 double pa_big_vnxd(rnd_vnode_t *vn);
