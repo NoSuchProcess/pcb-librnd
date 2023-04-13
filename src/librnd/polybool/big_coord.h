@@ -69,6 +69,8 @@ int pa_big_desc_desc_incident(pa_conn_desc_t *a, pa_conn_desc_t *b);
 /* Convert big coord to native coord with rounding */
 rnd_coord_t pa_big_to_coord(pa_big_coord_t crd);
 
+/* returns whether a big coord is integer (fraction part is zero) */
+RND_INLINE int pa_big_is_int(pa_big_coord_t crd) { return (crd[0] == 0) && (crd[1] == 0) && (crd[2] == 0); }
 
 /* Approximation of big coords in double, for debug prints */
 double pa_big_double(pa_big_coord_t crd);
