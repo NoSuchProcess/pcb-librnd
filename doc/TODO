@@ -1,6 +1,10 @@
 1. For the upcoming release ===============================================================================
 
 2. For later releases ===============================================================================
+	- polybool:
+		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
+			-> this confuses the algo later because poly B intersects too much
+			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 	- API additions (4.1.0)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
