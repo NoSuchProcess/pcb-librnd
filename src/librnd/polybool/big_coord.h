@@ -80,3 +80,6 @@ int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb);
 double pa_big_double(pa_big_coord_t crd);
 double pa_big_vnxd(rnd_vnode_t *vn);
 double pa_big_vnyd(rnd_vnode_t *vn);
+
+/* Contour postprocessing; see pa_bool_postproc() for explanation */
+void pa_big_bool_postproc(rnd_polyarea_t *pa);

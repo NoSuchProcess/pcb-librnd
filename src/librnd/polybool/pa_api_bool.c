@@ -35,6 +35,20 @@
  *
  */
 
+
+/* If vertices have high precision coords, the actual output will differ
+   slightly after rounding the coords. In other words rounding moves vertices.
+   In some cases this may change the topology and cause self-intersecting
+   polygons or zero-length edges. Remove them here. */
+RND_INLINE void pa_bool_postproc(rnd_polyarea_t *pa)
+{
+#ifdef PA_BIGCOORD_ISC
+	pa_big_bool_postproc(pa);
+#endif
+	/* else don't do naything: this happens only with big coords */
+}
+
+
 int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
 {
 	rnd_polyarea_t *a = NULL, *b = NULL;
@@ -122,7 +136,11 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 		return code;
 	}
 
-	assert(!*res || rnd_poly_valid(*res));
+	if (*res != NULL) {
+		pa_bool_postproc(*res);
+		assert(rnd_poly_valid(*res));
+	}
+
 	return code;
 }
 
