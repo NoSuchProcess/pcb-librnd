@@ -3,7 +3,7 @@
 
 /* If defined, use fixed point numbers with multi-word integers (bigint) to
    represent true coordinates of intersection points at high precision */
-/*#define PA_BIGCOORD_ISC*/
+#define PA_BIGCOORD_ISC
 
 /* If defined, intersection points close to edge endpoint is moved to edge
    endpoint; this removes the tiny edge corner case. The value is manhattan
