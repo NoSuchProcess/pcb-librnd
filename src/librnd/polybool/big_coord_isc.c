@@ -203,6 +203,15 @@ int rnd_big_coord_isc(pa_big_vector_t res[2], pa_big_vector_t p1, pa_big_vector_
 	if (!pa_big_in_between(pa_big_less(Y1, Y2), Y1, Y2, res[0].y)) return 0;
 	if (!pa_big_in_between(pa_big_less(Y3, Y4), Y3, Y4, res[0].y)) return 0;
 	return 1;
+
+#undef X1
+#undef Y1
+#undef X2
+#undef Y2
+#undef X3
+#undef Y3
+#undef X4
+#undef Y4
 }
 
 int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2)
