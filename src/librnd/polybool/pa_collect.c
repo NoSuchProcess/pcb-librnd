@@ -203,7 +203,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 		}
 		else { /* insert subsequent */
 			newnd = rnd_poly_node_create(nd->point);
-			newnd->flg.rounded = pa_is_node_coords_integer(nd);
+			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
 			if (newnd == NULL)
 				return pa_err_no_memory;
 			rnd_poly_vertex_include((*result)->head->prev, newnd);

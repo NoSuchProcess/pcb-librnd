@@ -271,7 +271,7 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 #endif
 }
 
-RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2)
+RND_INLINE int pa_isc_edge_edge_(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2)
 {
 	int res;
 	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
@@ -285,6 +285,11 @@ RND_INLINE int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t 
 #endif
 
 	return res;
+}
+
+int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2)
+{
+	return pa_isc_edge_edge_(v1a, v1b, v2a, v2b, isc1, isc2);
 }
 
 /* This callback checks if the segment "s" in the tree intersect
@@ -310,7 +315,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	if (s->intersected || ctx->s->intersected)
 		return RND_R_DIR_NOT_FOUND;
 
-	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
+	num_isc = pa_isc_edge_edge_(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
 	if (!num_isc)
 		return RND_R_DIR_NOT_FOUND;
 
