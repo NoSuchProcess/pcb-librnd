@@ -71,6 +71,8 @@ rnd_coord_t pa_big_to_coord(pa_big_coord_t crd);
 
 /* returns whether a big coord is integer (fraction part is zero) */
 RND_INLINE int pa_big_is_int(pa_big_coord_t crd) { return (crd[0] == 0) && (crd[1] == 0) && (crd[2] == 0); }
+RND_INLINE int pa_big_vect_is_int(pa_big_vector_t pt) { return pa_big_is_int(pt.x) && pa_big_is_int(pt.y); }
+
 
 /* Compare the coords of vna and vnb and return true of they are equal. Use
    high precision coords where available */

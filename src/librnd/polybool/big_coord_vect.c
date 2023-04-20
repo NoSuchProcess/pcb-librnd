@@ -72,11 +72,6 @@ RND_INLINE int pa_big_in_between(int ordered, pa_big_coord_t A, pa_big_coord_t B
 
 #define pa_big_vect_equ(a, b) ((big_signed_cmpn((a).x, (b).x, W) == 0) && (big_signed_cmpn((a).y, (b).y, W) == 0))
 
-RND_INLINE int pa_big_vect_is_int(pa_big_vector_t pt)
-{
-	return pa_big_is_int(pt.x) && pa_big_is_int(pt.y);
-}
-
 /* Compares pt's point to vn and returns 1 if they match (0 otherwise). If
    vn has a cvc, use its high precision coords */
 RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)

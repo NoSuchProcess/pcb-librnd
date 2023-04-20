@@ -44,6 +44,7 @@ struct rnd_vnode_s {
 		unsigned int plabel:3; /* one of pa_plinept_label_t; for the edge {v to v->next} (the edge forward of v) */
 		unsigned int mark:1;
 		unsigned int in_hub:1;
+		unsigned int rounded:1; /* had high resolution coords that got rounded for the output; kept track until the bool_postprocess step that resets this. */
 	} flg;
 	pa_conn_desc_t *cvclst_prev, *cvclst_next; /* "cross vertex connection list" */
 	rnd_vector_t point;
