@@ -119,6 +119,12 @@ RND_INLINE void remove_contour(rnd_polyarea_t *pa, rnd_pline_t *prev_contour, rn
 		rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)contour);
 }
 
+void pa_remove_contour(rnd_polyarea_t *pa, rnd_pline_t *prev_contour, rnd_pline_t *contour, int remove_from_rtree)
+{
+	remove_contour(pa, prev_contour, contour, remove_from_rtree);
+}
+
+
 typedef struct pa_insert_holes_s {
 	rnd_box_t bbox;
 	rnd_polyarea_t *pa;

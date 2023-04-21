@@ -84,4 +84,4 @@ double pa_big_vnxd(rnd_vnode_t *vn);
 double pa_big_vnyd(rnd_vnode_t *vn);
 
 /* Contour postprocessing; see pa_bool_postproc() for explanation */
-void pa_big_bool_postproc(rnd_polyarea_t *pa);
+void pa_big_bool_postproc(rnd_polyarea_t **pa);
