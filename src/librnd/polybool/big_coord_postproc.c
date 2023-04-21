@@ -148,7 +148,7 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 
 			TODO("Think over if this can happen to cutouts as well");
 			for(pl = (*pa)->contours->next; pl != NULL; pl = pl->next) {
-				rnd_polyarea_t *res = big_bool_ppl_(pn, pl, 0);
+				rnd_polyarea_t *res = big_bool_ppl_(pn, pl, 1);
 				if (res != NULL) {
 					*pa = res;
 					return 1;
