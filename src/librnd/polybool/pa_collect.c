@@ -200,12 +200,14 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			*result = pa_pline_new(nd->point);
 			if (*result == NULL)
 				return pa_err_no_memory;
+			newnd = (*result)->head;
+			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
 		}
 		else { /* insert subsequent */
 			newnd = rnd_poly_node_create(nd->point);
-			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
 			if (newnd == NULL)
 				return pa_err_no_memory;
+			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
 		}
 
