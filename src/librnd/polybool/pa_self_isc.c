@@ -141,35 +141,41 @@ TODO("overlap always means break and remove shared section");
 	return RND_R_DIR_NOT_FOUND;
 }
 
-RND_INLINE rnd_vnode_t *pa_selfi_next(rnd_vnode_t *n)
+RND_INLINE rnd_vnode_t *pa_selfi_next(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
+	rnd_vnode_t *onto;
 
 	rnd_trace(" next: ");
 	if (n->cvclst_prev == NULL) {
 		rnd_trace("straight to %d %d\n", n->next->point[0], n->next->point[1]);
-		return n->next;
+		if (*dir == 'N') return n->next;
+		return n->prev;
 	}
 
 	rnd_trace("CVC\n");
-	c = n->cvclst_next;
-	start = c->prev;
-	for(;;c = c->next) {
-		assert(c != start); /* we came back to where we started without finding anything */
-		rnd_trace("  %d %d ", c->parent->point[0], c->parent->point[1]);
-		if (!c->parent->flg.mark) {
-			rnd_trace(" accept!\n");
-			return c->parent;
+	start = c = n->cvclst_prev->next;
+	do {
+		if (c->side == 'N') onto = c->parent->next;
+		else onto = c->parent->prev;
+		rnd_trace("  %d %d '%c'", onto->point[0], onto->point[1], c->side);
+		if (!onto->flg.mark) {
+			*dir = c->side;
+			rnd_trace(" accept, dir '%c'!\n", *dir);
+			return onto;
 		}
 		rnd_trace(" refuse (marked)\n");
-	}
-	
+	} while((c = c->prev) != start);
+
+	assert(!"nowhere to go from CVC");
+	return NULL;
 }
 
 RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *last, *newn;
 	rnd_pline_t *dst;
+	char dir = 'N';
 
 	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 	start->flg.mark = 1;
@@ -188,7 +194,7 @@ RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode
 
 	/* collect a closed loop */
 	last = start;
-	for(n = pa_selfi_next(start); n != start; n = pa_selfi_next(n)) {
+	for(n = pa_selfi_next(start, &dir); n != start; n = pa_selfi_next(n, &dir)) {
 		rnd_trace(" at %d %d", n->point[0], n->point[1]);
 		assert(!n->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 		n->flg.mark = 1;
