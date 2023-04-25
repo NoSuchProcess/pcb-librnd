@@ -39,7 +39,7 @@
    Low level helper functions. (It was "cvc" in the original code.) */
 
 
-/* preallocate a new, preliminary conn desc, yo store precise intersection
+/* preallocate a new, preliminary conn desc, to store precise intersection
    coords (isc) */
 static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 {
