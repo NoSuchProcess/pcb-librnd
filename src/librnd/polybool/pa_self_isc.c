@@ -69,7 +69,6 @@ RND_INLINE pa_seg_t *pa_selfi_find_seg(pa_selfi_t *ctx, rnd_vnode_t *pt)
 {
 	rnd_r_dir_t rres;
 	rnd_box_t box;
-	double dx = pt->next->point[0] - pt->point[0]; /* compute the slant for region trimming */
 
 	ctx->search_seg_v = pt;
 	ctx->search_seg = NULL;
