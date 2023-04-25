@@ -27,6 +27,8 @@
  *
  */
 
+#include <librnd/core/error.h>
+
 /* Return the "top-left" vnode of pl (the node that has the smallest x and y) */
 static rnd_vnode_t *pa_find_minnode(rnd_pline_t *pl)
 {
