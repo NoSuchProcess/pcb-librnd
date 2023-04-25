@@ -42,6 +42,7 @@ static rnd_vnode_t *pa_find_minnode(rnd_pline_t *pl)
 	return min;
 }
 
+/*** map intersections ***/
 typedef struct {
 	rnd_vnode_t *v;
 	rnd_pline_t *pl;
@@ -81,6 +82,7 @@ RND_INLINE pa_seg_t *pa_selfi_find_seg(pa_selfi_t *ctx, rnd_vnode_t *pt)
 	return ctx->search_seg;
 }
 
+/* Insert a new node and a cvc at an intersection point as the next node of vn */
 RND_INLINE rnd_vnode_t *pa_selfi_ins_pt(pa_selfi_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
 {
 	rnd_vnode_t *new_node;
@@ -101,6 +103,7 @@ RND_INLINE rnd_vnode_t *pa_selfi_ins_pt(pa_selfi_t *ctx, rnd_vnode_t *vn, pa_big
 	return new_node;
 }
 
+/* Called back from an rtree query to figure if two edges intersect */
 static rnd_r_dir_t pa_selfi_cross_cb(const rnd_box_t *b, void *cl)
 {
 	pa_selfi_t *ctx = (pa_selfi_t *)cl;
