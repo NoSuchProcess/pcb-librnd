@@ -42,4 +42,6 @@
 #include "pa_api_check.c"
 #include "pa_api_misc.c"
 
+#include "pa_self_isc.c"
+
 #include "pa_compat.c"
