@@ -139,10 +139,70 @@ TODO("overlap always means break and remove shared section");
 	return RND_R_DIR_NOT_FOUND;
 }
 
+RND_INLINE rnd_vnode_t *pa_selfi_next(rnd_vnode_t *n)
+{
+	pa_conn_desc_t *c, *start;
+
+	rnd_trace(" next: ");
+	if (n->cvclst_prev == NULL) {
+		rnd_trace("straight to %d %d\n", n->next->point[0], n->next->point[1]);
+		return n->next;
+	}
+
+	rnd_trace("CVC\n");
+	c = n->cvclst_next;
+	start = c->prev;
+	for(;;c = c->next) {
+		assert(c != start); /* we came back to where we started without finding anything */
+		rnd_trace("  %d %d ", c->parent->point[0], c->parent->point[1]);
+		if (!c->parent->flg.mark) {
+			rnd_trace(" accept!\n");
+			return c->parent;
+		}
+		rnd_trace(" refuse (marked)\n");
+	}
+	
+}
+
+RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+{
+	rnd_vnode_t *n, *last, *newn;
+	rnd_pline_t *dst;
+
+	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
+	start->flg.mark = 1;
+	dst = pa_pline_new(start->point);
+
+	rnd_trace("selfi collect from %d %d\n", start->point[0], start->point[1]);
+
+	/* append dst to the list of plines */
+	if (*dst_ != NULL) {
+		rnd_pline_t *last;
+		for(last = *dst_; last->next != NULL; last = last->next) ;
+		last->next = dst;
+	}
+	else
+		*dst_ = dst;
+
+	/* collect a closed loop */
+	last = start;
+	for(n = pa_selfi_next(start); n != start; n = pa_selfi_next(n)) {
+		rnd_trace(" at %d %d", n->point[0], n->point[1]);
+		assert(!n->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
+		n->flg.mark = 1;
+		newn = calloc(sizeof(rnd_vnode_t), 1);
+		newn->point[0] = n->point[0];
+		newn->point[1] = n->point[1];
+		rnd_poly_vertex_include(last, newn);
+		last = n;
+	}
+}
+
 rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *start = pa_find_minnode(pl);
 	pa_selfi_t ctx = {0};
+	rnd_pline_t *res = NULL;
 
 	ctx.pl = pl;
 
@@ -150,6 +210,7 @@ rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 	do {
 		rnd_box_t box;
 
+		n->flg.mark = 0;
 		ctx.v = n;
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
@@ -163,7 +224,10 @@ rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 	if (ctx.num_isc == 0)
 		return pl;
 
-	
+	/* collect outer line */
+	pa_selfi_collect(&res, pl, start);
 
-	return pl;
+	pa_pline_free(&pl);
+
+	return res;
 }
