@@ -693,6 +693,7 @@
  ../src/librnd/polybool/pa_isc_contours.c \
  ../src/librnd/polybool/pa_label.c \
  ../src/librnd/polybool/pa_collect_tmp.c \
+ ../src/librnd/polybool/pa_self_isc.c \
  ../src/librnd/polybool/pa_collect.c ../src/librnd/polybool/pa_api_bool.c \
  ../src/librnd/polybool/pa_api_vertex.c \
  ../src/librnd/polybool/pa_api_pline.c \
