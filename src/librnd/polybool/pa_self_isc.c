@@ -51,6 +51,8 @@ typedef struct {
 
 	rnd_vnode_t *search_seg_v;
 	pa_seg_t *search_seg;
+
+	pa_conn_desc_t *cdl;
 } pa_selfi_t;
 
 static rnd_r_dir_t pa_selfi_find_seg_cb(const rnd_box_t *b, void *ctx_)
@@ -223,6 +225,8 @@ rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 
 	if (ctx.num_isc == 0)
 		return pl;
+
+	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect outer line */
 	pa_selfi_collect(&res, pl, start);
