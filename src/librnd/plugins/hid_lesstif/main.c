@@ -812,6 +812,10 @@ static void rnd_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, 
 	}
 	if (pixmap->hid_data != NULL) {
 		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
+
+		if (ca < 0) ca = -ca;
+		if (sa < 0) sa = -sa;
+
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
 		rnd_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - rsx/2, cy - rsy/2, rsx, rsy);

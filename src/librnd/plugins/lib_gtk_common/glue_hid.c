@@ -554,6 +554,10 @@ static void rnd_gtkg_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy,
 		rnd_gtkg_init_pixmap(hid, pixmap);
 	if (pixmap->hid_data != NULL) {
 		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
+
+		if (ca < 0) ca = -ca;
+		if (sa < 0) sa = -sa;
+
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
 /*rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);*/
