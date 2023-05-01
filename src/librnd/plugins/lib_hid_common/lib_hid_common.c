@@ -92,6 +92,7 @@ rnd_action_t hid_common_action_list[] = {
 	{"Scroll", rnd_act_Scroll, rnd_acth_Scroll, rnd_acts_Scroll},
 	{"LogDialog", rnd_act_LogDialog, rnd_acth_LogDialog, rnd_acts_LogDialog},
 	{"FsdTest", rnd_act_FsdTest, rnd_acth_FsdTest, rnd_acts_FsdTest},
+	{"FsdSimple", rnd_act_FsdSimple, rnd_acth_FsdSimple, rnd_acts_FsdSimple},
 	{"Command", rnd_act_Command, rnd_acth_Command, rnd_acts_Command},
 	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"ExportDialog", rnd_act_ExportDialog, rnd_acth_ExportDialog, rnd_acts_ExportDialog},

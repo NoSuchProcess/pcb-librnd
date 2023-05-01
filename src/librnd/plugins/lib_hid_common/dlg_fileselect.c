@@ -1108,3 +1108,34 @@ fgw_error_t rnd_act_FsdTest(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return -1;
 }
 
+const char rnd_acts_FsdSimple[] = "FsdSimple(title, descr, default_file, default_ext, history_tag, [read])";
+const char rnd_acth_FsdSimple[] = "File selection dialog, simplified API; for meaning of the arguments, see the HID API doc.";
+fgw_error_t rnd_act_FsdSimple(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_hid_fsd_flags_t flags = 0;
+	char *resfn;
+	const char *title, *descr, *default_file, *default_ext, *history_tag, *sflags = NULL;
+
+	RND_ACT_CONVARG(1, FGW_STR, FsdSimple, title = argv[1].val.cstr);
+	RND_ACT_CONVARG(2, FGW_STR, FsdSimple, descr = argv[2].val.cstr);
+	RND_ACT_CONVARG(3, FGW_STR, FsdSimple, default_file = argv[3].val.cstr);
+	RND_ACT_CONVARG(4, FGW_STR, FsdSimple, default_ext = argv[4].val.cstr);
+	RND_ACT_CONVARG(5, FGW_STR, FsdSimple, history_tag = argv[5].val.cstr);
+	RND_ACT_MAY_CONVARG(6, FGW_STR, FsdSimple, sflags = argv[6].val.cstr);
+
+	if (sflags != NULL) {
+		if (rnd_strcasecmp(sflags, "read") == 0) {
+			flags = RND_HID_FSD_READ;
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "FsdSimple: the last argument, flags, must be either \"read\" or empty\n");
+			return FGW_ERR_ARG_CONV;
+		}
+	}
+
+	resfn = rnd_dlg_fileselect(rnd_gui, title, descr, default_file, default_ext, NULL, history_tag, flags, NULL);
+
+	res->type = FGW_STR;
+	res->val.str = resfn;
+	return 0;
+}
