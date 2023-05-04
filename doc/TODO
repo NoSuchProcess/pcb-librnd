@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+	- FEATURE: appearance/loglevels colors are R G B, but make the actual #rgbs configurable in the gtk hid [report: Majenko]
 
 2. For later releases ===============================================================================
 	- polybool:
