@@ -567,13 +567,13 @@ if sys/cross
 then
 print [@
 ../src_3rd/puplug/libpuplug.a $(PUPLUG):
-	cd ../src_3rd/puplug && make libpuplug.a CC=$(CC)
-	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC) PUP_O_PREFIX=-host
+	cd ../src_3rd/puplug && $(MAKE) libpuplug.a CC=$(CC)
+	cd ../src_3rd/puplug && $(MAKE) util/puplug CC=$(HOSTCC) PUP_O_PREFIX=-host
 @]
 else
 print [@
 ../src_3rd/puplug/libpuplug.a $(PUPLUG):
-	cd ../src_3rd/puplug && make libpuplug.a util/puplug
+	cd ../src_3rd/puplug && $(MAKE) libpuplug.a util/puplug
 @]
 end
 
