@@ -260,6 +260,7 @@ const char rnd_acts_dad[] =
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
 	"dad(dlgname, get, widgetID, [unit]) - return the current value of a widget\n"
 	"dad(dlgname, iterate) - runs a global GUI iteration (event dispatch, redraw)\n"
+	"dad(dlgname, raise) - pops up window in front\n"
 	;
 const char rnd_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -670,6 +671,10 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "iterate") == 0) {
 		rnd_gui->iterate(rnd_gui);
+	}
+	else if (rnd_strcasecmp(cmd, "raise") == 0) {
+		if (rnd_gui->attr_dlg_raise != NULL)
+			rnd_gui->attr_dlg_raise(dad->dlg_hid_ctx);
 	}
 	else if ((rnd_strcasecmp(cmd, "run") == 0) || (rnd_strcasecmp(cmd, "run_modal") == 0)) {
 		if (dad->running) goto cant_chg;
