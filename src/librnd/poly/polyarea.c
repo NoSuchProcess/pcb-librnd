@@ -460,7 +460,7 @@ static rnd_cvc_list_t *add_descriptors(rnd_pline_t * pl, char poly, rnd_cvc_list
 	return list;
 }
 
-static inline void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
+RND_INLINE void cntrbox_adjust(rnd_pline_t * c, const rnd_vector_t p)
 {
 	c->xmin = min(c->xmin, p[0]);
 	c->xmax = max(c->xmax, p[0] + 1);
@@ -895,7 +895,7 @@ static void M_rnd_polyarea_t_intersect(jmp_buf * e, rnd_polyarea_t * afst, rnd_p
 	while (add && (a = a->f) != afst);
 }																/* M_rnd_polyarea_t_intersect */
 
-static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
+RND_INLINE int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
 {
 	assert(c1 != NULL && c2 != NULL);
 	return ((c1->xmin >= c2->xmin) && (c1->ymin >= c2->ymin) && (c1->xmax <= c2->xmax) && (c1->ymax <= c2->ymax));
@@ -1141,7 +1141,7 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 	}
 }																/* PutContour */
 
-static inline void remove_contour(rnd_polyarea_t * piece, rnd_pline_t * prev_contour, rnd_pline_t * contour, int remove_rtree_entry)
+RND_INLINE void remove_contour(rnd_polyarea_t * piece, rnd_pline_t * prev_contour, rnd_pline_t * contour, int remove_rtree_entry)
 {
 	if (piece->contours == contour)
 		piece->contours = contour->next;
@@ -1664,19 +1664,19 @@ static void M_B_AREA_Collect(jmp_buf * e, rnd_polyarea_t * bfst, rnd_polyarea_t 
 }
 
 
-static inline int contour_is_first(rnd_polyarea_t * a, rnd_pline_t * cur)
+RND_INLINE int contour_is_first(rnd_polyarea_t * a, rnd_pline_t * cur)
 {
 	return (a->contours == cur);
 }
 
 
-static inline int contour_is_last(rnd_pline_t * cur)
+RND_INLINE int contour_is_last(rnd_pline_t * cur)
 {
 	return (cur->next == NULL);
 }
 
 
-static inline void remove_polyarea(rnd_polyarea_t ** list, rnd_polyarea_t * piece)
+RND_INLINE void remove_polyarea(rnd_polyarea_t ** list, rnd_polyarea_t * piece)
 {
 	/* If this item was the start of the list, advance that pointer */
 	if (*list == piece)
@@ -2235,12 +2235,12 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t * ai, rnd_polyarea_t * bi, rnd
 	return code;
 } /* poly_AndSubtract_free */
 
-static inline int cntrbox_pointin(const rnd_pline_t *c, const rnd_vector_t p)
+RND_INLINE int cntrbox_pointin(const rnd_pline_t *c, const rnd_vector_t p)
 {
 	return (p[0] >= c->xmin && p[1] >= c->ymin && p[0] <= c->xmax && p[1] <= c->ymax);
 }
 
-static inline int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
+RND_INLINE int node_neighbours(rnd_vnode_t * a, rnd_vnode_t * b)
 {
 	return (a == b) || (a->next == b) || (b->next == a) || (a->next == b->next);
 }
@@ -2716,7 +2716,7 @@ static int point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd
 	return (u > 0.0) && (v > 0.0) && (u + v < 1.0);
 }
 
-/* wrapper to keep the original name short and original function inline */
+/* wrapper to keep the original name short and original function RND_INLINE */
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P)
 {
 	return point_in_triangle(A, B, C, P);
