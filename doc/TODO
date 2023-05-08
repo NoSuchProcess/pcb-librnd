@@ -2,13 +2,20 @@
 	- FEATURE: conf(get) for scripting - check if we have anything for this already [report: Majenko]
 	- FEATURE: expose basic safe_fs() calls for scripting -maybe in librnd [report: Majenko]
 	- FEATURE: appearance/loglevels colors are R G B, but make the actual #rgbs configurable in the gtk hid [report: Majenko]
+	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
+	- CLEANUP/BUG: separate static linking from dynamic linking
+		- librnd.mak: do not add hid deps in LDFLAGS_LIBRND and CFLAGS_LIBRND
+		- make sure hid.so has -l on them and ldd loads them
+		- create separate STATIC version of LDFLAGS_LIBRND and CFLAGS_LIBRND that still have these, for static linked test/example ode
+		- sovles the upgrade problem reported by Erich and Derek: librnd installed; then pango upgraded; sch-rnd compileation broke because of pre-upgrade LDFLAGS in librnd.mak
+	- BUG: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
+	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 
 2. For later releases ===============================================================================
 	- polybool:
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
-	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 	- API additions (4.1.0)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 		- move sch-rnd's basename() call next to dirname()
@@ -29,7 +36,6 @@
 					- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
 					- GUI text edit could auto-replace unicode with &unicode_name;
 					- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
-	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
@@ -38,12 +44,6 @@
 			- "earlier" should be a new event probably, that runs after loading all plugins and doing all initialization but before loading anything
 			- check if we have GUI for editing permascript; if so, add this there too
 		- sch-rnd doc: trunk/doc/user/07_io/alien/index.html: look for <!--TODO#1--> and update it (from which version of librnd it works and how)
-	- CLEANUP/BUG: separate static linking from dynamic linking
-		- librnd.mak: do not add hid deps in LDFLAGS_LIBRND and CFLAGS_LIBRND
-		- make sure hid.so has -l on them and ldd loads them
-		- create separate STATIC version of LDFLAGS_LIBRND and CFLAGS_LIBRND that still have these, for static linked test/example ode
-		- sovles the upgrade problem reported by Erich and Derek: librnd installed; then pango upgraded; sch-rnd compileation broke because of pre-upgrade LDFLAGS in librnd.mak
-	- BUG: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
