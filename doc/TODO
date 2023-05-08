@@ -1,6 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- FEATURE: dad() raise subcommand [report: Majenko]
 	- FEATURE: dad() close subcommand [report: Majenko]
+	- FEATURE: dad() iterate subcommand [report: Majenko]
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 
 2. For later releases ===============================================================================
