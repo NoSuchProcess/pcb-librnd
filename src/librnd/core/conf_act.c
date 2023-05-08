@@ -245,8 +245,8 @@ static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *path;
 	rnd_conf_native_t *nat;
 
-	RND_ACT_CONVARG(1, FGW_STR, Conf, path = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[2]));
+	RND_ACT_CONVARG(1, FGW_STR, ConfGet, path = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, ConfGet, op = fgw_keyword(&argv[2]));
 
 	/* prepare to return nil by default */
 	res->type = FGW_PTR;
