@@ -27,6 +27,7 @@
 #include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 
 
 static const char rnd_acts_SafeFsSystem[] = "SafeFsSystem(cmdline)";
@@ -42,9 +43,70 @@ static fgw_error_t rnd_act_SafeFsSystem(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
+static const char rnd_acts_SafeFsRemove[] = "SafeFsRemove(path)";
+static const char rnd_acth_SafeFsRemove[] = "Remove an object from the file system. Return value is the same as remove(3)'s";
+static fgw_error_t rnd_act_SafeFsRemove(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsRemove, path = argv[1].val.str);
+
+	res->type = FGW_INT;
+	res->val.nat_int = rnd_remove(RND_ACT_DESIGN, path);
+	return 0;
+}
+
+static const char rnd_acts_SafeFsUnlink[] = "SafeFsUnlink(path)";
+static const char rnd_acth_SafeFsUnlink[] = "Unlink a file from the file system. Return value is the same as unlink(2)'s";
+static fgw_error_t rnd_act_SafeFsUnlink(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsUnlink, path = argv[1].val.str);
+
+	res->type = FGW_INT;
+	res->val.nat_int = rnd_unlink(RND_ACT_DESIGN, path);
+	return 0;
+}
+
+static const char rnd_acts_SafeFsMkdir[] = "SafeFsMkdir(path, mode)";
+static const char rnd_acth_SafeFsMkdir[] = "Mkdir a file from the file system. If mode is a string, it is converted from octal. Return value is the same as mkdir(2)'s";
+static fgw_error_t rnd_act_SafeFsMkdir(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path;
+	int mode = 0;
+
+	if (argc != 3) {
+		RND_ACT_FAIL(SafeFsMkdir);
+		return FGW_ERR_ARG_CONV;
+	}
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsMkdir, path = argv[1].val.str);
+	if ((argv[2].type & FGW_STR) == FGW_STR) {
+		char *end;
+		mode = strtol(argv[2].val.str, &end, 8);
+
+		if (*end != '\0') {
+			RND_ACT_FAIL(SafeFsMkdir);
+			rnd_message(RND_MSG_ERROR, "(Invalid octagonal number in string for the mode argument)\n");
+			return FGW_ERR_ARG_CONV;
+		}
+	}
+	else {
+		RND_ACT_CONVARG(2, FGW_LONG, SafeFsMkdir, mode = argv[2].val.nat_long);
+	}
+
+	res->type = FGW_INT;
+	res->val.nat_int = rnd_mkdir(RND_ACT_DESIGN, path, mode);
+	return 0;
+}
+
 
 static rnd_action_t rnd_safe_fs_action_list[] = {
-	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem}
+	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
+	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
+	{"SafeFsUnlink", rnd_act_SafeFsUnlink, rnd_acth_SafeFsUnlink, rnd_acts_SafeFsUnlink},
+	{"SafeFsMkdir", rnd_act_SafeFsMkdir, rnd_acth_SafeFsMkdir, rnd_acts_SafeFsMkdir}
 };
 
 void rnd_safe_fs_act_init2(void)
