@@ -119,6 +119,7 @@ append /local/librnd/OBJS_CORELIB [@
 	$(LIBRND)/core/rnd_printf.o
 	$(LIBRND)/core/plugins.o
 	$(LIBRND)/core/safe_fs.o
+	$(LIBRND)/core/safe_fs_act.o
 	$(LIBRND)/core/unit.o
 	$(LIBRND)/core/vtc0.o
 @]
