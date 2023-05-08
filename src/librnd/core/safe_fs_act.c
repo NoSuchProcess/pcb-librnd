@@ -126,7 +126,7 @@ static fgw_error_t rnd_act_SafeFsFileSize(fgw_arg_t *res, int argc, fgw_arg_t *a
 	RND_ACT_CONVARG(1, FGW_STR, SafeFsFileSize, path = argv[1].val.str);
 
 	res->type = FGW_LONG;
-	res->val.nat_long = rnd_file_mtime(RND_ACT_DESIGN, path);
+	res->val.nat_long = rnd_file_size(RND_ACT_DESIGN, path);
 	return 0;
 }
 
