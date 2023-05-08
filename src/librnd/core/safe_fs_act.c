@@ -216,6 +216,67 @@ static fgw_error_t rnd_act_SafeFsReadFile(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+
+static const char *PTR_DOMAIN_FILE = "librnd/core/safe_fs_act.c:FILE*";
+
+static const char rnd_acts_SafeFsFopen[] = "SafeFsFopen(path, [mode])";
+static const char rnd_acth_SafeFsFopen[] = "Opens a file using fopen, returns FILE *. If mode is not specified, r is assumed. Returns nil on error.";
+static fgw_error_t rnd_act_SafeFsFopen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path, *mode = "r";
+	FILE *f;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsFopen, path = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SafeFsFopen, mode = argv[2].val.str);
+
+	f = rnd_fopen(RND_ACT_DESIGN, path, mode);
+	if (f == NULL) {
+		res->type = FGW_STR;
+		res->val.str = NULL;
+		return 0;
+	}
+
+	fgw_ptr_reg(&rnd_fgw, res, PTR_DOMAIN_FILE, FGW_PTR | FGW_STRUCT, f);
+	return 0;
+}
+
+static const char rnd_acts_SafeFsFclose[] = "SafeFsFclose(f)";
+static const char rnd_acth_SafeFsFclose[] = "Closes a file previously open using SafeFsFopen()";
+static fgw_error_t rnd_act_SafeFsFclose(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFclose, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	fclose(argv[1].val.ptr_void);
+	fgw_ptr_unreg(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE);
+	return 0;
+}
+
+static const char rnd_acts_SafeFsFgets[] = "SafeFsFgets(f, [maxlen])";
+static const char rnd_acth_SafeFsFgets[] = "Reads and returns a line from f (open with SafeFsFopen()). Stops reading after maxlen (subsequent call will continue reading the same line). Returns nil on error or eof or empty line. Maxlen is 64k by default. Note: string heap allocation is made for maxlen.";
+static fgw_error_t rnd_act_SafeFsFgets(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	long len = 65536;
+	char *buff;
+
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFgets, ;);
+	RND_ACT_MAY_CONVARG(2, FGW_LONG, SafeFsFgets, len = argv[2].val.nat_long);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	buff = malloc(len+1);
+	if (buff != NULL)
+		fgets(buff, len, argv[1].val.ptr_void);
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = buff;
+	return 0;
+}
+
+
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
@@ -227,7 +288,10 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsIsDir", rnd_act_SafeFsIsDir, rnd_acth_SafeFsIsDir, rnd_acts_SafeFsIsDir},
 	{"SafeFsPathSep", rnd_act_SafeFsPathSep, rnd_acth_SafeFsPathSep, rnd_acts_SafeFsPathSep},
 	{"SafeFsRealPath", rnd_act_SafeFsRealPath, rnd_acth_SafeFsRealPath, rnd_acts_SafeFsRealPath},
-	{"SafeFsReadFile", rnd_act_SafeFsReadFile, rnd_acth_SafeFsReadFile, rnd_acts_SafeFsReadFile}
+	{"SafeFsReadFile", rnd_act_SafeFsReadFile, rnd_acth_SafeFsReadFile, rnd_acts_SafeFsReadFile},
+	{"SafeFsFopen", rnd_act_SafeFsFopen, rnd_acth_SafeFsFopen, rnd_acts_SafeFsFopen},
+	{"SafeFsFclose", rnd_act_SafeFsFclose, rnd_acth_SafeFsFclose, rnd_acts_SafeFsFclose},
+	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets}
 };
 
 void rnd_safe_fs_act_init2(void)
