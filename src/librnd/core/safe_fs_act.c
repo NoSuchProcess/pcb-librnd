@@ -189,9 +189,9 @@ static fgw_error_t rnd_act_SafeFsReadFile(fgw_arg_t *res, int argc, fgw_arg_t *a
 	char *buff = NULL;
 
 	RND_ACT_CONVARG(1, FGW_STR, SafeFsReadFile, path = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_STR, SafeFsReadFile, maxlen = argv[1].val.nat_long);
+	RND_ACT_MAY_CONVARG(2, FGW_LONG, SafeFsReadFile, maxlen = argv[2].val.nat_long);
 
-	len = rnd_file_mtime(RND_ACT_DESIGN, path);
+	len = rnd_file_size(RND_ACT_DESIGN, path);
 	if (maxlen < len)
 		len = maxlen;
 
