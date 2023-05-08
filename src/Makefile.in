@@ -668,6 +668,7 @@ append /local/librnd/HDRS_3RDLIB /local/librnd/HDRS_LIBUALLOC_API
 # rndlib: corner case: some headers are not derived from the objects
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/conf_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/main_act.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/safe_fs_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/anyload_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_dlg.h } {}
