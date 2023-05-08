@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -259,6 +259,7 @@ const char rnd_acts_dad[] =
 	"dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)\n"
 	"dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog \n"
 	"dad(dlgname, get, widgetID, [unit]) - return the current value of a widget\n"
+	"dad(dlgname, iterate) - runs a global GUI iteration (event dispatch, redraw)\n"
 	;
 const char rnd_acth_dad[] = "Manipulate Dynamic Attribute Dialogs";
 fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -666,7 +667,11 @@ fgw_error_t rnd_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return FGW_ERR_NOT_FOUND;
 		}
 		return 0;
-	}	else if ((rnd_strcasecmp(cmd, "run") == 0) || (rnd_strcasecmp(cmd, "run_modal") == 0)) {
+	}
+	else if (rnd_strcasecmp(cmd, "iterate") == 0) {
+		rnd_gui->iterate(rnd_gui);
+	}
+	else if ((rnd_strcasecmp(cmd, "run") == 0) || (rnd_strcasecmp(cmd, "run_modal") == 0)) {
 		if (dad->running) goto cant_chg;
 
 		RND_ACT_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
