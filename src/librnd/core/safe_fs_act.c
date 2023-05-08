@@ -312,6 +312,21 @@ static fgw_error_t rnd_act_SafeFsFread(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char rnd_acts_SafeFsFeof[] = "SafeFsFeof(f)";
+static const char rnd_acth_SafeFsFeof[] = "Returns 1 if file has reached EOF, 0 otherwise";
+static fgw_error_t rnd_act_SafeFsFeof(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFeof, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	res->type = FGW_INT;
+	res->val.nat_int = feof(argv[1].val.ptr_void);
+
+	return 0;
+}
+
 
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
@@ -328,7 +343,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFopen", rnd_act_SafeFsFopen, rnd_acth_SafeFsFopen, rnd_acts_SafeFsFopen},
 	{"SafeFsFclose", rnd_act_SafeFsFclose, rnd_acth_SafeFsFclose, rnd_acts_SafeFsFclose},
 	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets},
-	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread}
+	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread},
+	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof}
 };
 
 void rnd_safe_fs_act_init2(void)
