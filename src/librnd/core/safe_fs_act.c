@@ -156,6 +156,15 @@ static fgw_error_t rnd_act_SafeFsIsDir(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char rnd_acts_SafeFsPathSep[] = "SafeFsPathSep(path)";
+static const char rnd_acth_SafeFsPathSep[] = "Return the system dependet path separator character (normally slash).";
+static fgw_error_t rnd_act_SafeFsPathSep(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	res->type = FGW_STR;
+	res->val.cstr = RND_DIR_SEPARATOR_S;
+	return 0;
+}
+
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
@@ -164,7 +173,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsRename", rnd_act_SafeFsRename, rnd_acth_SafeFsRename, rnd_acts_SafeFsRename},
 	{"SafeFsFileSize", rnd_act_SafeFsFileSize, rnd_acth_SafeFsFileSize, rnd_acts_SafeFsFileSize},
 	{"SafeFsFileMtime", rnd_act_SafeFsFileMtime, rnd_acth_SafeFsFileMtime, rnd_acts_SafeFsFileMtime},
-	{"SafeFsIsDir", rnd_act_SafeFsIsDir, rnd_acth_SafeFsIsDir, rnd_acts_SafeFsIsDir}
+	{"SafeFsIsDir", rnd_act_SafeFsIsDir, rnd_acth_SafeFsIsDir, rnd_acts_SafeFsIsDir},
+	{"SafeFsPathSep", rnd_act_SafeFsPathSep, rnd_acth_SafeFsPathSep, rnd_acts_SafeFsPathSep}
 };
 
 void rnd_safe_fs_act_init2(void)
