@@ -14,7 +14,7 @@ LDLIBS = -lm
 LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-core.a $(SRC)/librnd-3rd.a
 
 include $(LIBRND)/core/librnd.mak
-LDFLAGS = $(LDFLAGS_LIBRND)
+LDFLAGS = $(LDFLAGS_LIBRND_STATIC)
 
 
 test: tester.diff
