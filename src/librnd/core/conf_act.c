@@ -232,9 +232,10 @@ static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char rnd_acts_ConfGet[] =
 	"ConfGet(path, [value]) - return the value of a conf node; units, colors and lists are returned as string.\n"
-/*	"ConfGet(path, desc) - return the human readable description\n"
-	"ConfGet(path, array_size) - number of elements\n"
-	"ConfGet(path, read_only) - returns 1 if node is read-only, 0 otherwise\n"*/
+	"ConfGet(path, desc) - return the human readable description\n"
+	"ConfGet(path, ArraySize) - number of elements\n"
+	"ConfGet(path, ReadOnly) - returns 1 if node is read-only, 0 otherwise\n"
+	"ConfGet(path, ConfRev) - conf (merge) rev number the value last changed\n"
 	;
 static const char rnd_acth_ConfGet[] = "Return conf node value or property from the merged in-memory/native storage. Returns nil if node is unset (for value query) or not found. Intended for scripting.";
 static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -293,6 +294,22 @@ static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				default:
 					return 0;
 			}
+			break;
+		case F_Desc:
+			res->type = FGW_STR;
+			res->val.cstr = nat->description;
+			break;
+		case F_ArraySize:
+			res->type = FGW_LONG;
+			res->val.nat_long = nat->array_size;
+			break;
+		case F_ReadOnly:
+			res->type = FGW_INT;
+			res->val.nat_long = nat->random_flags.read_only;
+			break;
+		case F_ConfRev:
+			res->type = FGW_LONG;
+			res->val.nat_long = nat->rnd_conf_rev;
 			break;
 	}
 	
