@@ -179,6 +179,43 @@ static fgw_error_t rnd_act_SafeFsRealPath(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+static const char rnd_acts_SafeFsReadFile[] = "SafeFsReadFile(path, [maxlen])";
+static const char rnd_acth_SafeFsReadFile[] = "Reads a text file into one long string, returned, but at most maxlen bytes. If maxlen is not specified, 64k is used. Returns nil on error or empty file.";
+static fgw_error_t rnd_act_SafeFsReadFile(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path;
+	long maxlen = 65536, len, rlen;
+	FILE *f;
+	char *buff = NULL;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsReadFile, path = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, SafeFsReadFile, maxlen = argv[1].val.nat_long);
+
+	len = rnd_file_mtime(RND_ACT_DESIGN, path);
+	if (maxlen < len)
+		len = maxlen;
+
+	if (len > 0) {
+		f = rnd_fopen(RND_ACT_DESIGN, path, "r");
+		if (f != NULL) {
+			buff = malloc(len+1);
+			rlen = fread(buff, 1, len, f);
+			if (rlen <= 0) {
+				free(buff);
+				buff = NULL;
+			}
+			else
+				buff[rlen] = '\0';
+			
+			fclose(f);
+		}
+	}
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = buff;
+	return 0;
+}
+
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
@@ -189,7 +226,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFileMtime", rnd_act_SafeFsFileMtime, rnd_acth_SafeFsFileMtime, rnd_acts_SafeFsFileMtime},
 	{"SafeFsIsDir", rnd_act_SafeFsIsDir, rnd_acth_SafeFsIsDir, rnd_acts_SafeFsIsDir},
 	{"SafeFsPathSep", rnd_act_SafeFsPathSep, rnd_acth_SafeFsPathSep, rnd_acts_SafeFsPathSep},
-	{"SafeFsRealPath", rnd_act_SafeFsRealPath, rnd_acth_SafeFsRealPath, rnd_acts_SafeFsRealPath}
+	{"SafeFsRealPath", rnd_act_SafeFsRealPath, rnd_acth_SafeFsRealPath, rnd_acts_SafeFsRealPath},
+	{"SafeFsReadFile", rnd_act_SafeFsReadFile, rnd_acth_SafeFsReadFile, rnd_acts_SafeFsReadFile}
 };
 
 void rnd_safe_fs_act_init2(void)
