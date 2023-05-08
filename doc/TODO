@@ -2,11 +2,6 @@
 	- FEATURE: dad() raise subcommand [report: Majenko]
 	- FEATURE: dad() close subcommand [report: Majenko]
 	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
-	- CLEANUP/BUG: separate static linking from dynamic linking
-		- librnd.mak: do not add hid deps in LDFLAGS_LIBRND and CFLAGS_LIBRND
-		- make sure hid.so has -l on them and ldd loads them
-		- create separate STATIC version of LDFLAGS_LIBRND and CFLAGS_LIBRND that still have these, for static linked test/example ode
-		- sovles the upgrade problem reported by Erich and Derek: librnd installed; then pango upgraded; sch-rnd compileation broke because of pre-upgrade LDFLAGS in librnd.mak
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 
 2. For later releases ===============================================================================
