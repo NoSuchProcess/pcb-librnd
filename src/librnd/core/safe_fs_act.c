@@ -27,6 +27,7 @@
 #include <librnd/rnd_config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/error.h>
 
 
@@ -165,6 +166,19 @@ static fgw_error_t rnd_act_SafeFsPathSep(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
+static const char rnd_acts_SafeFsRealPath[] = "SafeFsRealPath(path)";
+static const char rnd_acth_SafeFsRealPath[] = "Returns the realpath(3) of path, or NULL on error.";
+static fgw_error_t rnd_act_SafeFsRealPath(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsRealPath, path = argv[1].val.str);
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = rnd_lrealpath(path);
+	return 0;
+}
+
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
@@ -174,7 +188,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFileSize", rnd_act_SafeFsFileSize, rnd_acth_SafeFsFileSize, rnd_acts_SafeFsFileSize},
 	{"SafeFsFileMtime", rnd_act_SafeFsFileMtime, rnd_acth_SafeFsFileMtime, rnd_acts_SafeFsFileMtime},
 	{"SafeFsIsDir", rnd_act_SafeFsIsDir, rnd_acth_SafeFsIsDir, rnd_acts_SafeFsIsDir},
-	{"SafeFsPathSep", rnd_act_SafeFsPathSep, rnd_acth_SafeFsPathSep, rnd_acts_SafeFsPathSep}
+	{"SafeFsPathSep", rnd_act_SafeFsPathSep, rnd_acth_SafeFsPathSep, rnd_acts_SafeFsPathSep},
+	{"SafeFsRealPath", rnd_act_SafeFsRealPath, rnd_acth_SafeFsRealPath, rnd_acts_SafeFsRealPath}
 };
 
 void rnd_safe_fs_act_init2(void)
