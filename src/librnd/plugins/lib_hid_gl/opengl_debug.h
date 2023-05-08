@@ -10,7 +10,7 @@
 typedef const GLubyte * GLubyteCP;
 
 #define gld_print_ret_make(type, type_fmt) \
-static inline type gld_print_ ## type (type res, const char *fmt, ...) \
+RND_INLINE type gld_print_ ## type (type res, const char *fmt, ...) \
 { \
 	va_list ap; \
 	printf("GL: "); \
@@ -21,7 +21,7 @@ static inline type gld_print_ ## type (type res, const char *fmt, ...) \
 	return res; \
 } \
 
-static inline void gld_print(const char *fmt, ...)
+RND_INLINE void gld_print(const char *fmt, ...)
 {
 	va_list ap;
 	printf("GL: ");

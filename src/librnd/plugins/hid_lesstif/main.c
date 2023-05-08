@@ -332,7 +332,7 @@ static void Pan(int mode, rnd_coord_t x, rnd_coord_t y);
 
 /* Px converts view->design, Vx converts pcb->view */
 
-static inline int Vx(rnd_coord_t x)
+RND_INLINE int Vx(rnd_coord_t x)
 {
 	int rv = (x - view_left_x) / view_zoom + 0.5;
 	if (rnd_conf.editor.view.flip_x)
@@ -340,7 +340,7 @@ static inline int Vx(rnd_coord_t x)
 	return rv;
 }
 
-static inline int Vy(rnd_coord_t y)
+RND_INLINE int Vy(rnd_coord_t y)
 {
 	int rv = (y - view_top_y) / view_zoom + 0.5;
 	if (rnd_conf.editor.view.flip_y)
@@ -348,24 +348,24 @@ static inline int Vy(rnd_coord_t y)
 	return rv;
 }
 
-static inline int Vz(rnd_coord_t z)
+RND_INLINE int Vz(rnd_coord_t z)
 {
 	return z / view_zoom + 0.5;
 }
 
-static inline int Vw(rnd_coord_t w)
+RND_INLINE int Vw(rnd_coord_t w)
 {
 	return w < 0 ? -w : w / view_zoom + 0.5;
 }
 
-static inline rnd_coord_t Px(int x)
+RND_INLINE rnd_coord_t Px(int x)
 {
 	if (rnd_conf.editor.view.flip_x)
 		x = view_width - x;
 	return x * view_zoom + view_left_x;
 }
 
-static inline rnd_coord_t Py(int y)
+RND_INLINE rnd_coord_t Py(int y)
 {
 	if (rnd_conf.editor.view.flip_y)
 		y = view_height - y;
