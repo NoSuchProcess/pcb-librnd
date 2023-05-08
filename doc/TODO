@@ -8,7 +8,6 @@
 		- make sure hid.so has -l on them and ldd loads them
 		- create separate STATIC version of LDFLAGS_LIBRND and CFLAGS_LIBRND that still have these, for static linked test/example ode
 		- sovles the upgrade problem reported by Erich and Derek: librnd installed; then pango upgraded; sch-rnd compileation broke because of pre-upgrade LDFLAGS in librnd.mak
-	- BUG: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 
 2. For later releases ===============================================================================
@@ -19,6 +18,8 @@
 	- API additions (4.1.0)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 		- move sch-rnd's basename() call next to dirname()
+		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
+			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- FEATURE: font -v2 support:
 			- prepare for the new font lib
 				- move camv-rnd's mx_extract_*() to the font xform lib
