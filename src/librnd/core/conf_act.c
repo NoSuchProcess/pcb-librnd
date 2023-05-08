@@ -230,8 +230,79 @@ static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_ConfGet[] =
+	"ConfGet(path, [value]) - return the value of a conf node; units, colors and lists are returned as string.\n"
+/*	"ConfGet(path, desc) - return the human readable description\n"
+	"ConfGet(path, array_size) - number of elements\n"
+	"ConfGet(path, read_only) - returns 1 if node is read-only, 0 otherwise\n"*/
+	;
+static const char rnd_acth_ConfGet[] = "Return conf node value or property from the merged in-memory/native storage. Returns nil if node is unset (for value query) or not found. Intended for scripting.";
+static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op = F_Value;
+	long idx = 0;
+	const char *path;
+	rnd_conf_native_t *nat;
+
+	RND_ACT_CONVARG(1, FGW_STR, Conf, path = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[2]));
+
+	/* prepare to return nil by default */
+	res->type = FGW_PTR;
+	res->val.ptr_void = NULL;
+
+	nat = rnd_conf_get_field(path);
+	if (nat == NULL)
+		return 0;
+
+	switch(op) {
+		case F_Value:
+			switch(nat->type) {
+				case RND_CFN_STRING:
+					res->type = FGW_STR;
+					res->val.cstr = nat->val.string[idx];
+					break;
+				case RND_CFN_BOOLEAN:
+					res->type = FGW_INT;
+					res->val.nat_int = nat->val.boolean[idx];
+					break;
+				case RND_CFN_INTEGER:
+					res->type = FGW_LONG;
+					res->val.nat_long = nat->val.integer[idx];
+					break;
+				case RND_CFN_REAL:
+					res->type = FGW_DOUBLE;
+					res->val.nat_double = nat->val.real[idx];
+					break;
+				case RND_CFN_COORD:
+					res->type = FGW_COORD;
+					*(res->val.custom.c) = nat->val.coord[idx];
+					break;
+
+				case RND_CFN_UNIT:
+				case RND_CFN_COLOR:
+				case RND_CFN_LIST:
+				case RND_CFN_HLIST:
+					{
+						gds_t tmp = {0};
+						rnd_conf_print_native((rnd_conf_pfn)rnd_append_printf, &tmp, NULL, 0, nat);
+						res->type = FGW_STR | FGW_DYN;
+						res->val.str = tmp.array;
+					}
+					break;
+				default:
+					return 0;
+			}
+			break;
+	}
+	
+	return 0;
+}
+
+
 static rnd_action_t rnd_conf_action_list[] = {
-	{"conf", rnd_act_Conf, rnd_acth_Conf, rnd_acts_Conf}
+	{"conf", rnd_act_Conf, rnd_acth_Conf, rnd_acts_Conf},
+	{"confget", rnd_act_ConfGet, rnd_acth_ConfGet, rnd_acts_ConfGet}
 };
 
 void rnd_conf_act_init2(void)
