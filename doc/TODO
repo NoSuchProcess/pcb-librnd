@@ -44,6 +44,10 @@
 	- API deletion (5.0.0)
 		- remove old font support
 			- remove xform compatibility .h from font, it's been moved to core
+	- script bindings for creating new conf nodes [report: Majenko]
+		- probably needs a new subtree next to plugins/
+		- remove all nodes registered on script unload
+		- what if two scripts try to register the same path?
 
 4. Low prio ===============================================================================
 	- BUG: use libualloc for rtree stack instead of static allocation [report: Vuokko]
