@@ -268,8 +268,14 @@ static fgw_error_t rnd_act_SafeFsFgets(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return FGW_ERR_PTR_DOMAIN;
 
 	buff = malloc(len+1);
-	if (buff != NULL)
-		fgets(buff, len, argv[1].val.ptr_void);
+	if (buff != NULL) {
+		char *r = fgets(buff, len, argv[1].val.ptr_void);
+		if (r == NULL) {
+			res->type = FGW_STR;
+			res->val.str = NULL;
+			return 0;
+		}
+	}
 
 	res->type = FGW_STR | FGW_DYN;
 	res->val.str = buff;
