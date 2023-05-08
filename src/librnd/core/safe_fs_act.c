@@ -277,6 +277,36 @@ static fgw_error_t rnd_act_SafeFsFgets(fgw_arg_t *res, int argc, fgw_arg_t *argv
 }
 
 
+static const char rnd_acts_SafeFsFread[] = "SafeFsFread(f, len)";
+static const char rnd_acth_SafeFsFread[] = "Reads and returns at most len bytes from a file (open with SafeFsFopen()). Returns nil on error or eof or empty line.";
+static fgw_error_t rnd_act_SafeFsFread(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	long len;
+	char *buff;
+
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFread, ;);
+	RND_ACT_CONVARG(2, FGW_LONG, SafeFsFread, len = argv[2].val.nat_long);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	buff = malloc(len+1);
+	if (buff != NULL) {
+		long rlen = fread(buff, 1, len, argv[1].val.ptr_void);
+		if (rlen < 0) {
+			res->type = FGW_STR;
+			res->val.str = NULL;
+			return 0;
+		}
+		buff[rlen] = '\0';
+	}
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = buff;
+	return 0;
+}
+
+
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
@@ -291,7 +321,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsReadFile", rnd_act_SafeFsReadFile, rnd_acth_SafeFsReadFile, rnd_acts_SafeFsReadFile},
 	{"SafeFsFopen", rnd_act_SafeFsFopen, rnd_acth_SafeFsFopen, rnd_acts_SafeFsFopen},
 	{"SafeFsFclose", rnd_act_SafeFsFclose, rnd_acth_SafeFsFclose, rnd_acts_SafeFsFclose},
-	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets}
+	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets},
+	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread}
 };
 
 void rnd_safe_fs_act_init2(void)
