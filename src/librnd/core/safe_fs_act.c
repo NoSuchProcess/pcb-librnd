@@ -101,12 +101,28 @@ static fgw_error_t rnd_act_SafeFsMkdir(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char rnd_acts_SafeFsRename[] = "SafeFsRename(old_path, new_path)";
+static const char rnd_acth_SafeFsRename[] = "Rename an object on the file system. Return value is the same as rename(2)'s";
+static fgw_error_t rnd_act_SafeFsRename(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *old_path, *new_path;
+
+	RND_ACT_CONVARG(1, FGW_STR, SafeFsRename, old_path = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, SafeFsRename, new_path = argv[2].val.str);
+
+	res->type = FGW_INT;
+	res->val.nat_int = rnd_rename(RND_ACT_DESIGN, old_path, new_path);
+	return 0;
+}
+
+
 
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
 	{"SafeFsRemove", rnd_act_SafeFsRemove, rnd_acth_SafeFsRemove, rnd_acts_SafeFsRemove},
 	{"SafeFsUnlink", rnd_act_SafeFsUnlink, rnd_acth_SafeFsUnlink, rnd_acts_SafeFsUnlink},
-	{"SafeFsMkdir", rnd_act_SafeFsMkdir, rnd_acth_SafeFsMkdir, rnd_acts_SafeFsMkdir}
+	{"SafeFsMkdir", rnd_act_SafeFsMkdir, rnd_acth_SafeFsMkdir, rnd_acts_SafeFsMkdir},
+	{"SafeFsRename", rnd_act_SafeFsRename, rnd_acth_SafeFsRename, rnd_acts_SafeFsRename}
 };
 
 void rnd_safe_fs_act_init2(void)
