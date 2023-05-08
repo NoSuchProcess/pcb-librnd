@@ -43,7 +43,7 @@ static const char rnd_acts_Conf[] =
 static const char rnd_acth_Conf[] = "Perform various operations on the configuration tree.";
 
 extern lht_doc_t *conf_root[];
-static inline int conf_iseq_pf(void *ctx, const char *fmt, ...)
+RND_INLINE int conf_iseq_pf(void *ctx, const char *fmt, ...)
 {
 	int res;
 	va_list ap;

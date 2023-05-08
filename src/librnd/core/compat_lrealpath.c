@@ -104,13 +104,6 @@ char *rnd_lrealpath(const char *filename)
 	   skip this.  */
 #elif defined (RND_HAVE_REALPATH) && defined (RND_HAVE_UNISTD_H)
 	{
-#ifdef inline
-	/* Suppress compiler warnings; -Dinline means we are compiling in
-	   --debug with -ansi -pedantic; we do know that realpath exists on the system,
-	   because of the the ifdefs. */
-	char *realpath(const char *path, char *resolved_path);
-#endif
-
 		/* Find out the max path size.  */
 		long path_max = pathconf("/", _PC_PATH_MAX);
 		if (path_max > 0) {

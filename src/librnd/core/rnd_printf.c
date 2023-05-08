@@ -79,7 +79,7 @@ static int do_trunc0(char *str)
 
 
 /* Create sprintf specifier, using default_prec no precision is given */
-static inline void make_printf_spec(char *printf_spec_new, const char *printf_spec, int precision, int *trunc0)
+RND_INLINE void make_printf_spec(char *printf_spec_new, const char *printf_spec, int precision, int *trunc0)
 {
 	int i = 0;
 
@@ -106,7 +106,7 @@ do { \
 } while(0)
 
 /* append a suffix, with or without space */
-static int inline append_suffix(gds_t *dest, rnd_unit_suffix_t suffix_type, const char *suffix)
+RND_INLINE int append_suffix(gds_t *dest, rnd_unit_suffix_t suffix_type, const char *suffix)
 {
 	switch (suffix_type) {
 	case RND_UNIT_NO_SUFFIX:
@@ -294,7 +294,7 @@ static human_coord_t human_coord[] = {
 };
 #define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
 
-static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
+RND_INLINE int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
 	double v, frac, save;
 	long int digs, zeros;
