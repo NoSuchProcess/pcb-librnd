@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+	- FEATURE: dad() raise subcommand [report: Majenko]
 	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 	- CLEANUP/BUG: separate static linking from dynamic linking
 		- librnd.mak: do not add hid deps in LDFLAGS_LIBRND and CFLAGS_LIBRND
