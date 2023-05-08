@@ -35,7 +35,7 @@
 					- GUI text edit could auto-replace unicode with &unicode_name;
 					- upgrade aussiefont: greek alphabet (2*24), <sup> numbers (10) and degree sign all in upper 127
 	- BUG: perma scripts are initialized too late
-		- sch-rnd postporc scripts wont' run when invoked with ./sch-rnd a.rs
+		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
 		- can't easily change this without breaking existing scripts that depend on GUI availability
 		- can add a new flag in scripts.lht to load a script earlier
