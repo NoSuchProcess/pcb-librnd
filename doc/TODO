@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- FEATURE: dad() raise subcommand [report: Majenko]
 	- FEATURE: dad() close subcommand [report: Majenko]
-	- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 	- optimize: gdk crosshair attached draw in sch-rnd is slow when moving a lot of ldo symbols at once; check if the HID could do cheaper line drawing for 1 pixel lines
 
 2. For later releases ===============================================================================
@@ -42,6 +41,9 @@
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
+		- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
+			- see bug_files/TODO/inline.patch
+			- requires API change because apps depend on -Dinline too
 		- remove old font support
 			- remove xform compatibility .h from font, it's been moved to core
 	- script bindings for creating new conf nodes [report: Majenko]
