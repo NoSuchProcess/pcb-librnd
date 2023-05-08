@@ -1,5 +1,6 @@
 State on MacOSX
 ~~~~~~~~~~~~~~~
+NOTE: on OSX, if compilation fails, try --debug for ./configure.
 
 Source releases starting from 1.1.0 should compile and run out-of-the-box.
 

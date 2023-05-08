@@ -30,6 +30,7 @@ compiled with command line interface only.
 have missing dependencies. This process can be controlled using configure
 command line switches, see ./configure --help.
 
+NOTE: on OSX, if compilation fails, try --debug for ./configure.
 
 2. Compiling
 
