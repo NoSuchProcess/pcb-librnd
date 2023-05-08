@@ -143,9 +143,9 @@ static void txt_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_tex
 		if (!tctx->markup_inited) {
 			gtk_text_buffer_create_tag(b, "italic", "style", PANGO_STYLE_ITALIC, NULL);
 			gtk_text_buffer_create_tag(b, "bold", "weight", PANGO_WEIGHT_BOLD, NULL);
-			gtk_text_buffer_create_tag(b, "red", "foreground", "#aa0000", NULL);
-			gtk_text_buffer_create_tag(b, "green", "foreground", "#00aa00", NULL);
-			gtk_text_buffer_create_tag(b, "blue", "foreground", "#0000aa", NULL);
+			gtk_text_buffer_create_tag(b, "red", "foreground", rnd_gtk_conf_hid.plugins.hid_gtk.markup.fg_red, NULL);
+			gtk_text_buffer_create_tag(b, "green", "foreground", rnd_gtk_conf_hid.plugins.hid_gtk.markup.fg_green, NULL);
+			gtk_text_buffer_create_tag(b, "blue", "foreground", rnd_gtk_conf_hid.plugins.hid_gtk.markup.fg_blue, NULL);
 			tctx->markup_inited = 1;
 		}
 		while((seg = rnd_markup_next(&st, &str, &seglen)) != NULL) {

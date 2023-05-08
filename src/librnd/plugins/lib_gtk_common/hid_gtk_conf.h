@@ -64,6 +64,12 @@ typedef struct {
 				RND_CFT_BOOLEAN transient_modeless;           /* modeless dialogs are transient to the main window */
 				RND_CFT_BOOLEAN auto_present;                 /* present (pop up to the top) new dialogs automatically */
 			} dialog;
+
+			const struct {
+				RND_CFT_STRING  fg_red;                       /* foreground color to be used with <red> text in markup */
+				RND_CFT_STRING  fg_green;                     /* foreground color to be used with <green> text in markup */
+				RND_CFT_STRING  fg_blue;                      /* foreground color to be used with <blue> text in markup */
+			} markup;
 		} hid_gtk;
 	} plugins;
 } conf_hid_gtk_t;
