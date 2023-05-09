@@ -326,18 +326,18 @@
  ../src/librnd/core/globalconst.h ../src/librnd/core/paths.h ../src/librnd/core/hidlib.h \
  ../src_3rd/genlist/gendlist.h
 ../src/librnd/core/safe_fs_act.o: ../src/librnd/core/safe_fs_act.c \
- ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
+ ../src/librnd/rnd_config.h ../src/librnd/config.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/actions.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
  ../src/librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h ../src/librnd/core/safe_fs.h \
- ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h ../src/librnd/core/unit.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src/librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h
+ ../src_3rd/genlist/gendlist.h ../src/librnd/core/compat_lrealpath.h
 ../src/librnd/core/unit.o: ../src/librnd/core/unit.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/compat_misc.h ../src/librnd/config.h \
  ../src/librnd/core/unit.h ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
