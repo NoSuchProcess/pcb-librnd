@@ -282,6 +282,23 @@ static fgw_error_t rnd_act_SafeFsFgets(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	return 0;
 }
 
+static const char rnd_acts_SafeFsFputs[] = "SafeFsFputs(f, str)";
+static const char rnd_acth_SafeFsFputs[] = "Writes str to file f (previously opne with SafeFsFopen))";
+static fgw_error_t rnd_act_SafeFsFputs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *str;
+
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFputs, ;);
+	RND_ACT_CONVARG(2, FGW_STR, SafeFsFputs, str = argv[2].val.str);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	fputs(str, argv[1].val.ptr_void);
+
+	return 0;
+}
+
 
 static const char rnd_acts_SafeFsFread[] = "SafeFsFread(f, len)";
 static const char rnd_acth_SafeFsFread[] = "Reads and returns at most len bytes from a file (open with SafeFsFopen()). Returns nil on error or eof or empty line.";
@@ -343,6 +360,7 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFopen", rnd_act_SafeFsFopen, rnd_acth_SafeFsFopen, rnd_acts_SafeFsFopen},
 	{"SafeFsFclose", rnd_act_SafeFsFclose, rnd_acth_SafeFsFclose, rnd_acts_SafeFsFclose},
 	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets},
+	{"SafeFsFputs", rnd_act_SafeFsFputs, rnd_acth_SafeFsFputs, rnd_acts_SafeFsFputs},
 	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread},
 	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof}
 };
