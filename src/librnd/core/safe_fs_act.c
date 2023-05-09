@@ -25,6 +25,7 @@
  */
 
 #include <librnd/rnd_config.h>
+#include <genvector/gds_char.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_lrealpath.h>
@@ -401,6 +402,65 @@ static fgw_error_t rnd_act_SafeFsRewind(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	return 0;
 }
 
+static const char rnd_acts_SafeFsFreadSep[] = "SafeFsFreadSep(f, seps, [maxlen])";
+static const char rnd_acth_SafeFsFreadSep[] = "Reads characters that are either all non-seps or all seps. Reads at most maxlen bytes. Returns the string read or nil on eof or error. Seps is a string that contains every separator character. Maxlen is 64k by default.";
+static fgw_error_t rnd_act_SafeFsFreadSep(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	long maxlen = 65536;
+	const char *seps;
+	gds_t tmp = {0};
+	int c;
+	FILE *f;
+
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFreadSep, ;);
+	RND_ACT_CONVARG(2, FGW_STR, SafeFsFreadSep, seps = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_LONG, SafeFsFreadSep, maxlen = argv[3].val.nat_long);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	f = argv[1].val.ptr_void;
+	c = fgetc(f);
+	if (c <= 0) {
+		res->type = FGW_STR;
+		res->val.str = NULL;
+		return 0;
+	}
+
+	gds_append(&tmp, c);
+
+	if (strchr(seps, c) != NULL) {
+		/* we are reading separators */
+		for(;tmp.used < maxlen;) {
+			c = fgetc(f);
+			if (c <= 0)
+				break;
+			if (strchr(seps, c) == NULL) {
+				ungetc(c, f);
+				break;
+			}
+			gds_append(&tmp, c);
+		}
+	}
+	else {
+		/* we are reading non-separators */
+		for(;tmp.used < maxlen;) {
+			c = fgetc(f);
+			if (c <= 0)
+				break;
+			if (strchr(seps, c) != NULL) {
+				ungetc(c, f);
+				break;
+			}
+			gds_append(&tmp, c);
+		}
+	}
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = tmp.array;
+	return 0;
+}
+
 
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
@@ -422,7 +482,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof},
 	{"SafeFsFseek", rnd_act_SafeFsFseek, rnd_acth_SafeFsFseek, rnd_acts_SafeFsFseek},
 	{"SafeFsFtell", rnd_act_SafeFsFtell, rnd_acth_SafeFsFtell, rnd_acts_SafeFsFtell},
-	{"SafeFsRewind", rnd_act_SafeFsRewind, rnd_acth_SafeFsRewind, rnd_acts_SafeFsRewind}
+	{"SafeFsRewind", rnd_act_SafeFsRewind, rnd_acth_SafeFsRewind, rnd_acts_SafeFsRewind},
+	{"SafeFsFreadSep", rnd_act_SafeFsFreadSep, rnd_acth_SafeFsFreadSep, rnd_acts_SafeFsFreadSep}
 };
 
 void rnd_safe_fs_act_init2(void)
