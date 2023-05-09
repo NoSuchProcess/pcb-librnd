@@ -344,6 +344,63 @@ static fgw_error_t rnd_act_SafeFsFeof(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_SafeFsFseek[] = "SafeFsFseek(f, offs, [whence])";
+static const char rnd_acth_SafeFsFseek[] = "Same as fseek(3); whence is a string, one of set, cur or end not specified (set is used when not specified)";
+static fgw_error_t rnd_act_SafeFsFseek(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	char *whences = "set";
+	long offs;
+	int whence;
+
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFseek, ;);
+	RND_ACT_CONVARG(2, FGW_LONG, SafeFsFseek, offs = argv[2].val.nat_long);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, SafeFsFseek, whences = argv[3].val.str);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	switch(whences[0]) {
+		case 's': case 'S': whence = SEEK_SET; break;
+		case 'c': case 'C': whence = SEEK_CUR; break;
+		case 'e': case 'E': whence = SEEK_END; break;
+		default:
+			RND_ACT_FAIL(SafeFsMkdir);
+			return FGW_ERR_ARG_CONV;
+	}
+
+	res->type = FGW_INT;
+	res->val.nat_int = fseek(argv[1].val.ptr_void, offs, whence);
+	return 0;
+}
+
+static const char rnd_acts_SafeFsFtell[] = "SafeFsFtell(f)";
+static const char rnd_acth_SafeFsFtell[] = "Same as ftell(3).";
+static fgw_error_t rnd_act_SafeFsFtell(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFtell, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	res->type = FGW_LONG;
+	res->val.nat_int = ftell(argv[1].val.ptr_void);
+
+	return 0;
+}
+
+static const char rnd_acts_SafeFsRewind[] = "SafeFsRewind(f)";
+static const char rnd_acth_SafeFsRewind[] = "Same as rewind(3)";
+static fgw_error_t rnd_act_SafeFsRewind(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsRewind, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	rewind(argv[1].val.ptr_void);
+	return 0;
+}
+
 
 static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsSystem", rnd_act_SafeFsSystem, rnd_acth_SafeFsSystem, rnd_acts_SafeFsSystem},
@@ -362,7 +419,10 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFgets", rnd_act_SafeFsFgets, rnd_acth_SafeFsFgets, rnd_acts_SafeFsFgets},
 	{"SafeFsFputs", rnd_act_SafeFsFputs, rnd_acth_SafeFsFputs, rnd_acts_SafeFsFputs},
 	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread},
-	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof}
+	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof},
+	{"SafeFsFseek", rnd_act_SafeFsFseek, rnd_acth_SafeFsFseek, rnd_acts_SafeFsFseek},
+	{"SafeFsFtell", rnd_act_SafeFsFtell, rnd_acth_SafeFsFtell, rnd_acts_SafeFsFtell},
+	{"SafeFsRewind", rnd_act_SafeFsRewind, rnd_acth_SafeFsRewind, rnd_acts_SafeFsRewind}
 };
 
 void rnd_safe_fs_act_init2(void)
