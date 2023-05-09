@@ -345,6 +345,34 @@ static fgw_error_t rnd_act_SafeFsFeof(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char rnd_acts_SafeFsFerror[] = "SafeFsFerror(f)";
+static const char rnd_acth_SafeFsFerror[] = "Returns 1 if file had errors, 0 otherwise";
+static fgw_error_t rnd_act_SafeFsFerror(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsFerror, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	res->type = FGW_INT;
+	res->val.nat_int = ferror(argv[1].val.ptr_void);
+
+	return 0;
+}
+
+static const char rnd_acts_SafeFsclearerr[] = "SafeFsclearerr(f)";
+static const char rnd_acth_SafeFsclearerr[] = "Same as clearerr(3)";
+static fgw_error_t rnd_act_SafeFsclearerr(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	RND_ACT_CONVARG(1, FGW_PTR | FGW_STRUCT, SafeFsclearerr, ;);
+
+	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
+		return FGW_ERR_PTR_DOMAIN;
+
+	clearerr(argv[1].val.ptr_void);
+	return 0;
+}
+
 static const char rnd_acts_SafeFsFseek[] = "SafeFsFseek(f, offs, [whence])";
 static const char rnd_acth_SafeFsFseek[] = "Same as fseek(3); whence is a string, one of set, cur or end not specified (set is used when not specified)";
 static fgw_error_t rnd_act_SafeFsFseek(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -480,6 +508,8 @@ static rnd_action_t rnd_safe_fs_action_list[] = {
 	{"SafeFsFputs", rnd_act_SafeFsFputs, rnd_acth_SafeFsFputs, rnd_acts_SafeFsFputs},
 	{"SafeFsFread", rnd_act_SafeFsFread, rnd_acth_SafeFsFread, rnd_acts_SafeFsFread},
 	{"SafeFsFeof", rnd_act_SafeFsFeof, rnd_acth_SafeFsFeof, rnd_acts_SafeFsFeof},
+	{"SafeFsFerror", rnd_act_SafeFsFerror, rnd_acth_SafeFsFerror, rnd_acts_SafeFsFerror},
+	{"SafeFsclearerr", rnd_act_SafeFsclearerr, rnd_acth_SafeFsclearerr, rnd_acts_SafeFsclearerr},
 	{"SafeFsFseek", rnd_act_SafeFsFseek, rnd_acth_SafeFsFseek, rnd_acts_SafeFsFseek},
 	{"SafeFsFtell", rnd_act_SafeFsFtell, rnd_acth_SafeFsFtell, rnd_acts_SafeFsFtell},
 	{"SafeFsRewind", rnd_act_SafeFsRewind, rnd_acth_SafeFsRewind, rnd_acts_SafeFsRewind},
