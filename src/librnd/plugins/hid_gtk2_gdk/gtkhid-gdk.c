@@ -803,6 +803,13 @@ static void ghid_gdk_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 	vrx2 = Vz(xradius*2.0);
 	vry2 = Vz(yradius*2.0);
 
+	if ((vrx2 <= 2) && (vry2 <= 2)) {
+		gdk_draw_point(priv->out_pixel, priv->pixel_gc, Vxd(cx), Vyd(cy));
+		if (priv->out_clip != NULL)
+			gdk_draw_point(priv->out_clip, priv->clip_gc, Vxd(cx), Vyd(cy));
+		return;
+	}
+
 	if ((delta_angle > 360.0) || (delta_angle < -360.0)) {
 		start_angle = 0;
 		delta_angle = 360;
