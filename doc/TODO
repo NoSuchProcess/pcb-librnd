@@ -1,8 +1,4 @@
 1. For the upcoming release ===============================================================================
-	+ FEATURE: dad() raise subcommand [report: Majenko]
-	+ FEATURE: dad() close subcommand [report: Majenko]
-	+ FEATURE: safefs API for fopen/fgets/fread/fclose [report: Majenko]
-	+ FEATURE: safefs API for fwrite [report: Majenko]
 
 2. For later releases ===============================================================================
 	- polybool:
