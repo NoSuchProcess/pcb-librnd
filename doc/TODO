@@ -6,6 +6,10 @@
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- API additions (4.1.0)
+		- FEATURE: getxy in sch-rnd [report: Majenko]
+			- return value of action is coord, and coord is converted using %mH
+			- which alwaysl results in mm!
+			- make %mH configurable by the host app (and document the new API)
 		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
 		- move sch-rnd's basename() call next to dirname()
 		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
