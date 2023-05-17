@@ -195,7 +195,7 @@ const char *rnd_script_lang2eng(const char **lang)
 
 	eng = htss_get(&guess_lang_lang2eng, *lang);
 	if (eng == NULL) {
-		/* last resort: maybe *lang is an eng, prefixewd with fungw_ */
+		/* last resort: maybe *lang is an eng, prefixed with fungw_ */
 		char name[RND_PATH_MAX];
 		rnd_snprintf(name, RND_PATH_MAX, "fungw_%s", *lang);
 		eng = htsp_get(&guess_lang_engs, name);
