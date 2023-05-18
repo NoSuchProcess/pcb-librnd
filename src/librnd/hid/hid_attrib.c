@@ -134,6 +134,9 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 		rnd_hid_load_defaults(ha->hid, ha->opts, ha->n);
 	}
 
+	if (rnd_gui->get_export_options != NULL)
+		rnd_gui->get_export_options(rnd_gui, NULL, NULL, NULL);
+
 	/* parse the command line and overwrite with values read from argc/argv */
 	while(*argc > 0)
 	if (*argc && (*argv)[0][0] == '-' && (*argv)[0][1] == '-') {
