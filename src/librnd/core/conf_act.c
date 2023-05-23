@@ -56,8 +56,9 @@ RND_INLINE int conf_iseq_pf(void *ctx, const char *fmt, ...)
 static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
-	const char *a1, *a2, *a3, *a4;
+	const char *cmd, *a1, *a2, *a3, *a4;
 
+	RND_ACT_MAY_CONVARG(1, FGW_STR, Conf, cmd = argv[1].val.str);
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Conf, op = fgw_keyword(&argv[1]));
 	RND_ACT_MAY_CONVARG(2, FGW_STR, Conf, a1 = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, Conf, a2 = argv[3].val.str);
@@ -210,7 +211,7 @@ static fgw_error_t rnd_act_Conf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_conf_update(a1, -1);
 	}
 
-	else if (op == F_Reset) {
+	else if (rnd_strcasecmp(cmd, "reset") == 0) {
 		rnd_conf_role_t role;
 		role = rnd_conf_role_parse(a1);
 		if (role == RND_CFR_invalid) {
@@ -240,13 +241,12 @@ static const char rnd_acts_ConfGet[] =
 static const char rnd_acth_ConfGet[] = "Return conf node value or property from the merged in-memory/native storage. Returns nil if node is unset (for value query) or not found. Intended for scripting.";
 static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int op = F_Value;
 	long idx = 0;
-	const char *path;
+	const char *path, *cmd = "value";
 	rnd_conf_native_t *nat;
 
 	RND_ACT_CONVARG(1, FGW_STR, ConfGet, path = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_KEYWORD, ConfGet, op = fgw_keyword(&argv[2]));
+	RND_ACT_MAY_CONVARG(2, FGW_STR, ConfGet, cmd = argv[2].val.str);
 
 	/* prepare to return nil by default */
 	res->type = FGW_PTR;
@@ -256,8 +256,7 @@ static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (nat == NULL)
 		return 0;
 
-	switch(op) {
-		case F_Value:
+	if (rnd_strcasecmp(cmd, "value") == 0) {
 			switch(nat->type) {
 				case RND_CFN_STRING:
 					res->type = FGW_STR;
@@ -294,25 +293,23 @@ static fgw_error_t rnd_act_ConfGet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				default:
 					return 0;
 			}
-			break;
-		case F_Desc:
+	}
+	else if (rnd_strcasecmp(cmd, "desc") == 0) {
 			res->type = FGW_STR;
 			res->val.cstr = nat->description;
-			break;
-		case F_ArraySize:
+	}
+	else if (rnd_strcasecmp(cmd, "arraysize") == 0) {
 			res->type = FGW_LONG;
 			res->val.nat_long = nat->array_size;
-			break;
-		case F_ReadOnly:
+	}
+	else if (rnd_strcasecmp(cmd, "readonly") == 0) {
 			res->type = FGW_INT;
 			res->val.nat_long = nat->random_flags.read_only;
-			break;
-		case F_ConfRev:
+	}
+	else if (rnd_strcasecmp(cmd, "confrev") == 0) {
 			res->type = FGW_LONG;
 			res->val.nat_long = nat->rnd_conf_rev;
-			break;
 	}
-	
 	return 0;
 }
 
