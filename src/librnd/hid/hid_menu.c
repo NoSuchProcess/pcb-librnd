@@ -1312,8 +1312,7 @@ static int remove_menu_node_debug(rnd_hid_t *hid, lht_node_t *nd)
 	return 0;
 }
 
-static const char rnd_acts_MenuDebug[] = 
-	"MenuDebug(save, path)\n";
+static const char rnd_acts_MenuDebug[] = "MenuDebug(save, path)\n";
 static const char rnd_acth_MenuDebug[] = "Menu debug helpers: save the merged menu in a file";
 fgw_error_t rnd_act_MenuDebug(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
