@@ -250,7 +250,7 @@ static fgw_error_t rnd_act_SafeFsFclose(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
 		return FGW_ERR_PTR_DOMAIN;
 
-	fclose(argv[1].val.ptr_void);
+	fclose((FILE *)(argv[1].val.ptr_void));
 	fgw_ptr_unreg(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE);
 	return 0;
 }
@@ -270,7 +270,7 @@ static fgw_error_t rnd_act_SafeFsFgets(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	buff = malloc(len+1);
 	if (buff != NULL) {
-		char *r = fgets(buff, len, argv[1].val.ptr_void);
+		char *r = fgets(buff, len, (FILE *)(argv[1].val.ptr_void));
 		if (r == NULL) {
 			res->type = FGW_STR;
 			res->val.str = NULL;
@@ -295,7 +295,7 @@ static fgw_error_t rnd_act_SafeFsFputs(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
 		return FGW_ERR_PTR_DOMAIN;
 
-	fputs(str, argv[1].val.ptr_void);
+	fputs(str, (FILE *)(argv[1].val.ptr_void));
 
 	return 0;
 }
@@ -316,7 +316,7 @@ static fgw_error_t rnd_act_SafeFsFread(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	buff = malloc(len+1);
 	if (buff != NULL) {
-		long rlen = fread(buff, 1, len, argv[1].val.ptr_void);
+		long rlen = fread(buff, 1, len, (FILE *)(argv[1].val.ptr_void));
 		if (rlen < 0) {
 			res->type = FGW_STR;
 			res->val.str = NULL;
@@ -340,7 +340,7 @@ static fgw_error_t rnd_act_SafeFsFeof(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_PTR_DOMAIN;
 
 	res->type = FGW_INT;
-	res->val.nat_int = feof(argv[1].val.ptr_void);
+	res->val.nat_int = feof((FILE *)(argv[1].val.ptr_void));
 
 	return 0;
 }
@@ -355,7 +355,7 @@ static fgw_error_t rnd_act_SafeFsFerror(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		return FGW_ERR_PTR_DOMAIN;
 
 	res->type = FGW_INT;
-	res->val.nat_int = ferror(argv[1].val.ptr_void);
+	res->val.nat_int = ferror((FILE *)(argv[1].val.ptr_void));
 
 	return 0;
 }
@@ -369,7 +369,7 @@ static fgw_error_t rnd_act_SafeFsclearerr(fgw_arg_t *res, int argc, fgw_arg_t *a
 	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
 		return FGW_ERR_PTR_DOMAIN;
 
-	clearerr(argv[1].val.ptr_void);
+	clearerr((FILE *)(argv[1].val.ptr_void));
 	return 0;
 }
 
@@ -398,7 +398,7 @@ static fgw_error_t rnd_act_SafeFsFseek(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	}
 
 	res->type = FGW_INT;
-	res->val.nat_int = fseek(argv[1].val.ptr_void, offs, whence);
+	res->val.nat_int = fseek((FILE *)(argv[1].val.ptr_void), offs, whence);
 	return 0;
 }
 
@@ -412,7 +412,7 @@ static fgw_error_t rnd_act_SafeFsFtell(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		return FGW_ERR_PTR_DOMAIN;
 
 	res->type = FGW_LONG;
-	res->val.nat_int = ftell(argv[1].val.ptr_void);
+	res->val.nat_int = ftell((FILE *)(argv[1].val.ptr_void));
 
 	return 0;
 }
@@ -426,7 +426,7 @@ static fgw_error_t rnd_act_SafeFsRewind(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	if ((((argv[1].type & FGW_PTR) != FGW_PTR)) || (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], PTR_DOMAIN_FILE)))
 		return FGW_ERR_PTR_DOMAIN;
 
-	rewind(argv[1].val.ptr_void);
+	rewind((FILE *)(argv[1].val.ptr_void));
 	return 0;
 }
 
