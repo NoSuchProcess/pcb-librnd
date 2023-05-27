@@ -796,6 +796,8 @@ put /local/comp/OBJS_C89 /local/librnd/OBJS
 put /local/comp/OBJS_C99 ?/local/librnd/OBJS_C99
 put /local/comp/C89FLAGS {$(C89FLAGS)}
 put /local/comp/C99FLAGS {$(CFLAGS)}
+# TODO: remove this once POLYBOLLIB is part of OBJS
+append /local/comp/OBJS_C89 /local/librnd/OBJS_POLYBOOLLIB
 include {librnd/scconfig/template/compile.tmpasm}
 
 print [@
