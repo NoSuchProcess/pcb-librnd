@@ -1038,9 +1038,21 @@ static rnd_hid_cfg_mod_t lesstif_mb2cfg(int but)
 	return 0;
 }
 
+/* save rnd_render and restore at the end: we may get an async expose draw
+   while it is set to an exporter */
+#define SAVE_HID() \
+do { \
+	hid_save = rnd_render; \
+	rnd_render = &lesstif_hid; \
+} while(0)
+
+#define RESTORE_HID() \
+ rnd_render = hid_save
+
 static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 {
 	static int pressed_button = 0;
+	rnd_hid_t *hid_save;
 
 	show_crosshair(0);
 	switch (e->type) {
@@ -1126,6 +1138,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		break;
 
 	case LeaveNotify:
+		SAVE_HID();
 		crosshair_in_window = 0;
 		if (crosshair_on && (rnd_app.draw_attached != NULL))
 			rnd_app.draw_attached(ltf_hidlib, 1);
@@ -1133,6 +1146,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			rnd_app.draw_marks(ltf_hidlib, 1);
 		ShowCrosshair(rnd_false);
 		need_idle_proc();
+		RESTORE_HID();
 		break;
 
 	case EnterNotify:
@@ -2000,6 +2014,9 @@ static void draw_grid()
 
 static Boolean idle_proc(XtPointer dummy)
 {
+	rnd_hid_t *hid_save;
+
+	SAVE_HID();
 	if (need_redraw) {
 		int mx, my;
 		rnd_hid_expose_ctx_t ctx;
@@ -2095,6 +2112,7 @@ TODO(": remove this, update-on should handle all cases")
 
 	show_crosshair(1);
 	idle_proc_set = 0;
+	RESTORE_HID();
 	return True;
 }
 
@@ -2145,11 +2163,14 @@ static void lesstif_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_com
 	}
 
 	if (invalidate_depth == 0 && crosshair_on) {
+		rnd_hid_t *hid_save;
+		SAVE_HID();
 		save_pixmap = pixmap;
 		pixmap = window;
 		if (rnd_app.draw_attached != NULL)
 			rnd_app.draw_attached(ltf_hidlib, 1);
 		pixmap = save_pixmap;
+		RESTORE_HID();
 	}
 
 	if (!changes_complete)
