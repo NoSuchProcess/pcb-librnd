@@ -1472,10 +1472,18 @@ static gboolean ghid_gdk_drawing_area_expose_cb(GtkWidget *widget, rnd_gtk_expos
 	rnd_gtk_port_t *port = vport;
 	render_priv_t *priv = port->render_priv;
 	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
+	rnd_hid_t *hid_save;
+
+	/* save rnd_render and restore at the end: we may get an async expose draw
+	   while it is set to an exporter */
+	hid_save = rnd_render;
+	rnd_render = &gtk2_gdk_hid;
 
 	gdk_draw_drawable(window, priv->bg_gc, priv->base_pixel,
 		ev->area.x, ev->area.y, ev->area.x, ev->area.y, ev->area.width, ev->area.height);
 	show_crosshair(TRUE);
+
+	rnd_render = hid_save;
 	return FALSE;
 }
 
@@ -1494,6 +1502,12 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev,
 	render_priv_t *priv = ghidgui->port.render_priv;
 	rnd_coord_t ox1 = ctx->view.X1, oy1 = ctx->view.Y1, ox2 = ctx->view.X2, oy2 = ctx->view.Y2;
 	rnd_coord_t save_cpp;
+	rnd_hid_t *hid_save;
+
+	/* save rnd_render and restore at the end: we may get an async expose draw
+	   while it is set to an exporter */
+	hid_save = rnd_render;
+	rnd_render = &gtk2_gdk_hid;
 
 	vw = ctx->view.X2 - ctx->view.X1;
 	vh = ctx->view.Y2 - ctx->view.Y1;
@@ -1538,6 +1552,8 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev,
 	ghidgui->port.view = save_view;
 	ghidgui->port.view.canvas_width = save_width;
 	ghidgui->port.view.canvas_height = save_height;
+
+	rnd_render = hid_save;
 
 	return FALSE;
 }

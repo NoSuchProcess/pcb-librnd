@@ -446,6 +446,12 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	GtkAllocation allocation;
 	rnd_hid_expose_ctx_t ctx;
 	double tx, ty, zx, zy, zz;
+	rnd_hid_t *hid_save;
+
+	/* save rnd_render and restore at the end: we may get an async expose draw
+	   while it is set to an exporter */
+	hid_save = rnd_render;
+	rnd_render = hid;
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
@@ -491,6 +497,8 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	hidgl_flush_drawing();
 
 	ghid_gl_end_drawing(port);
+
+	rnd_render = hid_save;
 
 	return FALSE;
 }
