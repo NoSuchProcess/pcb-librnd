@@ -28,6 +28,7 @@
 				- maybe support for multiline? think this over
 				- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
 				- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
+				- maybe: replace delta with advance, calculated from glyph's 0, not from glyph's width (so our engine is less strange)
 				- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
 					- custom &name; -> integer translation table
 					- as a convention &amp; should be added to point to &
