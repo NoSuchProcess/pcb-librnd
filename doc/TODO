@@ -1,6 +1,7 @@
 1. For the upcoming release ===============================================================================
 
 2. For later releases ===============================================================================
+	- BUG: pcb-rnd's TODO: humancrd.pcb (rnd_printf rounding error) [report: Erich]
 	- polybool:
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
