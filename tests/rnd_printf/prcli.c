@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 	int n;
 
 	setlocale(LC_ALL, "C");
+	rnd_units_init();
 
 	rnd_printf_slot[0] = "%mr";
 
@@ -28,5 +29,6 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
+	rnd_units_uninit();
 	return 0;
 }
