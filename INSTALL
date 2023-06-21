@@ -17,8 +17,9 @@ Summary of dependencies:
 For users:
  - mandatory: C compiler
  - mandatory: make (BSD make won't work)
- - optional: glib and gtk2 if you are using the GTK GUI
- - optional: gtkglext if you need opengl rendering
+ - optional: glib and gtk2 or gtk4 if you are using the GTK GUI
+ - optional: opengl with gtk2_gl: gtkglext and libglu (only if you want opengl rendering; if not, use gtk2_gdk, no further deps required)
+ - optional: gtk4: libepoxy and libglu (opengl is mandatory for gtk4)
  - optional: motif or lesstif if you are using the lesstif frontend
  - optional: gdlib if you want to export/import to/from png, jpg or gif
  - optional: both genht and fungw (system installed) for extended user scripting
