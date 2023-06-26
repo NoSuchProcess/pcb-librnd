@@ -1,3 +1,57 @@
+librnd 4.0.2 (r35546)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: use $(MAKE) instead of make from central Makefile
+		-Fix: separate static and dynamic cflags/ldflags so that app executables compiled with a specific librnd configuration won't have stale -l's with a different librnd later
+
+	[core]
+		-Cleanup: use portable RND_INLINE instead of inline
+		-Add: ConfGet() action to provide access to the native conf nodes for user scripts
+		-Add: SafeFs actions for: system, rename, unlink, remove and mkdir (for scripting)
+		-Add: SafeFs actions for querying file stat()s, mirroring discrete calls of safe_fs.h
+		-Add: SafeFsPathSep() action for returning system-dependent path separator char (e.g. slash)
+		-Add: SafeFsRealPath() action for exposing librnd's lrealpath() implementation
+		-Add: SafeFsReadFile() action
+		-Add: SafeFs actions: fopen, fgets, fclose, fread, feof, fputs for scripting
+		-Add: SafeFs binding for fseek, ftell and rewind
+		-Add: SafeFs helper action to read a file from separator to separator
+		-Add: SafeFs bindings for ferror() and clearerr() (for scripting)
+
+	[doc]
+		-Fix: packager's doc: main description did not have gtk4 support
+		-Add: recommend --debug when compilation fails of mac, because of -Dinline
+		-Add: refine dependencies in INSTALL: mention glu for opengl; mention libepoxy for gtk4
+
+	[gtk]
+		-Fix: sign flip on pixmap rotated bbox calculation
+		-Fix: enfroce rnd_render point to gtk when rendering from callbacks
+		-Add: make gtk text markup foreground colors configurable for <red>, <green> and <blue> (may be useful on the dark theme)
+
+	[hid_gtk2_gdk]
+		-Optimize: draw a single point instead of an arc when radius is smaller than a pixel
+
+	[lesstif]
+		-Fix: sign flip on pixmap rotated bbox calculation
+		-Fix: enfroce rnd_render point to lesstif when rendering from callbacks
+		-Cleanup: use portable RND_INLINE instead of inline
+
+	[lib_hid_common]
+		-Add: extend the tooltip for auto_place to mention it enables window placement in the first place
+		-Add: FsdSimple(): simplified API to the file selection dialog (for scripting)
+		-Add: dad() iterate subcommand
+		-Add: dad() raise subcommand
+		-Add: dad() close subcommand
+
+	[lib_hid_gl]
+		-Cleanup: use portable RND_INLINE instead of inline
+
+	[poly]
+		-Cleanup: use portable RND_INLINE instead of inline
+
+	[tests]
+		-Fix: printf cli testers shall init/uninit rnd units else some rnd_printf internals may crash
+
+
 librnd 4.0.1 (r35417)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
