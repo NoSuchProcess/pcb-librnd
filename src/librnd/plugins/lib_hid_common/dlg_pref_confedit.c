@@ -260,6 +260,13 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid
 }
 
 
+static void pref_conf_edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	confedit_ctx_t *ctx = caller_data;
+	pref_conf_editval_cb(hid_ctx, caller_data, NULL);
+	rnd_hid_dad_close(hid_ctx, ctx->dlg_ret_override, 0);
+}
+
 static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t role, rnd_conflist_t *hlist, rnd_bool modal)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -280,6 +287,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 			case RND_CFN_STRING:
 				RND_DAD_STRING(ctx->dlg);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_ENTER_CB(ctx->dlg, pref_conf_edit_enter_cb);
 				RND_DAD_BUTTON(ctx->dlg, "apply");
 					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = RND_DAD_CURRENT(ctx->dlg);
