@@ -8,8 +8,9 @@
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- API additions (4.1.0)
 		- preview widget zoom upgrades (see TODO()s in sch-rnd lib_plot)
-			- per widget configurable maximum zoom level
+			- per widget configurable maximum zoom level (with poke?)
 			- pass back current zoom level in expose_ctx
+			- control flip (with poke?)
 		- FEATURE: getxy in sch-rnd [report: Majenko]
 			- return value of action is coord, and coord is converted using %mH
 			- which alwaysl results in mm!
