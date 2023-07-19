@@ -27,7 +27,8 @@
 				- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
 				- copy font to font2
 				- add spares
-			- font upgrade:
+			- font upgrade (font2):
+				- publish MAX_SIMPLE_POLY_POINTS in the header, pcb-rnd needs it (e.g. for ttf import and font decompositing)
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
 				- baseline?
 				- support for real tabs
