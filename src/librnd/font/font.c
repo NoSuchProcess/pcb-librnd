@@ -158,7 +158,7 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 		case RND_GLYPH_POLY:
 			h = a->poly.pts.used/2;
 
-			if (a->poly.pts.used >= MAX_SIMPLE_POLY_POINTS) {
+			if (a->poly.pts.used >= MAX_SIMPLE_POLY_POINTS*2) {
 				too_large = 1;
 				rnd_message(RND_MSG_ERROR, "Can't render glyph atom: simple poly with too many points %d >= %d\n", a->poly.pts.used, MAX_SIMPLE_POLY_POINTS);
 			}
