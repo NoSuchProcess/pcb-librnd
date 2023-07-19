@@ -118,6 +118,7 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_xform_mx_t mx, const unsign
 RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	long nx, ny, h;
+	int too_large;
 	rnd_glyph_atom_t res;
 	rnd_coord_t tmp[2*MAX_SIMPLE_POLY_POINTS];
 
@@ -157,7 +158,14 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 		case RND_GLYPH_POLY:
 			h = a->poly.pts.used/2;
 
-			if (poly_thin) {
+			if (a->poly.pts.used >= MAX_SIMPLE_POLY_POINTS) {
+				too_large = 1;
+				rnd_message(RND_MSG_ERROR, "Can't render glyph atom: simple poly with too many points %d >= %d\n", a->poly.pts.used, MAX_SIMPLE_POLY_POINTS);
+			}
+			else
+				too_large = 0;
+
+			if (poly_thin || too_large) {
 				rnd_coord_t lpx, lpy, tx, ty;
 
 				res.line.thickness = -1;
