@@ -172,7 +172,7 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 				res.line.type = RND_GLYPH_LINE;
 
 				tx = a->poly.pts.array[h-1];
-				ty = a->poly.pts.array[a->poly.pts.used-1];
+				ty = a->poly.pts.array[2*h-1];
 				lpx = rnd_round(rnd_xform_x(mx, tx + dx, ty));
 				lpy = rnd_round(rnd_xform_y(mx, tx + dx, ty));
 
