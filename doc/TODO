@@ -9,6 +9,7 @@
 	- API additions (4.1.0)
 		- move sch_sim_mktempdir() and sch_sim_rmtempdir() from sch-rnd to core/compat_fs.c
 		- move pcb_act_Export from pcb-rnd to librnd so it's accessible for sch-rnd and camv-rnd
+		- move sim_export() from sch-rnd sim plugins to hid/
 		- preview widget zoom upgrades (see TODO()s in sch-rnd lib_plot)
 			- per widget configurable maximum zoom level (with poke?)
 			- pass back current zoom level in expose_ctx
