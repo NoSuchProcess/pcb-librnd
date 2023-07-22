@@ -7,6 +7,7 @@
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- API additions (4.1.0)
+		- move sch_sim_mktempdir() and sch_sim_rmtempdir() from sch-rnd to core/compat_fs.c
 		- preview widget zoom upgrades (see TODO()s in sch-rnd lib_plot)
 			- per widget configurable maximum zoom level (with poke?)
 			- pass back current zoom level in expose_ctx
