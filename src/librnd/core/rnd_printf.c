@@ -297,8 +297,9 @@ static human_coord_t human_coord[] = {
 RND_INLINE int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
 	double v, frac, save;
-	long int digs, zeros;
+	long int digs, zeros, nines;
 	unsigned int score;
+	int round_up = 0;
 
 	/* convert the value to the proposed unit */
 	if (unit->family == RND_UNIT_METRIC)
@@ -317,18 +318,47 @@ RND_INLINE int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, double
 	/* count trailing zeros after the decimal point up to 8 digits */
 	frac = v - floor(v);
 	digs = frac * 100000000.0;
-	if (digs != 0)
-		for(zeros = 0; (digs % 10) == 0; zeros++, digs /= 10);
-	else
-		zeros = 8;
 
-	/* score is higher for more zeroes */
+	if (digs != 0) {
+		int in_ze = 1, in_ni = 1;
+
+		/* count continous zeros and nines from the back in parallel */
+		for(zeros = nines = 0; (digs > 0) ; digs /= 10)
+		{
+			int d = (digs % 10), ze = (d == 0), ni = (d == 9);
+			if (ze && in_ze) zeros++;
+			else in_ze = 0;
+			if (ni && in_ni) nines++;
+			else in_ni = 0;
+		}
+	}
+	else {
+		zeros = 8;
+		nines = 0;
+	}
+
+/*	rnd_trace("^^ zeros=%d nines=%d\n", zeros, nines);*/
+
+	/* ending to more nines than zeros */
+	if (nines > zeros) {
+		/* go for the nines and get the converter to round up */
+		zeros = nines;
+		round_up = 1;
+	}
+
+	/* score is higher for more zeroes or nines */
 	score = score_factor + 8 * zeros;
 
 /*	printf("try: %s '%.8f' -> %.8f %d score=%d\n", unit->suffix, v, frac, zeros, score);*/
 
 	/* update the best score */
 	if (score > *best) {
+/*		rnd_trace("save= %.16f %d\n", save, round_up);*/
+		if (round_up) {
+			/* ends in 999999, tweak it just a little bit so it's rounded up */
+			save += 0.0000000001;
+/*			rnd_trace("save= %.16f %d\n", save, round_up);*/
+		}
 		*value = save;
 		*best = score;
 		*suffix = unit->suffix;
