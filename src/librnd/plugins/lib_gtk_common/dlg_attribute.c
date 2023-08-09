@@ -1032,14 +1032,18 @@ void rnd_gtk_attr_dlg_free(void *hid_ctx)
 
 void rnd_gtk_attr_dlg_free_all(rnd_gtk_t *gctx)
 {
-	attr_dlg_t *curr, *next;
+	attr_dlg_t *curr, *last = NULL;
 
-	/* don't rely on closing always the first, just in case it fails to unlink */
-	for(curr = gdl_first(&gctx->dad_dialogs); curr != NULL; curr = next) {
-		next = curr->link.next;
+	/* have to rely on closing always the first because it may close further
+	   dialogs so ->link.next is unreliable */
+	while((curr = gdl_first(&gctx->dad_dialogs)) != NULL) {
+		if (curr == last) {
+			fprintf(stderr, "rnd_gtk_attr_dlg_free_all(): failed to force-close dialog\n");
+			break;
+		}
+		last = curr;
 		rnd_gtk_attr_dlg_free(curr);
 	}
-	
 }
 
 void rnd_gtk_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)

@@ -830,11 +830,16 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 /* Close and free all open DAD dialogs */
 void lesstif_attr_dlg_free_all(void)
 {
-	lesstif_attr_dlg_t *curr, *next;
+	lesstif_attr_dlg_t *curr, *last = NULL;
 
-	/* don't rely on closing always the first, just in case it fails to unlink */
-	for(curr = gdl_first(&ltf_dad_dialogs); curr != NULL; curr = next) {
-		next = curr->link.next;
+	/* have to rely on closing always the first because it may close further
+	   dialogs so ->link.next is unreliable */
+	while((curr = gdl_first(&ltf_dad_dialogs)) != NULL) {
+		if (curr == last) {
+			fprintf(stderr, "lesstif_attr_dlg_free_all(): failed to force-close dialog\n");
+			break;
+		}
+		last = curr;
 		lesstif_attr_dlg_free(curr);
 	}
 }
