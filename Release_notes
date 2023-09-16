@@ -1,5 +1,4 @@
-librnd 4.0.2
+librnd 4.0.3
 ~~~~~~~~~~~~
 
-This release contains bugfixes plus new scripting actions
-(SafeFS file handling, DAD() subcommands, file selection dialog action).
+This release features minor bugfixes.

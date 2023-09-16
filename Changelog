@@ -1,3 +1,24 @@
+librnd 4.0.3 (r35588)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Fix: human coord print: if coordinate ends in .99999999 to the last digit, that means rounding error in conversion; detect and correct it
+		-Fix: action registration: NULL pointer deref when a redundant action is refused to register
+
+	[font]
+		-Fix: memory overrun on font glyph rendering for simplepoly; verify number of points and fall back to thin draw mode if polygon is too large
+		-Fix: off-by-one error in thin poly rendering "last point index" in simplepoly
+		-Fix: simplepoly "numpts" is really number of coords in the array, so allow twice as many while keeping compatibility
+
+	[gtk]
+		-Fix: when closing all dialogs at quit, prepare for the case of a dialog closing subsequent dialogs automatically
+
+	[lesstif]
+		-Fix: when closing all dialogs at quit, prepare for the case of a dialog closing subsequent dialogs automatically
+
+	[lib_hid_common]
+		-Add: pressing enter on the string for conf tree value edit should accept new value and close the dialog
+
+
 librnd 4.0.2 (r35546)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
