@@ -110,7 +110,8 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		f = fgw_func_reg(rnd_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL)
 			rnd_message(RND_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
-		f->reg_data = ca;
+		else
+			f->reg_data = ca;
 	}
 }
 
