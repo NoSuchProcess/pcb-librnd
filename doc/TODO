@@ -24,9 +24,6 @@
 		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- FEATURE: font -v2 support:
-			- prepare for the new font lib
-				- copy font to font2
-				- add spares
 			- font upgrade (font2):
 				- publish MAX_SIMPLE_POLY_POINTS in the header, pcb-rnd needs it (e.g. for ttf import and font decompositing)
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
