@@ -124,15 +124,13 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 {
 	const unsigned char *s = c->pos_next, *end;
 
+
 	/* if entity is enabled and we have a & it may be the start of an entity... */
 	if ((c->opts & RND_FONT_ENTITY) && (*s == '&')) {
 		for(end = s+1; isalnum(*end); end++) ;
 		if (*end == ';') {
 			char name[PCB_FONT2_ENTITY_MAX_LENGTH+1];
 			int res, elen = end - (s+1);
-
-			if (!c->font->entity_tbl_valid)
-				return RND_FONT2_INVALID_ENTITY_CHAR; /* no table to work from */
 
 			if (elen > PCB_FONT2_ENTITY_MAX_LENGTH) {
 				*len = elen+2;
@@ -142,6 +140,10 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 			memcpy(name, s+1, elen);
 			name[elen] = '\0';
 			*len = elen+2;
+
+			if (!c->font->entity_tbl_valid)
+				return RND_FONT2_INVALID_ENTITY_CHAR; /* no table to work from */
+
 			res = htsi_get((htsi_t *)&c->font->entity_tbl, name);
 			if (res > 0)
 				return res;
