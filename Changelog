@@ -1,4 +1,4 @@
-librnd 4.0.3 (r35588)
+librnd 4.0.3 (r35593)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-Fix: human coord print: if coordinate ends in .99999999 to the last digit, that means rounding error in conversion; detect and correct it
