@@ -107,6 +107,8 @@ RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t
 	return rnd_font_advance_invalid(font, opts, x);
 }
 
+#define RND_FONT2_INVALID_ENTITY_CHAR 255
+
 /* Iterate over a string - handling &entity; sequences */
 typedef struct {
 	int chr, chr_next;
@@ -114,12 +116,44 @@ typedef struct {
 	rnd_font_render_opts_t opts;
 } cursor_t;
 
+/* Return the next character, which is either a single byte of input or is
+   an &entity; that is looked up in the font's entity table. Fills in len
+   with the input length (1 or full entity length). */
+RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
+{
+	const unsigned char *s = c->pos_next, *end;
+
+	/* if entity is enabled and we have a & it may be the start of an entity... */
+	if ((c->opts & RND_FONT_ENTITY) && (*s == '&')) {
+		for(end = s+1; isalnum(*end); end++) ;
+		if (*end == ';') {
+			char name[PCB_FONT2_ENTITY_MAX_LENGTH+1];
+			int elen = end - (s+1);
+			if (elen > PCB_FONT2_ENTITY_MAX_LENGTH) {
+				*len = elen+2;
+				rnd_message(RND_MSG_ERROR, "Text error: entity name too long around '%s'\n", s);
+				return RND_FONT2_INVALID_ENTITY_CHAR;
+			}
+			memcpy(name, s+1, elen);
+			name[elen] = '\0';
+			*len = elen+2;
+			return RND_FONT2_INVALID_ENTITY_CHAR;
+		}
+	}
+
+	/* plain char */
+	*len = 1;
+	return *s;
+}
+
 RND_INLINE void cursor_next(cursor_t *c)
 {
-	c->chr = *c->pos_next;
+	int len;
+
+	c->chr = cursor_next_ent(c, &len);
 	if (c->chr != 0) {
-		c->pos_next++;
-		c->chr_next = *c->pos_next;
+		c->pos_next += len;
+		c->chr_next = cursor_next_ent(c, &len);
 	}
 	else
 		c->chr_next = 0;
@@ -129,6 +163,9 @@ RND_INLINE void cursor_first(cursor_t *c, const unsigned char *string, rnd_font_
 {
 	c->pos_next = string;
 	c->opts = opts;
+#ifdef FONT2_DEBUG
+	c->opts |= RND_FONT_ENTITY;
+#endif
 	cursor_next(c);
 }
 

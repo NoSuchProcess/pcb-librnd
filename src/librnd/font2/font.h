@@ -33,12 +33,16 @@
 #include <librnd/core/box.h>
 #include <librnd/font2/glyph.h>
 
+/* Note: char 0 can not be used (string terminator). If RND_FONT_ENTITY is
+   enabled, char 255 is used internally to indicate unknown entities */
 #define RND_FONT_MAX_GLYPHS 255
 #define RND_FONT_DEFAULT_CELLSIZE 50
 
 /* [4.1.0] maximum number of points in a simple polygon (used in glyphs) */
 #define RND_FONT2_MAX_SIMPLE_POLY_POINTS 256
 
+/* [4.1.0] maximum length of an entity name (the sequence between & and ;) */
+#define PCB_FONT2_ENTITY_MAX_LENGTH 32
 
 typedef long int rnd_font_id_t;      /* safe reference */
 
@@ -68,7 +72,8 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_MIRROR_NO = 0,      /* do not mirror (but 0 and 1 are cleared) */
 	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
 	RND_FONT_MIRROR_X = 2,       /* change X coords (mirror over the Y axis) */
-	RND_FONT_HTAB = 4            /* render horizontal tab */
+	RND_FONT_HTAB = 4,           /* render horizontal tab */
+	RND_FONT_ENTITY = 8          /* interpret &entity; sequences and render them single glyph */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */
