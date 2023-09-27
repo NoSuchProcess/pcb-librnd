@@ -28,7 +28,7 @@
 #ifndef RND_FONT_H
 #define RND_FONT_H
 
-#include <genht/htip.h>
+#include <genht/htsi.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/box.h>
 #include <librnd/font2/glyph.h>
@@ -44,6 +44,7 @@
 /* [4.1.0] maximum length of an entity name (the sequence between & and ;) */
 #define PCB_FONT2_ENTITY_MAX_LENGTH 32
 
+
 typedef long int rnd_font_id_t;      /* safe reference */
 
 typedef struct rnd_font_s {          /* complete set of symbols */
@@ -54,6 +55,11 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	char *name;                        /* not unique */
 	rnd_font_id_t id;                  /* unique for safe reference */
 	rnd_coord_t tab_width;             /* [4.1.0, filever 2] \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
+
+	unsigned entity_tbl_valid:1;
+	unsigned kerning_tbl_valid:1;
+	htsi_t entity_tbl;                 /* [4.1.0, filever 2] key: entity name without the "&" and ";" wrapping; value: [1..245] glyph index */
+	htsi_t kerning_tbl;                /* [4.1.0, filever 2] key: character pair as string; value: value added to advance */
 
 	/* cached fields - these are not directly in the file */
 	char filever;                      /* [4.1.0] 0 for unknown/legacy, 1 for lht v1 or 2 for lht v2 */

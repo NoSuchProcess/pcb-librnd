@@ -912,6 +912,21 @@ void rnd_font_free(rnd_font_t *f)
 	for(n = 0; n <= RND_FONT_MAX_GLYPHS; n++)
 		rnd_font_free_glyph(&f->glyph[n]);
 
+	if (f->entity_tbl_valid) {
+		htsi_entry_t *e;
+		for(e = htsi_first(&f->entity_tbl); e != NULL; e = htsi_next(&f->entity_tbl, e))
+			free(e->key);
+		htsi_uninit(&f->entity_tbl);
+		f->entity_tbl_valid = 0;
+	}
+	if (f->kerning_tbl_valid) {
+		htsi_entry_t *e;
+		for(e = htsi_first(&f->kerning_tbl); e != NULL; e = htsi_next(&f->kerning_tbl, e))
+			free(e->key);
+		htsi_uninit(&f->kerning_tbl);
+		f->kerning_tbl_valid = 0;
+	}
+	
 	free(f->name);
 	f->name = NULL;
 	f->id = -1;
