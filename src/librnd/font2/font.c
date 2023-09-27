@@ -30,6 +30,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/hid/hid.h>
 #include <librnd/core/globalconst.h>
+#include <librnd/core/error.h>
 #include <librnd/core/xform_mx.h>
 #include <librnd/font2/font.h>
 
@@ -56,7 +57,7 @@ RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_op
 	rnd_coord_t tabsize;
 
 	if ((font->tab_width_cache <= 0) && (font->tab_width <= 0))
-		rnd_trace("librnd font: missing tab_width in font; improvising a value\n");
+		rnd_message(RND_MSG_WARNING, "librnd font: missing tab_width in font; improvising a value\n");
 
 	if (font->tab_width_cache <= 0)
 		font->tab_width_cache = font->tab_width;
