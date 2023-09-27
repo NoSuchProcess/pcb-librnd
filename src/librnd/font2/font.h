@@ -60,10 +60,10 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 
 
 typedef enum {                 /* bitfield - order matters for backward compatibility */
-	RND_FONT_MIRROR_NO = 0,
+	RND_FONT_MIRROR_NO = 0,      /* do not mirror (but 0 and 1 are cleared) */
 	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
 	RND_FONT_MIRROR_X = 2        /* change X coords (mirror over the Y axis) */
-} rnd_font_mirror_t;
+} rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */
 	RND_FONT_TINY_HIDE,          /* do not draw it at all */
@@ -91,15 +91,15 @@ rnd_coord_t rnd_font_string_height(rnd_font_t *font, double scy, const unsigned 
 typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
 
 /* Render a text object atom by atom using cb/cb_ctx */
-void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
+void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 /* Same as draw_string but insert extra_glyph empty space after each glyph
    except for whitepsace, where extra_spc is inserted */
-void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx);
+void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 /* Calculate all 4 corners of the transformed (e.g. rotated) box in cx;cy */
-void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width);
-void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale);
+void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width);
+void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale);
 
 /* transforms symbol coordinates so that the left edge of each symbol
    is at the zero position. The y coordinates are moved so that min(y) = 0 */

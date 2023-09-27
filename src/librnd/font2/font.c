@@ -33,6 +33,9 @@
 #include <librnd/core/xform_mx.h>
 #include <librnd/font2/font.h>
 
+/* Evaluates to 1 if opts has any mirroring */
+#define OPTS_IS_MIRRORED(opts) \
+	((opts & RND_FONT_MIRROR_Y) || (opts & RND_FONT_MIRROR_X))
 
 /* Add glyph advance to current and return the new position, for valid glyphs */
 RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, int chr, rnd_coord_t current, rnd_glyph_t *g)
@@ -131,8 +134,7 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_xform_mx_t mx, const unsign
 	return 0;
 }
 
-
-RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	long nx, ny, h;
 	int too_large;
@@ -162,7 +164,7 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			res.arc.start = a->arc.start + rotdeg;
 			res.arc.delta = a->arc.delta;
 			res.arc.thickness = rnd_round(a->arc.thickness * (scx+scy) / 4.0);
-			if (mirror) {
+			if (OPTS_IS_MIRRORED(opts)) {
 				res.arc.start = RND_SWAP_ANGLE(res.arc.start);
 				res.arc.delta = RND_SWAP_DELTA(res.arc.delta);
 			}
@@ -218,22 +220,22 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 	cb(cb_ctx, &res);
 }
 
-#define rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror) \
+#define rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts) \
 do { \
 	rnd_xform_mx_translate(mx, x0, y0); \
-	if (mirror != RND_FONT_MIRROR_NO) \
-		rnd_xform_mx_scale(mx, (mirror & RND_FONT_MIRROR_X) ? -1 : 1, (mirror & RND_FONT_MIRROR_Y) ? -1 : 1); \
+	if (OPTS_IS_MIRRORED(opts)) \
+		rnd_xform_mx_scale(mx, (opts & RND_FONT_MIRROR_X) ? -1 : 1, (opts & RND_FONT_MIRROR_Y) ? -1 : 1); \
 	rnd_xform_mx_rotate(mx, rotdeg); \
 	rnd_xform_mx_scale(mx, scx, scy); \
 } while(0)
 
-RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	const unsigned char *s;
 	rnd_coord_t x = 0;
 
-	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror);
+	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
 
 	/* Text too small at this zoom level: cheap draw */
 	if (tiny != RND_FONT_TINY_ACCURATE) {
@@ -248,7 +250,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 			rnd_glyph_t *g = &font->glyph[*s];
 			
 			for(n = 0; n < g->atoms.used; n++)
-				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
+				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
 			x = rnd_font_advance_valid(font, *s, x, g);
@@ -300,14 +302,14 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 	}
 }
 
-void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, 0, 0, cb, cb_ctx);
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, tiny, 0, 0, cb, cb_ctx);
 }
 
-void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, tiny, extra_glyph, extra_spc, cb, cb_ctx);
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, tiny, extra_glyph, extra_spc, cb, cb_ctx);
 }
 
 /* Calculates accurate centerline bbox */
@@ -359,7 +361,7 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 	dst->Y2 = a->cy + a->r * maxy;
 }
 
-RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
+RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	const unsigned char *s;
 	rnd_coord_t minx, miny, maxx, maxy, tx, min_unscaled_radius;
@@ -375,7 +377,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 		return;
 	}
 
-	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, mirror);
+	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
 
 	minx = miny = maxx = maxy = tx = 0;
 
@@ -484,14 +486,14 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 	cy[3] = rnd_round(rnd_xform_y(mx, minx, maxy));
 }
 
-void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width)
+void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width)
 {
-	rnd_font_string_bbox_(cx, cy, 0, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, 0);
+	rnd_font_string_bbox_(cx, cy, 0, font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, 0);
 }
 
-void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
+void rnd_font_string_bbox_pcb_rnd(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
-	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, mirror, thickness, min_line_width, scale);
+	rnd_font_string_bbox_(cx, cy, 1, font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, scale);
 }
 
 static void rnd_font_normalize_(rnd_font_t *f, int fix_only, int compat)
