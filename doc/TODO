@@ -25,8 +25,6 @@
 			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- FEATURE: font -v2 support:
 			- prepare for the new font lib
-				- move camv-rnd's mx_extract_*() to the font xform lib
-				- move the font xform lib to core, keep a .h at the font #including the new .h for compatibility
 				- copy font to font2
 				- add spares
 			- font upgrade (font2):
@@ -61,6 +59,7 @@
 			- remove --debug on mac from INSTALL and mac.txt
 		- remove old font support
 			- remove xform compatibility .h from font, it's been moved to core
+			- maybe remove the whole old font/
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
