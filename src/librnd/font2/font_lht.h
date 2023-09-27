@@ -25,7 +25,7 @@
  *
  */
 
-#include <librnd/font/font.h>
+#include <librnd/font2/font.h>
 
 /* calls provided by the caller:
 

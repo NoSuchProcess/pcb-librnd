@@ -31,7 +31,7 @@
 #include <librnd/hid/hid.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/xform_mx.h>
-#include <librnd/font/font.h>
+#include <librnd/font2/font.h>
 
 #define MAX_SIMPLE_POLY_POINTS 256
 
