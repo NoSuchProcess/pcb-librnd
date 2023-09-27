@@ -37,9 +37,6 @@
    name does not exist in hash:
     lht_node_t *HASH_GET(lht_node_t *hash, const char *name);
 
-   Same without printing error
-    lht_node_t *HASH_GET_OPT(lht_node_t *hash, const char *name);
-
    Prints error for nd:
     RND_LHT_ERROR(lht_node_t *nd, const char *fmt, ...)
 
@@ -152,7 +149,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	err |= PARSE_COORD(&font->max_height, HASH_GET(nd, "cell_height"));
 	err |= PARSE_COORD(&font->max_width,  HASH_GET(nd, "cell_width"));
 
-	tabw = HASH_GET_OPT(nd, "tab_width");
+	tabw = lht_dom_hash_get(nd, "tab_width");
 	if (tabw != 0) {
 		if ((font->filever > 0) && (font->filever < 2))
 			RND_LHT_ERROR(sym, "tab_width is unexpected below font file version 2.\n");
