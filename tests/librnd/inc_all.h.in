@@ -5,6 +5,7 @@ foreach /local/h in /local/objs
 	sub /local/h {^[$](LIBRND)/} {}
 	switch /local/h
 		case {core/funchash_core_list.h} end;
+		case {^font/} end;
 		default
 			print [@#include <librnd/@/local/h@>
 @]
