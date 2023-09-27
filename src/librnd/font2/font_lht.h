@@ -152,7 +152,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	tabw = lht_dom_hash_get(nd, "tab_width");
 	if (tabw != 0) {
 		if ((font->filever > 0) && (font->filever < 2))
-			RND_LHT_ERROR(sym, "tab_width is unexpected below font file version 2.\n");
+			RND_LHT_ERROR(tabw, "tab_width is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->tab_width, tabw);
 	}
 	else
