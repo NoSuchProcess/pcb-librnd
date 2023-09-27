@@ -53,17 +53,27 @@
 
 RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t x)
 {
-	rnd_coord_t tabsize = font->tab_width;
+	rnd_coord_t tabsize;
 
-	if (font->tab_width <= 0) {
+	if (font->tab_width_cache <= 0)
+		rnd_trace("missing tab width\n");
+
+	if (font->tab_width_cache <= 0)
+		font->tab_width_cache = font->tab_width;
+
+	if (font->tab_width_cache <= 0) {
+		/* heuristics if there was no explicit tab_width */
 		if (font->glyph['M'].valid)
-			tabsize = font->glyph['M'].width * 4;
+			font->tab_width_cache = font->glyph['M'].width * 4;
 		else if (font->glyph[' '].valid)
-			tabsize = font->glyph[' '].width * 4;
+			font->tab_width_cache = font->glyph[' '].width * 4;
+		else if (font->height > 0)
+			font->tab_width_cache = font->height * 4;
 		else
-			tabsize = font->height * 4;
+			font->tab_width_cache = RND_MM_TO_COORD(3);
 	}
 
+	tabsize = font->tab_width_cache;
 	return ((x + tabsize)/tabsize)*tabsize;
 }
 

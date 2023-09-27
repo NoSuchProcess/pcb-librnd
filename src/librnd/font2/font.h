@@ -50,7 +50,10 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	char *name;                        /* not unique */
 	rnd_font_id_t id;                  /* unique for safe reference */
 	rnd_coord_t tab_width;             /* [4.1.0, filever 2] \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
+
+	/* cached fields - these are not directly in the file */
 	char filever;                      /* [4.1.0] 0 for unknown/legacy, 1 for lht v1 or 2 for lht v2 */
+	rnd_coord_t tab_width_cache;       /* either ->tab_width or if that's missing, computed by a heuristic only once per font */
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void);
