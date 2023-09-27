@@ -129,7 +129,11 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 		for(end = s+1; isalnum(*end); end++) ;
 		if (*end == ';') {
 			char name[PCB_FONT2_ENTITY_MAX_LENGTH+1];
-			int elen = end - (s+1);
+			int res, elen = end - (s+1);
+
+			if (!c->font->entity_tbl_valid)
+				return RND_FONT2_INVALID_ENTITY_CHAR; /* no table to work from */
+
 			if (elen > PCB_FONT2_ENTITY_MAX_LENGTH) {
 				*len = elen+2;
 				rnd_message(RND_MSG_ERROR, "Text error: entity name too long around '%s'\n", s);
@@ -138,6 +142,9 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 			memcpy(name, s+1, elen);
 			name[elen] = '\0';
 			*len = elen+2;
+			res = htsi_get((htsi_t *)&c->font->entity_tbl, name);
+			if (res > 0)
+				return res;
 			return RND_FONT2_INVALID_ENTITY_CHAR;
 		}
 		/* else: not an entity; fall through to go char by char */
@@ -163,8 +170,9 @@ RND_INLINE void cursor_next(cursor_t *c)
 
 RND_INLINE void cursor_first(const rnd_font_t *font, rnd_font_render_opts_t opts, cursor_t *c, const unsigned char *string)
 {
-	c->pos_next = string;
+	c->font = font;
 	c->opts = opts;
+	c->pos_next = string;
 #ifdef FONT2_DEBUG
 	c->opts |= RND_FONT_ENTITY;
 #endif
