@@ -15,7 +15,7 @@
 			- control flip (with poke?)
 		- FEATURE: getxy in sch-rnd [report: Majenko]
 			- return value of action is coord, and coord is converted using %mH
-			- which alwaysl results in mm!
+			- which always results in mm!
 			- make %mH configurable by the host app (and document the new API)
 			- easiest way: rnd_printf.c, expose human_coord_t *human_coord so it can be overwritten with a different array
 		- move sch-rnd's plugins/sch_dialogs/timed_chg.h to lib_hid_common
