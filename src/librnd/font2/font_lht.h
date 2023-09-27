@@ -37,11 +37,17 @@
    name does not exist in hash:
     lht_node_t *HASH_GET(lht_node_t *hash, const char *name);
 
+   Same without printing error
+    lht_node_t *HASH_GET_OPT(lht_node_t *hash, const char *name);
+
    Prints error for nd:
     RND_LHT_ERROR(lht_node_t *nd, const char *fmt, ...)
 
 */
 
+/* Parsing depends on font->filever: when seeing v2+ features, a warning
+   is generated if font->filever is 1; font->filever==0 means unknown,
+   no warning is issued. */
 static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd);
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd);
 
@@ -134,7 +140,7 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 {
-	lht_node_t *grp, *sym;
+	lht_node_t *grp, *sym, *tabw;
 	lht_dom_iterator_t it;
 	int err = 0;
 
@@ -145,6 +151,15 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 
 	err |= PARSE_COORD(&font->max_height, HASH_GET(nd, "cell_height"));
 	err |= PARSE_COORD(&font->max_width,  HASH_GET(nd, "cell_width"));
+
+	tabw = HASH_GET_OPT(nd, "tab_width");
+	if (tabw != 0) {
+		if ((font->filever > 0) && (font->filever < 2))
+			RND_LHT_ERROR(sym, "tab_width is unexpected below font file version 2.\n");
+		PARSE_COORD(&font->tab_width, tabw);
+	}
+	else
+		font->tab_width = 0;
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
@@ -187,13 +202,22 @@ static int rnd_font_load(rnd_design_t *design, rnd_font_t *dst, const char *fn, 
 		return -1;
 	}
 
-	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-font-v1"))) {
+	dst->filever = 0;
+	if ((doc->root->type != LHT_LIST) || (strncmp(doc->root->name, "pcb-rnd-font-v", 14) != 0)) {
 		if (!quiet)
 			rnd_message(RND_MSG_ERROR, "Error loading font: %s is not a font lihata.\n", fn);
 		res = -1;
 	}
-	else
-		rnd_font_lht_parse_font(dst, doc->root->data.list.first);
+	else {
+		dst->filever = atoi(doc->root->name+14);
+		if ((dst->filever < 1) || (dst->filever > 2)) {
+			if (!quiet)
+				rnd_message(RND_MSG_ERROR, "Error loading font: %s version %d is out of range (version not supported).\n", fn, dst->filever);
+			res = -1;
+		}
+		else
+			rnd_font_lht_parse_font(dst, doc->root->data.list.first);
+	}
 
 	free(errmsg);
 	lht_dom_uninit(doc);

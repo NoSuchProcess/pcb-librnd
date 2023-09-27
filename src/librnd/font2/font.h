@@ -49,7 +49,8 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	rnd_glyph_t glyph[RND_FONT_MAX_GLYPHS+1];
 	char *name;                        /* not unique */
 	rnd_font_id_t id;                  /* unique for safe reference */
-	rnd_coord_t tab_width;             /* \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
+	rnd_coord_t tab_width;             /* [4.1.0, filever 2] \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
+	char filever;                      /* [4.1.0] 0 for unknown/legacy, 1 for lht v1 or 2 for lht v2 */
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void);
