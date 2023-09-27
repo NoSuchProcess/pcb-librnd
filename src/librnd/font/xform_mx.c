@@ -133,3 +133,18 @@ void rnd_xform_mx_mirrorx(rnd_xform_mx_t mx)
 {
 	rnd_xform_mx_scale(mx, 0, -1);
 }
+
+/* based on https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix/13165#13165 */
+double rnd_xform_mx_extract_rot(rnd_xform_mx_t mx)
+{
+	return atan2(mx[3], mx[4]) * RND_RAD_TO_DEG;
+}
+
+void rnd_xform_mx_extract_scale(rnd_xform_mx_t mx, double *sx, double *sy)
+{
+	*sx = sqrt(mx[0] * mx[0] + mx[1] * mx[1]);
+	*sy = sqrt(mx[3] * mx[3] + mx[4] * mx[4]);
+/* This would be needed for mirroring
+	if (mx[0] < 0) *sx = -(*sx);
+	if (mx[4] < 0) *sy = -(*sy);*/
+}
