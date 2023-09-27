@@ -8,6 +8,7 @@
 static int PARSE_COORD(rnd_coord_t *dst, lht_node_t *src) { return 0; }
 static int PARSE_DOUBLE(double *dst, lht_node_t *src) { return 0; }
 static lht_node_t *HASH_GET(lht_node_t *hash, const char *name) { return NULL; }
+static lht_node_t *HASH_GET_OPT(lht_node_t *hash, const char *name) { return NULL; }
 static int RND_LHT_ERROR(lht_node_t *nd, char *fmt, ...) { return 0; }
 
 
