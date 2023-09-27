@@ -56,7 +56,7 @@ RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_op
 	rnd_coord_t tabsize;
 
 	if ((font->tab_width_cache <= 0) && (font->tab_width <= 0))
-		rnd_trace("missing tab width\n");
+		rnd_trace("librnd font: missing tab_width in font; improvising a value\n");
 
 	if (font->tab_width_cache <= 0)
 		font->tab_width_cache = font->tab_width;
