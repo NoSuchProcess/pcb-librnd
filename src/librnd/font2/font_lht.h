@@ -25,7 +25,9 @@
  *
  */
 
+#include <librnd/core/compat_misc.h>
 #include <librnd/font2/font.h>
+#include <genht/hash.h>
 
 /* calls provided by the caller:
 
@@ -137,7 +139,7 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 {
-	lht_node_t *grp, *sym, *tabw;
+	lht_node_t *grp, *sym, *tabw, *ents, *ent;
 	lht_dom_iterator_t it;
 	int err = 0;
 
@@ -150,13 +152,35 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	err |= PARSE_COORD(&font->max_width,  HASH_GET(nd, "cell_width"));
 
 	tabw = lht_dom_hash_get(nd, "tab_width");
-	if (tabw != 0) {
+	if (tabw != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
 			RND_LHT_ERROR(tabw, "tab_width is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->tab_width, tabw);
 	}
 	else
 		font->tab_width = 0;
+
+	ents = lht_dom_hash_get(nd, "entities");
+	if (ents != NULL) {
+		if (ents->type == LHT_HASH) {
+			if ((font->filever > 0) && (font->filever < 2))
+				RND_LHT_ERROR(ents, "entities is unexpected below font file version 2.\n");
+			htsi_init(&font->entity_tbl, strhash, strkeyeq);
+			font->entity_tbl_valid = 1;
+			for(ent = lht_dom_first(&it, ents); ent != NULL; ent = lht_dom_next(&it)) {
+				if (ent->type == LHT_TEXT) {
+					char *end;
+					long idx = strtol(ent->data.text.value, &end, 10);
+					if ((*end == '\0') && (idx > 0) && (idx < 255))
+						htsi_set(&font->entity_tbl, rnd_strdup(ent->name), idx);
+					else
+						RND_LHT_ERROR(ent, "entity value must be a decimal integer between 1 and 254 inclusive\n");
+				}
+			}
+		}
+		else
+			RND_LHT_ERROR(ents, "entities shall be a hash\n");
+	}
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
