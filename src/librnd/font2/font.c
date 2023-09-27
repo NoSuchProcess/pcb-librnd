@@ -139,6 +139,7 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 			*len = elen+2;
 			return RND_FONT2_INVALID_ENTITY_CHAR;
 		}
+		/* else: not an entity; fall through to go char by char */
 	}
 
 	/* plain char */
