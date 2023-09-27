@@ -121,6 +121,7 @@ append /local/librnd/OBJS_CORELIB [@
 	$(LIBRND)/core/safe_fs.o
 	$(LIBRND)/core/safe_fs_act.o
 	$(LIBRND)/core/unit.o
+	$(LIBRND)/core/xform_mx.o
 	$(LIBRND)/core/vtc0.o
 @]
 
@@ -144,7 +145,6 @@ put /local/librnd/OBJS_POLYBOOLLIB [@
 put /local/librnd/OBJS_FONTLIB [@
 	$(LIBRND)/font/font.o
 	$(LIBRND)/font/vtgla.o
-	$(LIBRND)/font/xform_mx.o
 @]
 
 put /local/librnd/OBJS_HIDLIB [@
