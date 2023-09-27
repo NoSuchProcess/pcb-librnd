@@ -514,6 +514,10 @@ librnd-font.so: librnd-font.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so.$(PCB_RND_VER_MAJOR)
 
+librnd-font2.so: librnd-font2.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-font2.so.$(PCB_RND_VER) librnd-font2.so
+	$(SCCBOX) ln -f librnd-font2.so.$(PCB_RND_VER) librnd-font2.so.$(PCB_RND_VER_MAJOR)
+
 librnd-hid.so: librnd-hid.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so
 	$(SCCBOX) ln -f librnd-hid.so.$(PCB_RND_VER) librnd-hid.so.$(PCB_RND_VER_MAJOR)
@@ -534,6 +538,7 @@ HIDLIB_CLEAN_FILES_SO=\
 	librnd-3rd.so.$(PCB_RND_VER) \
 	librnd-poly.so.$(PCB_RND_VER) \
 	librnd-font.so.$(PCB_RND_VER) \
+	librnd-font2.so.$(PCB_RND_VER) \
 	librnd-hid.so.$(PCB_RND_VER)
 
 HIDLIB_CLEAN_FILES_SO_SY=\
@@ -541,6 +546,7 @@ HIDLIB_CLEAN_FILES_SO_SY=\
 	librnd-3rd.so \
 	librnd-poly.so \
 	librnd-font.so \
+	librnd-font2.so \
 	librnd-hid.so
 @]
 end
@@ -551,6 +557,7 @@ HIDLIB_CLEAN_FILES_A=\
 	librnd-3rd.a \
 	librnd-poly.a \
 	librnd-font.a \
+	librnd-font2.a \
 	librnd-hid.a
 
 HIDLIB_CLEAN_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
@@ -630,6 +637,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "librnd-font.a" "$(HL_LIBDIR)/librnd-font.a"
+	$(SCCBOX) $(HOW) "librnd-font2.a" "$(HL_LIBDIR)/librnd-font2.a"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "$(LIBRND)/plugin.state" "$(HL_SHAREDIR)/plugin.state"
@@ -664,6 +672,7 @@ else
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
 @]
 end
@@ -775,6 +784,8 @@ install_librnd_sy:
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so"
 
