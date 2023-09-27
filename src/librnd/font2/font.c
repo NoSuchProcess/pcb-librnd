@@ -111,6 +111,7 @@ RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t
 
 /* Iterate over a string - handling &entity; sequences */
 typedef struct {
+	const rnd_font_t *font;
 	int chr, chr_next;
 	const unsigned char *pos_next;
 	rnd_font_render_opts_t opts;
@@ -160,7 +161,7 @@ RND_INLINE void cursor_next(cursor_t *c)
 		c->chr_next = 0;
 }
 
-RND_INLINE void cursor_first(cursor_t *c, const unsigned char *string, rnd_font_render_opts_t opts)
+RND_INLINE void cursor_first(const rnd_font_t *font, rnd_font_render_opts_t opts, cursor_t *c, const unsigned char *string)
 {
 	c->pos_next = string;
 	c->opts = opts;
@@ -179,7 +180,7 @@ rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts,
 	if (string == NULL)
 		return 0;
 
-	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
 		w = rnd_font_advance(font, opts, c.chr, w);
 	return rnd_round((double)w * scx);
 }
@@ -194,7 +195,7 @@ rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts
 
 	h = font->max_height;
 
-	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
 		if (c.chr == '\n')
 			h += font->max_height;
 
@@ -354,7 +355,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 			return;
 	}
 
-	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c)) {
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
 		/* draw atoms if symbol is valid and data is present */
 		if (is_valid(font, opts, c.chr)) {
 			long n;
@@ -500,7 +501,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 		min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
 
 	/* calculate size of the bounding box */
-	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c)) {
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
 		if (is_valid(font, opts, c.chr)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[c.chr];
@@ -845,7 +846,7 @@ int rnd_font_invalid_chars(rnd_font_t *font, rnd_font_render_opts_t opts, const 
 	cursor_t c;
 	int ctr = 0;
 
-	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
 		if ((c.chr > RND_FONT_MAX_GLYPHS) || (!font->glyph[c.chr].valid))
 			ctr++;
 
