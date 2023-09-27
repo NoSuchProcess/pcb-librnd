@@ -38,31 +38,31 @@
 	((opts & RND_FONT_MIRROR_Y) || (opts & RND_FONT_MIRROR_X))
 
 /* Add glyph advance to current and return the new position, for valid glyphs */
-RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_coord_t current, int chr, rnd_glyph_t *g)
+RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t current, int chr, rnd_glyph_t *g)
 {
 	return current + g->width + g->xdelta;
 }
 
 /* Add glyph advance to current and return the new position, for the unknown glyph */
-RND_INLINE rnd_coord_t rnd_font_advance_invalid(rnd_font_t *font, rnd_coord_t current)
+RND_INLINE rnd_coord_t rnd_font_advance_invalid(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t current)
 {
 	const rnd_box_t *unk_gl = &font->unknown_glyph;
 	return current + ((unk_gl->X2 - unk_gl->X1) * 6 / 5);
 }
 
 /* Add glyph advance to current and return the new position, for chr */
-RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, int chr, rnd_coord_t x)
+RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t opts, int chr, rnd_coord_t x)
 {
 
 	if ((chr > 0) && (chr <= RND_FONT_MAX_GLYPHS)) {
 		rnd_glyph_t *g = &font->glyph[chr];
 		if (g->valid)
-			return rnd_font_advance_valid(font, x, chr, g);
+			return rnd_font_advance_valid(font, opts, x, chr, g);
 	}
-	return rnd_font_advance_invalid(font, x);
+	return rnd_font_advance_invalid(font, opts, x);
 }
 
-rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string)
+rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts, double scx, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
 
@@ -70,11 +70,11 @@ rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned c
 		return 0;
 
 	for(; *string != '\0'; string++)
-		w = rnd_font_advance(font, *string, w);
+		w = rnd_font_advance(font, opts, *string, w);
 	return rnd_round((double)w * scx);
 }
 
-rnd_coord_t rnd_font_string_height(rnd_font_t *font, double scy, const unsigned char *string)
+rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts, double scy, const unsigned char *string)
 {
 	rnd_coord_t h;
 
@@ -105,9 +105,9 @@ RND_INLINE void cheap_text_line(rnd_xform_mx_t mx, rnd_coord_t x1, rnd_coord_t y
 }
 
 /* Decreased level-of-detail: draw only a few lines for the whole text */
-RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_xform_mx_t mx, const unsigned char *string, double scx, double scy, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_xform_mx_t mx, const unsigned char *string, double scx, double scy, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_coord_t w, h = rnd_font_string_height(font, scy, string);
+	rnd_coord_t w, h = rnd_font_string_height(font, opts, scy, string);
 
 	if (tiny == RND_FONT_TINY_HIDE) {
 		if (h <= rnd_render->coord_per_pix*6) /* <= 6 pixel high: unreadable */
@@ -115,14 +115,14 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_xform_mx_t mx, const unsign
 	}
 	else if (tiny == RND_FONT_TINY_CHEAP) {
 		if (h <= rnd_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
-			w = rnd_font_string_width(font, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
-			h = rnd_font_string_height(font, 1.0, string);
+			w = rnd_font_string_width(font, opts, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
+			h = rnd_font_string_height(font, opts, 1.0, string);
 			cheap_text_line(mx, 0, h/2, w, h/2, cb, cb_ctx);
 			return 1;
 		}
 		else if (h <= rnd_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
-			w = rnd_font_string_width(font, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
-			h = rnd_font_string_height(font, 1.0, string);
+			w = rnd_font_string_width(font, opts, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
+			h = rnd_font_string_height(font, opts, 1.0, string);
 			h /= 4;
 			cheap_text_line(mx, 0, h,   w, h,   cb, cb_ctx);
 			cheap_text_line(mx, 0, h,   w, h*3, cb, cb_ctx);
@@ -239,7 +239,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 
 	/* Text too small at this zoom level: cheap draw */
 	if (tiny != RND_FONT_TINY_ACCURATE) {
-		if (draw_text_cheap(font, mx, string, scx, scy, tiny, cb, cb_ctx))
+		if (draw_text_cheap(font, opts, mx, string, scx, scy, tiny, cb, cb_ctx))
 			return;
 	}
 
@@ -253,7 +253,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, x, *s, g);
+			x = rnd_font_advance_valid(font, opts, x, *s, g);
 		}
 		else {
 			/* the default symbol is a filled box */
@@ -296,7 +296,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				tmp.poly.pts.array = p;
 				cb(cb_ctx, &tmp);
 			}
-			x = rnd_font_advance_invalid(font, x);
+			x = rnd_font_advance_invalid(font, opts, x);
 		}
 		x += (isspace(*s)) ? extra_spc :  extra_glyph; /* for justify */
 	}
@@ -455,7 +455,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			tx = rnd_font_advance_valid(font, tx, *s, g);
+			tx = rnd_font_advance_valid(font, opts, tx, *s, g);
 		}
 		else {
 			rnd_box_t *ds = &font->unknown_glyph;
@@ -469,7 +469,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			maxx = MAX(maxx, ds->X2 + tx);
 			maxy = MAX(maxy, ds->Y2);
 
-			tx = rnd_font_advance_invalid(font, tx);
+			tx = rnd_font_advance_invalid(font, opts, tx);
 		}
 	}
 

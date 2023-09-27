@@ -84,8 +84,8 @@ void rnd_font_free_glyph(rnd_glyph_t *g);
 
 
 /* Very rough (but quick) estimation on the full size of the text */
-rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string);
-rnd_coord_t rnd_font_string_height(rnd_font_t *font, double scy, const unsigned char *string);
+rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts, double scx, const unsigned char *string);
+rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts, double scy, const unsigned char *string);
 
 
 typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
