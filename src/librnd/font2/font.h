@@ -62,7 +62,8 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 typedef enum {                 /* bitfield - order matters for backward compatibility */
 	RND_FONT_MIRROR_NO = 0,      /* do not mirror (but 0 and 1 are cleared) */
 	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
-	RND_FONT_MIRROR_X = 2        /* change X coords (mirror over the Y axis) */
+	RND_FONT_MIRROR_X = 2,       /* change X coords (mirror over the Y axis) */
+	RND_FONT_HTAB = 4            /* render horizontal tab */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */

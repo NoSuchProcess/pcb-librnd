@@ -33,13 +33,36 @@
 #include <librnd/core/xform_mx.h>
 #include <librnd/font2/font.h>
 
+#define FONT2_DEBUG 1
+
 /* Evaluates to 1 if opts has any mirroring */
 #define OPTS_IS_MIRRORED(opts) \
 	((opts & RND_FONT_MIRROR_Y) || (opts & RND_FONT_MIRROR_X))
 
+#ifdef FONT2_DEBUG
+/* force tab support for debug */
+#define is_tab(opts, chr) \
+	((chr) == '\t')
+#else
+#define is_tab(opts, chr) \
+	(((chr) == '\t') && ((opts) & RND_FONT_HTAB))
+#endif
+
+#define is_valid(font, opts, chr) \
+		(is_tab(opts, chr) || (((chr) <= RND_FONT_MAX_GLYPHS) && (font)->glyph[(chr)].valid))
+
+RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t x)
+{
+	rnd_coord_t tabsize = RND_MM_TO_COORD(8);
+	rnd_trace("TAB2! x=%ld -> %ld\n", x, ((x + tabsize)/tabsize)*tabsize);
+	return ((x + tabsize)/tabsize)*tabsize;
+}
+
 /* Add glyph advance to current and return the new position, for valid glyphs */
 RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t current, int chr, rnd_glyph_t *g)
 {
+	if (is_tab(opts, chr))
+		return rnd_font_advance_tab(font, opts, current);
 	return current + g->width + g->xdelta;
 }
 
@@ -53,6 +76,8 @@ RND_INLINE rnd_coord_t rnd_font_advance_invalid(rnd_font_t *font, rnd_font_rende
 /* Add glyph advance to current and return the new position, for chr */
 RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t opts, int chr, rnd_coord_t x)
 {
+	if (is_tab(opts, chr))
+		return rnd_font_advance_tab(font, opts, x);
 
 	if ((chr > 0) && (chr <= RND_FONT_MAX_GLYPHS)) {
 		rnd_glyph_t *g = &font->glyph[chr];
@@ -245,7 +270,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 
 	for(s = string; *s != '\0'; s++) {
 		/* draw atoms if symbol is valid and data is present */
-		if ((*s <= RND_FONT_MAX_GLYPHS) && font->glyph[*s].valid) {
+		if (is_valid(font, opts, *s)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[*s];
 			
@@ -390,7 +415,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 
 	/* calculate size of the bounding box */
 	for (s = string; *s != '\0'; s++) {
-		if ((*s <= RND_FONT_MAX_GLYPHS) && font->glyph[*s].valid) {
+		if (is_valid(font, opts, *s)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[*s];
 
