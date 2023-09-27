@@ -38,7 +38,7 @@
 	((opts & RND_FONT_MIRROR_Y) || (opts & RND_FONT_MIRROR_X))
 
 /* Add glyph advance to current and return the new position, for valid glyphs */
-RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, int chr, rnd_coord_t current, rnd_glyph_t *g)
+RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_coord_t current, int chr, rnd_glyph_t *g)
 {
 	return current + g->width + g->xdelta;
 }
@@ -57,7 +57,7 @@ RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, int chr, rnd_coord_t x
 	if ((chr > 0) && (chr <= RND_FONT_MAX_GLYPHS)) {
 		rnd_glyph_t *g = &font->glyph[chr];
 		if (g->valid)
-			return rnd_font_advance_valid(font, chr, x, g);
+			return rnd_font_advance_valid(font, x, chr, g);
 	}
 	return rnd_font_advance_invalid(font, x);
 }
@@ -253,7 +253,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, *s, x, g);
+			x = rnd_font_advance_valid(font, x, *s, g);
 		}
 		else {
 			/* the default symbol is a filled box */
@@ -455,7 +455,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			tx = rnd_font_advance_valid(font, *s, tx, g);
+			tx = rnd_font_advance_valid(font, tx, *s, g);
 		}
 		else {
 			rnd_box_t *ds = &font->unknown_glyph;
