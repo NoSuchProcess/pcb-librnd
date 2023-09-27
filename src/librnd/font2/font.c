@@ -33,22 +33,41 @@
 #include <librnd/core/xform_mx.h>
 #include <librnd/font2/font.h>
 
+
+/* Add glyph advance to current and return the new position, for valid glyphs */
+RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, int chr, rnd_coord_t current, rnd_glyph_t *g)
+{
+	return current + g->width + g->xdelta;
+}
+
+/* Add glyph advance to current and return the new position, for the unknown glyph */
+RND_INLINE rnd_coord_t rnd_font_advance_invalid(rnd_font_t *font, rnd_coord_t current)
+{
+	const rnd_box_t *unk_gl = &font->unknown_glyph;
+	return current + ((unk_gl->X2 - unk_gl->X1) * 6 / 5);
+}
+
+/* Add glyph advance to current and return the new position, for chr */
+RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, int chr, rnd_coord_t x)
+{
+
+	if ((chr > 0) && (chr <= RND_FONT_MAX_GLYPHS)) {
+		rnd_glyph_t *g = &font->glyph[chr];
+		if (g->valid)
+			return rnd_font_advance_valid(font, chr, x, g);
+	}
+	return rnd_font_advance_invalid(font, x);
+}
+
 rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
-	const rnd_box_t *unk_gl;
 
 	if (string == NULL)
 		return 0;
 
-	unk_gl = &font->unknown_glyph;
-
-	for(; *string != '\0'; string++) {
-		if ((*string <= RND_FONT_MAX_GLYPHS) && font->glyph[*string].valid)
-			w += (font->glyph[*string].width + font->glyph[*string].xdelta);
-		else
-			w += (unk_gl->X2 - unk_gl->X1) * 6 / 5;
-	}
+	for(; *string != '\0'; string++)
+		w = rnd_font_advance(font, *string, w);
 	return rnd_round((double)w * scx);
 }
 
@@ -232,11 +251,10 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, mirror, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x += (g->width + g->xdelta);
+			x = rnd_font_advance_valid(font, *s, x, g);
 		}
 		else {
 			/* the default symbol is a filled box */
-			rnd_coord_t size = (font->unknown_glyph.X2 - font->unknown_glyph.X1) * 6 / 5;
 			rnd_coord_t p[8];
 			rnd_glyph_atom_t tmp;
 
@@ -276,7 +294,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				tmp.poly.pts.array = p;
 				cb(cb_ctx, &tmp);
 			}
-			x += size;
+			x = rnd_font_advance_invalid(font, x);
 		}
 		x += (isspace(*s)) ? extra_spc :  extra_glyph; /* for justify */
 	}
@@ -344,7 +362,6 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	const unsigned char *s;
-	int space, width;
 	rnd_coord_t minx, miny, maxx, maxy, tx, min_unscaled_radius;
 	rnd_bool first_time = rnd_true;
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
@@ -375,7 +392,6 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			long n;
 			rnd_glyph_t *g = &font->glyph[*s];
 
-			width = g->width;
 			for(n = 0; n < g->atoms.used; n++) {
 				rnd_glyph_atom_t *a = &g->atoms.array[n];
 				rnd_coord_t unscaled_radius;
@@ -437,11 +453,10 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			space = g->xdelta;
+			tx = rnd_font_advance_valid(font, *s, tx, g);
 		}
 		else {
 			rnd_box_t *ds = &font->unknown_glyph;
-			rnd_coord_t w = ds->X2 - ds->X1;
 
 			minx = MIN(minx, ds->X1 + tx);
 			miny = MIN(miny, ds->Y1);
@@ -452,10 +467,8 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			maxx = MAX(maxx, ds->X2 + tx);
 			maxy = MAX(maxy, ds->Y2);
 
-			width = 0;
-			space = w / 5;
+			tx = rnd_font_advance_invalid(font, tx);
 		}
-		tx += width + space;
 	}
 
 	/* it is enough to do the transformations only once, on the raw bounding box:
