@@ -25,7 +25,6 @@
 			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- FEATURE: font -v2 support:
 			- font upgrade (font2):
-				- publish MAX_SIMPLE_POLY_POINTS in the header, pcb-rnd needs it (e.g. for ttf import and font decompositing)
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
 				- baseline?
 				- support for real tabs
