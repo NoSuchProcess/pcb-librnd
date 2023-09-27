@@ -107,29 +107,57 @@ RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t
 	return rnd_font_advance_invalid(font, opts, x);
 }
 
+/* Iterate over a string - handling &entity; sequences */
+typedef struct {
+	int chr, chr_next;
+	const unsigned char *pos_next;
+	rnd_font_render_opts_t opts;
+} cursor_t;
+
+RND_INLINE void cursor_next(cursor_t *c)
+{
+	c->chr = *c->pos_next;
+	if (c->chr != 0) {
+		c->pos_next++;
+		c->chr_next = *c->pos_next;
+	}
+	else
+		c->chr_next = 0;
+}
+
+RND_INLINE void cursor_first(cursor_t *c, const unsigned char *string, rnd_font_render_opts_t opts)
+{
+	c->pos_next = string;
+	c->opts = opts;
+	cursor_next(c);
+}
+
+
 rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts, double scx, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
+	cursor_t c;
 
 	if (string == NULL)
 		return 0;
 
-	for(; *string != '\0'; string++)
-		w = rnd_font_advance(font, opts, *string, w);
+	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+		w = rnd_font_advance(font, opts, c.chr, w);
 	return rnd_round((double)w * scx);
 }
 
 rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts, double scy, const unsigned char *string)
 {
 	rnd_coord_t h;
+	cursor_t c;
 
 	if (string == NULL)
 		return 0;
 
 	h = font->max_height;
 
-	for(; *string != '\0'; string++)
-		if (*string == '\n')
+	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+		if (c.chr == '\n')
 			h += font->max_height;
 
 	return rnd_round((double)h * scy);
@@ -277,7 +305,7 @@ do { \
 RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
-	const unsigned char *s;
+	cursor_t c;
 	rnd_coord_t x = 0;
 
 	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
@@ -288,17 +316,17 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 			return;
 	}
 
-	for(s = string; *s != '\0'; s++) {
+	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c)) {
 		/* draw atoms if symbol is valid and data is present */
-		if (is_valid(font, opts, *s)) {
+		if (is_valid(font, opts, c.chr)) {
 			long n;
-			rnd_glyph_t *g = &font->glyph[*s];
+			rnd_glyph_t *g = &font->glyph[c.chr];
 			
 			for(n = 0; n < g->atoms.used; n++)
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, opts, x, *s, g);
+			x = rnd_font_advance_valid(font, opts, x, c.chr, g);
 		}
 		else {
 			/* the default symbol is a filled box */
@@ -343,7 +371,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 			}
 			x = rnd_font_advance_invalid(font, opts, x);
 		}
-		x += (isspace(*s)) ? extra_spc :  extra_glyph; /* for justify */
+		x += (isspace(c.chr)) ? extra_spc :  extra_glyph; /* for justify */
 	}
 }
 
@@ -408,7 +436,7 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 
 RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
-	const unsigned char *s;
+	cursor_t c;
 	rnd_coord_t minx, miny, maxx, maxy, tx, min_unscaled_radius;
 	rnd_bool first_time = rnd_true;
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
@@ -434,10 +462,10 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 		min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
 
 	/* calculate size of the bounding box */
-	for (s = string; *s != '\0'; s++) {
-		if (is_valid(font, opts, *s)) {
+	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c)) {
+		if (is_valid(font, opts, c.chr)) {
 			long n;
-			rnd_glyph_t *g = &font->glyph[*s];
+			rnd_glyph_t *g = &font->glyph[c.chr];
 
 			for(n = 0; n < g->atoms.used; n++) {
 				rnd_glyph_atom_t *a = &g->atoms.array[n];
@@ -500,7 +528,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			tx = rnd_font_advance_valid(font, opts, tx, *s, g);
+			tx = rnd_font_advance_valid(font, opts, tx, c.chr, g);
 		}
 		else {
 			rnd_box_t *ds = &font->unknown_glyph;
@@ -774,12 +802,13 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 		dst->name = rnd_strdup(src->name);
 }
 
-int rnd_font_invalid_chars(rnd_font_t *font, const unsigned char *s)
+int rnd_font_invalid_chars(rnd_font_t *font, rnd_font_render_opts_t opts, const unsigned char *string)
 {
-	int ctr;
+	cursor_t c;
+	int ctr = 0;
 
-	for(ctr = 0; *s != '\0'; s++)
-		if ((*s > RND_FONT_MAX_GLYPHS) || (!font->glyph[*s].valid))
+	for(cursor_first(&c, string, opts); c.chr != 0; cursor_next(&c))
+		if ((c.chr > RND_FONT_MAX_GLYPHS) || (!font->glyph[c.chr].valid))
 			ctr++;
 
 	return ctr;
