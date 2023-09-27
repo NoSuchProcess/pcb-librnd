@@ -44,9 +44,10 @@ void rnd_xform_mx_shear(rnd_xform_mx_t mx, double sx, double sy);
 void rnd_xform_mx_mirrorx(rnd_xform_mx_t mx); /* mirror over the x axis (flip y coords) */
 
 /*** Reverse ***/
+/* [4.1.0] */
 double rnd_xform_mx_extract_rot(rnd_xform_mx_t mx);
 
-/* Always returns positive sx and sy */
+/* [4.1.0] Always returns positive sx and sy */
 void rnd_xform_mx_extract_scale(rnd_xform_mx_t mx, double *sx, double *sy);
 
 #endif
