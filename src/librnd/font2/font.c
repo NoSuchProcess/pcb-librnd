@@ -53,8 +53,17 @@
 
 RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t x)
 {
-	rnd_coord_t tabsize = RND_MM_TO_COORD(8);
-	rnd_trace("TAB2! x=%ld -> %ld\n", x, ((x + tabsize)/tabsize)*tabsize);
+	rnd_coord_t tabsize = font->tab_width;
+
+	if (font->tab_width <= 0) {
+		if (font->glyph['M'].valid)
+			tabsize = font->glyph['M'].width * 4;
+		else if (font->glyph[' '].valid)
+			tabsize = font->glyph[' '].width * 4;
+		else
+			tabsize = font->height * 4;
+	}
+
 	return ((x + tabsize)/tabsize)*tabsize;
 }
 
