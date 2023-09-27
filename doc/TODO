@@ -23,11 +23,16 @@
 		- move sch-rnd's basename() call next to dirname()
 		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 			- disabling the widget makes it lose focus; need to have an API for setting focus
+		- DOC: font -v2:
+			- optional support for real tabs, per font tab_width
 		- FEATURE: font -v2 support:
 			- font upgrade (font2):
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
 				- baseline?
-				- support for real tabs
+				- pcb-rnd:
+					- io_lihata should set font->filever before parsing so tab_width doesn't warn in a board v9
+					- io_lihata: font write code should write v2 fields
+					- io_pcb: font write code should warn for v2 fields
 				- maybe support for multiline? think this over
 				- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
 				- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
