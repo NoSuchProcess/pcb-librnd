@@ -33,8 +33,6 @@
 #include <librnd/core/xform_mx.h>
 #include <librnd/font2/font.h>
 
-#define MAX_SIMPLE_POLY_POINTS 256
-
 rnd_coord_t rnd_font_string_width(rnd_font_t *font, double scx, const unsigned char *string)
 {
 	rnd_coord_t w = 0;
@@ -120,7 +118,7 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 	long nx, ny, h;
 	int too_large;
 	rnd_glyph_atom_t res;
-	rnd_coord_t tmp[2*MAX_SIMPLE_POLY_POINTS];
+	rnd_coord_t tmp[2*RND_FONT2_MAX_SIMPLE_POLY_POINTS];
 
 	res.type = a->type;
 	switch(a->type) {
@@ -158,9 +156,9 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 		case RND_GLYPH_POLY:
 			h = a->poly.pts.used/2;
 
-			if (a->poly.pts.used >= MAX_SIMPLE_POLY_POINTS*2) {
+			if (a->poly.pts.used >= RND_FONT2_MAX_SIMPLE_POLY_POINTS*2) {
 				too_large = 1;
-				rnd_message(RND_MSG_ERROR, "Can't render glyph atom: simple poly with too many points %d >= %d\n", a->poly.pts.used, MAX_SIMPLE_POLY_POINTS);
+				rnd_message(RND_MSG_ERROR, "Can't render glyph atom: simple poly with too many points %d >= %d\n", a->poly.pts.used, RND_FONT2_MAX_SIMPLE_POLY_POINTS);
 			}
 			else
 				too_large = 0;

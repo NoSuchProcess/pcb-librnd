@@ -36,6 +36,10 @@
 #define RND_FONT_MAX_GLYPHS 255
 #define RND_FONT_DEFAULT_CELLSIZE 50
 
+/* [4.1.0] maximum number of points in a simple polygon (used in glyphs) */
+#define RND_FONT2_MAX_SIMPLE_POLY_POINTS 256
+
+
 typedef long int rnd_font_id_t;      /* safe reference */
 
 typedef struct rnd_font_s {          /* complete set of symbols */
