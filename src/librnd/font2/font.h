@@ -45,6 +45,13 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	rnd_glyph_t glyph[RND_FONT_MAX_GLYPHS+1];
 	char *name;                        /* not unique */
 	rnd_font_id_t id;                  /* unique for safe reference */
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 } rnd_font_t;
 
 
