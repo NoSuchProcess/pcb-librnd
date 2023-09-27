@@ -147,6 +147,11 @@ put /local/librnd/OBJS_FONTLIB [@
 	$(LIBRND)/font/vtgla.o
 @]
 
+put /local/librnd/OBJS_FONT2LIB [@
+	$(LIBRND)/font2/font.o
+	$(LIBRND)/font2/vtgla.o
+@]
+
 put /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/hid/anyload_act.o
 	$(LIBRND)/hid/grid.o
@@ -232,7 +237,8 @@ put /local/librnd/OBJS /local/librnd/OBJS_CORELIB
 append /local/librnd/OBJS /local/librnd/OBJS_3RDLIB
 append /local/librnd/OBJS /local/librnd/OBJS_POLYLIB
 #append /local/librnd/OBJS /local/librnd/OBJS_POLYBOOLLIB
-append /local/librnd/OBJS /local/librnd/OBJS_FONTLIB
+#append /local/librnd/OBJS /local/librnd/OBJS_FONTLIB
+append /local/librnd/OBJS /local/librnd/OBJS_FONT2LIB
 append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 
 
@@ -282,6 +288,7 @@ uniq /local/librnd/OBJS_3RDLIB_NOAUTO
 uniq /local/librnd/OBJS_POLYLIB
 uniq /local/librnd/OBJS_POLYBOOLLIB
 uniq /local/librnd/OBJS_FONTLIB
+uniq /local/librnd/OBJS_FONT2LIB
 uniq /local/librnd/OBJS_CORELIB
 uniq /local/librnd/OBJS_HIDLIB
 uniq /local/librnd/OBJS_C99_CORELIB
@@ -303,6 +310,7 @@ append /local/librnd/SRCS ?/local/librnd/OBJS_3RDLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_POLYLIB
 #append /local/librnd/SRCS ?/local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_FONTLIB
+append /local/librnd/SRCS ?/local/librnd/OBJS_FONT2LIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_CORELIB
 append /local/librnd/SRCS ?/local/librnd/OBJS_HIDLIB
 gsub /local/librnd/SRCS {.o } {.c }
@@ -357,6 +365,7 @@ OBJS_C99=@/local/librnd/OBJS_C99@
 OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
 OBJS_POLYBOOLLIB=@/local/librnd/OBJS_POLYBOOLLIB@
 OBJS_FONTLIB=@/local/librnd/OBJS_FONTLIB@
+OBJS_FONT2LIB=@/local/librnd/OBJS_FONT2LIB@
 OBJS_3RDLIB=@/local/librnd/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
 OBJS_CORELIB=@/local/librnd/OBJS_CORELIB@
 OBJS_HIDLIB=@/local/librnd/OBJS_HIDLIB@
@@ -425,6 +434,7 @@ SONAME_CORE=@cc/soname@librnd-core.so.$(PCB_RND_VER_MAJOR)
 SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
 SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT=@cc/soname@librnd-font.so.$(PCB_RND_VER_MAJOR)
+SONAME_FONT2=@cc/soname@librnd-font2.so.$(PCB_RND_VER_MAJOR)
 SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
 @]
 	end;
@@ -452,6 +462,10 @@ librnd-font.a: $(OBJS_FONTLIB)
 	$(ARU) $(AR) rvu librnd-font.a $(OBJS_FONTLIB)
 	$(RANLIB) librnd-font.a
 
+librnd-font2.a: $(OBJS_FONT2LIB)
+	$(ARU) $(AR) rvu librnd-font2.a $(OBJS_FONT2LIB)
+	$(RANLIB) librnd-font2.a
+
 librnd-hid.a: $(OBJS_HIDLIB_ALL)
 	$(ARU) $(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
 	$(RANLIB) librnd-hid.a
@@ -473,6 +487,9 @@ librnd-polybool.so.$(PCB_RND_VER): $(OBJS_POLYBOOLLIB) librnd-polybool.a
 
 librnd-font.so.$(PCB_RND_VER): $(OBJS_FONTLIB) librnd-font.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_FONT) -o librnd-font.so.$(PCB_RND_VER) $(OBJS_FONTLIB) $(LDFLAGS) -lm
+
+librnd-font2.so.$(PCB_RND_VER): $(OBJS_FONT2LIB) librnd-font2.a
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_FONT2) -o librnd-font2.so.$(PCB_RND_VER) $(OBJS_FONT2LIB) $(LDFLAGS) -lm
 
 librnd-hid.so.$(PCB_RND_VER): $(OBJS_HIDLIB_ALL) librnd-hid.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL) $(LDFLAGS) -lm
@@ -608,7 +625,7 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd4
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/font2" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
 	$(SCCBOX) $(HOW) "librnd-core.a" "$(HL_LIBDIR)/librnd-core.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
@@ -657,6 +674,7 @@ put /local/librnd/HDRS_CORELIB /local/librnd/OBJS_CORELIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYLIB
 #append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONTLIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONT2LIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_HIDLIB
 uniq /local/librnd/HDRS_3RDLIB
 uniq /local/librnd/HDRS_CORELIB
