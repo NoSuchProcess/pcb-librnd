@@ -443,14 +443,14 @@ typedef struct {
 	rnd_font_wcache_t *wcache;
 } align_t;
 
-#define WCACHE_GLOB_WIDTH align->wcache->array[0]
+#define WCACHE_GLOB_WIDTH ((align->boxw <= 0) ? align->wcache->array[0] : align->boxw)
 #define WCACHE_LINE_WIDTH align->wcache->array[(*lineno + 1) * 4]
 #define WCACHE_LINE_CHARS align->wcache->array[(*lineno + 1) * 4 + 1]
 #define WCACHE_LINE_SPCS  align->wcache->array[(*lineno + 1) * 4 + 2]
 
 RND_INLINE void setup_valign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y)
 {
-	if (align == NULL) return;
+	if ((align == NULL) || (align->boxh <= 0)) return;
 }
 
 RND_INLINE void setup_halign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_glyph, rnd_coord_t *extra_spc)
