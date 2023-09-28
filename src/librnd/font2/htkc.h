@@ -9,7 +9,7 @@
 #include <librnd/config.h>
 
 typedef struct htkc_key_s {
-	char left, right;
+	unsigned char left, right;
 } htkc_key_t;
 typedef rnd_coord_t htkc_value_t;
 #define HT(x) htkc_ ## x
