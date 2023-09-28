@@ -83,6 +83,17 @@ RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_
 {
 	if (is_tab(opts, chr))
 		return rnd_font_advance_tab(font, opts, current);
+
+	if (font->kerning_tbl_valid) {
+		htkc_key_t key;
+		rnd_coord_t offs;
+		
+		key.left = chr;
+		key.right = chr2;
+		offs = htkc_get(&font->kerning_tbl, key);
+		if (offs != 0) current += offs; /* apply kerning in advance to the normal mechanism */
+	}
+
 	return current + g->width + g->xdelta;
 }
 
