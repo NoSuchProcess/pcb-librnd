@@ -16,6 +16,7 @@ typedef rnd_coord_t htkc_value_t;
 #include <genht/ht.h>
 #undef HT
 
+unsigned htkc_keyhash(htkc_key_t a);
 int htkc_keyeq(htkc_key_t a, htkc_key_t b);
 
 #endif

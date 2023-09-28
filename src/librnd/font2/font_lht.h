@@ -137,9 +137,36 @@ static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 	return 0;
 }
 
+static int load_kern_key(const char *start, const char *end)
+{
+	/* single character cases, left or right */
+	if (end == start+1)
+		return *start;
+	if ((end == NULL) && (start[0] != '\0') && (start[1] == '\0'))
+		return *start;
+
+	if (*start == '&') {
+		char *e;
+		long val = strtol(start+1, &e, 10);
+		if (end != NULL) {
+			if (e != end)
+				return 0; /* non-numeric suffix on left side */
+		}
+		else {
+			if (*e != '\0')
+				return 0; /* non-numeric suffix on right side */
+		}
+		if ((val < 1) || (val > 254))
+			return 0;
+		return val;
+	}
+
+	return 0; /* unknown format */
+}
+
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 {
-	lht_node_t *grp, *sym, *tabw, *ents, *ent;
+	lht_node_t *grp, *sym, *tabw, *ents, *ent, *kerning, *kern;
 	lht_dom_iterator_t it;
 	int err = 0;
 
@@ -181,6 +208,41 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 		else
 			RND_LHT_ERROR(ents, "entities shall be a hash\n");
 	}
+
+	kerning = lht_dom_hash_get(nd, "kerning");
+	if (kerning != NULL) {
+		if (kerning->type == LHT_HASH) {
+			if ((font->filever > 0) && (font->filever < 2))
+				RND_LHT_ERROR(kerning, "entities is unexpected below font file version 2.\n");
+			htkc_init(&font->kerning_tbl, htkc_keyhash, htkc_keyeq);
+			font->kerning_tbl_valid = 1;
+			for(kern = lht_dom_first(&it, kerning); kern != NULL; kern = lht_dom_next(&it)) {
+				if (kern->type == LHT_TEXT) {
+					rnd_coord_t offs = 0;
+					err |= PARSE_COORD(&offs,  kern);
+					if (offs != 0) {
+						htkc_key_t key;
+						char *sep = strchr(kern->name+1, '-'); /* +1 so if '-' is the left char it is preserved */
+						if (sep != NULL) {
+							key.left = load_kern_key(kern->name, sep);
+							key.right = load_kern_key(sep+1, NULL);
+							if ((key.left > 0) && (key.right > 0))
+								htkc_set(&font->kerning_tbl, key, offs);
+							else
+								RND_LHT_ERROR(kern, "invalid character in kerning key\n");
+						}
+						else
+							RND_LHT_ERROR(kern, "kerning key must be char-char pair\n");
+					}
+					else
+						RND_LHT_ERROR(kern, "kerning value must be a non-zero coord\n");
+				}
+			}
+		}
+		else
+			RND_LHT_ERROR(kerning, "kerning shall be a hash\n");
+	}
+
 
 	grp = lht_dom_hash_get(nd, "symbols");
 
