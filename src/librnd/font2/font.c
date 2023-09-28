@@ -32,6 +32,7 @@
 #include <librnd/core/globalconst.h>
 #include <librnd/core/error.h>
 #include <librnd/core/xform_mx.h>
+#include <librnd/core/vtc0.h>
 #include <librnd/font2/font.h>
 
 #define FONT2_DEBUG 1
@@ -498,7 +499,7 @@ void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string,
 	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, extra_glyph, extra_spc, NULL, cb, cb_ctx);
 }
 
-static void wcache_update(rnd_font_t *font, rnd_font_wcache_t *wcache, const unsigned char *string);
+static void wcache_update(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_font_wcache_t *wcache, const unsigned char *string);
 void rnd_font_draw_string_align(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t boxw, rnd_coord_t boxh, rnd_font_align_t halign, rnd_font_align_t valign, rnd_font_wcache_t *wcache, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	align_t a;
@@ -515,8 +516,8 @@ void rnd_font_draw_string_align(rnd_font_t *font, const unsigned char *string, r
 	else
 		a.wcache = wcache;
 
-	if (a.wcache->used < 2)
-		wcache_update(font, a.wcache, string);
+	if ((a.wcache->used < 4) || (a.wcache->array[3] != opts))
+		wcache_update(font, opts, a.wcache, string);
 
 	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, 0, 0, &a, cb, cb_ctx);
 
@@ -535,10 +536,41 @@ void rnd_font_inval_wcache(rnd_font_wcache_t *wcache)
 	wcache->used = 0;
 }
 
-static void wcache_update(rnd_font_t *font, rnd_font_wcache_t *wcache, const unsigned char *string)
+static void wcache_update(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_font_wcache_t *wcache, const unsigned char *string)
 {
-	wcache->used = 0;
+	cursor_t c;
+	rnd_coord_t x;
+	int spc = 0, len = 0;
 
+	/* first entry should be the dimension of the widest line */
+	wcache->used = 0;
+	vtc0_append(wcache, 0); /* pixel width */
+	vtc0_append(wcache, 0); /* character length */
+	vtc0_append(wcache, 0); /* number of whitepsace (space and tab) */
+	vtc0_append(wcache, opts);
+
+	for(cursor_first(font, opts, &c, string); ; cursor_next(&c)) {
+		if ((c.chr == 0) || (c.chr == '\n')) { /* line termination */
+			vtc0_append(wcache, x);   /* pixel width */
+			vtc0_append(wcache, len); /* character length */
+			vtc0_append(wcache, spc); /* number of whitepsace (space and tab) */
+			vtc0_append(wcache, 0);   /* padding (opts in the first record) */
+
+			/* update first entry (absolte maximums) */
+			if (x > wcache->array[0])   wcache->array[0] = x;
+			if (len > wcache->array[1]) wcache->array[1] = len;
+			if (spc > wcache->array[2]) wcache->array[2] = spc;
+			x = 0;
+		}
+		else {
+			len++;
+			if (isspace(c.chr)) spc++;
+			x = rnd_font_advance(font, opts, c.chr, c.chr_next, x);
+		}
+
+		if (c.chr == 0)
+			break;
+	}
 }
 
 
