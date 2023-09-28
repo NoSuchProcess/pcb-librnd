@@ -362,31 +362,18 @@ do { \
 	rnd_xform_mx_scale(mx, scx, scy); \
 } while(0)
 
-RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, int chr, int chr_next, rnd_xform_mx_t mx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
-	cursor_t c;
-	rnd_coord_t x = 0;
-
-	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
-
-	/* Text too small at this zoom level: cheap draw */
-	if (tiny != RND_FONT_TINY_ACCURATE) {
-		if (draw_text_cheap(font, opts, mx, string, scx, scy, tiny, cb, cb_ctx))
-			return;
-	}
-
-	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
 		/* draw atoms if symbol is valid and data is present */
-		if (is_valid(font, opts, c.chr)) {
+		if (is_valid(font, opts, chr)) {
 			long n;
-			rnd_glyph_t *g = &font->glyph[c.chr];
+			rnd_glyph_t *g = &font->glyph[chr];
 			
 			for(n = 0; n < g->atoms.used; n++)
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, opts, x, c.chr, c.chr_next, g);
+			x = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
 		}
 		else {
 			/* the default symbol is a filled box */
@@ -431,6 +418,27 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 			}
 			x = rnd_font_advance_invalid(font, opts, x);
 		}
+
+	return x;
+}
+
+
+RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+{
+	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
+	cursor_t c;
+	rnd_coord_t x = 0;
+
+	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
+
+	/* Text too small at this zoom level: cheap draw */
+	if (tiny != RND_FONT_TINY_ACCURATE) {
+		if (draw_text_cheap(font, opts, mx, string, scx, scy, tiny, cb, cb_ctx))
+			return;
+	}
+
+	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
+		x = rnd_font_draw_glyph(font, x, c.chr, c.chr_next, mx, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 		x += (isspace(c.chr)) ? extra_spc :  extra_glyph; /* for justify */
 	}
 }
