@@ -61,6 +61,8 @@
 		- remove old font support
 			- remove xform compatibility .h from font, it's been moved to core
 			- maybe remove the whole old font/
+			- remove font2 rnd_font_fix_v1() - used by sch-rnd with font v1
+			- remove font2 rnd_font_draw_string_justify() - used by sch-rnd with font v1
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
