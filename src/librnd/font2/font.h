@@ -57,14 +57,14 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	rnd_font_id_t id;                  /* unique for safe reference */
 	rnd_coord_t tab_width;             /* [4.1.0, filever 2] \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
 
-	unsigned entity_tbl_valid:1;
-	unsigned kerning_tbl_valid:1;
 	htsi_t entity_tbl;                 /* [4.1.0, filever 2] key: entity name without the "&" and ";" wrapping; value: [1..245] glyph index */
 	htkc_t kerning_tbl;                /* [4.1.0, filever 2] key: character pair; value: signed coord added to advance of the first char */
 
 	/* cached fields - these are not directly in the file */
+	unsigned entity_tbl_valid:1;       /* [4.1.0] */
+	unsigned kerning_tbl_valid:1;      /* [4.1.0] */
 	char filever;                      /* [4.1.0] 0 for unknown/legacy, 1 for lht v1 or 2 for lht v2 */
-	rnd_coord_t tab_width_cache;       /* either ->tab_width or if that's missing, computed by a heuristic only once per font */
+	rnd_coord_t tab_width_cache;       /* [4.1.0] either ->tab_width or if that's missing, computed by a heuristic only once per font */
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void);
