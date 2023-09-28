@@ -79,9 +79,9 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_MIRROR_NO = 0,      /* do not mirror (but 0 and 1 are cleared) */
 	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
 	RND_FONT_MIRROR_X = 2,       /* change X coords (mirror over the Y axis) */
-	RND_FONT_HTAB = 4,           /* render horizontal tab */
-	RND_FONT_ENTITY = 8,         /* interpret &entity; sequences and render them single glyph */
-	RND_FONT_MULTI_LINE = 16     /* support rendering into multiple lines (split at \n) */
+	RND_FONT_HTAB = 4,           /* [4.1.0] render horizontal tab */
+	RND_FONT_ENTITY = 8,         /* [4.1.0] interpret &entity; sequences and render them single glyph */
+	RND_FONT_MULTI_LINE = 16     /* [4.1.0] support rendering into multiple lines (split at \n) */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */
