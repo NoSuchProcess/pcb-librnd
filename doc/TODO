@@ -41,7 +41,7 @@
 						- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
 						- GUI text edit could auto-replace unicode with &entity;
 						- upgrade aussiefont: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
-				- check calls to rnd_font_fix_v1() in sch-rnd and don't call it if ->height is loaded
+					- check calls to rnd_font_fix_v1() in sch-rnd and don't call it if ->height is loaded; maybe not needed at all with font2, multiline is handled in librnd
 				- maybe: replace delta with advance, calculated from glyph's 0, not from glyph's width (so our engine is less strange)
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
