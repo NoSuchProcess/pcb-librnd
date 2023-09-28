@@ -445,6 +445,8 @@ typedef struct {
 
 #define WCACHE_GLOB_WIDTH align->wcache->array[0]
 #define WCACHE_LINE_WIDTH align->wcache->array[(*lineno + 1) * 4]
+#define WCACHE_LINE_CHARS align->wcache->array[(*lineno + 1) * 4 + 1]
+#define WCACHE_LINE_SPCS  align->wcache->array[(*lineno + 1) * 4 + 2]
 
 RND_INLINE void setup_valign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y)
 {
@@ -460,8 +462,20 @@ RND_INLINE void setup_halign(align_t *align, int *lineno, rnd_coord_t *x, rnd_co
 		case RND_FONT_ALIGN_invalid: return;
 		case RND_FONT_ALIGN_CENTER:    *x = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH) / 2; break;
 		case RND_FONT_ALIGN_END:       *x = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH); break;
-		case RND_FONT_ALIGN_WORD_JUST: *x = 0; break; TODO("load extra_glyph and extra_spc");
-		case RND_FONT_ALIGN_JUST:      *x = 0; break; TODO("load extra_glyph and extra_spc");
+		case RND_FONT_ALIGN_WORD_JUST:
+			*x = 0;
+			if (WCACHE_LINE_SPCS > 0)
+				*extra_spc = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH) / WCACHE_LINE_SPCS;
+			else
+				*extra_spc = 0;
+			break;
+		case RND_FONT_ALIGN_JUST:
+			*x = 0;
+			if ((WCACHE_LINE_CHARS-1) > 0)
+				*extra_spc = *extra_glyph = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH) / (WCACHE_LINE_CHARS-1);
+			else
+				*extra_spc = *extra_glyph = 0;
+			break;
 	}
 }
 
@@ -590,6 +604,7 @@ static void wcache_update(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_fon
 			if (len > wcache->array[1]) wcache->array[1] = len;
 			if (spc > wcache->array[2]) wcache->array[2] = spc;
 			x = 0;
+			spc = len = 0;
 		}
 		else {
 			len++;
