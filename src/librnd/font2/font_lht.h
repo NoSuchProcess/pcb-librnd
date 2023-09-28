@@ -166,7 +166,7 @@ static int load_kern_key(const char *start, const char *end)
 
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 {
-	lht_node_t *grp, *sym, *tabw, *ents, *ent, *kerning, *kern, *lineh;
+	lht_node_t *grp, *sym, *tabw, *ents, *ent, *kerning, *kern, *lineh, *hght;
 	lht_dom_iterator_t it;
 	int err = 0;
 
@@ -177,6 +177,26 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 
 	err |= PARSE_COORD(&font->max_height, HASH_GET(nd, "cell_height"));
 	err |= PARSE_COORD(&font->max_width,  HASH_GET(nd, "cell_width"));
+
+	hght = lht_dom_hash_get(nd, "height");
+	if (hght != NULL) {
+		if ((font->filever > 0) && (font->filever < 2))
+			RND_LHT_ERROR(tabw, "height is unexpected below font file version 2.\n");
+		PARSE_COORD(&font->height, hght);
+	}
+	else
+		font->height = 0;
+
+
+	hght = lht_dom_hash_get(nd, "cent_height");
+	if (hght != NULL) {
+		if ((font->filever > 0) && (font->filever < 2))
+			RND_LHT_ERROR(tabw, "cent_height is unexpected below font file version 2.\n");
+		PARSE_COORD(&font->cent_height, hght);
+	}
+	else
+		font->cent_height = 0;
+
 
 	lineh = lht_dom_hash_get(nd, "line_height");
 	if (lineh != NULL) {
