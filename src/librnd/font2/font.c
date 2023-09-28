@@ -542,7 +542,7 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	cursor_t c;
-	rnd_coord_t minx, miny, maxx, maxy, tx, min_unscaled_radius;
+	rnd_coord_t minx, miny, maxx, maxy, tx, ty, min_unscaled_radius;
 	rnd_bool first_time = rnd_true;
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 
@@ -555,9 +555,13 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 		return;
 	}
 
+#ifdef FONT2_DEBUG
+	opts |= RND_FONT_MULTI_LINE;
+#endif
+
 	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
 
-	minx = miny = maxx = maxy = tx = 0;
+	minx = miny = maxx = maxy = tx = ty = 0;
 
 	/* We are initially computing the bbox of the un-scaled text but
 	   min_line_width is interpreted on the scaled text. */
@@ -568,7 +572,11 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 
 	/* calculate size of the bounding box */
 	for(cursor_first(font, opts, &c, string); (c.chr != 0) && !STOP_AT_NL; cursor_next(&c)) {
-		if (is_valid(font, opts, c.chr)) {
+		if (c.chr == '\n') {
+			tx = 0;
+			ty += font->max_height;
+		}
+		else if (is_valid(font, opts, c.chr)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[c.chr];
 
@@ -595,13 +603,13 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						}
 
 						minx = MIN(minx, a->line.x1 - unscaled_radius + tx);
-						miny = MIN(miny, a->line.y1 - unscaled_radius);
+						miny = MIN(miny, a->line.y1 - unscaled_radius + ty);
 						minx = MIN(minx, a->line.x2 - unscaled_radius + tx);
-						miny = MIN(miny, a->line.y2 - unscaled_radius);
+						miny = MIN(miny, a->line.y2 - unscaled_radius + ty);
 						maxx = MAX(maxx, a->line.x1 + unscaled_radius + tx);
-						maxy = MAX(maxy, a->line.y1 + unscaled_radius);
+						maxy = MAX(maxy, a->line.y1 + unscaled_radius + ty);
 						maxx = MAX(maxx, a->line.x2 + unscaled_radius + tx);
-						maxy = MAX(maxy, a->line.y2 + unscaled_radius);
+						maxy = MAX(maxy, a->line.y2 + unscaled_radius + ty);
 					break;
 
 					case RND_GLYPH_ARC:
@@ -613,9 +621,9 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 							unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 2);
 
 						minx = MIN(minx, b.X1 + tx - unscaled_radius);
-						miny = MIN(miny, b.Y1 - unscaled_radius);
+						miny = MIN(miny, b.Y1 + ty - unscaled_radius);
 						maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
-						maxy = MAX(maxy, b.Y2 + unscaled_radius);
+						maxy = MAX(maxy, b.Y2 + ty + unscaled_radius);
 						break;
 
 					case RND_GLYPH_POLY:
@@ -625,9 +633,9 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 
 							for(i = 0; i < h; i++,px++,py++) {
 								minx = MIN(minx, *px + tx);
-								miny = MIN(miny, *py);
+								miny = MIN(miny, *py + ty);
 								maxx = MAX(maxx, *px + tx);
-								maxy = MAX(maxy, *py);
+								maxy = MAX(maxy, *py + ty);
 							}
 						}
 						break;
@@ -635,17 +643,17 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			}
 			tx = rnd_font_advance_valid(font, opts, tx, c.chr, c.chr_next, g);
 		}
-		else {
+		else { /* invalid char */
 			rnd_box_t *ds = &font->unknown_glyph;
 
 			minx = MIN(minx, ds->X1 + tx);
-			miny = MIN(miny, ds->Y1);
+			miny = MIN(miny, ds->Y1 + ty);
 			minx = MIN(minx, ds->X2 + tx);
-			miny = MIN(miny, ds->Y2);
+			miny = MIN(miny, ds->Y2 + ty);
 			maxx = MAX(maxx, ds->X1 + tx);
-			maxy = MAX(maxy, ds->Y1);
+			maxy = MAX(maxy, ds->Y1 + ty);
 			maxx = MAX(maxx, ds->X2 + tx);
-			maxy = MAX(maxy, ds->Y2);
+			maxy = MAX(maxy, ds->Y2 + ty);
 
 			tx = rnd_font_advance_invalid(font, opts, tx);
 		}
