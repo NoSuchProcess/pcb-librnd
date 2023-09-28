@@ -157,6 +157,9 @@ RND_INLINE int cursor_next_ent(cursor_t *c, int *len)
 			name[elen] = '\0';
 			*len = elen+2;
 
+			if ((elen == 3) && (strcmp(name, "amp") == 0))
+				return '&';
+
 			if (!c->font->entity_tbl_valid)
 				return RND_FONT2_INVALID_ENTITY_CHAR; /* no table to work from */
 
