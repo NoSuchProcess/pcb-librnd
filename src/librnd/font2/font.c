@@ -477,7 +477,6 @@ RND_INLINE void setup_valign(rnd_font_t *font, align_t *align, int *lineno, rnd_
 			*y = 0;
 			if ((WCACHE_NUM_LINES-1) > 0)
 				*extra_y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / (WCACHE_NUM_LINES-1);
-			rnd_trace("num lines=%d globh=%mm net=%mm | ystep=%mm extra=%mm total=%mm\n", WCACHE_NUM_LINES, WCACHE_GLOB_HEIGHT, WCACHE_NET_HEIGHT, rnd_font_step_y(font), *extra_y, rnd_font_step_y(font) + *extra_y);
 			break;
 	}
 }
