@@ -82,7 +82,8 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_HTAB = 4,           /* [4.1.0] render horizontal tab */
 	RND_FONT_ENTITY = 8,         /* [4.1.0] interpret &entity; sequences and render them single glyph */
 	RND_FONT_MULTI_LINE = 16,    /* [4.1.0] support rendering into multiple lines (split at \n) */
-	RND_FONT_STOP_AT_NL = 32     /* [4.1.0] stop rendering at the first newline */
+	RND_FONT_STOP_AT_NL = 32,    /* [4.1.0] stop rendering at the first newline */
+	RND_FONT_THIN_POLY = 64      /* [4.1.0] render polygons with their outline only */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */
@@ -111,11 +112,11 @@ rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts
 typedef void (*rnd_font_draw_atom_cb)(void *cb_ctx, const rnd_glyph_atom_t *a);
 
 /* Render a text object atom by atom using cb/cb_ctx */
-void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
+void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 /* Same as draw_string but insert extra_glyph empty space after each glyph
    except for whitepsace, where extra_spc is inserted */
-void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx);
+void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx);
 
 /* Calculate all 4 corners of the transformed (e.g. rotated) box in cx;cy */
 void rnd_font_string_bbox(rnd_coord_t cx[4], rnd_coord_t cy[4], rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width);
