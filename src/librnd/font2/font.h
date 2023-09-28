@@ -136,6 +136,33 @@ int rnd_font_invalid_chars(rnd_font_t *font, rnd_font_render_opts_t opts, const 
 
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src);
 
+
+/*** [4.1.0] render in a box with alignment ***/
+typedef struct vtc0_s rnd_font_wcache_t;
+
+typedef enum {
+	CSCH_HALIGN_START,     /* left or top */
+	CSCH_HALIGN_CENTER,
+	CSCH_HALIGN_END,       /* right or bottom */
+	CSCH_HALIGN_WORD_JUST, /* extra space inserted between words or lines */
+	CSCH_HALIGN_JUST,      /* extra space inserted between characters; only for horizontal */
+	CSCH_HALIGN_invalid
+} rnd_font_align_t;
+
+/* Same as rnd_font_draw_string but aligned in a box. Unrotated box width and
+   height are passed as boxw and boxh. Alignment of text lines within the box
+   is specified using halign and valign. Per line widths are cached for a
+   specific text string if wcache is not NULL - wcache needs to be invalidated
+   when text string changes, use rnd_font_uninit_wcache */
+void rnd_font_draw_string_align(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t boxw, rnd_coord_t boxh, rnd_font_align_t halign, rnd_font_align_t valign, rnd_font_wcache_t *wcache, rnd_font_draw_atom_cb cb, void *cb_ctx);
+
+/* Free all memory of wcache */
+void rnd_font_uninit_wcache(rnd_font_wcache_t *wcache);
+
+/* Keep memory allocation but invalidate the cache so it is recalculated upon
+   next call. */
+void rnd_font_inval_wcache(rnd_font_wcache_t *wcache);
+
 /*** embedded (internal) font ***/
 
 typedef struct embf_line_s {

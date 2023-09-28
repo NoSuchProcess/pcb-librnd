@@ -54,6 +54,8 @@
 #define is_valid(font, opts, chr) \
 		(is_tab(opts, chr) || (((chr) <= RND_FONT_MAX_GLYPHS) && (font)->glyph[(chr)].valid))
 
+static rnd_font_wcache_t rnd_font_tmp_wc;
+
 RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t x)
 {
 	rnd_coord_t tabsize;
@@ -432,7 +434,13 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 	y += font->max_height; \
 	cursor_next(&c);
 
-RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
+typedef struct {
+	rnd_coord_t boxw, boxh;
+	rnd_font_align_t haling, valign;
+	rnd_font_wcache_t *wcache;
+} align_t;
+
+RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, align_t *align, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	cursor_t c;
@@ -482,13 +490,59 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 
 void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, 0, 0, cb, cb_ctx);
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, 0, 0, NULL, cb, cb_ctx);
 }
 
 void rnd_font_draw_string_justify(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, extra_glyph, extra_spc, cb, cb_ctx);
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, extra_glyph, extra_spc, NULL, cb, cb_ctx);
 }
+
+static void wcache_update(rnd_font_t *font, rnd_font_wcache_t *wcache, const unsigned char *string);
+void rnd_font_draw_string_align(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t boxw, rnd_coord_t boxh, rnd_font_align_t halign, rnd_font_align_t valign, rnd_font_wcache_t *wcache, rnd_font_draw_atom_cb cb, void *cb_ctx)
+{
+	align_t a;
+
+	a.boxw = boxw;
+	a.boxh = boxh;
+	a.haling = halign;
+	a.valign = valign;
+	if (wcache == NULL) {
+		/* reuse the allocation but flush the cache - not really reentrant in multithread */
+		a.wcache = &rnd_font_tmp_wc;
+		a.wcache->used = 0;
+	}
+	else
+		a.wcache = wcache;
+
+	if (a.wcache->used < 2)
+		wcache_update(font, a.wcache, string);
+
+	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, 0, 0, &a, cb, cb_ctx);
+
+	if (wcache == NULL)
+		rnd_font_uninit_wcache(a.wcache); /* free memory of the temporary cache */
+}
+
+/*** wcache ***/
+void rnd_font_uninit_wcache(rnd_font_wcache_t *wcache)
+{
+	vtc0_uninit(wcache);
+}
+
+void rnd_font_inval_wcache(rnd_font_wcache_t *wcache)
+{
+	wcache->used = 0;
+}
+
+static void wcache_update(rnd_font_t *font, rnd_font_wcache_t *wcache, const unsigned char *string)
+{
+	wcache->used = 0;
+
+}
+
+
+/*** bbox ***/
 
 /* Calculates accurate centerline bbox */
 RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
@@ -1001,5 +1055,10 @@ void rnd_font_free(rnd_font_t *f)
 	free(f->name);
 	f->name = NULL;
 	f->id = -1;
+
+	/* By freeing the cache here we may lose a memory allocation optimization,
+	   but there won't be any render after the last font_free() so we avoid
+	   a memleak without having to introduce a central uninit function */
+	rnd_font_uninit_wcache(&rnd_font_tmp_wc);
 }
 
