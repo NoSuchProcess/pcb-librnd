@@ -430,7 +430,7 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 RND_INLINE rnd_coord_t rnd_font_step_y(rnd_font_t *font)
 {
 	if (font->line_height_cache <= 0)
-		font->line_height_cache = (font->line_height > 0) ? font->line_height : font->max_height;
+		font->line_height_cache = (font->line_height > 0) ? font->line_height : font->max_height*1.5;
 	return font->line_height_cache;
 }
 
@@ -439,7 +439,7 @@ RND_INLINE rnd_coord_t rnd_font_step_y(rnd_font_t *font)
 	if ((c.chr == 0) || (opts & RND_FONT_STOP_AT_NL)) \
 		break; \
 	x = 0; \
-	y += rnd_font_step_y(font); \
+	y += rnd_font_step_y(font) + extra_y; \
 	lineno++; \
 	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc); \
 	cursor_next(&c);
@@ -451,13 +451,32 @@ typedef struct {
 } align_t;
 
 #define WCACHE_GLOB_WIDTH ((align->boxw <= 0) ? align->wcache->array[0] : align->boxw)
+#define WCACHE_GLOB_HEIGHT (align->boxh)
 #define WCACHE_LINE_WIDTH align->wcache->array[(*lineno + 1) * 4]
 #define WCACHE_LINE_CHARS align->wcache->array[(*lineno + 1) * 4 + 1]
 #define WCACHE_LINE_SPCS  align->wcache->array[(*lineno + 1) * 4 + 2]
+#define WCACHE_NUM_LINES  ((align->wcache->used / 4)-1)
+#define WCACHE_NET_HEIGHT (WCACHE_NUM_LINES * font->line_height_cache)
 
-RND_INLINE void setup_valign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y)
+RND_INLINE void setup_valign(rnd_font_t *font, align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_y)
 {
 	if ((align == NULL) || (align->boxh <= 0)) return;
+
+	rnd_font_step_y(font); /* make sure we have the line_height cache updated */
+
+	switch(align->valign) {
+		case RND_FONT_ALIGN_START: return;
+		case RND_FONT_ALIGN_invalid: return;
+		case RND_FONT_ALIGN_CENTER:    *y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / 2; break;
+		case RND_FONT_ALIGN_END:       *y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT); break;
+		case RND_FONT_ALIGN_WORD_JUST:
+		case RND_FONT_ALIGN_JUST:
+			*y = 0;
+			if ((WCACHE_NUM_LINES-1) > 0)
+				*extra_y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / (WCACHE_NUM_LINES-1);
+			rnd_trace("num lines=%d globh=%mm net=%mm | ystep=%mm extra=%mm total=%mm\n", WCACHE_NUM_LINES, WCACHE_GLOB_HEIGHT, WCACHE_NET_HEIGHT, rnd_font_step_y(font), *extra_y, rnd_font_step_y(font) + *extra_y);
+			break;
+	}
 }
 
 RND_INLINE void setup_halign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_glyph, rnd_coord_t *extra_spc)
@@ -491,14 +510,14 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	cursor_t c;
 	int lineno = 0;
-	rnd_coord_t x = 0, y = 0;
+	rnd_coord_t x = 0, y = 0, extra_y = 0;
 
 	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
 
 #ifdef FONT2_DEBUG
 	opts |= RND_FONT_MULTI_LINE;
 #endif
-	setup_valign(align, &lineno, &x, &y);
+	setup_valign(font, align, &lineno, &x, &y, &extra_y);
 	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc);
 
 	/* Text too small at this zoom level: cheap draw */
