@@ -40,6 +40,8 @@
 #define OPTS_IS_MIRRORED(opts) \
 	((opts & RND_FONT_MIRROR_Y) || (opts & RND_FONT_MIRROR_X))
 
+#define STOP_AT_NL ((c.chr == '\n') && (opts & RND_FONT_STOP_AT_NL))
+
 #ifdef FONT2_DEBUG
 /* force tab support for debug */
 #define is_tab(opts, chr) \
@@ -201,7 +203,7 @@ rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts,
 	if (string == NULL)
 		return 0;
 
-	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
+	for(cursor_first(font, opts, &c, string); (c.chr != 0) && !STOP_AT_NL; cursor_next(&c))
 		w = rnd_font_advance(font, opts, c.chr, c.chr_next, w);
 	return rnd_round((double)w * scx);
 }
@@ -216,7 +218,7 @@ rnd_coord_t rnd_font_string_height(rnd_font_t *font, rnd_font_render_opts_t opts
 
 	h = font->max_height;
 
-	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
+	for(cursor_first(font, opts, &c, string); c.chr != 0 && !STOP_AT_NL; cursor_next(&c))
 		if (c.chr == '\n')
 			h += font->max_height;
 
@@ -238,7 +240,7 @@ RND_INLINE void cheap_text_line(rnd_xform_mx_t mx, rnd_coord_t x1, rnd_coord_t y
 }
 
 /* Decreased level-of-detail: draw only a few lines for the whole text */
-RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_xform_mx_t mx, const unsigned char *string, double scx, double scy, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_xform_mx_t mx, rnd_coord_t dx, rnd_coord_t dy, const unsigned char *string, double scx, double scy, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_coord_t w, h = rnd_font_string_height(font, opts, scy, string);
 
@@ -250,16 +252,16 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_font_render_opts_t opts, rn
 		if (h <= rnd_render->coord_per_pix*2) { /* <= 1 pixel high: draw a single line in the middle */
 			w = rnd_font_string_width(font, opts, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
 			h = rnd_font_string_height(font, opts, 1.0, string);
-			cheap_text_line(mx, 0, h/2, w, h/2, cb, cb_ctx);
+			cheap_text_line(mx, 0+dx, h/2+dy, w+dx, h/2+dy, cb, cb_ctx);
 			return 1;
 		}
 		else if (h <= rnd_render->coord_per_pix*4) { /* <= 4 pixel high: draw a mirrored Z-shape */
 			w = rnd_font_string_width(font, opts, 1.0, string); /* scx=1 because mx xformation will scale it up anyway */
 			h = rnd_font_string_height(font, opts, 1.0, string);
 			h /= 4;
-			cheap_text_line(mx, 0, h,   w, h,   cb, cb_ctx);
-			cheap_text_line(mx, 0, h,   w, h*3, cb, cb_ctx);
-			cheap_text_line(mx, 0, h*3, w, h*3, cb, cb_ctx);
+			cheap_text_line(mx, dx, h+dy,   w+dx, h+dy,   cb, cb_ctx);
+			cheap_text_line(mx, dx, h+dy,   w+dx, h*3+dy, cb, cb_ctx);
+			cheap_text_line(mx, dx, h*3+dy, w+dx, h*3+dy, cb, cb_ctx);
 			return 1;
 		}
 	}
@@ -267,7 +269,7 @@ RND_INLINE int draw_text_cheap(rnd_font_t *font, rnd_font_render_opts_t opts, rn
 	return 0;
 }
 
-RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coord_t dx, rnd_coord_t dy, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	long nx, ny, h;
 	int too_large;
@@ -277,10 +279,10 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 	res.type = a->type;
 	switch(a->type) {
 		case RND_GLYPH_LINE:
-			res.line.x1 = rnd_round(rnd_xform_x(mx, a->line.x1+dx, a->line.y1));
-			res.line.y1 = rnd_round(rnd_xform_y(mx, a->line.x1+dx, a->line.y1));
-			res.line.x2 = rnd_round(rnd_xform_x(mx, a->line.x2+dx, a->line.y2));
-			res.line.y2 = rnd_round(rnd_xform_y(mx, a->line.x2+dx, a->line.y2));
+			res.line.x1 = rnd_round(rnd_xform_x(mx, a->line.x1+dx, a->line.y1+dy));
+			res.line.y1 = rnd_round(rnd_xform_y(mx, a->line.x1+dx, a->line.y1+dy));
+			res.line.x2 = rnd_round(rnd_xform_x(mx, a->line.x2+dx, a->line.y2+dy));
+			res.line.y2 = rnd_round(rnd_xform_y(mx, a->line.x2+dx, a->line.y2+dy));
 			res.line.thickness = rnd_round(a->line.thickness * (scx+scy) / 4.0);
 
 			if (res.line.thickness < min_line_width)
@@ -291,8 +293,8 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			break;
 
 		case RND_GLYPH_ARC:
-			res.arc.cx = rnd_round(rnd_xform_x(mx, a->arc.cx + dx, a->arc.cy));
-			res.arc.cy = rnd_round(rnd_xform_y(mx, a->arc.cx + dx, a->arc.cy));
+			res.arc.cx = rnd_round(rnd_xform_x(mx, a->arc.cx + dx, a->arc.cy + dy));
+			res.arc.cy = rnd_round(rnd_xform_y(mx, a->arc.cx + dx, a->arc.cy + dy));
 			res.arc.r  = rnd_round(a->arc.r * scx);
 			res.arc.start = a->arc.start + rotdeg;
 			res.arc.delta = a->arc.delta;
@@ -325,13 +327,13 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 
 				tx = a->poly.pts.array[h-1];
 				ty = a->poly.pts.array[2*h-1];
-				lpx = rnd_round(rnd_xform_x(mx, tx + dx, ty));
-				lpy = rnd_round(rnd_xform_y(mx, tx + dx, ty));
+				lpx = rnd_round(rnd_xform_x(mx, tx + dx, ty + dy));
+				lpy = rnd_round(rnd_xform_y(mx, tx + dx, ty + dy));
 
 				for(nx = 0, ny = h; nx < h; nx++,ny++) {
 					rnd_coord_t npx, npy, px = a->poly.pts.array[nx], py = a->poly.pts.array[ny];
-					npx = rnd_round(rnd_xform_x(mx, px + dx, py));
-					npy = rnd_round(rnd_xform_y(mx, px + dx, py));
+					npx = rnd_round(rnd_xform_x(mx, px + dx, py + dy));
+					npy = rnd_round(rnd_xform_y(mx, px + dx, py + dy));
 					res.line.x1 = lpx; res.line.y1 = lpy;
 					res.line.x2 = npx; res.line.y2 = npy;
 					cb(cb_ctx, &res);
@@ -344,8 +346,8 @@ RND_INLINE void draw_atom(const rnd_glyph_atom_t *a, rnd_xform_mx_t mx, rnd_coor
 			res.poly.pts.array = tmp;
 			for(nx = 0, ny = h; nx < h; nx++,ny++) {
 				rnd_coord_t px = a->poly.pts.array[nx], py = a->poly.pts.array[ny];
-				res.poly.pts.array[nx] = rnd_round(rnd_xform_x(mx, px + dx, py));
-				res.poly.pts.array[ny] = rnd_round(rnd_xform_y(mx, px + dx, py));
+				res.poly.pts.array[nx] = rnd_round(rnd_xform_x(mx, px + dx, py + dy));
+				res.poly.pts.array[ny] = rnd_round(rnd_xform_y(mx, px + dx, py + dy));
 			}
 			break;
 	}
@@ -362,7 +364,7 @@ do { \
 	rnd_xform_mx_scale(mx, scx, scy); \
 } while(0)
 
-RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, int chr, int chr_next, rnd_xform_mx_t mx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
+RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_coord_t y, int chr, int chr_next, rnd_xform_mx_t mx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 		/* draw atoms if symbol is valid and data is present */
 		if (is_valid(font, opts, chr)) {
@@ -370,7 +372,7 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, int 
 			rnd_glyph_t *g = &font->glyph[chr];
 			
 			for(n = 0; n < g->atoms.used; n++)
-				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
+				draw_atom(&g->atoms.array[n], mx, x, y,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
 			x = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
@@ -380,14 +382,14 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, int 
 			rnd_coord_t p[8];
 			rnd_glyph_atom_t tmp;
 
-			p[0+0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
-			p[4+0] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1));
-			p[0+1] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
-			p[4+1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1));
-			p[0+2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
-			p[4+2] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2));
-			p[0+3] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
-			p[4+3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2));
+			p[0+0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
+			p[4+0] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
+			p[0+1] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
+			p[4+1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
+			p[0+2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
+			p[4+2] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
+			p[0+3] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
+			p[4+3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
 
 			/* draw move on to next cursor position */
 			if (poly_thin) {
@@ -422,24 +424,59 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, int 
 	return x;
 }
 
+/* skip to the next line or break on end of string */ 
+#define next_line() \
+	if ((c.chr == 0) || (opts & RND_FONT_STOP_AT_NL)) \
+		break; \
+	x = 0; \
+	y += font->max_height; \
+	cursor_next(&c);
 
 RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int poly_thin, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	cursor_t c;
-	rnd_coord_t x = 0;
+	rnd_coord_t x = 0, y = 0;
 
 	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
 
+#ifdef FONT2_DEBUG
+	opts |= RND_FONT_MULTI_LINE;
+#endif
+
 	/* Text too small at this zoom level: cheap draw */
 	if (tiny != RND_FONT_TINY_ACCURATE) {
-		if (draw_text_cheap(font, opts, mx, string, scx, scy, tiny, cb, cb_ctx))
-			return;
+		if (opts & RND_FONT_MULTI_LINE) {
+			for(cursor_first(font, opts, &c, string);;) {
+				const unsigned char *start = c.pos_next;
+				if (!draw_text_cheap(font, opts | RND_FONT_STOP_AT_NL, mx, 0, y, start, scx, scy, tiny, cb, cb_ctx))
+					goto render_accurately;
+				for(; (c.chr != 0) && (c.chr != '\n'); cursor_next(&c)) ;
+				next_line();
+			}
+			return; /* skip expensive rendering */
+		}
+		else {
+			if (draw_text_cheap(font, opts, mx, 0, 0, string, scx, scy, tiny, cb, cb_ctx))
+				return;
+		}
 	}
 
-	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
-		x = rnd_font_draw_glyph(font, x, c.chr, c.chr_next, mx, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
-		x += (isspace(c.chr)) ? extra_spc :  extra_glyph; /* for justify */
+	render_accurately:;
+	if (opts & RND_FONT_MULTI_LINE) {
+		for(cursor_first(font, opts, &c, string);;) {
+			for(; (c.chr != 0) && (c.chr != '\n'); cursor_next(&c)) {
+				x = rnd_font_draw_glyph(font, x, y, c.chr, c.chr_next, mx, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
+				x += (isspace(c.chr)) ? extra_spc :  extra_glyph; /* for justify */
+			}
+			next_line();
+		}
+	}
+	else {
+		for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
+			x = rnd_font_draw_glyph(font, x, 0, c.chr, c.chr_next, mx, scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
+			x += (isspace(c.chr)) ? extra_spc :  extra_glyph; /* for justify */
+		}
 	}
 }
 
@@ -530,7 +567,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 		min_unscaled_radius = (min_line_width * (2/(scx+scy))) / 2;
 
 	/* calculate size of the bounding box */
-	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c)) {
+	for(cursor_first(font, opts, &c, string); (c.chr != 0) && !STOP_AT_NL; cursor_next(&c)) {
 		if (is_valid(font, opts, c.chr)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[c.chr];
