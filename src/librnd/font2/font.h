@@ -141,12 +141,12 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src);
 typedef struct vtc0_s rnd_font_wcache_t;
 
 typedef enum {
-	CSCH_HALIGN_START,     /* left or top */
-	CSCH_HALIGN_CENTER,
-	CSCH_HALIGN_END,       /* right or bottom */
-	CSCH_HALIGN_WORD_JUST, /* extra space inserted between words or lines */
-	CSCH_HALIGN_JUST,      /* extra space inserted between characters; only for horizontal */
-	CSCH_HALIGN_invalid
+	RND_FONT_ALIGN_START,     /* left or top */
+	RND_FONT_ALIGN_CENTER,
+	RND_FONT_ALIGN_END,       /* right or bottom */
+	RND_FONT_ALIGN_WORD_JUST, /* extra space inserted between words or lines */
+	RND_FONT_ALIGN_JUST,      /* extra space inserted between characters; only for horizontal */
+	RND_FONT_ALIGN_invalid
 } rnd_font_align_t;
 
 /* Same as rnd_font_draw_string but aligned in a box. Unrotated box width and
