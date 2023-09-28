@@ -29,19 +29,19 @@
 				- custom &name; -> integer translation table
 				- as a convention &amp; should be added to point to &
 			- optional kerning table: advance offs value for combiation of 2 glyphs; usually negative to move second char to the left
+			- document alignments and multiline
 		- FEATURE: font -v2 support:
 			- font upgrade (font2):
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
 				- baseline?
 				- pcb-rnd and sch-rnd:
 					- io_lihata should set font->filever before parsing so tab_width doesn't warn in a board v9
-					- io_lihata: font write code should write v2 fields: entity table, kerning table, tab_width, font_height
+					- io_lihata: font write code should write v2 fields: entity table, kerning table, tab_width, font_height, line_height
 					- io_pcb: font write code should warn for v2 fields
 					- &entity; translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
 						- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
 						- GUI text edit could auto-replace unicode with &entity;
 						- upgrade aussiefont: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
-				- maybe support for multiline? think this over
 				- save and load ->height, check calls to rnd_font_fix_v1() and don't call it if ->height is loaded
 				- maybe: replace delta with advance, calculated from glyph's 0, not from glyph's width (so our engine is less strange)
 	- BUG: perma scripts are initialized too late
