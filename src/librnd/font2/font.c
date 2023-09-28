@@ -79,7 +79,7 @@ RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_op
 }
 
 /* Add glyph advance to current and return the new position, for valid glyphs */
-RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t current, int chr, rnd_glyph_t *g)
+RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t current, int chr, int chr2, rnd_glyph_t *g)
 {
 	if (is_tab(opts, chr))
 		return rnd_font_advance_tab(font, opts, current);
@@ -94,7 +94,7 @@ RND_INLINE rnd_coord_t rnd_font_advance_invalid(rnd_font_t *font, rnd_font_rende
 }
 
 /* Add glyph advance to current and return the new position, for chr */
-RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t opts, int chr, rnd_coord_t x)
+RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t opts, int chr, int chr2, rnd_coord_t x)
 {
 	if (is_tab(opts, chr))
 		return rnd_font_advance_tab(font, opts, x);
@@ -102,7 +102,7 @@ RND_INLINE rnd_coord_t rnd_font_advance(rnd_font_t *font, rnd_font_render_opts_t
 	if ((chr > 0) && (chr <= RND_FONT_MAX_GLYPHS)) {
 		rnd_glyph_t *g = &font->glyph[chr];
 		if (g->valid)
-			return rnd_font_advance_valid(font, opts, x, chr, g);
+			return rnd_font_advance_valid(font, opts, x, chr, chr2, g);
 	}
 	return rnd_font_advance_invalid(font, opts, x);
 }
@@ -191,7 +191,7 @@ rnd_coord_t rnd_font_string_width(rnd_font_t *font, rnd_font_render_opts_t opts,
 		return 0;
 
 	for(cursor_first(font, opts, &c, string); c.chr != 0; cursor_next(&c))
-		w = rnd_font_advance(font, opts, c.chr, w);
+		w = rnd_font_advance(font, opts, c.chr, c.chr_next, w);
 	return rnd_round((double)w * scx);
 }
 
@@ -375,7 +375,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 				draw_atom(&g->atoms.array[n], mx, x,  scx, scy, rotdeg, opts, thickness, min_line_width, poly_thin, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, opts, x, c.chr, g);
+			x = rnd_font_advance_valid(font, opts, x, c.chr, c.chr_next, g);
 		}
 		else {
 			/* the default symbol is a filled box */
@@ -577,7 +577,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			tx = rnd_font_advance_valid(font, opts, tx, c.chr, g);
+			tx = rnd_font_advance_valid(font, opts, tx, c.chr, c.chr_next, g);
 		}
 		else {
 			rnd_box_t *ds = &font->unknown_glyph;
