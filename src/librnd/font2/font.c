@@ -427,12 +427,19 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 	return x;
 }
 
+RND_INLINE rnd_coord_t rnd_font_step_y(rnd_font_t *font)
+{
+	if (font->line_height_cache <= 0)
+		font->line_height_cache = (font->line_height > 0) ? font->line_height : font->max_height;
+	return font->line_height_cache;
+}
+
 /* skip to the next line or break on end of string */ 
 #define next_line() \
 	if ((c.chr == 0) || (opts & RND_FONT_STOP_AT_NL)) \
 		break; \
 	x = 0; \
-	y += font->max_height; \
+	y += rnd_font_step_y(font); \
 	lineno++; \
 	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc); \
 	cursor_next(&c);
@@ -704,7 +711,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 	for(cursor_first(font, opts, &c, string); (c.chr != 0) && !STOP_AT_NL; cursor_next(&c)) {
 		if (c.chr == '\n') {
 			tx = 0;
-			ty += font->max_height;
+			ty += rnd_font_step_y(font);
 		}
 		else if (is_valid(font, opts, c.chr)) {
 			long n;
