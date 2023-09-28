@@ -149,6 +149,7 @@ put /local/librnd/OBJS_FONTLIB [@
 
 put /local/librnd/OBJS_FONT2LIB [@
 	$(LIBRND)/font2/font.o
+	$(LIBRND)/font2/htkc.o
 	$(LIBRND)/font2/vtgla.o
 @]
 

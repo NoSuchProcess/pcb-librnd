@@ -930,10 +930,7 @@ void rnd_font_free(rnd_font_t *f)
 		f->entity_tbl_valid = 0;
 	}
 	if (f->kerning_tbl_valid) {
-		htsi_entry_t *e;
-		for(e = htsi_first(&f->kerning_tbl); e != NULL; e = htsi_next(&f->kerning_tbl, e))
-			free(e->key);
-		htsi_uninit(&f->kerning_tbl);
+		htkc_uninit(&f->kerning_tbl);
 		f->kerning_tbl_valid = 0;
 	}
 	

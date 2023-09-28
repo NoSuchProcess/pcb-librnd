@@ -380,8 +380,13 @@
  ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/globalconst.h \
- ../src/librnd/core/xform_mx.h ../src/librnd/font2/font.h ../src_3rd/genht/htip.h \
- ../src/librnd/font2/glyph.h ../src/librnd/core/vtc0.h ../src/librnd/font2/vtgla.h
+ ../src/librnd/core/xform_mx.h ../src/librnd/font2/font.h ../src_3rd/genht/htsi.h \
+ ../src/librnd/font2/glyph.h ../src_3rd/genht/htip.h ../src/librnd/core/vtc0.h \
+ ../src/librnd/font2/vtgla.h ../src/librnd/font2/htkc.h ../src_3rd/genht/ht.h
+../src/librnd/font2/htkc.o: ../src/librnd/font2/htkc.c \
+ ../src/librnd/font2/htkc.h ../src/librnd/config.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/ht.c ../src_3rd/genht/ht_inlines.h \
+ ../src_3rd/genht/hash.h
 ../src/librnd/font2/vtgla.o: ../src/librnd/font2/vtgla.c \
  ../src/librnd/font2/glyph.h ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \

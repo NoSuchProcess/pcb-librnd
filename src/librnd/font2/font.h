@@ -32,6 +32,7 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/box.h>
 #include <librnd/font2/glyph.h>
+#include <librnd/font2/htkc.h>
 
 /* Note: char 0 can not be used (string terminator). If RND_FONT_ENTITY is
    enabled, char 255 is used internally to indicate unknown entities */
@@ -59,7 +60,7 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	unsigned entity_tbl_valid:1;
 	unsigned kerning_tbl_valid:1;
 	htsi_t entity_tbl;                 /* [4.1.0, filever 2] key: entity name without the "&" and ";" wrapping; value: [1..245] glyph index */
-	htsi_t kerning_tbl;                /* [4.1.0, filever 2] key: character pair as string; value: value added to advance */
+	htkc_t kerning_tbl;                /* [4.1.0, filever 2] key: character pair; value: signed coord added to advance of the first char */
 
 	/* cached fields - these are not directly in the file */
 	char filever;                      /* [4.1.0] 0 for unknown/legacy, 1 for lht v1 or 2 for lht v2 */
