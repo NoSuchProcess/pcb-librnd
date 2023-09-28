@@ -433,18 +433,43 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 		break; \
 	x = 0; \
 	y += font->max_height; \
+	lineno++; \
+	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc); \
 	cursor_next(&c);
 
 typedef struct {
 	rnd_coord_t boxw, boxh;
-	rnd_font_align_t haling, valign;
+	rnd_font_align_t halign, valign;
 	rnd_font_wcache_t *wcache;
 } align_t;
+
+#define WCACHE_GLOB_WIDTH align->wcache->array[0]
+#define WCACHE_LINE_WIDTH align->wcache->array[(*lineno + 1) * 4]
+
+RND_INLINE void setup_valign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y)
+{
+	if (align == NULL) return;
+}
+
+RND_INLINE void setup_halign(align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_glyph, rnd_coord_t *extra_spc)
+{
+	if ((align == NULL) || (((*lineno+1)*4+3) >= align->wcache->used)) return;
+
+	switch(align->halign) {
+		case RND_FONT_ALIGN_START: return;
+		case RND_FONT_ALIGN_invalid: return;
+		case RND_FONT_ALIGN_CENTER:    *x = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH) / 2; break;
+		case RND_FONT_ALIGN_END:       *x = (WCACHE_GLOB_WIDTH - WCACHE_LINE_WIDTH); break;
+		case RND_FONT_ALIGN_WORD_JUST: *x = 0; break; TODO("load extra_glyph and extra_spc");
+		case RND_FONT_ALIGN_JUST:      *x = 0; break; TODO("load extra_glyph and extra_spc");
+	}
+}
 
 RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_coord_t extra_glyph, rnd_coord_t extra_spc, align_t *align, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_xform_mx_t mx = RND_XFORM_MX_IDENT;
 	cursor_t c;
+	int lineno = 0;
 	rnd_coord_t x = 0, y = 0;
 
 	rnd_font_mx(mx, x0, y0, scx, scy, rotdeg, opts);
@@ -452,13 +477,15 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 #ifdef FONT2_DEBUG
 	opts |= RND_FONT_MULTI_LINE;
 #endif
+	setup_valign(align, &lineno, &x, &y);
+	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc);
 
 	/* Text too small at this zoom level: cheap draw */
 	if (tiny != RND_FONT_TINY_ACCURATE) {
 		if (opts & RND_FONT_MULTI_LINE) {
 			for(cursor_first(font, opts, &c, string);;) {
 				const unsigned char *start = c.pos_next;
-				if (!draw_text_cheap(font, opts | RND_FONT_STOP_AT_NL, mx, 0, y, start, scx, scy, tiny, cb, cb_ctx))
+				if (!draw_text_cheap(font, opts | RND_FONT_STOP_AT_NL, mx, x, y, start, scx, scy, tiny, cb, cb_ctx))
 					goto render_accurately;
 				for(; (c.chr != 0) && (c.chr != '\n'); cursor_next(&c)) ;
 				next_line();
@@ -489,6 +516,8 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 	}
 }
 
+#undef next_line
+
 void rnd_font_draw_string(rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_tiny_t tiny, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
 	rnd_font_draw_string_(font, string, x0, y0, scx, scy, rotdeg, opts, thickness, min_line_width, tiny, 0, 0, NULL, cb, cb_ctx);
@@ -506,7 +535,7 @@ void rnd_font_draw_string_align(rnd_font_t *font, const unsigned char *string, r
 
 	a.boxw = boxw;
 	a.boxh = boxh;
-	a.haling = halign;
+	a.halign = halign;
 	a.valign = valign;
 	if (wcache == NULL) {
 		/* reuse the allocation but flush the cache - not really reentrant in multithread */
@@ -539,7 +568,7 @@ void rnd_font_inval_wcache(rnd_font_wcache_t *wcache)
 static void wcache_update(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_font_wcache_t *wcache, const unsigned char *string)
 {
 	cursor_t c;
-	rnd_coord_t x;
+	rnd_coord_t x = 0;
 	int spc = 0, len = 0;
 
 	/* first entry should be the dimension of the widest line */
