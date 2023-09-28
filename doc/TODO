@@ -36,9 +36,9 @@
 					- io_lihata should set font->filever before parsing so tab_width doesn't warn in a board v9
 					- io_lihata: font write code should write v2 fields
 					- io_pcb: font write code should warn for v2 fields
-					- unicode translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
+					- &entity; translation table so that the upper 127 and lower 32 chars can be used for mu, degree and similar
 						- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
-						- GUI text edit could auto-replace unicode with &unicode_name;
+						- GUI text edit could auto-replace unicode with &entity;
 						- upgrade aussiefont: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
 				- maybe support for multiline? think this over
 				- optional kerning table: a single dx value for combiation of 2 glyphs; second glyph usually needs to moved in the negative direction
