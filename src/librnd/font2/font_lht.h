@@ -181,7 +181,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	hght = lht_dom_hash_get(nd, "height");
 	if (hght != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
-			RND_LHT_ERROR(tabw, "height is unexpected below font file version 2.\n");
+			RND_LHT_ERROR(hght, "height is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->height, hght);
 	}
 	else
@@ -191,7 +191,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	hght = lht_dom_hash_get(nd, "cent_height");
 	if (hght != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
-			RND_LHT_ERROR(tabw, "cent_height is unexpected below font file version 2.\n");
+			RND_LHT_ERROR(hght, "cent_height is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->cent_height, hght);
 	}
 	else
@@ -200,7 +200,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	bsln = lht_dom_hash_get(nd, "baseline");
 	if (bsln != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
-			RND_LHT_ERROR(tabw, "baseline is unexpected below font file version 2.\n");
+			RND_LHT_ERROR(bsln, "baseline is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->baseline, bsln);
 	}
 	else
@@ -209,7 +209,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	lineh = lht_dom_hash_get(nd, "line_height");
 	if (lineh != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
-			RND_LHT_ERROR(tabw, "line height is unexpected below font file version 2.\n");
+			RND_LHT_ERROR(lineh, "line height is unexpected below font file version 2.\n");
 		PARSE_COORD(&font->line_height, lineh);
 	}
 	else
