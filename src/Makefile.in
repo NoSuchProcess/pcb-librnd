@@ -700,7 +700,7 @@ sub /local/librnd/HDRS_CORELIB {$(LIBRND)/core/safe_fs_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/anyload_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_act.h } {}
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/hid_dlg.h } {}
-append /local/librnd/HDRS_CORELIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/hid/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
+append /local/librnd/HDRS_CORELIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs.h $(LIBRND)/core/globalconst.h $(LIBRND)/core/math_helper.h $(LIBRND)/hid/buildin.hidlib.h $(LIBRND)/hid/hid_inlines.h $(LIBRND)/core/rotate.h $(LIBRND)/core/fptr_cast.h $(LIBRND)/core/compat_fs_dir.h $(LIBRND)/core/safe_fs_dir.h $(LIBRND)/core/compat_inc.h $(LIBRND)/poly/rtree2_compat.h $(LIBRND)/core/color_cache.h }
 append /local/librnd/HDRS_CORELIB {$(LIBRND)/font/font_lht.h $(LIBRND)/font/glyph.h $(LIBRND)/font/xform_mx.h }
 append /local/librnd/HDRS_CORELIB {$(LIBRND)/font2/font_lht.h $(LIBRND)/font2/glyph.h }
 append /local/librnd/HDRS_CORELIB {$(LIBRND)/plugins/lib_hid_common/dialogs_conf.h $(LIBRND)/plugins/lib_hid_common/xpm.h $(LIBRND)/plugins/lib_hid_common/dlg_comm_m.h $(LIBRND)/plugins/lib_hid_common/place.h $(LIBRND)/plugins/lib_hid_common/toolbar.h $(LIBRND)/plugins/lib_hid_common/dlg_pref.h $(LIBRND)/plugins/lib_hid_common/zoompan.h $(LIBRND)/plugins/lib_hid_common/dlg_export.h }

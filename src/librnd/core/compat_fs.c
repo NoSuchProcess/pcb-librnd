@@ -4,6 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,2004,2006 Thomas Nau
+ *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,10 +47,12 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/compat_fs_dir.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/globalconst.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/safe_fs_dir.h>
 
 #include <genvector/gds_char.h>
 
@@ -392,6 +395,85 @@ char *rnd_dirname_real(const char *path)
 		res = rnd_lrealpath(dn);
 
 	free(dn);
+	return res;
+}
+
+
+int rnd_mktempdir(rnd_design_t *dsg, gds_t *dst, const char *prefix)
+{
+	const char *tmpdir = getenv("TMPDIR");
+	long tmpdir_len, prefix_len;
+	char *end;
+	int tries;
+
+	TODO("what about win32? this is broken in rnd_tempfile_name_new() as well");
+	if (tmpdir == NULL) {
+		tmpdir = "/tmp";
+		tmpdir_len = 4;
+	}
+	else
+		tmpdir_len = strlen(tmpdir);
+
+	prefix_len = strlen(prefix);
+	gds_enlarge(dst, tmpdir_len + 1 + prefix_len + 32);
+	dst->used = 0;
+	if (dst->array == NULL)
+		return -1;
+
+	end = dst->array;
+	memcpy(end, tmpdir, tmpdir_len); end += tmpdir_len;
+	*end = RND_DIR_SEPARATOR_C; end++;
+	memcpy(end, prefix, prefix_len); end += prefix_len;
+	*end = '.'; end++;
+
+	for(tries = 32; tries > 0; tries--) {
+		int n;
+		char *s = end;
+		char pool[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+		for(n = 0; n < 12; n++) {
+			*s = pool[rnd_rand() % (sizeof(pool)-1)];
+			s++;
+		}
+		*s = '\0';
+		if (rnd_mkdir(dsg, dst->array, 0750) == 0) {
+			dst->used = s - dst->array;
+			return 0;
+		}
+	}
+
+	gds_uninit(dst);
+	return -1;
+}
+
+int rnd_rmtree(rnd_design_t *dsg, gds_t *dst)
+{
+	if (rnd_is_dir(dsg, dst->array)) {
+		DIR *dir = rnd_opendir(dsg, dst->array);
+		struct dirent *de;
+
+		while((de = rnd_readdir(dir)) != NULL) {
+			int save = dst->used;
+
+			if (de->d_name[0] == '.') { /* skip . and .. */
+				if (de->d_name[1] == '\0') continue;
+				if ((de->d_name[1] == '.') && (de->d_name[2] == '\0')) continue;
+			}
+
+			gds_append_str(dst, de->d_name);
+			rnd_rmtree(dsg, dst);
+			dst->array[save] = '\0';
+			dst->used = save;
+		}
+		rnd_closedir(dir);
+	}
+	rnd_remove(dsg, dst->array);
+	return 0;
+}
+
+int rnd_rmtempdir(rnd_design_t *dsg, gds_t *dst)
+{
+	int res = rnd_rmtree(dsg, dst);
+	gds_uninit(dst);
 	return res;
 }
 
