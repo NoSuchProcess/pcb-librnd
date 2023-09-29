@@ -25,8 +25,9 @@
  *
  */
 
-#include <ctype.h>
 #include "config.h"
+#include <ctype.h>
+#include <genht/hash.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/hid/hid.h>
 #include <librnd/core/globalconst.h>
@@ -1033,6 +1034,21 @@ void rnd_font_load_internal(rnd_font_t *font, embf_font_t *embf_font, int len, r
 	rnd_font_normalize_(font, 0, 1); /* embedded font doesn't have arcs or polygons, loading in compatibility mode won't change anything */
 }
 
+void rnd_font_copy_tables(rnd_font_t *dst, const rnd_font_t *src)
+{
+	htkc_entry_t *k;
+	htsi_entry_t *e;
+
+	/* copy the kerning table */
+	htkc_init(&dst->kerning_tbl, htkc_keyhash, htkc_keyeq);
+	for(k = htkc_first(&src->kerning_tbl); k != NULL; k = htkc_next(&src->kerning_tbl, k))
+		htkc_set(&dst->kerning_tbl, k->key, k->value);
+
+	htsi_init(&dst->entity_tbl, strhash, strkeyeq);
+	for(e = htsi_first(&src->entity_tbl); e != NULL; e = htsi_next(&src->entity_tbl, e))
+		htsi_set(&dst->entity_tbl, rnd_strdup(e->key), e->value);
+}
+
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 {
 	int n, m;
@@ -1075,6 +1091,8 @@ void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src)
 			}
 		}
 	}
+
+	rnd_font_copy_tables(dst, src);
 
 	if (src->name != NULL)
 		dst->name = rnd_strdup(src->name);

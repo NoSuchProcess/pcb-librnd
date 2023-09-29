@@ -139,6 +139,7 @@ void rnd_font_fix_v1(rnd_font_t *f);
 int rnd_font_invalid_chars(rnd_font_t *font, rnd_font_render_opts_t opts, const unsigned char *s);
 
 void rnd_font_copy(rnd_font_t *dst, const rnd_font_t *src);
+void rnd_font_copy_tables(rnd_font_t *dst, const rnd_font_t *src); /* [4.1.0] */
 
 
 /*** [4.1.0] render in a box with alignment ***/
