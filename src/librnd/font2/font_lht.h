@@ -166,7 +166,7 @@ static int load_kern_key(const char *start, const char *end)
 
 static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 {
-	lht_node_t *grp, *sym, *tabw, *ents, *ent, *kerning, *kern, *lineh, *hght;
+	lht_node_t *grp, *sym, *tabw, *ents, *ent, *kerning, *kern, *lineh, *hght, *bsln;
 	lht_dom_iterator_t it;
 	int err = 0;
 
@@ -197,6 +197,16 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	else
 		font->cent_height = 0;
 
+	bsln = lht_dom_hash_get(nd, "baseline");
+rnd_trace("bsln=%p\n", bsln);
+	if (bsln != NULL) {
+		if ((font->filever > 0) && (font->filever < 2))
+			RND_LHT_ERROR(tabw, "baseline is unexpected below font file version 2.\n");
+		PARSE_COORD(&font->baseline, bsln);
+	}
+	else
+		font->baseline = 0;
+rnd_trace("  %ml\n", font->baseline);
 
 	lineh = lht_dom_hash_get(nd, "line_height");
 	if (lineh != NULL) {

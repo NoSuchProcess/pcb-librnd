@@ -57,6 +57,7 @@ typedef struct rnd_font_s {          /* complete set of symbols */
 	rnd_font_id_t id;                  /* unique for safe reference */
 	rnd_coord_t tab_width;             /* [4.1.0, filever 2] \t positions when rendering with RND_FONT_HTAB; calculated from 'M' when unspecified */
 	rnd_coord_t line_height;           /* [4.1.0, filever 2] y stepping for multiline text; if not available (0 in pre-v2 font): 1.1*max_height */
+	rnd_coord_t baseline;              /* [4.1.0, filever 2] y offset from the top to the baseline - see comment at RND_FONT_BASELINEnormally the origin of a text object is the top-left of the glyph coord system; when */
 
 	htsi_t entity_tbl;                 /* [4.1.0, filever 2] key: entity name without the "&" and ";" wrapping; value: [1..245] glyph index */
 	htkc_t kerning_tbl;                /* [4.1.0, filever 2] key: character pair; value: signed coord added to advance of the first char */
@@ -85,7 +86,8 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_ENTITY = 8,         /* [4.1.0] interpret &entity; sequences and render them single glyph */
 	RND_FONT_MULTI_LINE = 16,    /* [4.1.0] support rendering into multiple lines (split at \n) */
 	RND_FONT_STOP_AT_NL = 32,    /* [4.1.0] stop rendering at the first newline */
-	RND_FONT_THIN_POLY = 64      /* [4.1.0] render polygons with their outline only */
+	RND_FONT_THIN_POLY = 64,     /* [4.1.0] render polygons with their outline only */
+	RND_FONT_BASELINE = 128      /* [4.1.0] normally the origin of a text object is the top-left of the glyph coord system; when this is enabled, the glyphs are moved up so the origin is at the custom baseline of the font (bbox is modified too) */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */

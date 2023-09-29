@@ -461,8 +461,16 @@ typedef struct {
 #define WCACHE_NUM_LINES  ((align->wcache->used / 4)-1)
 #define WCACHE_NET_HEIGHT (WCACHE_NUM_LINES * font->line_height_cache)
 
-RND_INLINE void setup_valign(rnd_font_t *font, align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_y)
+RND_INLINE void setup_valign(rnd_font_t *font, rnd_font_render_opts_t opts, align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_y)
 {
+
+	if ((opts & RND_FONT_BASELINE) && (font->baseline != 0))
+		*y = -font->baseline;
+	else
+		*y = 0;
+
+rnd_trace("rend bl: %ml opt=%d field=%d\n", *y, (opts & RND_FONT_BASELINE), (font->baseline != 0));
+
 	if ((align == NULL) || (align->boxh <= 0)) return;
 
 	rnd_font_step_y(font); /* make sure we have the line_height cache updated */
@@ -470,11 +478,10 @@ RND_INLINE void setup_valign(rnd_font_t *font, align_t *align, int *lineno, rnd_
 	switch(align->valign) {
 		case RND_FONT_ALIGN_START: return;
 		case RND_FONT_ALIGN_invalid: return;
-		case RND_FONT_ALIGN_CENTER:    *y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / 2; break;
-		case RND_FONT_ALIGN_END:       *y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT); break;
+		case RND_FONT_ALIGN_CENTER:    *y += (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / 2; break;
+		case RND_FONT_ALIGN_END:       *y += (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT); break;
 		case RND_FONT_ALIGN_WORD_JUST:
 		case RND_FONT_ALIGN_JUST:
-			*y = 0;
 			if ((WCACHE_NUM_LINES-1) > 0)
 				*extra_y = (WCACHE_GLOB_HEIGHT - WCACHE_NET_HEIGHT) / (WCACHE_NUM_LINES-1);
 			break;
@@ -519,7 +526,7 @@ RND_INLINE void rnd_font_draw_string_(rnd_font_t *font, const unsigned char *str
 #ifdef FONT2_DEBUG
 	opts |= RND_FONT_MULTI_LINE;
 #endif
-	setup_valign(font, align, &lineno, &x, &y, &extra_y);
+	setup_valign(font, opts, align, &lineno, &x, &y, &extra_y);
 	setup_halign(align, &lineno, &x, &y, &extra_glyph, &extra_spc);
 
 	/* Text too small at this zoom level: cheap draw */
@@ -721,6 +728,9 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 
 	minx = miny = maxx = maxy = tx = ty = 0;
 
+	if ((opts & RND_FONT_BASELINE) && (font->baseline != 0))
+		miny = maxy = ty = -font->baseline;
+
 	/* We are initially computing the bbox of the un-scaled text but
 	   min_line_width is interpreted on the scaled text. */
 	if (compat)
@@ -755,8 +765,8 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						unscaled_radius = RND_MAX(min_unscaled_radius, a->line.thickness / 4);
 
 						if (first_time) {
-							minx = maxx = a->line.x1;
-							miny = maxy = a->line.y1;
+							minx = maxx = a->line.x1 + tx;
+							miny = maxy = a->line.y1 + ty;
 							first_time = rnd_false;
 						}
 
