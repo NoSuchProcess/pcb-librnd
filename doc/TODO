@@ -30,10 +30,13 @@
 				- as a convention &amp; should be added to point to &
 			- optional kerning table: advance offs value for combiation of 2 glyphs; usually negative to move second char to the left
 			- document alignments and multiline
+			- baseline
+				- normally text origin is top-left in glyph coord system
+				- with the RND_FONT_BASELINE rendering option enabled text origin is baseline-left
+				- baseline field is from top to the baseline (positive number)
 		- FEATURE: font -v2 support:
 			- font upgrade (font2):
 				- test-parse call or some other way to avoid font load error on valid lihata fonts
-				- baseline?
 				- pcb-rnd and sch-rnd:
 					- io_lihata should set font->filever before parsing so tab_width doesn't warn in a board v9
 					- io_lihata: font write code should write v2 fields: entity table, kerning table, tab_width, font_height, line_height, height, cent_height
