@@ -198,7 +198,6 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 		font->cent_height = 0;
 
 	bsln = lht_dom_hash_get(nd, "baseline");
-rnd_trace("bsln=%p\n", bsln);
 	if (bsln != NULL) {
 		if ((font->filever > 0) && (font->filever < 2))
 			RND_LHT_ERROR(tabw, "baseline is unexpected below font file version 2.\n");
@@ -206,7 +205,6 @@ rnd_trace("bsln=%p\n", bsln);
 	}
 	else
 		font->baseline = 0;
-rnd_trace("  %ml\n", font->baseline);
 
 	lineh = lht_dom_hash_get(nd, "line_height");
 	if (lineh != NULL) {

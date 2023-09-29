@@ -463,13 +463,10 @@ typedef struct {
 
 RND_INLINE void setup_valign(rnd_font_t *font, rnd_font_render_opts_t opts, align_t *align, int *lineno, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *extra_y)
 {
-
 	if ((opts & RND_FONT_BASELINE) && (font->baseline != 0))
 		*y = -font->baseline;
 	else
 		*y = 0;
-
-rnd_trace("rend bl: %ml opt=%d field=%d\n", *y, (opts & RND_FONT_BASELINE), (font->baseline != 0));
 
 	if ((align == NULL) || (align->boxh <= 0)) return;
 
