@@ -251,7 +251,7 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd)
 	if (kerning != NULL) {
 		if (kerning->type == LHT_HASH) {
 			if ((font->filever > 0) && (font->filever < 2))
-				RND_LHT_ERROR(kerning, "entities is unexpected below font file version 2.\n");
+				RND_LHT_ERROR(kerning, "kerning is unexpected below font file version 2.\n");
 			htkc_init(&font->kerning_tbl, htkc_keyhash, htkc_keyeq);
 			font->kerning_tbl_valid = 1;
 			for(kern = lht_dom_first(&it, kerning); kern != NULL; kern = lht_dom_next(&it)) {
