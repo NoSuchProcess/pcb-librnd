@@ -35,20 +35,13 @@
 				- with the RND_FONT_BASELINE rendering option enabled text origin is baseline-left
 				- baseline field is from top to the baseline (positive number)
 			- draw a glyph anatomy
-		- FEATURE: font -v2 support:
-			- font upgrade (font2):
-				- test-parse call or some other way to avoid font load error on valid lihata fonts
-				- pcb-rnd and sch-rnd:
-					- enable &entity
-						- new text flag in sch-rnd and pcb-rnd (similar to dyntext) that activates translation
-						- GUI text edit could auto-replace unicode with &entity;
-					- check calls to rnd_font_fix_v1() in sch-rnd and don't call it if ->height is loaded; maybe not needed at all with font2, multiline is handled in librnd
-			- FEATURE: font v2: upgrade aussiefont:
-				- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
-				- kerning
-				- tab_width
-				- baseline
-				- line_height
+		- BUG: font2: test-parse call or some other way to avoid font load error on valid lihata fonts
+		- FEATURE: font v2: upgrade aussiefont:
+			- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
+			- kerning
+			- tab_width
+			- baseline
+			- line_height
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
