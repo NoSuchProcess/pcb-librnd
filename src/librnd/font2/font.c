@@ -36,7 +36,7 @@
 #include <librnd/core/vtc0.h>
 #include <librnd/font2/font.h>
 
-#define FONT2_DEBUG 1
+/*#define FONT2_DEBUG 1*/
 
 /* Evaluates to 1 if opts has any mirroring */
 #define OPTS_IS_MIRRORED(opts) \
