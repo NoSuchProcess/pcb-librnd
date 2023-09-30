@@ -16,9 +16,6 @@
 			- which always results in mm!
 			- make %mH configurable by the host app (and document the new API)
 			- easiest way: rnd_printf.c, expose human_coord_t *human_coord so it can be overwritten with a different array
-		- move sch-rnd's plugins/sch_dialogs/timed_chg.h to lib_hid_common
-		- move sch-rnd's libcschem/util_path to librnd; pcb-rnd has something similar too
-		- move sch-rnd's basename() call next to dirname()
 		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- DOC: font -v2:
