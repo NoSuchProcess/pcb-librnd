@@ -477,3 +477,64 @@ int rnd_rmtempdir(rnd_design_t *dsg, gds_t *dst)
 	return res;
 }
 
+TODO("#define this: ((*s == '/') || (*s == RND_DIR_SEPARATOR_C)); use this instead of looking for /")
+
+char *rnd_relative_path_files(const char *pth, const char *relto)
+{
+	char *freeme1 = NULL, *freeme2 = NULL;
+	const char *s, *s1, *s2;
+	int offs, commsep = -1;
+	gds_t res = {0};
+	
+
+	/* make sure both inputs are full paths */
+	if (!rnd_is_path_abs(pth))
+		pth = freeme1 = rnd_lrealpath(pth);
+	if (!rnd_is_path_abs(relto))
+		relto = freeme2 = rnd_lrealpath(relto);
+
+	/* calculate common part */
+	for(offs = 0, s1 = pth, s2 = relto; *s1 == *s2; s1++, s2++, offs++)
+		if ((*s1 == '/') && (*s2 == '/'))
+			commsep = offs;
+
+	assert(commsep >= 0); /* both paths are absolute, worst case first char match */
+
+	/* add all the ../ */
+	for(s = relto+commsep+1; *s != '\0'; s++) {
+		if ((s[0] == '/') && (s[1] != '/'))
+			gds_append_str(&res, "../");
+	}
+
+	/* append partial path to dest file */
+	gds_append_str(&res, pth+commsep+1);
+
+	free(freeme1);
+	free(freeme2);
+	return res.array;
+}
+
+const char *rnd_basename(const char *path)
+{
+	char *res = strrchr(path, '/');
+	if (res == NULL) return path;
+	return res+1;
+}
+
+const char *rnd_parent_dir_name(const char *fullpath)
+{
+	const char *bn;
+	int seps = 0;
+
+	for(bn = fullpath + strlen(fullpath) - 1; bn > fullpath; bn--) {
+		if ((bn[0] == '/') && (bn[1] != '/')) {
+			seps++;
+			if (seps == 2) {
+				bn++;
+				return bn;
+			}
+		}
+	}
+
+	return bn;
+}
