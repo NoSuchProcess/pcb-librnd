@@ -8,11 +8,6 @@
 			- per widget configurable maximum zoom level (with poke?)
 			- pass back current zoom level in expose_ctx
 			- control flip (with poke?)
-		- FEATURE: getxy in sch-rnd [report: Majenko]
-			- return value of action is coord, and coord is converted using %mH
-			- which always results in mm!
-			- make %mH configurable by the host app (and document the new API)
-			- easiest way: rnd_printf.c, expose human_coord_t *human_coord so it can be overwritten with a different array
 		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- DOC: font -v2:
@@ -56,6 +51,8 @@
 			- maybe remove the whole old font/
 			- remove font2 rnd_font_fix_v1() - used by sch-rnd with font v1
 			- remove font2 rnd_font_draw_string_justify() - used by sch-rnd with font v1
+		- spare write back:
+			- rnd_app_t in hidlib.h
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
