@@ -688,4 +688,9 @@ void rnd_hid_set_mouse_cursor(int id);
    return to the last set normal cursor. */
 void rnd_hid_override_mouse_cursor(int id);
 
+/* [4.1.0] Perform an export using a specific export plugin. The export plugin
+   is looked up by exporter_name. */
+int rnd_hid_export_using(rnd_design_t *dsg, char *exporter_name, int argc, char *args[]);
+
+
 #endif
