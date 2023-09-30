@@ -3,6 +3,7 @@
 #include <locale.h>
 #include "config.h"
 #include <librnd/core/rnd_printf.h>
+#include <librnd/core/hidlib.h>
 
 #ifdef SPEED
 	char buff[8192];
@@ -27,6 +28,8 @@ int main()
 	NULL };
 	char **f;
 	int n, rep;
+
+	rnd_app.human_coord = NULL;
 
 	setlocale(LC_ALL, "C");
 	rnd_units_init();
