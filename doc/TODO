@@ -1,6 +1,4 @@
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 	- polybool:
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
@@ -36,6 +34,8 @@
 			- tab_width
 			- baseline
 			- line_height
+
+2. For later releases ===============================================================================
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
