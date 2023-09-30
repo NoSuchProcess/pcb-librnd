@@ -174,8 +174,15 @@ typedef struct rnd_app_s {
 	   widgets; e is not const because the call chain needs to fill in e->design */
 	void (*expose_preview)(rnd_hid_t *hid, rnd_hid_expose_ctx_t *e);
 
+	/* [4.1.0] Optional: if not NULL, this is called for rnd_printf human coord
+	   conversion. If the call can convert coord, the output should be stored
+	   in out_val and out_suffix and return value should be 1. Otherwise
+	   return value is NULL and the original human coord converter is called
+	   instead. */
+	int (*human_coord)(rnd_coord_t coord, double *out_val, const char **out_suffix);
+
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;

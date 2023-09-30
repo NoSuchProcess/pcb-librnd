@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2011 Andrew Poelstra
- *  Copyright (C) 2016,2019,2022 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019,2022,2023 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
 #include <librnd/rnd_config.h>
 #include <librnd/core/rnd_printf.h>
 #include "actions.h"
+#include "hidlib.h"
 
 const char *rnd_printf_slot[RND_PRINTF_SLOT_max] =
 {
@@ -373,7 +374,7 @@ static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *prin
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
 	char *printf_spec_new;
-	int i, retval = -1, trunc0;
+	int i, retval = -1, trunc0, from_app;
 	const char *printf_spec = printf_spec_->array;
 	const char *suffix;
 	double value;
@@ -394,14 +395,21 @@ static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *prin
 		}
 	}
 
-	for(i = 0; i < NUM_HUMAN_COORD; i++) {
-		int res;
-		/* try the base units first */
-		res = try_human_coord(coord, human_coord[i].base_unit, human_coord[i].down_limit, human_coord[i].up_limit, human_coord[i].score_factor,&value, &best_score, &suffix);
-		if (res < 0)
-			try_human_coord(coord, human_coord[i].down_unit, 0, 0, human_coord[i].score_factor, &value, &best_score, &suffix);
-		else if (res > 0)
-			try_human_coord(coord, human_coord[i].up_unit, 0, 0, human_coord[i].score_factor,&value, &best_score, &suffix);
+	if (rnd_app.human_coord != NULL)
+		from_app = rnd_app.human_coord(coord, &value, &suffix);
+	else
+		from_app = 0;
+
+	if (!from_app) {
+		for(i = 0; i < NUM_HUMAN_COORD; i++) {
+			int res;
+			/* try the base units first */
+			res = try_human_coord(coord, human_coord[i].base_unit, human_coord[i].down_limit, human_coord[i].up_limit, human_coord[i].score_factor,&value, &best_score, &suffix);
+			if (res < 0)
+				try_human_coord(coord, human_coord[i].down_unit, 0, 0, human_coord[i].score_factor, &value, &best_score, &suffix);
+			else if (res > 0)
+				try_human_coord(coord, human_coord[i].up_unit, 0, 0, human_coord[i].score_factor,&value, &best_score, &suffix);
+		}
 	}
 
 	make_printf_spec(printf_spec_new, printf_spec, 8, &trunc0);
