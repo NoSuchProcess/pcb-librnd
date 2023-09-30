@@ -83,7 +83,7 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_MIRROR_Y = 1,       /* change Y coords (mirror over the X axis) */
 	RND_FONT_MIRROR_X = 2,       /* change X coords (mirror over the Y axis) */
 	RND_FONT_HTAB = 4,           /* [4.1.0] render horizontal tab */
-	RND_FONT_ENTITY = 8,         /* [4.1.0] interpret &entity; sequences and render them single glyph */
+	RND_FONT_ENTITY = 8,         /* [4.1.0] interpret &entity; sequences and render them single glyph; if enabled &amp; is always translated to the '&' character */
 	RND_FONT_MULTI_LINE = 16,    /* [4.1.0] support rendering into multiple lines (split at \n) */
 	RND_FONT_STOP_AT_NL = 32,    /* [4.1.0] stop rendering at the first newline */
 	RND_FONT_THIN_POLY = 64,     /* [4.1.0] render polygons with their outline only */
