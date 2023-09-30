@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Manage timer for postponed change for any dialog */
+/* [4.1.0] Manage timer for postponed change for any dialog */
 
 /* caller needs to define:
 #define RND_TIMED_CHG_TIMEOUT conf_core.editor.edit_time
@@ -41,20 +41,20 @@ typedef struct rnd_timed_chg_s {
 	char active;
 } rnd_timed_chg_t;
 
-/* set up a timed change with a callback */
+/* [4.1.0] set up a timed change with a callback */
 RND_INLINE void rnd_timed_chg_init(rnd_timed_chg_t *chg, void (*cb)(void *uctx), void *uctx);
 
-/* (re-)schedule a change; (re)start timer and call cb on timeout */
+/* [4.1.0] (re-)schedule a change; (re)start timer and call cb on timeout */
 RND_INLINE void rnd_timed_chg_schedule(rnd_timed_chg_t *chg);
 
-/* if timer is active, force-call it and stop it */
+/* [4.1.0] if timer is active, force-call it and stop it */
 RND_INLINE void rnd_timed_chg_finalize(rnd_timed_chg_t *chg);
 
-/* stop the timer without calling back anything */
+/* [4.1.0] stop the timer without calling back anything */
 RND_INLINE void rnd_timed_chg_cancel(rnd_timed_chg_t *chg);
 
 
-/* Creates a "pending" label; when the dialog box is created, call
+/* [4.1.0] Creates a "pending" label; when the dialog box is created, call
    rnd_timed_chg_timing_init() */
 #define RND_DAD_TIMING(dlg, chg, what) \
 	do { \
@@ -62,7 +62,7 @@ RND_INLINE void rnd_timed_chg_cancel(rnd_timed_chg_t *chg);
 			(chg)->wtiming = RND_DAD_CURRENT(dlg); \
 	} while(0)
 
-/* Call this after the dialog has been realized if RND_DAD_TIMING() has been
+/* [4.1.0] Call this after the dialog has been realized if RND_DAD_TIMING() has been
    used */
 RND_INLINE void rnd_timed_chg_timing_init(rnd_timed_chg_t *chg, void *hid_ctx);
 

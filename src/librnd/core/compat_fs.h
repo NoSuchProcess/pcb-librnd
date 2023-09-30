@@ -25,15 +25,17 @@ char *rnd_dirname(const char *path);
    path of the symlink's parent dir (so path is never resolved) */
 char *rnd_dirname_real(const char *path);
 
-/* Return pointer to file's base name (see basename(1)) within path */
+/* [4.1.0] Return pointer to file's base name (see basename(1)) within path */
 const char *rnd_basename(const char *path);
 
-/* Return a pointer to the parent dir name in fullpath; e.g. if fullpath
+/* [4.1.0]
+   Return a pointer to the parent dir name in fullpath; e.g. if fullpath
    is /foo/bar/baz.rs, return a pointer to bar. If there's no parent dir,
    return pointer to fullpath. */
 const char *rnd_parent_dir_name(const char *fullpath);
 
-/* Allocate a new string and store a path of pth relative to relto, assuming
+/* [4.1.0]
+   Allocate a new string and store a path of pth relative to relto, assuming
    both path and relto are files. For example if
    path=/home/foo/bar/baz.pcb and relto=/home/foo/heh.txt, the result is
    bar/baz.pcb; if they are swapped the result is  ../heh.txt */
