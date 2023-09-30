@@ -4,6 +4,7 @@
 #include "config.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hidlib.h>
+#include <librnd/core/rnd_conf.h>
 
 #ifdef SPEED
 	char buff[8192];
@@ -29,7 +30,9 @@ int main()
 	char **f;
 	int n, rep;
 
-	rnd_app.human_coord = NULL;
+	/* manual init sequence required due to broken linker on OSX */
+	rnd_multi_get_current();
+	rnd_hidlib_conf_init();
 
 	setlocale(LC_ALL, "C");
 	rnd_units_init();
