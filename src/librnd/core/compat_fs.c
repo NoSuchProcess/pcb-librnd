@@ -364,6 +364,8 @@ int rnd_is_path_abs(const char *fn)
 #endif
 }
 
+#define ISSEP(c) (((c) == '/') || ((c) == RND_DIR_SEPARATOR_C))
+
 char *rnd_dirname(const char *path)
 {
 	long len = strlen(path);
@@ -375,7 +377,7 @@ char *rnd_dirname(const char *path)
 
 	memcpy(res, path, len+1);
 	for(s = res + len - 1; s >= res; s--) {
-		if ((*s == '/') || (*s == RND_DIR_SEPARATOR_C)) {
+		if (ISSEP(*s)) {
 			*s = '\0';
 			return res;
 		}
@@ -477,8 +479,6 @@ int rnd_rmtempdir(rnd_design_t *dsg, gds_t *dst)
 	return res;
 }
 
-TODO("#define this: ((*s == '/') || (*s == RND_DIR_SEPARATOR_C)); use this instead of looking for /")
-
 char *rnd_relative_path_files(const char *pth, const char *relto)
 {
 	char *freeme1 = NULL, *freeme2 = NULL;
@@ -495,14 +495,14 @@ char *rnd_relative_path_files(const char *pth, const char *relto)
 
 	/* calculate common part */
 	for(offs = 0, s1 = pth, s2 = relto; *s1 == *s2; s1++, s2++, offs++)
-		if ((*s1 == '/') && (*s2 == '/'))
+		if (ISSEP(*s1) && ISSEP(*s2))
 			commsep = offs;
 
 	assert(commsep >= 0); /* both paths are absolute, worst case first char match */
 
 	/* add all the ../ */
 	for(s = relto+commsep+1; *s != '\0'; s++) {
-		if ((s[0] == '/') && (s[1] != '/'))
+		if (ISSEP(s[0]) && !ISSEP(s[1]))
 			gds_append_str(&res, "../");
 	}
 
@@ -527,7 +527,7 @@ const char *rnd_parent_dir_name(const char *fullpath)
 	int seps = 0;
 
 	for(bn = fullpath + strlen(fullpath) - 1; bn > fullpath; bn--) {
-		if ((bn[0] == '/') && (bn[1] != '/')) {
+		if (ISSEP(bn[0]) && !ISSEP(bn[1])) {
 			seps++;
 			if (seps == 2) {
 				bn++;
