@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
- *  Copyright (C) 2020,2023 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 
 #include <librnd/rnd_config.h>
 #include <librnd/hid/hid.h>
-#include <librnd/hid/hid_init.h>
 #include <librnd/hid/tool.h>
 #include <librnd/hid/hid_menu.h>
 #include <librnd/core/event.h>
@@ -173,26 +172,4 @@ void rnd_hid_busy(rnd_design_t *design, rnd_bool is_busy)
 void rnd_hid_cursor_uninit(void)
 {
 	rnd_tool_unreg_by_cookie(hid_cursor_cookie);
-}
-
-int rnd_hid_export_using(rnd_design_t *dsg, char *exporter_name, int argc, char *args[])
-{
-	char **a;
-
-	rnd_exporter = rnd_hid_find_exporter(exporter_name);
-	if (rnd_exporter == NULL) {
-		rnd_message(RND_MSG_ERROR, "export failed: %s exporter not found.\n", exporter_name);
-		return -1;
-	}
-
-	/* call the exporter */
-	a = args;
-	rnd_event(dsg, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
-	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
-	rnd_exporter->do_export(rnd_exporter, dsg, NULL, NULL);
-	rnd_event(dsg, RND_EVENT_EXPORT_SESSION_END, NULL);
-
-	rnd_exporter = NULL;
-
-	return 0;
 }

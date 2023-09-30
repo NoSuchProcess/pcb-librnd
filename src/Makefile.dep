@@ -437,12 +437,9 @@
  ../src/librnd/core/box.h ../src/librnd/core/math_helper.h ../src/librnd/core/misc_util.h \
  ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src/librnd/hid/hid_init.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src/librnd/hid/tool.h ../src/librnd/hid/hid_menu.h \
- ../src/librnd/core/hid_cfg.h ../src/librnd/core/event.h ../src/librnd/core/hidlib.h \
- ../src_3rd/genlist/gendlist.h
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/hid/tool.h \
+ ../src/librnd/hid/hid_menu.h ../src/librnd/core/hid_cfg.h ../src/librnd/core/event.h \
+ ../src/librnd/core/hidlib.h ../src_3rd/genlist/gendlist.h
 ../src/librnd/hid/hid_act.o: ../src/librnd/hid/hid_act.c \
  ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \

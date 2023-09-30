@@ -34,6 +34,28 @@
 
 #include "hid_export.h"
 
+int rnd_hid_export_using(rnd_design_t *dsg, char *exporter_name, int argc, char *args[])
+{
+	char **a;
+
+	rnd_exporter = rnd_hid_find_exporter(exporter_name);
+	if (rnd_exporter == NULL) {
+		rnd_message(RND_MSG_ERROR, "export failed: %s exporter not found.\n", exporter_name);
+		return -1;
+	}
+
+	/* call the exporter */
+	a = args;
+	rnd_event(dsg, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
+	rnd_exporter->parse_arguments(rnd_exporter, &argc, &a);
+	rnd_exporter->do_export(rnd_exporter, dsg, NULL, NULL);
+	rnd_event(dsg, RND_EVENT_EXPORT_SESSION_END, NULL);
+
+	rnd_exporter = NULL;
+
+	return 0;
+}
+
 const char rnd_acts_Export[] = "Export(exporter, [exporter-args])";
 const char rnd_acth_Export[] = "Export the current layout, e.g. Export(png, --dpi, 600)";
 fgw_error_t rnd_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
