@@ -165,6 +165,7 @@ put /local/librnd/OBJS_HIDLIB [@
 	$(LIBRND)/hid/hid_dad_tree.o
 	$(LIBRND)/hid/hid_dad_spin.o
 	$(LIBRND)/hid/hid_dad_unit.o
+	$(LIBRND)/hid/hid_export.o
 	$(LIBRND)/hid/hid_init.o
 	$(LIBRND)/hid/hid_menu.o
 	$(LIBRND)/hid/hid_nogui.o

@@ -1,4 +1,4 @@
-35681	configure	moving common functionality from sch-rnd to librnd
+35687	configure	moving common functionality from sch-rnd to librnd
 35610	configure	fontv2
 35481	configure	new source file for safe_fs actions (script binding)
 35385	configure	polygon lib rewrite
