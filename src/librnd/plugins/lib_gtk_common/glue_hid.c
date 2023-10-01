@@ -103,6 +103,7 @@ static void rnd_gtkg_gui_inited(rnd_gtk_t *gctx, int main, int conf)
 		rnd_hid_announce_gui_init(gctx->hidlib);
 		rnd_gtk_zoom_view_win(&gctx->port.view, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.X2, gctx->hidlib->dwg.Y2, 0);
 		rnd_gtk_pan_view_abs(&gctx->port.view, midx, midy, gctx->port.view.canvas_width/2.0, gctx->port.view.canvas_height/2.0);
+		gctx->port.view.min_zoom = 200;
 		gctx->port.view.inited = 1;
 	}
 }
@@ -454,6 +455,7 @@ static void rnd_gtkg_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 	rnd_gtk_tw_ranges_scale(gctx);
 	if (!gctx->port.view.inited) {
 		rnd_gtk_zoom_view_win(&gctx->port.view, hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, 0);
+		gctx->port.view.min_zoom = 200;
 		gctx->port.view.inited = 1;
 	}
 	else

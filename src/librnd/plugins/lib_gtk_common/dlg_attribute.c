@@ -805,6 +805,14 @@ static int rnd_gtk_attr_dlg_widget_poke_preview(void *hid_ctx, GtkWidget *w, int
 	if ((argv[0].type & FGW_STR) != FGW_STR) return -1;
 
 	switch(argv[0].val.str[0]) {
+		case 'm':
+			if (strcmp(argv[0].val.str, "min_zoom") == 0) {
+				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))
+					return -1;
+				p->view.min_zoom = argv[1].val.nat_int;
+				return 0;
+			}
+			break;
 		case 'y':
 			if (strcmp(argv[0].val.str, "yflip") == 0) { /* needs a redraw on caller side! */
 				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))

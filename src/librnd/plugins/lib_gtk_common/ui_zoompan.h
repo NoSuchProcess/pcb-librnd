@@ -77,6 +77,7 @@ typedef struct {
 	rnd_coord_t design_x, design_y;        /* design space coordinates of the mouse pointer */
 	rnd_coord_t crosshair_x, crosshair_y;  /* design_space coordinates of the crosshair     */
 
+	rnd_coord_t min_zoom;                  /* optional: how much the user can zoom in */
 
 	/* local/global design; used only for flip calculation and initial expose ctx design setup */
 	unsigned local_dsg:1;  /* if 1, use local hidlib instead of current GUI hidlib (for local dialogs) */

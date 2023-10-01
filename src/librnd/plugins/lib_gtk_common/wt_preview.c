@@ -573,6 +573,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 	prv->view.max_width = RND_MAX_COORD;
 	prv->view.max_height = RND_MAX_COORD;
 	prv->view.coord_per_px = RND_MM_TO_COORD(0.25);
+	prv->view.min_zoom = 200;
 	prv->view.ctx = ctx;
 
 	if (local_dsg != NULL) {
