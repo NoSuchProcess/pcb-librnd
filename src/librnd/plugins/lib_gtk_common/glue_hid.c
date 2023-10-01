@@ -610,6 +610,7 @@ void rnd_gtk_glue_hid_init(rnd_hid_t *dst)
 	dst->attr_dlg_widget_state = rnd_gtk_attr_dlg_widget_state;
 	dst->attr_dlg_widget_hide = rnd_gtk_attr_dlg_widget_hide;
 	dst->attr_dlg_widget_poke = rnd_gtk_attr_dlg_widget_poke;
+	dst->attr_dlg_widget_focus = rnd_gtk_attr_dlg_widget_focus;
 	dst->attr_dlg_set_value = rnd_gtk_attr_dlg_set_value;
 	dst->attr_dlg_set_help = rnd_gtk_attr_dlg_set_help;
 

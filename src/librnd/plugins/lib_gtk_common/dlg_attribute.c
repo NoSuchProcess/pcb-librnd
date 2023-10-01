@@ -1096,7 +1096,29 @@ int rnd_gtk_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	if ((idx < 0) || (idx >= ctx->n_attrs))
 		return -1;
 
+	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
+		return -1;
+
+	if (ctx->attrs[idx].type == RND_HATT_END) {
+		rnd_hid_compound_t *cmp = ctx->attrs[idx].wdata;
+		if ((cmp != NULL) && (cmp->widget_state != NULL))
+			return cmp->widget_focus(&ctx->attrs[idx], ctx, idx);
+		else
+			return -1;
+	}
+
 	return rnd_gtk_attr_dlg_widget_hide_(ctx, idx, hide);
+}
+
+int rnd_gtk_attr_dlg_widget_focus(void *hid_ctx, int idx)
+{
+	attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs))
+		return -1;
+
+	gtk_widget_grab_focus(ctx->wl[idx]);
+	return 0;
 }
 
 int rnd_gtk_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
