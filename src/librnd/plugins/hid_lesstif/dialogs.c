@@ -898,6 +898,57 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	return 0;
 }
 
+static int lesstif_attr_dlg_widget_poke_preview(void *hid_ctx, Widget w, int idx, int argc, fgw_arg_t argv[])
+{
+	rnd_ltf_preview_t *p;
+
+	if ((argv[0].type & FGW_STR) != FGW_STR) return -1;
+
+	stdarg_n = 0;
+	stdarg(XmNuserData, &p);
+	XtGetValues(w, stdarg_args, stdarg_n);
+	switch(argv[0].val.str[0]) {
+		case 'y':
+			if (strcmp(argv[0].val.str, "yflip") == 0) { /* needs a redraw on caller side! */
+				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))
+					return -1;
+				p->flip_local = 1;
+				p->flip_y = argv[1].val.nat_int;
+				return 0;
+			}
+			break;
+		case 'x':
+			if (strcmp(argv[0].val.str, "xflip") == 0) { /* needs a redraw on caller side! */
+				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))
+					return -1;
+				p->flip_local = 1;
+				p->flip_x = argv[1].val.nat_int;
+				return 0;
+			}
+			break;
+	}
+	return -1;
+}
+
+int lesstif_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[])
+{
+	Widget w;
+
+	lesstif_attr_dlg_t *ctx = hid_ctx;
+
+	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
+		return -1;
+
+	w = ctx->wl[idx];
+	switch(ctx->attrs[idx].type) {
+		/* case RND_HATT_STRING: no lesstif support for selection */
+		case RND_HATT_PREVIEW: return lesstif_attr_dlg_widget_poke_preview(hid_ctx, w, idx, argc, argv);
+		default: return -1;
+	}
+	return -1;
+}
+
+
 int lesstif_attr_dlg_widget_focus(void *hid_ctx, int idx, rnd_bool hide)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;

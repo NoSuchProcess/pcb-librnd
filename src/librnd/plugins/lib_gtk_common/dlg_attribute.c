@@ -798,6 +798,35 @@ static int rnd_gtk_attr_dlg_widget_poke_string(void *hid_ctx, GtkWidget *w, int 
 	return -1;
 }
 
+static int rnd_gtk_attr_dlg_widget_poke_preview(void *hid_ctx, GtkWidget *w, int idx, int argc, fgw_arg_t argv[])
+{
+	rnd_gtk_preview_t *p = (rnd_gtk_preview_t *)w;
+
+	if ((argv[0].type & FGW_STR) != FGW_STR) return -1;
+
+	switch(argv[0].val.str[0]) {
+		case 'y':
+			if (strcmp(argv[0].val.str, "yflip") == 0) { /* needs a redraw on caller side! */
+				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))
+					return -1;
+				p->flip_local = 1;
+				p->view.flip_y = argv[1].val.nat_int;
+				return 0;
+			}
+			break;
+		case 'x':
+			if (strcmp(argv[0].val.str, "xflip") == 0) { /* needs a redraw on caller side! */
+				if ((argc < 2) || (fgw_arg_conv(&rnd_fgw, &argv[1], FGW_INT) != 0))
+					return -1;
+				p->flip_local = 1;
+				p->view.flip_x = argv[1].val.nat_int;
+				return 0;
+			}
+			break;
+	}
+	return -1;
+}
+
 int rnd_gtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[])
 {
 	attr_dlg_t *ctx = (attr_dlg_t *)hid_ctx;
@@ -809,6 +838,7 @@ int rnd_gtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t arg
 	w = ctx->wl[idx];
 	switch(ctx->attrs[idx].type) {
 		case RND_HATT_STRING: return rnd_gtk_attr_dlg_widget_poke_string(hid_ctx, w, idx, argc, argv);
+		case RND_HATT_PREVIEW: return rnd_gtk_attr_dlg_widget_poke_preview(hid_ctx, w, idx, argc, argv);
 		default: return -1;
 	}
 	return -1;
