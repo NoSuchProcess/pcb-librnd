@@ -558,9 +558,9 @@ struct rnd_hid_expose_ctx_s {
 	void (*spare_f1)(void), (*spare_f2)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
-	double coord_per_pix;            /* [4.1.0] current zoom level */
-	double spare_d2, spare_d3, spare_d4;
-	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
+	rnd_coord_t coord_per_pix;       /* [4.1.0] current zoom level */
+	rnd_coord_t spare_c2, spare_c3, spare_c4;
 };
 
 typedef void (*rnd_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
