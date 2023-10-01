@@ -7,7 +7,6 @@
 	- API additions (4.1.0)
 		- preview widget zoom upgrades (see TODO()s in sch-rnd lib_plot)
 			- per widget configurable maximum zoom level (with poke?)
-			- pass back current zoom level in expose_ctx
 			- control flip (with poke?)
 		- DOC: font -v2:
 			- optional support for real tabs, per font tab_width
@@ -54,6 +53,7 @@
 			- rnd_app_t in hidlib.h
 			- attr_dlg_widget_focus in hid.h
 			- widget_focus in rnd_hid_compound_t in hid_dad.h
+			- coord_per_pix in rnd_hid_expose_ctx_s in hid.h
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
