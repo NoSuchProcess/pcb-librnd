@@ -2786,6 +2786,7 @@ extern void lesstif_attr_dlg_free(void *hid_ctx);
 extern void lesstif_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 extern int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
+extern int lesstif_attr_dlg_widget_focus(void *hid_ctx, int idx);
 extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 extern void lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
@@ -3038,6 +3039,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.attr_dlg_property = lesstif_attr_dlg_property;
 	lesstif_hid.attr_dlg_widget_state = lesstif_attr_dlg_widget_state;
 	lesstif_hid.attr_dlg_widget_hide = lesstif_attr_dlg_widget_hide;
+	lesstif_hid.attr_dlg_widget_focus = lesstif_attr_dlg_widget_focus;
 	lesstif_hid.attr_dlg_set_value = lesstif_attr_dlg_set_value;
 	lesstif_hid.attr_dlg_set_help = lesstif_attr_dlg_set_help;
 	lesstif_hid.supports_dad_text_markup = 0;
