@@ -5,9 +5,6 @@
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- API additions (4.1.0)
-		- preview widget zoom upgrades (see TODO()s in sch-rnd lib_plot)
-			- per widget configurable maximum zoom level (with poke?)
-			- control flip (with poke?)
 		- DOC: font -v2:
 			- optional support for real tabs, per font tab_width
 			- html &entity; (only named, #nnn is not supported)
