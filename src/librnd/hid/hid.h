@@ -535,7 +535,7 @@ struct rnd_hid_s {
 	/*** (these should be upper, but the struct has to be extended at spares
 	     for binary compatibility) ***/
 
-	/* Move focus to the widget addressed by idx. Returns 0 on success. */
+	/* [4.1.0] Move focus to the widget addressed by idx. Returns 0 on success. */
 	int (*attr_dlg_widget_focus)(void *hid_ctx, int idx);
 
 	/* Spare: see doc/developer/spare.txt */
@@ -558,7 +558,7 @@ struct rnd_hid_expose_ctx_s {
 	void (*spare_f1)(void), (*spare_f2)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
-	double coord_per_pix;
+	double coord_per_pix;            /* [4.1.0] current zoom level */
 	double spare_d2, spare_d3, spare_d4;
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 };
