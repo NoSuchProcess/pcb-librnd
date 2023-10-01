@@ -309,14 +309,14 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup_printf printf_args); \
 } while(0)
 
-#define RND_DAD_STRING_SELECT_REGION(table, idx, first_char_offs, len) \
+#define RND_DAD_STRING_SELECT_REGION(dlg_hid_ctx, idx, first_char_offs, len) \
 do { \
 	if (rnd_gui->attr_dlg_widget_poke != NULL) { \
 		fgw_arg_t __args__[3]; \
 		__args__[0].type = FGW_STR; __args__[0].val.cstr = "select"; \
 		__args__[1].type = FGW_INT; __args__[1].val.nat_int = first_char_offs; \
 		__args__[2].type = FGW_INT; __args__[2].val.nat_int = len; \
-		rnd_gui->attr_dlg_widget_poke(table, idx, 3, __args__); \
+		rnd_gui->attr_dlg_widget_poke(dlg_hid_ctx, idx, 3, __args__); \
 	} \
 } while(0)
 
