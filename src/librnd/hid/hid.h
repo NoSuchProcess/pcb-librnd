@@ -535,8 +535,11 @@ struct rnd_hid_s {
 	/*** (these should be upper, but the struct has to be extended at spares
 	     for binary compatibility) ***/
 
+	/* Move focus to the widget addressed by idx. Returns 0 on success. */
+	int (*attr_dlg_widget_focus)(void *hid_ctx, int idx);
+
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f1)(void), (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
+	void (*spare_f2)(void), (*spare_f3)(void), (*spare_f4)(void), (*spare_f5)(void), (*spare_f6)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4, spare_l5, spare_l6, spare_l7, spare_l8;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4, *spare_p5, *spare_p6;
 	double spare_d1, spare_d2, spare_d3, spare_d4, spare_d5, spare_d6;

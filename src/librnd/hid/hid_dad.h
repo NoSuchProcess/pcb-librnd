@@ -178,7 +178,9 @@ typedef struct {
 	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and RND_HATT_END_COMPOUND widget */
 
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f1)(void), (*spare_f2)(void);
+	int (*widget_focus)(rnd_hid_attribute_t *end, void *hid_ctx, int idx);
+
+	void (*spare_f2)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2;
