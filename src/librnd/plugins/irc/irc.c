@@ -128,6 +128,8 @@ void on_me_join(uirc_t *ctx, int query, char *chan)
 	irc_printf(0, ("*** Connected. ***\n"));
 	irc_printf(0, ("*** You may ask your question now - then please be patient. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 1);
+	if (rnd_gui->attr_dlg_widget_focus != NULL)
+		rnd_gui->attr_dlg_widget_focus(irc_ctx.dlg_hid_ctx, irc_ctx.winput);
 }
 
 
