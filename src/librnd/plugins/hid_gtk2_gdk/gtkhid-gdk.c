@@ -1170,12 +1170,6 @@ static void redraw_region(rnd_design_t *hidlib, GdkRectangle *rect)
 	ctx.view.X2 = MAX(Px(priv->clip_rect.x), Px(priv->clip_rect.x + priv->clip_rect.width + 1));
 	ctx.view.Y2 = MAX(Py(priv->clip_rect.y), Py(priv->clip_rect.y + priv->clip_rect.height + 1));
 
-	ctx.view.X1 = ctx.view.X1;
-	ctx.view.X2 = ctx.view.X2;
-	ctx.view.Y1 = ctx.view.Y1;
-	ctx.view.Y2 = ctx.view.Y2;
-
-
 	eleft   = Vx(hidlib->dwg.X1);
 	eright  = Vx(hidlib->dwg.X2);
 	etop    = Vy(hidlib->dwg.Y1);
