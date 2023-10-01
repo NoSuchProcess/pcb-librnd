@@ -1,4 +1,5 @@
 1. For the upcoming release ===============================================================================
+	+ FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
 	- polybool:
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
@@ -8,8 +9,6 @@
 			- per widget configurable maximum zoom level (with poke?)
 			- pass back current zoom level in expose_ctx
 			- control flip (with poke?)
-		- FEATURE: the librnd IRC client should move focus to the text entry box if connection is successful. It does not do this, and typing on successful connection has the potential to disconnect the user if user neglects to select the text entry box first [report: Erich]
-			- disabling the widget makes it lose focus; need to have an API for setting focus
 		- DOC: font -v2:
 			- optional support for real tabs, per font tab_width
 			- html &entity; (only named, #nnn is not supported)
@@ -53,6 +52,8 @@
 			- remove font2 rnd_font_draw_string_justify() - used by sch-rnd with font v1
 		- spare write back:
 			- rnd_app_t in hidlib.h
+			- attr_dlg_widget_focus in hid.h
+			- widget_focus in rnd_hid_compound_t in hid_dad.h
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
