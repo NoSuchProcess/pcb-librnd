@@ -526,9 +526,9 @@ static void ghid_gl_preview_expose_common(rnd_hid_t *hid, rnd_design_t *hidlib, 
 	save_cpp = rnd_gui->coord_per_pix;
 
 	if (xz > yz)
-		ghidgui->port.view.coord_per_px = xz;
+		ctx->coord_per_pix = ghidgui->port.view.coord_per_px = xz;
 	else
-		ghidgui->port.view.coord_per_px = yz;
+		ctx->coord_per_pix = ghidgui->port.view.coord_per_px = yz;
 
 	ghidgui->port.view.canvas_width = widget_xs;
 	ghidgui->port.view.canvas_height = widget_ys;

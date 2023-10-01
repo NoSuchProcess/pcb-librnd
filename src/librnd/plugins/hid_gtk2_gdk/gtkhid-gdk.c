@@ -1523,9 +1523,9 @@ static gboolean ghid_gdk_preview_expose(GtkWidget *widget, rnd_gtk_expose_t *ev,
 	xz = vw / (double)allocation.width;
 	yz = vh / (double)allocation.height;
 	if (xz > yz)
-		ghidgui->port.view.coord_per_px = xz;
+		ctx->coord_per_pix = ghidgui->port.view.coord_per_px = xz;
 	else
-		ghidgui->port.view.coord_per_px = yz;
+		ctx->coord_per_pix = ghidgui->port.view.coord_per_px = yz;
 
 	priv->base_pixel = priv->out_pixel = window;
 	ghidgui->port.view.canvas_width = allocation.width;

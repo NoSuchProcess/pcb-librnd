@@ -145,6 +145,7 @@ void rnd_ltf_preview_redraw(rnd_ltf_preview_t *pd)
 	pd->exp_ctx.view.X2 = pd->x2;
 	pd->exp_ctx.view.Y2 = pd->y2;
 
+	pd->exp_ctx.coord_per_pix = view_zoom;
 	rnd_gui->coord_per_pix = view_zoom;
 	rnd_app.expose_preview(&lesstif_hid, &pd->exp_ctx);
 
