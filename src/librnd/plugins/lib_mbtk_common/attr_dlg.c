@@ -77,6 +77,11 @@ int rnd_mbtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t ar
 
 }
 
+int rnd_mbtk_attr_dlg_widget_focus(void *hid_ctx, int idx, rnd_bool hide)
+{
+
+}
+
 int rnd_mbtk_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 

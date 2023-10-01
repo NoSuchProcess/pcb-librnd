@@ -543,6 +543,7 @@ void rnd_mbtk_glue_hid_init(rnd_hid_t *dst, int (*init_backend)(rnd_mbtk_t *mctx
 	dst->attr_dlg_widget_state = rnd_mbtk_attr_dlg_widget_state;
 	dst->attr_dlg_widget_hide = rnd_mbtk_attr_dlg_widget_hide;
 	dst->attr_dlg_widget_poke = rnd_mbtk_attr_dlg_widget_poke;
+	dst->attr_dlg_widget_focus = rnd_mbtk_attr_dlg_widget_focus;
 	dst->attr_dlg_set_value = rnd_mbtk_attr_dlg_set_value;
 	dst->attr_dlg_set_help = rnd_mbtk_attr_dlg_set_help;
 

@@ -11,6 +11,7 @@ void rnd_mbtk_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rn
 int rnd_mbtk_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 int rnd_mbtk_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
 int rnd_mbtk_attr_dlg_widget_poke(void *hid_ctx, int idx, int argc, fgw_arg_t argv[]);
+int rnd_mbtk_attr_dlg_widget_focus(void *hid_ctx, int idx);
 int rnd_mbtk_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 void rnd_mbtk_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
