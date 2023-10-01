@@ -2089,6 +2089,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
+		ctx.coord_per_pix = view_zoom;
 		rnd_app.expose_main(&lesstif_hid, &ctx, NULL);
 		lesstif_drawing_mode = RND_HID_COMP_POSITIVE;
 		draw_grid();

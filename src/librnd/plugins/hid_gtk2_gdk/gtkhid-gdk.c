@@ -1175,6 +1175,7 @@ static void redraw_region(rnd_design_t *hidlib, GdkRectangle *rect)
 	ctx.view.Y1 = ctx.view.Y1;
 	ctx.view.Y2 = ctx.view.Y2;
 
+
 	eleft   = Vx(hidlib->dwg.X1);
 	eright  = Vx(hidlib->dwg.X2);
 	etop    = Vy(hidlib->dwg.Y1);
@@ -1210,6 +1211,8 @@ static void redraw_region(rnd_design_t *hidlib, GdkRectangle *rect)
 	gdk_draw_rectangle(priv->out_pixel, priv->bg_gc, 1, eleft, etop, eright - eleft + 1, ebottom - etop + 1);
 
 	ghid_gdk_draw_bg_image(hidlib);
+
+	ctx.coord_per_pix = ghidgui->port.view.coord_per_px;
 
 	rnd_app.expose_main(&gtk2_gdk_hid, &ctx, NULL);
 	ghid_gdk_draw_grid(hidlib);

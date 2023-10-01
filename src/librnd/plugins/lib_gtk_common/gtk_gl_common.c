@@ -472,6 +472,8 @@ static gboolean ghid_gl_drawing_area_expose_cb_common(rnd_hid_t *hid, GtkWidget 
 	ty = rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->dwg.Y2 : -port->view.y0;
 	hidgl_set_view(tx, ty, zx, zy, zz);
 
+	ctx.coord_per_pix = port->view.coord_per_px;
+
 	/* Draw PCB background, before PCB primitives */
 	hidgl_draw_initial_fill(hidlib->dwg.X1, hidlib->dwg.Y1, hidlib->dwg.X2, hidlib->dwg.Y2, priv->bg_color.fr, priv->bg_color.fg, priv->bg_color.fb);
 	ghid_gl_draw_bg_image(hidlib);
