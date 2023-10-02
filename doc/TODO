@@ -4,18 +4,9 @@
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
+	- ANNOUNCE: font2 with the pool node
 	- API additions (4.1.0)
 		- DOC: font -v2:
-			- optional support for real tabs, per font tab_width
-			- html &entity; (only named, #nnn is not supported)
-				- custom &name; -> integer translation table
-				- as a convention &amp; should be added to point to &
-			- optional kerning table: advance offs value for combiation of 2 glyphs; usually negative to move second char to the left
-			- document alignments and multiline and line_height
-			- baseline
-				- normally text origin is top-left in glyph coord system
-				- with the RND_FONT_BASELINE rendering option enabled text origin is baseline-left
-				- baseline field is from top to the baseline (positive number)
 			- draw a glyph anatomy
 		- BUG: font2: test-parse call or some other way to avoid font load error on valid lihata fonts
 		- FEATURE: font v2: upgrade aussiefont:
