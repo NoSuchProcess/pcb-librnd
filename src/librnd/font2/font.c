@@ -377,74 +377,74 @@ do { \
 
 RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_coord_t y, int chr, int chr_next, rnd_xform_mx_t mx, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, rnd_font_draw_atom_cb cb, void *cb_ctx)
 {
-		/* draw atoms if symbol is valid and data is present */
-		if (is_valid(font, opts, chr)) {
-			long n;
-			rnd_glyph_t *g = &font->glyph[chr];
-			rnd_coord_t xt = x, xnext;
-			int inhibit = 0;
+	/* draw atoms if symbol is valid and data is present */
+	if (is_valid(font, opts, chr)) {
+		long n;
+		rnd_glyph_t *g = &font->glyph[chr];
+		rnd_coord_t xt = x, xnext;
+		int inhibit = 0;
 
-			xnext = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
+		xnext = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
 
-			if (is_tab(opts, chr)) {
-				if (!(opts & RND_FONT_INVIS_TAB)) {
-					/* position visible tab character in the middle */
-					xt += (xnext - x)/2 - (font)->glyph[(chr)].width;
-				}
-				else
-					inhibit = 1;
+		if (is_tab(opts, chr)) {
+			if (!(opts & RND_FONT_INVIS_TAB)) {
+				/* position visible tab character in the middle */
+				xt += (xnext - x)/2 - (font)->glyph[(chr)].width;
 			}
+			else
+				inhibit = 1;
+		}
 
-			if (!inhibit && (font)->glyph[(chr)].valid)
-				for(n = 0; n < g->atoms.used; n++)
-					draw_atom(&g->atoms.array[n], mx, xt, y,  scx, scy, rotdeg, opts, thickness, min_line_width, cb, cb_ctx);
+		if (!inhibit && (font)->glyph[(chr)].valid)
+			for(n = 0; n < g->atoms.used; n++)
+				draw_atom(&g->atoms.array[n], mx, xt, y,  scx, scy, rotdeg, opts, thickness, min_line_width, cb, cb_ctx);
 
-			/* move on to next cursor position */
-			x = xnext;
+		/* move on to next cursor position */
+		x = xnext;
+	}
+	else {
+		/* the default symbol is a filled box */
+		rnd_coord_t p[8];
+		rnd_glyph_atom_t tmp;
+
+		p[0+0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
+		p[4+0] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
+		p[0+1] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
+		p[4+1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
+		p[0+2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
+		p[4+2] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
+		p[0+3] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
+		p[4+3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
+
+		/* draw move on to next cursor position */
+		if (opts & RND_FONT_THIN_POLY) {
+			tmp.line.type = RND_GLYPH_LINE;
+			tmp.line.thickness = -1;
+
+			tmp.line.x1 = p[0+0]; tmp.line.y1 = p[4+0];
+			tmp.line.x2 = p[0+1]; tmp.line.y2 = p[4+1];
+			cb(cb_ctx, &tmp);
+
+			tmp.line.x1 = p[0+1]; tmp.line.y1 = p[4+1];
+			tmp.line.x2 = p[0+2]; tmp.line.y2 = p[4+2];
+			cb(cb_ctx, &tmp);
+
+			tmp.line.x1 = p[0+2]; tmp.line.y1 = p[4+2];
+			tmp.line.x2 = p[0+3]; tmp.line.y2 = p[4+3];
+			cb(cb_ctx, &tmp);
+
+			tmp.line.x1 = p[0+3]; tmp.line.y1 = p[4+3];
+			tmp.line.x2 = p[0+0]; tmp.line.y2 = p[4+0];
+			cb(cb_ctx, &tmp);
 		}
 		else {
-			/* the default symbol is a filled box */
-			rnd_coord_t p[8];
-			rnd_glyph_atom_t tmp;
-
-			p[0+0] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
-			p[4+0] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y1 + y));
-			p[0+1] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
-			p[4+1] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y1 + y));
-			p[0+2] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
-			p[4+2] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X2 + x, font->unknown_glyph.Y2 + y));
-			p[0+3] = rnd_round(rnd_xform_x(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
-			p[4+3] = rnd_round(rnd_xform_y(mx, font->unknown_glyph.X1 + x, font->unknown_glyph.Y2 + y));
-
-			/* draw move on to next cursor position */
-			if (opts & RND_FONT_THIN_POLY) {
-				tmp.line.type = RND_GLYPH_LINE;
-				tmp.line.thickness = -1;
-
-				tmp.line.x1 = p[0+0]; tmp.line.y1 = p[4+0];
-				tmp.line.x2 = p[0+1]; tmp.line.y2 = p[4+1];
-				cb(cb_ctx, &tmp);
-
-				tmp.line.x1 = p[0+1]; tmp.line.y1 = p[4+1];
-				tmp.line.x2 = p[0+2]; tmp.line.y2 = p[4+2];
-				cb(cb_ctx, &tmp);
-
-				tmp.line.x1 = p[0+2]; tmp.line.y1 = p[4+2];
-				tmp.line.x2 = p[0+3]; tmp.line.y2 = p[4+3];
-				cb(cb_ctx, &tmp);
-
-				tmp.line.x1 = p[0+3]; tmp.line.y1 = p[4+3];
-				tmp.line.x2 = p[0+0]; tmp.line.y2 = p[4+0];
-				cb(cb_ctx, &tmp);
-			}
-			else {
-				tmp.poly.type = RND_GLYPH_POLY;
-				tmp.poly.pts.used = tmp.poly.pts.alloced = 8;
-				tmp.poly.pts.array = p;
-				cb(cb_ctx, &tmp);
-			}
-			x = rnd_font_advance_invalid(font, opts, x);
+			tmp.poly.type = RND_GLYPH_POLY;
+			tmp.poly.pts.used = tmp.poly.pts.alloced = 8;
+			tmp.poly.pts.array = p;
+			cb(cb_ctx, &tmp);
 		}
+		x = rnd_font_advance_invalid(font, opts, x);
+	}
 
 	return x;
 }
@@ -777,66 +777,67 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 					inhibit = 1;
 			}
 
-			if (!inhibit && g->valid)
-			for(n = 0; n < g->atoms.used; n++) {
-				rnd_glyph_atom_t *a = &g->atoms.array[n];
-				rnd_coord_t unscaled_radius;
-				rnd_box_t b;
+			if (!inhibit && g->valid) {
+				for(n = 0; n < g->atoms.used; n++) {
+					rnd_glyph_atom_t *a = &g->atoms.array[n];
+					rnd_coord_t unscaled_radius;
+					rnd_box_t b;
 
-				switch(a->type) {
-					case RND_GLYPH_LINE:
-							/* Clamp the width of text lines at the minimum thickness.
-							   NB: Divide 4 in thickness calculation is comprised of a factor
-							       of 1/2 to get a radius from the center-line, and a factor
-							       of 1/2 because some stupid reason we render our glyphs
-							       at half their defined stroke-width. 
-							   WARNING: need to keep it for pcb-rnd backward compatibility
-							*/
-						unscaled_radius = RND_MAX(min_unscaled_radius, a->line.thickness / 4);
+					switch(a->type) {
+						case RND_GLYPH_LINE:
+								/* Clamp the width of text lines at the minimum thickness.
+								   NB: Divide 4 in thickness calculation is comprised of a factor
+								       of 1/2 to get a radius from the center-line, and a factor
+								       of 1/2 because some stupid reason we render our glyphs
+								       at half their defined stroke-width. 
+								   WARNING: need to keep it for pcb-rnd backward compatibility
+								*/
+							unscaled_radius = RND_MAX(min_unscaled_radius, a->line.thickness / 4);
 
-						if (first_time) {
-							minx = maxx = a->line.x1 + tx;
-							miny = maxy = a->line.y1 + ty;
-							first_time = rnd_false;
-						}
-
-						minx = MIN(minx, a->line.x1 - unscaled_radius + tx);
-						miny = MIN(miny, a->line.y1 - unscaled_radius + ty);
-						minx = MIN(minx, a->line.x2 - unscaled_radius + tx);
-						miny = MIN(miny, a->line.y2 - unscaled_radius + ty);
-						maxx = MAX(maxx, a->line.x1 + unscaled_radius + tx);
-						maxy = MAX(maxy, a->line.y1 + unscaled_radius + ty);
-						maxx = MAX(maxx, a->line.x2 + unscaled_radius + tx);
-						maxy = MAX(maxy, a->line.y2 + unscaled_radius + ty);
-					break;
-
-					case RND_GLYPH_ARC:
-						font_arc_bbox(&b, &a->arc);
-
-						if (compat)
-							unscaled_radius = a->arc.thickness / 2;
-						else
-							unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 2);
-
-						minx = MIN(minx, b.X1 + tx - unscaled_radius);
-						miny = MIN(miny, b.Y1 + ty - unscaled_radius);
-						maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
-						maxy = MAX(maxy, b.Y2 + ty + unscaled_radius);
-						break;
-
-					case RND_GLYPH_POLY:
-						{
-							int i, h = a->poly.pts.used/2;
-							rnd_coord_t *px = &a->poly.pts.array[0], *py = &a->poly.pts.array[h];
-
-							for(i = 0; i < h; i++,px++,py++) {
-								minx = MIN(minx, *px + tx);
-								miny = MIN(miny, *py + ty);
-								maxx = MAX(maxx, *px + tx);
-								maxy = MAX(maxy, *py + ty);
+							if (first_time) {
+								minx = maxx = a->line.x1 + tx;
+								miny = maxy = a->line.y1 + ty;
+								first_time = rnd_false;
 							}
-						}
+
+							minx = MIN(minx, a->line.x1 - unscaled_radius + tx);
+							miny = MIN(miny, a->line.y1 - unscaled_radius + ty);
+							minx = MIN(minx, a->line.x2 - unscaled_radius + tx);
+							miny = MIN(miny, a->line.y2 - unscaled_radius + ty);
+							maxx = MAX(maxx, a->line.x1 + unscaled_radius + tx);
+							maxy = MAX(maxy, a->line.y1 + unscaled_radius + ty);
+							maxx = MAX(maxx, a->line.x2 + unscaled_radius + tx);
+							maxy = MAX(maxy, a->line.y2 + unscaled_radius + ty);
 						break;
+
+						case RND_GLYPH_ARC:
+							font_arc_bbox(&b, &a->arc);
+
+							if (compat)
+								unscaled_radius = a->arc.thickness / 2;
+							else
+								unscaled_radius = RND_MAX(min_unscaled_radius, a->arc.thickness / 2);
+
+							minx = MIN(minx, b.X1 + tx - unscaled_radius);
+							miny = MIN(miny, b.Y1 + ty - unscaled_radius);
+							maxx = MAX(maxx, b.X2 + tx + unscaled_radius);
+							maxy = MAX(maxy, b.Y2 + ty + unscaled_radius);
+							break;
+
+						case RND_GLYPH_POLY:
+							{
+								int i, h = a->poly.pts.used/2;
+								rnd_coord_t *px = &a->poly.pts.array[0], *py = &a->poly.pts.array[h];
+
+								for(i = 0; i < h; i++,px++,py++) {
+									minx = MIN(minx, *px + tx);
+									miny = MIN(miny, *py + ty);
+									maxx = MAX(maxx, *px + tx);
+									maxy = MAX(maxy, *py + ty);
+								}
+							}
+							break;
+					}
 				}
 			}
 			tx = txnext;
