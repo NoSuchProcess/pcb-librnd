@@ -8,7 +8,6 @@
 	- API additions (4.1.0)
 		- DOC: font -v2:
 			- draw a glyph anatomy
-		- BUG: font2: test-parse call or some other way to avoid font load error on valid lihata fonts
 		- FEATURE: font v2: upgrade aussiefont:
 			- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
 			- kerning
