@@ -87,7 +87,8 @@ typedef enum {                 /* bitfield - order matters for backward compatib
 	RND_FONT_MULTI_LINE = 16,    /* [4.1.0] support rendering into multiple lines (split at \n) */
 	RND_FONT_STOP_AT_NL = 32,    /* [4.1.0] stop rendering at the first newline */
 	RND_FONT_THIN_POLY = 64,     /* [4.1.0] render polygons with their outline only */
-	RND_FONT_BASELINE = 128      /* [4.1.0] normally the origin of a text object is the top-left of the glyph coord system; when this is enabled and the font has a baseline, the glyphs are moved up so the origin is at the custom baseline of the font (bbox is modified too) */
+	RND_FONT_BASELINE = 128,     /* [4.1.0] normally the origin of a text object is the top-left of the glyph coord system; when this is enabled and the font has a baseline, the glyphs are moved up so the origin is at the custom baseline of the font (bbox is modified too) */
+	RND_FONT_INVIS_TAB = 256     /* [4.1.0] tab glyphs are normally visible (rendered in the center of the tab space); when RND_FONT_INVIS_TAB is used, tab glyph graphic is not rendered */
 } rnd_font_render_opts_t;
 
 typedef enum rnd_font_tiny_e { /* How to draw text that is too tiny to be readable */

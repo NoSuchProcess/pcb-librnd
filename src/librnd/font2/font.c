@@ -378,15 +378,20 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 			long n;
 			rnd_glyph_t *g = &font->glyph[chr];
 			rnd_coord_t xt = x, xnext;
+			int inhibit = 0;
 
 			xnext = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
 
 			if (is_tab(opts, chr)) {
-				/* position visible tab character in the middle */
-				xt += (xnext - x)/2 - (font)->glyph[(chr)].width;
+				if (!(opts & RND_FONT_INVIS_TAB)) {
+					/* position visible tab character in the middle */
+					xt += (xnext - x)/2 - (font)->glyph[(chr)].width;
+				}
+				else
+					inhibit = 1;
 			}
 
-			if ((font)->glyph[(chr)].valid)
+			if (!inhibit && (font)->glyph[(chr)].valid)
 				for(n = 0; n < g->atoms.used; n++)
 					draw_atom(&g->atoms.array[n], mx, xt, y,  scx, scy, rotdeg, opts, thickness, min_line_width, cb, cb_ctx);
 
