@@ -61,6 +61,7 @@ static rnd_font_wcache_t rnd_font_tmp_wc;
 RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_opts_t opts, rnd_coord_t x)
 {
 	rnd_coord_t tabsize;
+	rnd_glyph_t *gt = &font->glyph['\t'];
 
 	if ((font->tab_width_cache <= 0) && (font->tab_width <= 0))
 		rnd_message(RND_MSG_WARNING, "librnd font: missing tab_width in font; improvising a value\n");
@@ -79,6 +80,9 @@ RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_op
 		else
 			font->tab_width_cache = RND_MM_TO_COORD(3);
 	}
+
+	if (gt->valid)
+		x += gt->width + gt->xdelta;
 
 	tabsize = font->tab_width_cache;
 	return ((x + tabsize)/tabsize)*tabsize;
@@ -757,9 +761,23 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 			ty += rnd_font_step_y(font);
 		}
 		else if (is_valid(font, opts, c.chr)) {
+			int inhibit = 0;
+			rnd_coord_t txnext;
 			long n;
 			rnd_glyph_t *g = &font->glyph[c.chr];
 
+			txnext = rnd_font_advance_valid(font, opts, tx, c.chr, c.chr_next, g);
+
+			if (is_tab(opts, c.chr)) {
+				if (!(opts & RND_FONT_INVIS_TAB)) {
+					/* position visible tab character in the middle */
+					tx += (txnext - tx)/2 - (font)->glyph[(c.chr)].width;
+				}
+				else
+					inhibit = 1;
+			}
+
+			if (!inhibit && g->valid)
 			for(n = 0; n < g->atoms.used; n++) {
 				rnd_glyph_atom_t *a = &g->atoms.array[n];
 				rnd_coord_t unscaled_radius;
@@ -821,7 +839,7 @@ RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int 
 						break;
 				}
 			}
-			tx = rnd_font_advance_valid(font, opts, tx, c.chr, c.chr_next, g);
+			tx = txnext;
 		}
 		else { /* invalid char */
 			rnd_box_t *ds = &font->unknown_glyph;
