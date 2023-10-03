@@ -377,12 +377,21 @@ RND_INLINE rnd_coord_t rnd_font_draw_glyph(rnd_font_t *font, rnd_coord_t x, rnd_
 		if (is_valid(font, opts, chr)) {
 			long n;
 			rnd_glyph_t *g = &font->glyph[chr];
-			
-			for(n = 0; n < g->atoms.used; n++)
-				draw_atom(&g->atoms.array[n], mx, x, y,  scx, scy, rotdeg, opts, thickness, min_line_width, cb, cb_ctx);
+			rnd_coord_t xt = x, xnext;
+
+			xnext = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
+
+			if (is_tab(opts, chr)) {
+				/* position visible tab character in the middle */
+				xt += (xnext - x)/2 - (font)->glyph[(chr)].width;
+			}
+
+			if ((font)->glyph[(chr)].valid)
+				for(n = 0; n < g->atoms.used; n++)
+					draw_atom(&g->atoms.array[n], mx, xt, y,  scx, scy, rotdeg, opts, thickness, min_line_width, cb, cb_ctx);
 
 			/* move on to next cursor position */
-			x = rnd_font_advance_valid(font, opts, x, chr, chr_next, g);
+			x = xnext;
 		}
 		else {
 			/* the default symbol is a filled box */
