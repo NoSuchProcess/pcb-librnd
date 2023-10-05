@@ -36,6 +36,7 @@
 			- attr_dlg_widget_focus in hid.h
 			- widget_focus in rnd_hid_compound_t in hid_dad.h
 			- coord_per_pix in rnd_hid_expose_ctx_s in hid.h
+			- rnd_hid_tree_t in hid_dad.h: hid_get_selected_multi_cb()
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
@@ -47,4 +48,5 @@
 		- BUG: hid_lesstif potential bug: bug_files/TODO/lesstif.txt [report: Fuz]
 		- multi preview widget: implement gtk's r34242, r34773
 		- lesstif: vertical text, truncated text support
+		- implement gtk's tree view multi select API
 	- bitmap object export in png, ps, eps, svg
