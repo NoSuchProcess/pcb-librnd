@@ -169,17 +169,27 @@ static rnd_hid_row_t *rnd_gtk_tree_table_get_selected(rnd_hid_attribute_t *attri
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
 	GtkTreeSelection *tsel;
-	GtkTreeModel *tm;
 	GtkTreeIter iter;
+	GtkTreeModel *tm;
 	rnd_hid_row_t *r;
 
 	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tt));
 	if (tsel == NULL)
 		return NULL;
 
-	gtk_tree_selection_get_selected(tsel, &tm, &iter);
-	if (iter.stamp == 0)
-		return NULL;
+	if (attrib->hatt_flags & RND_HATF_TREE_MULTI) { /* multiselect: get first */
+		GList *list = gtk_tree_selection_get_selected_rows(tsel, &tm);
+		GtkTreePath *path = list->data;
+		gtk_tree_model_get_iter(tm, &iter, path);
+
+		g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
+		g_list_free(list);
+	}
+	else { /* single selection */
+		gtk_tree_selection_get_selected(tsel, &tm, &iter);
+		if (iter.stamp == 0)
+			return NULL;
+	}
 
 	gtk_tree_model_get(tm, &iter, attrib->rnd_hatt_table_cols, &r, -1);
 	return r;
@@ -476,8 +486,10 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
 	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(rnd_gtk_tree_table_row_activated_cb), attr);
 
+rnd_trace("gtl selection: %d %d\n", attr->hatt_flags & RND_HATF_TREE_MULTI, attr->hatt_flags);
+
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	gtk_tree_selection_set_mode(selection, (attr->hatt_flags & RND_HATF_TREE_MULTI) ? GTK_SELECTION_MULTIPLE : GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
 	frame_scroll_(parent, attr->rnd_hatt_flags, &ctx->wltop[j], view, 1);
