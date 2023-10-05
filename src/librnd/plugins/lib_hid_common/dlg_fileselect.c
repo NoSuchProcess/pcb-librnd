@@ -94,6 +94,7 @@ typedef struct{
 	const rnd_hid_fsd_filter_t *flt;
 	const char *history_tag;
 	char *res_path;
+	unsigned edit_last:1; /* set to 1 when the input box is modified, 0 to when clicked into the list */
 } fsd_ctx_t;
 
 static fsd_ctx_t fsd_ctx;
@@ -110,22 +111,28 @@ static void fsd_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 #include "dlg_fileselect_io.c"
 
+/* Returns 1 if path is acceptable; if not acceptable and report is non-zero
+   writes an error message in the log */
+static int fsd_acceptable_(fsd_ctx_t *ctx, const char *path, int report)
+{
+	if (ctx->flags & RND_HID_FSD_READ) {
+		if (!rnd_file_readable(ctx->hidlib, path)) {
+			if (report) rnd_message(RND_MSG_ERROR, "File '%s' does not exist or is not a file or is not readable\n", path);
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
 /* Returns 1 if ctx->res_path is acceptable; if not acceptable, free's it
    and sets it to NULL and if report is non-zero writes an error message in
    the log */
 static int fsd_acceptable(fsd_ctx_t *ctx, int report)
 {
-	if (ctx->flags & RND_HID_FSD_READ) {
-		if (!rnd_file_readable(ctx->hidlib, ctx->res_path)) {
-			if (report) rnd_message(RND_MSG_ERROR, "File '%s' does not exist or is not a file or is not readable\n", ctx->res_path);
-			goto err;
-		}
+	if (fsd_acceptable_(ctx, ctx->res_path, report) != 0)
 		return 1;
-	}
 
-	return 1;
-
-	err:;
 	free(ctx->res_path);
 	ctx->res_path = NULL;
 	return 0;
@@ -477,6 +484,79 @@ static void resort_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	fsd_load(ctx, 0);
 }
 
+TODO("closing from within a tree table causes a gtk/glib segf")
+static void timed_close_cb(rnd_hidval_t user_data)
+{
+	static rnd_dad_retovr_t retovr;
+	rnd_hid_dad_close(user_data.ptr, &retovr, 0);
+}
+
+static void build_res_multi(fsd_ctx_t *ctx)
+{
+	rnd_hid_attribute_t *tree_attr = &ctx->dlg[ctx->wfilelist];
+	rnd_hid_row_t *row;
+	int r;
+	vtp0_t lst = {0};
+	gds_t tmp = {0};
+
+	r = rnd_dad_tree_get_selected_multi(tree_attr, &lst);
+	if ((r < 0) || (lst.used == 0))
+		return;
+
+	row = lst.array[0];
+	if ((lst.used == 1) && (row->cell[1][0] == '<')) {
+/*rnd_trace("BRM: cd %s\n", row->cell[0]);*/
+		fsd_cd(ctx, row->cell[0]);
+	}
+	else if (ctx->edit_last) {
+		rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
+		const char *fn = inp->val.str;
+
+/*rnd_trace("BRM: edit line \n", fn);*/
+
+		if ((fn != NULL) && (*fn != '\0')) {
+			static rnd_dad_retovr_t retovr;
+			ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
+			if (fsd_acceptable(ctx, 1))
+				rnd_hid_dad_close(ctx->dlg_hid_ctx, &retovr, 0);
+		}
+	}
+	else {
+		int accepted = 0;
+		long n;
+		rnd_hidval_t rv;
+		rv.ptr = ctx->dlg_hid_ctx;
+
+/*rnd_trace("BRM: multiselect:\n");*/
+
+		for(n = 0; n < lst.used; n++) {
+			long start = tmp.used;
+
+			row = lst.array[n];
+			gds_append_str(&tmp, ctx->cwd);
+			gds_append(&tmp, '/');
+			gds_append_str(&tmp, row->cell[0]);
+			gds_append(&tmp, '\0');
+/*rnd_trace("  '%s'\n", tmp.array+start);*/
+			if (fsd_acceptable_(ctx, tmp.array+start, 1))
+				accepted = 1;
+		}
+
+		if (accepted) {
+			ctx->res_path = tmp.array; /* take over ownership */
+			rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
+		}
+		else
+			gds_uninit(&tmp);
+	}
+}
+
+static void edit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	fsd_ctx_t *ctx = caller_data;
+	ctx->edit_last = 1; /* so that this value is taken instead of table selection */
+}
+
 /* Handle new text entered in the path field */
 static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -533,12 +613,6 @@ static void edit_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpath, &hv);
 }
 
-TODO("closing from within a tree table causes a gtk/glib segf")
-static void timed_close_cb(rnd_hidval_t user_data)
-{
-	static rnd_dad_retovr_t retovr;
-	rnd_hid_dad_close(user_data.ptr, &retovr, 0);
-}
 
 
 static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_row_t *row)
@@ -546,6 +620,7 @@ static void fsd_filelist_cb(rnd_hid_attribute_t *attr, void *hid_ctx, rnd_hid_ro
 	rnd_hid_tree_t *tree = attr->wdata;
 	fsd_ctx_t *ctx = tree->user_ctx;
 
+	ctx->edit_last = 0;
 	if (row != NULL) { /* first click on a new row */
 		if (row->cell[1][0] != '<') { /* file: load the edit line with the new file name */
 			rnd_hid_attr_val_t hv;
@@ -559,35 +634,16 @@ TODO("We shouldn't need a timer for close (fix this in DAD)")
 static void fsd_filelist_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	fsd_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 
-	if (row == NULL)
-		return;
-
-	if (row->cell[1][0] != '<') {
-		rnd_hidval_t rv;
-		rv.ptr = hid_ctx;
-		ctx->res_path = rnd_concat(ctx->cwd, "/", row->cell[0], NULL);
-		if (fsd_acceptable(ctx, 1))
-			rnd_gui->add_timer(rnd_gui, timed_close_cb, 1, rv);
-	}
-	else
-		fsd_cd(ctx, row->cell[0]);
+	build_res_multi(ctx);
 }
 
 
 static void fsd_ok_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_IGNORED)
 {
 	fsd_ctx_t *ctx = caller_data;
-	rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
-	const char *fn = inp->val.str;
 
-	if ((fn != NULL) && (*fn != '\0')) {
-		static rnd_dad_retovr_t retovr;
-		ctx->res_path = rnd_concat(ctx->cwd, "/", fn, NULL);
-		if (fsd_acceptable(ctx, 1))
-			rnd_hid_dad_close(hid_ctx, &retovr, 0);
-	}
+	build_res_multi(ctx);
 }
 
 /*** shortcut ***/
@@ -774,6 +830,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	const char **filter_names = NULL;
 	const rnd_hid_fsd_filter_t *fl;
 	rnd_hid_fsd_filter_t flt_local[3];
+	unsigned long multisel = (flags & RND_HID_FSD_MULTI) ? RND_HATF_TREE_MULTI : 0;
 
 	if (ctx->active) {
 		rnd_message(RND_MSG_ERROR, "Recursive call of rnd_dlg_fileselect\n");
@@ -822,6 +879,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_STRING(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				ctx->wpath = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_CHANGE_CB(ctx->dlg, edit_chg_cb);
 				RND_DAD_ENTER_CB(ctx->dlg, edit_enter_cb);
 		RND_DAD_END(ctx->dlg);
 
@@ -871,7 +929,7 @@ char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 			RND_DAD_BEGIN_VBOX(ctx->dlg); /* file list */
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_TREE(ctx->dlg, 3, 0, filelist_hdr);
-					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_SCROLL | multisel);
 					ctx->wfilelist = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, fsd_filelist_cb);
 					RND_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
