@@ -179,11 +179,15 @@ static rnd_hid_row_t *rnd_gtk_tree_table_get_selected(rnd_hid_attribute_t *attri
 
 	if (attrib->hatt_flags & RND_HATF_TREE_MULTI) { /* multiselect: get first */
 		GList *list = gtk_tree_selection_get_selected_rows(tsel, &tm);
-		GtkTreePath *path = list->data;
-		gtk_tree_model_get_iter(tm, &iter, path);
+		if (list != NULL) {
+			GtkTreePath *path = list->data;
+			gtk_tree_model_get_iter(tm, &iter, path);
 
-		g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
-		g_list_free(list);
+			g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
+			g_list_free(list);
+		}
+		else
+			return NULL;
 	}
 	else { /* single selection */
 		gtk_tree_selection_get_selected(tsel, &tm, &iter);
@@ -193,6 +197,47 @@ static rnd_hid_row_t *rnd_gtk_tree_table_get_selected(rnd_hid_attribute_t *attri
 
 	gtk_tree_model_get(tm, &iter, attrib->rnd_hatt_table_cols, &r, -1);
 	return r;
+}
+
+static int rnd_gtk_tree_table_get_selected_multi(rnd_hid_attribute_t *attrib, void *hid_ctx, vtp0_t *dst)
+{
+	attr_dlg_t *ctx = hid_ctx;
+	int idx = attrib - ctx->attrs;
+	GtkWidget *tt = ctx->wl[idx];
+	GtkTreeSelection *tsel;
+	GtkTreeIter iter;
+	GtkTreeModel *tm;
+	rnd_hid_row_t *r;
+
+	tsel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tt));
+	if (tsel == NULL)
+		return -1;
+
+	if (attrib->hatt_flags & RND_HATF_TREE_MULTI) { /* multiselect: get first */
+		GList *list;
+
+		for(list = gtk_tree_selection_get_selected_rows(tsel, &tm); list; list = g_list_next(list)) {
+			GtkTreePath *path = list->data;
+			gtk_tree_model_get_iter(tm, &iter, path);
+			gtk_tree_model_get(tm, &iter, attrib->rnd_hatt_table_cols, &r, -1);
+			vtp0_append(dst, r);
+		}
+
+		g_list_foreach(list, (GFunc) gtk_tree_path_free, NULL);
+		g_list_free(list);
+		return 0;
+	}
+	else { /* single selection */
+		gtk_tree_selection_get_selected(tsel, &tm, &iter);
+		if (iter.stamp == 0)
+			return -1;
+
+		gtk_tree_model_get(tm, &iter, attrib->rnd_hatt_table_cols, &r, -1);
+		vtp0_append(dst, r);
+		return 0;
+	}
+
+	return -1;
 }
 
 static void rnd_gtk_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
@@ -446,6 +491,7 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	tree->hid_expcoll_cb = rnd_gtk_tree_table_expcoll_cb;
 	tree->hid_free_cb = rnd_gtk_tree_table_free_cb;
 	tree->hid_get_selected_cb = rnd_gtk_tree_table_get_selected;
+	tree->hid_get_selected_multi_cb = rnd_gtk_tree_table_get_selected_multi;
 	tree->hid_update_hide_cb = rnd_gtk_tree_table_update_hide;
 	tree->hid_wdata = ctx;
 
