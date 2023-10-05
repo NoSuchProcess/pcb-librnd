@@ -251,6 +251,27 @@ RND_INLINE rnd_hid_row_t *rnd_dad_tree_get_selected(rnd_hid_attribute_t *attr)
 	return tree->hid_get_selected_cb(tree->attrib, tree->hid_wdata);
 }
 
+/* appends 0, 1 or more (rnd_hid_row_t *)'s in dst; returns 0 if any selection is added, -1 on error or no selection */
+RND_INLINE int rnd_dad_tree_get_selected_multi(rnd_hid_attribute_t *attr, vtp0_t *dst)
+{
+	rnd_hid_tree_t *tree = attr->wdata;
+
+	assert(attr == tree->attrib);
+
+	if (tree->hid_get_selected_multi_cb == NULL) { /* fall back for single selection get if HID doesn't support multi */
+		rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
+		if (r == NULL)
+			return -1;
+
+		vtp0_append(dst, r);
+		return 0;
+	}
+
+	/* native multiselect support in HID */
+	return tree->hid_get_selected_multi_cb(tree->attrib, tree->hid_wdata, dst);
+}
+
+
 RND_INLINE void rnd_dad_tree_update_hide(rnd_hid_attribute_t *attr)
 {
 	rnd_hid_tree_t *tree = attr->wdata;
