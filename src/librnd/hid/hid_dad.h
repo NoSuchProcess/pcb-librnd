@@ -124,7 +124,9 @@ typedef struct {
 	void (*hid_update_hide_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 
 	/* Spare: see doc/developer/spare.txt */
-	void (*spare_f1)(void), (*spare_f2)(void);
+	int (*hid_get_selected_multi_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, vtp0_t *dst); /* optional: appends 0, 1 or more (rnd_hid_row_t *)'s in dst; returns 0 if any selection is added, -1 on error or no selection */
+
+	void (*spare_f2)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2;
