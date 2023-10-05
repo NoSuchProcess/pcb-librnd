@@ -6,7 +6,7 @@
    If flags contains both RND_HID_FSD_READ and RND_HID_FSD_MULTI, multiple
    paths may be selected; these are returned as concatenated \0 terminated
    strings with an extra \0 appended at the end (so that the last string of
-   the list is an empty string). */
+   the list is an empty string). The caller needs to free the returned string. */
 char *rnd_dlg_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 extern const char rnd_acts_FsdTest[];
