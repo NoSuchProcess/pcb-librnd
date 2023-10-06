@@ -499,16 +499,7 @@ static void build_res_multi(fsd_ctx_t *ctx)
 	vtp0_t lst = {0};
 	gds_t tmp = {0};
 
-	r = rnd_dad_tree_get_selected_multi(tree_attr, &lst);
-	if ((r < 0) || (lst.used == 0))
-		return;
-
-	row = lst.array[0];
-	if ((lst.used == 1) && (row->cell[1][0] == '<')) {
-/*rnd_trace("BRM: cd %s\n", row->cell[0]);*/
-		fsd_cd(ctx, row->cell[0]);
-	}
-	else if (ctx->edit_last) {
+	if (ctx->edit_last) {
 		rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
 		const char *fn = inp->val.str;
 
@@ -520,6 +511,16 @@ static void build_res_multi(fsd_ctx_t *ctx)
 			if (fsd_acceptable(ctx, 1))
 				rnd_hid_dad_close(ctx->dlg_hid_ctx, &retovr, 0);
 		}
+	}
+
+	r = rnd_dad_tree_get_selected_multi(tree_attr, &lst);
+	if ((r < 0) || (lst.used == 0))
+		return;
+
+	row = lst.array[0];
+	if ((lst.used == 1) && (row->cell[1][0] == '<')) {
+/*rnd_trace("BRM: cd %s\n", row->cell[0]);*/
+		fsd_cd(ctx, row->cell[0]);
 	}
 	else {
 		int accepted = 0;
