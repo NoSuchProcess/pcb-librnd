@@ -1140,7 +1140,7 @@ int rnd_gtk_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	if (ctx->attrs[idx].type == RND_HATT_END) {
 		rnd_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
-			return cmp->widget_focus(&ctx->attrs[idx], ctx, idx);
+			return cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
 		else
 			return -1;
 	}
