@@ -726,6 +726,12 @@ RND_INLINE void font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
 	dst->Y2 = a->cy + a->r * maxy;
 }
 
+void rnd_font_arc_bbox(rnd_box_t *dst, rnd_glyph_arc_t *a)
+{
+	font_arc_bbox(dst, a);
+}
+
+
 RND_INLINE void rnd_font_string_bbox_(rnd_coord_t cx[4], rnd_coord_t cy[4], int compat, rnd_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, rnd_font_render_opts_t opts, rnd_coord_t thickness, rnd_coord_t min_line_width, int scale)
 {
 	cursor_t c;
