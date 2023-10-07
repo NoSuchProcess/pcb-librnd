@@ -14,6 +14,11 @@ left. Cells have a font-global height but a per glyph width. Each glyph
 also has an xdelta which is extra space left after the glyph on the right
 side.
 <p>
+Since v2, a per glyph advance also can be saved. When advance is present,
+it is used by the rendering code instead of the sum of width+xdelta. The
+width+delta method is less stable and prone to rounding errors due to
+historical reasons.
+<p>
 Optional baseline is specified from the top. Line height is the vertical
 advance between two lines of text.
 <p>
@@ -42,8 +47,9 @@ not override a value or change polygon dimensions.
 
 <h2> kerning table </h2>
 <p>
-Normally the advance is calculated as width+xdelta. In the above example
-from j's origin to E's origin it'ss j's width plus j's xdelta.
+Normally the advance is either the explicit specified glyp advance, or if it
+is not specified, it is computed as width+xdelta. In the above example
+from j's origin to E's origin it is j's width plus j's xdelta.
 <p>
 If j-E is present in the kerning table with a non-zero value, that
 kerning value is also added to the above sum. A positive value will push E
