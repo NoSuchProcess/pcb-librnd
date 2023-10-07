@@ -54,13 +54,22 @@ static int rnd_font_lht_parse_font(rnd_font_t *font, lht_node_t *nd);
 
 static int rnd_font_lht_parse_glyph(rnd_glyph_t *glp, lht_node_t *nd)
 {
-	lht_node_t *grp, *obj, *n;
+	lht_node_t *grp, *obj, *n, *adv;
 	lht_dom_iterator_t it;
 	int err = 0;
 
 	err |= PARSE_COORD(&glp->width,  HASH_GET(nd, "width"));
 	err |= PARSE_COORD(&glp->height, HASH_GET(nd, "height"));
 	err |= PARSE_COORD(&glp->xdelta, HASH_GET(nd, "delta"));
+
+	adv = lht_dom_hash_get(nd, "advance");
+	if (adv != NULL) {
+		int e = PARSE_COORD(&glp->advance, adv);
+		if (e == 0)
+			glp->advance_valid = 1;
+		else
+			err |= e;
+	}
 
 	grp = lht_dom_hash_get(nd, "objects");
 	for(obj = lht_dom_first(&it, grp); obj != NULL; obj = lht_dom_next(&it)) {

@@ -71,7 +71,10 @@ typedef struct rnd_glyph_s {
 	unsigned valid:1;
 	rnd_coord_t width, height; /* total size of glyph */
 	rnd_coord_t xdelta;        /* extra distance after width to next symbol */
+	rnd_coord_t advance;       /* [4.1.0, filever 2] if specified (->advance_valid == 1), use this value to advance in x directon instead of less stable ->width + ->xdelta */
 	vtgla_t atoms;
+
+	unsigned advance_valid:1;  /* [4.1.0] */
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void);

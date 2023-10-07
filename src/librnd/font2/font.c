@@ -81,8 +81,12 @@ RND_INLINE rnd_coord_t rnd_font_advance_tab(rnd_font_t *font, rnd_font_render_op
 			font->tab_width_cache = RND_MM_TO_COORD(3);
 	}
 
-	if (gt->valid)
-		x += gt->width + gt->xdelta;
+	if (gt->valid) {
+		if (gt->advance_valid)
+			x += gt->advance;
+		else
+			x += gt->width + gt->xdelta;
+	}
 
 	tabsize = font->tab_width_cache;
 	return ((x + tabsize)/tabsize)*tabsize;
@@ -104,6 +108,8 @@ RND_INLINE rnd_coord_t rnd_font_advance_valid(rnd_font_t *font, rnd_font_render_
 		if (offs != 0) current += offs; /* apply kerning in advance to the normal mechanism */
 	}
 
+	if (g->advance_valid)
+		return current + g->advance;
 	return current + g->width + g->xdelta;
 }
 
@@ -1193,7 +1199,8 @@ void rnd_font_free_glyph(rnd_glyph_t *g)
 	}
 	vtgla_uninit(&g->atoms);
 	g->valid = 0;
-	g->width = g->height = g->xdelta = 0;
+	g->advance_valid = 0;
+	g->width = g->height = g->xdelta = g->advance = 0;
 }
 
 void rnd_font_free(rnd_font_t *f)
