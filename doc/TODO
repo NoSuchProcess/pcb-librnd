@@ -4,6 +4,7 @@
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- FEATURE: font v2: upgrade aussiefont:
+		- set advance to round numbers
 		- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
 		- kerning
 		- tab_width
