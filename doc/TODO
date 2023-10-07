@@ -4,12 +4,14 @@
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
 	- FEATURE: font v2: upgrade aussiefont:
-		- set advance to round numbers
-		- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
-		- kerning
-		- tab_width
-		- baseline
-		- line_height
+		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
+		- step #2: make sure the default advance value is consistent and renders correctly; test string: || and ii (this depends on atom thickness too)
+		- step #3: make sure tab is thin and space has the proper advance
+		- step #4: set and verify tab_width; rule of thumb: should be about 4 'M' width, rounded up to 10mil
+		- step #5: set and verify baseline
+		- step #6: kerning tables
+		- step #7: entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
+		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
 	- BUG: perma scripts are initialized too late
