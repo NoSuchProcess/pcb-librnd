@@ -511,6 +511,7 @@ static void build_res_multi(fsd_ctx_t *ctx)
 			if (fsd_acceptable(ctx, 1))
 				rnd_hid_dad_close(ctx->dlg_hid_ctx, &retovr, 0);
 		}
+		return;
 	}
 
 	r = rnd_dad_tree_get_selected_multi(tree_attr, &lst);
