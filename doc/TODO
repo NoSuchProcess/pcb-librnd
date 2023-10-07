@@ -3,7 +3,6 @@
 		- BUG: work/poly/tester/tests/TODO/selfi1/: two islands of polygon A (red) causes self intersection
 			-> this confuses the algo later because poly B intersects too much
 			-> cheap cross-check: subtract 1 from the x coords of the triangle in A, so self intersection doesn't happen
-	- fsd: pcb-rnd: save as, enter a new file name, click 'ok' -> gtk errors on stderr (doesn't happen on enter) [report: Igor2]
 	- FEATURE: font v2: upgrade aussiefont:
 		- entities: some from the greek alphabet, <sup> numbers (10) and degree sign all in upper 127
 		- kerning
