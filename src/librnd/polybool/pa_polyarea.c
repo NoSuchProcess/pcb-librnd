@@ -288,7 +288,7 @@ RND_INLINE long pa_polyarea_count(rnd_polyarea_t *src)
 }
 
 /* Unlink polyarea from list; *list may be modified or even set to NULL */
-RND_INLINE void pa_polyarea_unlink(rnd_polyarea_t **list, rnd_polyarea_t *island)
+void pa_polyarea_unlink(rnd_polyarea_t **list, rnd_polyarea_t *island)
 {
 	/* avoid "island being the head of list" corner case by bumping the list */
 	if (*list == island)
