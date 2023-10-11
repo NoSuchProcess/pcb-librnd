@@ -296,7 +296,9 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 		}
 	}
 
-	/* pline intersects other plines  */
+	/* pline intersects other plines within a pa island; since the first pline
+	   is the outer contour, this really means a hole-contour or a hole-hole
+	   intersection within a single island  */
 	for(pl = pa->contours; pl != NULL; pl = next) {
 		next = pl->next;
 		for(pl2 = next; pl2 != NULL; pl2 = next2) {
