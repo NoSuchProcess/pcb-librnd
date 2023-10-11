@@ -283,6 +283,7 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 {
+	rnd_polyarea_t *paa, *pab;
 	rnd_pline_t *pl, *next, *pl2, *next2, *pln, *prev = NULL, *newpl;
 	rnd_cardinal_t cnt = 0;
 
@@ -308,6 +309,16 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 			}
 		}
 	}
+
+	/* pa-pa intersections: different islands of the same polygon object intersect */
+	paa = pa;
+	do {
+		for(pab = paa->f; pab != pa; pab = pab->f) {
+			rnd_trace("pa-pa %p %p\n", paa, pab);
+			if (rnd_polyarea_touching(paa, pab))
+				rnd_trace("pa-pa isc!\n");
+		}
+	} while((paa = paa->f) != pa);
 
 	return cnt;
 }
