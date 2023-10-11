@@ -324,7 +324,8 @@ restart:;
 			/* remove ->f for this test to make sure only that oen island is checked */
 			pfa = paa->f;
 			pfb = pab->f;
-			paa->f = pab->f = NULL;
+			paa->f = paa;
+			pab->f = pab;
 			touching = rnd_polyarea_touching(paa, pab);
 			paa->f = pfa;
 			pab->f = pfb;
