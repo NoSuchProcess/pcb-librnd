@@ -113,7 +113,7 @@ void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
 		if (n == pl)
 			prev->next = pl->next;
 
-	rnd_r_remove_entry(pa->contour_tree, (rnd_box_t *)pl);
+	rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)pl);
 }
 
 rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src)
