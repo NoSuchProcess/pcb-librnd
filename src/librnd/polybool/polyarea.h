@@ -111,6 +111,7 @@ struct rnd_polyarea_s {
 
 rnd_bool rnd_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
 void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
+void pa_polyarea_unlink(rnd_polyarea_t **list, rnd_polyarea_t *island);
 
 /* Allocate a new polyarea and copy src into it; returns NULL on error */
 rnd_polyarea_t *rnd_polyarea_dup(const rnd_polyarea_t *src);

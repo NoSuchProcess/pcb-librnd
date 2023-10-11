@@ -310,13 +310,25 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		}
 	}
 
+restart:;
+
 	/* pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
 	do {
 		for(pab = paa->f; pab != *pa; pab = pab->f) {
 			rnd_trace("pa-pa %p %p\n", paa, pab);
-			if (rnd_polyarea_touching(paa, pab))
-				rnd_trace("pa-pa isc!\n");
+			if (rnd_polyarea_touching(paa, pab)) {
+				int res;
+				rnd_polyarea_t *tmp = NULL;
+
+				pa_polyarea_unlink(&pa, pab);
+				res = rnd_polyarea_boolean_free(paa, pab, &tmp, RND_PBO_UNITE);
+				*pa = tmp;
+
+				rnd_trace("pa-pa isc! -> resolving with an union: %d -> %p\n", res, *pa);
+				cnt++;
+				goto restart;
+			}
 		}
 	} while((paa = paa->f) != *pa);
 
