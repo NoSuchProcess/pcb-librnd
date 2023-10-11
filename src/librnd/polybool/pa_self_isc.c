@@ -255,7 +255,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 		newpl = rnd_pline_split_selfisc(pa, pl);
 		if (newpl != pl) {
 			rnd_trace("selfisc class 1\n");
-			rnd_bool pa_polyarea_insert_pline(pa, newpl);
+			pa_polyarea_insert_pline(pa, newpl);
 		}
 	}
 
