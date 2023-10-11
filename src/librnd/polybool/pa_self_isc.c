@@ -53,11 +53,11 @@ typedef struct {
 	pa_seg_t *search_seg;
 
 	pa_conn_desc_t *cdl;
-} pa_selfi_t;
+} pa_selfisc_t;
 
-static rnd_r_dir_t pa_selfi_find_seg_cb(const rnd_box_t *b, void *ctx_)
+static rnd_r_dir_t pa_selfisc_find_seg_cb(const rnd_box_t *b, void *ctx_)
 {
-	pa_selfi_t *ctx = (pa_selfi_t *)ctx_;
+	pa_selfisc_t *ctx = (pa_selfisc_t *)ctx_;
 	pa_seg_t *s = (pa_seg_t *)b;
 
 	if (ctx->search_seg_v == s->v) {
@@ -68,7 +68,7 @@ static rnd_r_dir_t pa_selfi_find_seg_cb(const rnd_box_t *b, void *ctx_)
 }
 
 /* Find the segment for pt in tree */
-RND_INLINE pa_seg_t *pa_selfi_find_seg(pa_selfi_t *ctx, rnd_vnode_t *pt)
+RND_INLINE pa_seg_t *pa_selfisc_find_seg(pa_selfisc_t *ctx, rnd_vnode_t *pt)
 {
 	rnd_r_dir_t rres;
 	rnd_box_t box;
@@ -78,14 +78,14 @@ RND_INLINE pa_seg_t *pa_selfi_find_seg(pa_selfi_t *ctx, rnd_vnode_t *pt)
 
 	box.X1 = pt->point[0];    box.Y1 = pt->point[1];
 	box.X2 = box.X1 + 1;      box.Y2 = box.Y1 + 1;
-	rres = rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfi_find_seg_cb, ctx, NULL);
+	rres = rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_find_seg_cb, ctx, NULL);
 	assert(rres == RND_R_DIR_CANCEL);
 
 	return ctx->search_seg;
 }
 
 /* Insert a new node and a cvc at an intersection point as the next node of vn */
-RND_INLINE rnd_vnode_t *pa_selfi_ins_pt(pa_selfi_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
 {
 	rnd_vnode_t *new_node;
 	pa_seg_t *sg;
@@ -98,7 +98,7 @@ RND_INLINE rnd_vnode_t *pa_selfi_ins_pt(pa_selfi_t *ctx, rnd_vnode_t *vn, pa_big
 	vn->next->prev = new_node;
 	vn->next = new_node;
 	ctx->pl->Count++;
-	sg = pa_selfi_find_seg(ctx, vn);
+	sg = pa_selfisc_find_seg(ctx, vn);
 	if (pa_adjust_tree(ctx->pl->tree, sg) != 0)
 		assert(0); /* failed memory allocation */
 
@@ -106,9 +106,9 @@ RND_INLINE rnd_vnode_t *pa_selfi_ins_pt(pa_selfi_t *ctx, rnd_vnode_t *vn, pa_big
 }
 
 /* Called back from an rtree query to figure if two edges intersect */
-static rnd_r_dir_t pa_selfi_cross_cb(const rnd_box_t *b, void *cl)
+static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 {
-	pa_selfi_t *ctx = (pa_selfi_t *)cl;
+	pa_selfisc_t *ctx = (pa_selfisc_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2;
 	int num_isc, got_isc = 0;
@@ -121,10 +121,10 @@ static rnd_r_dir_t pa_selfi_cross_cb(const rnd_box_t *b, void *cl)
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
 
-	new_node = pa_selfi_ins_pt(ctx, ctx->v, isc1);
+	new_node = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
 	if (new_node != NULL) got_isc = 1;
 
-	new_node = pa_selfi_ins_pt(ctx, s->v, isc1);
+	new_node = pa_selfisc_ins_pt(ctx, s->v, isc1);
 	if (new_node != NULL) got_isc = 1;
 
 	if (new_node != NULL)
@@ -141,7 +141,7 @@ TODO("overlap always means break and remove shared section");
 	return RND_R_DIR_NOT_FOUND;
 }
 
-RND_INLINE rnd_vnode_t *pa_selfi_next(rnd_vnode_t *n, char *dir)
+RND_INLINE rnd_vnode_t *pa_selfisc_next(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
@@ -171,7 +171,7 @@ RND_INLINE rnd_vnode_t *pa_selfi_next(rnd_vnode_t *n, char *dir)
 	return NULL;
 }
 
-RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *last, *newn;
 	rnd_pline_t *dst;
@@ -194,7 +194,7 @@ RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode
 
 	/* collect a closed loop */
 	last = start;
-	for(n = pa_selfi_next(start, &dir); n != start; n = pa_selfi_next(n, &dir)) {
+	for(n = pa_selfisc_next(start, &dir); n != start; n = pa_selfisc_next(n, &dir)) {
 		rnd_trace(" at %d %d", n->point[0], n->point[1]);
 		assert(!n->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 		n->flg.mark = 1;
@@ -206,10 +206,10 @@ RND_INLINE void pa_selfi_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode
 	}
 }
 
-rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
+rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *start = pa_find_minnode(pl);
-	pa_selfi_t ctx = {0};
+	pa_selfisc_t ctx = {0};
 	rnd_pline_t *res = NULL;
 
 	ctx.pl = pl;
@@ -224,7 +224,7 @@ rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
 		do {
 			ctx.restart = 0;
-			rnd_r_search(pl->tree, &box, NULL, pa_selfi_cross_cb, &ctx, NULL);
+			rnd_r_search(pl->tree, &box, NULL, pa_selfisc_cross_cb, &ctx, NULL);
 		} while(ctx.restart);
 
 	} while((n = n->next) != start);
@@ -235,7 +235,7 @@ rnd_pline_t *rnd_pline_split_selfi(rnd_pline_t *pl)
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect outer line */
-	pa_selfi_collect(&res, pl, start);
+	pa_selfisc_collect(&res, pl, start);
 
 	pa_pline_free(&pl);
 
