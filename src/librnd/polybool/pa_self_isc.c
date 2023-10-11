@@ -206,7 +206,7 @@ RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vno
 	}
 }
 
-rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
+rnd_pline_t *rnd_pline_split_selfisc(rnd_polyarea_t *parent, rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *start = pa_find_minnode(pl);
 	pa_selfisc_t ctx = {0};
@@ -237,7 +237,36 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	/* collect outer line */
 	pa_selfisc_collect(&res, pl, start);
 
+	if (parent != NULL)
+		rnd_polyarea_contour_exclude(parent, pl);
 	pa_pline_free(&pl);
 
 	return res;
+}
+
+rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
+{
+	rnd_pline_t *pl, *next, *pl2, *next2, *pln, *prev = NULL, *newpl;
+	rnd_cardinal_t cnt = 0;
+
+	/* pline intersects itself */
+	for(pl = pa->contours; pl != NULL; pl = next) {
+		next = pl->next;
+		newpl = rnd_pline_split_selfisc(pa, pl);
+		if (newpl != pl) {
+			rnd_trace("selfisc class 1\n");
+			rnd_bool pa_polyarea_insert_pline(pa, newpl);
+		}
+	}
+
+	/* pline intersects other plines  */
+	for(pl = pa->contours; pl != NULL; pl = next) {
+		next = pl->next;
+		for(pl2 = next; pl2 != NULL; pl2 = next2) {
+			next2 = pl2->next;
+			
+		}
+	}
+
+	return cnt;
 }
