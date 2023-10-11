@@ -281,26 +281,26 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 	return 0;
 }
 
-rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
+rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab;
 	rnd_pline_t *pl, *next, *pl2, *next2, *pln, *prev = NULL, *newpl;
 	rnd_cardinal_t cnt = 0;
 
 	/* pline intersects itself */
-	for(pl = pa->contours; pl != NULL; pl = next) {
+	for(pl = (*pa)->contours; pl != NULL; pl = next) {
 		next = pl->next;
-		newpl = rnd_pline_split_selfisc(pa, pl);
+		newpl = rnd_pline_split_selfisc(*pa, pl);
 		if (newpl != pl) {
 			rnd_trace("selfisc class 1\n");
-			pa_polyarea_insert_pline(pa, newpl);
+			pa_polyarea_insert_pline(*pa, newpl);
 		}
 	}
 
 	/* pline intersects other plines within a pa island; since the first pline
 	   is the outer contour, this really means a hole-contour or a hole-hole
 	   intersection within a single island  */
-	for(pl = pa->contours; pl != NULL; pl = next) {
+	for(pl = (*pa)->contours; pl != NULL; pl = next) {
 		next = pl->next;
 		for(pl2 = next; pl2 != NULL; pl2 = next2) {
 			next2 = pl2->next;
@@ -311,14 +311,14 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 	}
 
 	/* pa-pa intersections: different islands of the same polygon object intersect */
-	paa = pa;
+	paa = *pa;
 	do {
-		for(pab = paa->f; pab != pa; pab = pab->f) {
+		for(pab = paa->f; pab != *pa; pab = pab->f) {
 			rnd_trace("pa-pa %p %p\n", paa, pab);
 			if (rnd_polyarea_touching(paa, pab))
 				rnd_trace("pa-pa isc!\n");
 		}
-	} while((paa = paa->f) != pa);
+	} while((paa = paa->f) != *pa);
 
 	return cnt;
 }
