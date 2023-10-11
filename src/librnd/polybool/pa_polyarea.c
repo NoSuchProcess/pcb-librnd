@@ -104,6 +104,18 @@ static int pa_is_pline_in_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, rnd_bool
 	return rnd_true;
 }
 
+void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
+{
+	rnd_pline_t *n, *prev;
+
+	/* unlink */
+	for(n = pa->contours, prev = NULL; n != NULL; n = n->next)
+		if (n == pl)
+			prev->next = pl->next;
+
+	rnd_r_remove_entry(pa->contour_tree, (rnd_box_t *)pl);
+}
+
 rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src)
 {
 	rnd_pline_t *n, *last, *newpl;

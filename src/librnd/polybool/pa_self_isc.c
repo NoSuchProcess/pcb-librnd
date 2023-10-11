@@ -238,10 +238,47 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_polyarea_t *parent, rnd_pline_t *pl)
 	pa_selfisc_collect(&res, pl, start);
 
 	if (parent != NULL)
-		rnd_polyarea_contour_exclude(parent, pl);
+		pa_polyarea_del_pline(parent, pl);
+
 	pa_pline_free(&pl);
 
 	return res;
+}
+
+/* Called back from an rtree query to figure if two edges intersect */
+static rnd_r_dir_t pa_pline_isc_pline_cb(const rnd_box_t *b, void *cl)
+{
+	rnd_vnode_t *va1 = (rnd_vnode_t *)cl;
+	pa_seg_t *s = (pa_seg_t *)b;
+	int num_isc, got_isc = 0;
+	rnd_vnode_t *new_node;
+
+	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, NULL, NULL);
+	if (num_isc > 0)
+		return RND_R_DIR_CANCEL;
+
+	return RND_R_DIR_NOT_FOUND;
+}
+
+
+/* Returns whether pl1 intersects with pl2 */
+int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
+{
+	rnd_vnode_t *n, *start;
+	rnd_r_dir_t res;
+
+	n = start = pl1->head;
+	do {
+		rnd_box_t box;
+
+		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
+		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
+		res = rnd_r_search(pl2->tree, &box, NULL, pa_pline_isc_pline_cb, n, NULL);
+		if (res == RND_R_DIR_CANCEL)
+			return 1;
+	} while((n = n->next) != start);
+
+	return 0;
 }
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
@@ -264,7 +301,9 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t *pa)
 		next = pl->next;
 		for(pl2 = next; pl2 != NULL; pl2 = next2) {
 			next2 = pl2->next;
-			
+			if (rnd_pline_isc_pline(pl, pl2)) {
+				rnd_trace("selfisc class 2 (TODO)\n");
+			}
 		}
 	}
 

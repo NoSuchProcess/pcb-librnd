@@ -128,6 +128,9 @@ rnd_bool pa_polyarea_copy_plines(rnd_polyarea_t *dst, const rnd_polyarea_t *src)
    in a pa that doesn't have an outer. */
 rnd_bool pa_polyarea_insert_pline(rnd_polyarea_t *pa, rnd_pline_t *pl);
 
+/* Remove pl from pa (but do not free pl) */
+void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl);
+
 
 rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a);
 
