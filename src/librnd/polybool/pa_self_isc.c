@@ -316,12 +316,24 @@ restart:;
 	paa = *pa;
 	do {
 		for(pab = paa->f; pab != *pa; pab = pab->f) {
+			rnd_polyarea_t *pfa, *pfb;
+
+			int touching;
 			rnd_trace("pa-pa %p %p\n", paa, pab);
-			if (rnd_polyarea_touching(paa, pab)) {
+
+			/* remove ->f for this test to make sure only that oen island is checked */
+			pfa = paa->f;
+			pfb = pab->f;
+			paa->f = pab->f = NULL;
+			touching = rnd_polyarea_touching(paa, pab);
+			paa->f = pfa;
+			pab->f = pfb;
+
+			if (touching) {
 				int res;
 				rnd_polyarea_t *tmp = NULL;
 
-				pa_polyarea_unlink(&pa, pab);
+				pa_polyarea_unlink(pa, pab);
 				res = rnd_polyarea_boolean_free(paa, pab, &tmp, RND_PBO_UNITE);
 				*pa = tmp;
 
