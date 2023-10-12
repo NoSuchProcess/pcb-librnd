@@ -269,6 +269,11 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 	rnd_vnode_t *n, *start;
 	rnd_r_dir_t res;
 
+	/* if bboxes don't overlap there's no need to run anything epensive */
+	if ((pl1->xmax < pl2->xmin) || (pl2->xmax < pl1->xmin)) return 0;
+	if ((pl1->ymax < pl2->ymin) || (pl2->ymax < pl1->ymin)) return 0;
+
+
 	/* do the linear iteration on the smaller one (pl1) */
 	if (pl1->Count > pl2->Count)
 		SWAP(rnd_pline_t *, pl1, pl2);
