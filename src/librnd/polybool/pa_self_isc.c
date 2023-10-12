@@ -253,8 +253,9 @@ static rnd_r_dir_t pa_pline_isc_pline_cb(const rnd_box_t *b, void *cl)
 	pa_seg_t *s = (pa_seg_t *)b;
 	int num_isc, got_isc = 0;
 	rnd_vnode_t *new_node;
+	pa_big_vector_t isc1, isc2;
 
-	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, NULL, NULL);
+	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, &isc1, &isc2);
 	if (num_isc > 0)
 		return RND_R_DIR_CANCEL;
 
@@ -306,12 +307,40 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	   is the outer contour, this really means a hole-contour or a hole-hole
 	   intersection within a single island. Start with merging hole-hole
 	   intersections.  */
+restart_2a:;
 	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 		next = pl->next;
 		for(pl2 = next; pl2 != NULL; pl2 = next2) {
 			next2 = pl2->next;
 			if (rnd_pline_isc_pline(pl, pl2)) {
+				rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
+				int res;
+
 				rnd_trace("selfisc class 2a hole-hole (TODO)\n");
+				pa_polyarea_del_pline(*pa, pl);
+				pa_polyarea_del_pline(*pa, pl2);
+
+				/* hole-to-contour for unite */
+				pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
+				pa_pline_invert(pl2); assert(pl2->flg.orient == RND_PLF_DIR);
+
+				tmpa = pa_polyarea_alloc();
+				tmpb = pa_polyarea_alloc();
+
+				pa_polyarea_insert_pline(tmpa, pl);
+				pa_polyarea_insert_pline(tmpb, pl2);
+
+				res = rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
+
+				/* unlunk from tmpc and free up temps */
+				pl = tmpc->contours;
+				pa_polyarea_del_pline(tmpc, pl);
+				rnd_polyarea_free(tmpc);
+
+				pa_pline_invert(pl); /* contour to hole for insertion */
+				pa_polyarea_insert_pline(*pa, pl);
+
+				goto restart_2a; /* now we have a new hole with a different geo and changed the list... */
 			}
 		}
 	}
