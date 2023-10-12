@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* THIS IS THE OLD API, DO NOT USE IT, use pa_self_isc.c instead */
+
 /* Resolve polygon self intersections */
 
 #include <genvector/vtp0.h>
