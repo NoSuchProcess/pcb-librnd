@@ -116,7 +116,10 @@ void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
 			else
 				prev->next = pl->next;
 		}
+		prev = n;
 	}
+
+	pl->next = NULL;
 
 	rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)pl);
 }
