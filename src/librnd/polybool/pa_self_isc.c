@@ -316,7 +316,7 @@ restart_2a:;
 				rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
 				int res;
 
-				rnd_trace("selfisc class 2a hole-hole (TODO)\n");
+				rnd_trace("selfisc class 2a hole-hole\n");
 				pa_polyarea_del_pline(*pa, pl);
 				pa_polyarea_del_pline(*pa, pl2);
 
@@ -345,12 +345,26 @@ restart_2a:;
 		}
 	}
 
+restart_2b:;
 	/* hole vs. contour intersection */
 	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 		if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
-			if (rnd_pline_isc_pline(pl, pl2)) {
-				rnd_trace("selfisc class 2b hole-contour (TODO)\n");
-			}
+			rnd_polyarea_t *tmpa, *tmpc = NULL;
+			int res;
+
+			rnd_trace("selfisc class 2b hole-contour\n");
+
+			pa_polyarea_del_pline(*pa, pl);
+
+			/* hole-to-contour for unite */
+			pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
+
+			tmpa = pa_polyarea_alloc();
+			pa_polyarea_insert_pline(tmpa, pl);
+			res = rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
+			*pa = tmpc;
+
+			goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
 		}
 	}
 
