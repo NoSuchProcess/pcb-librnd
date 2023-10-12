@@ -302,13 +302,23 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 	/* pline intersects other plines within a pa island; since the first pline
 	   is the outer contour, this really means a hole-contour or a hole-hole
-	   intersection within a single island  */
-	for(pl = (*pa)->contours; pl != NULL; pl = next) {
+	   intersection within a single island. Start with merging hole-hole
+	   intersections.  */
+	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 		next = pl->next;
 		for(pl2 = next; pl2 != NULL; pl2 = next2) {
 			next2 = pl2->next;
 			if (rnd_pline_isc_pline(pl, pl2)) {
-				rnd_trace("selfisc class 2 (TODO)\n");
+				rnd_trace("selfisc class 2a hole-hole (TODO)\n");
+			}
+		}
+	}
+
+	/* hole vs. contour intersection */
+	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
+		if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
+			if (rnd_pline_isc_pline(pl, pl2)) {
+				rnd_trace("selfisc class 2b hole-contour (TODO)\n");
 			}
 		}
 	}
