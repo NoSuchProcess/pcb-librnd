@@ -368,7 +368,7 @@ restart_2b:;
 		}
 	}
 
-restart:;
+restart3:;
 
 	/* pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
@@ -398,7 +398,7 @@ restart:;
 
 				rnd_trace("pa-pa isc! -> resolving with an union: %d -> %p\n", res, *pa);
 				cnt++;
-				goto restart;
+				goto restart3;
 			}
 		}
 	} while((paa = paa->f) != *pa);
