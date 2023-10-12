@@ -196,7 +196,9 @@ RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vno
 	last = dst->head;
 	for(n = pa_selfisc_next(start, &dir); n != start; n = pa_selfisc_next(n, &dir)) {
 		rnd_trace(" at %d %d", n->point[0], n->point[1]);
-		assert(!n->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
+		/* Can't assert for this: in the bowtie case the same crossing point has two roles
+			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
+		*/
 		n->flg.mark = 1;
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
