@@ -193,7 +193,7 @@ RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vno
 		*dst_ = dst;
 
 	/* collect a closed loop */
-	last = start;
+	last = dst->head;
 	for(n = pa_selfisc_next(start, &dir); n != start; n = pa_selfisc_next(n, &dir)) {
 		rnd_trace(" at %d %d", n->point[0], n->point[1]);
 		assert(!n->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
@@ -202,7 +202,7 @@ RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vno
 		newn->point[0] = n->point[0];
 		newn->point[1] = n->point[1];
 		rnd_poly_vertex_include(last, newn);
-		last = n;
+		last = newn;
 	}
 }
 
@@ -244,6 +244,8 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_polyarea_t *parent, rnd_pline_t *pl)
 
 	return res;
 }
+
+/*** class 2 ***/
 
 /* Called back from an rtree query to figure if two edges intersect */
 static rnd_r_dir_t pa_pline_isc_pline_cb(const rnd_box_t *b, void *cl)
