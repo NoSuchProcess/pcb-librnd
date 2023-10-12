@@ -206,7 +206,9 @@ RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vno
 	}
 }
 
-rnd_pline_t *rnd_pline_split_selfisc(rnd_polyarea_t *parent, rnd_pline_t *pl)
+/* Build the outer contour of self-intersecting pl and return it. If there is
+   no self intersection, return NULL. */
+rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *start = pa_find_minnode(pl);
 	pa_selfisc_t ctx = {0};
@@ -230,17 +232,12 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_polyarea_t *parent, rnd_pline_t *pl)
 	} while((n = n->next) != start);
 
 	if (ctx.num_isc == 0)
-		return pl;
+		return NULL;
 
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect outer line */
 	pa_selfisc_collect(&res, pl, start);
-
-	if (parent != NULL)
-		pa_polyarea_del_pline(parent, pl);
-
-	pa_pline_free(&pl);
 
 	return res;
 }
@@ -292,10 +289,14 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	/* pline intersects itself */
 	for(pl = (*pa)->contours; pl != NULL; pl = next) {
 		next = pl->next;
-		newpl = rnd_pline_split_selfisc(*pa, pl);
-		if (newpl != pl) {
-			rnd_trace("selfisc class 1\n");
-			pa_polyarea_insert_pline(*pa, newpl);
+		newpl = rnd_pline_split_selfisc(pl);
+		if (newpl != NULL) {
+			/* replace pl with newpl in pa; really just swap the vertex list... */
+			SWAP(rnd_vnode_t *, pl->head, newpl->head);
+			pa_pline_update(pl, 0);
+
+			/* ... so newpl holds the old list now and can be freed */
+			pa_pline_free(&newpl);
 		}
 	}
 
