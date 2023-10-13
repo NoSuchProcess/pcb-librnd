@@ -168,7 +168,8 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 	return rnd_false;
 }
 
-RND_INLINE int pa_is_node_coords_integer(rnd_vnode_t *nd)
+/* Returns 1 if bigcoord is enabled and nd is not on an exact integer coordinate */
+RND_INLINE int pa_is_node_coords_non_integer(rnd_vnode_t *nd)
 {
 /* If we have an intersection, we have a high resolution coord; if that coord
    is not integer, we had to do a rounding to get the output integer coord */
@@ -201,13 +202,13 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			if (*result == NULL)
 				return pa_err_no_memory;
 			newnd = (*result)->head;
-			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
+			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_non_integer(nd);
 		}
 		else { /* insert subsequent */
 			newnd = rnd_poly_node_create(nd->point);
 			if (newnd == NULL)
 				return pa_err_no_memory;
-			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_integer(nd);
+			newnd->flg.rounded = nd->flg.rounded | pa_is_node_coords_non_integer(nd);
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
 		}
 
