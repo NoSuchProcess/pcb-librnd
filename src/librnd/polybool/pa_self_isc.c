@@ -342,7 +342,7 @@ restart_2a:;
 				/* unlunk from tmpc and free up temps */
 				pl = tmpc->contours;
 				pa_polyarea_del_pline(tmpc, pl);
-				rnd_polyarea_free(tmpc);
+				rnd_polyarea_free(&tmpc);
 
 				pa_pline_invert(pl); /* contour to hole for insertion */
 				pa_polyarea_insert_pline(*pa, pl);
