@@ -1,6 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- BUG: work/poly/tester/tests/fixed/selfi/: figure when to run the self-isc resolver after an operation
+			-> work/poly/tester/tests/TODO/topo_chg: line jumps over a point causing a self-intersection
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
