@@ -51,7 +51,7 @@
 
    Algorithms described by de Berg, or Goodrich or Halperin, or Hobby would
    probably work as well. */
-TODO("Maybe use Bentley-Ottman here instead of building trees? But how to handle arcs?");
+TODO("Maybe use Bentley-Ottman here instead of building trees? But how to handle arcs?")
 
 typedef struct pa_contour_info_s {
 	rnd_pline_t *pa;
