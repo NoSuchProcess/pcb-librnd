@@ -194,8 +194,9 @@ RND_INLINE void pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
 	   loaded with adjacent nodes; pt1 is "a", pt3 is "b" and pt2 is "v". */
 	pt1 = poly->head;
 	do {
+		double dot_product;
 		pt2 = pt1->next; pt3 = pt2->next;
-		double dot_product = dot_orthogonal_to_direction(pt1->point, pt2->point, pt3->point, pt2->point);
+		dot_product = dot_orthogonal_to_direction(pt1->point, pt2->point, pt3->point, pt2->point);
 
 		if (dot_product * dir > 0.0)
 			break;
