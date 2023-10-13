@@ -219,7 +219,7 @@ RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, pa_big_vector
 #endif
 
 typedef enum { /* bitfield of extra info the dump should contain */
-	PA_DBG_DUMP_CVC = 1,
+	PA_DBG_DUMP_CVC = 1
 } pa_debug_dump_extra_t;
 
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP
