@@ -58,12 +58,15 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 	pa_pp_isc_t tmp;
 	rnd_polyarea_t *paother;
 
-	for(paother = pa->f; paother != pa; paother = paother->f) {
+	paother = pa;
+	do {
 		rnd_pline_t *plother = paother->contours;
 
 		if (plother != NULL) {
 			rnd_box_t box;
 			int res;
+
+rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 
 			box.X1 = pa_min(v->point[0], v->next->point[0])-1;
 			box.Y1 = pa_min(v->point[1], v->next->point[1])-1;
@@ -72,14 +75,15 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 
 			tmp.v = v;
 			res = rnd_r_search(plother->tree, &box, NULL, pa_pp_isc_cb, &tmp, NULL);
-/*			rnd_trace("res=%d %d (return: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND));*/
+			rnd_trace("  res=%d %d (return: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND));
 			if (res & rnd_RTREE_DIR_FOUND)
 				return 1;
 		}
 
 TODO("if is_hole, need to check other holes as well");
 
-	}
+	} while((paother = paother->f) != pa);
+
 	return 0;
 }
 
@@ -91,7 +95,12 @@ RND_INLINE rnd_polyarea_t *big_bool_ppl_merge(rnd_polyarea_t *pa, rnd_pline_t *p
 {
 	rnd_polyarea_t *pb, *res = NULL;
 
-	assert(pa->f != pa); /* need at least 2 isllands */
+	if (pa->f == pa) {
+		/* self intersection */
+		TODO("this needs to be hanled differently, see pa_self_isc");
+		rnd_trace("    can't handle\n");
+		return NULL;
+	}
 
 	/* pb is the "rest of the polygon", pa is removed from it to be a separate island */
 	pb = pa->f;
@@ -118,10 +127,13 @@ RND_INLINE rnd_polyarea_t *big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, in
 	rnd_vnode_t *v = pl->head;
 
 	do {
-		if (v->flg.rounded) {
-			v->flg.rounded = 0;
-			if (big_bool_ppl_isc(pa, pl, v->prev, is_hole) || big_bool_ppl_isc(pa, pl, v, is_hole))
+		if (v->flg.risk) {
+			v->flg.risk = 0;
+rnd_trace("check risk:\n");
+			if (big_bool_ppl_isc(pa, pl, v->prev, is_hole) || big_bool_ppl_isc(pa, pl, v, is_hole)) {
+rnd_trace("  oops\n");
 				return big_bool_ppl_merge(pa, pl, is_hole);
+			}
 		}
 	} while((v = v->next) != pl->head);
 

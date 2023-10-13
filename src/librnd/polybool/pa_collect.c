@@ -212,7 +212,13 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
 		}
 
-		DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
+		if (nd->cvclst_prev != NULL) {
+			DEBUG_GATHER("gather vertex at %$mD (risk)\n", nd->point[0], nd->point[1]);
+			newnd->flg.risk = 1;
+		}
+		else {
+			DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
+		}
 
 		/* mark the edge as included; mark both if SHARED edge */
 		newnd = (dir == PA_FORWARD) ? nd : nd->prev;
