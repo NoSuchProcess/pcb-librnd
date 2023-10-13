@@ -29,6 +29,9 @@
 #include "rtree.h"
 #include "rtree2_compat.h"
 
+#include <librnd/core/error.h>
+
+
 int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2);
 
 typedef struct pa_pp_isc_s {
