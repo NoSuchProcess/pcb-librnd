@@ -251,8 +251,7 @@ static rnd_r_dir_t pa_pline_isc_pline_cb(const rnd_box_t *b, void *cl)
 {
 	rnd_vnode_t *va1 = (rnd_vnode_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
-	int num_isc, got_isc = 0;
-	rnd_vnode_t *new_node;
+	int num_isc;
 	pa_big_vector_t isc1, isc2;
 
 	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, &isc1, &isc2);
@@ -295,7 +294,7 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab;
-	rnd_pline_t *pl, *next, *pl2, *next2, *pln, *prev = NULL, *newpl;
+	rnd_pline_t *pl, *next, *pl2, *next2, *newpl;
 	rnd_cardinal_t cnt = 0;
 
 	/* pline intersects itself */
@@ -323,7 +322,6 @@ restart_2a:;
 			next2 = pl2->next;
 			if (rnd_pline_isc_pline(pl, pl2)) {
 				rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
-				int res;
 
 				rnd_trace("selfisc class 2a hole-hole\n");
 				pa_polyarea_del_pline(*pa, pl);
@@ -339,7 +337,7 @@ restart_2a:;
 				pa_polyarea_insert_pline(tmpa, pl);
 				pa_polyarea_insert_pline(tmpb, pl2);
 
-				res = rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
+				rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
 
 				/* unlunk from tmpc and free up temps */
 				pl = tmpc->contours;
@@ -359,7 +357,6 @@ restart_2b:;
 	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 		if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
 			rnd_polyarea_t *tmpa, *tmpc = NULL;
-			int res;
 
 			rnd_trace("selfisc class 2b hole-contour\n");
 
@@ -370,7 +367,7 @@ restart_2b:;
 
 			tmpa = pa_polyarea_alloc();
 			pa_polyarea_insert_pline(tmpa, pl);
-			res = rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
+			rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
 			*pa = tmpc;
 
 			goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
