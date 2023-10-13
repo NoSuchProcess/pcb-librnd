@@ -54,9 +54,9 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-/* Return 1 if there's any intersection between pl and any _other_ island
-   of pa (assumes no self intersection within an island) */
-RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v, int is_hole)
+/* Return 1 if there's any intersection between pl and any island
+   of pa (including self intersection within the pa) */
+RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v)
 {
 	pa_pp_isc_t tmp;
 	rnd_polyarea_t *paother;
@@ -83,70 +83,40 @@ rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->p
 				return 1;
 		}
 
-TODO("if is_hole, need to check other holes as well");
-
 	} while((paother = paother->f) != pa);
 
 	return 0;
 }
 
-void pa_remove_contour(rnd_polyarea_t *pa, rnd_pline_t *prev_contour, rnd_pline_t *contour, int remove_from_rtree);
 
-/* pa intersects another island (a sibling of pa). Merge them and return the new,
-   merged polyarea that contains (at least) one less island. */
-RND_INLINE rnd_polyarea_t *big_bool_ppl_merge(rnd_polyarea_t *pa, rnd_pline_t *pl, int pl_is_hole)
-{
-	rnd_polyarea_t *pb, *res = NULL;
-
-	if (pa->f == pa) {
-		/* self intersection */
-		TODO("this needs to be hanled differently, see pa_self_isc");
-		rnd_trace("    can't handle\n");
-		return NULL;
-	}
-
-	/* pb is the "rest of the polygon", pa is removed from it to be a separate island */
-	pb = pa->f;
-	pa->b->f = pa->f;
-	pa->f->b = pa->b;
-	pa->f = pa->b = pa;
-
-	/* unite pa with the rest (pb) */
-/*	rnd_trace("merge\n");*/
-	if (rnd_polyarea_boolean_free(pa, pb, &res, RND_PBO_UNITE) == 0) {
-/*		rnd_trace(" Yes!\n");*/
-		return res;
-	}
-
-	return NULL;
-}
-
-/* Check each vertex in pl: if it is rounded, check if there's any intersection
-   on the incoming or outgoing edge of that vertex. If there is, the island
-   of this polyline needs to be merged and the resulting polyarea that
-   replaces pa is returned. Returns NULL if no merge done. */
-RND_INLINE rnd_polyarea_t *big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int is_hole)
+/* Check each vertex in pl: if it is risky, check if there's any intersection
+   on the incoming or outgoing edge of that vertex. If there is, stop and
+   return 1, otherwise return 0. */
+RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl)
 {
 	rnd_vnode_t *v = pl->head;
+	int res = 0;
 
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
 rnd_trace("check risk:\n");
-			if (big_bool_ppl_isc(pa, pl, v->prev, is_hole) || big_bool_ppl_isc(pa, pl, v, is_hole)) {
+			if (!res && (big_bool_ppl_isc(pa, pl, v->prev) || big_bool_ppl_isc(pa, pl, v))) {
 rnd_trace("  oops\n");
-				return big_bool_ppl_merge(pa, pl, is_hole);
+				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
 	} while((v = v->next) != pl->head);
 
-	return NULL;
+	return res;
 }
 
 /* Does an iteration of postprocessing; returns whether pa changed (0 or 1) */
 RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 {
+	int res = 0;
 	rnd_polyarea_t *pn = *pa;
+
 	do {
 		rnd_pline_t *pl = pn->contours;
 		if (pl != NULL) {
@@ -155,28 +125,17 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 			   happens when high precision coord of non-intersecting islands are
 			   rounded to output integers and the rounding error introduces
 			   a new crossing somewhere. Merge the two islands. */
-			rnd_polyarea_t *res = big_bool_ppl_(pn, pl, 0);
-			if (res != NULL) {
-				*pa = res;
-				return 1;
-			}
-
-			TODO("Think over if this can happen to cutouts as well");
-			for(pl = (*pa)->contours->next; pl != NULL; pl = pl->next) {
-				rnd_polyarea_t *res = big_bool_ppl_(pn, pl, 1);
-				if (res != NULL) {
-					*pa = res;
-					return 1;
-				}
-			}
+			for(pl = (*pa)->contours; pl != NULL; pl = pl->next)
+				if (big_bool_ppl_(pn, pl))
+					res = 1; /* can not return here, need to clear all the risk flags */
 		}
 	} while ((pn = pn->f) != *pa);
-	return 0;
+	return res;
 }
 
 void pa_big_bool_postproc(rnd_polyarea_t **pa)
 {
-	/* keep iterating as long as there are things to be fixed */
-	while(big_bool_ppa_(pa)) ;
+	if (big_bool_ppa_(pa))
+		rnd_polyarea_split_selfisc(pa);
 }
 

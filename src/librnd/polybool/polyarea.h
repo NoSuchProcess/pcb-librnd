@@ -136,6 +136,11 @@ void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl);
 
 rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a);
 
+/* Make sure pa is not self intersecting; resolves any type of self intersection
+   by fixing pa. Returns number of changes made */
+rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa);
+
+
 rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *c, rnd_vector_t v0);
 rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
