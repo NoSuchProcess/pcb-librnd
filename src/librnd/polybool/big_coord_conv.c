@@ -143,3 +143,8 @@ RND_INLINE void pa_big_load_cvc(pa_big_vector_t *dst, rnd_vnode_t *src)
 	else
 		memcpy(dst, &src->cvclst_next->isc, sizeof(pa_big_vector_t));
 }
+
+void rnd_pa_big_load_cvc(pa_big_vector_t *dst, rnd_vnode_t *src)
+{
+	pa_big_load_cvc(dst, src);
+}

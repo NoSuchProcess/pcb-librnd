@@ -116,13 +116,44 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
       intersection; this 
     - isc1 and isc2 are the intersection points
    Notes:
-    - ctx->v->prev is guaranteed to be on the outer loop
+    - ctx->v (and ctx->v->prev) are guaranteed to be on the outer loop
     - ctx->v->next is going to be in the island
 
 */
-static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isc1, pa_big_vector_t isc2)
+static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isco, pa_big_vector_t isci)
 {
+	pa_big2_coord_t disto, disti;
+	pa_big_vector_t ctxv1, ctxv2, sv1, sv2; /* line endpoints: ctx->v/ctx->v->next and sv;sv->next */
+	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
+
+	rnd_pa_big_load_cvc(&ctxv1, ctx->v);
+	rnd_pa_big_load_cvc(&ctxv2, ctx->v->next);
+	rnd_pa_big_load_cvc(&sv1, sv);
+	rnd_pa_big_load_cvc(&sv2, sv->next);
+
+	/* order isco and isci so that isco is on the outer loop and isci is the island
+	   loop. This can be done by looking at the distance from ctx->v, which is
+	   guaranteed to be on the outer loop */
+	rnd_vect_m_dist2_big(&disto, ctxv1, isco);
+	rnd_vect_m_dist2_big(&disti, ctxv1, isci);
+	if (disti < disto)
+		SWAP(pa_big_vector_t, isco, isci);
+
+	/* add the intersection points; when pa_selfisc_ins_pt() returns NULL, we are at an endpoint */
+	ctxn2 = pa_selfisc_ins_pt(ctx, ctx->v, isci);
+	if (ctxn2 == NULL) ctxn2 = ctx->v->next;
+	ctxn1 = pa_selfisc_ins_pt(ctx, ctx->v, isco);
+	if (ctxn1 == NULL) ctxn1 = ctx->v;
+
+	sn2 = pa_selfisc_ins_pt(ctx, sv, isco);
+	if (sn2 == NULL) sn2 = sv->next;
+	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
+	if (sn1 == NULL) sn1 = sv;
+
+
+
 	assert(!"TODO");
+
 	ctx->hard_restart = 1; /* need to restart loop search from top-left because we changed the topology */
 	return RND_R_DIR_NOT_FOUND;
 }

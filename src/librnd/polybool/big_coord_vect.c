@@ -27,7 +27,7 @@
  */
 
 /* Distance square between v1 and v2 in big coord */
-RND_INLINE void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
+void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
 {
 	pa_big_coord_t dx, dy;
 	pa_big2_coord_t a, b;
