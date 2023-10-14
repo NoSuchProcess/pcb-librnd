@@ -100,9 +100,9 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl)
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
-rnd_trace("check risk:\n");
+rnd_trace("check risk for self-intersection:\n");
 			if (!res && (big_bool_ppl_isc(pa, pl, v->prev) || big_bool_ppl_isc(pa, pl, v))) {
-rnd_trace("  oops\n");
+rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
