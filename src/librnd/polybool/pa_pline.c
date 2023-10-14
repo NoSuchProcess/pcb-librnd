@@ -310,7 +310,7 @@ rnd_pline_t *pa_pline_dup(rnd_pline_t *src)
 		n->shared = newnd;
 #endif
 
-		newnd->flg.rounded = n->flg.rounded;
+		newnd->flg.risk = n->flg.risk;
 		rnd_poly_vertex_include(dst->head->prev, newnd);
 	}
 
