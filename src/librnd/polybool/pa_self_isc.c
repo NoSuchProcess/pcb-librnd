@@ -141,8 +141,8 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	/* order isco and isci so that isco is on the outer loop and isci is the island
 	   loop. This can be done by looking at the distance from ctx->v, which is
 	   guaranteed to be on the outer loop */
-	rnd_vect_m_dist2_big(&disto, ctxv1, isco);
-	rnd_vect_m_dist2_big(&disti, ctxv1, isci);
+	rnd_vect_m_dist2_big(disto, ctxv1, isco);
+	rnd_vect_m_dist2_big(disti, ctxv1, isci);
 	if (disti < disto)
 		SWAP(pa_big_vector_t, isco, isci);
 
