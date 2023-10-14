@@ -125,6 +125,13 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	pa_big2_coord_t disto, disti;
 	pa_big_vector_t ctxv1, ctxv2, sv1, sv2; /* line endpoints: ctx->v/ctx->v->next and sv;sv->next */
 	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
+	pa_seg_t *sg1, *sg2;
+
+	rnd_trace("line-line overlap: %ld;%ld %ld;%ld vs %ld;%ld %ld;%ld\n",
+		ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1],
+		sv->point[0], sv->point[1], sv->next->point[0], sv->next->point[1]
+		);
+
 
 	rnd_pa_big_load_cvc(&ctxv1, ctx->v);
 	rnd_pa_big_load_cvc(&ctxv2, ctx->v->next);
@@ -150,9 +157,31 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
 	if (sn1 == NULL) sn1 = sv;
 
+	sg1 = pa_selfisc_find_seg(ctx, ctxn1);
+	sg2 = pa_selfisc_find_seg(ctx, sn1);
+	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg1);
+	free(sg1);
+	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg2);
+	free(sg2);
 
 
-	assert(!"TODO");
+	/* relink the outer contour */
+	sg2 = pa_selfisc_find_seg(ctx, sn2);
+	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg2);
+	ctxn1->next = sn2->next;
+	sn2->next->prev = ctxn1;
+
+	/* this would relink the island, but we need the island in a different polyline */
+/*
+	sn1->next = ctxn2->next;
+	ctxn2->next->prev = sn1;
+*/
+
+	/* create the island */
+	TODO("create the island");
+
+
+rnd_trace("line overlap relinked\n");
 
 	ctx->hard_restart = 1; /* need to restart loop search from top-left because we changed the topology */
 	return RND_R_DIR_NOT_FOUND;
@@ -368,9 +397,13 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	ctx.pl = pl;
 
 	hard_restart:;
+	ctx.hard_restart = 0;
 	n = start = pa_find_minnode(pl);
+	rnd_trace("loop start (outer @ rnd_pline_split_selfisc)\n");
 	do {
 		rnd_box_t box;
+
+		rnd_trace(" loop %ld;%ld (outer)\n", n->point[0], n->point[1]);
 
 		n->flg.mark = 0;
 		ctx.v = n;
