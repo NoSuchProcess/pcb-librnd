@@ -208,6 +208,51 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	}
 }
 
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir)
+{
+	pa_conn_desc_t *c, *start;
+	rnd_vnode_t *onto;
+
+	rnd_trace("    next: ");
+	if (n->cvclst_prev == NULL) {
+		rnd_trace("straight to %d %d\n", n->next->point[0], n->next->point[1]);
+		if (*dir == 'N') return n->prev;
+		return n->next;
+	}
+
+	rnd_trace("CVC\n");
+	start = c = n->cvclst_prev->next;
+	do {
+		if (c->side == 'N') onto = c->parent->prev;
+		else onto = c->parent->next;
+		rnd_trace("     %d %d '%c'", onto->point[0], onto->point[1], c->side);
+		if (!onto->flg.mark) {
+			*dir = c->side;
+			rnd_trace("    accept, dir '%c'!\n", *dir);
+			return onto;
+		}
+		rnd_trace("    refuse (marked)\n");
+	} while((c = c->prev) != start);
+
+	return NULL;
+}
+
+/* Collect all unmarked islands starting from a cvc node */
+RND_INLINE void pa_selfisc_collect_island(rnd_pline_t **dst_, rnd_vnode_t *start)
+{
+	char dir = 'N';
+	rnd_vnode_t *n;
+
+	rnd_trace("  island {:\n");
+	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
+	for(n = pa_selfisc_next_i(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir)) {
+		rnd_trace("   IS2 %d %d\n", n->point[0], n->point[1]);
+		n->flg.mark = 1;
+	}
+	start->flg.mark = 1;
+	rnd_trace("  } (end island)\n");
+}
+
 RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n;
@@ -226,7 +271,7 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t **dst_, rnd_pline_t *src,
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
-				rnd_trace("  island!\n");
+				pa_selfisc_collect_island(dst_, c->parent);
 		} while((c = c->next) != cstart);
 
 	} while((n = n->next) != start);
