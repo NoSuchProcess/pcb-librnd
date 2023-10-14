@@ -47,7 +47,8 @@ typedef struct {
 	rnd_vnode_t *v;
 	rnd_pline_t *pl;
 	long num_isc;
-	unsigned restart:1;
+	unsigned restart:1;      /* restart the rtree search on the current line */
+	unsigned hard_restart:1; /* restart the search from the beginning of the loop (because the current line has changed) */
 
 	rnd_vnode_t *search_seg_v;
 	pa_seg_t *search_seg;
@@ -105,6 +106,22 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
 	return new_node;
 }
 
+/* Handle line-line overlap: split up both lines then cut the path in three:
+    - a loop before isc1
+    - a loop after isc2
+    - segments in between isc1 and isc2 (these are dropped)
+   Parameters:
+    - ctx->v is the first point of the line segment we are searching for
+    - sv is the first point of the other line segment participating in the intersection
+    - isc1 and isc2 are the intersection points
+*/
+static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isc1, pa_big_vector_t isc2)
+{
+	assert(!"TODO");
+	ctx->hard_restart = 1; /* need to restart loop search from top-left because we changed the topology */
+	return RND_R_DIR_NOT_FOUND;
+}
+
 /* Called back from an rtree query to figure if two edges intersect */
 static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 {
@@ -121,6 +138,12 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
 
+	/* Having two intersections means line-line overlap */
+	if (num_isc == 2)
+		return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
+
+	/* singe intersection between two lines; new_node is NULL if isc1 is at
+	   one end of the line */
 	new_node = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
 	if (new_node != NULL) got_isc = 1;
 
@@ -130,8 +153,6 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	if (new_node != NULL)
 		rnd_trace("isc1 %d %d | %d %d %d %d\n", new_node->point[0], new_node->point[1], ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
 
-TODO("overlap always means break and remove shared section");
-	assert(num_isc < 2);
 
 	if (got_isc) {
 		ctx->num_isc++;
@@ -304,13 +325,14 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *sr
    no self intersection, return NULL. */
 rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 {
-	rnd_vnode_t *n, *start = pa_find_minnode(pl);
+	rnd_vnode_t *n, *start;
 	pa_selfisc_t ctx = {0};
 	rnd_pline_t *res = NULL;
 
 	ctx.pl = pl;
 
-	n = start;
+	hard_restart:;
+	n = start = pa_find_minnode(pl);
 	do {
 		rnd_box_t box;
 
@@ -321,6 +343,8 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 		do {
 			ctx.restart = 0;
 			rnd_r_search(pl->tree, &box, NULL, pa_selfisc_cross_cb, &ctx, NULL);
+			if (ctx.hard_restart)
+				goto hard_restart;
 		} while(ctx.restart);
 
 	} while((n = n->next) != start);
