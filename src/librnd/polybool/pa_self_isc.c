@@ -171,7 +171,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next(rnd_vnode_t *n, char *dir)
 	return NULL;
 }
 
-RND_INLINE void pa_selfisc_collect(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *last, *newn;
 	rnd_pline_t *dst;
@@ -238,8 +238,8 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
-	/* collect outer line */
-	pa_selfisc_collect(&res, pl, start);
+	/* collect the outline first, anything that remains is an island */
+	pa_selfisc_collect_outline(&res, pl, start);
 
 	return res;
 }
