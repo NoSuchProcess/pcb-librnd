@@ -181,7 +181,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	start->flg.mark = 1;
 	dst = pa_pline_new(start->point);
 
-	rnd_trace("selfi collect from %d %d\n", start->point[0], start->point[1]);
+	rnd_trace("selfi collect outline from %d %d\n", start->point[0], start->point[1]);
 
 	/* append dst to the list of plines */
 	if (*dst_ != NULL) {
@@ -206,6 +206,30 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
 	}
+}
+
+RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+{
+	rnd_vnode_t *n;
+
+	rnd_trace("selfi collect islands from %d %d\n", start->point[0], start->point[1]);
+
+	/* detect uncollected loops */
+	n = start;
+	do {
+		pa_conn_desc_t *c, *cstart = n->cvclst_prev;
+		
+		if (cstart == NULL)
+			continue;
+		
+		rnd_trace(" at %d %d\n", n->point[0], n->point[1]);
+		c = cstart;
+		do {
+			if (!c->parent->flg.mark)
+				rnd_trace("  island!\n");
+		} while((c = c->next) != cstart);
+
+	} while((n = n->next) != start);
 }
 
 /* Build the outer contour of self-intersecting pl and return it. If there is
@@ -238,8 +262,10 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
-	/* collect the outline first, anything that remains is an island */
+	/* collect the outline first; anything that remains is an island,
+	   add them as a hole depending on their loop orientation */
 	pa_selfisc_collect_outline(&res, pl, start);
+	pa_selfisc_collect_islands(&res, pl, start);
 
 	return res;
 }
