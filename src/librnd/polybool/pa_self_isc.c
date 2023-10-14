@@ -398,7 +398,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		if (newpl != NULL) {
 			/* replace pl with newpl in pa; really just swap the vertex list... */
 			SWAP(rnd_vnode_t *, pl->head, newpl->head);
-			SWAP(rnd_vnode_t *, pl->next, newpl->next);
+			SWAP(rnd_pline_t *, pl->next, newpl->next);
 			pa_pline_update(pl, 0);
 
 			/* ... so newpl holds the old list now and can be freed */
