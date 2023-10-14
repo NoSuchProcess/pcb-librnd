@@ -263,8 +263,8 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 		last = newn;
 	}
 	start->flg.mark = 1;
-	pa_pline_update(dst, 0);
-	accept = (dst->flg.orient != RND_PLF_DIR); /* only negative orientation should be treated as cutout */
+	pa_pline_update(dst, 1);
+	accept = (dst->flg.orient != RND_PLF_DIR) && (dst->Count >= 3); /* only negative orientation should be treated as cutout */
 	rnd_trace("  } (end island: len=%d accept=%d)\n", dst->Count, accept);
 
 
