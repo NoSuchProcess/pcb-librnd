@@ -48,6 +48,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	int num_isc;
 
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
+rnd_trace("   offend: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
 	if (num_isc > 0)
 		return rnd_RTREE_DIR_FOUND_STOP;
 
