@@ -240,22 +240,43 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir)
 }
 
 /* Collect all unmarked islands starting from a cvc node */
-RND_INLINE void pa_selfisc_collect_island(rnd_pline_t **dst_, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *start)
 {
+	int accept;
 	char dir = 'N';
-	rnd_vnode_t *n;
+	rnd_vnode_t *n, *newn, *last;
+	rnd_pline_t *dst;
+
+	dst = pa_pline_new(start->point);
+	last = dst->head;
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
 	for(n = pa_selfisc_next_i(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir)) {
 		rnd_trace("   IS2 %d %d\n", n->point[0], n->point[1]);
 		n->flg.mark = 1;
+
+		newn = calloc(sizeof(rnd_vnode_t), 1);
+		newn->point[0] = n->point[0];
+		newn->point[1] = n->point[1];
+		rnd_poly_vertex_include(last, newn);
+		last = newn;
 	}
 	start->flg.mark = 1;
-	rnd_trace("  } (end island)\n");
+	pa_pline_update(dst, 0);
+	accept = (dst->flg.orient != RND_PLF_DIR); /* only negative orientation should be treated as cutout */
+	rnd_trace("  } (end island: len=%d accept=%d)\n", dst->Count, accept);
+
+
+	if (accept) {
+		dst->next = outline->next;
+		outline->next = dst;
+	}
+	else
+		pa_pline_free(&dst); /* drop overlapping positive */
 }
 
-RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n;
 
@@ -273,7 +294,7 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t **dst_, rnd_pline_t *src,
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
-				pa_selfisc_collect_island(dst_, c->parent);
+				pa_selfisc_collect_island(outline, c->parent);
 		} while((c = c->next) != cstart);
 
 	} while((n = n->next) != start);
@@ -312,7 +333,7 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	/* collect the outline first; anything that remains is an island,
 	   add them as a hole depending on their loop orientation */
 	pa_selfisc_collect_outline(&res, pl, start);
-	pa_selfisc_collect_islands(&res, pl, start);
+	pa_selfisc_collect_islands(res, pl, start);
 
 	return res;
 }
@@ -377,6 +398,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		if (newpl != NULL) {
 			/* replace pl with newpl in pa; really just swap the vertex list... */
 			SWAP(rnd_vnode_t *, pl->head, newpl->head);
+			SWAP(rnd_vnode_t *, pl->next, newpl->next);
 			pa_pline_update(pl, 0);
 
 			/* ... so newpl holds the old list now and can be freed */
