@@ -112,8 +112,13 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
     - segments in between isc1 and isc2 (these are dropped)
    Parameters:
     - ctx->v is the first point of the line segment we are searching for
-    - sv is the first point of the other line segment participating in the intersection
+    - sv is the first point of the other line segment participating in the
+      intersection; this 
     - isc1 and isc2 are the intersection points
+   Notes:
+    - ctx->v->prev is guaranteed to be on the outer loop
+    - ctx->v->next is going to be in the island
+
 */
 static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isc1, pa_big_vector_t isc2)
 {
