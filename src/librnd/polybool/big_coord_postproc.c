@@ -47,10 +47,29 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	pa_big_vector_t isc1, isc2;
 	int num_isc;
 
+	if ((s->v == ctx->v) || (s->v->next == ctx->v) || (s->v->prev == ctx->v))
+		return RND_R_DIR_NOT_FOUND;
+
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
-rnd_trace("   offend: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
-	if (num_isc > 0)
+
+	/* ignore perfect endpoint matches - self-touching is okay, self-intersection
+	   is the problem; typical example is bowtie: it's split up into two triangles
+	   with the same vertex in the center, but that's not self-intersection.
+	   Note: num_isc == 2 means overlapping lines, that needs to be handled. */
+	if (num_isc == 1) {
+		pa_big_vector_t s1, s2, c1, c2;
+		pa_big_load_cvc(&s1, s->v);
+		pa_big_load_cvc(&s1, s->v->next);
+		pa_big_load_cvc(&c1, ctx->v);
+		pa_big_load_cvc(&c1, ctx->v->next);
+		if (Vequ2(&s1, &isc1) || Vequ2(&s2, &isc1) || Vequ2(&c1, &isc1) || Vequ2(&c2, &isc1))
+			num_isc--;
+	}
+
+	if (num_isc > 0) {
+		rnd_trace("   offend: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
 		return rnd_RTREE_DIR_FOUND_STOP;
+	}
 
 	return RND_R_DIR_NOT_FOUND;
 }
