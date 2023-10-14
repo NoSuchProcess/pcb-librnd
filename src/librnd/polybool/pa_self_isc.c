@@ -141,7 +141,8 @@ TODO("overlap always means break and remove shared section");
 	return RND_R_DIR_NOT_FOUND;
 }
 
-RND_INLINE rnd_vnode_t *pa_selfisc_next(rnd_vnode_t *n, char *dir)
+/* Step from n to the next node according to dir, walking the outline */
+RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
@@ -194,7 +195,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 
 	/* collect a closed loop */
 	last = dst->head;
-	for(n = pa_selfisc_next(start, &dir); n != start; n = pa_selfisc_next(n, &dir)) {
+	for(n = pa_selfisc_next_o(start, &dir); n != start; n = pa_selfisc_next_o(n, &dir)) {
 		rnd_trace(" at %d %d", n->point[0], n->point[1]);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -208,6 +209,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	}
 }
 
+/* Step from n to the next node according to dir, walking an island */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
