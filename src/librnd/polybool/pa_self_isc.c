@@ -108,7 +108,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
 	return new_node;
 }
 
-/* Handle line-line overlap: split up both lines then cut the path in three:
+/* Class 5: line-line overlap: split up both lines then cut the path in three:
     - a loop before isc1
     - a loop after isc2
     - segments in between isc1 and isc2 (these are dropped)
@@ -198,7 +198,7 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
 
-	/* Having two intersections means line-line overlap */
+	/* Having two intersections means line-line overlap: class 5 */
 	if (num_isc == 2)
 		return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
 
