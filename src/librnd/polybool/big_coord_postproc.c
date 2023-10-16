@@ -89,16 +89,20 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 			rnd_box_t box;
 			int res;
 
-rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 
 			box.X1 = pa_min(v->point[0], v->next->point[0])-1;
 			box.Y1 = pa_min(v->point[1], v->next->point[1])-1;
 			box.X2 = pa_max(v->point[0], v->next->point[0])+1;
 			box.Y2 = pa_max(v->point[1], v->next->point[1])+1;
 
+			if ((plother->xmax < box.X1) || (plother->ymax < box.Y1)) continue;
+			if ((plother->xmin > box.X2) || (plother->ymin > box.Y2)) continue;
+
+rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
+
 			tmp.v = v;
 			res = rnd_r_search(plother->tree, &box, NULL, pa_pp_isc_cb, &tmp, NULL);
-			rnd_trace("  res=%d %d (return: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND));
+			rnd_trace("  res=%d %d (intersected: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND));
 			if (res & rnd_RTREE_DIR_FOUND)
 				return 1;
 		}
@@ -120,7 +124,7 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl)
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
-rnd_trace("check risk for self-intersection:\n");
+rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
 			if (!res && (big_bool_ppl_isc(pa, pl, v->prev) || big_bool_ppl_isc(pa, pl, v))) {
 rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
