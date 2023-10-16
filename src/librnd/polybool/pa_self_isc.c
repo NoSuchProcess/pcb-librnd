@@ -48,12 +48,14 @@ typedef struct {
 	rnd_pline_t *pl;
 	long num_isc;
 	unsigned restart:1;      /* restart the rtree search on the current line */
-	unsigned hard_restart:1; /* restart the search from the beginning of the loop (because the current line has changed) */
+	rnd_vnode_t *skip_to;    /* skip to this node while walking the outline, skipping sections of hidden inner islands */
 
 	rnd_vnode_t *search_seg_v;
 	pa_seg_t *search_seg;
 
 	pa_conn_desc_t *cdl;
+
+	vtp0_t hidden_islands;
 } pa_selfisc_t;
 
 static rnd_r_dir_t pa_selfisc_find_seg_cb(const rnd_box_t *b, void *ctx_)
@@ -118,14 +120,14 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
    Notes:
     - ctx->v (and ctx->v->prev) are guaranteed to be on the outer loop
     - ctx->v->next is going to be in the island
-
+    - it is enough to mark the lines on the overlapping section and the
+      collect() calls will ignore them
 */
 static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isco, pa_big_vector_t isci)
 {
 	pa_big2_coord_t disto, disti;
 	pa_big_vector_t ctxv1, ctxv2, sv1, sv2; /* line endpoints: ctx->v/ctx->v->next and sv;sv->next */
 	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
-	pa_seg_t *sg1, *sg2;
 
 	rnd_trace("line-line overlap: %ld;%ld %ld;%ld vs %ld;%ld %ld;%ld\n",
 		ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1],
@@ -157,33 +159,26 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
 	if (sn1 == NULL) sn1 = sv;
 
-	sg1 = pa_selfisc_find_seg(ctx, ctxn1);
-	sg2 = pa_selfisc_find_seg(ctx, sn1);
-	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg1);
-	free(sg1);
-	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg2);
-	free(sg2);
+	/* block the overlapping part from collect*() */
+	ctxn1->flg.mark = 1;
+	sn1->flg.mark = 1;
+
+	/* the resulting island has no access from the outer contour because of
+	   the blocking so we need to remember them separately */
+	rnd_trace(" hidden island:  %ld;%ld\n", ctxn2->point[0], ctxn2->point[1]);
+	vtp0_append(&ctx->hidden_islands, ctxn2);
 
 
-	/* relink the outer contour */
-	sg2 = pa_selfisc_find_seg(ctx, sn2);
-	rnd_r_delete_entry(ctx->pl->tree, (const rnd_box_t *)sg2);
-	ctxn1->next = sn2->next;
-	sn2->next->prev = ctxn1;
+	rnd_trace(" blocking enter: %ld;%ld %ld;%ld\n",
+		ctxn1->point[0], ctxn1->point[1], ctxn1->next->point[0], ctxn1->next->point[1]);
+	rnd_trace(" blocking leave: %ld;%ld %ld;%ld\n",
+		sn1->point[0], sn1->point[1], sn1->next->point[0], sn1->next->point[1]);
 
-	/* this would relink the island, but we need the island in a different polyline */
-/*
-	sn1->next = ctxn2->next;
-	ctxn2->next->prev = sn1;
-*/
+	ctx->skip_to = sn2;
+	rnd_trace(" skipping to:    %ld;%ld\n", sn2->point[0], sn2->point[1]);
 
-	/* create the island */
-	TODO("create the island");
+	ctx->num_isc++;
 
-
-rnd_trace("line overlap relinked\n");
-
-	ctx->hard_restart = 1; /* need to restart loop search from top-left because we changed the topology */
 	return RND_R_DIR_NOT_FOUND;
 }
 
@@ -393,11 +388,10 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	rnd_vnode_t *n, *start;
 	pa_selfisc_t ctx = {0};
 	rnd_pline_t *res = NULL;
+	long i;
 
 	ctx.pl = pl;
 
-	hard_restart:;
-	ctx.hard_restart = 0;
 	n = start = pa_find_minnode(pl);
 	rnd_trace("loop start (outer @ rnd_pline_split_selfisc)\n");
 	do {
@@ -412,11 +406,15 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 		do {
 			ctx.restart = 0;
 			rnd_r_search(pl->tree, &box, NULL, pa_selfisc_cross_cb, &ctx, NULL);
-			if (ctx.hard_restart)
-				goto hard_restart;
 		} while(ctx.restart);
 
-	} while((n = n->next) != start);
+		if (ctx.skip_to != NULL) {
+			n = ctx.skip_to;
+			ctx.skip_to = NULL;
+		}
+		else
+			n = n->next;
+	} while(n != start);
 
 	if (ctx.num_isc == 0)
 		return NULL;
@@ -427,6 +425,13 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	   add them as a hole depending on their loop orientation */
 	pa_selfisc_collect_outline(&res, pl, start);
 	pa_selfisc_collect_islands(res, pl, start);
+
+	/* collect hiddel islands - they are not directly reachable from the
+	   outline */
+	for(i = 0; i < ctx.hidden_islands.used; i++)
+		pa_selfisc_collect_island(res, ctx.hidden_islands.array[i]);
+
+	vtp0_uninit(&ctx.hidden_islands);
 
 	return res;
 }
