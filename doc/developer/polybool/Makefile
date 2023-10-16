@@ -13,6 +13,8 @@ SVGS= \
 	fig5.svg \
 	fig6.svg \
 	fig7.svg \
+	selfi1.svg \
+	selfi2.svg \
 
 all: $(SVGS)
 
@@ -57,3 +59,9 @@ fig6.svg: src/fig6.rp
 
 fig7.svg: src/fig7.rp
 	pcb-rnd -x svg --opacity 100 --cam $@=top-doc src/fig7.rp
+
+selfi1.svg: src/selfi1.rp
+	pcb-rnd -x svg --opacity 100 --cam $@=top-copper src/selfi1.rp
+
+selfi2.svg: src/selfi2.rp
+	pcb-rnd -x svg --opacity 100 --cam $@=top-copper src/selfi2.rp
