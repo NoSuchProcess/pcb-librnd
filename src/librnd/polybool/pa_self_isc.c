@@ -243,12 +243,29 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		rnd_trace("  %d %d '%c'", onto->point[0], onto->point[1], c->side);
 		if (!onto->flg.mark) {
 			*dir = c->side;
-			rnd_trace(" accept, dir '%c'!\n", *dir);
+			rnd_trace(" accept, dir '%c' (onto)!\n", *dir);
 			return onto;
 		}
 		rnd_trace(" refuse (marked)\n");
 	} while((c = c->prev) != start);
 
+	/* corner case: bowtie-kind of self-isc with the original 'start' node
+	   being the next node from the last cvc junction. Since the 'start' node
+	   is already marked, the above loop will not pick it up and we'd panic.
+	   As a special exception in this case search the outgoing edges for
+	   the original 'start' node and if found, and there were no better way
+	   to continue, just close the poly. Test case: class1c */
+	start = c = n->cvclst_prev->next;
+	do {
+		if (c->side == 'N') onto = c->parent->next;
+		else onto = c->parent->prev;
+		if (onto->flg.start) {
+			rnd_trace(" accept, dir '%c' (start)!\n", *dir);
+			return onto;
+		}
+	} while((c = c->prev) != start);
+
+	/* didn't find a way out of CVC that's still available or is closing the loop */
 	assert(!"nowhere to go from CVC");
 	return NULL;
 }
@@ -261,6 +278,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 
 	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 	start->flg.mark = 1;
+	start->flg.start = 1;
 	dst = pa_pline_new(start->point);
 
 	rnd_trace("selfi collect outline from %d %d\n", start->point[0], start->point[1]);
@@ -288,6 +306,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
 	}
+	start->flg.start = 0;
 }
 
 /* Step from n to the next node according to dir, walking an island */

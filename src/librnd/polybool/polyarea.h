@@ -45,6 +45,7 @@ struct rnd_vnode_s {
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 		unsigned int risk:1;    /* the vertex was an intersection so there is a risk of topology change (line jumping over another vertex); kept track until the bool_postprocess step that handles the risk and resets this. */
+		unsigned int start:1;   /* used in pa_self_isc: the node the loop search has started from */
 	} flg;
 	pa_conn_desc_t *cvclst_prev, *cvclst_next; /* "cross vertex connection list" */
 	rnd_vector_t point;
