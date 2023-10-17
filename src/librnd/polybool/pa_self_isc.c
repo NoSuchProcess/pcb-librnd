@@ -151,11 +151,13 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	/* add the intersection points; when pa_selfisc_ins_pt() returns NULL, we are at an endpoint */
 	ctxn2 = pa_selfisc_ins_pt(ctx, ctx->v, isci);
 	if (ctxn2 == NULL) ctxn2 = ctx->v->next;
+	else ctxn2->flg.mark = 1;
 	ctxn1 = pa_selfisc_ins_pt(ctx, ctx->v, isco);
 	if (ctxn1 == NULL) ctxn1 = ctx->v;
 
 	sn2 = pa_selfisc_ins_pt(ctx, sv, isco);
 	if (sn2 == NULL) sn2 = sv->next;
+	else sn2->flg.mark = 1;
 	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
 	if (sn1 == NULL) sn1 = sv;
 
@@ -260,7 +262,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		if (c->side == 'N') onto = c->parent->next;
 		else onto = c->parent->prev;
 		if (onto->flg.start) {
-			rnd_trace(" accept, dir '%c' (start)!\n", *dir);
+			rnd_trace(" accept, dir '%c' (start %ld;%ld)!\n", *dir, onto->point[0], onto->point[1]);
 			return onto;
 		}
 	} while((c = c->prev) != start);
@@ -295,7 +297,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	/* collect a closed loop */
 	last = dst->head;
 	for(n = pa_selfisc_next_o(start, &dir); n != start; n = pa_selfisc_next_o(n, &dir)) {
-		rnd_trace(" at %d %d", n->point[0], n->point[1]);
+		rnd_trace(" at out %d %d", n->point[0], n->point[1]);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
 		*/
@@ -330,11 +332,29 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir)
 		rnd_trace("     %d %d '%c'", onto->point[0], onto->point[1], c->side);
 		if (!onto->flg.mark) {
 			*dir = c->side;
-			rnd_trace("    accept, dir '%c'!\n", *dir);
+			rnd_trace("    accept, dir '%c' (onto)!\n", *dir);
 			return onto;
 		}
 		rnd_trace("    refuse (marked)\n");
 	} while((c = c->prev) != start);
+
+	/* corner case: bowtie-kind of self-isc with the original 'start' node
+	   being the next node from the last cvc junction. Since the 'start' node
+	   is already marked, the above loop will not pick it up and we'd panic.
+	   As a special exception in this case search the outgoing edges for
+	   the original 'start' node and if found, and there were no better way
+	   to continue, just close the poly. Test case: class1c */
+	start = c = n->cvclst_prev->next;
+	do {
+		if (c->side == 'N') onto = c->parent->prev;
+		else onto = c->parent->next;
+		if (onto->flg.start) {
+			rnd_trace(" accept, dir '%c' (start %ld;%ld)!\n", *dir, onto->point[0], onto->point[1]);
+			return onto;
+		}
+	} while((c = c->prev) != start);
+
+	/* didn't find a way out of CVC that's still available or is closing the loop */
 
 	return NULL;
 }
@@ -350,6 +370,9 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
+	start->flg.mark = 1;
+	start->flg.start = 1;
+
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
 	for(n = pa_selfisc_next_i(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir)) {
@@ -362,11 +385,10 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
 	}
-	start->flg.mark = 1;
 	pa_pline_update(dst, 1);
 	accept = (dst->flg.orient != RND_PLF_DIR) && (dst->Count >= 3); /* only negative orientation should be treated as cutout */
 	rnd_trace("  } (end island: len=%d accept=%d)\n", dst->Count, accept);
-
+	start->flg.start = 0;
 
 	if (accept) {
 		dst->next = outline->next;
@@ -387,10 +409,10 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *sr
 	do {
 		pa_conn_desc_t *c, *cstart = n->cvclst_prev;
 		
-		if (cstart == NULL)
+		if ((cstart == NULL) || n->flg.mark)
 			continue;
 		
-		rnd_trace(" at %d %d\n", n->point[0], n->point[1]);
+		rnd_trace(" at isl %d %d\n", n->point[0], n->point[1]);
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
