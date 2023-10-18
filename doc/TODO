@@ -1,6 +1,4 @@
 1. For the upcoming release ===============================================================================
-	- polybool:
-		- BUG: autotest/rounding3: undetected self-intersection among pa-pa
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
