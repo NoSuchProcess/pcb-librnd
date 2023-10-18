@@ -531,91 +531,91 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	rnd_cardinal_t cnt = 0;
 
 	pa_start = *pa;
-do {
-	rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
+	do {
+		rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
 
-	/* pline intersects itself */
-	for(pl = (*pa)->contours; pl != NULL; pl = next) {
-		next = pl->next;
-		newpl = rnd_pline_split_selfisc(pl);
-		if (newpl != NULL) {
-			/* replace pl with newpl in pa; really just swap the vertex list... */
-			SWAP(rnd_vnode_t *, pl->head, newpl->head);
-			SWAP(rnd_pline_t *, pl->next, newpl->next);
-			pa_pline_update(pl, 0);
+		/* pline intersects itself */
+		for(pl = (*pa)->contours; pl != NULL; pl = next) {
+			next = pl->next;
+			newpl = rnd_pline_split_selfisc(pl);
+			if (newpl != NULL) {
+				/* replace pl with newpl in pa; really just swap the vertex list... */
+				SWAP(rnd_vnode_t *, pl->head, newpl->head);
+				SWAP(rnd_pline_t *, pl->next, newpl->next);
+				pa_pline_update(pl, 0);
 
-			/* ... so newpl holds the old list now and can be freed */
-			pa_pline_free(&newpl);
+				/* ... so newpl holds the old list now and can be freed */
+				pa_pline_free(&newpl);
+			}
 		}
-	}
 
 
-	/* pline intersects other plines within a pa island; since the first pline
-	   is the outer contour, this really means a hole-contour or a hole-hole
-	   intersection within a single island. Start with merging hole-hole
-	   intersections.  */
-restart_2a:;
-	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
-		next = pl->next;
-		for(pl2 = next; pl2 != NULL; pl2 = next2) {
-			next2 = pl2->next;
-			if (rnd_pline_isc_pline(pl, pl2)) {
-				rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
+		/* pline intersects other plines within a pa island; since the first pline
+		   is the outer contour, this really means a hole-contour or a hole-hole
+		   intersection within a single island. Start with merging hole-hole
+		   intersections.  */
+		restart_2a:;
+		for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
+			next = pl->next;
+			for(pl2 = next; pl2 != NULL; pl2 = next2) {
+				next2 = pl2->next;
+				if (rnd_pline_isc_pline(pl, pl2)) {
+					rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
 
-				rnd_trace("selfisc class 2a hole-hole\n");
+					rnd_trace("selfisc class 2a hole-hole\n");
+					pa_polyarea_del_pline(*pa, pl);
+					pa_polyarea_del_pline(*pa, pl2);
+
+					/* hole-to-contour for unite */
+					pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
+					pa_pline_invert(pl2); assert(pl2->flg.orient == RND_PLF_DIR);
+
+					tmpa = pa_polyarea_alloc();
+					tmpb = pa_polyarea_alloc();
+
+					pa_polyarea_insert_pline(tmpa, pl);
+					pa_polyarea_insert_pline(tmpb, pl2);
+
+					rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
+
+					/* unlunk from tmpc and free up temps */
+					pl = tmpc->contours;
+					pa_polyarea_del_pline(tmpc, pl);
+					rnd_polyarea_free(&tmpc);
+
+					pa_pline_invert(pl); /* contour to hole for insertion */
+					pa_polyarea_insert_pline(*pa, pl);
+
+					goto restart_2a; /* now we have a new hole with a different geo and changed the list... */
+				}
+			}
+		}
+	} while((*pa = (*pa)->f) != pa_start);
+
+	restart_2b:; /* need to restart the loop because *pa changes */
+	pa_start = *pa;
+	do {
+		/* hole vs. contour intersection */
+		for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
+			if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
+				rnd_polyarea_t *tmpa, *tmpc = NULL;
+
+				rnd_trace("selfisc class 2b hole-contour\n");
+
 				pa_polyarea_del_pline(*pa, pl);
-				pa_polyarea_del_pline(*pa, pl2);
 
 				/* hole-to-contour for unite */
 				pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
-				pa_pline_invert(pl2); assert(pl2->flg.orient == RND_PLF_DIR);
 
 				tmpa = pa_polyarea_alloc();
-				tmpb = pa_polyarea_alloc();
-
 				pa_polyarea_insert_pline(tmpa, pl);
-				pa_polyarea_insert_pline(tmpb, pl2);
+				rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
+				*pa = tmpc;
 
-				rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
-
-				/* unlunk from tmpc and free up temps */
-				pl = tmpc->contours;
-				pa_polyarea_del_pline(tmpc, pl);
-				rnd_polyarea_free(&tmpc);
-
-				pa_pline_invert(pl); /* contour to hole for insertion */
-				pa_polyarea_insert_pline(*pa, pl);
-
-				goto restart_2a; /* now we have a new hole with a different geo and changed the list... */
+				goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
 			}
 		}
-	}
-} while((*pa = (*pa)->f) != pa_start);
-
-restart_2b:; /* need to restart the loop because *pa changes */
-	pa_start = *pa;
-do {
-	/* hole vs. contour intersection */
-	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
-		if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
-			rnd_polyarea_t *tmpa, *tmpc = NULL;
-
-			rnd_trace("selfisc class 2b hole-contour\n");
-
-			pa_polyarea_del_pline(*pa, pl);
-
-			/* hole-to-contour for unite */
-			pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
-
-			tmpa = pa_polyarea_alloc();
-			pa_polyarea_insert_pline(tmpa, pl);
-			rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
-			*pa = tmpc;
-
-			goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
-		}
-	}
-} while((*pa = (*pa)->f) != pa_start);
+	} while((*pa = (*pa)->f) != pa_start);
 
 
 restart3:; /* need to restart the loop because *pa changes */
