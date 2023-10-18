@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- BUG: work/poly/tester/tests/TODO/self_ovrlap/: overlapping lines (go-in-come-out kind of cutout)
 		- BUG: autotest/rounding3: undetected self-intersection among pa-pa
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
