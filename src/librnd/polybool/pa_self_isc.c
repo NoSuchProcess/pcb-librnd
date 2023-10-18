@@ -526,9 +526,13 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
-	rnd_polyarea_t *paa, *pab;
+	rnd_polyarea_t *paa, *pab, *pan, *pa_start;
 	rnd_pline_t *pl, *next, *pl2, *next2, *newpl;
 	rnd_cardinal_t cnt = 0;
+
+	pa_start = *pa;
+do {
+	rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
 
 	/* pline intersects itself */
 	for(pl = (*pa)->contours; pl != NULL; pl = next) {
@@ -544,6 +548,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 			pa_pline_free(&newpl);
 		}
 	}
+
 
 	/* pline intersects other plines within a pa island; since the first pline
 	   is the outer contour, this really means a hole-contour or a hole-hole
@@ -585,8 +590,11 @@ restart_2a:;
 			}
 		}
 	}
+} while((*pa = (*pa)->f) != pa_start);
 
-restart_2b:;
+restart_2b:; /* need to restart the loop because *pa changes */
+	pa_start = *pa;
+do {
 	/* hole vs. contour intersection */
 	for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 		if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
@@ -607,8 +615,10 @@ restart_2b:;
 			goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
 		}
 	}
+} while((*pa = (*pa)->f) != pa_start);
 
-restart3:;
+
+restart3:; /* need to restart the loop because *pa changes */
 
 	/* pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
