@@ -149,7 +149,7 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 			   happens when high precision coord of non-intersecting islands are
 			   rounded to output integers and the rounding error introduces
 			   a new crossing somewhere. Merge the two islands. */
-			for(pl = (*pa)->contours; pl != NULL; pl = pl->next)
+			for(pl = pn->contours; pl != NULL; pl = pl->next)
 				if (big_bool_ppl_(pn, pl))
 					res = 1; /* can not return here, need to clear all the risk flags */
 		}
