@@ -106,3 +106,27 @@ int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb)
 	assert(vnb->cvclst_prev == NULL);
 	return pa_big_vnode_vect_equ(vnb, vna->cvclst_prev->isc);
 }
+
+int pa_big_vnode_vnode_cross_sgn(rnd_vnode_t *vna, rnd_vnode_t *vnb, pa_big_vector_t pt)
+{
+	pa_big_vector_t v1, v2;
+	pa_big2_coord_t m1, m2, cross;
+	pa_big_vector_t sv, sv_next;
+
+
+	rnd_pa_big_load_cvc(&sv, vna);
+	rnd_pa_big_load_cvc(&sv_next, vnb);
+	big_subn(v1.x, sv_next.x, sv.x, W, 0);
+	big_subn(v1.y, sv_next.y, sv.y, W, 0);
+	big_subn(v2.x, pt.x, sv.x, W, 0);
+	big_subn(v2.y, pt.y, sv.y, W, 0);
+	big_signed_mul(m1, W2, v1.x, v2.y, W);
+	big_signed_mul(m2, W2, v2.x, v1.y, W);
+
+	big_subn(cross, m1, m2, W2, 0);
+	if (big_is_neg(cross, W2))
+		return -1;
+	if (big_is_zero(cross, W2))
+		return 0;
+	return +1;
+}

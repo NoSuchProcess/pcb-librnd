@@ -45,6 +45,9 @@
 #define pa_big_copy(dst, src)  memcpy(&(dst), &(src), sizeof(pa_big_vector_t));
 #define pa_vnode_equ(vna, vnb) pa_big_vnode_vnode_equ(vna, vnb)
 
+/* Calculates the cross product and returns its sign (+1, 0 or -1)
+   See also (same as): PA_CIN_CROSS_SMALL */
+int pa_big_vnode_vnode_cross_sgn(rnd_vnode_t *vna, rnd_vnode_t *vnb, pa_big_vector_t pt);
 
 #else
 
