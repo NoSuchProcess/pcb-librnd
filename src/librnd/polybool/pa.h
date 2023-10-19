@@ -119,3 +119,8 @@ typedef struct pa_seg_s {
 
 void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src);
 
+
+/* Returns whether pl intersects with the line segment specified in lx;ly; if
+   it does, and cx and cy are not NULL, fill in cx;cy with the first
+   intersection point */
+rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
