@@ -161,6 +161,13 @@ rnd_polyarea_t *pa_polyarea_alloc(void);
 void pa_polyarea_free_all(rnd_polyarea_t **p);
 void pa_polyarea_init(rnd_polyarea_t *p); /* reset/initialize p's fields (call after malloc) */
 void rnd_poly_plines_free(rnd_pline_t **pl);
+
+/* Verify that the polygon island is valid (not self intersecting); returns
+   true if valid. */
+rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p);
+
+/* Verify that the polygon is valid (not self intersecting); checks all islands;
+   returns true if valid. */
 rnd_bool rnd_poly_valid(rnd_polyarea_t *p);
 
 enum rnd_poly_bool_op_e {

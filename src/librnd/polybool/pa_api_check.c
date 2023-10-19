@@ -310,7 +310,7 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 #endif
 
 
-rnd_bool rnd_poly_valid(rnd_polyarea_t *p)
+rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 {
 	rnd_pline_t *n;
 	pa_chk_res_t chk;
@@ -362,3 +362,15 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t *p)
 	}
 	return rnd_true;
 }
+
+rnd_bool rnd_poly_valid(rnd_polyarea_t *pa)
+{
+	rnd_polyarea_t *p = pa;
+	do {
+		if (!rnd_poly_valid_island(p))
+			return rnd_false;
+	} while((p = p->f) != pa);
+
+	return rnd_true;
+}
+
