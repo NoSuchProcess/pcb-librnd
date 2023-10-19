@@ -96,6 +96,35 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
 }
 
 
+rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *b)
+{
+	rnd_pline_t *pla, *plb;
+	rnd_vnode_t *n;
+
+	/* it is enough to check outline only, no holes, assuming holes are within
+	   the outline*/
+	pla = a->contours;
+	plb = b->contours;
+
+	/* order them so pla is the smaller (matters for speed) */
+	if (pla->Count > plb->Count)
+		SWAP(rnd_pline_t *, pla, plb);
+
+	/* Corner case: if plb is fully within pla, there is no crossing so the loop
+	   below doesn't trigger. In this case any node of plb is in pla. */
+	if (pa_pline_is_vnode_inside(pla, plb->head))
+		return 1;
+
+	/* check each outline vertex of pla whether it is inside of plb; if any is
+	   inside, pla is either inside plb or intersects plb */
+	for(n = pla->head; n != NULL; n = n->next)
+		if (pa_pline_is_vnode_inside(plb, n))
+			return 1;
+
+	return 0; /* no intersections */
+}
+
+
 void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int cnt;

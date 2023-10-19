@@ -144,6 +144,12 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa);
 rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *c, rnd_vector_t v0);
 rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
+/* Returns whether two islands intersect or not. Only the first island of a and
+   first island of b are verified. They are considered intersecting if and only
+   if there's a vertex of a inside of b or a vertex of b inside of a. Touching
+   on the edges is not considered intersection here. */
+rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *b);
+
 /*** tools for clipping ***/
 
 /* checks whether point lies within contour independently of its orientation */
