@@ -101,29 +101,38 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 
 typedef struct pa_cin_ctx_s {
 	int f;
+#ifdef PA_BIGCOORD_ISC
+	pa_big_vector_t p_big;
+	unsigned p_is_big:1;    /* p_big is available from input (need to do accurate calculations) */
+	unsigned p_has_big:1;   /* p_big is filled in (from input or converted from p) */
+#endif
+
 	rnd_vector_t p;
 } pa_cin_ctx_t;
 
-#define PA_CIN_CROSS \
+#ifdef PA_BIGCOORD_ISC
+	/* this version is accurate but expensive */
+#	define PA_CIN_CROSS_BIG \
+	int cross_sgn = pa_big_vnode_vnode_cross_sgn(s->v, s->v->next, p->p_big)
+#endif
+
+/* this can easily overflow with 64 bit coords */
+#define PA_CIN_CROSS_SMALL \
 	rnd_vector_t v1, v2; \
 	rnd_long64_t cross; \
 	Vsub2(v1, s->v->next->point, s->v->point); \
 	Vsub2(v2, p->p, s->v->point); \
-	TODO("this can easily overflow with 64 bit coords"); \
 	cross = (rnd_long64_t)v1[0] * (rnd_long64_t)v2[1] - (rnd_long64_t)v2[0] * (rnd_long64_t)v1[1];
 
-static rnd_r_dir_t pa_cin_crossing(const rnd_box_t * b, void *cl)
+static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 {
-	pa_seg_t *s = (pa_seg_t *)b;   /* polygon edge, line segment */
-	pa_cin_ctx_t *p = cl;          /* horizontal cutting line */
-
 	/* the horizontal cutting line is between vectors s->v and s->v->next, but
 	   these two can be in any order; because poly contour is CCW, this means if
 	   the edge is going up, we went from inside to outside, else we went
 	   from outside to inside */
 	if (s->v->point[1] <= p->p[1]) {
 		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
-			PA_CIN_CROSS;
+			PA_CIN_CROSS_SMALL;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				return RND_R_DIR_CANCEL;
@@ -134,7 +143,7 @@ static rnd_r_dir_t pa_cin_crossing(const rnd_box_t * b, void *cl)
 	}
 	else { /* since the other side was <=, when we get here we also blocked horizontal lines of the negative direction */
 		if (s->v->next->point[1] <= p->p[1]) {
-			PA_CIN_CROSS;
+			PA_CIN_CROSS_SMALL;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
 				p->f = 1;
 				return RND_R_DIR_CANCEL;
@@ -145,6 +154,64 @@ static rnd_r_dir_t pa_cin_crossing(const rnd_box_t * b, void *cl)
 	}
 
 	return RND_R_DIR_FOUND_CONTINUE;
+}
+
+#ifdef PA_BIGCOORD_ISC
+/* same as above, but with big coords */
+static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
+{
+	if (!p->p_has_big) {
+		pa_big_load(p->p_big.x, p->p[0]);
+		pa_big_load(p->p_big.y, p->p[1]);
+		p->p_has_big = 1;
+	}
+
+
+	if (s->v->point[1] <= p->p[1]) {
+		if (s->v->next->point[1] > p->p[1]) {
+			PA_CIN_CROSS_BIG;
+			if (cross_sgn == 0) {
+				p->f = 1;
+				return RND_R_DIR_CANCEL;
+			}
+			if (cross_sgn > 0)
+				p->f++;
+		}
+	}
+	else {
+		if (s->v->next->point[1] <= p->p[1]) {
+			PA_CIN_CROSS_BIG;
+			if (cross_sgn == 0) {
+				p->f = 1;
+				return RND_R_DIR_CANCEL;
+			}
+			if (cross_sgn < 0)
+				p->f--;
+		}
+	}
+
+	return RND_R_DIR_FOUND_CONTINUE;
+}
+#endif
+
+static rnd_r_dir_t pa_cin_crossing(const rnd_box_t *b, void *cl)
+{
+	pa_seg_t *s = (pa_seg_t *)b;   /* polygon edge, line segment */
+	pa_cin_ctx_t *p = cl;          /* horizontal cutting line */
+
+#ifdef PA_BIGCOORD_ISC
+	if (p->p_is_big || (s->v->cvclst_prev != NULL) || (s->v->next->cvclst_prev != NULL)) {
+/*
+		rnd_trace("&&&&& line=%ld;%ld - %ld;%ld  pt=%ld;%ld\n",
+			s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1],
+			p->p[0], p->p[1]);
+*/
+		pa_cin_crossing_small(p, s);
+		return pa_cin_crossing_big(p, s);
+	}
+#endif
+
+	return pa_cin_crossing_small(p, s);
 }
 
 int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
@@ -161,6 +228,7 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	ctx.f = 0;
 	ctx.p[0] = ray.X1 = pt[0];
 	ctx.p[1] = ray.Y1 = pt[1];
+	ctx.p_is_big = ctx.p_has_big = 0;
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = pt[1] + 1;
 
@@ -168,6 +236,59 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 
 	return ctx.f;
 }
+
+
+/* Returns whether pt is within the bbox of pl */
+rnd_bool pa_is_vnode_in_pline_box(const rnd_pline_t *pl, const rnd_vnode_t *nd)
+{
+
+	if (pa_is_point_in_pline_box(pl, nd->point))
+		return 1;
+
+	if (nd->cvclst_prev != NULL) {
+		rnd_vector_t pt;
+
+		/* round down */
+		pt[0] = nd->point[0]-1;
+		pt[1] = nd->point[1]-1;
+
+		if (pa_is_point_in_pline_box(pl, pt))
+			return 1;
+	}
+
+	return 0;
+}
+
+int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd)
+{
+	pa_cin_ctx_t ctx;
+	rnd_box_t ray;
+
+	/* quick exit if point has not even in th bbox of pl*/
+	if (!pa_is_vnode_in_pline_box(pl, nd))
+		return rnd_false;
+
+	/* run a horizontal ray from the point to x->infinity and count (in ctx.f)
+	   how it crosses poly edges with different winding */
+	ctx.f = 0;
+	ctx.p[0] = ray.X1 = nd->point[0];
+	ctx.p[1] = ray.Y1 = nd->point[1];
+	ray.X2 = RND_COORD_MAX;
+	ray.Y2 = nd->point[1] + 1;
+	ctx.p_has_big = 0;
+
+	if (nd->cvclst_prev != NULL) {
+		ctx.p_big = nd->cvclst_prev->isc;
+		ctx.p_is_big = 1;
+		ray.Y1--;
+		ray.X1--;
+	}
+
+	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
+
+	return ctx.f;
+}
+
 
 /* Algorithm from http://www.exaflop.org/docs/cgafaq/cga2.html
 

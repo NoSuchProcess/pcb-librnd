@@ -149,6 +149,11 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 /* checks whether point lies within contour independently of its orientation */
 int pa_pline_is_point_inside(const rnd_pline_t *c, rnd_vector_t v);
 
+/* same as pa_pline_is_point_inside() but uses sub-nanometer resolution and
+   is always accurate */
+int pa_pline_is_node_inside(const rnd_pline_t *pl, rnd_vnode_t nd);
+
+
 /* Return whether inner is within outer. Caller must ensure they are not
    intersecting. Returns the correct result if pl and inner share common
    points on contour. (Identical contours are treated as being inside each
