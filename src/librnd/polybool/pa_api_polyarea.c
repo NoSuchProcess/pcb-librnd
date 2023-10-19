@@ -117,9 +117,11 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 
 	/* check each outline vertex of pla whether it is inside of plb; if any is
 	   inside, pla is either inside plb or intersects plb */
-	for(n = pla->head; n != NULL; n = n->next)
+	n = pla->head;
+	do {
 		if (pa_pline_is_vnode_inside(plb, n))
 			return 1;
+	} while((n = n->next) != pla->head);
 
 	return 0; /* no intersections */
 }
