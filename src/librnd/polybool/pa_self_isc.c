@@ -201,8 +201,12 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 
 	/* Having two intersections means line-line overlap: class 5 */
-	if (num_isc == 2)
+	if (num_isc == 2) {
+		if (s->v->flg.mark)
+			return RND_R_DIR_NOT_FOUND; /* already handled */
+		s->v->flg.mark = 1;
 		return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
+	}
 
 	/* singe intersection between two lines; new_node is NULL if isc1 is at
 	   one end of the line */
