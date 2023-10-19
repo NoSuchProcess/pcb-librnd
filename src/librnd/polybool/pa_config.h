@@ -22,3 +22,13 @@
 
 /* only when DEBUG is enabled */
 #define DEBUG_ALL_LABELS 1
+
+#ifdef PA_BIGCOORD_ISC
+#define RND_POLY_ENDP_EPSILON 0.25
+#else
+#error nem
+/* EPSILON^2 for endpoint matching; the bool algebra code is not
+   perfect and causes tiny self intersections at the end of sharp
+   spikes. Accept at most 10 nanometer of such intersection */
+#define RND_POLY_ENDP_EPSILON 100
+#endif
