@@ -633,7 +633,7 @@ restart3:; /* need to restart the loop because *pa changes */
 			int touching;
 			rnd_trace("pa-pa %p %p\n", paa, pab);
 
-			/* remove ->f for this test to make sure only that oen island is checked */
+			/* remove ->f for this test to make sure only that one island is checked */
 			pfa = paa->f;
 			pfb = pab->f;
 			paa->f = paa;
