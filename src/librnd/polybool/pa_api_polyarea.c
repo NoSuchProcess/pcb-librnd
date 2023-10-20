@@ -95,11 +95,58 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
 	return rnd_false;
 }
 
+typedef enum pa_island_isc_e {
+	PA_ISLAND_ISC_OUT,   /* island is fully outside of a hole */
+	PA_ISLAND_ISC_IN,    /* island is fully within a hole */
+	PA_ISLAND_ISC_CROSS  /* island has an intersection with the hole */
+} pa_island_isc_t;
+
+
+/* Iterates through the nodes of small figuring if small is fully within big. */
+static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_pline_t *small)
+{
+	int got_in = 0, got_out = 0;
+	rnd_vnode_t *n;
+
+TODO("optimization: verify bbox if they are far away");
+
+	n = small->head;
+	do {
+		if (pa_pline_is_vnode_inside(big, n))
+			got_in = 1;
+		else
+			got_out = 1;
+
+		if (got_in && got_out) /* we are both inside and outside -> that's a crossing */
+			return PA_ISLAND_ISC_CROSS;
+	} while((n = n->next) != small->head);
+
+	/* if we got here, small is either full inside or fully outside */
+	return got_in ? PA_ISLAND_ISC_IN : PA_ISLAND_ISC_OUT;
+}
+
+/* Returns whether a polyline is fully inside, fully outside or half-in-half-out
+   of pa's holes. Checks only the first island of pa. If pl is fully within
+   any island, PA_ISLAND_ISC_IN is returned. */
+static pa_island_isc_t pa_polyarea_pline_island_isc(const rnd_polyarea_t *pa, const rnd_pline_t *pl)
+{
+	rnd_pline_t *hole;
+
+	for(hole = pa->contours->next; hole != NULL; hole = hole->next) {
+		pa_island_isc_t r = pa_pline_pline_isc(hole, pl);
+		if (r != PA_ISLAND_ISC_OUT)
+			return r;
+	}
+
+	return PA_ISLAND_ISC_OUT;
+}
 
 rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *b)
 {
 	rnd_pline_t *pla, *plb;
 	rnd_vnode_t *n;
+
+TODO("optimization: verify bbox if they are far away");
 
 	/* it is enough to check outline only, no holes, assuming holes are within
 	   the outline*/
@@ -107,20 +154,40 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 	plb = b->contours;
 
 	/* order them so pla is the smaller (matters for speed) */
-	if (pla->Count > plb->Count)
+	if (pla->Count > plb->Count) {
 		SWAP(rnd_pline_t *, pla, plb);
+		SWAP(const rnd_polyarea_t *, a, b);
+	}
 
 	/* Corner case: if plb is fully within pla, there is no crossing so the loop
-	   below doesn't trigger. In this case any node of plb is in pla. */
-	if (pa_pline_is_vnode_inside(pla, plb->head))
+	   below doesn't trigger. In this case any node of plb is in pla so it is
+	   enough to verify a single point of plb. */
+	if (pa_pline_is_vnode_inside(pla, plb->head)) {
+		/* ... except if plb is in an island */
+		int r = pa_polyarea_pline_island_isc(a, plb);
+		switch(r) {
+			case PA_ISLAND_ISC_IN:    return 0; /* plb island is fully in an island of pa -> no intersection pssible */
+			case PA_ISLAND_ISC_OUT:   return 1; /* plb island is fully outside of any island of pa -> it is in the solid area */
+			case PA_ISLAND_ISC_CROSS: return 1; /* crossing an island boundary means some points are inside the solid */
+		}
+		assert("!invalid rturn by pa_polyarea_is_vnode_island_isc()");
 		return 1;
+	}
 
 	/* check each outline vertex of pla whether it is inside of plb; if any is
 	   inside, pla is either inside plb or intersects plb */
 	n = pla->head;
 	do {
-		if (pa_pline_is_vnode_inside(plb, n))
+		if (pa_pline_is_vnode_inside(plb, n)) {
+			int r = pa_polyarea_pline_island_isc(b, pla);
+			switch(r) {
+				case PA_ISLAND_ISC_IN:    return 0; /* pla island is fully in an island of pb -> no intersection pssible */
+				case PA_ISLAND_ISC_OUT:   return 1; /* pla island is fully outside of any island of pb -> it is in the solid area */
+				case PA_ISLAND_ISC_CROSS: return 1; /* crossing an island boundary means some points are inside the solid */
+			}
+			assert("!invalid rturn by pa_polyarea_is_vnode_island_isc()");
 			return 1;
+		}
 	} while((n = n->next) != pla->head);
 
 	return 0; /* no intersections */
