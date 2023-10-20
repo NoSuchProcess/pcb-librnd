@@ -365,11 +365,31 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 
 rnd_bool rnd_poly_valid(rnd_polyarea_t *pa)
 {
-	rnd_polyarea_t *p = pa;
+	rnd_polyarea_t *p, *q;
+
+	/* verify all polylines */
+	p = pa;
 	do {
 		if (!rnd_poly_valid_island(p))
 			return rnd_false;
 	} while((p = p->f) != pa);
+
+	/* verify that no two island intersect (if there are more than one islands) */
+	if (pa->f != pa) {
+		p = pa;
+		do {
+			q = p->f;
+			while(q != pa) {
+				if (rnd_polyarea_island_isc(p, q)) {
+#ifndef NDEBUG
+					rnd_fprintf(stderr, "island-island intersect\n");
+#endif
+					return rnd_false;
+				}
+				q = q->f;
+			}
+		} while((p = p->f) != pa);
+	}
 
 	return rnd_true;
 }
