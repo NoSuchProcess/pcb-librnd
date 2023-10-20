@@ -286,6 +286,8 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd)
 		ray.Y1--;
 		ray.X1--;
 	}
+	else
+		ctx.p_is_big = 0;
 
 	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
 
