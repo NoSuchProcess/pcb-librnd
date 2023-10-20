@@ -108,7 +108,11 @@ static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_plin
 	int got_in = 0, got_out = 0;
 	rnd_vnode_t *n;
 
-TODO("optimization: verify bbox if they are far away");
+	/* cheap bbox checks: if bboxes don't intersect, small is outside of big */
+	if ((small->xmax < big->xmin) || (small->ymax < big->ymin))
+		return PA_ISLAND_ISC_OUT;
+	if ((small->xmin > big->xmax) || (small->ymin > big->ymax))
+		return PA_ISLAND_ISC_OUT;
 
 	n = small->head;
 	do {
@@ -146,12 +150,16 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 	rnd_pline_t *pla, *plb;
 	rnd_vnode_t *n;
 
-TODO("optimization: verify bbox if they are far away");
-
 	/* it is enough to check outline only, no holes, assuming holes are within
 	   the outline*/
 	pla = a->contours;
 	plb = b->contours;
+
+	/* cheap bbox checks: if bboxes don't intersect, pla is outside of plb */
+	if ((pla->xmax < plb->xmin) || (pla->ymax < plb->ymin))
+		return 0;
+	if ((pla->xmin > plb->xmax) || (pla->ymin > plb->ymax))
+		return 0;
 
 	/* order them so pla is the smaller (matters for speed) */
 	if (pla->Count > plb->Count) {
