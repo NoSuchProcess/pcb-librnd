@@ -101,6 +101,7 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 
 typedef struct pa_cin_ctx_s {
 	int f;
+	int point_on_edge_is_in;/* configuration */
 #ifdef PA_BIGCOORD_ISC
 	pa_big_vector_t p_big;
 	unsigned p_is_big:1;    /* p_big is available from input (need to do accurate calculations) */
@@ -134,7 +135,7 @@ static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 		if (s->v->next->point[1] > p->p[1]) { /* this also happens to blocks horizontal poly edges because they are only == */
 			PA_CIN_CROSS_SMALL;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
-				p->f = 1;
+				p->f = p->point_on_edge_is_in;
 				return RND_R_DIR_CANCEL;
 			}
 			if (cross > 0)
@@ -145,7 +146,7 @@ static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 		if (s->v->next->point[1] <= p->p[1]) {
 			PA_CIN_CROSS_SMALL;
 			if (cross == 0) { /* special case: if the point is on any edge, the point is in the poly */
-				p->f = 1;
+				p->f = p->point_on_edge_is_in;
 				return RND_R_DIR_CANCEL;
 			}
 			if (cross < 0)
@@ -171,7 +172,7 @@ static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 		if (s->v->next->point[1] > p->p[1]) {
 			PA_CIN_CROSS_BIG;
 			if (cross_sgn == 0) {
-				p->f = 1;
+				p->f = p->point_on_edge_is_in;
 				return RND_R_DIR_CANCEL;
 			}
 			if (cross_sgn > 0)
@@ -182,7 +183,7 @@ static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 		if (s->v->next->point[1] <= p->p[1]) {
 			PA_CIN_CROSS_BIG;
 			if (cross_sgn == 0) {
-				p->f = 1;
+				p->f = p->point_on_edge_is_in;
 				return RND_R_DIR_CANCEL;
 			}
 			if (cross_sgn < 0)
@@ -226,6 +227,7 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	/* run a horizontal ray from the point to x->infinity and count (in ctx.f)
 	   how it crosses poly edges with different winding */
 	ctx.f = 0;
+	ctx.point_on_edge_is_in = 1; /* for compatibility */
 	ctx.p[0] = ray.X1 = pt[0];
 	ctx.p[1] = ray.Y1 = pt[1];
 	ctx.p_is_big = ctx.p_has_big = 0;
@@ -271,6 +273,7 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd)
 	/* run a horizontal ray from the point to x->infinity and count (in ctx.f)
 	   how it crosses poly edges with different winding */
 	ctx.f = 0;
+	ctx.point_on_edge_is_in = 0;
 	ctx.p[0] = ray.X1 = nd->point[0];
 	ctx.p[1] = ray.Y1 = nd->point[1];
 	ray.X2 = RND_COORD_MAX;
