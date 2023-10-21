@@ -59,9 +59,9 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	if (num_isc == 1) {
 		pa_big_vector_t s1, s2, c1, c2;
 		pa_big_load_cvc(&s1, s->v);
-		pa_big_load_cvc(&s1, s->v->next);
+		pa_big_load_cvc(&s2, s->v->next);
 		pa_big_load_cvc(&c1, ctx->v);
-		pa_big_load_cvc(&c1, ctx->v->next);
+		pa_big_load_cvc(&c2, ctx->v->next);
 		if (Vequ2(&s1, &isc1) || Vequ2(&s2, &isc1) || Vequ2(&c1, &isc1) || Vequ2(&c2, &isc1))
 			num_isc--;
 	}
