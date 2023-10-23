@@ -634,6 +634,10 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 				tmpa = pa_polyarea_alloc();
 				pa_polyarea_insert_pline(tmpa, pl);
+
+				TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
+				remove_all_cvc(*pa);
+
 				rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
 				*pa = tmpc;
 
@@ -643,6 +647,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	} while((*pa = (*pa)->f) != pa_start);
 
 	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
+	TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
 	remove_all_cvc(*pa);
 
 	/* class 3: pa-pa intersections: different islands of the same polygon object intersect */
