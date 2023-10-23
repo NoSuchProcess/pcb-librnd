@@ -530,9 +530,11 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
-	rnd_polyarea_t *paa, *pab, *pan, *pa_start;
+	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next;
 	rnd_pline_t *pl, *next, *pl2, *next2, *newpl;
 	rnd_cardinal_t cnt = 0;
+	vtp0_t floating = {0};
+	long n;
 
 	pa_start = *pa;
 	do {
@@ -622,15 +624,14 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	} while((*pa = (*pa)->f) != pa_start);
 
 
-restart3:; /* need to restart the loop because *pa changes */
-
-	/* pa-pa intersections: different islands of the same polygon object intersect */
+	/* class 3: pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
 	do {
-		for(pab = paa->f; pab != *pa; pab = pab->f) {
+		for(pab = paa->f; pab != *pa; pab = pab_next) {
 			rnd_polyarea_t *pfa, *pfb;
-
 			int touching;
+
+			pab_next = pab->f;
 			rnd_trace("pa-pa %p %p\n", paa, pab);
 
 			/* remove ->f for this test to make sure only that one island is checked */
@@ -643,19 +644,28 @@ restart3:; /* need to restart the loop because *pa changes */
 			pab->f = pfb;
 
 			if (touching) {
-				int res;
-				rnd_polyarea_t *tmp = NULL;
-
+				/* unlink and collect now floating pab on a list for postponed merging */
 				pa_polyarea_unlink(pa, pab);
-				res = rnd_polyarea_boolean_free(paa, pab, &tmp, RND_PBO_UNITE);
-				*pa = tmp;
+				vtp0_append(&floating, pab);
 
-				rnd_trace("pa-pa isc! -> resolving with an union: %d -> %p\n", res, *pa);
-				cnt++;
-				goto restart3;
+				rnd_trace("pa-pa isc! -> resolving with an union (later)\n");
 			}
 		}
 	} while((paa = paa->f) != *pa);
+
+	/* class 3: merge floating pab's */
+	for(n = 0; n < floating.used; n++) {
+		int res;
+		rnd_polyarea_t *tmp = NULL, *fl = floating.array[n];
+
+		rnd_trace("pa-pa isc union:\n");
+		res = rnd_polyarea_boolean_free(*pa, fl, &tmp, RND_PBO_UNITE);
+		*pa = tmp;
+
+		rnd_trace("  pa-pa isc union result: %d -> %p\n", res, *pa);
+		cnt++;
+	}
+	vtp0_uninit(&floating);
 
 	return cnt;
 }
