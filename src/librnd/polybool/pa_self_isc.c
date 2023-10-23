@@ -528,6 +528,26 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 	return 0;
 }
 
+/* The pline self-isc code may introduce CVCs - we need to get rid of them
+   before we do poly bool on the pa */
+RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
+{
+	rnd_polyarea_t *pa = pa1;
+	do {
+		rnd_pline_t *pl;
+		for(pl = pa->contours; pl != NULL; pl = pl->next) {
+			rnd_vnode_t *n = pl->head;
+			do {
+				if (n->cvclst_prev != NULL) {
+					free(n->cvclst_prev);
+					n->cvclst_prev = n->cvclst_next = NULL;
+					/* no need to unlink, all cvcs are free'd here */
+				}
+			} while((n = n->next) != pl->head);
+		}
+	} while((pa = pa->f) != pa1);
+}
+
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next;
@@ -554,7 +574,6 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 				pa_pline_free(&newpl);
 			}
 		}
-
 
 		/* pline intersects other plines within a pa island; since the first pline
 		   is the outer contour, this really means a hole-contour or a hole-hole
@@ -623,26 +642,19 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		}
 	} while((*pa = (*pa)->f) != pa_start);
 
+	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
+	remove_all_cvc(*pa);
 
 	/* class 3: pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
 	do {
 		for(pab = paa->f; pab != *pa; pab = pab_next) {
-			rnd_polyarea_t *pfa, *pfb;
 			int touching;
 
 			pab_next = pab->f;
 			rnd_trace("pa-pa %p %p\n", paa, pab);
 
-			/* remove ->f for this test to make sure only that one island is checked */
-			pfa = paa->f;
-			pfb = pab->f;
-			paa->f = paa;
-			pab->f = pab;
-			touching = rnd_polyarea_touching(paa, pab);
-			paa->f = pfa;
-			pab->f = pfb;
-
+			touching = rnd_polyarea_island_isc(paa, pab); /* this call doesn't add cvcs */
 			if (touching) {
 				/* unlink and collect now floating pab on a list for postponed merging */
 				pa_polyarea_unlink(pa, pab);
