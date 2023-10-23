@@ -37,7 +37,7 @@
 
 /* Contour labelling */
 
-/* label an intersecting, node as per the paper */
+/* label an intersecting node as per the paper */
 static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 {
 	pa_conn_desc_t *l1, *l;
