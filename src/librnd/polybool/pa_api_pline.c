@@ -207,7 +207,6 @@ static rnd_r_dir_t pa_cin_crossing(const rnd_box_t *b, void *cl)
 			s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1],
 			p->p[0], p->p[1]);
 */
-		pa_cin_crossing_small(p, s);
 		return pa_cin_crossing_big(p, s);
 	}
 #endif
