@@ -426,6 +426,14 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *sr
 	} while((n = n->next) != start);
 }
 
+/* Move over the original islands of the source polyline into dst; these
+   islands are independent of the pline self-isc resolve effort */
+RND_INLINE void pa_selfisc_preserve_islands(rnd_pline_t *dst, rnd_pline_t *src)
+{
+	dst->next = src->next;
+	src->next = NULL;
+}
+
 /* Build the outer contour of self-intersecting pl and return it. If there is
    no self intersection, return NULL. */
 rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
@@ -469,6 +477,7 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	/* collect the outline first; anything that remains is an island,
 	   add them as a hole depending on their loop orientation */
 	pa_selfisc_collect_outline(&res, pl, start);
+	pa_selfisc_preserve_islands(res, pl);
 	pa_selfisc_collect_islands(res, pl, start);
 
 	/* collect hiddel islands - they are not directly reachable from the
