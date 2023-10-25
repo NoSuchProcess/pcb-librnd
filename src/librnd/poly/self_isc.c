@@ -334,3 +334,14 @@ rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa)
 
 	return cnt;
 }
+
+/*** forward compat with polybool for the tester ***/
+rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
+{
+	return -1;
+}
+
+int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd)
+{
+	return -1;
+}
