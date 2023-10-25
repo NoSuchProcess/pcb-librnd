@@ -260,6 +260,8 @@ void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_
 /* create a (rnd_rtree_t *) of each segment derived from a contour object of src */
 void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
+int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd);
+
 /*** generic geo ***/
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
 
