@@ -127,6 +127,35 @@ typedef struct pa_cin_ctx_s {
 
 static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 {
+	/* special case: horizontal line - point is either on it or not */
+	if (s->v->point[1] == s->v->next->point[1]) {
+
+		if (p->p[1] != s->v->point[1])
+			return RND_R_DIR_FOUND_CONTINUE; /* not the same y, no intersection */
+
+		if ((p->p[0] > s->v->point[0]) && (p->p[0] > s->v->next->point[0]))
+			return RND_R_DIR_FOUND_CONTINUE; /* point is right of the line, no isc */
+
+		/* check if we are on the line */
+		if (s->v->point[0] <= s->v->next->point[0]) {
+			if ((p->p[0] >= s->v->point[0]) && (p->p[0] <= s->v->next->point[0])) {
+				p->f = p->point_on_edge_is_in;
+				return RND_R_DIR_CANCEL;
+			}
+		}
+		else {
+			if ((p->p[0] >= s->v->next->point[0]) && (p->p[0] <= s->v->point[0])) {
+				p->f = p->point_on_edge_is_in;
+				return RND_R_DIR_CANCEL;
+			}
+		}
+
+		/* point is left of the horizontal line - there are too many cases,
+		   just ignore the horizontal line and let the connecting non-horizontal
+		   lines catch the ray */
+		return RND_R_DIR_FOUND_CONTINUE;
+	}
+
 	/* the horizontal cutting line is between vectors s->v and s->v->next, but
 	   these two can be in any order; because poly contour is CCW, this means if
 	   the edge is going up, we went from inside to outside, else we went
