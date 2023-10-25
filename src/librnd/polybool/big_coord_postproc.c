@@ -138,6 +138,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
+		assert(v->cvclst_next == NULL);
 	} while((v = v->next) != pl->head);
 
 	return res;
