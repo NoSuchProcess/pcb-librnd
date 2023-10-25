@@ -107,6 +107,7 @@ typedef struct pa_cin_ctx_s {
 	unsigned p_is_big:1;    /* p_big is available from input (need to do accurate calculations) */
 	unsigned p_has_big:1;   /* p_big is filled in (from input or converted from p) */
 #endif
+	unsigned compatibility:1; /* with the original poly lib */
 
 	rnd_vector_t p;
 } pa_cin_ctx_t;
@@ -128,7 +129,7 @@ typedef struct pa_cin_ctx_s {
 static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 {
 	/* special case: horizontal line - point is either on it or not */
-	if (s->v->point[1] == s->v->next->point[1]) {
+	if (!p->compatibility && (s->v->point[1] == s->v->next->point[1])) {
 
 		if (p->p[1] != s->v->point[1])
 			return RND_R_DIR_FOUND_CONTINUE; /* not the same y, no intersection */
@@ -259,6 +260,7 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	ctx.p[0] = ray.X1 = pt[0];
 	ctx.p[1] = ray.Y1 = pt[1];
 	ctx.p_is_big = ctx.p_has_big = 0;
+	ctx.compatibility = 1;
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = pt[1] + 1;
 
@@ -304,6 +306,7 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd)
 	ctx.point_on_edge_is_in = 0;
 	ctx.p[0] = ray.X1 = nd->point[0];
 	ctx.p[1] = ray.Y1 = nd->point[1];
+	ctx.compatibility = 0;
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = nd->point[1] + 1;
 	ctx.p_has_big = 0;
