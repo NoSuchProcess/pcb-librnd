@@ -115,7 +115,7 @@ typedef struct pa_cin_ctx_s {
 #ifdef PA_BIGCOORD_ISC
 	/* this version is accurate but expensive */
 #	define PA_CIN_CROSS_BIG \
-	int cross_sgn = pa_big_vnode_vnode_cross_sgn(s->v, s->v->next, p->p_big)
+	int cross_sgn = pa_big_vnode_vnode_cross_sgn(sv, sv_next, p->p_big)
 #endif
 
 /* this can easily overflow with 64 bit coords */

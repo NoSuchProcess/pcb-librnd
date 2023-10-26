@@ -107,15 +107,11 @@ int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb)
 	return pa_big_vnode_vect_equ(vnb, vna->cvclst_prev->isc);
 }
 
-int pa_big_vnode_vnode_cross_sgn(rnd_vnode_t *vna, rnd_vnode_t *vnb, pa_big_vector_t pt)
+int pa_big_vnode_vnode_cross_sgn(pa_big_vector_t sv, pa_big_vector_t sv_next, pa_big_vector_t pt)
 {
 	pa_big_vector_t v1, v2;
 	pa_big2_coord_t m1, m2, cross;
-	pa_big_vector_t sv, sv_next;
 
-
-	rnd_pa_big_load_cvc(&sv, vna);
-	rnd_pa_big_load_cvc(&sv_next, vnb);
 	big_subn(v1.x, sv_next.x, sv.x, W, 0);
 	big_subn(v1.y, sv_next.y, sv.y, W, 0);
 	big_subn(v2.x, pt.x, sv.x, W, 0);

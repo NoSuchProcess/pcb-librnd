@@ -47,7 +47,7 @@
 
 /* Calculates the cross product and returns its sign (+1, 0 or -1)
    See also (same as): PA_CIN_CROSS_SMALL */
-int pa_big_vnode_vnode_cross_sgn(rnd_vnode_t *vna, rnd_vnode_t *vnb, pa_big_vector_t pt);
+int pa_big_vnode_vnode_cross_sgn(pa_big_vector_t sv, pa_big_vector_t sv_next, pa_big_vector_t pt);
 
 #else
 
