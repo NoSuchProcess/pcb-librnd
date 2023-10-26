@@ -90,3 +90,6 @@ void pa_big_bool_postproc(rnd_polyarea_t **pa);
 void rnd_pa_big_load_cvc(pa_big_vector_t *dst, rnd_vnode_t *src);
 void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2);
 
+int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b);
+
+

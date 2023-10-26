@@ -130,3 +130,9 @@ int pa_big_vnode_vnode_cross_sgn(rnd_vnode_t *vna, rnd_vnode_t *vnb, pa_big_vect
 		return 0;
 	return +1;
 }
+
+int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b)
+{
+	return big_signed_cmpn(a, b, W);
+}
+
