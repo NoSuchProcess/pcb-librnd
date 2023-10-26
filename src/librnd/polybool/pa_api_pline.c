@@ -188,13 +188,51 @@ static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 }
 
 #ifdef PA_BIGCOORD_ISC
+
+#define bigcmp(a, b) pa_big_coord_cmp(a, b)
+
 /* same as above, but with big coords */
 static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 {
+	pa_big_vector_t sv, sv_next;
+
+	rnd_pa_big_load_cvc(&sv, s->v);
+	rnd_pa_big_load_cvc(&sv_next, s->v->next);
+
+	/* cache big coords of the point */
 	if (!p->p_has_big) {
 		pa_big_load(p->p_big.x, p->p[0]);
 		pa_big_load(p->p_big.y, p->p[1]);
 		p->p_has_big = 1;
+	}
+
+	/* special case: horizontal line - point is either on it or not */
+	if (!p->compatibility && (bigcmp(sv.y, sv_next.y) == 0)) {
+
+		if (bigcmp(p->p_big.y, sv_next.y) != 0)
+			return RND_R_DIR_FOUND_CONTINUE; /* not the same y, no intersection */
+
+		if ((bigcmp(p->p_big.x, sv.x) > 0) && (bigcmp(p->p_big.x, sv_next.x) > 0))
+			return RND_R_DIR_FOUND_CONTINUE; /* point is right of the line, no isc */
+
+		/* check if we are on the line */
+		if (bigcmp(sv.x, sv_next.x) <= 0) {
+			if ((bigcmp(p->p_big.x, sv.x) >= 0) && (bigcmp(p->p_big.x, sv_next.x) <= 0)) {
+				p->f = p->point_on_edge_is_in;
+				return RND_R_DIR_CANCEL;
+			}
+		}
+		else {
+			if ((bigcmp(p->p_big.x, sv_next.x) >= 0) && (bigcmp(p->p_big.x, sv.x) <= 0)) {
+				p->f = p->point_on_edge_is_in;
+				return RND_R_DIR_CANCEL;
+			}
+		}
+
+		/* point is left of the horizontal line - there are too many cases,
+		   just ignore the horizontal line and let the connecting non-horizontal
+		   lines catch the ray */
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 
 
@@ -223,6 +261,8 @@ static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
+
+#undef bigcmp
 #endif
 
 static rnd_r_dir_t pa_cin_crossing(const rnd_box_t *b, void *cl)
