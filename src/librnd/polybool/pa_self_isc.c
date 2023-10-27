@@ -173,8 +173,8 @@ rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_bi
 	if (sn1 == NULL) sn1 = sv;
 
 	/* block the overlapping part from collect*() */
-	ctxn1->flg.mark = 1;
-	sn1->flg.mark = 1;
+	ctxn1->flg.mark = ctxn1->flg.blocked = 1;
+	sn1->flg.mark = sn1->flg.blocked = 1;
 
 	/* the resulting island has no access from the outer contour because of
 	   the blocking so we need to remember them separately */
@@ -182,13 +182,15 @@ rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_bi
 	vtp0_append(&ctx->hidden_islands, ctxn2);
 
 
-	rnd_trace(" blocking enter: %ld;%ld %ld;%ld\n",
-		ctxn1->point[0], ctxn1->point[1], ctxn1->next->point[0], ctxn1->next->point[1]);
-	rnd_trace(" blocking leave: %ld;%ld %ld;%ld\n",
-		sn1->point[0], sn1->point[1], sn1->next->point[0], sn1->next->point[1]);
+	rnd_trace(" blocking enter: %ld;%ld %ld;%ld {%p}\n",
+		ctxn1->point[0], ctxn1->point[1], ctxn1->next->point[0], ctxn1->next->point[1],
+		ctxn1);
+	rnd_trace(" blocking leave: %ld;%ld %ld;%ld {%p}\n",
+		sn1->point[0], sn1->point[1], sn1->next->point[0], sn1->next->point[1],
+		sn1);
 
 	ctx->skip_to = sn2;
-	rnd_trace(" skipping to:    %ld;%ld\n", sn2->point[0], sn2->point[1]);
+	rnd_trace(" skipping to:    %ld;%ld (to: %ld;%ld)\n", sn2->point[0], sn2->point[1], sn2->next->point[0], sn2->next->point[1]);
 
 	ctx->num_isc++;
 
@@ -279,6 +281,8 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		else onto = c->parent->prev;
 
 		rnd_trace("  %d %d '%c'", onto->point[0], onto->point[1], c->side);
+		if (c->parent->flg.blocked)
+			continue;
 		if (!onto->flg.mark) {
 			*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir)
