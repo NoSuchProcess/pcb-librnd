@@ -144,9 +144,17 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	/* order isco and isci so that isco is on the outer loop and isci is the island
 	   loop. This can be done by looking at the distance from ctx->v, which is
 	   guaranteed to be on the outer loop */
-	rnd_vect_m_dist2_big(disto, ctxv1, isco);
-	rnd_vect_m_dist2_big(disti, ctxv1, isci);
+	rnd_vect_u_dist2_big(disto, ctxv1, isco);
+	rnd_vect_u_dist2_big(disti, ctxv1, isci);
+
 	need_swap = (pa_big2_coord_cmp(disti, disto) < 0);
+rnd_trace("## I1 isco=%f;%f isci=%f;%f   ctxv1=%f;%f\n### disti=%f disto=%f swap=%d for %d\n",
+	pa_big_double(isco.x), pa_big_double(isco.y),
+	pa_big_double(isci.x), pa_big_double(isci.y),
+	pa_big_double(ctxv1.x), pa_big_double(ctxv1.y),
+	pa_big2_double(disti), pa_big2_double(disto),
+	need_swap, pa_big2_coord_cmp(disti, disto)
+	);
 	if (need_swap)
 		SWAP(pa_big_vector_t, isco, isci);
 
@@ -158,6 +166,7 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	if (ctxn1 == NULL) ctxn1 = ctx->v;
 
 	sn2 = pa_selfisc_ins_pt(ctx, sv, isco);
+rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_big_double(isco.y), pa_big_double(isci.x), pa_big_double(isci.y));
 	if (sn2 == NULL) sn2 = sv->next;
 	else sn2->flg.mark = 1;
 	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
@@ -230,6 +239,16 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
+RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
+{
+	int eff_dir = 1;
+
+	if (dir1 != 'N') eff_dir = !eff_dir;
+	if (dir2 != 'N') eff_dir = !eff_dir;
+
+	return eff_dir;
+}
+
 /* Step from n to the next node according to dir, walking the outline */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 {
@@ -238,23 +257,39 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 
 	rnd_trace(" next: ");
 	if (n->cvclst_prev == NULL) {
-		rnd_trace("straight to %d %d\n", n->next->point[0], n->next->point[1]);
-		if (*dir == 'N') return n->next;
-		return n->prev;
+		if (*dir == 'N') {
+			onto = n->next;
+			n->flg.mark = 1;
+		}
+		else {
+			onto = n->prev;
+			onto->flg.mark = 1;
+		}
+		rnd_trace("straight to %d %d\n", onto->point[0], onto->point[1]);
+
+		return onto;
 	}
 
-	rnd_trace("CVC\n");
 	start = c = n->cvclst_prev->next;
+	rnd_trace("CVC (c->side=%c *dir=%c)\n", c->side, *dir);
 	do {
-		if (c->side == 'N') onto = c->parent->next;
+		int eff_dir = pa_eff_dir_forward(c->side, *dir);
+
+		if (eff_dir) onto = c->parent->next;
 		else onto = c->parent->prev;
+
 		rnd_trace("  %d %d '%c'", onto->point[0], onto->point[1], c->side);
 		if (!onto->flg.mark) {
-			*dir = c->side;
-			rnd_trace(" accept, dir '%c' (onto)!\n", *dir);
+			*dir = eff_dir ? 'N' : 'P';
+			if (eff_dir)
+				c->parent->flg.mark = 1;
+			else
+				onto->flg.mark = 1;
+			
+			rnd_trace(" accept, dir '%c' (onto) {%p}!\n", *dir, onto);
 			return onto;
 		}
-		rnd_trace(" refuse (marked)\n");
+		rnd_trace(" refuse (marked) {%p}\n", onto);
 	} while((c = c->prev) != start);
 
 	/* corner case: bowtie-kind of self-isc with the original 'start' node
@@ -265,16 +300,23 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	   to continue, just close the poly. Test case: class1c */
 	start = c = n->cvclst_prev->next;
 	do {
-		if (c->side == 'N') onto = c->parent->next;
+		int eff_dir = pa_eff_dir_forward(c->side, *dir);
+
+		if (eff_dir) onto = c->parent->next;
 		else onto = c->parent->prev;
+
 		if (onto->flg.start) {
 			rnd_trace(" accept, dir '%c' (start %ld;%ld)!\n", *dir, onto->point[0], onto->point[1]);
+			if (eff_dir)
+				c->parent->flg.mark = 1;
+			else
+				onto->flg.mark = 1;
 			return onto;
 		}
 	} while((c = c->prev) != start);
 
 	/* didn't find a way out of CVC that's still available or is closing the loop */
-	assert(!"nowhere to go from CVC");
+	assert(!"nowhere to go from CVC (outline)");
 	return NULL;
 }
 
@@ -303,11 +345,10 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	/* collect a closed loop */
 	last = dst->head;
 	for(n = pa_selfisc_next_o(start, &dir); n != start; n = pa_selfisc_next_o(n, &dir)) {
-		rnd_trace(" at out %d %d", n->point[0], n->point[1]);
+		rnd_trace(" at out %d %d {%p}", n->point[0], n->point[1], n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
 		*/
-		n->flg.mark = 1;
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
 		newn->point[1] = n->point[1];
@@ -318,50 +359,85 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 }
 
 /* Step from n to the next node according to dir, walking an island */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, int *rev, rnd_vnode_t **first)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
 
-	rnd_trace("    next: ");
+	rnd_trace("    next (first:%d): ", first);
 	if (n->cvclst_prev == NULL) {
-		rnd_trace("straight to %d %d\n", n->next->point[0], n->next->point[1]);
-		if (*dir == 'N') return n->prev;
-		return n->next;
+		if (*dir == 'N') {
+			onto = n->prev;
+			onto->flg.mark = 1;
+rnd_trace("[mark %ld;%ld] ", onto->point[0], onto->point[1]);
+			if (first) {
+				*first = onto;
+				onto->flg.start = 1;
+			}
+		}
+		else {
+			onto = n->next;
+			n->flg.mark = 1;
+rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
+			if (first) {
+				*first = n;
+				n->flg.start = 1;
+			}
+		}
+		rnd_trace("straight to %d %d\n", onto->point[0], onto->point[1]);
+		return onto;
 	}
 
 	rnd_trace("CVC\n");
 	start = c = n->cvclst_prev->next;
 	do {
-		if (c->side == 'N') onto = c->parent->prev;
+		int eff_dir = pa_eff_dir_forward(c->side, *dir);
+
+		if (c->side == *dir)
+			*rev = 1;
+
+		if (eff_dir) onto = c->parent->prev;
 		else onto = c->parent->next;
-		rnd_trace("     %d %d '%c'", onto->point[0], onto->point[1], c->side);
-		if (!onto->flg.mark) {
+
+		rnd_trace("     %d %d '%c' m%d s%d %d onto={%p} parent={%p}", onto->point[0], onto->point[1], c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
+		if (c->parent->flg.start) {
+			if (first) continue; /* tried to start onto an already mapped path; try the next */
+			return NULL; /* arrived back to the starting point - finish normally */
+		}
+
+		if (!onto->flg.mark || onto->flg.start) { /* also accept flg.start here: greedy algorithm to find shortest loops */
 			*dir = c->side;
+			if (eff_dir) {
+				onto->flg.mark = 1;
+				if (first) {
+					*first = onto;
+					onto->flg.start = 1;
+				}
+				rnd_trace(" mark %d %d M1a s%d {%p}", onto->point[0], onto->point[1], first, onto);
+			}
+			else {
+				c->parent->flg.mark = 1;
+				if (first) {
+					*first = c->parent;
+					c->parent->flg.start = 1;
+				}
+				rnd_trace(" mark %d %d M1b s%d {%p}", c->parent->point[0], c->parent->point[1], first, c->parent);
+			}
+
 			rnd_trace("    accept, dir '%c' (onto)!\n", *dir);
 			return onto;
 		}
 		rnd_trace("    refuse (marked)\n");
 	} while((c = c->prev) != start);
 
-	/* corner case: bowtie-kind of self-isc with the original 'start' node
-	   being the next node from the last cvc junction. Since the 'start' node
-	   is already marked, the above loop will not pick it up and we'd panic.
-	   As a special exception in this case search the outgoing edges for
-	   the original 'start' node and if found, and there were no better way
-	   to continue, just close the poly. Test case: class1c */
-	start = c = n->cvclst_prev->next;
-	do {
-		if (c->side == 'N') onto = c->parent->prev;
-		else onto = c->parent->next;
-		if (onto->flg.start) {
-			rnd_trace(" accept, dir '%c' (start %ld;%ld)!\n", *dir, onto->point[0], onto->point[1]);
-			return onto;
-		}
-	} while((c = c->prev) != start);
-
-	/* didn't find a way out of CVC that's still available or is closing the loop */
-
+	if (!first) {
+		/* didn't find a way out of CVC that's still available or is closing the
+		   loop; it's really an error */
+		assert(!"nowhere to go from CVC (island)");
+	}
+	else {
+		/* can't start in any direction: all islands are mapped, return empty */
+	}
 	return NULL;
 }
 
@@ -370,20 +446,17 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 {
 	int accept;
 	char dir = 'N';
-	rnd_vnode_t *n, *newn, *last;
+	rnd_vnode_t *n, *newn, *last, *started;
 	rnd_pline_t *dst;
+	int rev = 0;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
-	start->flg.mark = 1;
-	start->flg.start = 1;
-
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
-	for(n = pa_selfisc_next_i(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir)) {
+	for(n = pa_selfisc_next_i(start, &dir, &rev, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, &rev, 0)) {
 		rnd_trace("   IS2 %d %d\n", n->point[0], n->point[1]);
-		n->flg.mark = 1;
 
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
@@ -392,9 +465,16 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 		last = newn;
 	}
 	pa_pline_update(dst, 1);
-	accept = (dst->flg.orient != RND_PLF_DIR) && (dst->Count >= 3); /* only negative orientation should be treated as cutout */
+
+	/* only negative orientation should be treated as cutout */
+	rnd_trace("    end: dir=%c rev=%d PLF=%d\n", dir, rev, dst->flg.orient == RND_PLF_DIR);
+	if (dir == 'N')
+		accept = (dst->flg.orient == RND_PLF_DIR) && (dst->Count >= 3);
+	else
+		accept = (dst->flg.orient != RND_PLF_DIR) && (dst->Count >= 3);
 	rnd_trace("  } (end island: len=%d accept=%d)\n", dst->Count, accept);
-	start->flg.start = 0;
+	if (started != NULL)
+		started->flg.start = 0;
 
 	if (accept) {
 		dst->next = outline->next;
@@ -452,7 +532,7 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	do {
 		rnd_box_t box;
 
-		rnd_trace(" loop %ld;%ld (outer)\n", n->point[0], n->point[1]);
+		rnd_trace(" loop %ld;%ld (outer) {%p}\n", n->point[0], n->point[1], n);
 
 		n->flg.mark = 0;
 		ctx.v = n;
