@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Distance square between v1 and v2 in big coord */
+/* Distance square between v1 and v2 in big coord (signed) */
 void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
 {
 	pa_big_coord_t dx, dy;
@@ -48,6 +48,21 @@ void rnd_vect_m_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector
 	dys = big_sgn(dy, W);
 	if (dys > 0)    {                        return /*+dd*/; }
 	if (dys < 0)    { big_neg(dst, dst, W2); return /*-dd*/; }
+}
+
+/* Distance square between v1 and v2 in big coord *unsigned) */
+void rnd_vect_u_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector_t v2)
+{
+	pa_big_coord_t dx, dy;
+	pa_big2_coord_t a, b;
+
+	big_subn(dx, v1.x, v2.x, W, 0);
+	big_subn(dy, v1.y, v2.y, W, 0);
+
+	big_signed_mul(a, W2, dx, dx, W);
+	big_signed_mul(b, W2, dy, dy, W);
+
+	big_addn(dst, a, b, W2, 0);
 }
 
 /* Returns if num is between A and B */
