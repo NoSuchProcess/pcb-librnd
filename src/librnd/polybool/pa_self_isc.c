@@ -128,6 +128,7 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	pa_big2_coord_t disto, disti;
 	pa_big_vector_t ctxv1, ctxv2, sv1, sv2; /* line endpoints: ctx->v/ctx->v->next and sv;sv->next */
 	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
+	int need_swap;
 
 	rnd_trace("line-line overlap: %ld;%ld %ld;%ld vs %ld;%ld %ld;%ld\n",
 		ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1],
@@ -145,7 +146,8 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	   guaranteed to be on the outer loop */
 	rnd_vect_m_dist2_big(disto, ctxv1, isco);
 	rnd_vect_m_dist2_big(disti, ctxv1, isci);
-	if (disti < disto)
+	need_swap = (pa_big2_coord_cmp(disti, disto) < 0);
+	if (need_swap)
 		SWAP(pa_big_vector_t, isco, isci);
 
 	/* add the intersection points; when pa_selfisc_ins_pt() returns NULL, we are at an endpoint */
