@@ -132,3 +132,8 @@ int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b)
 	return big_signed_cmpn(a, b, W);
 }
 
+int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b)
+{
+	return big_signed_cmpn(a, b, W2);
+}
+
