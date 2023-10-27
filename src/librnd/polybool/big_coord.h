@@ -80,6 +80,7 @@ int pa_big_vnode_vnode_equ(rnd_vnode_t *vna, rnd_vnode_t *vnb);
 
 /* Approximation of big coords in double, for debug prints */
 double pa_big_double(pa_big_coord_t crd);
+double pa_big2_double(pa_big2_coord_t crd);
 double pa_big_vnxd(rnd_vnode_t *vn);
 double pa_big_vnyd(rnd_vnode_t *vn);
 

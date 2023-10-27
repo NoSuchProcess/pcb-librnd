@@ -117,6 +117,24 @@ double pa_big_double(pa_big_coord_t crd)
 		return pa_big_double_(crd);
 }
 
+RND_INLINE double pa_big2_double_(pa_big2_coord_t crd)
+{
+	double n = (double)crd[6] + (double)crd[7] * BIG_DBL_MULT + (double)crd[8] * BIG_DBL_MULT * BIG_DBL_MULT + (double)crd[9] * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT + (double)crd[10] * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT + (double)crd[11] * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT;
+	double d = (double)crd[5] / BIG_DBL_MULT + (double)crd[4] / (BIG_DBL_MULT * BIG_DBL_MULT) + (double)crd[3] / (BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT) + (double)crd[2] / (BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT) + (double)crd[1] / (BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT) + (double)crd[0] / (BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT * BIG_DBL_MULT);
+	return n + d;
+}
+
+double pa_big2_double(pa_big2_coord_t crd)
+{
+	if (big_is_neg(crd, W2)) {
+		pa_big2_coord_t tmp;
+		big_neg(tmp, crd, W2);
+		return -pa_big2_double_(tmp);
+	}
+	else
+		return pa_big2_double_(crd);
+}
+
 double pa_big_vnxd(rnd_vnode_t *vn)
 {
 	if (vn->cvclst_prev != NULL)
