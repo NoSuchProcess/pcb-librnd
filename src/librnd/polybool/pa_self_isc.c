@@ -685,6 +685,12 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 	} while((pa = pa->f) != pa1);
 }
 
+static int cmp_pline_area(const void *Pl1, const void *Pl2)
+{
+	const rnd_pline_t *pl1 = Pl1, *pl2 = Pl2;
+	return (pl1->area < pl2->area) ? +1 : -1;
+}
+
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
@@ -704,6 +710,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		/* pline intersects itself */
 		for(pl = (*pa)->contours; pl != NULL; pl = next) {
 			pa_posneg_t posneg = {0};
+
 			next = pl->next;
 
 			if (rnd_pline_split_selfisc(&posneg, pl) == 0)
@@ -713,17 +720,54 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 			/* install holes (neg) in islands (pos) */
 			if (posneg.subseq_pos.used == 0) {
+				only_one_island:;
 				/* special case optimization: if there's only one positive island,
 				   all holes go in there - this is the common case, only the "bone"
 				   cases will result in multiple positive islands */
 				firstpos->next = posneg.neg_head;
 				posneg.neg_head = posneg.neg_tail = NULL;
+				pa_pline_update(firstpos, 0);
 			}
 			else {
 TODO("sort out which island goes where");
 				rnd_trace("TODO#751\n");
-				if (posneg.neg_head != NULL)
+
+				/* make sure all islands are updated so they have an area */
+				for(n = 0; n < posneg.subseq_pos.used; n++) {
+					rnd_pline_t *island = posneg.subseq_pos.array[n];
+					if (island->area <= 0)
+						pa_pline_update(island, 0);
+				}
+
+				/* sort islands so that the largest is first; there are only
+				   a few islands expected so this shouldn't be too slow */
+				qsort(posneg.subseq_pos.array, posneg.subseq_pos.used, sizeof(void *), cmp_pline_area);
+
+				/* if a positive island is within a larger positive island, remove it */
+				for(n = 1; n < posneg.subseq_pos.used; n++) {
+					long m;
+					int del = 0;
+					rnd_pline_t *small = posneg.subseq_pos.array[n];
+					
+					for(m = 0; m < n; m++) {
+						rnd_pline_t *big = posneg.subseq_pos.array[m];
+						if (pa_pline_inside_pline(big, small)) {
+							del = 1;
+							break;
+						}
+					}
+
+					if (del) {
+						vtp0_remove(&posneg.subseq_pos, n, 1);
+						n--;
+					}
+				}
+
+				if (posneg.neg_head != NULL) {
+					if (posneg.subseq_pos.used < 2)
+						goto only_one_island; /* the above deletions of redundant positives may have lead to this */
 					abort();
+				}
 
 				firstpos = posneg.subseq_pos.array[0];
 			}
