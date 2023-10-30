@@ -71,7 +71,6 @@ typedef struct {
 static void posneg_append_pline(pa_posneg_t *posneg, int polarity, rnd_pline_t *pl)
 {
 	assert(pl != NULL);
-	assert(pl->next == NULL);
 	assert(polarity != 0);
 
 	if (polarity > 0) {
