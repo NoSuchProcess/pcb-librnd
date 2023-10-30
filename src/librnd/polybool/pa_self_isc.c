@@ -289,7 +289,8 @@ RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
 	return eff_dir;
 }
 
-/* Step from n to the next node according to dir, walking the outline */
+/* Step from n to the next node according to dir, walking the outline (trying
+   to achieve largest area) */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
@@ -362,6 +363,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	return NULL;
 }
 
+/* Collect the outline, largest area possible; remember islands cut off */
 RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *last, *newn;
@@ -394,7 +396,8 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	start->flg.start = 0;
 }
 
-/* Step from n to the next node according to dir, walking an island */
+/* Step from n to the next node according to dir, walking an island (trying to
+   get minimal area portions) */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, int *rev, rnd_vnode_t **first)
 {
 	pa_conn_desc_t *c, *start;
