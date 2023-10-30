@@ -694,7 +694,7 @@ static int cmp_pline_area(const void *Pl1, const void *Pl2)
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
-	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos;
+	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next;
 	rnd_cardinal_t cnt = 0;
 	vtp0_t floating = {0};
 	long n;
@@ -729,9 +729,6 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 				posneg.neg_head = posneg.neg_tail = NULL;
 			}
 			else {
-TODO("sort out which island goes where");
-				rnd_trace("TODO#751\n");
-
 				/* make sure all islands are updated so they have an area */
 				for(n = 0; n < posneg.subseq_pos.used; n++) {
 					rnd_pline_t *island = posneg.subseq_pos.array[n];
@@ -766,7 +763,27 @@ TODO("sort out which island goes where");
 				if (posneg.neg_head != NULL) {
 					if (posneg.subseq_pos.used < 2)
 						goto only_one_island; /* the above deletions of redundant positives may have lead to this */
-					abort();
+
+					/* find out which hole goes in which island; after the pline self isc
+					   resolve function there's no intersection. Put every hold in the
+					   smallest island it is inside */
+					for(hole = posneg.neg_head; hole != NULL; hole = hole_next) {
+						int found = 0;
+
+						hole_next = hole->next;
+						hole->next = NULL;
+
+						for(n = posneg.subseq_pos.used-1; n >= 0; n--) {
+							rnd_pline_t *island = posneg.subseq_pos.array[n];
+							if (pa_pline_inside_pline(island, hole)) {
+								hole->next = island->next;
+								island->next = hole;
+								found = 1;
+								break;
+							}
+						}
+						assert(found == 1);
+					}
 				}
 
 				firstpos = posneg.subseq_pos.array[0];
