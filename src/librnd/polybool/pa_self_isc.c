@@ -58,6 +58,44 @@ typedef struct {
 	vtp0_t hidden_islands;
 } pa_selfisc_t;
 
+/* A collection of positive and negative polylines */
+typedef struct {
+	rnd_pline_t *first_pos; /* optimization: don't start a vtp0 if there's only one (most common case) */
+	vtp0_t subseq_pos;      /* if there's more than one positive, store them here; can't use pos->next because ->next is for holes */
+
+	/* negative islands are always collected in a list; tail pointer is kept
+	   for quick append */
+	rnd_pline_t *neg_head, *neg_tail;
+} pa_posneg_t;
+
+static void posneg_append_pline(pa_posneg_t *posneg, int polarity, rnd_pline_t *pl)
+{
+	assert(pl != NULL);
+	assert(pl->next == NULL);
+	assert(polarity != 0);
+
+	if (polarity > 0) {
+		if (posneg->first_pos == NULL)
+			posneg->first_pos = pl;
+		else
+			vtp0_append(&posneg->subseq_pos, pl);
+	}
+	else {
+		if (posneg->neg_head == NULL)
+			posneg->neg_head = pl; /* first entry */
+		else
+			posneg->neg_tail->next = pl; /* append to tail */
+
+		/* set new tail */
+		posneg->neg_tail = pl;
+
+		/* make sure tail points to the last entry */
+		while(posneg->neg_tail->next != NULL)
+			posneg->neg_tail = posneg->neg_tail->next;
+	}
+}
+
+
 static rnd_r_dir_t pa_selfisc_find_seg_cb(const rnd_box_t *b, void *ctx_)
 {
 	pa_selfisc_t *ctx = (pa_selfisc_t *)ctx_;
@@ -324,7 +362,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	return NULL;
 }
 
-RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *last, *newn;
 	rnd_pline_t *dst;
@@ -338,13 +376,7 @@ RND_INLINE void pa_selfisc_collect_outline(rnd_pline_t **dst_, rnd_pline_t *src,
 	rnd_trace("selfi collect outline from %d %d\n", start->point[0], start->point[1]);
 
 	/* append dst to the list of plines */
-	if (*dst_ != NULL) {
-		rnd_pline_t *last;
-		for(last = *dst_; last->next != NULL; last = last->next) ;
-		last->next = dst;
-	}
-	else
-		*dst_ = dst;
+	posneg_append_pline(posneg, +1, dst);
 
 	/* collect a closed loop */
 	last = dst->head;
@@ -446,7 +478,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 }
 
 /* Collect all unmarked islands starting from a cvc node */
-RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
 	int accept;
 	char dir = 'N';
@@ -480,14 +512,13 @@ RND_INLINE void pa_selfisc_collect_island(rnd_pline_t *outline, rnd_vnode_t *sta
 		started->flg.start = 0;
 
 	if (accept) {
-		dst->next = outline->next;
-		outline->next = dst;
+		posneg_append_pline(posneg, -1, dst);
 	}
 	else
 		pa_pline_free(&dst); /* drop overlapping positive */
 }
 
-RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *src, rnd_vnode_t *start)
+RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n;
 
@@ -505,27 +536,18 @@ RND_INLINE void pa_selfisc_collect_islands(rnd_pline_t *outline, rnd_pline_t *sr
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
-				pa_selfisc_collect_island(outline, c->parent);
+				pa_selfisc_collect_island(posneg, c->parent);
 		} while((c = c->next) != cstart);
 
 	} while((n = n->next) != start);
 }
 
-/* Move over the original islands of the source polyline into dst; these
-   islands are independent of the pline self-isc resolve effort */
-RND_INLINE void pa_selfisc_preserve_islands(rnd_pline_t *dst, rnd_pline_t *src)
-{
-	dst->next = src->next;
-	src->next = NULL;
-}
-
-/* Build the outer contour of self-intersecting pl and return it. If there is
-   no self intersection, return NULL. */
-rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
+/* Build the outer contour of self-intersecting pl and return it. Return
+   whether there was a self intersection (and posneg got loaded). */
+static rnd_bool rnd_pline_split_selfisc(pa_posneg_t *posneg, rnd_pline_t *pl)
 {
 	rnd_vnode_t *n, *start;
 	pa_selfisc_t ctx = {0};
-	rnd_pline_t *res = NULL;
 	long i;
 
 	ctx.pl = pl;
@@ -555,24 +577,30 @@ rnd_pline_t *rnd_pline_split_selfisc(rnd_pline_t *pl)
 	} while(n != start);
 
 	if (ctx.num_isc == 0)
-		return NULL;
+		return 0; /* no self intersection */
+
+	/* preserve original holes as negatives */
+	if (pl->next != NULL) {
+		posneg_append_pline(posneg, -1, pl->next);
+		pl->next = NULL;
+	}
 
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect the outline first; anything that remains is an island,
 	   add them as a hole depending on their loop orientation */
-	pa_selfisc_collect_outline(&res, pl, start);
-	pa_selfisc_preserve_islands(res, pl);
-	pa_selfisc_collect_islands(res, pl, start);
+	pa_selfisc_collect_outline(posneg, pl, start);
+
+	pa_selfisc_collect_islands(posneg, start);
 
 	/* collect hiddel islands - they are not directly reachable from the
 	   outline */
 	for(i = 0; i < ctx.hidden_islands.used; i++)
-		pa_selfisc_collect_island(res, ctx.hidden_islands.array[i]);
+		pa_selfisc_collect_island(posneg, ctx.hidden_islands.array[i]);
 
 	vtp0_uninit(&ctx.hidden_islands);
 
-	return res;
+	return 1;
 }
 
 /*** class 2 ***/
@@ -644,8 +672,8 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
-	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next;
-	rnd_pline_t *pl, *next, *pl2, *next2, *newpl;
+	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
+	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos;
 	rnd_cardinal_t cnt = 0;
 	vtp0_t floating = {0};
 	long n;
@@ -654,21 +682,57 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	do {
 		rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
 
+		/* remember pa->f so that new positive islands we are inserting after (*pa)
+		   are not affected */
+		paf = (*pa)->f;
+
 		/* pline intersects itself */
 		for(pl = (*pa)->contours; pl != NULL; pl = next) {
+			pa_posneg_t posneg = {0};
 			next = pl->next;
-			newpl = rnd_pline_split_selfisc(pl);
-			if (newpl != NULL) {
-				/* replace pl with newpl in pa; really just swap the vertex list... */
-				SWAP(rnd_vnode_t *, pl->head, newpl->head);
-				SWAP(rnd_pline_t *, pl->next, newpl->next);
+
+			if (rnd_pline_split_selfisc(&posneg, pl) == 0)
+				continue;
+
+			firstpos = posneg.first_pos;
+
+			/* install holes (neg) in islands (pos) */
+			if (posneg.subseq_pos.used == 0) {
+				/* special case optimization: if there's only one positive island,
+				   all holes go in there - this is the common case, only the "bone"
+				   cases will result in multiple positive islands */
+				firstpos->next = posneg.neg_head;
+				posneg.neg_head = posneg.neg_tail = NULL;
+			}
+			else {
+TODO("sort out which island goes where");
+				rnd_trace("TODO#751");
+				abort();
+			}
+
+			/* first positive: replace existing pl in pa; really just swap the
+			   vertex list and islands... */
+			if (firstpos != NULL) {
+				SWAP(rnd_vnode_t *, pl->head, firstpos->head);
+				SWAP(rnd_pline_t *, pl->next, firstpos->next);
 				pa_pline_update(pl, 0);
 
 				/* ... so newpl holds the old list now and can be freed */
-				pa_pline_free(&newpl);
+				pa_pline_free(&firstpos);
 			}
-		}
 
+
+			for(n = 0; n < posneg.subseq_pos.used; n++) {
+				rnd_pline_t *island = posneg.subseq_pos.array[n];
+				TODO("insert island as a new pa");
+			}
+
+			vtp0_uninit(&posneg.subseq_pos);
+		}
+	} while((*pa = paf) != pa_start);
+
+	pa_start = *pa;
+	do {
 		/* pline intersects other plines within a pa island; since the first pline
 		   is the outer contour, this really means a hole-contour or a hole-hole
 		   intersection within a single island. Start with merging hole-hole
