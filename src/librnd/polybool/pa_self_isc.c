@@ -720,13 +720,13 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 			/* install holes (neg) in islands (pos) */
 			if (posneg.subseq_pos.used == 0) {
+				pa_pline_update(firstpos, 0);
 				only_one_island:;
 				/* special case optimization: if there's only one positive island,
 				   all holes go in there - this is the common case, only the "bone"
 				   cases will result in multiple positive islands */
 				firstpos->next = posneg.neg_head;
 				posneg.neg_head = posneg.neg_tail = NULL;
-				pa_pline_update(firstpos, 0);
 			}
 			else {
 TODO("sort out which island goes where");
