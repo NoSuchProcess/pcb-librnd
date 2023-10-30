@@ -75,10 +75,14 @@ static void posneg_append_pline(pa_posneg_t *posneg, int polarity, rnd_pline_t *
 	assert(polarity != 0);
 
 	if (polarity > 0) {
-		if (posneg->first_pos == NULL)
-			posneg->first_pos = pl;
-		else
+		if (posneg->first_pos != NULL) {
+			if (posneg->subseq_pos.used == 0)
+				vtp0_append(&posneg->subseq_pos, posneg->first_pos); /* the vector should include first_pos too so it's not a special case */
 			vtp0_append(&posneg->subseq_pos, pl);
+		}
+		else
+			posneg->first_pos = pl;
+
 	}
 	else {
 		if (posneg->neg_head == NULL)
@@ -483,7 +487,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 /* Collect all unmarked islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
-	int accept;
+	int accept_pol = 0;
 	char dir = 'N';
 	rnd_vnode_t *n, *newn, *last, *started;
 	rnd_pline_t *dst;
@@ -505,17 +509,25 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	}
 	pa_pline_update(dst, 1);
 
-	/* only negative orientation should be treated as cutout */
-	if (dir == 'N')
-		accept = (dst->flg.orient == RND_PLF_DIR) && (dst->Count >= 3);
-	else
-		accept = (dst->flg.orient != RND_PLF_DIR) && (dst->Count >= 3);
-	rnd_trace("  } (end island: len=%d dir=%c PLF=%d rev=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, rev, accept);
+	if (dst->Count >= 3) {
+		/* if there are enough points for a polygon, figure its polarity */
+		if ((dir == 'N') && (dst->flg.orient == RND_PLF_DIR))
+			accept_pol = -1;
+		else if ((dir == 'P') && (dst->flg.orient != RND_PLF_DIR))
+			accept_pol = -1;
+		else if ((dir == 'N') && (dst->flg.orient != RND_PLF_DIR)) /* ? */
+			accept_pol = +1;
+		else if ((dir == 'P') && (dst->flg.orient == RND_PLF_DIR))
+			accept_pol = +1;
+	}
+	rnd_trace("  } (end island: len=%d dir=%c PLF=%d rev=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, rev, accept_pol);
 	if (started != NULL)
 		started->flg.start = 0;
 
-	if (accept) {
-		posneg_append_pline(posneg, -1, dst);
+	if (accept_pol != 0) {
+		if ((accept_pol > 0) && (dst->flg.orient != RND_PLF_DIR))
+			pa_pline_invert(dst);
+		posneg_append_pline(posneg, accept_pol, dst);
 	}
 	else
 		pa_pline_free(&dst); /* drop overlapping positive */
@@ -709,12 +721,17 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 			}
 			else {
 TODO("sort out which island goes where");
-				rnd_trace("TODO#751");
-				abort();
+				rnd_trace("TODO#751\n");
+				if (posneg.neg_head != NULL)
+					abort();
+
+				firstpos = posneg.subseq_pos.array[0];
 			}
 
 			/* first positive: replace existing pl in pa; really just swap the
-			   vertex list and islands... */
+			   vertex list and islands... This is an optimization that saves
+			   on memory allocations plus keeps the polyarea as intact as
+			   possible for the simple/common cases. */
 			if (firstpos != NULL) {
 				SWAP(rnd_vnode_t *, pl->head, firstpos->head);
 				SWAP(rnd_pline_t *, pl->next, firstpos->next);
@@ -724,10 +741,14 @@ TODO("sort out which island goes where");
 				pa_pline_free(&firstpos);
 			}
 
-
-			for(n = 0; n < posneg.subseq_pos.used; n++) {
+			/* insert subsequent islands; skip the 0th one, it's already in */
+			for(n = 1; n < posneg.subseq_pos.used; n++) {
+				rnd_polyarea_t *pa_new;
 				rnd_pline_t *island = posneg.subseq_pos.array[n];
 				TODO("insert island as a new pa");
+				pa_new = pa_polyarea_alloc();
+				rnd_polyarea_contour_include(pa_new, island);
+				rnd_polyarea_m_include(pa, pa_new);
 			}
 
 			vtp0_uninit(&posneg.subseq_pos);
