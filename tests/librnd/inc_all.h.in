@@ -6,6 +6,7 @@ foreach /local/h in /local/objs
 	switch /local/h
 		case {core/funchash_core_list.h} end;
 		case {^font/} end;
+		case {^poly/} end;
 		default
 			print [@#include <librnd/@/local/h@>
 @]
