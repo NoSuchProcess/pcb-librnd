@@ -59,7 +59,7 @@ static void init_rotate_cache(void)
 	}
 }
 
-rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
+rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *contour)
 {
 	rnd_polyarea_t *p;
 	rnd_poly_contour_pre(contour, rnd_true);
@@ -67,9 +67,16 @@ rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t * contour)
 	if (!(p = rnd_polyarea_create()))
 		return NULL;
 	rnd_polyarea_contour_include(p, contour);
+	return p;
+}
+
+rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *contour)
+{
+	rnd_polyarea_t *p = rnd_poly_from_contour_nochk(contour);
 	assert(rnd_poly_valid(p));
 	return p;
 }
+
 
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *contour)
 {

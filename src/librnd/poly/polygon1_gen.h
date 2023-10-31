@@ -5,6 +5,7 @@
 #include <librnd/poly/polyarea.h>
 
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl);
+rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *contour); /* do not assert(valid(pa)) */
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);
 
 rnd_polyarea_t *rnd_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius);
