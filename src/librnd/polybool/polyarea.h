@@ -36,6 +36,11 @@ typedef rnd_vertex_t rnd_vector_t;
 
 extern const rnd_vector_t rnd_vect_zero;
 
+typedef enum {
+	RND_VNODE_LINE = 0, /* there is no ->curve */
+	RND_VNODE_ARC
+} rnd_vnode_curve_type_t;
+
 typedef struct pa_conn_desc_s pa_conn_desc_t; /* A "descriptor" that makes up a "connectivity list" in the paper */
 typedef struct rnd_vnode_s rnd_vnode_t;
 struct rnd_vnode_s {
@@ -47,9 +52,23 @@ struct rnd_vnode_s {
 		unsigned int risk:1;    /* the vertex was an intersection so there is a risk of topology change (line jumping over another vertex); kept track until the bool_postprocess step that handles the risk and resets this. */
 		unsigned int start:1;   /* used in pa_self_isc: the node the loop search has started from */
 		unsigned int blocked:1; /* used in pa_self_isc: outline loop shouldn't go this direction */
+		unsigned curve_type:4; /* one of rnd_vnode_curve_type_t */
 	} flg;
 	pa_conn_desc_t *cvclst_prev, *cvclst_next; /* "cross vertex connection list" */
-	rnd_vector_t point;
+	rnd_vector_t point; /* startpoint; endpoint is ->next.point */
+
+	/* fields above are binary-compatible with the old poly lib */
+
+	union {
+		struct { /* circular arc */
+			rnd_vector_t center; /* part of the specification: saved */
+			/* cached fields (not saved) */
+			rnd_ucoord_t r[6]; /* pa_big_coord_t really */
+			/* angle of point from the center [0..4); pa_big_coord_t aim = aim_int.aim_frac */
+			rnd_ucoord_t aim_frac; /* fraction part of aim */
+			char aim_int; /* intege part of the aim */
+		} arc;
+	} curve;
 };
 
 typedef struct rnd_pline_s rnd_pline_t;
