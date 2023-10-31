@@ -5,6 +5,7 @@
 #include <librnd/polybool/polyarea.h>
 
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl);
+rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *pl); /* do not assert(valid(pa)) */
 rnd_polyarea_t *rnd_poly_from_contour_autoinv(rnd_pline_t *pl);
 
 /* create a circle approximation from lines */

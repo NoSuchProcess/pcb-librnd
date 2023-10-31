@@ -110,7 +110,7 @@ void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rn
 	rnd_poly_frac_circle_(c, cx, cy, v, range, 1);
 }
 
-rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
+rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *pl)
 {
 	rnd_polyarea_t *pa;
 
@@ -124,8 +124,14 @@ rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
 
 	pa_polyarea_insert_pline(pa, pl);
 
-	assert(rnd_poly_valid(pa));
 
+	return pa;
+}
+
+rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
+{
+	rnd_polyarea_t *pa = rnd_poly_from_contour_nochk(pl);
+	assert(rnd_poly_valid(pa));
 	return pa;
 }
 
