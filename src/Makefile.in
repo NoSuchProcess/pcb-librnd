@@ -512,6 +512,10 @@ librnd-poly.so: librnd-poly.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-poly.so.$(PCB_RND_VER) librnd-poly.so
 	$(SCCBOX) ln -f librnd-poly.so.$(PCB_RND_VER) librnd-poly.so.$(PCB_RND_VER_MAJOR)
 
+librnd-polybool.so: librnd-polybool.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-polybool.so.$(PCB_RND_VER) librnd-polybool.so
+	$(SCCBOX) ln -f librnd-polybool.so.$(PCB_RND_VER) librnd-polybool.so.$(PCB_RND_VER_MAJOR)
+
 librnd-font.so: librnd-font.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so.$(PCB_RND_VER_MAJOR)
@@ -539,6 +543,7 @@ HIDLIB_CLEAN_FILES_SO=\
 	librnd-core.so.$(PCB_RND_VER) \
 	librnd-3rd.so.$(PCB_RND_VER) \
 	librnd-poly.so.$(PCB_RND_VER) \
+	librnd-polybool.so.$(PCB_RND_VER) \
 	librnd-font.so.$(PCB_RND_VER) \
 	librnd-font2.so.$(PCB_RND_VER) \
 	librnd-hid.so.$(PCB_RND_VER)
@@ -547,6 +552,7 @@ HIDLIB_CLEAN_FILES_SO_SY=\
 	librnd-core.so \
 	librnd-3rd.so \
 	librnd-poly.so \
+	librnd-polybool.so \
 	librnd-font.so \
 	librnd-font2.so \
 	librnd-hid.so
@@ -558,6 +564,7 @@ HIDLIB_CLEAN_FILES_A=\
 	librnd-core.a \
 	librnd-3rd.a \
 	librnd-poly.a \
+	librnd-polybool.a \
 	librnd-font.a \
 	librnd-font2.a \
 	librnd-hid.a
@@ -634,10 +641,11 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd4
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/font2" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/polybool" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/font2" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
 	$(SCCBOX) $(HOW) "librnd-core.a" "$(HL_LIBDIR)/librnd-core.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
+	$(SCCBOX) $(HOW) "librnd-polybool.a" "$(HL_LIBDIR)/librnd-polybool.a"
 	$(SCCBOX) $(HOW) "librnd-font.a" "$(HL_LIBDIR)/librnd-font.a"
 	$(SCCBOX) $(HOW) "librnd-font2.a" "$(HL_LIBDIR)/librnd-font2.a"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
@@ -673,6 +681,7 @@ else
 	$(SCCBOX) $(HOW) "librnd-core.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-core.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
@@ -683,7 +692,7 @@ end
 put /local/librnd/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
 put /local/librnd/HDRS_CORELIB /local/librnd/OBJS_CORELIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYLIB
-#append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOLLIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOLLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONTLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONT2LIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_HIDLIB
@@ -784,6 +793,8 @@ install_librnd_sy:
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER_MAJOR)"
