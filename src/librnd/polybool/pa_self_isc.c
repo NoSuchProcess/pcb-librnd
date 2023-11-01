@@ -526,6 +526,8 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	if (accept_pol != 0) {
 		if ((accept_pol > 0) && (dst->flg.orient != RND_PLF_DIR))
 			pa_pline_invert(dst);
+		else if ((accept_pol < 0) && (dst->flg.orient == RND_PLF_DIR))
+			pa_pline_invert(dst);
 		posneg_append_pline(posneg, accept_pol, dst);
 	}
 	else
@@ -720,46 +722,65 @@ static int cmp_pline_area(const void *Pl1, const void *Pl2)
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
-	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *prev;
+	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *prev, *last;
 	rnd_cardinal_t cnt = 0;
 	vtp0_t floating = {0};
 	long n;
 
 	pa_start = *pa;
 	do {
+		pa_posneg_t posneg = {0};
+		int has_selfisc;
+
 		rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
 
 		/* remember pa->f so that new positive islands we are inserting after (*pa)
 		   are not affected */
 		paf = (*pa)->f;
 
-		/* pline intersects itself */
-		for(pl = (*pa)->contours; pl != NULL; pl = next) {
-			pa_posneg_t posneg = {0};
-			int has_selfisc;
-
+		/* pline intersects itself: holes first; any self-intersecting hole is
+		   removed, cleaned up (sometimes split) and as a result new loops are
+		   added to posneg for later processing */
+		has_selfisc = 0;
+		prev = (*pa)->contours;
+		for(pl = (*pa)->contours->next; pl != NULL; prev = pl, pl = next) {
+			int si;
 			next = pl->next;
+			si = rnd_pline_split_selfisc_i(&posneg, pl);
+			if (si) {
+				/* remove pl, the resolved variant is in posneg already */
+				prev->next = pl->next;
+				pa_pline_free(&pl);
+			}
+			has_selfisc += si;
+		}
 
-			if (pl == (*pa)->contours)
-				has_selfisc = rnd_pline_split_selfisc_o(&posneg, pl);
-			else
-				has_selfisc = rnd_pline_split_selfisc_i(&posneg, pl);
+		/* pline intersects itself: outline */
+		pl = (*pa)->contours;
+		has_selfisc += rnd_pline_split_selfisc_o(&posneg, pl);
 
-			if (has_selfisc == 0)
-				continue;
-
+		if (has_selfisc != 0) {
 			firstpos = posneg.first_pos;
 
 			/* install holes (neg) in islands (pos) */
 			if (posneg.subseq_pos.used == 0) {
-				if (firstpos != NULL)             /* NULL when dealing with islands only */
+				if (firstpos != NULL) /* only islands self-intersected, not the outline */
 					pa_pline_update(firstpos, 0);
 				only_one_island:;
 				/* special case optimization: if there's only one positive island,
 				   all holes go in there - this is the common case, only the "bone"
 				   cases will result in multiple positive islands */
-				if (firstpos != NULL)
+				if (firstpos == NULL) {
+					if (posneg.neg_head != NULL) {
+						/* append islands collected in the hole resolver loop above */
+						for(last = pl; last->next != NULL; last = last->next) ;
+						last->next = posneg.neg_head;
+						posneg.neg_head = NULL;
+					}
+				}
+				else
 					firstpos->next = posneg.neg_head;
+				
 				posneg.neg_head = posneg.neg_tail = NULL;
 			}
 			else {
@@ -826,7 +847,8 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 			/* first positive: replace existing pl in pa; really just swap the
 			   vertex list and islands... This is an optimization that saves
 			   on memory allocations plus keeps the polyarea as intact as
-			   possible for the simple/common cases. */
+			   possible for the simple/common cases. Note: firstpos is NULL if
+			   outline did not self-intersect. */
 			if (firstpos != NULL) {
 				SWAP(rnd_vnode_t *, pl->head, firstpos->head);
 				SWAP(rnd_pline_t *, pl->next, firstpos->next);
@@ -848,6 +870,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 			vtp0_uninit(&posneg.subseq_pos);
 		}
+
 	} while((*pa = paf) != pa_start);
 
 	pa_start = *pa;
