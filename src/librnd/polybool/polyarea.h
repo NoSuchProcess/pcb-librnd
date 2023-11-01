@@ -65,8 +65,8 @@ struct rnd_vnode_s {
 			/* cached fields (not saved) */
 			rnd_ucoord_t r[6]; /* pa_big_coord_t really */
 			/* angle of point from the center [0..4); pa_big_coord_t aim = aim_int.aim_frac */
-			rnd_ucoord_t aim_frac; /* fraction part of aim */
-			char aim_int; /* intege part of the aim */
+			rnd_ucoord_t aim_frac[2]; /* fraction part of aim ("angle") for start and endpoint */
+			char aim_int[2]; /* integer part of the aim ("angle") for start and endpoint */
 		} arc;
 	} curve;
 };
