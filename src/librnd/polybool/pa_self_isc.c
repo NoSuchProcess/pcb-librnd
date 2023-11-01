@@ -854,6 +854,9 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 				SWAP(rnd_pline_t *, pl->next, firstpos->next);
 				pa_pline_update(pl, 0);
 
+				if (pl->flg.orient != RND_PLF_DIR)
+					pa_pline_invert(pl);
+
 				/* ... so newpl holds the old list now and can be freed */
 				pa_pline_free(&firstpos);
 			}
@@ -862,7 +865,8 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 			for(n = 1; n < posneg.subseq_pos.used; n++) {
 				rnd_polyarea_t *pa_new;
 				rnd_pline_t *island = posneg.subseq_pos.array[n];
-				TODO("insert island as a new pa");
+				
+				assert(island->flg.orient == RND_PLF_DIR);
 				pa_new = pa_polyarea_alloc();
 				rnd_polyarea_contour_include(pa_new, island);
 				rnd_polyarea_m_include(pa, pa_new);
