@@ -201,7 +201,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p);
    returns true if valid. */
 rnd_bool rnd_poly_valid(rnd_polyarea_t *p);
 
-enum rnd_poly_bool_op_e {
+typedef enum rnd_poly_bool_op_e {
 	RND_PBO_UNITE,
 	RND_PBO_ISECT,
 	RND_PBO_SUB,
