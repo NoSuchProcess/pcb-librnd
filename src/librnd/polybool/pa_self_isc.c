@@ -693,7 +693,7 @@ static int cmp_pline_area(const void *Pl1, const void *Pl2)
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
-	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next;
+	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *prev;
 	rnd_cardinal_t cnt = 0;
 	vtp0_t floating = {0};
 	long n;
@@ -862,8 +862,11 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	restart_2b:; /* need to restart the loop because *pa changes */
 	pa_start = *pa;
 	do {
+		prev = NULL;
+
 		/* hole vs. contour intersection */
-		for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
+		for(pl = (*pa)->contours->next; pl != NULL; prev = pl, pl = next) {
+			next = pl->next;
 			if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
 				rnd_polyarea_t *tmpa, *tmpc = NULL;
 
@@ -884,6 +887,11 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 				*pa = tmpc;
 
 				goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
+			}
+			else if (!pa_pline_inside_pline((*pa)->contours, pl)) {
+				/* the hole is fully outside of the island, unlink and discard it */
+				pa_polyarea_del_pline(*pa, pl);
+				pa_pline_free(&pl);
 			}
 		}
 	} while((*pa = (*pa)->f) != pa_start);
