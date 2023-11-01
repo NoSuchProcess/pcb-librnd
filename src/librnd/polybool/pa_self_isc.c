@@ -556,17 +556,12 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 	} while((n = n->next) != start);
 }
 
-/* Build the outer contour of self-intersecting pl and return it. Return
-   whether there was a self intersection (and posneg got loaded). */
-static rnd_bool rnd_pline_split_selfisc(pa_posneg_t *posneg, rnd_pline_t *pl)
+
+static  rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 {
 	rnd_vnode_t *n, *start;
-	pa_selfisc_t ctx = {0};
-	long i;
 
-	ctx.pl = pl;
-
-	n = start = pa_find_minnode(pl);
+	n = start = pa_find_minnode(ctx->pl);
 	rnd_trace("loop start (outer @ rnd_pline_split_selfisc)\n");
 	do {
 		rnd_box_t box;
@@ -574,22 +569,36 @@ static rnd_bool rnd_pline_split_selfisc(pa_posneg_t *posneg, rnd_pline_t *pl)
 		rnd_trace(" loop %ld;%ld (outer) {%p}\n", n->point[0], n->point[1], n);
 
 		n->flg.mark = 0;
-		ctx.v = n;
+		ctx->v = n;
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
 		do {
-			ctx.restart = 0;
-			rnd_r_search(pl->tree, &box, NULL, pa_selfisc_cross_cb, &ctx, NULL);
-		} while(ctx.restart);
+			ctx->restart = 0;
+			rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_cross_cb, ctx, NULL);
+		} while(ctx->restart);
 
-		if (ctx.skip_to != NULL) {
-			n = ctx.skip_to;
-			ctx.skip_to = NULL;
+		if (ctx->skip_to != NULL) {
+			n = ctx->skip_to;
+			ctx->skip_to = NULL;
 		}
 		else
 			n = n->next;
 	} while(n != start);
 
+	return start;
+}
+
+
+/* Build the outer contour of self-intersecting pl. Return
+   whether there was a self intersection (and posneg got loaded). */
+static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
+{
+	rnd_vnode_t *start;
+	pa_selfisc_t ctx = {0};
+	long i;
+
+	ctx.pl = pl;
+	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
 
@@ -614,6 +623,24 @@ static rnd_bool rnd_pline_split_selfisc(pa_posneg_t *posneg, rnd_pline_t *pl)
 
 	vtp0_uninit(&ctx.hidden_islands);
 
+	return 1;
+}
+
+/* Build the contour of self-intersecting hole pl. Return
+   whether there was a self intersection (and posneg got loaded). */
+static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_pline_t *pl)
+{
+	rnd_vnode_t *start;
+	pa_selfisc_t ctx = {0};
+
+	ctx.pl = pl;
+	start = split_selfisc_map(&ctx);
+	if (ctx.num_isc == 0)
+		return 0; /* no self intersection */
+
+	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
+
+	pa_selfisc_collect_island(posneg, start);
 	return 1;
 }
 
@@ -709,22 +736,30 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		/* pline intersects itself */
 		for(pl = (*pa)->contours; pl != NULL; pl = next) {
 			pa_posneg_t posneg = {0};
+			int has_selfisc;
 
 			next = pl->next;
 
-			if (rnd_pline_split_selfisc(&posneg, pl) == 0)
+			if (pl == (*pa)->contours)
+				has_selfisc = rnd_pline_split_selfisc_o(&posneg, pl);
+			else
+				has_selfisc = rnd_pline_split_selfisc_i(&posneg, pl);
+
+			if (has_selfisc == 0)
 				continue;
 
 			firstpos = posneg.first_pos;
 
 			/* install holes (neg) in islands (pos) */
 			if (posneg.subseq_pos.used == 0) {
-				pa_pline_update(firstpos, 0);
+				if (firstpos != NULL)             /* NULL when dealing with islands only */
+					pa_pline_update(firstpos, 0);
 				only_one_island:;
 				/* special case optimization: if there's only one positive island,
 				   all holes go in there - this is the common case, only the "bone"
 				   cases will result in multiple positive islands */
-				firstpos->next = posneg.neg_head;
+				if (firstpos != NULL)
+					firstpos->next = posneg.neg_head;
 				posneg.neg_head = posneg.neg_tail = NULL;
 			}
 			else {
