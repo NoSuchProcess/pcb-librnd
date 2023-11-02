@@ -57,7 +57,7 @@ typedef rnd_ucoord_t big_word;
 #include "big_coord_isc.c"
 #include "big_coord_ang.c"
 #include "big_coord_postproc.c"
-
+#include "big_coord_poly.c"
 
 /* suppress warnings for unused inlines; do not call this function, it's a nop */
 void pa_big_coord_warning_suppressor(void)
