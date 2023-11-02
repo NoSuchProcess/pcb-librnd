@@ -488,7 +488,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 {
 	int accept_pol = 0;
 	char dir = 'N';
-	rnd_vnode_t *n, *newn, *last, *started;
+	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
 	int rev = 0;
 
