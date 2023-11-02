@@ -68,9 +68,11 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #if DEBUG_ANGLE
 #	undef DEBUG_ANGLE
 #	define DEBUG_ANGLE DEBUGP
+#	define DEBUG_ANGLE_EN 1
 #else
 #	undef DEBUG_ANGLE
 #	define DEBUG_ANGLE PA_DEBUGP_DUMMY
+#	define DEBUG_ANGLE_EN 0
 #endif
 
 #if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
@@ -149,8 +151,10 @@ RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 #endif
 	DEBUGP(" %$mD ", n->point[0], n->point[1]);
 }
+#endif
 
-RND_INLINE void pa_debug_print_angle(pa_big_angle_t a)
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN
+void pa_debug_print_angle(pa_big_angle_t a)
 {
 #ifdef PA_BIGCOORD_ISC
 DEBUGP("%lu`%lu`%lu`%lu", a[3], a[2], a[1], a[0]);

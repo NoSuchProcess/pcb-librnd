@@ -26,6 +26,13 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#if DEBUG_ANGLE
+#include <stdio.h>
+#include <librnd/core/rnd_printf.h>
+void pa_debug_print_angle(pa_big_angle_t a);
+#endif
+
+
 int pa_angle_equ(pa_big_angle_t a, pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) == 0;
@@ -102,8 +109,8 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	assert(pa_angle_valid(cd->angle));
 
 #if DEBUG_ANGLE
-	DEBUG_ANGLE("point on %c at %$mD assigned angle ", poly, pt->point[0], pt->point[1]);
+	rnd_fprintf(stderr, "point on %c at %$mD assigned angle ", poly, pt->point[0], pt->point[1]);
 	pa_debug_print_angle(cd->angle);
-	DEBUG_ANGLE(" on side %c\n", side);
+	rnd_fprintf(stderr, " on side %c\n", side);
 #endif
 }
