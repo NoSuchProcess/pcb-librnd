@@ -310,7 +310,8 @@
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
  ../src_3rd/genvector/vtp0.h ../src/librnd/core/actions.h \
  ../src/librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
+ ../src/librnd/core/hidlib.h ../src_3rd/genlist/gendlist.h
 ../src/librnd/core/safe_fs.o: ../src/librnd/core/safe_fs.c \
  ../src/librnd/core/compat_inc.h ../src/librnd/rnd_config.h ../src/librnd/config.h \
  ../src/librnd/core/safe_fs.h ../src/librnd/core/global_typedefs.h ../src/librnd/config.h \
@@ -723,7 +724,8 @@
  ../src/librnd/polybool/big_coord_ang.c \
  ../src/librnd/polybool/big_coord_postproc.c \
  ../src/librnd/polybool/rtree.h ../src_3rd/genrtree/genrtree_api.h \
- ../src/librnd/polybool/rtree2_compat.h
+ ../src/librnd/polybool/rtree2_compat.h ../src/librnd/core/error.h \
+ ../src/librnd/polybool/big_coord_poly.c
 ../src/librnd/polybool/offset.o: ../src/librnd/polybool/offset.c \
  ../src/librnd/core/compat_misc.h ../src/librnd/config.h ../src/librnd/polybool/rtree.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
