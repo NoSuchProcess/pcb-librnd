@@ -1,4 +1,20 @@
-librnd 4.0.3
+librnd 4.1.0
 ~~~~~~~~~~~~
 
-This release features minor bugfixes.
+Major API extension release. The two new APIs are:
+
+1. font2: an upgraded font engine with support for baseline, kerning,
+   multiline text, horizontal and vertical alignment, tabs, &entity;
+
+2. polybool: first phase of the poly lib rewrite; the new API is largely
+   compatible with the old poly API
+
+Further notable new features:
+
+3. the file selection dialog optionally allows multiple files to be selected
+   for read (avaialble in the gtk HID)
+
+4. DAD API extended for: moving widget focus, communicate coord-per-pixel
+   value to expose application callbacks in a reentrant way, make xflip/yflip
+   of preview widgets accessible to application code, multi-select option in
+   gtk tree-table widget, generic 'timed update on change' infra

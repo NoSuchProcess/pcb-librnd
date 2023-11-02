@@ -1,3 +1,67 @@
+librnd 4.1.0 (r35976)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Move: xform_mx from font to core - these are generic 2x matrix transformations
+		-Add: generic temp dir create/remove (imported from sch-rnd)
+		-Add: basename(), parent_dir_name() and relative path calculator imported from libcschem
+		-Add: rnd_printf allows applications to override human coord conversion via an optional rnd_app hook (useful for sch-rnd so that %mH prints in k)
+
+	[dad]
+		-Add: tree widget multisel flag
+		-Add: wrapper/helper inline rnd_dad_tree_get_selected_multi(); when HID backend doesn't implement multiple selections, it uses the single-selection API and builds a list-of-1 so the caller doesn't need to deal with this
+
+	[doc]
+		-Add: anatomy of font v2 with field names
+		-Add: polybool: figures for documenting the self-intersection cases
+
+	[font]
+		-Import: matrix reverse transformations from camv-rnd
+
+	[font2]
+		-Add: new font engine with support for baseline, kerning, multiline text, horizontal and vertical alignment, tabs, &entity;
+
+	[fsd]
+		-Add: enum bit for multi-select
+
+	[gtk]
+		-Fix: typo: widget hide shouldn't call widget focus on composite
+		-Add: implement widget focus hid call
+		-Add: fill in preview expose coord-per-pix field
+		-Add: set expose ctx coord_per_pix for main draw
+		-Add: xflip and yflip poke calls on preview widgets
+		-Add: make minimum zoom level configurable for the preview widget (using the widget poke API)
+		-Add: multisel tree: enable multiple selection in gtk, return cursor as the first selection
+		-Add: implement multi-select support for tree tables
+
+	[hid]
+		-Fix: ambigous naming of the first argument of RND_DAD_STRING_SELECT_REGION() - it's a hid_ctx, not a table
+		-Add: rnd_hid_export_using() - direct export plugin execution (imported from sch-rnd)
+		-Add: export action (imported from pcb-rnd) so other apps (e.g. sch-rnd) can have the same code
+		-Add: rnd_hid_expose_ctx_t has a coord_per_pix field so that preview callbacks canfigure zoom level in a reentrant way
+
+	[irc]
+		-Fix: set focus to the input widget after connection established and input widget is enabled
+
+	[lesstif]
+		-Add: implement widget focus hid call
+		-Add: fill in preview expose coord-per-pix field
+		-Add: set expose ctx coord_per_pix for main draw
+		-Add: xflip and yflip poke calls on preview widgets
+
+	[lib_hid_common]
+		-Fix: dlg_fileselect: text entered in the file name edit line always has precedence over tree selection when pressing enter or clicking "ok"
+		-Add: generic timed change helper inlines for implementing dialog boxes (imported from sch-rnd)
+		-Add: dlg_fileselect supports multiple path selection for read (optional)
+
+	[poly]
+		-Add: rnd_poly_from_contour_nochk(): same as rnd_poly_from_contour() but doesn't assert on invalid poly (useful if the caller is goign to clean it up or throw it away)
+
+	[polybool]
+		-Add: new API, largely compatible with the original poly API, for the new polygon library that features high precision coords and proper handling of self intersections
+
+	[tests]
+		-Workaround: printf test: linking static libs is just too advanced for OSX's linker - work it around by dropping the hid .a and manually doing the init sequence
+
 librnd 4.0.3 (r35593)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
