@@ -188,7 +188,8 @@ RND_INLINE int pa_is_node_coords_non_integer(rnd_vnode_t *nd)
 /* This is Collect() in the original paper */
 RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
-	rnd_vnode_t *nd, *newnd;
+	rnd_vnode_t *nd, *newnd, *tri[3];
+	int tri_n = 0, risky = 0;
 
 	DEBUG_GATHER("gather direction = %d\n", dir);
 	*result = NULL;
@@ -213,10 +214,15 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 		if (nd->cvclst_prev != NULL) {
 			DEBUG_GATHER("gather vertex at %$mD (risk)\n", nd->point[0], nd->point[1]);
 			newnd->flg.risk = 1;
+			risky++;
 		}
 		else {
 			DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
 		}
+
+		/* triangle flip special case (see below) - remember the first 3 input nodes */
+		if (tri_n < 3)
+			tri[tri_n++] = nd;
 
 		/* mark the edge as included; mark both if SHARED edge */
 		newnd = (dir == PA_FORWARD) ? nd : nd->prev;
@@ -224,6 +230,31 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 		if (newnd->shared != NULL)
 			newnd->shared->flg.mark = 1;
 	}
+
+	pa_pline_update(*result, rnd_true);
+
+#ifdef PA_BIGCOORD_ISC
+	/* triangle flip special case; test case: fixedd. The implicit rounding when
+	   nd is copied to newnd and cvc high resolution isc is dropped may cause
+	   self intersections in polygons that have more than 3 corners (this is
+	   handled later in postproc). In a small triangle such rounding error
+	   introduced change can not cause self intersect but can flip direction
+	   if one corner jumps over an edge. If that happens we can not "unround"
+	   the output triangle, the closest thing we can do is to invert it */
+	if (risky && ((*result)->Count == 3)) {
+		pa_big2_coord_t orig_area;
+		int orig_dir, orig_area_sgn;
+
+		assert(tri_n == 3);
+		orig_area_sgn = pa_big_array_area(&orig_area, tri, 3);
+		orig_dir = orig_area_sgn > 0;
+
+/*		rnd_trace(" triangle flip: [%d] %d area: orig=%f %d new=%f %d flipped=%d\n", (*result)->Count, (*result)->flg.orient, pa_big2_double(orig_area), orig_dir, (*result)->area, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));*/
+
+		if ((*result)->flg.orient != orig_dir)
+			pa_pline_invert(*result);
+	}
+#endif
 
 	return pa_err_ok;
 }
@@ -245,7 +276,6 @@ RND_INLINE void pa_collect_gather(jmp_buf *e, rnd_vnode_t *cur, pa_direction_t d
 	if (pl == NULL)
 		return;
 
-	pa_pline_update(pl, rnd_true);
 
 	if (pl->Count > 2) {
 		DEBUG_GATHER("adding contour with %d vertices and direction %c\n", pl->Count, (pl->flg.orient ? 'F' : 'B'));
