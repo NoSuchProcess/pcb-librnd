@@ -532,8 +532,6 @@ static GtkWidget *rnd_gtk_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t
 	g_signal_connect(G_OBJECT(view), "cursor-changed", G_CALLBACK(rnd_gtk_tree_table_cursor), attr);
 	g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(rnd_gtk_tree_table_row_activated_cb), attr);
 
-rnd_trace("gtl selection: %d %d\n", attr->hatt_flags & RND_HATF_TREE_MULTI, attr->hatt_flags);
-
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 	gtk_tree_selection_set_mode(selection, (attr->hatt_flags & RND_HATF_TREE_MULTI) ? GTK_SELECTION_MULTIPLE : GTK_SELECTION_SINGLE);
 
