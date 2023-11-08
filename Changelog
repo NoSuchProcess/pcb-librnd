@@ -1,4 +1,4 @@
-librnd 4.1.0 (r35976)
+librnd 4.1.0 (r35983)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-Move: xform_mx from font to core - these are generic 2x matrix transformations
