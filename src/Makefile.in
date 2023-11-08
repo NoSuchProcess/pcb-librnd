@@ -428,13 +428,16 @@ switch cc/soname
 SONAME_HID=
 SONAME_3RD=
 SONAME_POLY=
+SONAME_POLYBOOL=
 SONAME_FONT=
+SONAME_FONT2=
 @]
 	end;
 	default print [@
 SONAME_CORE=@cc/soname@librnd-core.so.$(PCB_RND_VER_MAJOR)
 SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
 SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
+SONAME_POLYBOOL=@cc/soname@librnd-polybool.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT=@cc/soname@librnd-font.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT2=@cc/soname@librnd-font2.so.$(PCB_RND_VER_MAJOR)
 SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
