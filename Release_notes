@@ -12,7 +12,7 @@ Major API extension release. The two new APIs are:
 Further notable new features:
 
 3. the file selection dialog optionally allows multiple files to be selected
-   for read (avaialble in the gtk HID)
+   for read (available in the gtk HID)
 
 4. DAD API extended for: moving widget focus, communicate coord-per-pixel
    value to expose application callbacks in a reentrant way, make xflip/yflip
