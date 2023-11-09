@@ -58,7 +58,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 	}
 
-	if ((s->v->prev == ctx->v)) {
+	if (s->v->prev == ctx->v) {
 		if (pa_big_is_node_on_line(ctx->v->next, s->v->prev, s->v)) {
 			rnd_trace("   offend2: %ld;%ld - %ld;%ld\n", s->v->prev->point[0], s->v->prev->point[1], s->v->point[0], s->v->point[1]);
 			return rnd_RTREE_DIR_FOUND_STOP;
