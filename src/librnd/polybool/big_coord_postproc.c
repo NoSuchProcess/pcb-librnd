@@ -47,8 +47,24 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	pa_big_vector_t isc1, isc2;
 	int num_isc;
 
-	if ((s->v == ctx->v) || (s->v->next == ctx->v) || (s->v->prev == ctx->v))
+	/* T shaped self intersection: one endpoint of ctx->v is the same as the
+	   neighbor's (s) endpoint, the other endpoint of ctx->v is on s.
+	   Test case: fixedf */
+	if ((s->v->next == ctx->v) || (s->v == ctx->v)) {
+		if (pa_big_is_node_on_line(ctx->v->next, s->v, s->v->next)) {
+			rnd_trace("   offend1: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
+			return rnd_RTREE_DIR_FOUND_STOP;
+		}
 		return RND_R_DIR_NOT_FOUND;
+	}
+
+	if ((s->v->prev == ctx->v)) {
+		if (pa_big_is_node_on_line(ctx->v->next, s->v->prev, s->v)) {
+			rnd_trace("   offend2: %ld;%ld - %ld;%ld\n", s->v->prev->point[0], s->v->prev->point[1], s->v->point[0], s->v->point[1]);
+			return rnd_RTREE_DIR_FOUND_STOP;
+		}
+		return RND_R_DIR_NOT_FOUND;
+	}
 
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
 
@@ -75,7 +91,7 @@ rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 	}
 
 	if (num_isc > 0) {
-		rnd_trace("   offend: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
+		rnd_trace("   offend0: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
 		return rnd_RTREE_DIR_FOUND_STOP;
 	}
 
