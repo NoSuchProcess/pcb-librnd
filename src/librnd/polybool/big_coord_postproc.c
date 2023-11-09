@@ -91,9 +91,9 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 
 	paother = pa;
 	do {
-		rnd_pline_t *plother = paother->contours;
+		rnd_pline_t *plother;
 
-		if (plother != NULL) {
+		for(plother = paother->contours; plother != NULL; plother = plother->next) {
 			rnd_box_t box;
 			int res;
 
