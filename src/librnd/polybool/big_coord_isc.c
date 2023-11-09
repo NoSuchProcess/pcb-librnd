@@ -231,6 +231,20 @@ int pa_big_inters2(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vno
 	return res;
 }
 
+int pa_big_is_node_on_line(rnd_vnode_t *v1, rnd_vnode_t *v2a, rnd_vnode_t *v2b)
+{
+	pa_big_vector_t tmp[2], V1, V2A, V2B;
+	int res;
+
+	pa_big_load_cvc(&V1, v1);
+	pa_big_load_cvc(&V2A, v2a);
+	pa_big_load_cvc(&V2B, v2b);
+
+	TODO("write a more efficient one for point-on-line");
+	return rnd_big_coord_isc(tmp, V1, V1, V2A, V2B);
+}
+
+
 rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 {
 	rnd_vnode_t *newnd;
