@@ -630,10 +630,11 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 
 /* Build the contour of self-intersecting hole pl. Return
    whether there was a self intersection (and posneg got loaded). */
-static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_pline_t *pl)
+static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **pa, rnd_pline_t *pl, rnd_pline_t *pl_prev, rnd_pline_t **prev_out)
 {
 	rnd_vnode_t *start;
 	pa_selfisc_t ctx = {0};
+	int first_pos_null;
 
 	ctx.pl = pl;
 	start = split_selfisc_map(&ctx);
@@ -642,7 +643,52 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_pline_t *pl)
 
 	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
-	pa_selfisc_collect_island(posneg, start);
+	first_pos_null = (posneg->first_pos == NULL);
+
+	pa_selfisc_collect_islands(posneg, start);
+
+	/* special case optimization: self intersecting cutout without a
+	   self intersecting outline; just put back all parts into pl wihtout
+	   having to do expensive poly bools */
+	if (first_pos_null) {
+		long n;
+
+
+		if (posneg->neg_head != NULL) { /* add cutouts */
+			rnd_pline_t *ng;
+
+			/* link in new islands after the original cutout */
+			posneg->neg_tail->next = pl->next;
+			pl->next = posneg->neg_head;
+
+			/* remove the original (self-intersecting) cutout */
+			pl_prev->next = pl->next;
+			
+			*prev_out = posneg->neg_tail;
+		}
+
+		if ((posneg->first_pos != NULL) || (posneg->subseq_pos.used != 0)) { /* add positives - they are all within the negative */
+			if (posneg->first_pos != NULL)
+				vtp0_append(&posneg->subseq_pos, posneg->first_pos);
+			for(n = 0; n < posneg->subseq_pos.used; n++) {
+				rnd_polyarea_t *pa_new;
+				rnd_pline_t *island = posneg->subseq_pos.array[n];
+				
+				assert(island->flg.orient == RND_PLF_DIR);
+				pa_new = pa_polyarea_alloc();
+				rnd_polyarea_contour_include(pa_new, island);
+				rnd_polyarea_m_include(pa, pa_new);
+			}
+		}
+
+		/* reset posneg */
+		vtp0_uninit(&posneg->subseq_pos);
+		posneg->first_pos = NULL;
+		posneg->neg_head = posneg->neg_tail = NULL;
+
+		return 0;
+	}
+
 	return 1;
 }
 
@@ -746,7 +792,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		for(pl = (*pa)->contours->next; pl != NULL; prev = pl, pl = next) {
 			int si;
 			next = pl->next;
-			si = rnd_pline_split_selfisc_i(&posneg, pl);
+			si = rnd_pline_split_selfisc_i(&posneg, pa, pl, prev, &pl);
 			if (si) {
 				/* remove pl, the resolved variant is in posneg already */
 				prev->next = pl->next;
