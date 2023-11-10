@@ -3,6 +3,10 @@
 		- self intersecting holes (see sih_*)
 			- fixede
 		- T stubs in outline and hole; bf test cases: fixedf and fixedf2
+			- implement manual test cases
+		- sih_class1b1:
+			- island-island pa-pa isc detected while inner positive is within a cutout
+			- P shaped positive with line-line overlap- bignum postproc already detects this elsewhere?
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
