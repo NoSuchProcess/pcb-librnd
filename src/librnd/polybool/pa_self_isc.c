@@ -401,7 +401,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 /* Step from n to the next node according to dir, walking an island (trying to
    get minimal area portions) */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, int *rev_unused, rnd_vnode_t **first)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
@@ -487,14 +487,13 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	char dir = 'N';
 	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
-	int rev = 0;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
-	for(n = pa_selfisc_next_i(start, &dir, &rev, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, &rev, 0)) {
+	for(n = pa_selfisc_next_i(start, &dir, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0)) {
 		rnd_trace("   IS2 %d %d\n", n->point[0], n->point[1]);
 
 		newn = calloc(sizeof(rnd_vnode_t), 1);
@@ -516,7 +515,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 		else if ((dir == 'P') && (dst->flg.orient == RND_PLF_DIR))
 			accept_pol = +1;
 	}
-	rnd_trace("  } (end island: len=%d dir=%c PLF=%d rev=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, rev, accept_pol);
+	rnd_trace("  } (end island: len=%d dir=%c PLF=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, accept_pol);
 	if (started != NULL)
 		started->flg.start = 0;
 
