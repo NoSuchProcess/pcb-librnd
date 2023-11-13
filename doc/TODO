@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- self intersecting holes (see sih_*)
-			- fixede
+		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
