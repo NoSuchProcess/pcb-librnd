@@ -401,12 +401,12 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 /* Step from n to the next node according to dir, walking an island (trying to
    get minimal area portions) */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, int *rev, rnd_vnode_t **first)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, int *rev_unused, rnd_vnode_t **first)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
 
-	rnd_trace("    next (first:%d): ", first);
+	rnd_trace("    next (first:%p dir='%c'): ", first, *dir);
 	if (n->cvclst_prev == NULL) {
 		if (*dir == 'N') {
 			onto = n->prev;
@@ -435,9 +435,6 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 	do {
 		int eff_dir = pa_eff_dir_forward(c->side, *dir);
 
-		if (c->side == *dir)
-			*rev = 1;
-
 		if (eff_dir) onto = c->parent->prev;
 		else onto = c->parent->next;
 
@@ -448,7 +445,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 		}
 
 		if (!onto->flg.mark || onto->flg.start) { /* also accept flg.start here: greedy algorithm to find shortest loops */
-			*dir = c->side;
+			*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir) {
 				onto->flg.mark = 1;
 				if (first) {
