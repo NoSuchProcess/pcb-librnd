@@ -2,6 +2,7 @@
 	- polybool:
 		- fixedh: core part of the lib doesn't realize island?
 		- fixedi: core omits whole output
+		- fixedj: selfi resolver can't unsert island
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
