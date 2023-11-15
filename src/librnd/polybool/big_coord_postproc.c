@@ -74,7 +74,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 
 	skip1:;
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
-rnd_trace(" num_isc=%d refuse_2isc%d\n", num_isc, refuse_2isc);
+rnd_trace(" num_isc=%d refuse_2isc=%d\n", num_isc, refuse_2isc);
 	if (refuse_2isc && (num_isc == 2))
 		return RND_R_DIR_NOT_FOUND;
 
