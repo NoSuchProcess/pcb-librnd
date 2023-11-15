@@ -45,28 +45,38 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	pa_pp_isc_t *ctx = (pa_pp_isc_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2;
-	int num_isc;
+	int num_isc, refuse_2isc = 0;
+
+
+#if 0
+	rnd_trace(" ppisc: ctx = %p:%ld;%ld - %p:%ld;%ld\n", ctx->v, ctx->v->point[0], ctx->v->point[1], ctx->v->next, ctx->v->next->point[0], ctx->v->next->point[1]);
+	rnd_trace("        seg = %p:%ld;%ld - %p:%ld;%ld - %p:%ld;%ld\n", s->v->prev, s->v->prev->point[0], s->v->prev->point[1], s->v, s->v->point[0], s->v->point[1], s->v->next, s->v->next->point[0], s->v->next->point[1]);
+#endif
 
 	/* T shaped self intersection: one endpoint of ctx->v is the same as the
 	   neighbor's (s) endpoint, the other endpoint of ctx->v is on s.
 	   Test case: fixedf */
 	if ((s->v->next == ctx->v) || (s->v == ctx->v)) {
+		if ((s->v == ctx->v) && (s->v->next == ctx->v->next)) {
+			/* if endpoints fully match by pointer that means we've found the very same line - skip this check, it's not a self intersection */
+			rnd_trace("  skip same edge isc 1\n");
+			refuse_2isc = 1;
+			goto skip1;
+		}
+
 		if (pa_big_is_node_on_line(ctx->v->next, s->v, s->v->next)) {
-			rnd_trace("   offend1: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
+			rnd_trace("   offend T 1: %ld;%ld - %ld;%ld ctx=%ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
+			rnd_trace("               %p - %p       %p - %p\n", s->v, s->v->next, ctx->v, ctx->v->next);
 			return rnd_RTREE_DIR_FOUND_STOP;
 		}
 		return RND_R_DIR_NOT_FOUND;
 	}
 
-	if (s->v->prev == ctx->v) {
-		if (pa_big_is_node_on_line(ctx->v->next, s->v->prev, s->v)) {
-			rnd_trace("   offend2: %ld;%ld - %ld;%ld\n", s->v->prev->point[0], s->v->prev->point[1], s->v->point[0], s->v->point[1]);
-			return rnd_RTREE_DIR_FOUND_STOP;
-		}
-		return RND_R_DIR_NOT_FOUND;
-	}
-
+	skip1:;
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
+rnd_trace(" num_isc=%d refuse_2isc%d\n", num_isc, refuse_2isc);
+	if (refuse_2isc && (num_isc == 2))
+		return RND_R_DIR_NOT_FOUND;
 
 /*
 rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
@@ -91,7 +101,7 @@ rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 	}
 
 	if (num_isc > 0) {
-		rnd_trace("   offend0: %ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
+		rnd_trace("   offend0: %ld;%ld - %ld;%ld numisc=%d\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], num_isc);
 		return rnd_RTREE_DIR_FOUND_STOP;
 	}
 
