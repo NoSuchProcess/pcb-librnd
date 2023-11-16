@@ -48,6 +48,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	int num_isc, refuse_2isc = 0;
 
 
+	TODO("arc: need to figure self isc and overlapping arc-arc cases for T shaped self isc here");
 #if 0
 	rnd_trace(" ppisc: ctx = %p:%ld;%ld - %p:%ld;%ld\n", ctx->v, ctx->v->point[0], ctx->v->point[1], ctx->v->next, ctx->v->next->point[0], ctx->v->next->point[1]);
 	rnd_trace("        seg = %p:%ld;%ld - %p:%ld;%ld - %p:%ld;%ld\n", s->v->prev, s->v->prev->point[0], s->v->prev->point[1], s->v, s->v->point[0], s->v->point[1], s->v->next, s->v->next->point[0], s->v->next->point[1]);
