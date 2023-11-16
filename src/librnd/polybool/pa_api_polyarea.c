@@ -103,7 +103,7 @@ typedef enum pa_island_isc_e {
 
 
 /* Iterates through the nodes of small figuring if small is fully within big. */
-static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_pline_t *small)
+static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_pline_t *small, int point_on_edge_is_in)
 {
 	int got_in = 0, got_out = 0;
 	rnd_vnode_t *n;
@@ -116,7 +116,7 @@ static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_plin
 
 	n = small->head;
 	do {
-		if (pa_pline_is_vnode_inside(big, n))
+		if (pa_pline_is_vnode_inside(big, n, point_on_edge_is_in))
 			got_in = 1;
 		else
 			got_out = 1;
@@ -137,7 +137,7 @@ static pa_island_isc_t pa_polyarea_pline_island_isc(const rnd_polyarea_t *pa, co
 	rnd_pline_t *hole;
 
 	for(hole = pa->contours->next; hole != NULL; hole = hole->next) {
-		pa_island_isc_t r = pa_pline_pline_isc(hole, pl);
+		pa_island_isc_t r = pa_pline_pline_isc(hole, pl, 1);
 		if (r != PA_ISLAND_ISC_OUT)
 			return r;
 	}
@@ -170,7 +170,7 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 	/* Corner case: if plb is fully within pla, there is no crossing so the loop
 	   below doesn't trigger. In this case any node of plb is in pla so it is
 	   enough to verify a single point of plb. */
-	if (pa_pline_is_vnode_inside(pla, plb->head)) {
+	if (pa_pline_is_vnode_inside(pla, plb->head, 0)) {
 		/* ... except if plb is in an island */
 		int r = pa_polyarea_pline_island_isc(a, plb);
 		switch(r) {
@@ -186,7 +186,7 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 	   inside, pla is either inside plb or intersects plb */
 	n = pla->head;
 	do {
-		if (pa_pline_is_vnode_inside(plb, n)) {
+		if (pa_pline_is_vnode_inside(plb, n, 0)) {
 			int r = pa_polyarea_pline_island_isc(b, pla);
 			switch(r) {
 				case PA_ISLAND_ISC_IN:    return 0; /* pla island is fully in an island of pb -> no intersection pssible */
