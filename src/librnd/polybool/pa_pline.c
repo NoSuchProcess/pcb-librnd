@@ -370,3 +370,14 @@ RND_INLINE int pa_pline_is_last(rnd_pline_t *pl)
 {
 	return (pl->next == NULL);
 }
+
+RND_INLINE void pa_pline_unlink(rnd_polyarea_t *pa, rnd_pline_t *prev, rnd_pline_t *pl)
+{
+	if (pa->contours == pl)
+		pa->contours = pl->next;
+	else
+		prev->next = pl->next;
+
+	pl->next = NULL;
+	rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)pl);
+}
