@@ -437,9 +437,17 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	if (!pa_pline_box_inside(inner, outer))
 		return 0;
 
+/* This optimization is disabled:
+   because there is a corner case where it fails: fixedj at 496;555 which
+   happens to be inner->head; it's right on a horizontal line of the outer
+   poly and pa_pline_is_point_inside() returns false in compatibility
+   mode. It'd be possible to change this, or try with another point but
+   there are probably new corner cases introduced. */
+#if 0
 	/* if there is a point in inner that's not within outer... */
 	if (!pa_pline_is_point_inside(outer, inner->head->point))
 		return 0;
+#endif
 
 	/* ...but that may still be only a shared point while the rest of inner
 	   is simply all outside. Since they are not intersecting if a random
