@@ -658,8 +658,8 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 			pl->next = posneg->neg_head;
 
 			/* remove the original (self-intersecting) cutout */
-			pl_prev->next = pl->next;
-			
+			pa_pline_unlink(*pa, pl_prev, pl);
+
 			*prev_out = posneg->neg_tail;
 		}
 
@@ -791,7 +791,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 			si = rnd_pline_split_selfisc_i(&posneg, pa, pl, prev, &pl);
 			if (si) {
 				/* remove pl, the resolved variant is in posneg already */
-				prev->next = pl->next;
+				pa_pline_unlink(*pa, prev, pl);
 				pa_pline_free(&pl);
 			}
 			has_selfisc += si;
