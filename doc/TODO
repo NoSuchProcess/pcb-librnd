@@ -1,5 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
+		- fixedl: redundant point
 		- fixedh: core part of the lib doesn't realize island?
 		- fixedi: core omits whole output
 		- finish self intersecting holes: sih_*
