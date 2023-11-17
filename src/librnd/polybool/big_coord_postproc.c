@@ -153,8 +153,8 @@ rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->p
    return 1, otherwise return 0. */
 RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl)
 {
-	rnd_vnode_t *v = pl->head;
-	int res = 0;
+	rnd_vnode_t *v = pl->head, *next;
+	int res = 0, rebuild_tree = 0;
 
 	do {
 		if (v->flg.risk) {
@@ -165,8 +165,26 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
+
 		assert(v->cvclst_next == NULL);
-	} while((v = v->next) != pl->head);
+
+		next = v->next;
+
+		/* remove redundant neighbor points */
+		if ((v->point[0] == v->next->point[0]) && (v->point[1] == v->next->point[1])) {
+			v->prev->next = next;
+			next->prev = v->prev;
+			free(v);
+			rebuild_tree = 1; /* we can't easily remove the segment, unfortunately */
+		}
+
+	} while((v = next) != pl->head);
+
+	if (rebuild_tree) {
+		rnd_r_free_tree_data(pl->tree, free);
+		rnd_r_destroy_tree(&pl->tree);
+		rnd_poly_make_edge_tree(pl);
+	}
 
 	return res;
 }
