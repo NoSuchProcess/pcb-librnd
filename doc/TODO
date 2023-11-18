@@ -5,6 +5,7 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
+	- BUG: dovepi lib symbol WIZNET* and USBLC6*: integrity check fails with missing uuid [report: aron]
 	- BUG: open existing symbol in symedit mode, edit, wait [report: Igor2]
 		- changed-on-disk false positive
 		- file name changes so {f s} saves to the wrong path
