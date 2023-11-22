@@ -60,7 +60,7 @@ int pa_pline_update_big2small(rnd_pline_t *pl)
 	if (pl->Count > 2)
 		pl->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
 
-	res_ori = big_sgn(big_area, W2);
+	res_ori = (big_sgn(big_area, W2) < 0) ? RND_PLF_INV : RND_PLF_DIR;
 
 	pl->tree = rnd_poly_make_edge_tree(pl);
 	return res_ori;
