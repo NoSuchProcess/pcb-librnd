@@ -189,7 +189,7 @@ RND_INLINE int pa_is_node_coords_non_integer(rnd_vnode_t *nd)
 RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
 	rnd_vnode_t *nd, *newnd, *tri[3];
-	int tri_n = 0, risky = 0;
+	int tri_n = 0, risky = 0, orig_dir;
 
 	DEBUG_GATHER("gather direction = %d\n", dir);
 	*result = NULL;
@@ -203,9 +203,11 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			if (*result == NULL)
 				return pa_err_no_memory;
 			newnd = (*result)->head;
+			newnd->LINK_BACK = (void *)nd;
 		}
 		else { /* insert subsequent */
 			newnd = rnd_poly_node_create(nd->point);
+			newnd->LINK_BACK = (void *)nd;
 			if (newnd == NULL)
 				return pa_err_no_memory;
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
@@ -231,7 +233,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			newnd->shared->flg.mark = 1;
 	}
 
-	pa_pline_update(*result, rnd_true);
+	orig_dir = pa_pline_update_big2small(*result);
 
 #ifdef PA_BIGCOORD_ISC
 	/* triangle flip special case; test case: fixedd. The implicit rounding when
@@ -242,14 +244,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 	   if one corner jumps over an edge. If that happens we can not "unround"
 	   the output triangle, the closest thing we can do is to invert it */
 	if (risky && ((*result)->Count == 3)) {
-		pa_big2_coord_t orig_area;
-		int orig_dir, orig_area_sgn;
-
-		assert(tri_n == 3);
-		orig_area_sgn = pa_big_array_area(&orig_area, tri, 3);
-		orig_dir = orig_area_sgn > 0;
-
-/*		rnd_trace(" triangle flip: [%d] %d area: orig=%f %d new=%f %d flipped=%d\n", (*result)->Count, (*result)->flg.orient, pa_big2_double(orig_area), orig_dir, (*result)->area, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));*/
+		rnd_trace(" triangle flip: [%d] orig_dir=%d res_dir=%d flipped=%d\n", (*result)->Count, orig_dir, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));
 
 		if ((*result)->flg.orient != orig_dir)
 			pa_pline_invert(*result);

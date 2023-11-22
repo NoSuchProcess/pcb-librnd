@@ -59,6 +59,10 @@ struct rnd_vnode_s {
 
 	/* fields above are binary-compatible with the old poly lib */
 
+	/* this could be a separate field, but for saving memory we are going to
+	   reuse -> cvclst_next; see pa_collect.c "triangle flip special case" */
+#define LINK_BACK cvclst_next
+
 	union {
 		struct { /* circular arc */
 			rnd_vector_t center; /* part of the specification: saved */
