@@ -101,10 +101,6 @@ void rnd_vect_u_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector
 int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b);
 int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b);
 
-/* Compute signed area of an array of nodes using high resolution coords
-   where available. Returns sign of dst. */
-int pa_big_array_area(pa_big2_coord_t dst, rnd_vnode_t **nds, long len);
-
 /* For collect/gather */
 int pa_pline_update_big2small(rnd_pline_t *pl);
 

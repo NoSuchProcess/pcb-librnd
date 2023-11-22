@@ -188,8 +188,8 @@ RND_INLINE int pa_is_node_coords_non_integer(rnd_vnode_t *nd)
 /* This is Collect() in the original paper */
 RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
-	rnd_vnode_t *nd, *newnd, *tri[3];
-	int tri_n = 0, risky = 0, orig_dir;
+	rnd_vnode_t *nd, *newnd;
+	int risky = 0, orig_dir;
 
 	DEBUG_GATHER("gather direction = %d\n", dir);
 	*result = NULL;
@@ -221,10 +221,6 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 		else {
 			DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
 		}
-
-		/* triangle flip special case (see below) - remember the first 3 input nodes */
-		if (tri_n < 3)
-			tri[tri_n++] = nd;
 
 		/* mark the edge as included; mark both if SHARED edge */
 		newnd = (dir == PA_FORWARD) ? nd : nd->prev;
