@@ -238,7 +238,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 	   handled later in postproc). In a small triangle such rounding error
 	   introduced change can not cause self intersect but can flip direction
 	   if one corner jumps over an edge. If that happens we can not "unround"
-	   the output triangle, the closest thing we can do is to invert it.
+	   the output triangle, the closest thing we can do is to invert it. */
 	if (risky && ((*result)->Count == 3)) {
 /*		rnd_trace(" triangle flip: [%d] orig_dir=%d res_dir=%d flipped=%d\n", (*result)->Count, orig_dir, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));*/
 		if ((*result)->flg.orient != orig_dir)
