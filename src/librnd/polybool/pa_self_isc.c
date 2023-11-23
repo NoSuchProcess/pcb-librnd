@@ -834,89 +834,89 @@ RND_INLINE void split_selfisc_pline_resolve(rnd_polyarea_t **pa, rnd_pline_t *pl
 	rnd_pline_t *hole, *hole_next, *last, *firstpos = posneg->first_pos;
 	long n;
 
-			/* install holes (neg) in islands (pos) */
-			if (posneg->subseq_pos.used == 0) {
-				if (firstpos != NULL) /* only islands self-intersected, not the outline */
-					pa_pline_update(firstpos, 0);
-				only_one_island:;
-				/* special case optimization: if there's only one positive island,
-				   all holes go in there - this is the common case, only the "bone"
-				   cases will result in multiple positive islands */
-				if (firstpos == NULL) {
-					if (posneg->neg_head != NULL) {
-						/* append islands collected in the hole resolver loop above */
-						for(last = pl; last->next != NULL; last = last->next) ;
-						last->next = posneg->neg_head;
-						posneg->neg_head = NULL;
-					}
-				}
-				else
-					firstpos->next = posneg->neg_head;
-				
-				posneg->neg_head = posneg->neg_tail = NULL;
+	/* install holes (neg) in islands (pos) */
+	if (posneg->subseq_pos.used == 0) {
+		if (firstpos != NULL) /* only islands self-intersected, not the outline */
+			pa_pline_update(firstpos, 0);
+		only_one_island:;
+		/* special case optimization: if there's only one positive island,
+		   all holes go in there - this is the common case, only the "bone"
+		   cases will result in multiple positive islands */
+		if (firstpos == NULL) {
+			if (posneg->neg_head != NULL) {
+				/* append islands collected in the hole resolver loop above */
+				for(last = pl; last->next != NULL; last = last->next) ;
+				last->next = posneg->neg_head;
+				posneg->neg_head = NULL;
 			}
-			else {
-				/* make sure all islands are updated so they have an area */
-				for(n = 0; n < posneg->subseq_pos.used; n++) {
+		}
+		else
+			firstpos->next = posneg->neg_head;
+		
+		posneg->neg_head = posneg->neg_tail = NULL;
+	}
+	else {
+		/* make sure all islands are updated so they have an area */
+		for(n = 0; n < posneg->subseq_pos.used; n++) {
+			rnd_pline_t *island = posneg->subseq_pos.array[n];
+			if (island->area <= 0)
+				pa_pline_update(island, 0);
+		}
+
+		/* sort islands so that the largest is first; there are only
+		   a few islands expected so this shouldn't be too slow */
+		qsort(posneg->subseq_pos.array, posneg->subseq_pos.used, sizeof(void *), cmp_pline_area);
+
+		/* if a positive island is within a larger positive island, remove it */
+		for(n = 1; n < posneg->subseq_pos.used; n++) {
+			long m;
+			int del = 0;
+			rnd_pline_t *small = posneg->subseq_pos.array[n];
+			
+			for(m = 0; m < n; m++) {
+				rnd_pline_t *big = posneg->subseq_pos.array[m];
+				if (pa_pline_inside_pline(big, small)) {
+					del = 1;
+					break;
+				}
+			}
+
+			if (del) {
+				vtp0_remove(&posneg->subseq_pos, n, 1);
+				n--;
+			}
+		}
+
+		if (posneg->neg_head != NULL) {
+			if (posneg->subseq_pos.used < 2)
+				goto only_one_island; /* the above deletions of redundant positives may have lead to this */
+
+			/* find out which hole goes in which island; after the pline self isc
+			   resolve function there's no intersection. Put every hold in the
+			   smallest island it is inside */
+			for(hole = posneg->neg_head; hole != NULL; hole = hole_next) {
+				int found = 0;
+
+				hole_next = hole->next;
+				hole->next = NULL;
+
+				for(n = posneg->subseq_pos.used-1; n >= 0; n--) {
 					rnd_pline_t *island = posneg->subseq_pos.array[n];
-					if (island->area <= 0)
-						pa_pline_update(island, 0);
-				}
-
-				/* sort islands so that the largest is first; there are only
-				   a few islands expected so this shouldn't be too slow */
-				qsort(posneg->subseq_pos.array, posneg->subseq_pos.used, sizeof(void *), cmp_pline_area);
-
-				/* if a positive island is within a larger positive island, remove it */
-				for(n = 1; n < posneg->subseq_pos.used; n++) {
-					long m;
-					int del = 0;
-					rnd_pline_t *small = posneg->subseq_pos.array[n];
-					
-					for(m = 0; m < n; m++) {
-						rnd_pline_t *big = posneg->subseq_pos.array[m];
-						if (pa_pline_inside_pline(big, small)) {
-							del = 1;
-							break;
-						}
-					}
-
-					if (del) {
-						vtp0_remove(&posneg->subseq_pos, n, 1);
-						n--;
+					if (pa_pline_inside_pline(island, hole)) {
+						hole->next = island->next;
+						island->next = hole;
+						found = 1;
+						break;
 					}
 				}
-
-				if (posneg->neg_head != NULL) {
-					if (posneg->subseq_pos.used < 2)
-						goto only_one_island; /* the above deletions of redundant positives may have lead to this */
-
-					/* find out which hole goes in which island; after the pline self isc
-					   resolve function there's no intersection. Put every hold in the
-					   smallest island it is inside */
-					for(hole = posneg->neg_head; hole != NULL; hole = hole_next) {
-						int found = 0;
-
-						hole_next = hole->next;
-						hole->next = NULL;
-
-						for(n = posneg->subseq_pos.used-1; n >= 0; n--) {
-							rnd_pline_t *island = posneg->subseq_pos.array[n];
-							if (pa_pline_inside_pline(island, hole)) {
-								hole->next = island->next;
-								island->next = hole;
-								found = 1;
-								break;
-							}
-						}
-						assert(found == 1);
-					}
-				}
-
-				firstpos = posneg->subseq_pos.array[0];
+				assert(found == 1);
 			}
+		}
 
-			split_pline_add_islands(pa, pl, posneg, firstpos);
+		firstpos = posneg->subseq_pos.array[0];
+	}
+
+	split_pline_add_islands(pa, pl, posneg, firstpos);
 }
 
 /* Handle self-interesecting plines (outlines or holes), e.g. bowties */
