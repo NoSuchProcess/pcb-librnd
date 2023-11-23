@@ -175,6 +175,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 			v->prev->next = next;
 			next->prev = v->prev;
 			free(v);
+			pl->Count--;
 			rebuild_tree = 1; /* we can't easily remove the segment, unfortunately */
 		}
 
@@ -183,7 +184,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 	if (rebuild_tree) {
 		rnd_r_free_tree_data(pl->tree, free);
 		rnd_r_destroy_tree(&pl->tree);
-		rnd_poly_make_edge_tree(pl);
+		pl->tree = rnd_poly_make_edge_tree(pl);
 	}
 
 	return res;
