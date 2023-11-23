@@ -1,6 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- fixedm, fixedm2: undetected bone?
+		- fixedp
 		- fixedo: rounding selfi
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
