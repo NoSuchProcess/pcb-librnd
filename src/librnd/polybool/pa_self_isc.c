@@ -309,6 +309,20 @@ RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
 	return eff_dir;
 }
 
+RND_INLINE double NODE_CRD_X(rnd_vnode_t *nd)
+{
+	if (nd->cvclst_prev == NULL) return nd->point[0];
+	return pa_big_double(nd->cvclst_prev->isc.x);
+}
+
+RND_INLINE double NODE_CRD_Y(rnd_vnode_t *nd)
+{
+	if (nd->cvclst_prev == NULL) return nd->point[1];
+	return pa_big_double(nd->cvclst_prev->isc.y);
+}
+
+#define NODE_CRDS(node) NODE_CRD_X(node), NODE_CRD_Y(node)
+
 /* Step from n to the next node according to dir, walking the outline (trying
    to achieve largest area) */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
@@ -326,7 +340,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 			onto = n->prev;
 			onto->flg.mark = 1;
 		}
-		rnd_trace("straight to %d %d\n", onto->point[0], onto->point[1]);
+		rnd_trace("straight to %.2f %.2f\n", NODE_CRDS(onto));
 
 		return onto;
 	}
@@ -339,7 +353,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		if (eff_dir) onto = c->parent->next;
 		else onto = c->parent->prev;
 
-		rnd_trace("  %d %d '%c'", onto->point[0], onto->point[1], c->side);
+		rnd_trace("  %.2f %.2f '%c'", NODE_CRDS(onto), c->side);
 		if (c->parent->flg.blocked)
 			continue;
 		if (!onto->flg.mark) {
@@ -369,7 +383,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		else onto = c->parent->prev;
 
 		if (onto->flg.start) {
-			rnd_trace(" accept, dir '%c' (start %ld;%ld)!\n", *dir, onto->point[0], onto->point[1]);
+			rnd_trace(" accept, dir '%c' (start %.2f;%.2f)!\n", *dir, NODE_CRDS(onto));
 			if (eff_dir)
 				c->parent->flg.mark = 1;
 			else
@@ -403,7 +417,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	/* collect a closed loop */
 	last = dst->head;
 	for(n = pa_selfisc_next_o(start, &dir); n != start; n = pa_selfisc_next_o(n, &dir)) {
-		rnd_trace(" at out %d %d {%p}", n->point[0], n->point[1], n);
+		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
 		*/
@@ -428,7 +442,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t
 		if (*dir == 'N') {
 			onto = n->prev;
 			onto->flg.mark = 1;
-rnd_trace("[mark %ld;%ld] ", onto->point[0], onto->point[1]);
+rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(onto));
 			if (first) {
 				*first = onto;
 				onto->flg.start = 1;
@@ -437,13 +451,13 @@ rnd_trace("[mark %ld;%ld] ", onto->point[0], onto->point[1]);
 		else {
 			onto = n->next;
 			n->flg.mark = 1;
-rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
+rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			if (first) {
 				*first = n;
 				n->flg.start = 1;
 			}
 		}
-		rnd_trace("straight to %d %d\n", onto->point[0], onto->point[1]);
+		rnd_trace("straight to %.2f %.2f\n", NODE_CRDS(onto));
 		return onto;
 	}
 
@@ -455,7 +469,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 		if (eff_dir) onto = c->parent->prev;
 		else onto = c->parent->next;
 
-		rnd_trace("     %d %d '%c' m%d s%d %d onto={%p} parent={%p}", onto->point[0], onto->point[1], c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
+		rnd_trace("     %.2f %.2f '%c' m%d s%d %d onto={%p} parent={%p}", NODE_CRDS(onto), c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
 		if (c->parent->flg.start) {
 			if (first) continue; /* tried to start onto an already mapped path; try the next */
 			return NULL; /* arrived back to the starting point - finish normally */
@@ -469,7 +483,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 					*first = onto;
 					onto->flg.start = 1;
 				}
-				rnd_trace(" mark %d %d M1a s%d {%p}", onto->point[0], onto->point[1], first, onto);
+				rnd_trace(" mark %.2f %.2f M1a s%d {%p}", NODE_CRDS(onto), first, onto);
 			}
 			else {
 				c->parent->flg.mark = 1;
@@ -477,7 +491,7 @@ rnd_trace("[mark %ld;%ld] ", n->point[0], n->point[1]);
 					*first = c->parent;
 					c->parent->flg.start = 1;
 				}
-				rnd_trace(" mark %d %d M1b s%d {%p}", c->parent->point[0], c->parent->point[1], first, c->parent);
+				rnd_trace(" mark %.2f %.2f M1b s%d {%p}", NODE_CRDS(c->parent), first, c->parent);
 			}
 
 			rnd_trace("    accept, dir '%c' (onto)!\n", *dir);
@@ -509,9 +523,9 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	last = dst->head;
 
 	rnd_trace("  island {:\n");
-	rnd_trace("   IS1 %d %d\n", start->point[0], start->point[1]);
+	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start->point));
 	for(n = pa_selfisc_next_i(start, &dir, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0)) {
-		rnd_trace("   IS2 %d %d\n", n->point[0], n->point[1]);
+		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n->point));
 
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
@@ -561,7 +575,7 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 		if ((cstart == NULL) || n->flg.mark)
 			continue;
 		
-		rnd_trace(" at isl %d %d\n", n->point[0], n->point[1]);
+		rnd_trace(" at isl %.2f %.2f\n", NODE_CRDS(n));
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
