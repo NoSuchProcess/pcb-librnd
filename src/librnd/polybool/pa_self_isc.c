@@ -796,35 +796,35 @@ RND_INLINE void split_pline_add_islands(rnd_polyarea_t **pa, rnd_pline_t *pl, pa
 {
 	long n;
 
-			/* first positive: replace existing pl in pa; really just swap the
-			   vertex list and islands... This is an optimization that saves
-			   on memory allocations plus keeps the polyarea as intact as
-			   possible for the simple/common cases. Note: firstpos is NULL if
-			   outline did not self-intersect. */
-			if (firstpos != NULL) {
-				SWAP(rnd_vnode_t *, pl->head, firstpos->head);
-				SWAP(rnd_pline_t *, pl->next, firstpos->next);
-				pa_pline_update(pl, 0);
+	/* first positive: replace existing pl in pa; really just swap the
+	   vertex list and islands... This is an optimization that saves
+	   on memory allocations plus keeps the polyarea as intact as
+	   possible for the simple/common cases. Note: firstpos is NULL if
+	   outline did not self-intersect. */
+	if (firstpos != NULL) {
+		SWAP(rnd_vnode_t *, pl->head, firstpos->head);
+		SWAP(rnd_pline_t *, pl->next, firstpos->next);
+		pa_pline_update(pl, 0);
 
-				if (pl->flg.orient != RND_PLF_DIR)
-					pa_pline_invert(pl);
+		if (pl->flg.orient != RND_PLF_DIR)
+			pa_pline_invert(pl);
 
-				/* ... so newpl holds the old list now and can be freed */
-				pa_pline_free(&firstpos);
-			}
+		/* ... so newpl holds the old list now and can be freed */
+		pa_pline_free(&firstpos);
+	}
 
-			/* insert subsequent islands; skip the 0th one, it's already in */
-			for(n = 1; n < posneg->subseq_pos.used; n++) {
-				rnd_polyarea_t *pa_new;
-				rnd_pline_t *island = posneg->subseq_pos.array[n];
-				
-				assert(island->flg.orient == RND_PLF_DIR);
-				pa_new = pa_polyarea_alloc();
-				rnd_polyarea_contour_include(pa_new, island);
-				rnd_polyarea_m_include(pa, pa_new);
-			}
+	/* insert subsequent islands; skip the 0th one, it's already in */
+	for(n = 1; n < posneg->subseq_pos.used; n++) {
+		rnd_polyarea_t *pa_new;
+		rnd_pline_t *island = posneg->subseq_pos.array[n];
+		
+		assert(island->flg.orient == RND_PLF_DIR);
+		pa_new = pa_polyarea_alloc();
+		rnd_polyarea_contour_include(pa_new, island);
+		rnd_polyarea_m_include(pa, pa_new);
+	}
 
-			vtp0_uninit(&posneg->subseq_pos);
+	vtp0_uninit(&posneg->subseq_pos);
 }
 
 RND_INLINE rnd_cardinal_t split_selfisc_pline(rnd_polyarea_t **pa)
