@@ -792,12 +792,10 @@ static int cmp_pline_area(const void *Pl1, const void *Pl2)
 	return (pl1->area < pl2->area) ? +1 : -1;
 }
 
-rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
+RND_INLINE rnd_cardinal_t split_selfisc_pline(rnd_polyarea_t **pa)
 {
-	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
-	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *prev, *last;
-	rnd_cardinal_t cnt = 0;
-	vtp0_t floating = {0};
+	rnd_polyarea_t *pa_start, *paf;
+	rnd_pline_t *pl, *next, *firstpos, *hole, *hole_next, *prev, *last;
 	long n;
 
 	pa_start = *pa;
@@ -950,6 +948,14 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 	} while((*pa = paf) != pa_start);
 
+	return 0;
+}
+
+RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
+{
+	rnd_polyarea_t *pa_start;
+	rnd_pline_t *pl, *next, *pl2, *next2;
+
 	pa_start = *pa;
 	do {
 		/* pline intersects other plines within a pa island; since the first pline
@@ -994,13 +1000,19 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		}
 	} while((*pa = (*pa)->f) != pa_start);
 
+	return 0;
+}
+
+RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
+{
+	rnd_polyarea_t *pa_start;
+	rnd_pline_t *pl, *next;
+
 	restart_2b:; /* need to restart the loop because *pa changes */
 	pa_start = *pa;
 	do {
-		prev = NULL;
-
 		/* hole vs. contour intersection */
-		for(pl = (*pa)->contours->next; pl != NULL; prev = pl, pl = next) {
+		for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 			next = pl->next;
 			if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
 				rnd_polyarea_t *tmpa, *tmpc = NULL;
@@ -1031,9 +1043,15 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		}
 	} while((*pa = (*pa)->f) != pa_start);
 
-	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
-	TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
-	remove_all_cvc(*pa);
+	return 0;
+}
+
+RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
+{
+	rnd_polyarea_t *paa, *pab, *pab_next;
+	rnd_cardinal_t cnt = 0;
+	vtp0_t floating = {0};
+	long n;
 
 	/* class 3: pa-pa intersections: different islands of the same polygon object intersect */
 	paa = *pa;
@@ -1068,6 +1086,28 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 		cnt++;
 	}
 	vtp0_uninit(&floating);
+
+	return cnt;
+}
+
+rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
+{
+/*	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
+	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *last;*/
+	rnd_cardinal_t cnt;
+/*	vtp0_t floating = {0};
+	long n;*/
+
+
+	cnt = split_selfisc_pline(pa);
+	cnt += split_selfisc_pline_pline(pa);
+	cnt += split_selfisc_hole_outline(pa);
+
+	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
+	TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
+	remove_all_cvc(*pa);
+
+	cnt += split_selfisc_pa_pa(pa);
 
 	return cnt;
 }
