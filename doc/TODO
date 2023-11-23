@@ -5,9 +5,6 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
-	- BUG: open existing symbol in symedit mode, edit, wait [report: Igor2]
-		- changed-on-disk false positive
-		- file name changes so {f s} saves to the wrong path
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
 		- step #2: make sure the default advance value is consistent and renders correctly; test string: || and ii (this depends on atom thickness too)
