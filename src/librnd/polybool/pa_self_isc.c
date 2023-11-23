@@ -1107,12 +1107,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
-/*	rnd_polyarea_t *paa, *pab, *pan, *pa_start, *pab_next, *paf;
-	rnd_pline_t *pl, *next, *pl2, *next2, *firstpos, *hole, *hole_next, *last;*/
 	rnd_cardinal_t cnt;
-/*	vtp0_t floating = {0};
-	long n;*/
-
 
 	cnt = split_selfisc_pline(pa);
 	cnt += split_selfisc_pline_pline(pa);
