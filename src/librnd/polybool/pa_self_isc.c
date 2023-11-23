@@ -828,8 +828,9 @@ RND_INLINE void split_pline_add_islands(rnd_polyarea_t **pa, rnd_pline_t *pl, pa
 	vtp0_uninit(&posneg->subseq_pos);
 }
 
-/* Fix up a self-intersecting pline */
-RND_INLINE void split_selfisc_pline_resolve(rnd_polyarea_t **pa, rnd_pline_t *pl, pa_posneg_t *posneg)
+/* We have a fixed up a self-intersecting pline; need to re-insert it in pa,
+   replacing pl */
+RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *pl, pa_posneg_t *posneg)
 {
 	rnd_pline_t *hole, *hole_next, *last, *firstpos = posneg->first_pos;
 	long n;
@@ -958,7 +959,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline(rnd_polyarea_t **pa)
 		has_selfisc += rnd_pline_split_selfisc_o(&posneg, pl);
 
 		if (has_selfisc != 0)
-			split_selfisc_pline_resolve(pa, pl, &posneg);
+			split_selfisc_pline_resolved(pa, pl, &posneg);
 
 	} while((*pa = paf) != pa_start);
 
