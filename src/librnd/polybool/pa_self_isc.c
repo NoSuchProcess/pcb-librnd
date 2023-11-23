@@ -792,6 +792,7 @@ static int cmp_pline_area(const void *Pl1, const void *Pl2)
 	return (pl1->area < pl2->area) ? +1 : -1;
 }
 
+/* Add plines of posneg in pa, replacing the original pl (freeing it) */
 RND_INLINE void split_pline_add_islands(rnd_polyarea_t **pa, rnd_pline_t *pl, pa_posneg_t *posneg, rnd_pline_t *firstpos)
 {
 	long n;
