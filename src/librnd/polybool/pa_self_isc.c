@@ -244,15 +244,32 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	pa_selfisc_t *ctx = (pa_selfisc_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2;
-	int num_isc, got_isc = 0;
+	rnd_vector_t isc1_small,isc2_small;
+	int num_isc, num_isc_small, got_isc = 0;
 	rnd_vnode_t *new_node;
 
 	if ((s->v == ctx->v) || (s->v == ctx->v->next) || (s->v == ctx->v->prev))
 		return RND_R_DIR_NOT_FOUND;
 
 	num_isc = pa_isc_edge_edge_(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
+
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
+
+	if (num_isc == 1) {
+		/* corner case: it may be that we have only one isc in high res coord regime
+		   but after rounding we would get a full overlap (class 5). Test case:
+		   fixed* */
+		TODO("arc: need to run low resolution intersect to figure overlap");
+		num_isc_small = rnd_vect_inters2(s->v->point, s->v->next->point, ctx->v->point, ctx->v->next->point, isc1_small, isc2_small);
+		if (num_isc_small == 2) {
+			num_isc = 2;
+			pa_big_load(isc1.x, isc1_small[0]);
+			pa_big_load(isc1.y, isc1_small[1]);
+			pa_big_load(isc2.x, isc2_small[0]);
+			pa_big_load(isc2.y, isc2_small[1]);
+		}
+	}
 
 	/* Having two intersections means line-line overlap: class 5 */
 	if (num_isc == 2) {
