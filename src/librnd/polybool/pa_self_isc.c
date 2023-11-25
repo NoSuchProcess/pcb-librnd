@@ -29,6 +29,20 @@
 
 #include <librnd/core/error.h>
 
+RND_INLINE double NODE_CRD_X(rnd_vnode_t *nd)
+{
+	if (nd->cvclst_prev == NULL) return nd->point[0];
+	return pa_big_double(nd->cvclst_prev->isc.x);
+}
+
+RND_INLINE double NODE_CRD_Y(rnd_vnode_t *nd)
+{
+	if (nd->cvclst_prev == NULL) return nd->point[1];
+	return pa_big_double(nd->cvclst_prev->isc.y);
+}
+
+#define NODE_CRDS(node) NODE_CRD_X(node), NODE_CRD_Y(node)
+
 /* Return the "top-left" vnode of pl (the node that has the smallest x and y) */
 static rnd_vnode_t *pa_find_minnode(rnd_pline_t *pl)
 {
@@ -171,9 +185,9 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
 	int need_swap;
 
-	rnd_trace("line-line overlap: %ld;%ld %ld;%ld vs %ld;%ld %ld;%ld\n",
-		ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1],
-		sv->point[0], sv->point[1], sv->next->point[0], sv->next->point[1]
+	rnd_trace("line-line overlap: %.2f;%.2f %.2f;%.2f vs %.2f;%.2f %.2f;%.2f\n",
+		NODE_CRDS(ctx->v), NODE_CRDS(ctx->v->next),
+		NODE_CRDS(sv), NODE_CRDS(sv->next)
 		);
 
 
@@ -308,20 +322,6 @@ RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
 
 	return eff_dir;
 }
-
-RND_INLINE double NODE_CRD_X(rnd_vnode_t *nd)
-{
-	if (nd->cvclst_prev == NULL) return nd->point[0];
-	return pa_big_double(nd->cvclst_prev->isc.x);
-}
-
-RND_INLINE double NODE_CRD_Y(rnd_vnode_t *nd)
-{
-	if (nd->cvclst_prev == NULL) return nd->point[1];
-	return pa_big_double(nd->cvclst_prev->isc.y);
-}
-
-#define NODE_CRDS(node) NODE_CRD_X(node), NODE_CRD_Y(node)
 
 /* Step from n to the next node according to dir, walking the outline (trying
    to achieve largest area) */
