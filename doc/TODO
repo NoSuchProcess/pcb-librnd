@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- fixedp
 		- fixedo: rounding selfi
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
