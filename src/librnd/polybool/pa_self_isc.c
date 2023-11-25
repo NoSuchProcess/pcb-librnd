@@ -392,8 +392,9 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		}
 	} while((c = c->prev) != start);
 
-	/* didn't find a way out of CVC that's still available or is closing the loop */
-	assert(!"nowhere to go from CVC (outline)");
+	/* didn't find a way out of CVC that's still available or is closing the loop;
+	   this happens with stubs left over by multi line-line overlap; test cases:
+	   si_class5c, fixedp */
 	return NULL;
 }
 
@@ -416,7 +417,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 	/* collect a closed loop */
 	last = dst->head;
-	for(n = pa_selfisc_next_o(start, &dir); n != start; n = pa_selfisc_next_o(n, &dir)) {
+	for(n = pa_selfisc_next_o(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir)) {
 		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -502,8 +503,8 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 
 	if (!first) {
 		/* didn't find a way out of CVC that's still available or is closing the
-		   loop; it's really an error */
-		assert(!"nowhere to go from CVC (island)");
+		   loop; this happens with stubs left over by multi line-line overlap;
+		   test cases: si_class5c, fixedp */
 	}
 	else {
 		/* can't start in any direction: all islands are mapped, return empty */
