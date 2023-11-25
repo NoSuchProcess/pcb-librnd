@@ -114,8 +114,6 @@ rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *pl)
 {
 	rnd_polyarea_t *pa;
 
-	pa_pline_update(pl, rnd_true);
-
 	assert(pl->flg.orient == RND_PLF_DIR);
 
 	pa = pa_polyarea_alloc();
@@ -130,7 +128,9 @@ rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *pl)
 
 rnd_polyarea_t *rnd_poly_from_contour(rnd_pline_t *pl)
 {
-	rnd_polyarea_t *pa = rnd_poly_from_contour_nochk(pl);
+	rnd_polyarea_t *pa;
+	pa_pline_update(pl, rnd_true);
+	pa = rnd_poly_from_contour_nochk(pl);
 	assert(rnd_poly_valid(pa));
 	return pa;
 }
