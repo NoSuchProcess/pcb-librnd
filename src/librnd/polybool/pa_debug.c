@@ -49,21 +49,6 @@ RND_INLINE void DEBUGP(const char *fmt, ...)
 RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #endif
 
-#if DEBUG_JUMP
-#	undef DEBUG_JUMP
-#	define DEBUG_JUMP DEBUGP
-#else
-#	undef DEBUG_JUMP
-#	define DEBUG_JUMP PA_DEBUGP_DUMMY
-#endif
-
-#if DEBUG_GATHER
-#	undef DEBUG_GATHER
-#	define DEBUG_GATHER DEBUGP
-#else
-#	undef DEBUG_GATHER
-#	define DEBUG_GATHER PA_DEBUGP_DUMMY
-#endif
 
 #if DEBUG_ANGLE
 #	undef DEBUG_ANGLE
@@ -282,4 +267,45 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 #else
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra) {}
 
+#endif
+
+#if DEBUG_GATHER || DEBUG_JUMP
+	static void DEBUG_COORDS(const char *prefix, rnd_vnode_t *n, const char *remark)
+	{
+#	ifdef PA_BIGCOORD_ISC
+		if (n->cvclst_next != NULL) {
+			DEBUGP("%s at %.2f %.2f %s\n", prefix, pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y), remark);
+			return;
+		}
+#	endif
+		DEBUGP("%s at %ld %ld %s\n", prefix, (long)n->point[0], (long)n->point[1], remark);
+	}
+#endif
+
+#if DEBUG_GATHER
+#define DEBUG_GATHER_COORDS(prefix, nd, remark) DEBUG_COORDS(prefix, nd, remark)
+#else
+#define DEBUG_GATHER_COORDS(prefix, nd, remark)
+#endif
+
+#if DEBUG_JUMP
+#define DEBUG_JUMP_COORDS(prefix, nd, remark) DEBUG_COORDS(prefix, nd, remark)
+#else
+#define DEBUG_JUMP_COORDS(prefix, nd, remark)
+#endif
+
+#if DEBUG_JUMP
+#	undef DEBUG_JUMP
+#	define DEBUG_JUMP DEBUGP
+#else
+#	undef DEBUG_JUMP
+#	define DEBUG_JUMP PA_DEBUGP_DUMMY
+#endif
+
+#if DEBUG_GATHER
+#	undef DEBUG_GATHER
+#	define DEBUG_GATHER DEBUGP
+#else
+#	undef DEBUG_GATHER
+#	define DEBUG_GATHER PA_DEBUGP_DUMMY
 #endif

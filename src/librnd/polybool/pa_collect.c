@@ -143,7 +143,7 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 
 	/* cross-vertex means we are at an intersection and have to decide which
 	   edge to continue at */
-	DEBUG_JUMP("jump entering node at %$mD\n", (*cur)->point[0], (*cur)->point[1]);
+	DEBUG_JUMP_COORDS("jump entering node", (*cur), "");
 
 	start = d = (*cdir == PA_FORWARD) ? (*cur)->cvclst_prev->prev : (*cur)->cvclst_next->prev;
 	do {
@@ -156,7 +156,7 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 		if (!e->flg.mark && rule(d->poly, e, &newdir)) {
 			if (((d->side == 'N') && (newdir == PA_FORWARD)) || ((d->side == 'P') && (newdir == PA_BACKWARD))) {
 				rnd_vnode_t *nnd = (newdir == PA_FORWARD) ? e->next : e;
-				DEBUG_JUMP("jump leaving node at %$mD\n", nnd->point[0], nnd->point[1]);
+				DEBUG_JUMP_COORDS("jump leaving node", nnd, "");
 
 				*cur = d->parent;
 				*cdir = newdir;
@@ -214,12 +214,12 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 		}
 
 		if (nd->cvclst_prev != NULL) {
-			DEBUG_GATHER("gather vertex at %$mD (risk)\n", nd->point[0], nd->point[1]);
+			DEBUG_GATHER_COORDS("gather vertex", nd, "(risk)");
 			newnd->flg.risk = 1;
 			risky++;
 		}
 		else {
-			DEBUG_GATHER("gather vertex at %$mD\n", nd->point[0], nd->point[1]);
+			DEBUG_GATHER_COORDS("gather vertex", nd, "");
 		}
 
 		/* mark the edge as included; mark both if SHARED edge */
