@@ -274,7 +274,7 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 	{
 #	ifdef PA_BIGCOORD_ISC
 		if (n->cvclst_next != NULL) {
-			DEBUGP("%s at %.2f %.2f %s\n", prefix, pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y), remark);
+			DEBUGP("%s at %.2f %.2f (%ld %ld) %s\n", prefix, pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y), (long)n->point[0], (long)n->point[1], remark);
 			return;
 		}
 #	endif
