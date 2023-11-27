@@ -1,6 +1,8 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedo: rounding selfi
+			- sih_class1*: point-point touch should be split up into separate islands, direction fixed up in each
+			- big postproc: if a rounded vertex falls onto another vertex (rounded or not), trigger a self-isc resolution
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
