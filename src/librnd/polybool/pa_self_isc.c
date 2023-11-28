@@ -524,9 +524,9 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	last = dst->head;
 
 	rnd_trace("  island {:\n");
-	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start->point));
+	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
 	for(n = pa_selfisc_next_i(start, &dir, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0)) {
-		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n->point));
+		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
