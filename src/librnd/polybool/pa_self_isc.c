@@ -410,7 +410,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	start->flg.start = 1;
 	dst = pa_pline_new(start->point);
 
-	rnd_trace("selfi collect outline from %d %d\n", start->point[0], start->point[1]);
+	rnd_trace("selfi collect outline from %.2f %.2f\n", NODE_CRDS(start));
 
 	/* append dst to the list of plines */
 	posneg_append_pline(posneg, +1, dst);
