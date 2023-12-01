@@ -293,7 +293,7 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 		return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
 	}
 
-	/* singe intersection between two lines; new_node is NULL if isc1 is at
+	/* single intersection between two lines; new_node is NULL if isc1 is at
 	   one end of the line */
 	new_node = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
 	if (new_node != NULL) got_isc = 1;
