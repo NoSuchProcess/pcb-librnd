@@ -229,3 +229,46 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 
 	/* Note: items of conn_list are stored plines of pa_a and pa_b */
 }
+
+/* Returns 1 if nd is participating in a true crossing; a self-touching
+   of >< topology is not considered a true crossing, but an X topology is. */
+static int pa_cvc_crossing_at_node(rnd_vnode_t *nd)
+{
+	pa_conn_desc_t *c, *cp, *cn;
+
+	c = nd->cvclst_prev;
+	if (c == NULL)
+		return 0;
+/*	rnd_trace("  me:   %ld;%ld {%ld;%ld} %ld;%ld (%p) %c\n",
+		c->parent->prev->point[0], c->parent->prev->point[1],
+		c->parent->point[0], c->parent->point[1],
+		c->parent->next->point[0], c->parent->next->point[1],
+		c->parent, c->side
+		);*/
+
+	cn = nd->cvclst_prev->next;
+/*	rnd_trace("  next: %ld;%ld {%ld;%ld} %ld;%ld (%p) %c\n",
+		cn->parent->prev->point[0], cn->parent->prev->point[1],
+		cn->parent->point[0], cn->parent->point[1],
+		cn->parent->next->point[0], cn->parent->next->point[1],
+		cn->parent, cn->side
+		);*/
+
+	cp = nd->cvclst_prev->prev;
+/*	rnd_trace("  prev: %ld;%ld {%ld;%ld} %ld;%ld (%p) %c\n",
+		cp->parent->prev->point[0], cp->parent->prev->point[1],
+		cp->parent->point[0], cp->parent->point[1],
+		cp->parent->next->point[0], cp->parent->next->point[1],
+		cp->parent, cp->side
+		);*/
+
+	if ((cn->parent != nd) && (cp->parent != nd)) {
+		/* if either neighbour is our own node, that means we could proceed that
+		   way from this crossing, which means it's a >< topology. If both
+		   neighbours are some other node's cvc, we are in a X crossing, going
+		   either left or right woudl jump us to another portion of the polyline */
+		return 1;
+	}
+
+	return 0;
+}
