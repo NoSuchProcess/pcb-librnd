@@ -592,11 +592,11 @@ static  rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	rnd_vnode_t *n, *start;
 
 	n = start = pa_find_minnode(ctx->pl);
-	rnd_trace("loop start (outer @ rnd_pline_split_selfisc)\n");
+	rnd_trace("loop start (map @ rnd_pline_split_selfisc)\n");
 	do {
 		rnd_box_t box;
 
-		rnd_trace(" loop %ld;%ld (outer) {%p}\n", n->point[0], n->point[1], n);
+		rnd_trace(" loop %ld;%ld (map) {%p}\n", n->point[0], n->point[1], n);
 
 		n->flg.mark = 0;
 		ctx->v = n;
