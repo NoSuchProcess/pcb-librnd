@@ -586,10 +586,43 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 	} while((n = n->next) != start);
 }
 
+/* Special case: self touching means we have a point that's visited twice
+   on the outline. Normally this is a >< topology, but due to rouding
+   there may be a triangle flip and the topology may change into a X.
+   Test case: fixedo at 225;215. Detect the X case and mark ctx self-isc */
+static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
+{
+	rnd_trace(" CVC cross detect: %ld;%ld\n", nd->point[0], nd->point[1]);
 
-static  rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
+#if 0
+	pa_conn_desc_t *c;
+
+	c = nd->cvclst_prev;
+	do {
+		rnd_vnode_t *cn = c->parent;
+		rnd_trace("  LS:   %p == %p\n", c->parent, nd);
+		rnd_trace("  ls:   %ld;%ld {%ld;%ld} %ld;%ld (%d) %c\n",
+			cn->prev->point[0], cn->prev->point[1],
+			cn->point[0], cn->point[1],
+			cn->next->point[0], cn->next->point[1],
+			c->prelim, c->side
+		);
+	} while((c = c->next) != nd->cvclst_prev);
+#endif
+
+	if (pa_cvc_crossing_at_node(nd)) {
+		ctx->num_isc++;
+		rnd_trace("  -> X crossing\n");
+	}
+	else
+		rnd_trace("  -> no crossing, >< topology\n");
+}
+
+
+static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 {
 	rnd_vnode_t *n, *start;
+	int has_cvc = 0;
 
 	n = start = pa_find_minnode(ctx->pl);
 	rnd_trace("loop start (map @ rnd_pline_split_selfisc)\n");
@@ -600,6 +633,7 @@ static  rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 
 		n->flg.mark = 0;
 		ctx->v = n;
+
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
 		do {
@@ -607,13 +641,34 @@ static  rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 			rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_cross_cb, ctx, NULL);
 		} while(ctx->restart);
 
+		if (n->cvclst_prev != NULL)
+			has_cvc = 1;
+
 		if (ctx->skip_to != NULL) {
 			n = ctx->skip_to;
+			if (n->cvclst_prev != NULL)
+				has_cvc = 1;
 			ctx->skip_to = NULL;
 		}
 		else
 			n = n->next;
 	} while(n != start);
+
+
+	/* crossing happening in points that had a cvc in the input already - these
+	   are not caught by pa_selfisc_cross_cb(); see the comment at
+	   selfisc_detect_cvc_crossing() */
+	if (has_cvc && (ctx->num_isc == 0)) {
+		ctx->cdl = pa_add_conn_desc(ctx->pl, 'A', NULL);
+		n = start;
+		do {
+			if (n->cvclst_prev != NULL)
+				selfisc_detect_cvc_crossing(ctx, n);
+			n = n->next;
+		} while((ctx->num_isc == 0) && (n != start));
+	}
+	else
+		ctx->cdl = NULL;
 
 	return start;
 }
@@ -638,7 +693,8 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 		pl->next = NULL;
 	}
 
-	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
+	if (ctx.cdl == NULL)
+		ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect the outline first; anything that remains is an island,
 	   add them as a hole depending on their loop orientation */
@@ -669,7 +725,8 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
 
-	ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
+	if (ctx.cdl == NULL)
+		ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	first_pos_null = (posneg->first_pos == NULL);
 
