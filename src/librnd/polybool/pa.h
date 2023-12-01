@@ -136,3 +136,10 @@ RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 	if (pt[1]     < pl->ymin) pl->ymin = pt[1];
 	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
+
+int pa_cvc_crossing_at_node(rnd_vnode_t *nd);
+pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list);
+pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
+
+
+

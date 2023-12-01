@@ -78,9 +78,6 @@ static rnd_vnode_t *pa_node_add_single(rnd_vnode_t *dst, pa_big_vector_t pt)
 #endif
 }
 
-
-static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
-
 /* Return a new node for a point next to dst, or NULL if pt falls on an existing
    node. Crashes/asserts if allocation fails. Preallocates cross vertex
    descriptor */

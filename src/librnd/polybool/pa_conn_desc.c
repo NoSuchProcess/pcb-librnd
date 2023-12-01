@@ -41,9 +41,9 @@
 
 /* preallocate a new, preliminary conn desc, to store precise intersection
    coords (isc) */
-static pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
+pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 {
-	pa_conn_desc_t *cd = malloc(sizeof(pa_conn_desc_t));
+	pa_conn_desc_t *cd = calloc(sizeof(pa_conn_desc_t), 1);
 	if (cd == NULL)
 		return NULL;
 
@@ -235,7 +235,7 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 }
 
 /* Add all intersected nodes of pl into list */
-static pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list)
+pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list)
 {
 	rnd_vnode_t *node = pl->head;
 

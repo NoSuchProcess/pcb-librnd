@@ -36,6 +36,7 @@ int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_v
 
 typedef struct pa_pp_isc_s {
 	rnd_vnode_t *v;         /* input: first node of the edge we are checking */
+	int pp_overlap;
 } pa_pp_isc_t;
 
 /* Report if there's an intersection between the edge starting from cl->v
@@ -53,6 +54,29 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	rnd_trace(" ppisc: ctx = %p:%ld;%ld - %p:%ld;%ld\n", ctx->v, ctx->v->point[0], ctx->v->point[1], ctx->v->next, ctx->v->next->point[0], ctx->v->next->point[1]);
 	rnd_trace("        seg = %p:%ld;%ld - %p:%ld;%ld - %p:%ld;%ld\n", s->v->prev, s->v->prev->point[0], s->v->prev->point[1], s->v, s->v->point[0], s->v->point[1], s->v->next, s->v->next->point[0], s->v->next->point[1]);
 #endif
+
+	/* detect point-point overlap of rounded coords; this can be the basis of
+	   an X-topology self-intersection, see test case fixedo */
+	if ((s->v->next != ctx->v) && (s->v->next->point[0] == ctx->v->point[0]) && (s->v->next->point[1] == ctx->v->point[1])) {
+		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
+		ctx->pp_overlap = 1;
+	}
+	else if ((s->v != ctx->v) && (s->v->point[0] == ctx->v->point[0]) && (s->v->point[1] == ctx->v->point[1])) {
+		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
+		ctx->pp_overlap = 1;
+	}
+
+	if (ctx->pp_overlap) { /* allocate preliminary cvc at the overlap so the cvc crossing list cna be built later */
+		pa_big_vector_t pt;
+
+		pa_big_load(&pt.x, ctx->v->point[0]);
+		pa_big_load(&pt.y, ctx->v->point[1]);
+
+		if (ctx->v->cvclst_prev == NULL)
+			ctx->v->cvclst_prev = pa_prealloc_conn_desc(pt);
+		if (ctx->v->cvclst_next == NULL)
+			ctx->v->cvclst_next = pa_prealloc_conn_desc(pt);
+	}
 
 	/* T shaped self intersection: one endpoint of ctx->v is the same as the
 	   neighbor's (s) endpoint, the other endpoint of ctx->v is on s.
@@ -110,8 +134,9 @@ rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 }
 
 /* Return 1 if there's any intersection between pl and any island
-   of pa (including self intersection within the pa) */
-RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v)
+   of pa (including self intersection within the pa). Sets *pp_overlap_out
+   to 1 if there's a point-point overlap is detected */
+RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v, int *pp_overlap_out)
 {
 	pa_pp_isc_t tmp;
 	rnd_polyarea_t *paother;
@@ -136,8 +161,11 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 
 			tmp.v = v;
+			tmp.pp_overlap = 0;
 			res = rnd_r_search(plother->tree, &box, NULL, pa_pp_isc_cb, &tmp, NULL);
-			rnd_trace("  res=%d %d (intersected: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND));
+			rnd_trace("  res=%d %d (intersected: %d pp-overlap: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND), tmp.pp_overlap);
+			if (tmp.pp_overlap)
+				*pp_overlap_out = 1;
 			if (res & rnd_RTREE_DIR_FOUND)
 				return 1;
 		}
@@ -151,22 +179,22 @@ rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->p
 /* Check each vertex in pl: if it is risky, check if there's any intersection
    on the incoming or outgoing edge of that vertex. If there is, stop and
    return 1, otherwise return 0. */
-RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl)
+RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_bad)
 {
 	rnd_vnode_t *v = pl->head, *next;
-	int res = 0, rebuild_tree = 0;
+	int res = 0, rebuild_tree = 0, pp_overlap = 0;
 
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
 rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
-			if (!res && (big_bool_ppl_isc(pa, pl, v->prev) || big_bool_ppl_isc(pa, pl, v))) {
+			if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
 rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
 
-		assert(v->cvclst_next == NULL);
+		assert(v->cvclst_next == NULL || v->cvclst_next->prelim);
 
 		next = v->next;
 
@@ -187,6 +215,42 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		pl->tree = rnd_poly_make_edge_tree(pl);
 	}
 
+
+	/* Do the expensive point-point overla X-crossing test only if
+	   there was a point-point overlap and if we still think the
+	   polygon is not self-intersecting. If it is already classified
+	   self-intersecting, skip this test, the selfisc resolver will
+	   handle all occurances without prior verification here */
+	if (pp_overlap && !already_bad && (res == 0)) {
+		/* There was a point-point overlap somewhere along this pline. This
+		   means either a >< kind of self-touch or a X kind of crossing in
+		   that point. We need to build the cvc lists to figure. */
+		rnd_vnode_t *n;
+
+		rnd_trace(" pp-overlap X-crossing risk...\n");
+		pa_add_conn_desc(pl, 'A', NULL);
+
+		/* evaluate crossings */
+		n = pl->head;
+		do {
+			if ((n->cvclst_prev != NULL) && (pa_cvc_crossing_at_node(n))) {
+				res = 1;
+				rnd_trace("  X-crossing detected at %ld;%ld\n", n->point[0], n->point[1]);
+			}
+		} while((res == 0) && (n = n->next) != pl->head);
+	}
+
+	if (pp_overlap) { /* remove the cvc's to keep output clean */
+		rnd_vnode_t *n = pl->head;
+		do {
+			if (n->cvclst_prev != NULL) {
+				free(n->cvclst_prev);
+				n->cvclst_prev = n->cvclst_next = NULL;
+				/* no need to unlink, all cvcs are free'd here */
+			}
+		} while((n = n->next) != pl->head);
+	}
+
 	return res;
 }
 
@@ -205,7 +269,7 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 			   rounded to output integers and the rounding error introduces
 			   a new crossing somewhere. Merge the two islands. */
 			for(pl = pn->contours; pl != NULL; pl = pl->next)
-				if (big_bool_ppl_(pn, pl))
+				if (big_bool_ppl_(pn, pl, res))
 					res = 1; /* can not return here, need to clear all the risk flags */
 		}
 	} while ((pn = pn->f) != *pa);

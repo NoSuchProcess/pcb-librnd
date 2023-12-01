@@ -232,7 +232,7 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 
 /* Returns 1 if nd is participating in a true crossing; a self-touching
    of >< topology is not considered a true crossing, but an X topology is. */
-static int pa_cvc_crossing_at_node(rnd_vnode_t *nd)
+int pa_cvc_crossing_at_node(rnd_vnode_t *nd)
 {
 	pa_conn_desc_t *c, *cp, *cn;
 
