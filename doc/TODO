@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- fixedj falls in infinite loop with the new selfisc resolver (force res = 1 in big postproc)
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
