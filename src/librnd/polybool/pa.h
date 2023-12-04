@@ -141,5 +141,5 @@ int pa_cvc_crossing_at_node(rnd_vnode_t *nd);
 pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list);
 pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
 
-
+int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op);
 

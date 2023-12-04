@@ -64,7 +64,7 @@ int rnd_polyarea_boolean(const rnd_polyarea_t *a_, const rnd_polyarea_t *b_, rnd
 	return rnd_polyarea_boolean_free(a, b, res, op);
 }
 
-int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
+int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
 {
 	rnd_polyarea_t *a = a_, *b = b_;
 	rnd_pline_t *a_isected = NULL, *holes = NULL;
@@ -136,13 +136,24 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 		return code;
 	}
 
-	if (*res != NULL) {
+	if (*res != NULL)
 		pa_bool_postproc(res);
+
+
+	return code;
+}
+
+int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op)
+{
+	int code = rnd_polyarea_boolean_free_nochk(a_, b_, res, op);
+
+	if ((code == 0) && (*res != NULL)) {
 		assert(rnd_poly_valid(*res));
 	}
 
 	return code;
 }
+
 
 RND_INLINE void pa_polyarea_clear_marks(rnd_polyarea_t *pa)
 {

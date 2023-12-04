@@ -1057,7 +1057,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 					pa_polyarea_insert_pline(tmpa, pl);
 					pa_polyarea_insert_pline(tmpb, pl2);
 
-					rnd_polyarea_boolean_free(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
+					rnd_polyarea_boolean_free_nochk(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
 
 					/* unlunk from tmpc and free up temps */
 					pl = tmpc->contours;
@@ -1103,7 +1103,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
 				remove_all_cvc(*pa);
 
-				rnd_polyarea_boolean_free(*pa, tmpa, &tmpc, RND_PBO_SUB);
+				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
 				*pa = tmpc;
 
 				goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
