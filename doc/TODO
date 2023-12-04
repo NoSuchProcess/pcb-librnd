@@ -1,6 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- fixedq, fixedq2: op results in invalid but only if the seemingly unrelated island is present
+		- fixedq, fixedq2, fixedq3: op results in invalid but only if the seemingly unrelated island is present
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
