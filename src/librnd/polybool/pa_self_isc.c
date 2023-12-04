@@ -832,14 +832,26 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 	do {
 		rnd_pline_t *pl;
 		for(pl = pa->contours; pl != NULL; pl = pl->next) {
-			rnd_vnode_t *n = pl->head;
+			rnd_vnode_t *p, *nxt, *n = pl->head;
+			int redundant;
+
 			do {
 				if (n->cvclst_prev != NULL) {
 					free(n->cvclst_prev);
 					n->cvclst_prev = n->cvclst_next = NULL;
 					/* no need to unlink, all cvcs are free'd here */
 				}
-			} while((n = n->next) != pl->head);
+
+				nxt = n->next;
+				p = n->prev;
+				redundant = (p->point[0] == n->point[0]) && (p->point[1] == n->point[1]);
+				if (!redundant)
+					redundant = (nxt->point[0] == n->point[0]) && (nxt->point[1] == n->point[1]);
+				if (redundant) {
+					rnd_poly_vertex_exclude(pl, n);
+					free(n);
+				}
+			} while((n = nxt) != pl->head);
 		}
 	} while((pa = pa->f) != pa1);
 }
