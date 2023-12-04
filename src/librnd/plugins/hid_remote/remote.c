@@ -392,7 +392,7 @@ int pplg_init_hid_remote(void)
 
 	rnd_hid_register_hid(&remote_hid);
 
-	rnd_event_bind(RND_EVENT_SET_CURRENT, ev_board_changed, NULL, remote_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, ev_board_changed, NULL, remote_cookie);
 
 	return 0;
 }
