@@ -1168,11 +1168,16 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	rnd_cardinal_t cnt;
 
 	cnt = split_selfisc_pline(pa);
+
+	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
+	TODO("optimize: run this only if there's any cvc in there? see: fixedr");
+	remove_all_cvc(*pa);
+
 	cnt += split_selfisc_pline_pline(pa);
 	cnt += split_selfisc_hole_outline(pa);
 
 	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
-	TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
+	TODO("optimize: run this only if there's any cvc in there? see: fixed8");
 	remove_all_cvc(*pa);
 
 	cnt += split_selfisc_pa_pa(pa);
