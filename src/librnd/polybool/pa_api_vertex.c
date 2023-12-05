@@ -105,6 +105,12 @@ void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node)
 	   (which is the middle node of 3 nodes on the same line) */
 	if (pa_vertices_are_coaxial(node)) {
 		rnd_vnode_t *t = node->prev;
+
+		if (t->flg.risk) { /* do not lose the risk flag, see test case fixeds */
+			t->prev->flg.risk = 1;
+			t->next->flg.risk = 1;
+		}
+
 		t->prev->next = node;
 		node->prev = t->prev;
 		free(t);
