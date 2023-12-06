@@ -876,6 +876,14 @@ RND_INLINE void split_pline_add_islands(rnd_polyarea_t **pa, rnd_pline_t *pl, pa
 		SWAP(rnd_vnode_t *, pl->head, firstpos->head);
 		SWAP(rnd_pline_t *, pl->next, firstpos->next);
 		SWAP(rnd_rtree_t *, pl->tree, firstpos->tree);
+
+		if (pl->tree != NULL) {
+			rnd_rtree_t *r = pl->tree;
+			rnd_r_free_tree_data(r, free);
+			rnd_r_destroy_tree(&r);
+			pl->tree = NULL;
+		}
+	
 		pa_pline_update(pl, 0);
 
 		if (pl->flg.orient != RND_PLF_DIR)
@@ -908,7 +916,7 @@ RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *p
 
 	/* install holes (neg) in islands (pos) */
 	if (posneg->subseq_pos.used == 0) {
-		if (firstpos != NULL) /* only islands self-intersected, not the outline */
+		if ((firstpos != NULL) && (firstpos->tree == NULL)) /* only islands self-intersected, not the outline */
 			pa_pline_update(firstpos, 0);
 		only_one_island:;
 		/* special case optimization: if there's only one positive island,
