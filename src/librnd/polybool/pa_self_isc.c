@@ -875,6 +875,7 @@ RND_INLINE void split_pline_add_islands(rnd_polyarea_t **pa, rnd_pline_t *pl, pa
 	if (firstpos != NULL) {
 		SWAP(rnd_vnode_t *, pl->head, firstpos->head);
 		SWAP(rnd_pline_t *, pl->next, firstpos->next);
+		SWAP(rnd_rtree_t *, pl->tree, firstpos->tree);
 		pa_pline_update(pl, 0);
 
 		if (pl->flg.orient != RND_PLF_DIR)
