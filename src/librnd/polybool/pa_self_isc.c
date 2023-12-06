@@ -962,6 +962,7 @@ RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *p
 			}
 
 			if (del) {
+				pa_pline_free(&small);
 				vtp0_remove(&posneg->subseq_pos, n, 1);
 				n--;
 			}
