@@ -216,7 +216,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 	}
 
 
-	/* Do the expensive point-point overla X-crossing test only if
+	/* Do the expensive point-point overlap X-crossing test only if
 	   there was a point-point overlap and if we still think the
 	   polygon is not self-intersecting. If it is already classified
 	   self-intersecting, skip this test, the selfisc resolver will
