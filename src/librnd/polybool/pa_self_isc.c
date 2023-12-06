@@ -733,7 +733,7 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	pa_selfisc_collect_islands(posneg, start);
 
 	/* special case optimization: self intersecting cutout without a
-	   self intersecting outline; just put back all parts into pl wihtout
+	   self intersecting outline; just put back all parts into pl without
 	   having to do expensive poly bools */
 	if (first_pos_null) {
 		long n;
