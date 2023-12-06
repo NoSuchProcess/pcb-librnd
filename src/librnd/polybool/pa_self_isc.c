@@ -839,6 +839,7 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 			do {
 				if (n->cvclst_prev != NULL) {
 					free(n->cvclst_prev);
+					free(n->cvclst_next);
 					n->cvclst_prev = n->cvclst_next = NULL;
 					/* no need to unlink, all cvcs are free'd here */
 				}
