@@ -281,12 +281,12 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 		fprintf(stderr, "color #770000\n");
 		for(n = 0; n < chk->marks; n++) {
 			if (small) {
-				fprintf(stderr, "! X at %ld %ld\n", (long)chk->x[n], (long)chk->y[n]);
+				rnd_fprintf(stderr, "! X at %ld %ld\n", (long)chk->x[n], (long)chk->y[n]);
 				rnd_fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]-MR, (long)chk->x[n]+MR, (long)chk->y[n]+MR);
 				rnd_fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]+MR, (long)chk->x[n]+MR, (long)chk->y[n]-MR);
 			}
 			else {
-				fprintf(stderr, "! X at %#mm %#mm\n", (long)chk->x[n], (long)chk->y[n]);
+				rnd_fprintf(stderr, "! X at %#mm %#mm\n", (long)chk->x[n], (long)chk->y[n]);
 				rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
 				rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
 			}
