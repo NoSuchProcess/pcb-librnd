@@ -247,6 +247,8 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 	if (pl->Count > 2)
 		pl->flg.orient = ((area < 0) ? RND_PLF_INV : RND_PLF_DIR);
 
+	assert(pl->tree == NULL); /* indicate memory leak */
+
 	pl->tree = rnd_poly_make_edge_tree(pl);
 }
 
