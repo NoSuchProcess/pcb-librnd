@@ -202,6 +202,10 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		if ((v->point[0] == v->next->point[0]) && (v->point[1] == v->next->point[1])) {
 			v->prev->next = next;
 			next->prev = v->prev;
+			if (v->cvclst_prev != NULL)
+				free(v->cvclst_prev);
+			if (v->cvclst_next != NULL)
+				free(v->cvclst_next);
 			free(v);
 			pl->Count--;
 			rebuild_tree = 1; /* we can't easily remove the segment, unfortunately */
