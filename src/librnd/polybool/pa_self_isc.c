@@ -748,6 +748,7 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 
 			/* remove the original (self-intersecting) cutout */
 			pa_pline_unlink(*pa, pl_prev, pl);
+			pa_pline_free(&pl);
 
 			*prev_out = posneg->neg_tail;
 		}
