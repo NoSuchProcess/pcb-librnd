@@ -245,6 +245,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		do {
 			if (n->cvclst_prev != NULL) {
 				free(n->cvclst_prev);
+				free(n->cvclst_next);
 				n->cvclst_prev = n->cvclst_next = NULL;
 				/* no need to unlink, all cvcs are free'd here */
 			}
