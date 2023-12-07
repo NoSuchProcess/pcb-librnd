@@ -237,9 +237,12 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		/* evaluate crossings */
 		n = pl->head;
 		do {
+			if (n->cvclst_prev != NULL) {
+				rnd_trace("  X-crossing check at %ld;%ld\n", n->point[0], n->point[1]);
+			}
 			if ((n->cvclst_prev != NULL) && (pa_cvc_crossing_at_node(n))) {
 				res = 1;
-				rnd_trace("  X-crossing detected at %ld;%ld\n", n->point[0], n->point[1]);
+				rnd_trace("   X-crossing detected!! schedule selfisc\n");
 			}
 		} while((res == 0) && (n = n->next) != pl->head);
 	}
