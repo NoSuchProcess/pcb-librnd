@@ -201,7 +201,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				if (pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) {
 					PA_CHK_MARK(a1->point[0], a1->point[1]);
 					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (1) at %mm;%mm", a1->point[0], a1->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (1) at %mm;%mm (%ld;%ld)", a1->point[0], a1->point[1], a1->point[0], a1->point[1]);
 				}
 			}
 			else if (hit2 == NULL) {
@@ -212,7 +212,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				if (pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) {
 					PA_CHK_MARK(a2->point[0], a2->point[1]);
 					PA_CHK_MARK(hit1->point[0], hit1->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (2) at %mm;%mm", a2->point[0], a2->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (2) at %mm;%mm (%ld;%ld)", a2->point[0], a2->point[1], a2->point[0], a2->point[1]);
 				}
 			}
 			else {
@@ -220,7 +220,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				if (pa_vect_inside_sect(hit1, hit2->prev->point) != pa_vect_inside_sect(hit1, hit2->next->point)) {
 					PA_CHK_MARK(hit1->point[0], hit2->point[1]);
 					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (3) at %mm;%mm or %mm;%mm", hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (3) at %mm;%mm (%ld;%ld) or %mm;%mm (%ld;%ld)", hit1->point[0], hit1->point[1], hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1], hit2->point[0], hit2->point[1]);
 				}
 			}
 		} while((a2 = a2->next) != a->head);
