@@ -176,6 +176,14 @@ rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->p
 }
 
 
+static int seg_too_short(rnd_vnode_t *a, rnd_vnode_t *b)
+{
+	/* See triangle flip in test case fixedx; worst case it can happen
+	   ends up in two corners diagonally arranged with both dx and dy
+	   being +-1. The square distance in that case equals to 2. */
+	return rnd_vect_dist2(a->point, b->point) <= 2.0;
+}
+
 /* Check each vertex in pl: if it is risky, check if there's any intersection
    on the incoming or outgoing edge of that vertex. If there is, stop and
    return 1, otherwise return 0. */
@@ -188,7 +196,16 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 		if (v->flg.risk) {
 			v->flg.risk = 0;
 rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
-			if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
+			if (!res && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
+				/* Related test case: fixedx; causes triangle flip; can't happen
+				   if the length of the edge of the triangle is larger than our rounding
+				   limit. Since this is checked only if v is rounded, it happens
+				   rarely so it is okay to schedule an expensive self-isc check
+				   that will then do a real triangle-flip detection. */
+				rnd_trace("  segment too short next to a rounded corner! Shedule selfi-resolve\n");
+				res = 1;
+			}
+			else if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
 rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
