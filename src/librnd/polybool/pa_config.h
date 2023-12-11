@@ -11,10 +11,10 @@
 /*#define PA_TWEAK_ISC 4*/
 
 /* debug control */
-#define DEBUG_JUMP 0
-#define DEBUG_GATHER 0
-#define DEBUG_ANGLE 0
-#define DEBUG_CVC 0
+#define DEBUG_JUMP 1
+#define DEBUG_GATHER 1
+#define DEBUG_ANGLE 1
+#define DEBUG_CVC 1
 #define DEBUG_ISC 0
 #define DEBUG_PAISC_DUMP 0
 #define DEBUG_DUMP 0

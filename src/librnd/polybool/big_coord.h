@@ -102,5 +102,6 @@ int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b);
 int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b);
 
 /* For collect/gather */
-int pa_pline_update_big2small(rnd_pline_t *pl);
+void pa_big_area_incremental(pa_big2_coord_t big_area, rnd_vnode_t *big_curr, rnd_vnode_t *big_prev);
+int pa_big_area2ori(pa_big2_coord_t big_area);
 

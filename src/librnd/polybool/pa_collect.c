@@ -188,8 +188,10 @@ RND_INLINE int pa_is_node_coords_non_integer(rnd_vnode_t *nd)
 /* This is Collect() in the original paper */
 RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_rule_t v_rule, pa_direction_t dir)
 {
-	rnd_vnode_t *nd, *newnd;
+	rnd_vnode_t *nd, *prev_nd, *first_nd; /* these are in terms of input node (high precision) */
+	rnd_vnode_t *newnd; /* this is output node, always rounded to integer */
 	int risky = 0, orig_dir;
+	pa_big2_coord_t big_area = {0};
 
 	DEBUG_GATHER("gather direction = %d\n", dir);
 	*result = NULL;
@@ -203,14 +205,15 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			if (*result == NULL)
 				return pa_err_no_memory;
 			newnd = (*result)->head;
-			newnd->LINK_BACK = (void *)nd;
+			prev_nd = first_nd = nd;
 		}
 		else { /* insert subsequent */
 			newnd = rnd_poly_node_create(nd->point);
-			newnd->LINK_BACK = (void *)nd;
 			if (newnd == NULL)
 				return pa_err_no_memory;
 			rnd_poly_vertex_include((*result)->head->prev, newnd);
+			pa_big_area_incremental(big_area, nd, prev_nd);
+			prev_nd = nd;
 		}
 
 		if (nd->cvclst_prev != NULL) {
@@ -229,7 +232,11 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			newnd->shared->flg.mark = 1;
 	}
 
-	orig_dir = pa_pline_update_big2small(*result);
+/*	orig_dir = pa_pline_update_big2small(*result);
+	rnd_trace("Bad orig=%d ", orig_dir);*/
+	pa_pline_update(*result, 1);
+	pa_big_area_incremental(big_area, first_nd, prev_nd);
+	orig_dir = pa_big_area2ori(big_area);
 
 #ifdef PA_BIGCOORD_ISC
 	/* triangle flip special case; test case: fixedd, fixedi. The implicit rounding when
@@ -240,7 +247,7 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 	   if one corner jumps over an edge. If that happens we can not "unround"
 	   the output triangle, the closest thing we can do is to invert it. */
 	if (risky && ((*result)->Count == 3)) {
-/*		rnd_trace(" triangle flip: [%d] orig_dir=%d res_dir=%d flipped=%d\n", (*result)->Count, orig_dir, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));*/
+		rnd_trace(" triangle flip: [%d] orig_dir=%d res_dir=%d flipped=%d\n", (*result)->Count, orig_dir, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));
 		if ((*result)->flg.orient != orig_dir)
 			pa_pline_invert(*result);
 	}
