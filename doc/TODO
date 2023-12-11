@@ -2,7 +2,6 @@
 	- polybool:
 		- fixedu: self-intersecting island (poly flip?) in the middle - missing from out.svg visualization
 		- fixedv: heaping bug?
-		- fixedw: island-island isc: triangle flip not detected in postproc
 		- fixedy*: unresolved selfisc on outline: selfisc happens far away from any rounding
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
