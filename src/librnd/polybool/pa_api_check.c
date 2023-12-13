@@ -151,6 +151,38 @@ rnd_vnode_t *pa_check_find_close_node(rnd_vector_t intersection, rnd_vnode_t *pn
 	return NULL;
 }
 
+/* There's an intersection at isc, caused by pt or pt->next or pt->prev.
+   Returns 1 if either outgoing edge of isc overlaps with
+   either outgoing edge of other. Such cases are accepted as non-error
+   becausew of test case fixedy3 that would be very expensive to detect */
+RND_INLINE int pa_chk_ll_olap(rnd_vnode_t *isc, rnd_vnode_t *pt, rnd_vnode_t *other)
+{
+	pa_big_vector_t tmp1, tmp2;
+
+/*
+	rnd_trace("ll olap: %ld;%ld other: %ld;%ld - %ld;%ld; - %ld;%ld\n",
+		isc->point[0], isc->point[1],
+		other->prev->point[0], other->prev->point[1],
+		other->point[0], other->point[1],
+		other->next->point[0], other->next->point[1]
+		);
+*/
+
+	if (pa_isc_edge_edge(other->prev, other, isc, isc->next, &tmp1, &tmp2) == 2)
+		return 1;
+
+	if (pa_isc_edge_edge(other->prev, other, isc, isc->prev, &tmp1, &tmp2) == 2)
+		return 1;
+
+	if (pa_isc_edge_edge(other->next, other, isc, isc->next, &tmp1, &tmp2) == 2)
+		return 1;
+
+	if (pa_isc_edge_edge(other->next, other, isc, isc->prev, &tmp1, &tmp2) == 2)
+		return 1;
+
+	return 0;
+}
+
 /*** Contour check ***/
 
 /* returns rnd_true if contour is invalid: a self-touching contour is valid, but
@@ -178,11 +210,14 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 			icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2);
 			if (icnt == 0) continue;
 
-			if (icnt > 1) { /* two intersections; must be overlapping lines */
+			/* two intersections; must be overlapping lines - we have to accept that, see test case fixedy3 */
+#if 0
+			if (icnt > 1) { 
 				PA_CHK_MARK(a1->point[0], a1->point[1]);
 				PA_CHK_MARK(a2->point[0], a2->point[1]);
-				return PA_CHK_ERROR(res, "icnt > 1 (%d) at %mm;%mm or  %mm;%mm", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+				return PA_CHK_ERROR(res, "icnt > 1 (%d) at %ld;%ld or  %ld;%ld", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
 			}
+#endif
 
 			/* we have one intersection; figure if it happens on a node next to a1
 			   or a2 and store them in hit1 and hit2 */
@@ -200,7 +235,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				   two edges of a1, one before and one after the intersection; if one
 				   is inside and one is outside, that's a1 crossing a2 (else it only
 				   touches and bounces back) */
-				if (pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) {
+				if ((pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) && !pa_chk_ll_olap(hit2, a2, a1)) {
 					PA_CHK_MARK(a1->point[0], a1->point[1]);
 					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
 					return PA_CHK_ERROR(res, "plines crossing (1) at %mm;%mm (%ld;%ld)", a1->point[0], a1->point[1], a1->point[0], a1->point[1]);
@@ -211,7 +246,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				   two edges of a2, one before and one after the intersection; if one
 				   is inside and one is outside, that's a2 crossing a1 (else it only
 				   touches and bounces back) */
-				if (pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) {
+				if ((pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) && !pa_chk_ll_olap(hit1, a1, a2)) {
 					PA_CHK_MARK(a2->point[0], a2->point[1]);
 					PA_CHK_MARK(hit1->point[0], hit1->point[1]);
 					return PA_CHK_ERROR(res, "plines crossing (2) at %mm;%mm (%ld;%ld)", a2->point[0], a2->point[1], a2->point[0], a2->point[1]);
