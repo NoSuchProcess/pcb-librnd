@@ -53,10 +53,29 @@ pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc)
 	return cd;
 }
 
+RND_INLINE double pa_vect_to_angle_small(rnd_vector_t v)
+{
+	double ang, dx, dy;
+
+	dx = fabs((double)v[0]);
+	dy = fabs((double)v[1]);
+	ang = dy / (dy + dx);
+
+	/* now move to the actual quadrant */
+	if ((v[0] < 0) && (v[1] >= 0))         ang = 2.0 - ang; /* 2nd quadrant */
+	else if ((v[0] < 0) && (v[1] < 0))     ang = 2.0 + ang; /* 3rd quadrant */
+	else if ((v[0] >= 0) && (v[1] < 0))    ang = 4.0 - ang; /* 4th quadrant */
+	else                                   { /* ang */ }    /* 1st quadrant */
+
+	assert((ang >= 0.0) && (ang <= 4.0));
+
+	return ang;
+}
+
+
 #ifndef PA_BIGCOORD_ISC
 RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
 {
-	double ang, dx, dy;
 	rnd_vector_t v;
 
 	if (side == 'P') /* previous */
@@ -87,17 +106,7 @@ RND_INLINE void pa_conn_calc_angle_small(pa_conn_desc_t *cd, rnd_vnode_t *pt, ch
 
 	assert(!Vequ2(v, rnd_vect_zero));
 
-	dx = fabs((double)v[0]);
-	dy = fabs((double)v[1]);
-	ang = dy / (dy + dx);
-
-	/* now move to the actual quadrant */
-	if ((v[0] < 0) && (v[1] >= 0))         cd->angle = 2.0 - ang; /* 2nd quadrant */
-	else if ((v[0] < 0) && (v[1] < 0))     cd->angle = 2.0 + ang; /* 3rd quadrant */
-	else if ((v[0] >= 0) && (v[1] < 0))    cd->angle = 4.0 - ang; /* 4th quadrant */
-	else                                   cd->angle = ang;       /* 1st quadrant */
-
-	assert((cd->angle >= 0.0) && (cd->angle <= 4.0));
+	cd->angle = pa_dxdy_to_angle_small(v);
 
 	DEBUG_ANGLE("point on %c at %$mD assigned angle %.08f on side %c\n", poly, pt->point[0], pt->point[1], cd->angle, side);
 }
