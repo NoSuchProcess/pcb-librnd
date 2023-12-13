@@ -77,6 +77,8 @@ struct pa_conn_desc_s {
 	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
 	pa_big_vector_t isc;                 /* (precise) coords of the intersection */
 	unsigned prelim:1;                   /* preliminary allocation: isc is set but other fields are blank */
+
+	rnd_vnode_t *PP_OTHER;               /* used only in big_postproc to link point-point overlap nodes */
 };
 
 
@@ -138,6 +140,8 @@ RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 }
 
 int pa_cvc_crossing_at_node(rnd_vnode_t *nd);
+int pa_cvc_line_line_overlap(rnd_vnode_t *na, rnd_vnode_t *nb);
+
 pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list);
 pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
 

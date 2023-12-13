@@ -272,3 +272,32 @@ int pa_cvc_crossing_at_node(rnd_vnode_t *nd)
 
 	return 0;
 }
+
+/* Overlapping nodes na and nb are on the same integer coordinates. Figure
+   if there's any overlapping lines coming out of them. Related test case:
+   fixedy. */
+int pa_cvc_line_line_overlap(rnd_vnode_t *na, rnd_vnode_t *nb)
+{
+	double aa1, aa2, ab1, ab2;
+	rnd_vector_t v;
+
+/*	rnd_trace("   ll overlap:\n");*/
+
+	Vsub2(v, na->next->point, na->point);
+	aa1 = pa_vect_to_angle_small(v);
+/*	rnd_trace("    %ld;%ld ->%f\n", (long)v[0], (long)v[1], aa1);*/
+
+	Vsub2(v, na->prev->point, na->point);
+	aa2 = pa_vect_to_angle_small(v);
+/*	rnd_trace("    %ld;%ld ->%f\n", (long)v[0], (long)v[1], aa2);*/
+
+	Vsub2(v, nb->next->point, nb->point);
+	ab1 = pa_vect_to_angle_small(v);
+/*	rnd_trace("    %ld;%ld ->%f\n", (long)v[0], (long)v[1], ab1);*/
+
+	Vsub2(v, nb->prev->point, nb->point);
+	ab2 = pa_vect_to_angle_small(v);
+/*	rnd_trace("    %ld;%ld ->%f\n", (long)v[0], (long)v[1], ab2);*/
+
+	return (aa1 == ab1) || (aa1 == ab2) || (aa2 == ab1) || (aa2 == ab2);
+}

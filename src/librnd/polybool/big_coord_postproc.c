@@ -47,7 +47,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2;
 	int num_isc, refuse_2isc = 0;
-
+	rnd_vnode_t *pp_other;
 
 	TODO("arc: need to figure self isc and overlapping arc-arc cases for T shaped self isc here");
 #if 0
@@ -60,10 +60,12 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	if ((s->v->next != ctx->v) && (s->v->next->point[0] == ctx->v->point[0]) && (s->v->next->point[1] == ctx->v->point[1])) {
 		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
 		ctx->pp_overlap = 1;
+		pp_other = s->v->next;
 	}
 	else if ((s->v != ctx->v) && (s->v->point[0] == ctx->v->point[0]) && (s->v->point[1] == ctx->v->point[1])) {
 		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
 		ctx->pp_overlap = 1;
+		pp_other = s->v;
 	}
 
 	if (ctx->pp_overlap) { /* allocate preliminary cvc at the overlap so the cvc crossing list can be built later */
@@ -72,10 +74,16 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 		pa_big_load(pt.x, ctx->v->point[0]);
 		pa_big_load(pt.y, ctx->v->point[1]);
 
-		if (ctx->v->cvclst_prev == NULL)
+		if (ctx->v->cvclst_prev == NULL) {
 			ctx->v->cvclst_prev = pa_prealloc_conn_desc(pt);
-		if (ctx->v->cvclst_next == NULL)
+			ctx->v->cvclst_prev->PP_OTHER = pp_other;
+rnd_trace("  pp_other set: %p -> %p\n", ctx->v, pp_other);
+		}
+		if (ctx->v->cvclst_next == NULL) {
 			ctx->v->cvclst_next = pa_prealloc_conn_desc(pt);
+			ctx->v->cvclst_prev->PP_OTHER = pp_other;
+rnd_trace("  pp_other sEt: %p -> %p\n", ctx->v, pp_other);
+		}
 	}
 
 	/* T shaped self intersection: one endpoint of ctx->v is the same as the
@@ -246,7 +254,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		/* There was a point-point overlap somewhere along this pline. This
 		   means either a >< kind of self-touch or a X kind of crossing in
 		   that point. We need to build the cvc lists to figure. */
-		rnd_vnode_t *n;
+		rnd_vnode_t *n, *pp_other;
 
 		rnd_trace(" pp-overlap X-crossing risk...\n");
 		pa_add_conn_desc(pl, 'A', NULL);
@@ -256,10 +264,17 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		do {
 			if (n->cvclst_prev != NULL) {
 				rnd_trace("  X-crossing check at %ld;%ld\n", n->point[0], n->point[1]);
-			}
-			if ((n->cvclst_prev != NULL) && (pa_cvc_crossing_at_node(n))) {
-				res = 1;
-				rnd_trace("   X-crossing detected!! schedule selfisc\n");
+				pp_other = n->cvclst_prev->PP_OTHER;
+rnd_trace("  pp_other get: %p -> %p\n", n, pp_other);
+
+				if (pa_cvc_crossing_at_node(n)) {
+					res = 1;
+					rnd_trace("   X-crossing detected!! schedule selfisc\n");
+				}
+				else if (pa_cvc_line_line_overlap(n, pp_other)) {
+					res = 1;
+					rnd_trace("   LL-overlap detected!! schedule selfisc\n");
+				}
 			}
 		} while((res == 0) && (n = n->next) != pl->head);
 	}
