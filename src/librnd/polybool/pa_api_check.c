@@ -46,6 +46,8 @@ static rnd_bool pa_vect_inside_sect(rnd_vnode_t *pn, rnd_vector_t p2)
 	rnd_vector_t cdir, ndir, pdir;
 	int cdir_above_prev, cdir_above_next, poly_edge_pos;
 
+	TODO("arc: extend this to work with arcs");
+
 	assert(pn != NULL);
 
 	Vsub2(cdir, p2,              pn->point);            /* p2 to pn */
