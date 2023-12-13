@@ -183,7 +183,7 @@ RND_INLINE void pa_inshole_build_rtree(rnd_polyarea_t *src, pa_insert_holes_t *a
 
 
 /* Search for the container of pl. Also loads insh_ctx as a side effect */
-RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **insh_ctx)
+RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **insh_ctx, int *risky)
 {
 	rnd_heap_t *heap;
 	rnd_pline_t *container = NULL;
@@ -206,7 +206,8 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 
 	if (rnd_heap_is_empty(heap)) {
 		/* only one possibility it must be the right one */
-		assert(pa_pline_inside_pline((*insh_ctx)->pa->contours, pl));
+		if (!pa_pline_inside_pline((*insh_ctx)->pa->contours, pl))
+			*risky = 1;
 		container = (*insh_ctx)->pa->contours;
 	}
 	else {
@@ -245,9 +246,11 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 
 	/* loop through the holes and put them where they belong */
 	while((pl = *src) != NULL) {
+		int risky = 0;
+
 		*src = pl->next;
 
-		container = pa_inshole_find_container(e, dst, tree, pl, &insh_ctx);
+		container = pa_inshole_find_container(e, dst, tree, pl, &insh_ctx, &risky);
 		if (container == NULL) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -259,6 +262,9 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 			pa_error(pa_err_bad_parm);
 		}
 		else {
+			if (risky)
+				container->flg.risky = 1;
+
 			/* New hole may trigger reprocessing on some existing holes (so those
 			   are removed from the pa and put on the result list and returned in *src) */
 			for(;;) {

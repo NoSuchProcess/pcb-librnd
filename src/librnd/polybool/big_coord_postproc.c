@@ -198,6 +198,11 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 	rnd_vnode_t *v = pl->head, *next;
 	int res = 0, rebuild_tree = 0, pp_overlap = 0;
 
+	if (pl->flg.risky) {
+		rnd_trace("pline marked risky earlier - schedule selfisc\n");
+		res = 1;
+	}
+
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
