@@ -77,12 +77,10 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 		if (ctx->v->cvclst_prev == NULL) {
 			ctx->v->cvclst_prev = pa_prealloc_conn_desc(pt);
 			ctx->v->cvclst_prev->PP_OTHER = pp_other;
-rnd_trace("  pp_other set: %p -> %p\n", ctx->v, pp_other);
 		}
 		if (ctx->v->cvclst_next == NULL) {
 			ctx->v->cvclst_next = pa_prealloc_conn_desc(pt);
 			ctx->v->cvclst_prev->PP_OTHER = pp_other;
-rnd_trace("  pp_other sEt: %p -> %p\n", ctx->v, pp_other);
 		}
 	}
 
@@ -265,7 +263,6 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 			if (n->cvclst_prev != NULL) {
 				rnd_trace("  X-crossing check at %ld;%ld\n", n->point[0], n->point[1]);
 				pp_other = n->cvclst_prev->PP_OTHER;
-rnd_trace("  pp_other get: %p -> %p\n", n, pp_other);
 
 				if (pa_cvc_crossing_at_node(n)) {
 					res = 1;
