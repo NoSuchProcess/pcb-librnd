@@ -66,7 +66,7 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 		ctx->pp_overlap = 1;
 	}
 
-	if (ctx->pp_overlap) { /* allocate preliminary cvc at the overlap so the cvc crossing list cna be built later */
+	if (ctx->pp_overlap) { /* allocate preliminary cvc at the overlap so the cvc crossing list can be built later */
 		pa_big_vector_t pt;
 
 		pa_big_load(pt.x, ctx->v->point[0]);
