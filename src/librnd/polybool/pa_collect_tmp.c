@@ -263,7 +263,7 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 		}
 		else {
 			if (risky)
-				container->flg.risky = 1;
+				container->flg.risky = 1; /* see also: test case fixedv */
 
 			/* New hole may trigger reprocessing on some existing holes (so those
 			   are removed from the pa and put on the result list and returned in *src) */
