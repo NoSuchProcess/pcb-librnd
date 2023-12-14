@@ -301,7 +301,7 @@ rnd_pline_t *pa_pline_dup(rnd_pline_t *src)
 #endif
 
 		newnd->flg.risk = n->flg.risk;
-		rnd_poly_vertex_include(dst->head->prev, newnd);
+		rnd_poly_vertex_include_force(dst->head->prev, newnd);
 	}
 
 #ifdef PB_OPTIMIZE_TREE_COPY
