@@ -69,7 +69,7 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 	rnd_polyarea_t *a = a_, *b = b_;
 	rnd_pline_t *a_isected = NULL, *holes = NULL;
 	jmp_buf e;
-	int code;
+	int code, from_selfisc = a_->from_selfisc && b_->from_selfisc;
 
 	*res = NULL;
 
@@ -136,8 +136,11 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 		return code;
 	}
 
-	if (*res != NULL)
+	if (*res != NULL) {
+		(*res)->from_selfisc = from_selfisc;
 		pa_bool_postproc(res);
+		(*res)->from_selfisc = 0;
+	}
 
 
 	return code;

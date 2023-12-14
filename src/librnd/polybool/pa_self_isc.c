@@ -1089,6 +1089,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 					pa_polyarea_insert_pline(tmpa, pl);
 					pa_polyarea_insert_pline(tmpb, pl2);
 
+					tmpa->from_selfisc = 1;
+					tmpb->from_selfisc = 1;
 					rnd_polyarea_boolean_free_nochk(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
 
 					/* unlunk from tmpc and free up temps */
@@ -1135,6 +1137,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
 				remove_all_cvc(*pa);
 
+				(*pa)->from_selfisc = 1;
+				tmpa->from_selfisc = 1;
 				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
 				*pa = tmpc;
 
@@ -1184,6 +1188,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 		rnd_polyarea_t *tmp = NULL, *fl = floating.array[n];
 
 		rnd_trace("pa-pa isc union:\n");
+		(*pa)->from_selfisc = 1;
+		fl->from_selfisc = 1;
 		res = rnd_polyarea_boolean_free(*pa, fl, &tmp, RND_PBO_UNITE);
 		*pa = tmp;
 

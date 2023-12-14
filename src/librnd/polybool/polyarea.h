@@ -129,6 +129,9 @@ struct rnd_polyarea_s {
 	rnd_polyarea_t *f, *b;
 	rnd_pline_t *contours;
 	rnd_rtree_t *contour_tree;
+
+	/* internal */
+	unsigned from_selfisc:1; /* postproc is running from within selfisc - avoid infinite loops */
 };
 
 rnd_bool rnd_polyarea_alloc_copy(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);

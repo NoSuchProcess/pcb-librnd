@@ -207,12 +207,14 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 		if (v->flg.risk) {
 			v->flg.risk = 0;
 rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
-			if (!res && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
+			if (!res && !pa->from_selfisc && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
 				/* Related test case: fixedx; causes triangle flip; can't happen
 				   if the length of the edge of the triangle is larger than our rounding
 				   limit. Since this is checked only if v is rounded, it happens
 				   rarely so it is okay to schedule an expensive self-isc check
-				   that will then do a real triangle-flip detection. */
+				   that will then do a real triangle-flip detection.
+				   Skip this test if we are called back from the selfisc code through
+				   bool algebra: could send us into infinite loop, see test case fixedz */
 				rnd_trace("  segment too short next to a rounded corner! Shedule selfi-resolve\n");
 				res = 1;
 			}
