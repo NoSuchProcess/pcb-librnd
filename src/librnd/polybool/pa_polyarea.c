@@ -159,6 +159,7 @@ rnd_polyarea_t *rnd_polyarea_dup(const rnd_polyarea_t *src)
 
 	res->contour_tree = rnd_r_create_tree();
 	pa_polyarea_copy_plines(res, src);
+	res->from_selfisc = src->from_selfisc;
 	return res;
 }
 
@@ -243,6 +244,7 @@ void pa_polyarea_init(rnd_polyarea_t *pa)
 	pa->f = pa->b = pa; /* single island */
 	pa->contours = NULL;
 	pa->contour_tree = rnd_r_create_tree();
+	pa->from_selfisc = 0;
 }
 
 rnd_polyarea_t *pa_polyarea_alloc(void)

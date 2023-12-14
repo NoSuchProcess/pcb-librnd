@@ -56,6 +56,7 @@ RND_INLINE void insert_pline(jmp_buf *e, rnd_polyarea_t **dst, rnd_pline_t *pl)
 
 	newp->contours = pl;
 	newp->contour_tree = rnd_r_create_tree();
+	newp->from_selfisc = 0;
 	rnd_r_insert_entry(newp->contour_tree, (rnd_box_t *)pl);
 	pl->next = NULL;
 }
