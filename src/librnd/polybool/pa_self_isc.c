@@ -62,6 +62,7 @@ typedef struct {
 	rnd_pline_t *pl;
 	long num_isc;
 	unsigned restart:1;      /* restart the rtree search on the current line */
+	unsigned cut_line_line_overlap:1; /*  config: when enabled, cut class5 line-line overlap cases (bones) */
 	rnd_vnode_t *skip_to;    /* skip to this node while walking the outline, skipping sections of hidden inner islands */
 
 	rnd_vnode_t *search_seg_v;
@@ -290,7 +291,8 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 		if (s->v->flg.mark)
 			return RND_R_DIR_NOT_FOUND; /* already handled */
 		s->v->flg.mark = 1;
-		return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
+		if (ctx->cut_line_line_overlap)
+			return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
 	}
 
 	/* single intersection between two lines; new_node is NULL if isc1 is at
@@ -683,6 +685,7 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 	long i;
 
 	ctx.pl = pl;
+	ctx.cut_line_line_overlap = 1;
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
@@ -720,7 +723,12 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	pa_selfisc_t ctx = {0};
 	int first_pos_null;
 
+	/* cut_line_line_overlap is disbaled, see test case fixedu: when collecting
+	   islands we are going by picking smallest loops; in this case a "bone"
+	   construct causes no problem as it's simply a two-vertex polygon that
+	   is eliminated. */
 	ctx.pl = pl;
+	ctx.cut_line_line_overlap = 0;
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
