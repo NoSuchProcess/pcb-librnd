@@ -1,7 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
-		- gixedb: selfisc resolver going wrong on island
+		- gixedb: selfisc resolver going wrong on island: bone case with multiple overlapping lines
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
