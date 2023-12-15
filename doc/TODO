@@ -1,7 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- gixeda*: undetected selfisc
-		- gixedb: undetected selfisc on distorted go-in-come-out hole
+		- fixedy4,fixedy5: undetected selfisc
+		- gixedb: selfisc resolver going wrong on island
 		- gixedc: infinite loop
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
