@@ -1,5 +1,8 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
+		- gixeda*: undetected selfisc
+		- gixedb: undetected selfisc on distorted go-in-come-out hole
+		- gixedc: infinite loop
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
