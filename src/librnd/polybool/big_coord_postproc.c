@@ -193,7 +193,7 @@ static int seg_too_short(rnd_vnode_t *a, rnd_vnode_t *b)
 /* Check each vertex in pl: if it is risky, check if there's any intersection
    on the incoming or outgoing edge of that vertex. If there is, stop and
    return 1, otherwise return 0. */
-RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_bad)
+RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_bad, int from_selfisc)
 {
 	rnd_vnode_t *v = pl->head, *next;
 	int res = 0, rebuild_tree = 0, pp_overlap = 0;
@@ -207,7 +207,7 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 		if (v->flg.risk) {
 			v->flg.risk = 0;
 rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
-			if (!res && !pa->from_selfisc && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
+			if (!res && !from_selfisc && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
 				/* Related test case: fixedx; causes triangle flip; can't happen
 				   if the length of the edge of the triangle is larger than our rounding
 				   limit. Since this is checked only if v is rounded, it happens
@@ -299,7 +299,7 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 }
 
 /* Does an iteration of postprocessing; returns whether pa changed (0 or 1) */
-RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
+RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa, int from_selfisc)
 {
 	int res = 0;
 	rnd_polyarea_t *pn = *pa;
@@ -313,16 +313,16 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa)
 			   rounded to output integers and the rounding error introduces
 			   a new crossing somewhere. Merge the two islands. */
 			for(pl = pn->contours; pl != NULL; pl = pl->next)
-				if (big_bool_ppl_(pn, pl, res))
+				if (big_bool_ppl_(pn, pl, res, from_selfisc))
 					res = 1; /* can not return here, need to clear all the risk flags */
 		}
 	} while ((pn = pn->f) != *pa);
 	return res;
 }
 
-void pa_big_bool_postproc(rnd_polyarea_t **pa)
+void pa_big_bool_postproc(rnd_polyarea_t **pa, int from_selfisc)
 {
-	if (big_bool_ppa_(pa))
+	if (big_bool_ppa_(pa, from_selfisc))
 		rnd_polyarea_split_selfisc(pa);
 }
 

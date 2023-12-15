@@ -40,10 +40,10 @@
    slightly after rounding the coords. In other words rounding moves vertices.
    In some cases this may change the topology and cause self-intersecting
    polygons or zero-length edges. Remove them here. */
-RND_INLINE void pa_bool_postproc(rnd_polyarea_t **pa)
+RND_INLINE void pa_bool_postproc(rnd_polyarea_t **pa, int from_selfisc)
 {
 #ifdef PA_BIGCOORD_ISC
-	pa_big_bool_postproc(pa);
+	pa_big_bool_postproc(pa, from_selfisc);
 #endif
 	/* else don't do naything: this happens only with big coords */
 }
@@ -136,12 +136,8 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 		return code;
 	}
 
-	if (*res != NULL) {
-		(*res)->from_selfisc = from_selfisc;
-		pa_bool_postproc(res);
-		(*res)->from_selfisc = 0;
-	}
-
+	if (*res != NULL)
+		pa_bool_postproc(res, from_selfisc);
 
 	return code;
 }
