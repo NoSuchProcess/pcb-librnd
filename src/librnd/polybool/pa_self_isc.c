@@ -164,6 +164,37 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
 	return new_node;
 }
 
+/* The bridge (overlapping lines) may be longer than just one pair,
+   see test case si_class5d*. Go and mark each such overlapping line pair
+   of the "bone" (bridge, snake) blocked and return the last junction
+   in sn2, where the two overlapping sections finally diverge. That's
+   where a new island (hole or outer island) starts. */
+static int pa_selfisc_llo_multiseg(rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
+{
+	int p1_match, p2_match;
+	rnd_trace(" long-bone test at %ld;%ld\n", sn1->point[0], sn1->point[1]);
+
+	do {
+		p1_match = (in->point[0] == out->point[0]) && (in->point[1] == out->point[1]);
+		p2_match = (in->next->point[0] == out->prev->point[0]) && (in->next->point[1] == out->prev->point[1]);
+
+		rnd_trace("  in:  %d;%d - %d;%d\n", in->point[0], in->point[1], in->next->point[0], in->next->point[1]);
+		rnd_trace("  out: %d;%d - %d;%d\n", out->point[0], out->point[1], out->prev->point[0], out->prev->point[1]);
+		rnd_trace("       pmatch: %d %d\n", p1_match, p2_match);
+
+		if (p1_match && p2_match) {
+			/* block the overlapping part from collect*() */
+			in->flg.mark = in->flg.blocked = 1;
+			out->flg.mark = out->flg.blocked = 1;
+			*sn2 = in->next;
+		}
+		if (p2_match) {
+			in = in->next;
+			out = out->prev;
+		}
+	} while(p2_match);
+}
+
 /* Class 5: line-line overlap: split up both lines then cut the path in three:
     - a loop before isc1
     - a loop after isc2
@@ -231,6 +262,11 @@ rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_bi
 	/* block the overlapping part from collect*() */
 	ctxn1->flg.mark = ctxn1->flg.blocked = 1;
 	sn1->flg.mark = sn1->flg.blocked = 1;
+
+	/* The bridge (overlapping lines) may be longer than just one pair,
+	   see test case si_class5d*; if that's the case, go on and trace
+	   the snake until it has a junction or ends */
+	pa_selfisc_llo_multiseg(sn1, ctx->v->next, sv, &sn2);
 
 	/* the resulting island has no access from the outer contour because of
 	   the blocking so we need to remember them separately */
