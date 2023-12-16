@@ -169,7 +169,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
    of the "bone" (bridge, snake) blocked and return the last junction
    in sn2, where the two overlapping sections finally diverge. That's
    where a new island (hole or outer island) starts. */
-static int pa_selfisc_llo_multiseg(pa_selfisc_t *ctx, rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
+static void pa_selfisc_llo_multiseg(pa_selfisc_t *ctx, rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
 {
 	int p1_match, p2_match;
 	rnd_trace(" long-bone test at %ld;%ld\n", sn1->point[0], sn1->point[1]);
