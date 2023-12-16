@@ -431,8 +431,10 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		else onto = c->parent->prev;
 
 		rnd_trace("  %.2f %.2f '%c'", NODE_CRDS(onto), c->side);
-		if (c->parent->flg.blocked)
+		if (c->parent->flg.blocked) {
+			rnd_trace(" refuse (blocked)\n");
 			continue;
+		}
 		if (!onto->flg.mark) {
 			*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir)
@@ -508,7 +510,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	start->flg.start = 0;
 }
 
-/* Step from n to the next node according to dir, walking an island (trying to
+/* Step from n to the next node according to dir, walking a hole island (trying to
    get minimal area portions) */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first)
 {
@@ -553,6 +555,11 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			return NULL; /* arrived back to the starting point - finish normally */
 		}
 
+		if (onto->flg.blocked) {
+			rnd_trace("    refuse (blocked)\n");
+			continue;
+		}
+
 		if (!onto->flg.mark || onto->flg.start) { /* also accept flg.start here: greedy algorithm to find shortest loops */
 			*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir) {
@@ -589,7 +596,7 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	return NULL;
 }
 
-/* Collect all unmarked islands starting from a cvc node */
+/* Collect all unmarked hole islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
 	int accept_pol = 0;
