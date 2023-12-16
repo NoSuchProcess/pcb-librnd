@@ -266,7 +266,7 @@ rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_bi
 	/* The bridge (overlapping lines) may be longer than just one pair,
 	   see test case si_class5d*; if that's the case, go on and trace
 	   the snake until it has a junction or ends */
-	pa_selfisc_llo_multiseg(sn1, ctx->v->next, sv, &sn2);
+	pa_selfisc_llo_multiseg(sn1, ctxn1->next, sn1, &sn2);
 
 	/* the resulting island has no access from the outer contour because of
 	   the blocking so we need to remember them separately */
