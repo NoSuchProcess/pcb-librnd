@@ -3,7 +3,7 @@
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedb: selfisc resolver going wrong on island
 			-> si_class5d
-			-> create si_class6d with intersection point offset on both ends
+			-> create si_class5e with intersection point offset on both ends
 			-> bone case with multiple overlapping lines
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
