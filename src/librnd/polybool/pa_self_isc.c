@@ -169,7 +169,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
    of the "bone" (bridge, snake) blocked and return the last junction
    in sn2, where the two overlapping sections finally diverge. That's
    where a new island (hole or outer island) starts. */
-static int pa_selfisc_llo_multiseg(rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
+static int pa_selfisc_llo_multiseg(pa_selfisc_t *ctx, rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
 {
 	int p1_match, p2_match;
 	rnd_trace(" long-bone test at %ld;%ld\n", sn1->point[0], sn1->point[1]);
@@ -188,6 +188,39 @@ static int pa_selfisc_llo_multiseg(rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_
 			out->flg.mark = out->flg.blocked = 1;
 			*sn2 = in->next;
 		}
+
+		if (p1_match && !p2_match) {
+			pa_big_vector_t isc1, isc2, isc, comm;
+			pa_big2_coord_t dist1, dist2;
+			int num_isc;
+			rnd_vnode_t *ind, *outd;
+
+			num_isc = pa_isc_edge_edge_(in, in->next, out, out->prev, &isc1, &isc2);
+
+			if (num_isc == 2) { /* partial overlap at the end: insert a new node into in and out */
+				/* set isc to the intersection point where they diverge */
+				rnd_pa_big_load_cvc(&comm, in); /* common starting point of in an out */
+				rnd_vect_u_dist2_big(dist1, comm, isc1);
+				rnd_vect_u_dist2_big(dist2, comm, isc2);
+				if (pa_big2_coord_cmp(dist1, dist2) < 0)
+					isc = isc2;
+				else
+					isc = isc1;
+
+				ind  = pa_selfisc_ins_pt(ctx, in, isc);
+				if (ind == NULL)
+					ind = in->next;
+				outd = pa_selfisc_ins_pt(ctx, out->prev, isc);
+				if (outd == NULL)
+					outd = out->prev;
+
+				*sn2 = ind;
+				rnd_trace("   outgoing junction in=%d;%d out=%d;%d!\n", ind->point[0], ind->point[1], outd->point[0],  outd->point[1]);
+
+				return;
+			}
+		}
+
 		if (p2_match) {
 			in = in->next;
 			out = out->prev;
@@ -266,7 +299,7 @@ rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_bi
 	/* The bridge (overlapping lines) may be longer than just one pair,
 	   see test case si_class5d*; if that's the case, go on and trace
 	   the snake until it has a junction or ends */
-	pa_selfisc_llo_multiseg(sn1, ctxn1->next, sn1, &sn2);
+	pa_selfisc_llo_multiseg(ctx, sn1, ctxn1->next, sn1, &sn2);
 
 	/* the resulting island has no access from the outer contour because of
 	   the blocking so we need to remember them separately */
