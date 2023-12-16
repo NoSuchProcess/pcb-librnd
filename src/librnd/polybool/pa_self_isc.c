@@ -597,6 +597,9 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
 
+	if (start->flg.blocked)
+		return;
+
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
@@ -624,7 +627,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 		else if ((dir == 'P') && (dst->flg.orient == RND_PLF_DIR))
 			accept_pol = +1;
 	}
-	rnd_trace("  } (end island: len=%d dir=%c PLF=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, accept_pol);
+	rnd_trace("\n  } (end island: len=%d dir=%c PLF=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, accept_pol);
 	if (started != NULL)
 		started->flg.start = 0;
 
@@ -650,7 +653,7 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 	do {
 		pa_conn_desc_t *c, *cstart = n->cvclst_prev;
 		
-		if ((cstart == NULL) || n->flg.mark)
+		if ((cstart == NULL) || n->flg.mark || n->flg.blocked)
 			continue;
 		
 		rnd_trace(" at isl %.2f %.2f\n", NODE_CRDS(n));
