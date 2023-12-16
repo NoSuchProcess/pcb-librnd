@@ -214,6 +214,12 @@ static void pa_selfisc_llo_multiseg(pa_selfisc_t *ctx, rnd_vnode_t *sn1, rnd_vno
 				if (outd == NULL)
 					outd = out->prev;
 
+				/* block the new segment pair of the partial overlap blocked */
+				in->flg.blocked = 1;
+				outd->flg.blocked = 1;
+				rnd_trace("    blk: %d;%d -> %d;%d\n", in->point[0], in->point[1], in->next->point[0], in->next->point[1]);
+				rnd_trace("    blk: %d;%d -> %d;%d\n", outd->point[0], outd->point[1], outd->next->point[0], outd->next->point[1]);
+
 				*sn2 = ind;
 				rnd_trace("   outgoing junction in=%d;%d out=%d;%d!\n", ind->point[0], ind->point[1], outd->point[0],  outd->point[1]);
 
