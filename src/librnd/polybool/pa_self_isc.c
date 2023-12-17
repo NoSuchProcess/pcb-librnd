@@ -346,6 +346,13 @@ static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
 
+rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:", NODE_CRDS(s->v), NODE_CRDS(s->v->next));
+rnd_trace(" [%d] %.2f;%.2f", num_isc, pa_big_double(isc1.x), pa_big_double(isc1.y));
+if (num_isc > 1)
+	rnd_trace("  and   %.2f;%.2f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
+else
+	rnd_trace("\n");
+
 	if (num_isc == 1) {
 		/* corner case: it may be that we have only one isc in high res coord regime
 		   but after rounding we would get a full overlap (class 5). Test case:
@@ -716,7 +723,7 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	do {
 		rnd_box_t box;
 
-		rnd_trace(" loop %ld;%ld (map) {%p}\n", n->point[0], n->point[1], n);
+		rnd_trace(" loop %.2f;%.2f - %.2f;%.2f (map)\n", NODE_CRDS(n), NODE_CRDS(n->next));
 
 		n->flg.mark = 0;
 		ctx->v = n;
