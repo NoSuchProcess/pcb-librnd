@@ -152,3 +152,20 @@ int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b)
 	return big_signed_cmpn(a, b, W2);
 }
 
+int pa_small_big_xy_eq(rnd_coord_t smallx, rnd_coord_t smally, pa_big_coord_t bigx, pa_big_coord_t bigy)
+{
+	int n;
+
+	/* if big is not round, they can not be equal */
+	for(n = 0; n < W/2; n++)
+		if ((bigx[n] != 0) || (bigy[n] != 0))
+			return 0;
+
+	/* if big is larger than a single word, they can not be equal */
+	for(n = W/2+1; n < W; n++)
+		if ((bigx[n] != 0) || (bigy[n] != 0))
+			return 0;
+
+	return (smallx == bigx[W/2]) && (smally == bigy[W/2]);
+}
+

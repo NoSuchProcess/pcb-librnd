@@ -101,6 +101,9 @@ void rnd_vect_u_dist2_big(pa_big2_coord_t dst, pa_big_vector_t v1, pa_big_vector
 int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b);
 int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b);
 
+int pa_small_big_xy_eq(rnd_coord_t smallx, rnd_coord_t smally, pa_big_coord_t bigx, pa_big_coord_t bigy);
+
+
 /* For collect/gather */
 void pa_big_area_incremental(pa_big2_coord_t big_area, rnd_vnode_t *big_curr, rnd_vnode_t *big_prev);
 int pa_big_area2ori(pa_big2_coord_t big_area);
