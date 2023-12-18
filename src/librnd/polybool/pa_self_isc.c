@@ -603,10 +603,84 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	return NULL;
 }
 
+/* returns 1 if low resolution coords of nd maches high resolution coords isc */
+RND_INLINE int vertex_on_isc(rnd_vnode_t *nd, pa_big_vector_t isc)
+{
+	return pa_small_big_xy_eq(nd->point[0], nd->point[1], isc.x, isc.y);
+}
+
+/* Called back from an rtree query to figure if two edges intersect, not
+   in their endpoints */
+static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
+{
+	rnd_vnode_t *va1 = (rnd_vnode_t *)cl;
+	pa_seg_t *s = (pa_seg_t *)b;
+	int num_isc;
+	pa_big_vector_t isc1, isc2;
+
+	if (s->v == va1)
+		return RND_R_DIR_NOT_FOUND;
+
+	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, &isc1, &isc2);
+	if (num_isc == 0)
+		return RND_R_DIR_NOT_FOUND;
+
+	if (num_isc == 1) {
+		/* single intersection: can be one endpoint falling on the other line,
+		   which is not a real rounding-induced intersection just a touch; ignore
+		   these */
+		if (vertex_on_isc(s->v, isc1)) return RND_R_DIR_NOT_FOUND;
+		if (vertex_on_isc(s->v->next, isc1)) return RND_R_DIR_NOT_FOUND;
+		if (vertex_on_isc(va1, isc1)) return RND_R_DIR_NOT_FOUND;
+		if (vertex_on_isc(va1->next, isc1)) return RND_R_DIR_NOT_FOUND;
+	}
+
+	if (num_isc == 2) {
+		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: overlapping lines\n");
+		abort();
+	}
+
+
+	/* found a legit isc */
+	return RND_R_DIR_CANCEL;
+}
+
+
+/* Figure if an island has self intersections (self touch ignored), but
+   check only risky nodes */
+static int pline_selfisc_risky(rnd_pline_t *dst)
+{
+	rnd_vnode_t *n, *start;
+	int res = 0, rres;
+	rnd_trace("\n   island collect risk...\n");
+
+	n = start = dst->head;
+	do {
+		rnd_box_t box;
+
+		rnd_trace("       chk: %ld;%ld %p %d\n", n->point[0], n->point[1], n, n->flg.risk);
+
+		if (n->flg.risk || n->next->flg.risk) {
+			rnd_trace("       chk: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);
+
+			box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
+			box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
+			rres = rnd_r_search(dst->tree, &box, NULL, pa_pline_isc_pline_notouch_cb, n, NULL);
+			if (rres == RND_R_DIR_CANCEL) {
+				rnd_trace("           risk isc!\n");
+				res = 1; /* can't return here, we need to reset all risk flags */
+			}
+			n->flg.risk = 0;
+		}
+	} while((n = n->next) != start);
+
+	return res;
+}
+
 /* Collect all unmarked hole islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
-	int accept_pol = 0;
+	int accept_pol = 0, has_risk = 0, has_selfisc = 0;
 	char dir = 'N';
 	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
@@ -617,18 +691,37 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
+	if (start->cvclst_prev != NULL) {
+		last->flg.risk = 1;
+		has_risk = 1;
+		rnd_trace("      RISK: %.2f %.2f -> %ld;%ld %p\n", NODE_CRDS(start), last->point[0], last->point[1], last);
+	}
+
+
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
 	for(n = pa_selfisc_next_i(start, &dir, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
+		/* This is rounding n->cvc into newn->point */
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
 		newn->point[1] = n->point[1];
+		if (n->cvclst_prev != NULL) {
+			newn->flg.risk = 1;
+			has_risk = 1;
+			rnd_trace("      RISK: %.2f %.2f -> %ld;%ld %p\n", NODE_CRDS(n), newn->point[0], newn->point[1], newn);
+		}
+		else
+			rnd_trace("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
 	}
 	pa_pline_update(dst, 1);
+
+	/* if we had any node rounded, check for post-rounding self-intersections */
+	if (has_risk)
+		has_selfisc = pline_selfisc_risky(dst);
 
 	if (dst->Count >= 3) {
 		/* if there are enough points for a polygon, figure its polarity */
@@ -650,6 +743,11 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 			pa_pline_invert(dst);
 		else if ((accept_pol < 0) && (dst->flg.orient == RND_PLF_DIR))
 			pa_pline_invert(dst);
+
+		if (has_selfisc) {
+			fprintf(stderr, "pa_selfisc_collect_island: unhandled self intersection (gixedb)\n");
+			abort();
+		}
 		posneg_append_pline(posneg, accept_pol, dst);
 	}
 	else
