@@ -603,6 +603,14 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	return NULL;
 }
 
+#define RISK_RESOLUTION shared
+typedef struct {
+	enum { NOP=0, REMOVE, SPLIT } op;
+	rnd_vnode_t *split; /* start of an edge that needs to be split (the V case) */
+
+	rnd_vnode_t *va1; /* temp for the r-search callback */
+} risk_resolution_t;
+
 /* returns 1 if low resolution coords of nd maches high resolution coords isc */
 RND_INLINE int vertex_on_isc(rnd_vnode_t *nd, pa_big_vector_t isc)
 {
@@ -613,10 +621,12 @@ RND_INLINE int vertex_on_isc(rnd_vnode_t *nd, pa_big_vector_t isc)
    in their endpoints */
 static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
 {
-	rnd_vnode_t *va1 = (rnd_vnode_t *)cl;
+	risk_resolution_t *rrs = (risk_resolution_t *)cl;
+	rnd_vnode_t *va1 = rrs->va1, *common = NULL;
 	pa_seg_t *s = (pa_seg_t *)b;
 	int num_isc;
-	pa_big_vector_t isc1, isc2;
+	pa_big_vector_t isc1, isc2, bva1;
+	pa_big2_coord_t dist2;
 
 	if (s->v == va1)
 		return RND_R_DIR_NOT_FOUND;
@@ -636,7 +646,26 @@ static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
 	}
 
 	if (num_isc == 2) {
-		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: overlapping lines\n");
+		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: overlapping lines (2-overlap)\n");
+		abort();
+		/* probably works the same, need to test. Probably should do a REMOVE */
+	}
+
+	/* check for 1-X case */
+	if (va1->prev == s->v)             common = s->v;
+	else if (va1->next == s->v)        common = s->v;
+	else if (va1->prev == s->v->next)  common = s->v;
+	else if (va1->next == s->v->next)  common = s->v;
+	if (common != NULL) {
+		/* test case: gixedb */
+		rnd_trace("   notouch_cb: remove (1-X)\n");
+		rrs->op = REMOVE;
+	}
+	else {
+		rnd_trace("   notouch_cb: split (1-V)\n");
+		rrs->op = SPLIT;
+		rrs->split = s->v;
+		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: SPLIT not handled at caller yet\n");
 		abort();
 	}
 
@@ -658,24 +687,64 @@ static int pline_selfisc_risky(rnd_pline_t *dst)
 	do {
 		rnd_box_t box;
 
-		rnd_trace("       chk: %ld;%ld %p %d\n", n->point[0], n->point[1], n, n->flg.risk);
+		rnd_trace("       chk: %ld;%ld %p %d shared=%p\n", n->point[0], n->point[1], n, n->flg.risk);
 
 		if (n->flg.risk || n->next->flg.risk) {
+			risk_resolution_t rrs = {0};
 			rnd_trace("       chk: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);
 
 			box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 			box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
-			rres = rnd_r_search(dst->tree, &box, NULL, pa_pline_isc_pline_notouch_cb, n, NULL);
+			rrs.va1 = n;
+			rres = rnd_r_search(dst->tree, &box, NULL, pa_pline_isc_pline_notouch_cb, &rrs, NULL);
 			if (rres == RND_R_DIR_CANCEL) {
 				rnd_trace("           risk isc!\n");
 				res = 1; /* can't return here, we need to reset all risk flags */
+				assert(n->RISK_RESOLUTION == NULL);
+				n->RISK_RESOLUTION = malloc(sizeof(rrs));
+				memcpy(n->RISK_RESOLUTION, &rrs, sizeof(rrs));
 			}
-			n->flg.risk = 0;
+			else
+				n->flg.risk = 0;
 		}
 	} while((n = n->next) != start);
 
 	return res;
 }
+
+static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
+{
+	rnd_vnode_t *n, *start, *next;
+	int res = 0, rres;
+	rnd_trace("\n   island RESOLVE risk...\n");
+
+	n = start = dst->head;
+	do {
+		if (n->flg.risk) {
+			risk_resolution_t *rrs = (risk_resolution_t *)n->RISK_RESOLUTION;
+			n->RISK_RESOLUTION = NULL;
+			n->flg.risk = 0;
+			next = n->next;
+
+			switch(rrs->op) {
+				case REMOVE: /* test case: gixedb; doc case: 1-X */
+					if (start == n)
+						start = n->next;
+					rnd_trace("   -> remove %ld;%ld\n", n->point[0], n->point[1]);
+					rnd_poly_vertex_exclude(dst, n);
+					break;
+				case SPLIT: /* doc case: 1-V */
+					TODO("find a test case and implement me");
+					abort();
+				case NOP:
+					abort(); /* shouldn't be in the list */
+			}
+			free(rrs);
+		}
+	} while((n = next) != start);
+	return 0;
+}
+
 
 /* Collect all unmarked hole islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
@@ -745,8 +814,11 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 			pa_pline_invert(dst);
 
 		if (has_selfisc) {
-			fprintf(stderr, "pa_selfisc_collect_island: unhandled self intersection (gixedb)\n");
-			abort();
+			pline_selfisc_risky_resolve(dst);
+			/* need to rebuild the tree because of node deletion */
+			rnd_r_free_tree_data(dst->tree, free);
+			rnd_r_destroy_tree(&dst->tree);
+			pa_pline_update(dst, 1);
 		}
 		posneg_append_pline(posneg, accept_pol, dst);
 	}
