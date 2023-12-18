@@ -1,10 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
-		- gixedb: selfisc resolver going wrong on island
-			-> si_class5d
-			-> create si_class5e with intersection point offset on both ends
-			-> bone case with multiple overlapping lines
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
