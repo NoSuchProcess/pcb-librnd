@@ -201,6 +201,7 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 	if (pl->flg.risky) {
 		rnd_trace("pline marked risky earlier - schedule selfisc\n");
 		res = 1;
+		pl->flg.risky = 0;
 	}
 
 	do {
