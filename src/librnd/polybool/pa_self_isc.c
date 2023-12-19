@@ -1142,7 +1142,7 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 					pa_pline_free(&pl);
 				}
 				else {
-					/* contour: remove the pa */
+					/* contour: remove the pa; test case: gixedc2 */
 					assert(pa->contours == pl);
 					if (pa == *pa1)
 						*pa1 = (*pa1)->f;
