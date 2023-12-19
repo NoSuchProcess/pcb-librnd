@@ -3,8 +3,7 @@
 		- fixedy4,fixedy5: undetected selfisc
 		- gixeda: output ends up empty but shouldn't
 		- gixedd: invalid union: hole ends up having a line-line overlap tentacle
-		- gixede: small triangle in input A confuses the algo
-		- gixedf: pline assert on sub
+		- gixede, gixede2: small triangle in input A confuses the algo
 		- MEMLEAK:
 			- gixedc
 		- finish self intersecting holes: sih_*
