@@ -1103,10 +1103,12 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 {
 	rnd_polyarea_t *pa = pa1;
 	do {
-		rnd_pline_t *pl;
-		for(pl = pa->contours; pl != NULL; pl = pl->next) {
+		rnd_pline_t *pl, *prev_pl = NULL, *next_pl;
+		for(pl = pa->contours; pl != NULL; prev_pl = pl, pl = next_pl) {
 			rnd_vnode_t *p, *nxt, *n = pl->head;
 			int redundant;
+
+			next_pl = pl->next;
 
 			do {
 				if (n->cvclst_prev != NULL) {
@@ -1115,6 +1117,9 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 					n->cvclst_prev = n->cvclst_next = NULL;
 					/* no need to unlink, all cvcs are free'd here */
 				}
+
+				if (pl->Count < 3)
+					break;
 
 				nxt = n->next;
 				p = n->prev;
@@ -1126,6 +1131,15 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 					free(n);
 				}
 			} while((n = nxt) != pl->head);
+
+			/* invalid hole (reduced into a single line); test case: gixedc */
+			if (pl->Count < 3) {
+				if (prev_pl != NULL)
+					prev_pl->next = pl->next;
+				else
+					abort(); /* can't be the contour */
+				pa_pline_free(&pl);
+			}
 		}
 	} while((pa = pa->f) != pa1);
 }
