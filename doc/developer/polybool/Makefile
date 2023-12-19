@@ -15,6 +15,7 @@ SVGS= \
 	fig7.svg \
 	selfi1.svg \
 	selfi2.svg \
+	gixedb.svg \
 
 all: $(SVGS)
 
@@ -65,3 +66,6 @@ selfi1.svg: src/selfi1.rp
 
 selfi2.svg: src/selfi2.rp
 	pcb-rnd -x svg --opacity 100 --cam $@=top-copper src/selfi2.rp
+
+gixedb.svg: src/gixedb.rp
+	pcb-rnd -x svg --opacity 100 --cam $@=top-doc src/gixedb.rp
