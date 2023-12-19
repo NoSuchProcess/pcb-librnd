@@ -1099,11 +1099,13 @@ int rnd_pline_isc_pline(rnd_pline_t *pl1, rnd_pline_t *pl2)
 
 /* The pline self-isc code may introduce CVCs - we need to get rid of them
    before we do poly bool on the pa */
-RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
+RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 {
-	rnd_polyarea_t *pa = pa1;
+	rnd_polyarea_t *pa = *pa1, *next_pa;
+
 	do {
 		rnd_pline_t *pl, *prev_pl = NULL, *next_pl;
+		next_pa = pa->f;
 		for(pl = pa->contours; pl != NULL; prev_pl = pl, pl = next_pl) {
 			rnd_vnode_t *p, *nxt, *n = pl->head;
 			int redundant;
@@ -1134,14 +1136,31 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t *pa1)
 
 			/* invalid hole (reduced into a single line); test case: gixedc */
 			if (pl->Count < 3) {
-				if (prev_pl != NULL)
+				if (prev_pl != NULL) {
+					/* hole: remove it */
 					prev_pl->next = pl->next;
-				else
-					abort(); /* can't be the contour */
-				pa_pline_free(&pl);
+					pa_pline_free(&pl);
+				}
+				else {
+					/* contour: remove the pa */
+					assert(pa->contours == pl);
+					if (pa == *pa1)
+						*pa1 = (*pa1)->f;
+					if (pa == *pa1) {
+						/* this was the last island in pa1 */
+						*pa1 = NULL;
+						return;
+					}
+					pa->b->f = pa->f;
+					pa->f->b = pa->b;
+					pa->f = pa->b = NULL;
+					pa_polyarea_free(pa);
+					goto skip_this_pa;
+				}
 			}
 		}
-	} while((pa = pa->f) != pa1);
+		skip_this_pa:;
+	} while((pa = next_pa) != *pa1);
 }
 
 static int cmp_pline_area(const void *Pl1, const void *Pl2)
@@ -1413,7 +1432,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				pa_polyarea_insert_pline(tmpa, pl);
 
 				TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
-				remove_all_cvc(*pa);
+				remove_all_cvc(pa);
 
 				(*pa)->from_selfisc = 1;
 				tmpa->from_selfisc = 1;
@@ -1487,14 +1506,14 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
 	TODO("optimize: run this only if there's any cvc in there? see: fixedr");
-	remove_all_cvc(*pa);
+	remove_all_cvc(pa);
 
 	cnt += split_selfisc_pline_pline(pa);
 	cnt += split_selfisc_hole_outline(pa);
 
 	/* clean up pa so it doesn't have cvc (confuses the poly_bool algo) */
 	TODO("optimize: run this only if there's any cvc in there? see: fixed8");
-	remove_all_cvc(*pa);
+	remove_all_cvc(pa);
 
 	cnt += split_selfisc_pa_pa(pa);
 
