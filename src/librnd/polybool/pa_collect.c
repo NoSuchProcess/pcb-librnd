@@ -232,6 +232,10 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 			newnd->shared->flg.mark = 1;
 	}
 
+	if (*result == NULL)
+		return pa_err_ok;  /* test case: gixedf */
+
+
 /*	orig_dir = pa_pline_update_big2small(*result);
 	rnd_trace("Bad orig=%d ", orig_dir);*/
 	pa_pline_update(*result, 1);
