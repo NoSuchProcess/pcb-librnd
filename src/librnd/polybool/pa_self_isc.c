@@ -618,7 +618,7 @@ RND_INLINE int vertex_on_isc(rnd_vnode_t *nd, pa_big_vector_t isc)
 }
 
 /* Called back from an rtree query to figure if two edges intersect, not
-   in their endpoints */
+   in their endpoints; see doc/developer/polybool/gixedb.svg */
 static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
 {
 	risk_resolution_t *rrs = (risk_resolution_t *)cl;
@@ -651,7 +651,7 @@ static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
 		/* probably works the same, need to test. Probably should do a REMOVE */
 	}
 
-	/* check for 1-X case */
+	/* check for 1-X case; see doc/developer/polybool/gixedb.svg */
 	if (va1->prev == s->v)             common = s->v;
 	else if (va1->next == s->v)        common = s->v;
 	else if (va1->prev == s->v->next)  common = s->v;
@@ -712,6 +712,8 @@ static int pline_selfisc_risky(rnd_pline_t *dst)
 	return res;
 }
 
+/* Resolve doc/developer/polybool/gixedb.svg cases by removing nodes or
+   splitting edges */
 static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
 {
 	rnd_vnode_t *n, *start, *next;
