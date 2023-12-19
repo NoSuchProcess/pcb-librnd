@@ -1,6 +1,10 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
+		- gixeda: output ends up empty but shouldn't
+		- gixedd: invalid union: hole ends up having a line-line overlap tentacle
+		- MEMLEAK:
+			- gixedc
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: fsd: run pcb-rnd on a board, {f a}, click on the ok button -> nothing happens (works after modifications to the file name) [report: Igor2]
