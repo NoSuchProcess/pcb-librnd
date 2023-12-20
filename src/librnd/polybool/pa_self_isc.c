@@ -1135,7 +1135,7 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 		next_pa = pa->f;
 		for(pl = pa->contours; pl != NULL; prev_pl = pl, pl = next_pl) {
 			rnd_vnode_t *p, *nxt, *n = pl->head;
-			int redundant;
+			int redundant, rebuild_tree = 0;
 
 			next_pl = pl->next;
 
@@ -1158,6 +1158,8 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 				if (redundant) {
 					rnd_poly_vertex_exclude(pl, n);
 					free(n);
+					rebuild_tree = 1;
+					pl->Count--;
 				}
 			} while((n = nxt) != pl->head);
 
@@ -1184,6 +1186,12 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 					pa_polyarea_free(pa);
 					goto skip_this_pa;
 				}
+			}
+
+			if (rebuild_tree && (pl != NULL) && (pl->tree != NULL)) {
+				rnd_r_free_tree_data(pl->tree, free);
+				rnd_r_destroy_tree(&pl->tree);
+				pl->tree = rnd_poly_make_edge_tree(pl);
 			}
 		}
 		skip_this_pa:;
