@@ -1324,7 +1324,8 @@ RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *p
 						break;
 					}
 				}
-				assert(found == 1);
+				if (!found) /* Hole not in any island; forget it; test case: gixedg */
+					pa_pline_free(&hole);
 			}
 		}
 
