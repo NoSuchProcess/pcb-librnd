@@ -854,6 +854,27 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 	} while((n = n->next) != start);
 }
 
+/* Figure if there's a stub (overlapping pair of lines sticking out from nd) */
+int stub_from(rnd_vnode_t *nd)
+{
+	pa_conn_desc_t *c = nd->cvclst_prev;
+/*	rnd_trace("STUB at %ld %ld:\n", nd->point[0], nd->point[1]);*/
+	do {
+#if 0
+		rnd_trace(" %f %d ", pa_big_double(c->angle), (int)c->prelim);
+		rnd_trace("P %p (%ld %ld) ", c->parent->prev, (long)c->parent->prev->point[0], (long)c->parent->prev->point[1]);
+		rnd_trace("N %p (%ld %ld)\n", c->parent->next, (long)c->parent->next->point[0], (long)c->parent->next->point[1]);
+#endif
+		if (pa_big_coord_cmp(c->angle, c->prev->angle) == 0) {
+			/* test case: gixedd at 836;559 <-> 835;559 */
+TODO("arc: simply having the same angle works for lines but won't work for arcs; check if the outgoing edges fully overlap");
+			rnd_trace("(STUB detected at %ld %ld)\n", nd->point[0], nd->point[1]);
+			return 1;
+		}
+	} while((c = c->next) != nd->cvclst_prev);
+	return 0;
+}
+
 /* Special case: self touching means we have a point that's visited twice
    on the outline. Normally this is a >< topology, but due to rouding
    there may be a triangle flip and the topology may change into a X.
@@ -881,6 +902,10 @@ static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
 	if (pa_cvc_crossing_at_node(nd)) {
 		ctx->num_isc++;
 		rnd_trace("  -> X crossing\n");
+	}
+	else if (stub_from(nd)) {
+		rnd_trace("  -> no crossing, >< topology but found stub\n");
+		ctx->num_isc++;
 	}
 	else
 		rnd_trace("  -> no crossing, >< topology\n");
