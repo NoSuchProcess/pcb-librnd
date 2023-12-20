@@ -2,9 +2,10 @@
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
 		- gixeda: output ends up empty but shouldn't
-		- gixedb2o: 2-point line overlap case!
 		- gixedd: invalid union: hole ends up having a line-line overlap tentacle
 		- gixede, gixede2: small triangle in input A confuses the algo
+		- gixedg: assert()
+		- gixedh: broken output
 		- MEMLEAK:
 			- gixedc
 		- finish self intersecting holes: sih_*
