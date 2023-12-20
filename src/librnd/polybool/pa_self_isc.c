@@ -646,9 +646,10 @@ static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
 	}
 
 	if (num_isc == 2) {
-		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: overlapping lines (2-overlap)\n");
-		abort();
-		/* probably works the same, need to test. Probably should do a REMOVE */
+		/* va1 is a stub sticking out from a corner, remove it; test case: gixedb2o */
+		rnd_trace("pa_pline_isc_pline_notouch_cb: overlapping lines (2-overlap)\n");
+		rrs->op = REMOVE;
+		return RND_R_DIR_CANCEL;
 	}
 
 	/* check for 1-X case; see doc/developer/polybool/gixedb.svg */
