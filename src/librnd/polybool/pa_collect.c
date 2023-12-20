@@ -267,7 +267,7 @@ RND_INLINE void pa_collect_gather(jmp_buf *e, rnd_vnode_t *cur, pa_direction_t d
 	int res;
 
 	/* gather a polyline in pl */
-	vn = (dir == PA_FORWARD) ? cur : cur->next;
+	vn = (dir == PA_FORWARD) ? cur : cur->prev;
 	res = pa_coll_gather(vn, &pl, j_rule, dir);
 	if (res != pa_err_ok) {
 		pa_pline_free(&pl);
