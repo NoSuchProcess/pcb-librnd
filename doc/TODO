@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
-		- gixeda: output ends up empty but shouldn't
 		- gixedb1v: 1-V case not handled
 		- gixede, gixede2, gixede3: small triangle in input A confuses the algo
 		- gixedh: broken output
