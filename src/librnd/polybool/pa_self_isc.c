@@ -693,7 +693,7 @@ static int pline_selfisc_risky(rnd_pline_t *dst)
 
 		if (n->flg.risk || n->next->flg.risk) {
 			risk_resolution_t rrs = {0};
-			rnd_trace("       chk: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);
+/*			rnd_trace("       chk: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
 
 			box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 			box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
@@ -701,6 +701,7 @@ static int pline_selfisc_risky(rnd_pline_t *dst)
 			rres = rnd_r_search(dst->tree, &box, NULL, pa_pline_isc_pline_notouch_cb, &rrs, NULL);
 			if (rres == RND_R_DIR_CANCEL) {
 				rnd_trace("           risk isc!\n");
+				n->flg.risk = 1;
 				res = 1; /* can't return here, we need to reset all risk flags */
 				assert(n->RISK_RESOLUTION == NULL);
 				n->RISK_RESOLUTION = malloc(sizeof(rrs));
@@ -723,7 +724,9 @@ static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
 	rnd_trace("\n   island RESOLVE risk...\n");
 
 	n = start = dst->head;
+	restart:;
 	do {
+		rnd_trace("       chk: %ld;%ld %p\n", n->point[0], n->point[1], n);
 		next = n->next;
 		if (n->flg.risk) {
 			risk_resolution_t *rrs = (risk_resolution_t *)n->RISK_RESOLUTION;
@@ -732,10 +735,13 @@ static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
 
 			switch(rrs->op) {
 				case REMOVE: /* test case: gixedb; doc case: 1-X */
-					if (start == n)
-						start = n->next;
 					rnd_trace("   -> remove %ld;%ld\n", n->point[0], n->point[1]);
 					rnd_poly_vertex_exclude(dst, n);
+					if (start == n) {
+						n = start = next;
+						free(rrs);
+						goto restart;
+					}
 					break;
 				case SPLIT: /* doc case: 1-V */
 					TODO("find a test case and implement me");
