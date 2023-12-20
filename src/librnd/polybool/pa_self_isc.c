@@ -568,7 +568,8 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 		}
 
 		if (!onto->flg.mark || onto->flg.start) { /* also accept flg.start here: greedy algorithm to find shortest loops */
-			*dir = eff_dir ? 'N' : 'P';
+			if (!onto->flg.start) /* don't remember new direction going out from the endpoint; test case: gixedbo2 */
+				*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir) {
 				onto->flg.mark = 1;
 				if (first) {
