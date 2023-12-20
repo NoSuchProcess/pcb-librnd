@@ -724,11 +724,11 @@ static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
 
 	n = start = dst->head;
 	do {
+		next = n->next;
 		if (n->flg.risk) {
 			risk_resolution_t *rrs = (risk_resolution_t *)n->RISK_RESOLUTION;
 			n->RISK_RESOLUTION = NULL;
 			n->flg.risk = 0;
-			next = n->next;
 
 			switch(rrs->op) {
 				case REMOVE: /* test case: gixedb; doc case: 1-X */
