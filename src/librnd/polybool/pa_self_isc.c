@@ -519,7 +519,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 /* Step from n to the next node according to dir, walking a hole island (trying to
    get minimal area portions) */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first, rnd_vnode_t *real_start)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto;
@@ -549,6 +549,23 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	}
 
 	rnd_trace("CVC\n");
+
+	/* quick return: if we can get back to the starting point from this CVC, do
+	   that; other loops will be picked up separately. Test case: gixedj */
+	if (real_start != NULL) {
+		start = c = n->cvclst_prev->next;
+		do {
+			int eff_dir = pa_eff_dir_forward(c->side, *dir);
+
+			if (eff_dir) onto = c->parent->prev;
+			else onto = c->parent->next;
+
+			if (onto == real_start)
+				return NULL; /* no need to return the start point, it's already added */
+		} while((c = c->prev) != start);
+	}
+
+	/* normal CVC next: pick shorter loop (by angle) */
 	start = c = n->cvclst_prev->next;
 	do {
 		int eff_dir = pa_eff_dir_forward(c->side, *dir);
@@ -779,7 +796,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
-	for(n = pa_selfisc_next_i(start, &dir, &started); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0)) {
+	for(n = pa_selfisc_next_i(start, &dir, &started, NULL); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
