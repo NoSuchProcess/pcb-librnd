@@ -2,8 +2,8 @@
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedb1v: 1-V case not handled
-		- si_class2bc, gixede, gixede2, gixede3: small pos triangle within the hole that class 2b is going to subtract
-		- gixedh: broken output
+		- gixede2: triangular hole at 475;279 disappears
+		- gixedh, gixedh2: broken output
 		- MEMLEAK:
 			- gixedc
 			- gixedg
