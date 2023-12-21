@@ -1461,7 +1461,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 		for(pl = (*pa)->contours->next; pl != NULL; pl = next) {
 			next = pl->next;
 			if (rnd_pline_isc_pline(pl, (*pa)->contours)) {
-				rnd_polyarea_t *tmpa, *tmpc = NULL;
+				rnd_polyarea_t *tmpa, *tmpc = NULL, *tmpd = NULL;
+				rnd_polyarea_t *pa_remain;
 
 				rnd_trace("selfisc class 2b hole-contour\n");
 
@@ -1476,10 +1477,32 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				TODO("optimize: it'd be better simply not to add the cvcs; test case : fixed8");
 				remove_all_cvc(pa);
 
+				/* unlink *pa so other islands don't interfere; the remaining
+				   polyarea is pa_remain or NULL if *pa was single-island;
+				   test case: si_class2bc, gixede */
+				if ((*pa)->b != *pa) {
+					pa_remain = (*pa)->b;
+					pa_polyarea_unlink(&pa_remain, *pa);
+				}
+				else
+					pa_remain = NULL;
+
+				/* pl is the hole sitting in tmpa; *pa is now the only island pl was in.
+				   Sub tmpa from *pa and put the result in tmpc */
 				(*pa)->from_selfisc = 1;
 				tmpa->from_selfisc = 1;
 				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
-				*pa = tmpc;
+
+				if (pa_remain != NULL) {
+					/* put back tmpc into pa_remain and make the combined result *pa again */
+					*pa = pa_remain;
+					(*pa)->from_selfisc = 1;
+					tmpc->from_selfisc = 1;
+					rnd_polyarea_boolean_free_nochk(*pa, tmpc, &tmpd, RND_PBO_UNITE);
+					*pa = tmpd;
+				}
+				else
+					*pa = tmpc;
 
 				goto restart_2b; /* now we have a new hole with a different geo and changed the list... */
 			}
