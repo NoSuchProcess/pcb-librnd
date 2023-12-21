@@ -2,7 +2,7 @@
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedb1v: 1-V case not handled
-		- gixede, gixede2, gixede3: small triangle in input A confuses the algo
+		- si_class2bc, gixede, gixede2, gixede3: small pos triangle within the hole that class 2b is going to subtract
 		- gixedh: broken output
 		- MEMLEAK:
 			- gixedc
