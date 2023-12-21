@@ -1412,7 +1412,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 			for(pl2 = next; pl2 != NULL; pl2 = next2) {
 				next2 = pl2->next;
 				if (rnd_pline_isc_pline(pl, pl2)) {
-					rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL;
+					rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL, *na;
 
 					rnd_trace("selfisc class 2a hole-hole\n");
 					pa_polyarea_del_pline(*pa, pl);
@@ -1432,13 +1432,18 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 					tmpb->from_selfisc = 1;
 					rnd_polyarea_boolean_free_nochk(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
 
-					/* unlink from tmpc and free up temps */
-					pl = tmpc->contours;
-					pa_polyarea_del_pline(tmpc, pl);
+					/* unlink all contours from tmpc and free up temps. Need to do all
+					   islands in a loop; related test case: fixedr (W shaped cutout) */
+					na = tmpc;
+					do {
+						pl = na->contours;
+						pa_polyarea_del_pline(na, pl);
+						pa_pline_invert(pl); /* contour to hole for insertion */
+						pa_polyarea_insert_pline(*pa, pl);
+					} while((na = na->f) != tmpc);
+
 					rnd_polyarea_free(&tmpc);
 
-					pa_pline_invert(pl); /* contour to hole for insertion */
-					pa_polyarea_insert_pline(*pa, pl);
 
 					goto restart_2a; /* now we have a new hole with a different geo and changed the list... */
 				}
