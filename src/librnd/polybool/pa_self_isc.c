@@ -1467,7 +1467,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 
 				pa_polyarea_del_pline(*pa, pl);
 
-				/* hole-to-contour for unite */
+				/* hole-to-contour for sub */
 				pa_pline_invert(pl); assert(pl->flg.orient == RND_PLF_DIR);
 
 				tmpa = pa_polyarea_alloc();
