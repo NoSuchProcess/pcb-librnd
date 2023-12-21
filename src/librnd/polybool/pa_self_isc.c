@@ -1432,7 +1432,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 					tmpb->from_selfisc = 1;
 					rnd_polyarea_boolean_free_nochk(tmpa, tmpb, &tmpc, RND_PBO_UNITE);
 
-					/* unlunk from tmpc and free up temps */
+					/* unlink from tmpc and free up temps */
 					pl = tmpc->contours;
 					pa_polyarea_del_pline(tmpc, pl);
 					rnd_polyarea_free(&tmpc);
