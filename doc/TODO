@@ -4,6 +4,7 @@
 		- gixedb1v: 1-V case not handled
 		- gixede2: triangular hole at 475;279 disappears
 		- gixedh, gixedh2: broken output
+		- gixedi: assert
 		- MEMLEAK:
 			- gixedc
 			- gixedg
