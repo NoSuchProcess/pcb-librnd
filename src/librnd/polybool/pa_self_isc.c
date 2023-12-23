@@ -256,11 +256,13 @@ static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *
 	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
 	int need_swap;
 
-	rnd_trace("line-line overlap: %.2f;%.2f %.2f;%.2f vs %.2f;%.2f %.2f;%.2f\n",
+	rnd_trace("line-line overlap: %.2f;%.2f %.2f;%.2f vs %.2f;%.2f %.2f;%.2f iscs: i=%.2f;%.2f o=%.2f;%.2f\n",
 		NODE_CRDS(ctx->v), NODE_CRDS(ctx->v->next),
 		NODE_CRDS(sv), NODE_CRDS(sv->next)
 		);
 
+	rnd_trace("  iscs: i=%.2f;%.2f o=%.2f;%.2f\n", isci.x, isci.y, isco.x, isco.y);
+	
 
 	rnd_pa_big_load_cvc(&ctxv1, ctx->v);
 	rnd_pa_big_load_cvc(&ctxv2, ctx->v->next);
@@ -386,7 +388,7 @@ else
 	if (new_node != NULL) got_isc = 1;
 
 	if (new_node != NULL)
-		rnd_trace("isc1 %d %d | %d %d %d %d\n", new_node->point[0], new_node->point[1], ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
+		rnd_trace("isc1 %.2f %.2f | %d %d %d %d\n", NODE_CRDS(new_node), ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
 
 
 	if (got_isc) {
