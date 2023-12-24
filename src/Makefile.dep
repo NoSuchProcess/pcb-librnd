@@ -761,6 +761,7 @@
  ../src/librnd/polybool/pa_api_check.c \
  ../src/librnd/polybool/pa_api_misc.c \
  ../src/librnd/polybool/pa_self_isc.c ../src/librnd/core/error.h \
+ ../src/librnd/polybool/pa_self_isc_pl.c \
  ../src/librnd/polybool/pa_compat.c
 ../src/librnd/polybool/polygon1_gen.o: \
  ../src/librnd/polybool/polygon1_gen.c ../src/librnd/rnd_config.h \
