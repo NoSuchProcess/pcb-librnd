@@ -186,11 +186,8 @@ else
 
 		rnd_trace("   shared seg marked\n");
 		ctx->num_isc++;
-		return RND_R_DIR_CANCEL;
+		return RND_R_DIR_NOT_FOUND;
 	}
-
-	/* single ISC point */
-
 
 	/* single intersection between two lines */
 	ip1 = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
@@ -199,10 +196,8 @@ else
 	ip2 = pa_selfisc_ins_pt(ctx, s->v, isc1);
 	if (ip2 != NULL) got_isc = 1;
 
-	if (got_isc) {
+	if (got_isc)
 		ctx->num_isc++;
-		return RND_R_DIR_CANCEL;
-	}
 
 	return RND_R_DIR_NOT_FOUND;
 }
