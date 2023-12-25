@@ -231,7 +231,7 @@ static rnd_r_dir_t pa_selfisc_install_cvc_cb(const rnd_box_t *b, void *cl)
 
 
 	if ((offender->cvclst_prev != NULL) && (ctx->v->cvclst_prev != NULL))
-		return;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (ctx->v->cvclst_prev == NULL) {
 		TODO("optimize: if we are all integers, avoid high res coords here");
