@@ -61,7 +61,6 @@ typedef struct {
 	rnd_vnode_t *v;
 	rnd_pline_t *pl;
 	long num_isc;
-	unsigned cut_line_line_overlap:1; /*  config: when enabled, cut class5 line-line overlap cases (bones) */
 
 	rnd_vnode_t *search_seg_v;
 	pa_seg_t *search_seg;

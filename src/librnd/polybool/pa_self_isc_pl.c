@@ -729,7 +729,6 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 	long i;
 
 	ctx.pl = pl;
-	ctx.cut_line_line_overlap = 1;
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
@@ -769,7 +768,6 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	   construct causes no problem as it's simply a two-vertex polygon that
 	   is eliminated. */
 	ctx.pl = pl;
-	ctx.cut_line_line_overlap = 0;
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
