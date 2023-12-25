@@ -1,8 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- remove bone-drawings from doc
-		- pline self-isc rewrite broke:
-			- gixedg, gixedh: too many points?
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedi: assert
 		- MEMLEAK:
