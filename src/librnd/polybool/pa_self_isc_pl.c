@@ -676,10 +676,9 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	} while((n = n->next) != start);
 
 
-TODO("do we need this?");
-	/* crossing happening in points that had a cvc in the input already - these
-	   are not caught by pa_selfisc_cross_cb(); see the comment at
-	   selfisc_detect_cvc_crossing() */
+	/* crossing happening in point-point on the input side - these
+	   are not caught above; have to check only if we haven't already
+	   decided we have intersections */
 	if (has_cvc && (ctx->num_isc == 0)) {
 		n = start;
 		do {
