@@ -649,7 +649,8 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	rnd_vnode_t *n, *start, *next;
 	int has_cvc = 0;
 
-	TODO("do we really need to strat from minnode for this? probably any node would do");
+	/* the outline mapper needs minnode anyway, best if we figure that early
+	   so all output is deterministic */
 	n = start = pa_find_minnode(ctx->pl);
 	rnd_trace("self-isc: map_cross start\n");
 	do {
