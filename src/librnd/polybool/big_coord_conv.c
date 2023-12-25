@@ -166,3 +166,20 @@ void rnd_pa_big_load_cvc(pa_big_vector_t *dst, rnd_vnode_t *src)
 {
 	pa_big_load_cvc(dst, src);
 }
+
+void pa_big_round(pa_big_coord_t big)
+{
+	double d = pa_big_double(big);
+	static const pa_big_coord_t one = {0,0,0,1,0,0};
+
+	big[0] = 0;
+	big[1] = 0;
+	big[2] = 0;
+
+	TODO("optimize: this could be done more efficiently, without using doubles");
+
+	d = d - floor(d);
+	if (d >= 0.5) {
+		big_addn(big, big, one, PA_BIGCRD_WIDTH, 0);
+	}
+}

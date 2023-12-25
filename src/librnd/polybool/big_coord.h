@@ -103,6 +103,9 @@ int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b);
 
 int pa_small_big_xy_eq(rnd_coord_t smallx, rnd_coord_t smally, pa_big_coord_t bigx, pa_big_coord_t bigy);
 
+/* Round to nearest integer */
+void pa_big_round(pa_big_coord_t big);
+
 
 /* For collect/gather */
 void pa_big_area_incremental(pa_big2_coord_t big_area, rnd_vnode_t *big_curr, rnd_vnode_t *big_prev);

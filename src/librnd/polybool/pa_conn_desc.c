@@ -243,13 +243,8 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 	return pa_link_before_conn_desc(newd, small);
 }
 
-/* Add all intersected nodes of pl into list */
-pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list)
+RND_INLINE pa_conn_desc_t *pa_add_conn_desc_at_(rnd_vnode_t *node, char poly, pa_conn_desc_t *list)
 {
-	rnd_vnode_t *node = pl->head;
-
-	do {
-		if (node->cvclst_prev != NULL) { /* node had an intersection if has a preliminary desc */
 			pa_conn_desc_t *p = node->cvclst_prev, *n = node->cvclst_next;
 
 			/* must be preliminary allocation that we are finalizing here */
@@ -262,8 +257,29 @@ pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *lis
 			list = node->cvclst_next = pa_insert_conn_desc(n, node, poly, 'N', list);
 			if (node->cvclst_next == NULL)
 				return NULL;
+
+	return list;
+}
+
+pa_conn_desc_t *pa_add_conn_desc_at(rnd_vnode_t *node, char poly, pa_conn_desc_t *list)
+{
+	return pa_add_conn_desc_at_(node, poly, list);
+}
+
+/* Add all intersected nodes of pl into list */
+pa_conn_desc_t *pa_add_conn_desc(rnd_pline_t *pl, char poly, pa_conn_desc_t *list)
+{
+	rnd_vnode_t *node = pl->head;
+
+	do {
+		if (node->cvclst_prev != NULL) { /* node had an intersection if has a preliminary desc */
+			list = pa_add_conn_desc_at_(node, poly, list);
+			if (list == NULL)
+				return NULL;
 		}
 	} while((node = node->next) != pl->head);
 
 	return list;
 }
+
+

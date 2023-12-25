@@ -28,15 +28,26 @@
  */
 
 
-/* Insert a new node and a cvc at an intersection point as the next node of vn */
-RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
+RND_INLINE int on_same_pt(rnd_vnode_t *va, rnd_vnode_t *vb)
+{
+	if (va == vb) return 1;
+	return (va->point[0] == vb->point[0]) && (va->point[1] == vb->point[1]);
+}
+
+
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt, int retnull)
 {
 	rnd_vnode_t *new_node;
 	pa_seg_t *sg;
 	
-	new_node = pa_ensure_point_and_prealloc_cvc(vn, pt);
-	if (new_node == NULL)
-		return NULL;
+	new_node = pa_node_add_single(vn, pt);
+	if ((new_node == vn) || (new_node == vn->next)) {
+		/* redundant */
+		if (retnull)
+			return NULL;
+		return new_node;
+	}
+
 	new_node->next = vn->next;
 	new_node->prev = vn;
 	vn->next->prev = new_node;
@@ -49,238 +60,208 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa
 	return new_node;
 }
 
-/* The bridge (overlapping lines) may be longer than just one pair,
-   see test case si_class5d*. Go and mark each such overlapping line pair
-   of the "bone" (bridge, snake) blocked and return the last junction
-   in sn2, where the two overlapping sections finally diverge. That's
-   where a new island (hole or outer island) starts. */
-static void pa_selfisc_llo_multiseg(pa_selfisc_t *ctx, rnd_vnode_t *sn1, rnd_vnode_t *in, rnd_vnode_t *out, rnd_vnode_t **sn2)
+/* Insert a new node at an intersection point as the next node of vn; return
+   NULL if no new node got inserted (redundancy) */
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
 {
-	int p1_match, p2_match;
-	rnd_trace(" long-bone test at %ld;%ld\n", sn1->point[0], sn1->point[1]);
-
-	do {
-		p1_match = (in->point[0] == out->point[0]) && (in->point[1] == out->point[1]);
-		p2_match = (in->next->point[0] == out->prev->point[0]) && (in->next->point[1] == out->prev->point[1]);
-
-		rnd_trace("  in:  %d;%d - %d;%d\n", in->point[0], in->point[1], in->next->point[0], in->next->point[1]);
-		rnd_trace("  out: %d;%d - %d;%d\n", out->point[0], out->point[1], out->prev->point[0], out->prev->point[1]);
-		rnd_trace("       pmatch: %d %d\n", p1_match, p2_match);
-
-		if (p1_match && p2_match) {
-			/* block the overlapping part from collect*() */
-			in->flg.mark = in->flg.blocked = 1;
-			out->flg.mark = out->flg.blocked = 1;
-			*sn2 = in->next;
-		}
-
-		if (p1_match && !p2_match) {
-			pa_big_vector_t isc1, isc2, isc, comm;
-			pa_big2_coord_t dist1, dist2;
-			int num_isc;
-			rnd_vnode_t *ind, *outd;
-
-			num_isc = pa_isc_edge_edge_(in, in->next, out, out->prev, &isc1, &isc2);
-
-			if (num_isc == 2) { /* partial overlap at the end: insert a new node into in and out */
-				/* set isc to the intersection point where they diverge */
-				rnd_pa_big_load_cvc(&comm, in); /* common starting point of in an out */
-				rnd_vect_u_dist2_big(dist1, comm, isc1);
-				rnd_vect_u_dist2_big(dist2, comm, isc2);
-				if (pa_big2_coord_cmp(dist1, dist2) < 0)
-					isc = isc2;
-				else
-					isc = isc1;
-
-				ind  = pa_selfisc_ins_pt(ctx, in, isc);
-				if (ind == NULL)
-					ind = in->next;
-				outd = pa_selfisc_ins_pt(ctx, out->prev, isc);
-				if (outd == NULL)
-					outd = out->prev;
-
-				/* block the new segment pair of the partial overlap blocked */
-				in->flg.blocked = 1;
-				outd->flg.blocked = 1;
-				rnd_trace("    blk: %d;%d -> %d;%d\n", in->point[0], in->point[1], in->next->point[0], in->next->point[1]);
-				rnd_trace("    blk: %d;%d -> %d;%d\n", outd->point[0], outd->point[1], outd->next->point[0], outd->next->point[1]);
-
-				*sn2 = ind;
-				rnd_trace("   outgoing junction in=%d;%d out=%d;%d!\n", ind->point[0], ind->point[1], outd->point[0],  outd->point[1]);
-
-				return;
-			}
-		}
-
-		if (p2_match) {
-			in = in->next;
-			out = out->prev;
-		}
-	} while(p2_match);
+	return pa_selfisc_ins_pt_(ctx, vn, pt, 1);
 }
 
-/* Class 5: line-line overlap: split up both lines then cut the path in three:
-    - a loop before isc1
-    - a loop after isc2
-    - segments in between isc1 and isc2 (these are dropped)
-   Parameters:
-    - ctx->v is the first point of the line segment we are searching for
-    - sv is the first point of the other line segment participating in the
-      intersection; this 
-    - isc1 and isc2 are the intersection points
-   Notes:
-    - ctx->v (and ctx->v->prev) are guaranteed to be on the outer loop
-    - ctx->v->next is going to be in the island
-    - it is enough to mark the lines on the overlapping section and the
-      collect() calls will ignore them
-*/
-static rnd_r_dir_t pa_selfisc_line_line_overlap(pa_selfisc_t *ctx, rnd_vnode_t *sv, pa_big_vector_t isco, pa_big_vector_t isci)
+/* Insert a new node at an intersection point as the next node of vn; return
+   an existing node if no new node got inserted (redundancy) */
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt2(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
 {
-	pa_big2_coord_t disto, disti;
-	pa_big_vector_t ctxv1, ctxv2, sv1, sv2; /* line endpoints: ctx->v/ctx->v->next and sv;sv->next */
-	rnd_vnode_t *ctxn1, *ctxn2, *sn1, *sn2; /* final intersection points */
-	int need_swap;
-
-	rnd_trace("line-line overlap: %.2f;%.2f %.2f;%.2f vs %.2f;%.2f %.2f;%.2f iscs: i=%.2f;%.2f o=%.2f;%.2f\n",
-		NODE_CRDS(ctx->v), NODE_CRDS(ctx->v->next),
-		NODE_CRDS(sv), NODE_CRDS(sv->next)
-		);
-
-	rnd_trace("  iscs: i=%.2f;%.2f o=%.2f;%.2f\n", isci.x, isci.y, isco.x, isco.y);
-	
-
-	rnd_pa_big_load_cvc(&ctxv1, ctx->v);
-	rnd_pa_big_load_cvc(&ctxv2, ctx->v->next);
-	rnd_pa_big_load_cvc(&sv1, sv);
-	rnd_pa_big_load_cvc(&sv2, sv->next);
-
-	/* order isco and isci so that isco is on the outer loop and isci is the island
-	   loop. This can be done by looking at the distance from ctx->v, which is
-	   guaranteed to be on the outer loop */
-	rnd_vect_u_dist2_big(disto, ctxv1, isco);
-	rnd_vect_u_dist2_big(disti, ctxv1, isci);
-
-	need_swap = (pa_big2_coord_cmp(disti, disto) < 0);
-rnd_trace("## I1 isco=%f;%f isci=%f;%f   ctxv1=%f;%f\n### disti=%f disto=%f swap=%d for %d\n",
-	pa_big_double(isco.x), pa_big_double(isco.y),
-	pa_big_double(isci.x), pa_big_double(isci.y),
-	pa_big_double(ctxv1.x), pa_big_double(ctxv1.y),
-	pa_big2_double(disti), pa_big2_double(disto),
-	need_swap, pa_big2_coord_cmp(disti, disto)
-	);
-	if (need_swap)
-		SWAP(pa_big_vector_t, isco, isci);
-
-	/* add the intersection points; when pa_selfisc_ins_pt() returns NULL, we are at an endpoint */
-	ctxn2 = pa_selfisc_ins_pt(ctx, ctx->v, isci);
-	if (ctxn2 == NULL) ctxn2 = ctx->v->next;
-	else ctxn2->flg.mark = 1;
-	ctxn1 = pa_selfisc_ins_pt(ctx, ctx->v, isco);
-	if (ctxn1 == NULL) ctxn1 = ctx->v;
-
-	sn2 = pa_selfisc_ins_pt(ctx, sv, isco);
-rnd_trace(" sn2=%p @ isco=%f;%f isci=%f;%f\n", sn2, pa_big_double(isco.x), pa_big_double(isco.y), pa_big_double(isci.x), pa_big_double(isci.y));
-	if (sn2 == NULL) sn2 = sv->next;
-	else sn2->flg.mark = 1;
-	sn1 = pa_selfisc_ins_pt(ctx, sv, isci);
-	if (sn1 == NULL) sn1 = sv;
-
-	/* block the overlapping part from collect*() */
-	ctxn1->flg.mark = ctxn1->flg.blocked = 1;
-	sn1->flg.mark = sn1->flg.blocked = 1;
-
-	/* The bridge (overlapping lines) may be longer than just one pair,
-	   see test case si_class5d*; if that's the case, go on and trace
-	   the snake until it has a junction or ends */
-	pa_selfisc_llo_multiseg(ctx, sn1, ctxn1->next, sn1, &sn2);
-
-	/* the resulting island has no access from the outer contour because of
-	   the blocking so we need to remember them separately */
-	rnd_trace(" hidden island:  %ld;%ld\n", ctxn2->point[0], ctxn2->point[1]);
-	vtp0_append(&ctx->hidden_islands, ctxn2);
-
-
-	rnd_trace(" blocking enter: %ld;%ld %ld;%ld {%p}\n",
-		ctxn1->point[0], ctxn1->point[1], ctxn1->next->point[0], ctxn1->next->point[1],
-		ctxn1);
-	rnd_trace(" blocking leave: %ld;%ld %ld;%ld {%p}\n",
-		sn1->point[0], sn1->point[1], sn1->next->point[0], sn1->next->point[1],
-		sn1);
-
-	ctx->skip_to = sn2;
-	rnd_trace(" skipping to:    %ld;%ld (to: %ld;%ld)\n", sn2->point[0], sn2->point[1], sn2->next->point[0], sn2->next->point[1]);
-
-	ctx->num_isc++;
-
-	return RND_R_DIR_NOT_FOUND;
+	return pa_selfisc_ins_pt_(ctx, vn, pt, 0);
 }
 
-/* Called back from an rtree query to figure if two edges intersect */
-static rnd_r_dir_t pa_selfisc_cross_cb(const rnd_box_t *b, void *cl)
+
+
+/* Return 1 if va and vb have matching endpoints (shared line seg) plus
+   mark them shared */
+RND_INLINE int on_same_seg_mark(rnd_vnode_t *va, rnd_vnode_t *vb)
+{
+	if (on_same_pt(va, vb) && on_same_pt(va->next, vb->next)) {
+		va->shared = vb;
+		vb->shared = va;
+		rnd_trace("     shared+={%p} {%p}", va, vb);
+		return 1;
+	}
+	if (on_same_pt(va->next, vb) && on_same_pt(va, vb->next)) {
+		va->shared = vb;
+		vb->shared = va;
+		rnd_trace("     shared+={%p} {%p}", va, vb);
+		return 1;
+	}
+	return 0;
+}
+
+
+
+/* Called back from an rtree query to figure if two edges intersect; inserts
+   points (but no cvc); after looping with this the pline is guaranteed
+   to have an integer point at each and every self-isc and self-touch */
+static rnd_r_dir_t pa_selfisc_map_cross_cb(const rnd_box_t *b, void *cl)
 {
 	pa_selfisc_t *ctx = (pa_selfisc_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
-	pa_big_vector_t isc1, isc2;
+	pa_big_vector_t isc1, isc2, start;
 	rnd_vector_t isc1_small,isc2_small;
 	int num_isc, num_isc_small, got_isc = 0;
-	rnd_vnode_t *new_node;
+	rnd_vnode_t *ip1, *ip2;
 
 	if ((s->v == ctx->v) || (s->v == ctx->v->next) || (s->v == ctx->v->prev))
 		return RND_R_DIR_NOT_FOUND;
 
+rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:\n", NODE_CRDS(s->v), NODE_CRDS(s->v->next));
+
+	if (on_same_seg_mark(ctx->v, s->v)) {
+		/* avoid infinite loop of re-discovering the same shared segment, plus
+		   optimization for trivial shared lines */
+		rnd_trace("   shared seg marked (quick)\n");
+		ctx->num_isc++;
+		return RND_R_DIR_NOT_FOUND;
+	}
+
+
+	TODO("if we settle with rounded coords, probably call the old, cheaper edge-edge isc func");
 	num_isc = pa_isc_edge_edge_(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
+
+	if (num_isc > 0) {
+		pa_big_round(isc1.x);
+		pa_big_round(isc1.y);
+	}
+	if (num_isc > 1) {
+		pa_big_round(isc2.x);
+		pa_big_round(isc2.y);
+	}
+
 
 	if (num_isc == 0)
 		return RND_R_DIR_NOT_FOUND;
 
-rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:", NODE_CRDS(s->v), NODE_CRDS(s->v->next));
-rnd_trace(" [%d] %.2f;%.2f", num_isc, pa_big_double(isc1.x), pa_big_double(isc1.y));
+
+rnd_trace("   [%d] %.2f;%.2f", num_isc, pa_big_double(isc1.x), pa_big_double(isc1.y));
 if (num_isc > 1)
 	rnd_trace("  and   %.2f;%.2f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
 else
 	rnd_trace("\n");
 
-	if (num_isc == 1) {
-		/* corner case: it may be that we have only one isc in high res coord regime
-		   but after rounding we would get a full overlap (class 5). Test case:
-		   fixed* */
-		TODO("arc: need to run low resolution intersect to figure overlap");
-		num_isc_small = rnd_vect_inters2(s->v->point, s->v->next->point, ctx->v->point, ctx->v->next->point, isc1_small, isc2_small);
-		if (num_isc_small == 2) {
-			num_isc = 2;
-			pa_big_load(isc1.x, isc1_small[0]);
-			pa_big_load(isc1.y, isc1_small[1]);
-			pa_big_load(isc2.x, isc2_small[0]);
-			pa_big_load(isc2.y, isc2_small[1]);
-		}
-	}
-
 	/* Having two intersections means line-line overlap: class 5 */
 	if (num_isc == 2) {
-		if (s->v->flg.mark)
-			return RND_R_DIR_NOT_FOUND; /* already handled */
-		s->v->flg.mark = 1;
-		if (ctx->cut_line_line_overlap)
-			return pa_selfisc_line_line_overlap(ctx, s->v, isc1, isc2);
+		rnd_vnode_t *ipa1, *ipa2, *ipb1, *ipb2, *sha, *shb;
+		pa_big2_coord_t d1, d2;
+
+		/* create the two nodes on ctx->v and s->v (first the farther one) */
+		rnd_pa_big_load_cvc(&start, ctx->v);
+		rnd_vect_u_dist2_big(d1, start, isc1);
+		rnd_vect_u_dist2_big(d2, start, isc2);
+		if (pa_big2_coord_cmp(d1, d2) > 0) {
+			ipa1 = pa_selfisc_ins_pt2(ctx, ctx->v, isc1);
+			ipa2 = pa_selfisc_ins_pt2(ctx, ctx->v, isc2);
+			sha = ipa2;
+		}
+		else {
+			ipa2 = pa_selfisc_ins_pt2(ctx, ctx->v, isc2);
+			ipa1 = pa_selfisc_ins_pt2(ctx, ctx->v, isc1);
+			sha = ipa1;
+		}
+
+		rnd_pa_big_load_cvc(&start, s->v);
+		rnd_vect_u_dist2_big(d1, start, isc1);
+		rnd_vect_u_dist2_big(d2, start, isc2);
+		if (pa_big2_coord_cmp(d1, d2) > 0) {
+			ipb1 = pa_selfisc_ins_pt2(ctx, s->v, isc1);
+			ipb2 = pa_selfisc_ins_pt2(ctx, s->v, isc2);
+			shb = ipb2;
+		}
+		else {
+			ipb2 = pa_selfisc_ins_pt2(ctx, s->v, isc2);
+			ipb1 = pa_selfisc_ins_pt2(ctx, s->v, isc1);
+			shb = ipb1;
+		}
+
+		/* mark the shared section */
+		shb->shared = sha;
+		sha->shared = shb;
+
+		rnd_trace("   shared seg marked\n");
+		ctx->num_isc++;
+/*		ctx->go_back = 1; /* because the rtree changed */
+		return RND_R_DIR_CANCEL;
 	}
 
-	/* single intersection between two lines; new_node is NULL if isc1 is at
-	   one end of the line */
-	new_node = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
-	if (new_node != NULL) got_isc = 1;
+	/* single ISC point */
 
-	new_node = pa_selfisc_ins_pt(ctx, s->v, isc1);
-	if (new_node != NULL) got_isc = 1;
 
-	if (new_node != NULL)
-		rnd_trace("isc1 %.2f %.2f | %d %d %d %d\n", NODE_CRDS(new_node), ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
+	/* single intersection between two lines */
+	ip1 = pa_selfisc_ins_pt(ctx, ctx->v, isc1);
+	if (ip1 != NULL) got_isc = 1;
 
+	ip2 = pa_selfisc_ins_pt(ctx, s->v, isc1);
+	if (ip2 != NULL) got_isc = 1;
 
 	if (got_isc) {
 		ctx->num_isc++;
-		ctx->restart = 1; /* because the rtree changed */
+/*		ctx->go_back = 1; /* because the rtree changed */
 		return RND_R_DIR_CANCEL;
 	}
+
+	return RND_R_DIR_NOT_FOUND;
+}
+
+static rnd_r_dir_t pa_selfisc_install_cvc_cb(const rnd_box_t *b, void *cl)
+{
+	pa_selfisc_t *ctx = (pa_selfisc_t *)cl;
+	pa_seg_t *s = (pa_seg_t *)b;
+	rnd_vnode_t *offender;
+	pa_big_vector_t pt;
+	pa_conn_desc_t *list;
+
+
+	/* ignore previous/next edge so a plain edge-edge chain won't cause cvcs */
+	if ((s->v == ctx->v) || (s->v == ctx->v->next) || (s->v == ctx->v->prev))
+		return RND_R_DIR_NOT_FOUND;
+
+	/* Our target point is ctx->v; there is a third party offender in s->v
+	   potentially ending on ctx->v, find which one is that */
+	if (on_same_pt(ctx->v, s->v))
+		offender = s->v;
+	else if (on_same_pt(ctx->v, s->v->next))
+		offender = s->v->next;
+	else
+		return RND_R_DIR_NOT_FOUND;
+
+
+	if ((offender->cvclst_prev != NULL) && (ctx->v->cvclst_prev != NULL))
+		return;
+
+	if (ctx->v->cvclst_prev == NULL) {
+		TODO("optimize: if we are all integers, avoid high res coords here");
+		rnd_pa_big_load_cvc(&pt, ctx->v);
+
+		/* first offender: need to create ctx->v's cvc */
+		ctx->v->cvclst_prev = pa_prealloc_conn_desc(pt);
+		ctx->v->cvclst_next = pa_prealloc_conn_desc(pt);
+		list = pa_add_conn_desc_at(ctx->v, 's', NULL);
+
+		rnd_trace("  include initial:  %ld;%ld - %ld;%ld\n",
+			(long)ctx->v->point[0], (long)ctx->v->point[1],
+			(long)ctx->v->next->point[0], (long)ctx->v->next->point[1]);
+	}
+	else {
+		list = ctx->v->cvclst_prev;
+		memcpy(&pt, &ctx->v->cvclst_prev->isc, sizeof(pt));
+	}
+
+	rnd_trace("  include offender: %ld;%ld - %ld;%ld\n",
+		(long)offender->point[0], (long)offender->point[1],
+		(long)offender->next->point[0], (long)offender->next->point[1]);
+
+	/* add the offender */
+	offender->cvclst_prev = pa_prealloc_conn_desc(pt);
+	offender->cvclst_next = pa_prealloc_conn_desc(pt);
+	list = pa_add_conn_desc_at(offender, 's', list);
+
 	return RND_R_DIR_NOT_FOUND;
 }
 
@@ -299,7 +280,7 @@ RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
 RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 {
 	pa_conn_desc_t *c, *start;
-	rnd_vnode_t *onto;
+	rnd_vnode_t *onto, *shtest;
 
 	rnd_trace(" next: ");
 	if (n->cvclst_prev == NULL) {
@@ -321,12 +302,15 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	do {
 		int eff_dir = pa_eff_dir_forward(c->side, *dir);
 
-		if (eff_dir) onto = c->parent->next;
-		else onto = c->parent->prev;
+		if (eff_dir) {
+			onto = c->parent->next;
+			shtest = c->parent;
+		}
+		else shtest = onto = c->parent->prev;
 
-		rnd_trace("  %.2f %.2f '%c'", NODE_CRDS(onto), c->side);
-		if (c->parent->flg.blocked) {
-			rnd_trace(" refuse (blocked)\n");
+		rnd_trace("  %.2f %.2f '%c' eff_dir=%d sh?={%p}", NODE_CRDS(onto), c->side, eff_dir, c->parent);
+		if (shtest->shared) {
+			rnd_trace(" refuse (shared)\n");
 			continue;
 		}
 		if (!onto->flg.mark) {
@@ -365,6 +349,10 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		}
 	} while((c = c->prev) != start);
 
+	fprintf(stderr, "pa_self_isc: nowhere to go in next_o\n");
+	abort();
+
+	TODO("this is not valid anymore:");
 	/* didn't find a way out of CVC that's still available or is closing the loop;
 	   this happens with stubs left over by multi line-line overlap; test cases:
 	   si_class5c, fixedp */
@@ -409,7 +397,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first, rnd_vnode_t *real_start)
 {
 	pa_conn_desc_t *c, *start;
-	rnd_vnode_t *onto;
+	rnd_vnode_t *onto, *shtest;
 
 	rnd_trace("    next (first:%p dir='%c'): ", first, *dir);
 	if (n->cvclst_prev == NULL) {
@@ -457,8 +445,14 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	do {
 		int eff_dir = pa_eff_dir_forward(c->side, *dir);
 
-		if (eff_dir) onto = c->parent->prev;
-		else onto = c->parent->next;
+		if (eff_dir) {
+			onto = c->parent->prev;
+			shtest = onto;
+		}
+		else {
+			onto = c->parent->next;
+			shtest = c->parent;
+		}
 
 		rnd_trace("     %.2f %.2f '%c' m%d s%d %d onto={%p} parent={%p}", NODE_CRDS(onto), c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
 		if (c->parent->flg.start) {
@@ -466,8 +460,8 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			return NULL; /* arrived back to the starting point - finish normally */
 		}
 
-		if (onto->flg.blocked) {
-			rnd_trace("    refuse (blocked)\n");
+		if (shtest->shared) {
+			rnd_trace(" refuse (shared)\n");
 			continue;
 		}
 
@@ -508,158 +502,6 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	return NULL;
 }
 
-#define RISK_RESOLUTION shared
-typedef struct {
-	enum { NOP=0, REMOVE, SPLIT } op;
-	rnd_vnode_t *split; /* start of an edge that needs to be split (the V case) */
-
-	rnd_vnode_t *va1; /* temp for the r-search callback */
-} risk_resolution_t;
-
-/* returns 1 if low resolution coords of nd maches high resolution coords isc */
-RND_INLINE int vertex_on_isc(rnd_vnode_t *nd, pa_big_vector_t isc)
-{
-	return pa_small_big_xy_eq(nd->point[0], nd->point[1], isc.x, isc.y);
-}
-
-/* Called back from an rtree query to figure if two edges intersect, not
-   in their endpoints; see doc/developer/polybool/gixedb.svg */
-static rnd_r_dir_t pa_pline_isc_pline_notouch_cb(const rnd_box_t *b, void *cl)
-{
-	risk_resolution_t *rrs = (risk_resolution_t *)cl;
-	rnd_vnode_t *va1 = rrs->va1, *common = NULL;
-	pa_seg_t *s = (pa_seg_t *)b;
-	int num_isc;
-	pa_big_vector_t isc1, isc2, bva1;
-	pa_big2_coord_t dist2;
-
-	if (s->v == va1)
-		return RND_R_DIR_NOT_FOUND;
-
-	num_isc = pa_isc_edge_edge_(s->v, s->v->next, va1, va1->next, &isc1, &isc2);
-	if (num_isc == 0)
-		return RND_R_DIR_NOT_FOUND;
-
-	if (num_isc == 1) {
-		/* single intersection: can be one endpoint falling on the other line,
-		   which is not a real rounding-induced intersection just a touch; ignore
-		   these */
-		if (vertex_on_isc(s->v, isc1)) return RND_R_DIR_NOT_FOUND;
-		if (vertex_on_isc(s->v->next, isc1)) return RND_R_DIR_NOT_FOUND;
-		if (vertex_on_isc(va1, isc1)) return RND_R_DIR_NOT_FOUND;
-		if (vertex_on_isc(va1->next, isc1)) return RND_R_DIR_NOT_FOUND;
-	}
-
-	if (num_isc == 2) {
-		/* va1 is a stub sticking out from a corner, remove it; test case: gixedb2o */
-		rnd_trace("pa_pline_isc_pline_notouch_cb: overlapping lines (2-overlap)\n");
-		rrs->op = REMOVE;
-		return RND_R_DIR_CANCEL;
-	}
-
-	/* check for 1-X case; see doc/developer/polybool/gixedb.svg */
-	if (va1->prev == s->v)             common = s->v;
-	else if (va1->next == s->v)        common = s->v;
-	else if (va1->prev == s->v->next)  common = s->v;
-	else if (va1->next == s->v->next)  common = s->v;
-	if (common != NULL) {
-		/* test case: gixedb */
-		rnd_trace("   notouch_cb: remove (1-X)\n");
-		rrs->op = REMOVE;
-	}
-	else {
-		rnd_trace("   notouch_cb: split (1-V)\n");
-		rrs->op = SPLIT;
-		rrs->split = s->v;
-		fprintf(stderr, "pa_pline_isc_pline_notouch_cb: SPLIT not handled at caller yet\n");
-		abort();
-	}
-
-
-	/* found a legit isc */
-	return RND_R_DIR_CANCEL;
-}
-
-
-/* Figure if an island has self intersections (self touch ignored), but
-   check only risky nodes */
-static int pline_selfisc_risky(rnd_pline_t *dst)
-{
-	rnd_vnode_t *n, *start;
-	int res = 0, rres;
-	rnd_trace("\n   island collect risk...\n");
-
-	n = start = dst->head;
-	do {
-		rnd_box_t box;
-
-		rnd_trace("       chk: %ld;%ld %p %d shared=%p\n", n->point[0], n->point[1], n, n->flg.risk);
-
-		if (n->flg.risk || n->next->flg.risk) {
-			risk_resolution_t rrs = {0};
-/*			rnd_trace("       chk: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
-
-			box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
-			box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
-			rrs.va1 = n;
-			rres = rnd_r_search(dst->tree, &box, NULL, pa_pline_isc_pline_notouch_cb, &rrs, NULL);
-			if (rres == RND_R_DIR_CANCEL) {
-				rnd_trace("           risk isc!\n");
-				n->flg.risk = 1;
-				res = 1; /* can't return here, we need to reset all risk flags */
-				assert(n->RISK_RESOLUTION == NULL);
-				n->RISK_RESOLUTION = malloc(sizeof(rrs));
-				memcpy(n->RISK_RESOLUTION, &rrs, sizeof(rrs));
-			}
-			else
-				n->flg.risk = 0;
-		}
-	} while((n = n->next) != start);
-
-	return res;
-}
-
-/* Resolve doc/developer/polybool/gixedb.svg cases by removing nodes or
-   splitting edges */
-static int pline_selfisc_risky_resolve(rnd_pline_t *dst)
-{
-	rnd_vnode_t *n, *start, *next;
-	int res = 0, rres;
-	rnd_trace("\n   island RESOLVE risk...\n");
-
-	n = start = dst->head;
-	restart:;
-	do {
-		rnd_trace("       chk: %ld;%ld %p\n", n->point[0], n->point[1], n);
-		next = n->next;
-		if (n->flg.risk) {
-			risk_resolution_t *rrs = (risk_resolution_t *)n->RISK_RESOLUTION;
-			n->RISK_RESOLUTION = NULL;
-			n->flg.risk = 0;
-
-			switch(rrs->op) {
-				case REMOVE: /* test case: gixedb; doc case: 1-X */
-					rnd_trace("   -> remove %ld;%ld\n", n->point[0], n->point[1]);
-					rnd_poly_vertex_exclude(dst, n);
-					if (start == n) {
-						n = start = next;
-						free(rrs);
-						goto restart;
-					}
-					break;
-				case SPLIT: /* doc case: 1-V */
-					TODO("find a test case and implement me");
-					abort();
-				case NOP:
-					abort(); /* shouldn't be in the list */
-			}
-			free(rrs);
-		}
-	} while((n = next) != start);
-	return 0;
-}
-
-
 /* Collect all unmarked hole islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
@@ -667,9 +509,6 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	char dir = 'N';
 	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
-
-	if (start->flg.blocked)
-		return;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
@@ -702,10 +541,6 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	}
 	pa_pline_update(dst, 1);
 
-	/* if we had any node rounded, check for post-rounding self-intersections */
-	if (has_risk)
-		has_selfisc = pline_selfisc_risky(dst);
-
 	if (dst->Count >= 3) {
 		/* if there are enough points for a polygon, figure its polarity */
 		if ((dir == 'N') && (dst->flg.orient == RND_PLF_DIR))
@@ -728,7 +563,6 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 			pa_pline_invert(dst);
 
 		if (has_selfisc) {
-			pline_selfisc_risky_resolve(dst);
 			/* need to rebuild the tree because of node deletion */
 			rnd_r_free_tree_data(dst->tree, free);
 			rnd_r_destroy_tree(&dst->tree);
@@ -751,7 +585,7 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 	do {
 		pa_conn_desc_t *c, *cstart = n->cvclst_prev;
 		
-		if ((cstart == NULL) || n->flg.mark || n->flg.blocked)
+		if ((cstart == NULL) || n->flg.mark)
 			continue;
 		
 		rnd_trace(" at isl %.2f %.2f\n", NODE_CRDS(n));
@@ -824,45 +658,56 @@ static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
 
 static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 {
-	rnd_vnode_t *n, *start;
+	rnd_vnode_t *n, *start, *next;
 	int has_cvc = 0;
 
+	TODO("do we really need to strat from minnode for this? probably any node would do");
 	n = start = pa_find_minnode(ctx->pl);
-	rnd_trace("loop start (map @ rnd_pline_split_selfisc)\n");
+	rnd_trace("self-isc: map_cross start\n");
 	do {
 		rnd_box_t box;
 
-		rnd_trace(" loop %.2f;%.2f - %.2f;%.2f (map)\n", NODE_CRDS(n), NODE_CRDS(n->next));
+		rnd_trace(" map cross: %.2f;%.2f - %.2f;%.2f\n", NODE_CRDS(n), NODE_CRDS(n->next));
 
-		n->flg.mark = 0;
+		next = n->next;
 		ctx->v = n;
 
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
-		do {
-			ctx->restart = 0;
-			rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_cross_cb, ctx, NULL);
-		} while(ctx->restart);
+/*		do {
+			ctx->go_back = 0;*/
+			rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_map_cross_cb, ctx, NULL);
+/*		} while(ctx->go_back);*/
+	} while((n = next) != start);
+
+	/* There are only integer coords and point-point intersections now; there
+	   can be T or X junctions in the input, so it is not enough to check the
+	   newly added points. It's (probably) the cheapest to just do a search from
+	   each point and add CVCs to any that ahs more than 2 edges coming in . */
+	n = start;
+	rnd_trace("self-isc: install cvc start\n");
+	do {
+		rnd_box_t box;
+
+		rnd_trace(" inst cvc: %.2f;%.2f\n", NODE_CRDS(n));
+
+		n->flg.mark = 0;
+		ctx->v = n;
+
+		box.X1 = n->point[0];   box.Y1 = n->point[1];
+		box.X2 = n->point[0]+1; box.Y2 = n->point[1]+1;
+		rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_install_cvc_cb, ctx, NULL);
 
 		if (n->cvclst_prev != NULL)
 			has_cvc = 1;
-
-		if (ctx->skip_to != NULL) {
-			n = ctx->skip_to;
-			if (n->cvclst_prev != NULL)
-				has_cvc = 1;
-			ctx->skip_to = NULL;
-		}
-		else
-			n = n->next;
-	} while(n != start);
+	} while((n = n->next) != start);
 
 
+TODO("do we need this?");
 	/* crossing happening in points that had a cvc in the input already - these
 	   are not caught by pa_selfisc_cross_cb(); see the comment at
 	   selfisc_detect_cvc_crossing() */
 	if (has_cvc && (ctx->num_isc == 0)) {
-		ctx->cdl = pa_add_conn_desc(ctx->pl, 'A', NULL);
 		n = start;
 		do {
 			if (n->cvclst_prev != NULL)
@@ -870,8 +715,6 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 			n = n->next;
 		} while((ctx->num_isc == 0) && (n != start));
 	}
-	else
-		ctx->cdl = NULL;
 
 	return start;
 }
@@ -896,9 +739,6 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 		posneg_append_pline(posneg, -1, pl->next);
 		pl->next = NULL;
 	}
-
-	if (ctx.cdl == NULL)
-		ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	/* collect the outline first; anything that remains is an island,
 	   add them as a hole depending on their loop orientation */
@@ -933,9 +773,6 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
-
-	if (ctx.cdl == NULL)
-		ctx.cdl = pa_add_conn_desc(pl, 'A', NULL);
 
 	first_pos_null = (posneg->first_pos == NULL);
 

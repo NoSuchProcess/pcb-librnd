@@ -61,14 +61,13 @@ typedef struct {
 	rnd_vnode_t *v;
 	rnd_pline_t *pl;
 	long num_isc;
-	unsigned restart:1;      /* restart the rtree search on the current line */
+/*	unsigned go_back:1;      /* go back one segment in the rtree search on the current line (it got split) */
 	unsigned cut_line_line_overlap:1; /*  config: when enabled, cut class5 line-line overlap cases (bones) */
-	rnd_vnode_t *skip_to;    /* skip to this node while walking the outline, skipping sections of hidden inner islands */
 
 	rnd_vnode_t *search_seg_v;
 	pa_seg_t *search_seg;
 
-	pa_conn_desc_t *cdl;
+	rnd_vnode_t *tee;
 
 	vtp0_t hidden_islands;
 } pa_selfisc_t;
