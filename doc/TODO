@@ -1,5 +1,8 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
+		- replace ->shared with a flag
+			- when splitting an exisitng edge for a new node, also keep this flag
+		- gixedh: inf loop in the rewritten code
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedi: assert
 		- MEMLEAK:
