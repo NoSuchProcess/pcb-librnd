@@ -35,11 +35,11 @@ RND_INLINE int on_same_pt(rnd_vnode_t *va, rnd_vnode_t *vb)
 }
 
 
-RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt, int retnull)
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt, int retnull, int *alloced)
 {
 	rnd_vnode_t *new_node;
 	pa_seg_t *sg;
-	
+
 	new_node = pa_node_add_single(vn, pt);
 	if ((new_node == vn) || (new_node == vn->next)) {
 		/* redundant */
@@ -48,11 +48,15 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, p
 		return new_node;
 	}
 
+	if (alloced != NULL)
+		*alloced = 1;
+
 	new_node->next = vn->next;
 	new_node->prev = vn;
 	vn->next->prev = new_node;
 	vn->next = new_node;
 	ctx->pl->Count++;
+
 	sg = pa_selfisc_find_seg(ctx, vn);
 	if (pa_adjust_tree(ctx->pl->tree, sg) != 0)
 		assert(0); /* failed memory allocation */
@@ -64,14 +68,14 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, p
    NULL if no new node got inserted (redundancy) */
 RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
 {
-	return pa_selfisc_ins_pt_(ctx, vn, pt, 1);
+	return pa_selfisc_ins_pt_(ctx, vn, pt, 1, NULL);
 }
 
 /* Insert a new node at an intersection point as the next node of vn; return
    an existing node if no new node got inserted (redundancy) */
-RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt2(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt)
+RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt2(pa_selfisc_t *ctx, rnd_vnode_t *vn, pa_big_vector_t pt, int *alloced)
 {
-	return pa_selfisc_ins_pt_(ctx, vn, pt, 0);
+	return pa_selfisc_ins_pt_(ctx, vn, pt, 0, alloced);
 }
 
 
@@ -150,34 +154,37 @@ else
 	/* Having two intersections means line-line overlap: class 5 */
 	if (num_isc == 2) {
 		rnd_vnode_t *ipa1, *ipa2, *ipb1, *ipb2, *sha, *shb;
+		rnd_vnode_t *cv = ctx->v, *sv = s->v; /* have to make copies because inserting points may change s and thus s->v */
 		pa_big2_coord_t d1, d2;
+		int alloced = 0;
 
-		/* create the two nodes on ctx->v and s->v (first the farther one) */
-		rnd_pa_big_load_cvc(&start, ctx->v);
+		/* create the two nodes on cv and sv (first the farther one) */
+		rnd_pa_big_load_cvc(&start, cv);
 		rnd_vect_u_dist2_big(d1, start, isc1);
 		rnd_vect_u_dist2_big(d2, start, isc2);
 		if (pa_big2_coord_cmp(d1, d2) > 0) {
-			ipa1 = pa_selfisc_ins_pt2(ctx, ctx->v, isc1);
-			ipa2 = pa_selfisc_ins_pt2(ctx, ctx->v, isc2);
+			ipa1 = pa_selfisc_ins_pt2(ctx, cv, isc1, &alloced);
+			ipa2 = pa_selfisc_ins_pt2(ctx, cv, isc2, &alloced);
 			sha = ipa2;
 		}
 		else {
-			ipa2 = pa_selfisc_ins_pt2(ctx, ctx->v, isc2);
-			ipa1 = pa_selfisc_ins_pt2(ctx, ctx->v, isc1);
+			ipa2 = pa_selfisc_ins_pt2(ctx, cv, isc2, &alloced);
+			ipa1 = pa_selfisc_ins_pt2(ctx, cv, isc1, &alloced);
 			sha = ipa1;
 		}
 
-		rnd_pa_big_load_cvc(&start, s->v);
+		rnd_pa_big_load_cvc(&start, sv);
 		rnd_vect_u_dist2_big(d1, start, isc1);
 		rnd_vect_u_dist2_big(d2, start, isc2);
+
 		if (pa_big2_coord_cmp(d1, d2) > 0) {
-			ipb1 = pa_selfisc_ins_pt2(ctx, s->v, isc1);
-			ipb2 = pa_selfisc_ins_pt2(ctx, s->v, isc2);
+			ipb1 = pa_selfisc_ins_pt2(ctx, sv, isc1, &alloced);
+			ipb2 = pa_selfisc_ins_pt2(ctx, sv, isc2, &alloced);
 			shb = ipb2;
 		}
 		else {
-			ipb2 = pa_selfisc_ins_pt2(ctx, s->v, isc2);
-			ipb1 = pa_selfisc_ins_pt2(ctx, s->v, isc1);
+			ipb2 = pa_selfisc_ins_pt2(ctx, sv, isc2, &alloced);
+			ipb1 = pa_selfisc_ins_pt2(ctx, sv, isc1, &alloced);
 			shb = ipb1;
 		}
 
@@ -185,8 +192,10 @@ else
 		shb->shared = sha;
 		sha->shared = shb;
 
-		rnd_trace("   shared seg marked\n");
+		rnd_trace("   shared seg marked (alloced=%d)\n", alloced);
 		ctx->num_isc++;
+		if (alloced)
+			return RND_R_DIR_CANCEL; /* modified the tree, need to restart the search at this node */
 		return RND_R_DIR_NOT_FOUND;
 	}
 
@@ -197,8 +206,10 @@ else
 	ip2 = pa_selfisc_ins_pt(ctx, s->v, isc1);
 	if (ip2 != NULL) got_isc = 1;
 
-	if (got_isc)
+	if (got_isc) {
 		ctx->num_isc++;
+		return RND_R_DIR_CANCEL; /* modified the tree, need to restart the search at this node */
+	}
 
 	return RND_R_DIR_NOT_FOUND;
 }
@@ -642,6 +653,7 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	rnd_trace("self-isc: map_cross start\n");
 	do {
 		rnd_box_t box;
+		int rr;
 
 		rnd_trace(" map cross: %.2f;%.2f - %.2f;%.2f\n", NODE_CRDS(n), NODE_CRDS(n->next));
 
@@ -650,7 +662,9 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
-		rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_map_cross_cb, ctx, NULL);
+		do {
+			rr = rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_map_cross_cb, ctx, NULL);
+		} while(rr == RND_R_DIR_CANCEL);
 	} while((n = next) != start);
 
 	/* There are only integer coords and point-point intersections now; there
