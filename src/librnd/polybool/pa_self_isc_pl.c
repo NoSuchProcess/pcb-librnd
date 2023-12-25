@@ -493,20 +493,13 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 /* Collect all unmarked hole islands starting from a cvc node */
 RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *start)
 {
-	int accept_pol = 0, has_risk = 0, has_selfisc = 0;
+	int accept_pol = 0, has_selfisc = 0;
 	char dir = 'N';
 	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
-
-	if (start->cvclst_prev != NULL) {
-		last->flg.risk = 1;
-		has_risk = 1;
-		rnd_trace("      RISK: %.2f %.2f -> %ld;%ld %p\n", NODE_CRDS(start), last->point[0], last->point[1], last);
-	}
-
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
@@ -517,13 +510,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
 		newn->point[1] = n->point[1];
-		if (n->cvclst_prev != NULL) {
-			newn->flg.risk = 1;
-			has_risk = 1;
-			rnd_trace("      RISK: %.2f %.2f -> %ld;%ld %p\n", NODE_CRDS(n), newn->point[0], newn->point[1], newn);
-		}
-		else
-			rnd_trace("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
+		rnd_trace("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
 	}
