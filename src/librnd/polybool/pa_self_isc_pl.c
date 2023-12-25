@@ -122,6 +122,7 @@ rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:\n", NODE_CRDS(s->v), NODE_CRDS(s->v->n
 		return RND_R_DIR_NOT_FOUND;
 	}
 
+	TODO("arc: check these for overlap");
 
 	TODO("if we settle with rounded coords, probably call the old, cheaper edge-edge isc func");
 	num_isc = pa_isc_edge_edge_(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
