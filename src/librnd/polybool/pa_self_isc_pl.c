@@ -186,7 +186,6 @@ else
 
 		rnd_trace("   shared seg marked\n");
 		ctx->num_isc++;
-/*		ctx->go_back = 1; /* because the rtree changed */
 		return RND_R_DIR_CANCEL;
 	}
 
@@ -202,7 +201,6 @@ else
 
 	if (got_isc) {
 		ctx->num_isc++;
-/*		ctx->go_back = 1; /* because the rtree changed */
 		return RND_R_DIR_CANCEL;
 	}
 
@@ -351,12 +349,6 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 
 	fprintf(stderr, "pa_self_isc: nowhere to go in next_o\n");
 	abort();
-
-	TODO("this is not valid anymore:");
-	/* didn't find a way out of CVC that's still available or is closing the loop;
-	   this happens with stubs left over by multi line-line overlap; test cases:
-	   si_class5c, fixedp */
-	return NULL;
 }
 
 /* Collect the outline, largest area possible; remember islands cut off */
@@ -674,10 +666,7 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 
 		box.X1 = pa_min(n->point[0], n->next->point[0]); box.Y1 = pa_min(n->point[1], n->next->point[1]);
 		box.X2 = pa_max(n->point[0], n->next->point[0]); box.Y2 = pa_max(n->point[1], n->next->point[1]);
-/*		do {
-			ctx->go_back = 0;*/
-			rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_map_cross_cb, ctx, NULL);
-/*		} while(ctx->go_back);*/
+		rnd_r_search(ctx->pl->tree, &box, NULL, pa_selfisc_map_cross_cb, ctx, NULL);
 	} while((n = next) != start);
 
 	/* There are only integer coords and point-point intersections now; there
