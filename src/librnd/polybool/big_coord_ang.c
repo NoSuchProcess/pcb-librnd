@@ -109,7 +109,10 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	assert(pa_angle_valid(cd->angle));
 
 #if DEBUG_ANGLE
-	rnd_fprintf(stderr, "point on %c at %$mD assigned angle ", poly, pt->point[0], pt->point[1]);
+	rnd_fprintf(stderr, "Angle: %c %.2f;%.2f %.2f;%.2f assigned angle ", poly,
+		pa_big_double(PT.x),pa_big_double(PT.y),
+		pa_big_double(OTHER.x),pa_big_double(OTHER.y)
+		);
 	pa_debug_print_angle(cd->angle);
 	rnd_fprintf(stderr, " on side %c\n", side);
 #endif
