@@ -2,9 +2,8 @@
 	- polybool:
 		- replace ->shared with a flag
 			- when splitting an exisitng edge for a new node, also keep this flag
-		- gixedh: inf loop in the rewritten code
 		- fixedy4,fixedy5: undetected selfisc
-		- gixedi: assert
+		- gixedi: assert; high res isc point very close to an integer node, cvc angles match but should differ
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: fsd: run pcb-rnd on a board, {f a}, click on the ok button -> nothing happens (works after modifications to the file name) [report: Igor2]
