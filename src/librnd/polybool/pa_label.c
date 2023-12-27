@@ -75,7 +75,16 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 		}
 		else {
 			if (pa_angle_equ(l->angle, pn->cvclst_next->angle)) {
+				/* This assert ensures that if two outgoing lines have the same angle,
+				   they also have the same other endpoint. Rationale: same angle means
+				   they must be overlapping, and by now any overlap will have a CVC
+				   inserted at both ends.
+				   When this assert triggers, that means two very close but
+				   non-overlapping lines ended up having the same angle. The fix is
+				   to increase angle precison by shfting it up one more word, see
+				   r36331 */
 				assert(pa_vnode_equ(l->parent->next, pn->next));
+
 				region = PA_PTL_SHARED;
 				pn->shared = l->parent;
 			}
