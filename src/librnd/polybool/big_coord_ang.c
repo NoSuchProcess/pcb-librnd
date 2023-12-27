@@ -55,7 +55,7 @@ int pa_angle_lte(pa_big_angle_t a, pa_big_angle_t b)
 
 int pa_angle_valid(pa_big_angle_t a)
 {
-	static const pa_big_angle_t a4 = {0, 0, 0, 4, 0, 0};
+	static const pa_big_angle_t a4 = {0, 0, 0, 0, 4, 0};
 	return !big_is_neg(a, W) && (big_signed_cmpn(a, (big_word *)a4, W) <= 0);
 }
 
@@ -65,9 +65,18 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	pa_big_vector_t D, PT, OTHER;
 	pa_big_coord_t dxdy, tmp;
 	pa_big2_coord_t dy2, ang2, ang2tmp, *ang2res;
-	int xneg = 0, yneg = 0;
-	static const pa_big_angle_t a2 = {0, 0, 0, 2, 0, 0};
-	static const pa_big_angle_t a4 = {0, 0, 0, 4, 0, 0};
+	pa_big3_coord_t ang3, dy3;
+	int xneg = 0, yneg = 0, n;
+	static const pa_big_angle_t a2 = {0, 0, 0, 0, 2, 0};
+	static const pa_big_angle_t a4 = {0, 0, 0, 0, 4, 0};
+
+
+#if DEBUG_ANGLE
+	static int cnt;
+	cnt++;
+/*	rnd_fprintf(stderr, "ANG [%d] ---------------\n", cnt);*/
+#endif
+
 
 	pa_big_load_cvc(&PT, pt);
 
@@ -94,8 +103,35 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 
 	pa_big_to_big2(dy2, D.y);
 
-	big_zero(ang2, W2);
-	big_signed_div(ang2, tmp, dy2, W2, dxdy, W, NULL);
+
+	/* Originally we did this here:
+	
+	     big_signed_div(ang2, tmp, dy2, W2, dxdy, W, NULL);
+	
+	   But we need more than 6 decimal words when two high-resolution (3.3)
+	   lines participate. Especially is one of them is real short, the final
+	   result in a W2 (6.6) is not wide enough and two very close but not
+	   overlapping lines may end up having the same angle. What we really need
+	   is 1.7 for the division and 1.4 for the final unique ang2 value, but we
+	   don't have that.
+	
+	   Test case: gixedi
+	
+	   The trick is to do the division in 9.9 and then convert it back to 6.6
+	   but with a shift up one word so we really have 2.4 stored in a 3.3.
+	   This works because the actual value of the angle doesn't matter, it
+	   just need to be different for different angles.
+	
+	   Example:
+	    division result is: 1 2 3 4 5 6 7 8 9 . a b c d e f g h i
+	    output ang2 is            3 4 5 6 7 8 . 9 a b c d e
+	    Note: b = c = d = e = 0; the extra info we get by the shift is '3'
+	*/
+	pa_big2_to_big3(dy3, dy2);
+	big_zero(ang3, W3);
+	big_signed_div(ang3, tmp, dy3, W3, dxdy, W, NULL);
+	for(n = 0; n < W2; n++)
+		ang2[n] = ang3[n+(W/2-1)]; /* if W is 6, that's 3.3 and this shifts 2, discarding the 2 lowest decimals */
 
 	/* now move to the actual quadrant */
 	ang2res = &ang2tmp;
@@ -109,7 +145,7 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	assert(pa_angle_valid(cd->angle));
 
 #if DEBUG_ANGLE
-	rnd_fprintf(stderr, "Angle: %c %.2f;%.2f %.2f;%.2f assigned angle ", poly,
+	rnd_fprintf(stderr, "Angle [%d]: %c %.19f;%.19f %.19f;%.19f assigned angle ", cnt, poly,
 		pa_big_double(PT.x),pa_big_double(PT.y),
 		pa_big_double(OTHER.x),pa_big_double(OTHER.y)
 		);
