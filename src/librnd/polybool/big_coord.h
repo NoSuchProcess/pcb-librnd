@@ -3,12 +3,14 @@
 #		define BIG_DECIMAL_DIGITS 9
 #		define BIG_DECIMAL_BASE 1000000000UL
 #		define BIG_NEG_BASE 0x80000000UL
+#		define BIG_UMAX 0xFFFFFFFFUL
 #		define BIG_DBL_MULT ((double)4294967296.0)
 #	elif RND_COORD_MAX == ((1ULL<<63)-1)
 #		define BIG_BITS 64
 #		define BIG_DECIMAL_DIGITS 19
 #		define BIG_DECIMAL_BASE 10000000000000000000UL
 #		define BIG_NEG_BASE 0x8000000000000000UL
+#		define BIG_UMAX 0xFFFFFFFFFFFFFFFFUL
 #		define BIG_DBL_MULT ((double)18446744073709551616.0)
 #	else
 #		error "unsupported system: rnd_coord has to be 32 or 64 bits wide (checked: RND_COORD_MAX)"

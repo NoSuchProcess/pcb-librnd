@@ -87,6 +87,43 @@ RND_INLINE int pa_big_in_between(int ordered, pa_big_coord_t A, pa_big_coord_t B
 
 #define pa_big_vect_equ(a, b) ((big_signed_cmpn((a).x, (b).x, W) == 0) && (big_signed_cmpn((a).y, (b).y, W) == 0))
 
+/* Returns if c is +-1 bit near zero */
+RND_INLINE int pa_big_coord_near_zero(pa_big_coord_t c)
+{
+	static const pa_big_coord_t p1 = {1, 0, 0, 0, 0, 0};
+	int is_zero = 1, is_p1 = 1, is_n1 = 1;
+	int n;
+
+	/* search c from LSB and exclude is_zero, is_p1 or is_n1 if the number
+	   can not be 0, +1 (bit) or -1 (bit). A number is zero only if it's
+	   all 0, -1 if it's all BIG_IMAX; p1 is the tricky one. */
+	for(n = 0; n < W; n++) {
+		if (is_zero && (c[n] != 0)) is_zero = 0;
+		if (is_p1 && (c[n] != p1[n])) is_p1 = 0;
+		if (is_n1 && (c[n] != BIG_UMAX)) is_n1 = 0;
+		if (!is_zero && !is_p1 && !is_n1)
+			return 0;
+	}
+	return 1;
+}
+
+/* Returns whether a==b within +-1 coord units to overcome rounding errors */
+RND_INLINE int pa_big_vect_equ_round(pa_big_vector_t a, pa_big_vector_t b)
+{
+	pa_big_coord_t dx, dy;
+
+	big_subn(dx, a.x, b.x, W, 0);
+	if (!pa_big_coord_near_zero(dx))
+		return 0;
+
+	big_subn(dy, a.y, b.y, W, 0);
+	if (!pa_big_coord_near_zero(dy))
+		return 0;
+
+	return 1;
+}
+
+
 /* Compares pt's point to vn and returns 1 if they match (0 otherwise). If
    vn has a cvc, use its high precision coords */
 RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
@@ -99,6 +136,27 @@ RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
 	   coord then they must differ (in fractions) */
 	if (!pa_big_vect_is_int(pt))
 		return 0;
+
+	return (pa_big_to_coord(pt.x) == vn->point[0]) && (pa_big_to_coord(pt.y) == vn->point[1]);
+}
+
+/* Same as pa_big_vnode_vect_equ but allows very close nodes (+-1 bit on
+   x and y) to match to overcome the effect of rounding errors from div
+   and isc calculation */
+RND_INLINE int pa_big_vnode_vect_equ_round(rnd_vnode_t *vn, pa_big_vector_t pt)
+{
+	/* high prec if available */
+	if (vn->cvclst_prev != NULL)
+		return pa_big_vect_equ_round(pt, vn->cvclst_prev->isc);
+
+	/* if pt is high precision but vn point is not, and pt is not an integer
+	   coord then they must differ (in fractions) - but they may be close enough
+	   for a rounded-match */
+	if (!pa_big_vect_is_int(pt)) {
+		pa_big_vector_t vnp;
+		rnd_pa_big_load_cvc(&vnp, vn);
+		return pa_big_vect_equ_round(pt, vnp);
+	}
 
 	return (pa_big_to_coord(pt.x) == vn->point[0]) && (pa_big_to_coord(pt.y) == vn->point[1]);
 }

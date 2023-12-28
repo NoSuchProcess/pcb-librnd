@@ -249,9 +249,12 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv)
 	rnd_vnode_t *newnd;
 	rnd_vector_t small;
 
-  /* no new allocation for redundant node around dst */
-	if (pa_big_vnode_vect_equ(dst, ptv))        return dst;
-	if (pa_big_vnode_vect_equ(dst->next, ptv))  return dst->next;
+  /* no new allocation for redundant node around dst; use rounded test
+     to overcome +-1 bit difference due to isc calculation rounding;
+     related test case: gixedk that yields two points at 332;471 with 1
+     bit x difference */
+	if (pa_big_vnode_vect_equ_round(dst, ptv))        return dst;
+	if (pa_big_vnode_vect_equ_round(dst->next, ptv))  return dst->next;
 
 	/* have to allocate a new node */
 	small[0] = pa_big_to_coord(ptv.x);
