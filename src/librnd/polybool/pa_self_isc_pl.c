@@ -925,7 +925,7 @@ RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *p
 				goto only_one_island; /* the above deletions of redundant positives may have lead to this */
 
 			/* find out which hole goes in which island; after the pline self isc
-			   resolve function there's no intersection. Put every hold in the
+			   resolve function there's no intersection. Put every hole in the
 			   smallest island it is inside */
 			for(hole = posneg->neg_head; hole != NULL; hole = hole_next) {
 				int found = 0;
