@@ -784,7 +784,7 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 		}
 
 		if ((posneg->first_pos != NULL) || (posneg->subseq_pos.used != 0)) { /* add positives - they are all within the negative */
-			if (posneg->first_pos != NULL)
+			if ((posneg->first_pos != NULL) && (posneg->subseq_pos.used == 0))
 				vtp0_append(&posneg->subseq_pos, posneg->first_pos);
 			for(n = 0; n < posneg->subseq_pos.used; n++) {
 				rnd_polyarea_t *pa_new;
