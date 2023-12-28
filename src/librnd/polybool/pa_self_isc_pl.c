@@ -27,6 +27,45 @@
  *
  */
 
+/* A collection of positive and negative polylines */
+typedef struct {
+	rnd_pline_t *first_pos; /* optimization: don't start a vtp0 if there's only one (most common case) */
+	vtp0_t subseq_pos;      /* if there's more than one positive, store them here; can't use pos->next because ->next is for holes */
+
+	/* negative islands are always collected in a list; tail pointer is kept
+	   for quick append */
+	rnd_pline_t *neg_head, *neg_tail;
+} pa_posneg_t;
+
+static void posneg_append_pline(pa_posneg_t *posneg, int polarity, rnd_pline_t *pl)
+{
+	assert(pl != NULL);
+	assert(polarity != 0);
+
+	if (polarity > 0) {
+		if (posneg->first_pos != NULL) {
+			if (posneg->subseq_pos.used == 0)
+				vtp0_append(&posneg->subseq_pos, posneg->first_pos); /* the vector should include first_pos too so it's not a special case */
+			vtp0_append(&posneg->subseq_pos, pl);
+		}
+		else
+			posneg->first_pos = pl;
+
+	}
+	else {
+		if (posneg->neg_head == NULL)
+			posneg->neg_head = pl; /* first entry */
+		else
+			posneg->neg_tail->next = pl; /* append to tail */
+
+		/* set new tail */
+		posneg->neg_tail = pl;
+
+		/* make sure tail points to the last entry */
+		while(posneg->neg_tail->next != NULL)
+			posneg->neg_tail = posneg->neg_tail->next;
+	}
+}
 
 RND_INLINE int on_same_pt(rnd_vnode_t *va, rnd_vnode_t *vb)
 {
