@@ -47,6 +47,7 @@
 			- widget_focus in rnd_hid_compound_t in hid_dad.h
 			- coord_per_pix in rnd_hid_expose_ctx_s in hid.h
 			- rnd_hid_tree_t in hid_dad.h: hid_get_selected_multi_cb()
+		- osm-rnd: TODO#fy5: we seem to have the wrong y values in gtk top window viewbox when flip_y==1
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
 		- remove all nodes registered on script unload
