@@ -189,7 +189,7 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 		if (pa_pline_is_vnode_inside(plb, n, 0)) {
 			int r = pa_polyarea_pline_island_isc(b, pla);
 			switch(r) {
-				case PA_ISLAND_ISC_IN:    return 0; /* pla island is fully in an island of pb -> no intersection pssible */
+				case PA_ISLAND_ISC_IN:    return 0; /* pla island is fully in an island of pb -> no intersection possible */
 				case PA_ISLAND_ISC_OUT:   return 1; /* pla island is fully outside of any island of pb -> it is in the solid area */
 				case PA_ISLAND_ISC_CROSS: return 1; /* crossing an island boundary means some points are inside the solid */
 			}
