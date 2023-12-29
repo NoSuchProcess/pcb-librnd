@@ -128,6 +128,18 @@ typedef struct pa_cin_ctx_s {
 
 static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 {
+	/* special case: point-on-point is a point_on_edge_is_in case; test case: gixedl */
+	if (!p->compatibility) {
+		if ((p->p[0] == s->v->point[0]) && (p->p[1] == s->v->point[1])) {
+			p->f = p->point_on_edge_is_in;
+			return RND_R_DIR_CANCEL;
+		}
+		if ((p->p[0] == s->v->next->point[0]) && (p->p[1] == s->v->next->point[1])) {
+			p->f = p->point_on_edge_is_in;
+			return RND_R_DIR_CANCEL;
+		}
+	}
+
 	/* special case: horizontal line - point is either on it or not */
 	if (!p->compatibility && (s->v->point[1] == s->v->next->point[1])) {
 
@@ -204,6 +216,18 @@ static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 		pa_big_load(p->p_big.x, p->p[0]);
 		pa_big_load(p->p_big.y, p->p[1]);
 		p->p_has_big = 1;
+	}
+
+	/* special case: point-on-point is a point_on_edge_is_in case; test case: gixedl */
+	if (!p->compatibility) {
+		if ((bigcmp(p->p_big.x, sv.x) == 0) && (bigcmp(p->p_big.y, sv.y) == 0)) {
+			p->f = p->point_on_edge_is_in;
+			return RND_R_DIR_CANCEL;
+		}
+		if ((bigcmp(p->p_big.x, sv_next.x) == 0) && (bigcmp(p->p_big.y, sv_next.y) == 0)) {
+			p->f = p->point_on_edge_is_in;
+			return RND_R_DIR_CANCEL;
+		}
 	}
 
 	/* special case: horizontal line - point is either on it or not */
