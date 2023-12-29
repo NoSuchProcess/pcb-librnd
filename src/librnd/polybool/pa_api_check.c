@@ -200,6 +200,9 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 
 	assert(a != NULL);
 
+	if (a->Count < 3)
+		return PA_CHK_ERROR(res, "pline with points too few at %ld;%ld", a->head->point[0], a->head->point[1]);
+
 	a1 = a->head;
 	do {
 		a2 = a1;
