@@ -94,6 +94,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_ins_pt_(pa_selfisc_t *ctx, rnd_vnode_t *vn, p
 	new_node->prev = vn;
 	vn->next->prev = new_node;
 	vn->next = new_node;
+	new_node->shared = vn->shared;
 	ctx->pl->Count++;
 
 	sg = pa_selfisc_find_seg(ctx, vn);

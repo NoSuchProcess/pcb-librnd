@@ -171,6 +171,8 @@ RND_INLINE void remove_all_cvc(rnd_polyarea_t **pa1)
 					/* no need to unlink, all cvcs are free'd here */
 				}
 
+				n->shared = NULL;
+
 				if (pl->Count < 3)
 					break;
 
