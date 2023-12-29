@@ -3,6 +3,7 @@
 		- self_isc_pl: replace ->shared with a flag
 			- when splitting an exisitng edge for a new node, also keep this flag
 		- fixedy4,fixedy5: undetected selfisc
+		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- BUG: fsd: run pcb-rnd on a board, {f a}, click on the ok button -> nothing happens (works after modifications to the file name) [report: Igor2]
