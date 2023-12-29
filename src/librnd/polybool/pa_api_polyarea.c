@@ -193,7 +193,7 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 				case PA_ISLAND_ISC_OUT:   return 1; /* pla island is fully outside of any island of pb -> it is in the solid area */
 				case PA_ISLAND_ISC_CROSS: return 1; /* crossing an island boundary means some points are inside the solid */
 			}
-			assert("!invalid rturn by pa_polyarea_is_vnode_island_isc()");
+			assert("!invalid return by pa_polyarea_is_vnode_island_isc()");
 			return 1;
 		}
 	} while((n = n->next) != pla->head);
