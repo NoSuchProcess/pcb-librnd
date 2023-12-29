@@ -1,7 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- self_isc_pl: replace ->shared with a flag
-			- when splitting an exisitng edge for a new node, also keep this flag
 		- fixedy4,fixedy5: undetected selfisc
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
