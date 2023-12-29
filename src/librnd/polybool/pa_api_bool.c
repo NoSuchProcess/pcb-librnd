@@ -147,7 +147,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 	int code = rnd_polyarea_boolean_free_nochk(a_, b_, res, op);
 
 	if ((code == 0) && (*res != NULL)) {
-/*		assert(rnd_poly_valid(*res));*/
+		assert(rnd_poly_valid(*res));
 	}
 
 	return code;
