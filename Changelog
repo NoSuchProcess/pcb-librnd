@@ -1,3 +1,18 @@
+librnd 4.1.1 (r36372)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Fix: soname for polybool so
+
+	[doc]
+		-Change: use mibbit for web irc client
+
+	[hid_remote]
+		-Fix: old event name
+
+	[polybool]
+		-Fix: various fixes on corner cases
+
+
 librnd 4.1.0 (r35983)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
