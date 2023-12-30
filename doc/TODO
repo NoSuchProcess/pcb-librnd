@@ -1,7 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
-		- gixedm: assert
+		- gixedm: assert; probably the same case as gixedk
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
