@@ -1,4 +1,4 @@
-librnd 4.1.1 (r36372)
+librnd 4.1.1 (r36375)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
 		-Fix: soname for polybool so
@@ -8,6 +8,9 @@ librnd 4.1.1 (r36372)
 
 	[hid_remote]
 		-Fix: old event name
+
+	[lib_hid_common]
+		-Fix: FSD: 'save as dialog ok button bug': if neither edit nor selection is available but the 'ok' button was clicked, do return with the file name built from entry (if that's not NULL)
 
 	[polybool]
 		-Fix: various fixes on corner cases
