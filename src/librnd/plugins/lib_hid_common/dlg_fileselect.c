@@ -491,7 +491,7 @@ static void timed_close_cb(rnd_hidval_t user_data)
 	rnd_hid_dad_close(user_data.ptr, &retovr, 0);
 }
 
-static void build_res_multi(fsd_ctx_t *ctx)
+static void build_res_multi(fsd_ctx_t *ctx, int fallback_entry)
 {
 	rnd_hid_attribute_t *tree_attr = &ctx->dlg[ctx->wfilelist];
 	rnd_hid_row_t *row;
@@ -500,10 +500,14 @@ static void build_res_multi(fsd_ctx_t *ctx)
 	gds_t tmp = {0};
 
 	if (ctx->edit_last) {
-		rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
-		const char *fn = inp->val.str;
+		rnd_hid_attribute_t *inp;
+		const char *fn;
 
 /*rnd_trace("BRM: edit line \n", fn);*/
+
+		fallback:;
+		inp = &ctx->dlg[ctx->wpath];
+		fn = inp->val.str;
 
 		if ((fn != NULL) && (*fn != '\0')) {
 			static rnd_dad_retovr_t retovr;
@@ -515,8 +519,11 @@ static void build_res_multi(fsd_ctx_t *ctx)
 	}
 
 	r = rnd_dad_tree_get_selected_multi(tree_attr, &lst);
-	if ((r < 0) || (lst.used == 0))
+	if ((r < 0) || (lst.used == 0)) {
+		if (fallback_entry)
+			goto fallback; /* corner case: if not edited and not selected but invoked from the button: use initial file from the entry */
 		return;
+	}
 
 	row = lst.array[0];
 	if ((lst.used == 1) && (row->cell[1][0] == '<')) {
@@ -637,7 +644,7 @@ static void fsd_filelist_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attr
 {
 	fsd_ctx_t *ctx = caller_data;
 
-	build_res_multi(ctx);
+	build_res_multi(ctx, 0);
 }
 
 
@@ -645,7 +652,7 @@ static void fsd_ok_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 {
 	fsd_ctx_t *ctx = caller_data;
 
-	build_res_multi(ctx);
+	build_res_multi(ctx, 1);
 }
 
 /*** shortcut ***/
