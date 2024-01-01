@@ -20,6 +20,7 @@
 	- API extensions (4.2.0)
 		- main drawing area zoom limit should be configurable for osm-rnd (200 is not enough)
 		- optional pixmap export (osm-rnd)
+		- move back osm-rnd's lib_wgetosm into lib_wget of librnd (extra features, more flexibility)
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
