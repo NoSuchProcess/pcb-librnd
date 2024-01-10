@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- API extensions (4.2.0)
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
-		- DAD close buttons can't have tooltips (for sch-rnd)
 		- FEATURE: svg export upgrade (enum: color, grayscale, b&w): allow svg schematic export with option of monochrome (for sch-rnd)
 		- export dialog gets confused on revert (for pcb-rnd)
 	- polybool:
@@ -33,6 +32,10 @@
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
+		- DAD close buttons can't have tooltips (for sch-rnd)
+			- need to add an optional tooltip field at the _end_ of rnd_hid_dad_buttons_t
+			- need to add spares in rnd_hid_dad_buttons_t
+		- DAD: add spares in rnd_dad_retovr_t
 		- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 			- see bug_files/TODO/inline.patch
 			- requires API change because apps depend on -Dinline too
