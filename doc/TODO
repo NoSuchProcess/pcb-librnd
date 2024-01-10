@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- API extensions (4.2.0)
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
-		- FEATURE: svg export upgrade (enum: color, grayscale, b&w): allow svg schematic export with option of monochrome (for sch-rnd)
 		- export dialog gets confused on revert (for pcb-rnd)
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
@@ -40,6 +39,7 @@
 			- see bug_files/TODO/inline.patch
 			- requires API change because apps depend on -Dinline too
 			- remove --debug on mac from INSTALL and mac.txt
+		- lib_exp_text/draw_svg.h: add colorspace in init()
 		- remove old font support
 			- remove xform compatibility .h from font, it's been moved to core
 			- maybe remove the whole old font/
@@ -52,6 +52,7 @@
 			- widget_focus in rnd_hid_compound_t in hid_dad.h
 			- coord_per_pix in rnd_hid_expose_ctx_s in hid.h
 			- rnd_hid_tree_t in hid_dad.h: hid_get_selected_multi_cb()
+			- lib_exp_text/draw_svg.h: rnd_svg_t
 		- osm-rnd: TODO#fy5: we seem to have the wrong y values in gtk top window viewbox when flip_y==1
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
