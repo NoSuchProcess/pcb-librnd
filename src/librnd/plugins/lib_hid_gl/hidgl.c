@@ -50,6 +50,16 @@
 #include "lib_hid_gl_conf.h"
 extern conf_lib_hid_gl_t conf_lib_hid_gl;
 
+/* Do the translation on CPU because most GPU will do only GLfloat which is
+   not capable of handling large coords (even in 32 bit space) without losing
+   precision. In other words: translate the input drawing's rnd_coord_t x;y
+   coordinates into a local screen-coord which is always around 0 so that
+   the GPU has to deal with small enough numbers that they usually fit in
+   float32. (When they don't, it's because we have a huge design and zoomed
+   out a lot - but then losing a few bits of integer coords won't matter anyway)
+   */
+static rnd_coord_t VTX, VTY;
+
 #include "draw_INIT.h"
 
 /* return the first draw implementation that would work with current opengl */
@@ -182,7 +192,10 @@ void hidgl_set_grid_color(float r, float g, float b)
 
 void hidgl_set_view(double tx, double ty, double zx, double zy, double zz)
 {
-	hidgl_draw.set_view(tx, ty, zx, zy, zz);
+	/* Translate to screen coords on CPU - see the comment at VTX declaration */
+	VTX = tx;
+	VTY = ty;
+	hidgl_draw.set_view(0, 0, zx, zy, zz);
 }
 
 long hidgl_texture_import(unsigned char *pixels, int width, int height, int has_alpha)
@@ -276,6 +289,9 @@ void hidgl_draw_local_grid(rnd_design_t *hidlib, rnd_coord_t grd, rnd_coord_t cx
 
 	reserve_grid_points(cross_grid ? n*5 : n, 0);
 
+	cx += VTX;
+	cy += VTY;
+
 	for(y = -radius; y <= radius; y++) {
 		int y2 = y * y;
 		for(x = -radius; x <= radius; x++) {
@@ -332,6 +348,9 @@ void hidgl_draw_grid(rnd_design_t *hidlib, rnd_coord_t grd, rnd_box_t *drawn_are
 		y1 = y2;
 		y2 = tmp;
 	}
+
+	x1 += VTX; y1 += VTY;
+	x2 += VTX; y2 += VTY;
 
 	n = (int)((x2 - x1) / grd + 0.5) + 1;
 	reserve_grid_points(n, cross_grid ? n*2 : 0);
@@ -434,6 +453,9 @@ void hidgl_draw_line(rnd_cap_style_t cap, rnd_coord_t width, rnd_coord_t x1, rnd
 	int round_caps = 0;
 	rnd_coord_t orig_width = width;
 
+	x1 += VTX; y1 += VTY;
+	x2 += VTX; y2 += VTY;
+
 	if ((width == 0) || (!NEEDS_CAP(orig_width, scale)))
 		hidgl_draw.prim_add_line(x1, y1, x2, y2);
 	else {
@@ -513,6 +535,8 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 	int hairline = 0;
 	rnd_coord_t orig_width = width;
 
+	x += VTX; y += VTY;
+
 	/* TODO: Draw hairlines as lines instead of triangles ? */
 
 	if (width == 0.0)
@@ -579,12 +603,12 @@ void hidgl_draw_arc(rnd_coord_t width, rnd_coord_t x, rnd_coord_t y, rnd_coord_t
 
 void hidgl_draw_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	hidgl_draw.prim_add_rect(x1, y1, x2, y2);
+	hidgl_draw.prim_add_rect(x1 + VTX, y1 + VTY, x2 + VTX, y2 + VTY);
 }
 
 void hidgl_draw_texture_rect(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned long texture_id)
 {
-	hidgl_draw.prim_add_textrect(x1, y1, 0.0, 0.0, x2, y1, 1.0, 0.0, x2, y2, 1.0, 1.0, x1, y2, 0.0, 1.0, texture_id);
+	hidgl_draw.prim_add_textrect(x1 + VTX, y1 + VTY, 0.0, 0.0, x2 + VTX, y1 + VTY, 1.0, 0.0, x2 + VTX, y2 + VTY, 1.0, 1.0, x1 + VTX, y2 + VTY, 0.0, 1.0, texture_id);
 }
 
 void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double scale)
@@ -596,6 +620,8 @@ void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double sc
 	float radius = vr;
 	int slices;
 	int i;
+
+	vx += VTX; vy += VTY;
 
 	assert((composite_op == RND_HID_COMP_POSITIVE) || (composite_op == RND_HID_COMP_POSITIVE_XOR) || (composite_op == RND_HID_COMP_NEGATIVE));
 
@@ -734,8 +760,8 @@ void hidgl_fill_polygon(int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 	gluTessBeginContour(tobj);
 
 	for(i = 0; i < n_coords; i++) {
-		vertices[0 + i * 3] = x[i];
-		vertices[1 + i * 3] = y[i];
+		vertices[0 + i * 3] = x[i] + VTX;
+		vertices[1 + i * 3] = y[i] + VTY;
 		vertices[2 + i * 3] = 0.;
 		gluTessVertex(tobj, &vertices[i * 3], &vertices[i * 3]);
 	}
@@ -768,6 +794,9 @@ void hidgl_fill_polygon_offs(int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_c
 	gluTessBeginPolygon(tobj, NULL);
 	gluTessBeginContour(tobj);
 
+	dx += VTX;
+	dy += VTY;
+
 	for(i = 0; i < n_coords; i++) {
 		vertices[0 + i * 3] = x[i] + dx;
 		vertices[1 + i * 3] = y[i] + dy;
@@ -792,14 +821,14 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 {
 	GLfloat points[4][6];
 
-	points[0][0] = x;
-	points[0][1] = miny;
-	points[1][0] = x;
-	points[1][1] = maxy;
-	points[2][0] = minx;
-	points[2][1] = y;
-	points[3][0] = maxx;
-	points[3][1] = y;
+	points[0][0] = x + VTX;
+	points[0][1] = miny + VTY;
+	points[1][0] = x + VTX;
+	points[1][1] = maxy + VTY;
+	points[2][0] = minx + VTX;
+	points[2][1] = y + VTY;
+	points[3][0] = maxx + VTX;
+	points[3][1] = y + VTY;
 
 	if (hidgl_draw.xor_start() == 0) {
 		red = 1.0 - red;
@@ -813,6 +842,9 @@ void hidgl_draw_crosshair(rnd_coord_t x, rnd_coord_t y, float red, float green, 
 void hidgl_draw_initial_fill(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, float r, float g, float b)
 {
 	hidgl_draw.xor_end();
+
+	x1 += VTX; y1 += VTY;
+	x2 += VTX; y2 += VTY;
 
 	/* we can cheat here: this is called only once, before other drawing commands
 	   to fill the background. */
