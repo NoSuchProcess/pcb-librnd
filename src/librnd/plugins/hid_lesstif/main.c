@@ -407,21 +407,27 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_design_t *hidlib)
 	if ((work_area == 0) || (hidlib == NULL))
 		return;
 	/*rnd_printf("PCB Changed! %$mD\n", rnd_dwg_get_size_x(ltf_hidlib), rnd_dwg_get_size_y(ltf_hidlib)); */
-	siz = rnd_dwg_get_size_x(ltf_hidlib);
-	stdarg_n = 0;
-	stdarg(XmNminimum, ltf_hidlib->dwg.X1);
-	stdarg(XmNvalue, ltf_hidlib->dwg.X1);
-	stdarg(XmNsliderSize, siz > 0 ? siz : 1);
-	stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
-	XtSetValues(hscroll, stdarg_args, stdarg_n);
 
-	siz = rnd_dwg_get_size_y(ltf_hidlib);
-	stdarg_n = 0;
-	stdarg(XmNminimum, ltf_hidlib->dwg.Y1);
-	stdarg(XmNvalue, ltf_hidlib->dwg.Y1);
-	stdarg(XmNsliderSize, siz > 0 ? siz : 1);
-	stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
-	XtSetValues(vscroll, stdarg_args, stdarg_n);
+	if (!rnd_conf.editor.unlimited_pan) {
+		siz = rnd_dwg_get_size_x(ltf_hidlib);
+		stdarg_n = 0;
+		stdarg(XmNminimum, ltf_hidlib->dwg.X1);
+		stdarg(XmNvalue, ltf_hidlib->dwg.X1);
+		stdarg(XmNsliderSize, siz > 0 ? siz : 1);
+		stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
+		XtSetValues(hscroll, stdarg_args, stdarg_n);
+	}
+
+	if (!rnd_conf.editor.unlimited_pan) {
+		siz = rnd_dwg_get_size_y(ltf_hidlib);
+		stdarg_n = 0;
+		stdarg(XmNminimum, ltf_hidlib->dwg.Y1);
+		stdarg(XmNvalue, ltf_hidlib->dwg.Y1);
+		stdarg(XmNsliderSize, siz > 0 ? siz : 1);
+		stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
+		XtSetValues(vscroll, stdarg_args, stdarg_n);
+	}
+
 	zoom_max();
 
 	lesstif_update_layer_groups();
@@ -892,17 +898,20 @@ void lesstif_pan_fixup()
 {
 	if (ltf_hidlib == NULL)
 		return;
-	if (view_left_x > ltf_hidlib->dwg.X2 + (view_width * view_zoom))
-		view_left_x = ltf_hidlib->dwg.X2 + (view_width * view_zoom);
-	if (view_top_y > ltf_hidlib->dwg.Y2 + (view_height * view_zoom))
-		view_top_y = ltf_hidlib->dwg.Y2 + (view_height * view_zoom);
-	if (view_left_x < ltf_hidlib->dwg.X1 - (view_width * view_zoom))
-		view_left_x = ltf_hidlib->dwg.X1 - (view_width * view_zoom);
-	if (view_top_y < ltf_hidlib->dwg.Y1 - (view_height * view_zoom))
-		view_top_y = ltf_hidlib->dwg.Y1 - (view_height * view_zoom);
 
-	set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2);
-	set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
+	if (!rnd_conf.editor.unlimited_pan) {
+		if (view_left_x > ltf_hidlib->dwg.X2 + (view_width * view_zoom))
+			view_left_x = ltf_hidlib->dwg.X2 + (view_width * view_zoom);
+		if (view_top_y > ltf_hidlib->dwg.Y2 + (view_height * view_zoom))
+			view_top_y = ltf_hidlib->dwg.Y2 + (view_height * view_zoom);
+		if (view_left_x < ltf_hidlib->dwg.X1 - (view_width * view_zoom))
+			view_left_x = ltf_hidlib->dwg.X1 - (view_width * view_zoom);
+		if (view_top_y < ltf_hidlib->dwg.Y1 - (view_height * view_zoom))
+			view_top_y = ltf_hidlib->dwg.Y1 - (view_height * view_zoom);
+
+		set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2);
+		set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
+	}
 
 	lesstif_invalidate_all(rnd_gui);
 }
@@ -1471,24 +1480,28 @@ TODO("dock: layersel depends on vertical text");
 										| PointerMotionMask | PointerMotionHintMask
 										| KeyPressMask | KeyReleaseMask | EnterWindowMask | LeaveWindowMask, 0, work_area_input, 0);
 
-	stdarg_n = 0;
-	stdarg(XmNorientation, XmVERTICAL);
-	stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
-	stdarg(XmNminimum, ltf_hidlib->dwg.Y1 ? ltf_hidlib->dwg.Y1 : 1);
-	stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
-	vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
-	XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
-	XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
-	XtManageChild(vscroll);
+	if (!rnd_conf.editor.unlimited_pan) {
+		stdarg_n = 0;
+		stdarg(XmNorientation, XmVERTICAL);
+		stdarg(XmNprocessingDirection, XmMAX_ON_BOTTOM);
+		stdarg(XmNminimum, ltf_hidlib->dwg.Y1 ? ltf_hidlib->dwg.Y1 : 1);
+		stdarg(XmNmaximum, ltf_hidlib->dwg.Y2 ? ltf_hidlib->dwg.Y2 : 1);
+		vscroll = XmCreateScrollBar(mainwind, XmStrCast("vscroll"), stdarg_args, stdarg_n);
+		XtAddCallback(vscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
+		XtAddCallback(vscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_top_y);
+		XtManageChild(vscroll);
+	}
 
-	stdarg_n = 0;
-	stdarg(XmNorientation, XmHORIZONTAL);
-	stdarg(XmNminimum, ltf_hidlib->dwg.X1 ? ltf_hidlib->dwg.X1 : 1);
-	stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
-	hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
-	XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
-	XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
-	XtManageChild(hscroll);
+	if (!rnd_conf.editor.unlimited_pan) {
+		stdarg_n = 0;
+		stdarg(XmNorientation, XmHORIZONTAL);
+		stdarg(XmNminimum, ltf_hidlib->dwg.X1 ? ltf_hidlib->dwg.X1 : 1);
+		stdarg(XmNmaximum, ltf_hidlib->dwg.X2 ? ltf_hidlib->dwg.X2 : 1);
+		hscroll = XmCreateScrollBar(mainwind, XmStrCast("hscroll"), stdarg_args, stdarg_n);
+		XtAddCallback(hscroll, XmNvalueChangedCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
+		XtAddCallback(hscroll, XmNdragCallback, (XtCallbackProc) scroll_callback, (XtPointer) & view_left_x);
+		XtManageChild(hscroll);
+	}
 }
 
 static void ltf_topwin_make_bottom(void)
