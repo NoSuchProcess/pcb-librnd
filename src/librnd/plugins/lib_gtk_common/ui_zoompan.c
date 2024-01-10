@@ -41,7 +41,7 @@ double rnd_gtk_clamp_zoom(const rnd_gtk_view_t *vw, double coord_per_px)
 
 	min_zoom = vw->min_zoom;
 	if (min_zoom <= 0)
-		min_zoom = 200;
+		min_zoom = rnd_conf.editor.min_zoom;
 
 	/* max zoom is calculated so that zoom * canvas_size * 2 doesn't overflow rnd_coord_t */
 	max_zoom_w = (double)RND_COORD_MAX / (double)vw->canvas_width;
@@ -211,8 +211,10 @@ void rnd_gtk_zoom_view_win(rnd_gtk_view_t *v, rnd_coord_t x1, rnd_coord_t y1, rn
 
 void rnd_gtk_pan_view_abs(rnd_gtk_view_t *v, rnd_coord_t design_x, rnd_coord_t design_y, double widget_x, double widget_y)
 {
+	double ya = (double)SIDE_Y(v, design_y);
+	double yb = (double)widget_y * v->coord_per_px;
 	v->x0 = rnd_round((double)SIDE_X(v, design_x) - (double)widget_x * v->coord_per_px);
-	v->y0 = rnd_round((double)SIDE_Y(v, design_y) - (double)widget_y * v->coord_per_px);
+	v->y0 = rnd_round(ya - yb);
 
 	uiz_pan_common(v);
 }
