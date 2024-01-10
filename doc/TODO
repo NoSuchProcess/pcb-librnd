@@ -1,6 +1,9 @@
 1. For the upcoming release ===============================================================================
 	- API extensions (4.2.0)
-		- optional pixmap export (osm-rnd): bitmap object export in png, ps, eps, svg
+		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
+		- DAD close buttons can't have tooltips (for sch-rnd)
+		- FEATURE: svg export upgrade (enum: color, grayscale, b&w): allow svg schematic export with option of monochrome (for sch-rnd)
+		- export dialog gets confused on revert (for pcb-rnd)
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedk3: assert in label because isc points on the hole are too close near 455;969
