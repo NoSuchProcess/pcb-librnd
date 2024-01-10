@@ -894,12 +894,13 @@ static void set_scroll(Widget s, int pos, int view, int min, int max)
 	XtSetValues(s, stdarg_args, stdarg_n);
 }
 
+static int view_inited;
 void lesstif_pan_fixup()
 {
 	if (ltf_hidlib == NULL)
 		return;
 
-	if (!rnd_conf.editor.unlimited_pan) {
+	if (!rnd_conf.editor.unlimited_pan || !view_inited) {
 		if (view_left_x > ltf_hidlib->dwg.X2 + (view_width * view_zoom))
 			view_left_x = ltf_hidlib->dwg.X2 + (view_width * view_zoom);
 		if (view_top_y > ltf_hidlib->dwg.Y2 + (view_height * view_zoom))
@@ -909,8 +910,12 @@ void lesstif_pan_fixup()
 		if (view_top_y < ltf_hidlib->dwg.Y1 - (view_height * view_zoom))
 			view_top_y = ltf_hidlib->dwg.Y1 - (view_height * view_zoom);
 
-		set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2);
-		set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
+		if (!rnd_conf.editor.unlimited_pan) {
+			set_scroll(hscroll, view_left_x, view_width, ltf_hidlib->dwg.X1, ltf_hidlib->dwg.X2);
+			set_scroll(vscroll, view_top_y, view_height, ltf_hidlib->dwg.Y1, ltf_hidlib->dwg.Y2);
+		}
+
+		view_inited = 1;
 	}
 
 	lesstif_invalidate_all(rnd_gui);
