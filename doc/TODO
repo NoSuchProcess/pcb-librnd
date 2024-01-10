@@ -40,6 +40,7 @@
 			- maybe remove the whole old font/
 			- remove font2 rnd_font_fix_v1() - used by sch-rnd with font v1
 			- remove font2 rnd_font_draw_string_justify() - used by sch-rnd with font v1
+		- add spares to rnd_conf.h main structs else it's impossible to add new conf items
 		- spare write back:
 			- rnd_app_t in hidlib.h
 			- attr_dlg_widget_focus in hid.h
