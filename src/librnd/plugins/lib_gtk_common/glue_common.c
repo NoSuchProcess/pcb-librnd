@@ -161,31 +161,37 @@ void rnd_gtk_tw_ranges_scale(rnd_gtk_t *gctx)
 	   size in pixels to PCB units and that will be the page size for the Gtk adjustment. */
 	rnd_gtk_zoom_post(view);
 
-	if (rnd_conf.editor.view.flip_x)
-		gtkc_scb_zoom_adjustment(tw->h_range, view->width, 0, gctx->hidlib->dwg.X2-gctx->hidlib->dwg.X1);
-	else
-		gtkc_scb_zoom_adjustment(tw->h_range, view->width, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.X2+gctx->hidlib->dwg.X1);
+	if (!rnd_conf.editor.unlimited_pan) {
+		if (rnd_conf.editor.view.flip_x)
+			gtkc_scb_zoom_adjustment(tw->h_range, view->width, 0, gctx->hidlib->dwg.X2-gctx->hidlib->dwg.X1);
+		else
+			gtkc_scb_zoom_adjustment(tw->h_range, view->width, gctx->hidlib->dwg.X1, gctx->hidlib->dwg.X2+gctx->hidlib->dwg.X1);
 
-	if (rnd_conf.editor.view.flip_y)
-		gtkc_scb_zoom_adjustment(tw->v_range, view->height, 0, gctx->hidlib->dwg.Y2-gctx->hidlib->dwg.Y1);
-	else
-		gtkc_scb_zoom_adjustment(tw->v_range, view->height, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.Y2+gctx->hidlib->dwg.Y1);
+		if (rnd_conf.editor.view.flip_y)
+			gtkc_scb_zoom_adjustment(tw->v_range, view->height, 0, gctx->hidlib->dwg.Y2-gctx->hidlib->dwg.Y1);
+		else
+			gtkc_scb_zoom_adjustment(tw->v_range, view->height, gctx->hidlib->dwg.Y1, gctx->hidlib->dwg.Y2+gctx->hidlib->dwg.Y1);
+	}
 }
 
 void rnd_gtk_port_ranges_changed(void)
 {
-	ghidgui->port.view.x0 = gtkc_scb_getval(ghidgui->topwin.h_range);
-	ghidgui->port.view.y0 = gtkc_scb_getval(ghidgui->topwin.v_range);
+	if (!rnd_conf.editor.unlimited_pan) {
+		ghidgui->port.view.x0 = gtkc_scb_getval(ghidgui->topwin.h_range);
+		ghidgui->port.view.y0 = gtkc_scb_getval(ghidgui->topwin.v_range);
+	}
 
 	rnd_gui->invalidate_all(rnd_gui);
 }
 
 void rnd_gtk_pan_common(void)
 {
-	ghidgui->topwin.adjustment_changed_holdoff = TRUE;
-	gtkc_scb_setval(ghidgui->topwin.h_range, ghidgui->port.view.x0);
-	gtkc_scb_setval(ghidgui->topwin.v_range, ghidgui->port.view.y0);
-	ghidgui->topwin.adjustment_changed_holdoff = FALSE;
+	if (!rnd_conf.editor.unlimited_pan) {
+		ghidgui->topwin.adjustment_changed_holdoff = TRUE;
+		gtkc_scb_setval(ghidgui->topwin.h_range, ghidgui->port.view.x0);
+		gtkc_scb_setval(ghidgui->topwin.v_range, ghidgui->port.view.y0);
+		ghidgui->topwin.adjustment_changed_holdoff = FALSE;
+	}
 
 	rnd_gtk_port_ranges_changed();
 }

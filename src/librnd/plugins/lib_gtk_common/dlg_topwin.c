@@ -197,7 +197,7 @@ void rnd_gtk_update_toggle_flags(rnd_design_t *hidlib, rnd_gtk_topwin_t *tw, con
 
 static void h_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 {
-	if (tw->adjustment_changed_holdoff)
+	if (tw->adjustment_changed_holdoff || rnd_conf.editor.unlimited_pan)
 		return;
 
 	rnd_gtk_port_ranges_changed();
@@ -205,7 +205,7 @@ static void h_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 
 static void v_adjustment_changed_cb(GtkAdjustment *adj, rnd_gtk_topwin_t *tw)
 {
-	if (tw->adjustment_changed_holdoff)
+	if (tw->adjustment_changed_holdoff || rnd_conf.editor.unlimited_pan)
 		return;
 
 	rnd_gtk_port_ranges_changed();
@@ -427,19 +427,26 @@ static void rnd_gtk_build_top_window(rnd_gtk_t *ctx, rnd_gtk_topwin_t *tw)
 
 	gtkc_box_pack_append(hbox, tw->drawing_area, TRUE, 0);
 
-
-	tw->v_range = gtkc_vscrollbar_new(G_CALLBACK(v_adjustment_changed_cb), tw);
-	gtkc_box_pack_append(hbox, tw->v_range, FALSE, 0);
+	if (!rnd_conf.editor.unlimited_pan) {
+		tw->v_range = gtkc_vscrollbar_new(G_CALLBACK(v_adjustment_changed_cb), tw);
+		gtkc_box_pack_append(hbox, tw->v_range, FALSE, 0);
+	}
 
 	hbox_scroll = gtkc_hbox_new(FALSE, 0);
-	tw->h_range = gtkc_hscrollbar_new(G_CALLBACK(h_adjustment_changed_cb), tw);
+
+	if (!rnd_conf.editor.unlimited_pan)
+		tw->h_range = gtkc_hscrollbar_new(G_CALLBACK(h_adjustment_changed_cb), tw);
+	else
+		tw->h_range = gtkc_vbox_new(TRUE, 0); /* spring for the full screen button */
+
 	fullscreen_btn = create_image_button_from_xpm_data(FullScreen_xpm);
 	g_signal_connect(G_OBJECT(fullscreen_btn), "clicked", G_CALLBACK(fullscreen_cb), NULL); /* gtk2-gtk4 compatible */
 	gtkc_box_pack_append(hbox_scroll, tw->h_range, TRUE, 0);
 	gtkc_box_pack_append(hbox_scroll, fullscreen_btn, FALSE, 0);
 	gtkc_box_pack_append(tw->vbox_middle, hbox_scroll, FALSE, 0);
 
-	gtkc_unify_hvscroll(tw->h_range, tw->v_range);
+	if (!rnd_conf.editor.unlimited_pan)
+		gtkc_unify_hvscroll(tw->h_range, tw->v_range);
 
 	/* -- The bottom status line label */
 	tw->bottom_hbox = gtkc_hbox_new(FALSE, 0);
