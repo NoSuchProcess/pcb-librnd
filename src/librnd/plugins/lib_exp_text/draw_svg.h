@@ -1,5 +1,11 @@
 #include <librnd/core/hidlib.h>
 
+typedef enum rnd_svg_colorspace_e {
+	RNDSVG_COLOR = 0, /* default: full color */
+	RNDSVG_GRAYSCALE,
+	RNDSVG_BLACKWHITE
+} rnd_svg_colorspace_t;
+
 typedef struct {
 	/* public: config */
 	rnd_design_t *hidlib;
@@ -21,7 +27,8 @@ typedef struct {
 
 	/* Spare: see doc/developer/spare.txt */
 	void (*spare_f1)(void), (*spare_f2)(void);
-	long spare_l1, spare_l2, spare_l3, spare_l4;
+	/*rnd_svg_colorspace_t*/long colorspace;
+	long spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_svg_t;

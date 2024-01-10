@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2006 Dan McMahill
- *  Copyright (C) 2016,2022 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2022,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -290,9 +290,65 @@ void rnd_svg_set_drawing_mode(rnd_svg_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 	}
 }
 
-static const char *svg_color(rnd_hid_gc_t gc)
+/* Convert a hex digit or return -1 on error */
+#define HEXDIGCONV(res, chr) \
+do { \
+	if ((chr >= '0') && (chr <= '9')) res = chr - '0'; \
+	else if ((chr >= 'a') && (chr <= 'f')) res = chr - 'a' + 10; \
+	else if ((chr >= 'A') && (chr <= 'F')) res = chr - 'A' + 10; \
+	else res = -1; \
+} while(0)
+
+#define GETCLR(r, g, b, str) \
+do { \
+	int d1, d2; \
+	HEXDIGCONV(d1, str[1]); HEXDIGCONV(d2, str[1]); \
+	r = (d1 << 4) | d2; \
+	HEXDIGCONV(d1, str[3]); HEXDIGCONV(d2, str[4]); \
+	g = (d1 << 4) | d2; \
+	HEXDIGCONV(d1, str[5]); HEXDIGCONV(d2, str[6]); \
+	b = (d1 << 4) | d2; \
+} while(0)
+
+static const char *color_to_hex = "0123456789abcdef";
+#define TOHEX(val) color_to_hex[(val) & 0x0F]
+
+#define SETCLR(str, r, g, b) \
+do { \
+	str[0] = '#'; \
+	str[1] = TOHEX((unsigned int)r >> 4); \
+	str[2] = TOHEX((unsigned int)r); \
+	str[3] = TOHEX((unsigned int)g >> 4); \
+	str[4] = TOHEX((unsigned int)g); \
+	str[5] = TOHEX((unsigned int)b >> 4); \
+	str[6] = TOHEX((unsigned int)b); \
+} while(0)
+
+static const char *svg_color(rnd_svg_t *pctx, rnd_hid_gc_t gc)
 {
-	return gc->color;
+	int r, g, b;
+	double avg;
+	static char tmp[16];
+
+	switch(pctx->colorspace) {
+		case RNDSVG_COLOR:
+			return gc->color;
+		case RNDSVG_GRAYSCALE:
+			GETCLR(r, g, b, gc->color);
+			avg = sqrt(r*r + g*g + b*b);
+			r = (int)avg * 0.578;
+			if (r > 255)
+				r = 255;
+			SETCLR(tmp, avg, avg, avg);
+			return tmp;
+		case RNDSVG_BLACKWHITE:
+			GETCLR(r, g, b, gc->color);
+			avg = sqrt(r*r + g*g + b*b);
+			if (avg > 220)
+				return "#FFFFFF";
+			return "#000000";
+	}
+	abort();
 }
 
 static const char *svg_clip_color(rnd_svg_t *pctx, rnd_hid_gc_t gc)
@@ -381,7 +437,7 @@ static void draw_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coor
 
 	indent(pctx, &pctx->snormal);
 	rnd_append_printf(&pctx->snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
-		x1, y1, w, h, stroke, svg_color(gc), CAPS(gc->cap));
+		x1, y1, w, h, stroke, svg_color(pctx, gc), CAPS(gc->cap));
 	if (clip_color != NULL) {
 		indent(pctx, &pctx->sclip);
 		rnd_append_printf(&pctx->sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
@@ -416,7 +472,7 @@ static void draw_fill_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd
 	else {
 		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-			x1, y1, w, h, svg_color(gc));
+			x1, y1, w, h, svg_color(pctx, gc));
 	}
 	if (clip_color != NULL)
 		rnd_append_printf(&pctx->sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
@@ -451,7 +507,7 @@ static void round_cap_line_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1
 	else {
 		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
-			x1, y1, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
+			x1, y1, x2, y2, gc->width, svg_color(pctx, gc), CAPS(gc->cap));
 	}
 	if (clip_color != NULL) {
 		rnd_append_printf(&pctx->sclip, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
@@ -487,7 +543,7 @@ static void round_cap_arc_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1,
 	else {
 		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
-			x1, y1, r, r, large, sweep, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
+			x1, y1, r, r, large, sweep, x2, y2, gc->width, svg_color(pctx, gc), CAPS(gc->cap));
 	}
 	if (clip_color != NULL)
 		rnd_append_printf(&pctx->sclip, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
@@ -588,7 +644,7 @@ static void draw_fill_circle(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, r
 	else{
 		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
-			cx, cy, r, stroke, svg_color(gc));
+			cx, cy, r, stroke, svg_color(pctx, gc));
 	}
 	if (clip_color != NULL)
 		rnd_append_printf(&pctx->sclip, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
@@ -632,7 +688,7 @@ void rnd_svg_fill_polygon_offs(rnd_svg_t *pctx, rnd_hid_gc_t gc, int n_coords, r
 		draw_poly(pctx, &pctx->snormal, gc, n_coords, x, y, dx, dy, photo_palette[rnd_svg_photo_color].normal);
 	}
 	else
-		draw_poly(pctx, &pctx->snormal, gc, n_coords, x, y, dx, dy, svg_color(gc));
+		draw_poly(pctx, &pctx->snormal, gc, n_coords, x, y, dx, dy, svg_color(pctx, gc));
 
 	if (clip_color != NULL)
 		draw_poly(pctx, &pctx->sclip, gc, n_coords, x, y, dx, dy, clip_color);
