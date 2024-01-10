@@ -41,6 +41,7 @@ int rnd_hidlib_conf_init()
 
 	/* historical default value for gtk */
 	*(rnd_coord_t *)&rnd_conf.editor.min_zoom = 200;
+	*(RND_CFT_BOOLEAN *)&rnd_conf.editor.unlimited_pan = 0;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(rnd_conf, field,isarray,type_name,cpath,cname,desc,flags);

@@ -108,6 +108,7 @@ typedef struct {
 		} global_grid;
 
 		RND_CFT_COORD min_zoom;                /* minimum GUI zoom in coord-per-pixel - controls how deep the user can zoom in; needs to be set before startup */
+		RND_CFT_BOOLEAN unlimited_pan;         /* if set, do not limit pan to around the drawing area */
 	} editor;
 } rnd_conf_t;
 
