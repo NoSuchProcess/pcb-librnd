@@ -39,6 +39,9 @@ int rnd_hidlib_conf_init()
 {
 	int cnt = 0;
 
+	/* historical default value for gtk */
+	*(rnd_coord_t *)&rnd_conf.editor.min_zoom = 200;
+
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(rnd_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include <librnd/core/hidlib_conf_fields.h>

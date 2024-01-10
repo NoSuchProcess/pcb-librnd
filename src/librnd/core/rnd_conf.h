@@ -107,6 +107,7 @@ typedef struct {
 			RND_CFT_BOOLEAN sparse;              /* enable drawing sparse grid: when zoomed out beyond min_dist_px draw every 2nd, 4th, 8th, etc. grid point; if disabled the grid is turned off when it'd get too dense */
 		} global_grid;
 
+		RND_CFT_COORD min_zoom;                /* minimum GUI zoom in coord-per-pixel - controls how deep the user can zoom in; needs to be set before startup */
 	} editor;
 } rnd_conf_t;
 
