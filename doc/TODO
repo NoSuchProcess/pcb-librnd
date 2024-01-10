@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- API extensions (4.2.0)
 		- optional pixmap export (osm-rnd): bitmap object export in png, ps, eps, svg
-		- action to pop up the log window (for osm-rnd)
 	- polybool:
 		- fixedy4,fixedy5: undetected selfisc
 		- gixedk3: assert in label because isc points on the hole are too close near 455;969
