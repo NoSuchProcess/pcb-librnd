@@ -150,6 +150,7 @@ void rnd_lpr_uninit(void)
 {
 	rnd_hid_remove_hid(&lpr_hid);
 	free(lpr_hid.argument_array);
+	free(lpr_options);
 	lpr_hid.argument_array = NULL;
 }
 
