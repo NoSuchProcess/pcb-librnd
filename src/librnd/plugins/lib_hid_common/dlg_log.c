@@ -244,6 +244,15 @@ static void log_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd
 	}
 }
 
+static void log_main_loop_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	int in_ml = argv[1].d.i;
+
+	/* disable the gui if we have left the main loop */
+	if (!in_ml)
+		log_ctx.gui_inited = 0;
+}
+
 
 void rnd_dlg_log_uninit(void)
 {
@@ -255,4 +264,5 @@ void rnd_dlg_log_init(void)
 	rnd_event_bind(RND_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
 	rnd_event_bind(RND_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, log_gui_init_ev, NULL, log_cookie);
+	rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, log_main_loop_ev, NULL, log_cookie);
 }
