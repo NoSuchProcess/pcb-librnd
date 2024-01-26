@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017, 2018, 2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017, 2018, 2021, 2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ void rnd_hid_announce_gui_init(rnd_design_t *hidlib)
 static const char *grid_cookie = "lib_hid_common/grid";
 static const char *lead_cookie = "lib_hid_common/user_lead";
 static const char *wplc_cookie = "lib_hid_common/window_placement";
+static const char *dlg_cookie  = "lib_hid_common/dialogs";
 
 extern void rnd_dad_spin_update_global_coords(void);
 static void grid_unit_chg_ev(rnd_conf_native_t *cfg, int arr_idx, void *user_data)
@@ -126,6 +127,7 @@ void pplg_uninit_lib_hid_common(void)
 	rnd_event_unbind_allcookie(grid_cookie);
 	rnd_event_unbind_allcookie(lead_cookie);
 	rnd_event_unbind_allcookie(wplc_cookie);
+	rnd_event_unbind_allcookie(dlg_cookie);
 	rnd_conf_hid_unreg(grid_cookie);
 	rnd_dialog_place_uninit();
 	rnd_remove_actions_by_cookie(hid_common_cookie);
@@ -161,6 +163,7 @@ int pplg_init_lib_hid_common(void)
 	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, rnd_lead_user_draw_ev, NULL, lead_cookie);
 	rnd_event_bind(RND_EVENT_DAD_NEW_DIALOG, rnd_dialog_place, NULL, wplc_cookie);
 	rnd_event_bind(RND_EVENT_DAD_NEW_GEO, rnd_dialog_resize, NULL, wplc_cookie);
+	rnd_event_bind(RND_EVENT_DESIGN_SET_CURRENT, rnd_dialog_export_close, NULL, dlg_cookie);
 
 	conf_id = rnd_conf_hid_reg(grid_cookie, NULL);
 

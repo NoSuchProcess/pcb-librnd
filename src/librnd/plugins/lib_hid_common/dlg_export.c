@@ -271,3 +271,10 @@ fgw_error_t rnd_act_PrintDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+void rnd_dialog_export_close(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if (export_ctx.active) {
+		rnd_dad_retovr_t retovr;
+		rnd_hid_dad_close(export_ctx.dlg_hid_ctx, &retovr, 3);
+	}
+}
