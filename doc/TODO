@@ -20,6 +20,7 @@
 		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
+	- BUG: shift+arrow key in act_Cursor() does strante things both in pcb-rnd and sch-rnd [report: Vuokko]
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
 		- plugins are all loaded and initialied but permascripts are loaded only in interactive main loop
