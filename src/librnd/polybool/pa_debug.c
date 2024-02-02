@@ -150,18 +150,18 @@ DEBUGP("%.09f", a);
 #endif
 
 #if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
-RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
+RND_INLINE void pa_debug_print_cvc_(pa_conn_desc_t *head, const char *ind)
 {
 	pa_conn_desc_t *n = head;
 
-	DEBUGP("CVC:\n");
+	DEBUGP("%sCVC:\n", ind);
 	if (n == NULL) {
-		DEBUGP(" (empty cvc)\n");
+		DEBUGP("%s (empty cvc)\n", ind);
 		return;
 	}
 
 	do {
-		DEBUGP(" %c %c ", n->poly, n->side);
+		DEBUGP("%s %c %c ", ind, n->poly, n->side);
 		pa_debug_print_angle(n->angle);
 		pa_debug_print_vnode_coord(n->parent);
 		if (n->side == 'N') {
@@ -174,6 +174,12 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
 		}
 	} while((n = n->next) != head);
 }
+
+RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *head)
+{
+	pa_debug_print_cvc_(head, "");
+}
+
 #else
 RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
 #endif
@@ -213,23 +219,30 @@ typedef enum { /* bitfield of extra info the dump should contain */
 
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP
 
-RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n)
+RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n, pa_debug_dump_extra_t extra)
 {
 #ifdef PA_BIGCOORD_ISC
 	if (n->cvclst_next != NULL) {
 		fprintf(f, "   %.012f %.012f\n", pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y));
-		return;
+		if (extra & PA_DBG_DUMP_CVC) {
+			pa_debug_print_cvc_(n->cvclst_next, "    ");
+		}
 	}
 #endif
 	fprintf(f, "   %ld %ld\n", (long)n->point[0], (long)n->point[1]);
 }
 
+RND_INLINE void pa_debug_dump_pline_from(FILE *f, rnd_vnode_t *v, pa_debug_dump_extra_t extra)
+{
+	rnd_vnode_t *start = v;
+	do {
+		pa_debug_dump_vnode_coord(f, v, extra);
+	} while((v = v->next) != start);
+}
+
 RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extra_t extra)
 {
-	rnd_vnode_t *v = pl->head;
-	do {
-		pa_debug_dump_vnode_coord(f, v);
-	} while((v = v->next) != pl->head);
+	pa_debug_dump_pline_from(f, pl->head, extra);
 }
 
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
