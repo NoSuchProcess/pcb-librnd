@@ -223,7 +223,13 @@ RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n, pa_debug_dump
 {
 #ifdef PA_BIGCOORD_ISC
 	if (n->cvclst_next != NULL) {
-		fprintf(f, "   %.012f %.012f\n", pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y));
+		int i;
+
+		fprintf(f, "   %.012f %.012f (x=", pa_big_double(n->cvclst_next->isc.x), pa_big_double(n->cvclst_next->isc.y));
+			for(i = 0; i < PA_BIGCRD_WIDTH; i++) fprintf(f, "%ld ", (long)n->cvclst_next->isc.x[i]);
+			fprintf(f, "y=");
+			for(i = 0; i < PA_BIGCRD_WIDTH; i++) fprintf(f, "%ld ", (long)n->cvclst_next->isc.y[i]);
+		fprintf(f, ")\n");
 		if (extra & PA_DBG_DUMP_CVC) {
 			pa_debug_print_cvc_(n->cvclst_next, "    ");
 		}
