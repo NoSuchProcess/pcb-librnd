@@ -188,9 +188,22 @@ RND_INLINE void pa_debug_print_cvc(pa_conn_desc_t *conn_list) {}
 RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, pa_big_vector_t isc1, pa_big_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
 {
 #ifdef PA_BIGCOORD_ISC
+	int i;
 	DEBUGP("ISC %s: %.03f;%.03f..%.03f;%.03f and %.03f;%.03f..%.03f;%.03f\n", name, pa_big_vnxd(a1), pa_big_vnyd(a1), pa_big_vnxd(a2), pa_big_vnyd(a2), pa_big_vnxd(b1), pa_big_vnyd(b1), pa_big_vnxd(b2), pa_big_vnyd(b2));
-	if (num_isc > 0) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc1.x), pa_big_double(isc1.y));
-	if (num_isc > 1) DEBUGP(" %.03f;%.03f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
+	if (num_isc > 0) {
+		DEBUGP(" %.03f;%.03f (x=", pa_big_double(isc1.x), pa_big_double(isc1.y));
+		for(i = 0; i < PA_BIGCRD_WIDTH; i++) DEBUGP("%ld ", (long)isc1.x[i]);
+		DEBUGP("y=");
+		for(i = 0; i < PA_BIGCRD_WIDTH; i++) DEBUGP("%ld ", (long)isc1.y[i]);
+		DEBUGP(")\n");
+	}
+	if (num_isc > 1) {
+		DEBUGP(" %.03f;%.03f (x=", pa_big_double(isc2.x), pa_big_double(isc2.y));
+		for(i = 0; i < PA_BIGCRD_WIDTH; i++) DEBUGP("%ld ", (long)isc2.x[i]);
+		DEBUGP("y=");
+		for(i = 0; i < PA_BIGCRD_WIDTH; i++) DEBUGP("%ld ", (long)isc2.y[i]);
+		DEBUGP(")\n");
+	}
 #else
 	DEBUGP("ISC %s: %$mD..%$mD and %$mD..%$mD\n", name, a1->point[0], a1->point[1], a2->point[0], a2->point[1], b1->point[0], b1->point[1], b2->point[0], b2->point[1]);
 	if (num_isc > 0) DEBUGP(" %$mD\n", isc1[0], isc1[1]);
@@ -242,6 +255,10 @@ RND_INLINE void pa_debug_dump_pline_from(FILE *f, rnd_vnode_t *v, pa_debug_dump_
 {
 	rnd_vnode_t *start = v;
 	do {
+		if (v == NULL) {
+			fprintf(f, "   <NULL>\n");
+			break;
+		}
 		pa_debug_dump_vnode_coord(f, v, extra);
 	} while((v = v->next) != start);
 }
