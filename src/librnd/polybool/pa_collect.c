@@ -150,6 +150,9 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 		pa_direction_t newdir = *cdir;
 		rnd_vnode_t *e = d->parent;
 
+		if (d->ignore) /* skip over stubs */
+			continue;
+
 		if (d->side == 'P')
 			e = e->prev;
 

@@ -77,6 +77,7 @@ struct pa_conn_desc_s {
 	char side;                           /* 'P' for previous 'N' for next (the other endpoint of edge of interest from ->parent) */
 	pa_big_vector_t isc;                 /* (precise) coords of the intersection */
 	unsigned prelim:1;                   /* preliminary allocation: isc is set but other fields are blank */
+	unsigned ignore:1;                   /* do not consider this when jumping to the next/prev cvc - e.g. this is a stub */
 
 	rnd_vnode_t *PP_OTHER;               /* used only in big_postproc to link point-point overlap nodes */
 };

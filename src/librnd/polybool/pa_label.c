@@ -53,10 +53,16 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 	   for shared edges (that could be prev or next in the list since the
 	   angles are equal) and check if this edge (pn -> pn->next) is found
 	   between the other poly's entry and exit */
-	if (pa_angle_equ(pn->cvclst_next->angle, pn->cvclst_next->prev->angle))
+	if (pa_angle_equ(pn->cvclst_next->angle, pn->cvclst_next->prev->angle)) {
 		l = pn->cvclst_next->prev;
-	else
+		while(l->ignore) /* skip over stubs */
+			l = l->prev;
+	}
+	else {
 		l = pn->cvclst_next->next;
+		while(l->ignore) /* skip over stubs */
+			l = l->next;
+	}
 
 	for(l1 = l; (l->poly == this_poly) && (l != l1->prev); l = l->next) ;
 

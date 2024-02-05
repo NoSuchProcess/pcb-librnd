@@ -186,6 +186,54 @@ static pa_conn_desc_t *pa_polyarea_list_intersected(jmp_buf *e, pa_conn_desc_t *
 	return conn_list;
 }
 
+/* Corner case: if a sloped line of polygon B crosses a triangular double-slope
+   of polygon A very close to the corner of A, it may yield a short stub of
+   A. Example case: gixedk at point 'o' at 331.9999;471:
+
+               329;454
+                 |B
+                 |
+              A  |
+    319;475  ----o------x 332;471
+                /|    A
+              /  |B
+            /A   |
+      331;477    333.03;476.83
+
+   In collect we are coming from 331;477 and should leave toward 319;475.
+   This doesnt happen if the stub between o and x exists because then pa_label
+   will think the upper B segment is outside.
+
+   When a stub detected, mark both cvcs to be ignored and whenever the code
+   needs to iterate around the cvcs of a point, skip over ignored cvcs.
+*/
+
+static void pa_conn_list_remove_stubs(pa_conn_desc_t **head)
+{
+	pa_conn_desc_t *n = *head, *n2, *next;
+
+	if ((n == NULL) || (n == n->next))
+		return;
+
+	do {
+		next = n->next;
+
+		/* a stub has two edges of the same poly in the same direction... */
+		if ((n->poly == n->next->poly) && pa_angle_equ(n, n->next)) {
+			rnd_vnode_t *remote_curr, *remote_next;
+
+			n2 = n->next;
+
+			remote_curr = n->side == 'N' ? n->parent->next : n->parent->prev;
+			remote_next = n2->side == 'N' ? n2->parent->next : n2->parent->prev;
+
+			/* ...reaching the same remote node */
+			if (remote_curr == remote_next)
+				n->ignore = n2->ignore = 1; /* ignore this stub */
+		}
+	} while((n = next) != *head);
+}
+
 /* Compute intersections between all islands of pa_a and pa_b. If all_iscs is
    true, collect and label all intersections, else stop after the first
    (usefule if only the fact of the intersection is interesting) */
@@ -218,6 +266,7 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 	/* add all intersections of all of pa_a's islands to the conn list */
 	do {
 		conn_list = pa_polyarea_list_intersected(e, conn_list, a, 'A');
+		pa_conn_list_remove_stubs(&conn_list);
 		pa_debug_print_cvc(conn_list);
 	} while (all_iscs && ((a = a->f) != pa_a));
 
