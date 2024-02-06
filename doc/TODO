@@ -2,7 +2,7 @@
 	- API extensions (4.2.0)
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
-		- fixedy4,fixedy5: undetected selfisc
+		- fixedy4,fixedy5,fixedy6: undetected selfisc on input (fixedy6 is the simplest)
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
