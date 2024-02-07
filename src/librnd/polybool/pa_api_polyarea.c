@@ -198,6 +198,22 @@ rnd_bool rnd_polyarea_island_isc(const rnd_polyarea_t *a, const rnd_polyarea_t *
 		}
 	} while((n = n->next) != pla->head);
 
+	/* check each outline vertex of plb whether it is inside of pla; if any is
+	   inside, plb is either inside pla or intersects pla */
+	n = plb->head;
+	do {
+		if (pa_pline_is_vnode_inside(pla, n, 0)) {
+			int r = pa_polyarea_pline_island_isc(b, plb);
+			switch(r) {
+				case PA_ISLAND_ISC_IN:    return 0; /* plb island is fully in an island of pla -> no intersection possible */
+				case PA_ISLAND_ISC_OUT:   return 1; /* plb island is fully outside of any island of pla -> it is in the solid area */
+				case PA_ISLAND_ISC_CROSS: return 1; /* crossing an island boundary means some points are inside the solid */
+			}
+			assert("!invalid return by pa_polyarea_is_vnode_island_isc()");
+			return 1;
+		}
+	} while((n = n->next) != plb->head);
+
 	return 0; /* no intersections */
 }
 
