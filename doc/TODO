@@ -3,6 +3,8 @@
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
 		- self touching input: fixedy5, fixedy7
+		- gixedm4: emits stub
+		- gixedn: self-isc(?) breaks output on the left 'a' poly
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
