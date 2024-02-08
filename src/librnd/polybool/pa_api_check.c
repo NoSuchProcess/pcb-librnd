@@ -206,6 +206,23 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 	a1 = a->head;
 	do {
 		a2 = a1;
+
+		/* Stubs are invalid; see test case gixedm*; first the cheap test: full overlap */
+		if ((a1->prev->point[0] == a1->next->point[0]) && (a1->prev->point[1] == a1->next->point[1])) {
+			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+			return PA_CHK_ERROR(res, "lines overlap at stub %mm;%mm (full)", a1->point[0], a1->point[1]);
+		}
+
+#ifdef PA_BIGCOORD_ISC
+		/* More expensive test: partly overlapping adjacent lines */
+		if (pa_big_is_node_on_line(a1->next, a1, a1->prev) || pa_big_is_node_on_line(a1->prev, a1, a1->next)) {
+			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+			return PA_CHK_ERROR(res, "lines overlap at stub %mm;%mm (partial)", a1->point[0], a1->point[1]);
+		}
+#endif
+
 		do {
 
 			/* count invalid intersections */
