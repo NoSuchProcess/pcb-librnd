@@ -3,7 +3,7 @@
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
 		- self touching input: fixedy5, fixedy7
-		- gixedn: emits stub (undetected risk)
+		- gixedn2: wrongly classified as stub?
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
