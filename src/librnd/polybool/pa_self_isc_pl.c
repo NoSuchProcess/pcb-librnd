@@ -401,9 +401,21 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 /* Collect the outline, largest area possible; remember islands cut off */
 RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
 {
-	rnd_vnode_t *n, *last, *newn;
+	rnd_vnode_t *n, *last, *newn, *stop_at = NULL;
 	rnd_pline_t *dst;
 	char dir = 'N';
+
+	/* Corner case: 'start' may be at the end of a stub, see test case gixedm4.
+	   Detection: next node has a cvc and the previous and next nodes are at
+	   the same place, so there are two overlapping lines from and to 'start'.
+	   In this case start from the next point and when we reach prev simply
+	   stop so that this stub is excluded. Other stubs are safely discarded by
+	   pa_selfisc_next_o()
+	   */
+	if ((start->next->cvclst_next != NULL) && pa_vnode_equ(start->prev, start->next)) {
+		stop_at = start;
+		start = start->next;
+	}
 
 	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 	start->flg.mark = 1;
@@ -417,7 +429,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 	/* collect a closed loop */
 	last = dst->head;
-	for(n = pa_selfisc_next_o(start, &dir); (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir)) {
+	for(n = pa_selfisc_next_o(start, &dir); (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_o(n, &dir)) {
 		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -546,15 +558,22 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 {
 	int accept_pol = 0, has_selfisc = 0;
 	char dir = 'N';
-	rnd_vnode_t *n, *newn, *last, *started = NULL;
+	rnd_vnode_t *n, *newn, *last, *started = NULL, *stop_at = NULL;
 	rnd_pline_t *dst;
+
+	/* corner case workaround; see above at gixedm4 */
+	if ((start->next->cvclst_next != NULL) && pa_vnode_equ(start->prev, start->next)) {
+		stop_at = start;
+		start = start->next;
+	}
+
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
-	for(n = pa_selfisc_next_i(start, &dir, &started, NULL); (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started)) {
+	for(n = pa_selfisc_next_i(start, &dir, &started, NULL); (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_i(n, &dir, 0, started)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
