@@ -3,7 +3,6 @@
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
 		- self touching input: fixedy5, fixedy7
-		- gixedm4: emits stub (selfisc iterator start corner case)
 		- gixedn: emits stub (undetected risk)
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
