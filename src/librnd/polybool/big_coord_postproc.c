@@ -190,6 +190,33 @@ static int seg_too_short(rnd_vnode_t *a, rnd_vnode_t *b)
 	return rnd_vect_dist2(a->point, b->point) <= 2.0;
 }
 
+RND_INLINE int seg_is_stub(rnd_vnode_t *edge1, rnd_vnode_t *edge2, rnd_vnode_t *pt)
+{
+	int res;
+
+	if ((pt->point[0] == edge1->point[0]) && (pt->point[1] == edge1->point[1]))
+		return 0;
+	if ((pt->point[0] == edge2->point[0]) && (pt->point[1] == edge2->point[1]))
+		return 0;
+
+	/* Corner case: test case gixedn: the overlap is created by a drift on
+	   the north end of the bottom-left vertical edge. This drags the middle
+	   of the edge onto the point 762;846. This is not detected because 762;846
+	   is not marked risky. Solution: check if the next point (pt) after this
+	   segment (edge1..edge2) falls on the edge; if it does, we do have a new
+	   stub */
+	res = pa_big_is_node_on_line(pt, edge1, edge2);
+
+	if (res) { /* need to create a node at the intersection for cvc in selfisc */
+		rnd_vnode_t *new_node = rnd_poly_node_create(pt->point);
+		rnd_poly_vertex_include_force(edge1, new_node);
+	}
+
+/*	rnd_trace("STUB CHECK for %ld;%ld: %d\n", pt->point[0], pt->point[1], res);*/
+	
+	return res;
+}
+
 /* Check each vertex in pl: if it is risky, check if there's any intersection
    on the incoming or outgoing edge of that vertex. If there is, stop and
    return 1, otherwise return 0. */
@@ -217,6 +244,11 @@ rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->poin
 				   Skip this test if we are called back from the selfisc code through
 				   bool algebra: could send us into infinite loop, see test case fixedz */
 				rnd_trace("  segment too short next to a rounded corner! Shedule selfi-resolve\n");
+				res = 1;
+			}
+			else if (!res && (seg_is_stub(v->prev, v, v->prev->prev) || seg_is_stub(v, v->next, v->next->next))) {
+				/* see description in seg_is_stub */
+				rnd_trace("  segment deflected into a stub! Shedule selfi-resolve\n");
 				res = 1;
 			}
 			else if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
