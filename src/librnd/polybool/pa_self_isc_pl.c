@@ -414,6 +414,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	   */
 	if ((start->next->cvclst_next != NULL) && pa_vnode_equ(start->prev, start->next)) {
 		stop_at = start;
+		start->flg.mark = 1; /* don't start at this node */
 		start = start->next;
 	}
 
@@ -429,7 +430,12 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 	/* collect a closed loop */
 	last = dst->head;
-	for(n = pa_selfisc_next_o(start, &dir); (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_o(n, &dir)) {
+
+	n = pa_selfisc_next_o(start, &dir);
+	if (stop_at != NULL)
+		stop_at->flg.mark = 0; /* allow reaching the stop-node */
+
+	for(; (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_o(n, &dir)) {
 		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -564,6 +570,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	/* corner case workaround; see above at gixedm4 */
 	if ((start->next->cvclst_next != NULL) && pa_vnode_equ(start->prev, start->next)) {
 		stop_at = start;
+		start->flg.mark = 1; /* don't start at this node */
 		start = start->next;
 	}
 
@@ -573,7 +580,10 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
-	for(n = pa_selfisc_next_i(start, &dir, &started, NULL); (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_i(n, &dir, 0, started)) {
+	n = pa_selfisc_next_i(start, &dir, &started, NULL);
+	if (stop_at != NULL)
+		stop_at->flg.mark = 0; /* allow reaching the stop-node */
+	for(; (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_i(n, &dir, 0, started)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
