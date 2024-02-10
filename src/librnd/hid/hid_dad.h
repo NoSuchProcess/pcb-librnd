@@ -74,7 +74,7 @@ typedef struct {
 } rnd_hid_text_t;
 
 
-typedef struct {
+typedef struct rnd_hid_row_s {
 	int cols;        /* number of columns used by this node (allocation size) */
 	void *hid_data;  /* the hid running the widget can use this field to store a custom pointer per row */
 	gdl_list_t children;
