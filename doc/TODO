@@ -4,6 +4,7 @@
 	- polybool:
 		- self touching input: fixedy5, fixedy7
 		- inf loop: gixedo
+		- selfisc getting stuck: gixedp
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
