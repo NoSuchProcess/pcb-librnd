@@ -2,8 +2,8 @@
 	- API extensions (4.2.0)
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
-		- self touching input: fixedy5, fixedy7
-		- inf loop: gixedo
+		- self touching input: fixedy5, fixedy7, fixedy8
+		- inf loop: gixedo, gixedo2
 		- selfisc getting stuck: gixedp
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
