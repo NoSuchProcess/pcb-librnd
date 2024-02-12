@@ -328,8 +328,11 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = pt[1] + 1;
 
+rnd_trace("TRACE from %ld %ld\n", pt[0], pt[1]);
+
 	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
 
+rnd_trace(" fin: %d\n", ctx.f);
 	return ctx.f;
 }
 
@@ -472,6 +475,21 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	if (!pa_pline_is_point_inside(outer, inner->head->point))
 		return 0;
 #endif
+
+	/* pa_pline_interior_pt() tends to fail for tiny polygons because of the
+	   constraint that it needs to pick an integer point: if the poly is a
+	   very small triangle, the "inner" point typically falls slightly outside.
+	   Do a slower but more reliable check corner by corner.
+	   Related test case: gixedo */
+	if (inner->area < 3) {
+		rnd_vnode_t *n = inner->head;
+		do {
+			int r = pa_pline_is_point_inside(outer, n->point);
+			if (!r)
+				return 0;
+		} while((n = n->next) != inner->head);
+		return 1;
+	}
 
 	/* ...but that may still be only a shared point while the rest of inner
 	   is simply all outside. Since they are not intersecting if a random
