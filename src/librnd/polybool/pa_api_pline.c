@@ -328,11 +328,8 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = pt[1] + 1;
 
-rnd_trace("TRACE from %ld %ld\n", pt[0], pt[1]);
-
 	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
 
-rnd_trace(" fin: %d\n", ctx.f);
 	return ctx.f;
 }
 
