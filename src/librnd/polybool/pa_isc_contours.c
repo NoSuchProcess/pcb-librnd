@@ -312,6 +312,27 @@ int pa_cvc_crossing_at_node(rnd_vnode_t *nd)
 		);*/
 
 	if ((cn->parent != nd) && (cp->parent != nd)) {
+		if (cn->parent != cp->parent) {
+			/* Special case: test case gixedo2 around 152;626:
+			          144;616
+			          +,
+			            \
+			   me        '\
+			   92;650      '-----+ 155;627
+			   +-----------+-----+ 154;628
+			              /'\
+			            /'   '\
+			          +'       '+
+			      141;644      155;632
+			
+			   The check is coming from 92;65 and figures 155;627 and 155;632->*
+			   are the next and prev incoming nodes into this CVC. This looks like
+			   a crossing because they are on different * point than 'me'. However
+			   they are not on the same different path, so that path is not crossing
+			   'me'. */
+			return 0;
+		}
+		
 		/* if either neighbour is our own node, that means we could proceed that
 		   way from this crossing, which means it's a >< topology. If both
 		   neighbours are some other node's cvc, we are in a X crossing, going
