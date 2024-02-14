@@ -398,18 +398,10 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	abort();
 }
 
-/* Collect the outline, largest area possible; remember islands cut off */
-RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
-{
-	rnd_vnode_t *n, *last, *newn, *stop_at = NULL, *sprev;
-	rnd_pline_t *dst;
-	char dir = 'N';
-
-	/* Corner case: 'start' may be at the end of a stub, see test case gixedm4.
-	   Detection: next node has a cvc and the previous and next nodes are at
+/* Stub detection: next node has a cvc and the previous and next nodes are at
 	   the same place, so there are two overlapping lines from and to 'start'.
 	   In this case start from the next point and when we reach prev simply
-	   stop so that this stub is excluded. 
+	   stop so that this stub is excluded.
 	
 	   This needs to be done in a loop because there may be a chain of stubs
 	   (and we are starting from the far end), see gixedm5:
@@ -427,14 +419,42 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	
 	   Other stubs elsewhere on the loop are safely discarded by
 	   pa_selfisc_next_o(), this affects the starting point only.
+*/
+RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vnode_t **stop_at)
+{
+	if (((*start)->next->cvclst_next != NULL) && pa_vnode_equ(*sprev, (*start)->next)) {
+		*stop_at = *sprev;
+		(*start)->flg.mark = 1; /* don't start at this node */
+		*start = (*start)->next;
+		*sprev = (*sprev)->prev;
+		return 1;
+	}
+
+	/* Special case: gixedm6: if there's a longer chain the last-minus-1st node
+	   won't look like a stub because the last node of the stub has empty cvc */
+	if (((*start)->cvclst_next != NULL) && ((*start)->next->cvclst_next == NULL) && pa_vnode_equ(*start, (*start)->next->next)) {
+		/* jump onto the next node, assuming it's the end of the stub */
+		(*start)->flg.mark = 1; /* don't start at this node */
+		*start = (*start)->next;
+		*sprev = (*start)->prev;
+		*stop_at = *sprev;
+		return 1;
+	}
+
+	return 0;
+}
+
+/* Collect the outline, largest area possible; remember islands cut off */
+RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
+{
+	rnd_vnode_t *n, *last, *newn, *stop_at = NULL, *sprev;
+	rnd_pline_t *dst;
+	char dir = 'N';
+
+	/* Corner case: 'start' may be at the end of a stub, see test case gixedm4.
 	   */
 	sprev = start->prev;
-	while ((start->next->cvclst_next != NULL) && pa_vnode_equ(sprev, start->next)) {
-		stop_at = sprev;
-		start->flg.mark = 1; /* don't start at this node */
-		start = start->next;
-		sprev = sprev->prev;
-	}
+	while(is_node_in_stub(&start, &sprev, &stop_at)) ;
 
 	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 	start->flg.mark = 1;
@@ -587,13 +607,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 
 	/* corner case workaround; see above at gixedm4 */
 	sprev = start->prev;
-	while ((start->next->cvclst_next != NULL) && pa_vnode_equ(sprev, start->next)) {
-		stop_at = sprev;
-		start->flg.mark = 1; /* don't start at this node */
-		start = start->next;
-		sprev = sprev->prev;
-	}
-
+	while(is_node_in_stub(&start, &sprev, &stop_at)) ;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
