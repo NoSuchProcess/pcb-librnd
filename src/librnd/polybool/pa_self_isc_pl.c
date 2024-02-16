@@ -398,6 +398,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	abort();
 }
 
+
 /* Stub detection: next node has a cvc and the previous and next nodes are at
 	   the same place, so there are two overlapping lines from and to 'start'.
 	   In this case start from the next point and when we reach prev simply
@@ -442,6 +443,28 @@ RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vno
 	}
 
 	return 0;
+}
+
+static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
+{
+	rnd_vnode_t *n, *loop_start, *sprev, *stop_at;
+
+	rnd_trace("STUB removal\n");
+
+	/* don't start from a stub */
+	loop_start = start;
+	sprev = start->prev;
+	while(is_node_in_stub(&loop_start, &sprev, &stop_at)) ;
+
+	n = loop_start;
+	do {
+		if ((n->next->cvclst_next != NULL) && (n->prev->cvclst_next != NULL) && pa_vnode_equ(n->prev, n->next)) {
+			/* n is the endpoint of a stub */
+			rnd_trace("STUB  found endpoint at: %ld;%ld\n", n->point[0], n->point[1]);
+		}
+	} while((n = n->next) != loop_start);
+
+	return start;
 }
 
 /* Collect the outline, largest area possible; remember islands cut off */
@@ -822,6 +845,8 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
 
+	start = stub_remover(&ctx, start);
+
 	/* preserve original holes as negatives */
 	if (pl->next != NULL) {
 		posneg_append_pline(posneg, -1, pl->next);
@@ -860,6 +885,8 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 	start = split_selfisc_map(&ctx);
 	if (ctx.num_isc == 0)
 		return 0; /* no self intersection */
+
+	start = stub_remover(&ctx, start);
 
 	first_pos_null = (posneg->first_pos == NULL);
 
