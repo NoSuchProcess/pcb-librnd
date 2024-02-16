@@ -476,6 +476,8 @@ RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vno
      (39;292) 48;289 49;289 50;289 (52;289)
    offending overlapping stub is:
      (52;288) 50;289 49;289 48;289 49;289 50;289 (52;287)
+
+   This also fixed fixedm4.
 */
 static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 {
@@ -527,14 +529,9 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 /* Collect the outline, largest area possible; remember islands cut off */
 RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
 {
-	rnd_vnode_t *n, *last, *newn, *stop_at = NULL, *sprev;
+	rnd_vnode_t *n, *last, *newn;
 	rnd_pline_t *dst;
 	char dir = 'N';
-
-	/* Corner case: 'start' may be at the end of a stub, see test case gixedm4.
-	   */
-	sprev = start->prev;
-	while(is_node_in_stub(&start, &sprev, &stop_at)) ;
 
 	assert(!start->flg.mark); /* should face marked nodes only as outgoing edges of intersections */
 	start->flg.mark = 1;
@@ -550,10 +547,8 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	last = dst->head;
 
 	n = pa_selfisc_next_o(start, &dir);
-	if (stop_at != NULL)
-		stop_at->flg.mark = 0; /* allow reaching the stop-node */
 
-	for(; (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_o(n, &dir)) {
+	for(; (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir)) {
 		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -682,12 +677,8 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 {
 	int accept_pol = 0, has_selfisc = 0;
 	char dir = 'N';
-	rnd_vnode_t *n, *newn, *last, *started = NULL, *stop_at = NULL, *sprev;
+	rnd_vnode_t *n, *newn, *last, *started = NULL;
 	rnd_pline_t *dst;
-
-	/* corner case workaround; see above at gixedm4 */
-	sprev = start->prev;
-	while(is_node_in_stub(&start, &sprev, &stop_at)) ;
 
 	dst = pa_pline_new(start->point);
 	last = dst->head;
@@ -695,9 +686,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
 	n = pa_selfisc_next_i(start, &dir, &started, NULL);
-	if (stop_at != NULL)
-		stop_at->flg.mark = 0; /* allow reaching the stop-node */
-	for(; (n != start) && (n != NULL) && (n != stop_at); n = pa_selfisc_next_i(n, &dir, 0, started)) {
+	for(; (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
