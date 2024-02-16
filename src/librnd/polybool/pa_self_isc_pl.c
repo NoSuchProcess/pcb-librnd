@@ -477,6 +477,8 @@ RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vno
    offending overlapping stub is:
      (52;288) 50;289 49;289 48;289 49;289 50;289 (52;287)
 
+   A simpler test case is si_class6
+
    This also fixed fixedm4.
 */
 static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
