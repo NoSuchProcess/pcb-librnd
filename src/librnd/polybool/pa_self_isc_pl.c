@@ -37,6 +37,29 @@ typedef struct {
 	rnd_pline_t *neg_head, *neg_tail;
 } pa_posneg_t;
 
+static void pl_remove_cvcs(rnd_pline_t *pl, rnd_bool rebuild_tree)
+{
+	rnd_vnode_t *n = pl->head;
+
+	do {
+		if (n->cvclst_prev != NULL) {
+			free(n->cvclst_prev);
+			free(n->cvclst_next);
+			n->cvclst_prev = n->cvclst_next = NULL;
+			/* no need to unlink, all cvcs are free'd here */
+		}
+
+		n->shared = NULL;
+		n->flg.mark = n->flg.start = 0;
+	} while((n = n->next) != pl->head);
+
+	if (rebuild_tree) {
+		rnd_r_free_tree_data(pl->tree, free);
+		rnd_r_destroy_tree(&pl->tree);
+		pl->tree = rnd_poly_make_edge_tree(pl);
+	}
+}
+
 static void posneg_append_pline(pa_posneg_t *posneg, int polarity, rnd_pline_t *pl)
 {
 	assert(pl != NULL);
@@ -445,11 +468,20 @@ RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vno
 	return 0;
 }
 
+/* Stubs have to be removed before outline collection because a stub can
+   overlap a legit edge that needs to be kept. This is done in this
+   preprocessing step. The function returns start or NULL. When NULL is
+   returned, the polyline has been modified and needs to be re-mapped.
+   Related test case: gixedp; legit edge is:
+     (39;292) 48;289 49;289 50;289 (52;289)
+   offending overlapping stub is:
+     (52;288) 50;289 49;289 48;289 49;289 50;289 (52;287)
+*/
 static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 {
-	rnd_vnode_t *n, *loop_start, *sprev, *stop_at;
+	rnd_vnode_t *n, *loop_start, *sprev, *stop_at, *next;
 
-	rnd_trace("STUB removal\n");
+/*	rnd_trace("STUB removal\n");*/
 
 	/* don't start from a stub */
 	loop_start = start;
@@ -458,11 +490,36 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 
 	n = loop_start;
 	do {
+		bypass_restart:;
+		next = n->next;
 		if ((n->next->cvclst_next != NULL) && (n->prev->cvclst_next != NULL) && pa_vnode_equ(n->prev, n->next)) {
+			pa_conn_desc_t *c1, *c2;
+
 			/* n is the endpoint of a stub */
-			rnd_trace("STUB  found endpoint at: %ld;%ld\n", n->point[0], n->point[1]);
+/*			rnd_trace("STUB  found endpoint at: %ld;%ld prev=%ld;%ld next=%ld;%ld\n", n->point[0], n->point[1], n->prev->point[0], n->prev->point[1], n->next->point[0], n->next->point[1]);*/
+
+			if (n == start)
+				start = n->next;
+
+/*rnd_trace("    stub removal1: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+			rnd_poly_vertex_exclude(ctx->pl, n);
+
+			/* now we have two points at the new stub endpoint: next and next->prev;
+			   Remove one of them. */
+			n = next;
+			next = n->prev;
+/*rnd_trace("    stub removal2: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+			rnd_poly_vertex_exclude(ctx->pl, n);
+
+			start = NULL;
+
+			if (n == loop_start) {
+				loop_start = next;
+				n = next;
+				goto bypass_restart;
+			}
 		}
-	} while((n = n->next) != loop_start);
+	} while((n = next) != loop_start);
 
 	return start;
 }
@@ -846,6 +903,12 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 		return 0; /* no self intersection */
 
 	start = stub_remover(&ctx, start);
+	if (start == NULL) {
+		pl_remove_cvcs(pl, 1);
+		start = split_selfisc_map(&ctx);
+		if (ctx.num_isc == 0)
+			return 0; /* no self intersection */
+	}
 
 	/* preserve original holes as negatives */
 	if (pl->next != NULL) {
@@ -887,6 +950,12 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 		return 0; /* no self intersection */
 
 	start = stub_remover(&ctx, start);
+	if (start == NULL) {
+		pl_remove_cvcs(pl, 1);
+		start = split_selfisc_map(&ctx);
+		if (ctx.num_isc == 0)
+			return 0; /* no self intersection */
+	}
 
 	first_pos_null = (posneg->first_pos == NULL);
 
