@@ -37,6 +37,8 @@ typedef struct {
 	rnd_pline_t *neg_head, *neg_tail;
 } pa_posneg_t;
 
+/* Reset a polyline back to pre-mapping state; enable tree rebuild if
+   nodes have been added or removed. */
 static void pl_remove_cvcs(rnd_pline_t *pl, rnd_bool rebuild_tree)
 {
 	rnd_vnode_t *n = pl->head;
