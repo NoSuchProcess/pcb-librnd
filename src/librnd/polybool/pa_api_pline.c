@@ -476,16 +476,20 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	/* pa_pline_interior_pt() tends to fail for tiny polygons because of the
 	   constraint that it needs to pick an integer point: if the poly is a
 	   very small triangle, the "inner" point typically falls slightly outside.
-	   Do a slower but more reliable check corner by corner.
-	   Related test case: gixedo */
+	   Do a slower but more reliable check corner by corner. Use majority vote
+	   because one point may be outside while majority of the poly is inside.
+	   Related test case: gixedo, gixedq */
 	if (inner->area < 3) {
 		rnd_vnode_t *n = inner->head;
+		int p_in = 0, p_out = 0;
 		do {
 			int r = pa_pline_is_point_inside(outer, n->point);
-			if (!r)
-				return 0;
+			if (r)
+				p_in++;
+			else
+				p_out++;
 		} while((n = n->next) != inner->head);
-		return 1;
+		return (p_in >= p_out);
 	}
 
 	/* ...but that may still be only a shared point while the rest of inner
