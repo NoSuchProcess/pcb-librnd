@@ -3,7 +3,8 @@
 		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
-		- gixedr: infinite loop in pa_intersect_impl()
+		- gixedr: infinite loop in pa_intersect_impl(): coord-ladder oscillation at 570;280
+		- gixeds: bad jump?
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
