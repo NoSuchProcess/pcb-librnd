@@ -1381,11 +1381,12 @@ static void show_crosshair(gboolean paint_new_location)
 
 	gdk_gc_set_foreground(xor_gc, &cross_color);
 
-	if (prev_valid && !paint_new_location)
+	if (prev_valid && !paint_new_location && !rnd_conf.editor.hide_hid_crosshair)
 		draw_crosshair(xor_gc, x_prev, y_prev);
 
 	if (paint_new_location) {
-		draw_crosshair(xor_gc, x, y);
+		if (!rnd_conf.editor.hide_hid_crosshair)
+			draw_crosshair(xor_gc, x, y);
 		x_prev = x;
 		y_prev = y;
 		prev_valid = 1;

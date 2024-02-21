@@ -109,6 +109,7 @@ typedef struct {
 
 		RND_CFT_COORD min_zoom;                /* minimum GUI zoom in coord-per-pixel - controls how deep the user can zoom in; needs to be set before startup */
 		RND_CFT_BOOLEAN unlimited_pan;         /* if set, do not limit pan to around the drawing area */
+		RND_CFT_BOOLEAN hide_hid_crosshair;    /* if set, the standard HID-crosshair is not drawn; does not affect application drawn crosshair and attached objects */
 	} editor;
 } rnd_conf_t;
 

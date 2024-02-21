@@ -396,7 +396,7 @@ static void ghid_gl_show_crosshair(rnd_design_t *hidlib, gboolean paint_new_loca
 		cross_color_packed = rnd_conf.appearance.color.cross.packed;
 	}
 
-	if (ghidgui->topwin.active && ghidgui->port.view.has_entered) {
+	if (ghidgui->topwin.active && ghidgui->port.view.has_entered && !rnd_conf.editor.hide_hid_crosshair) {
 		hidgl_draw_crosshair(
 			ghidgui->port.view.crosshair_x, ghidgui->port.view.crosshair_y,
 			GTKC_COLOR_CMP_TO_01(cross_color.red), GTKC_COLOR_CMP_TO_01(cross_color.green), GTKC_COLOR_CMP_TO_01(cross_color.blue),

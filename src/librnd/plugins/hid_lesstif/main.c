@@ -1213,7 +1213,8 @@ void lesstif_show_crosshair(int show)
 	}
 	else
 		need_idle_proc();
-	draw_crosshair(xor_gc, sx, sy, view_width, view_height);
+	if (!rnd_conf.editor.hide_hid_crosshair)
+		draw_crosshair(xor_gc, sx, sy, view_width, view_height);
 	showing = show;
 }
 
