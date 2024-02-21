@@ -54,6 +54,9 @@
 			- coord_per_pix in rnd_hid_expose_ctx_s in hid.h
 			- rnd_hid_tree_t in hid_dad.h: hid_get_selected_multi_cb()
 			- lib_exp_text/draw_svg.h: rnd_svg_t
+			- lib_exp_text/draw_ps.h: rnd_ps_t
+			- lib_exp_text/draw_eps.h: rnd_eps_t
+			- lib_exp_pixmap/draw_pixmap.h: rnd_drwpx_t
 		- osm-rnd: TODO#fy5: we seem to have the wrong y values in gtk top window viewbox when flip_y==1
 	- script bindings for creating new conf nodes [report: Majenko]
 		- probably needs a new subtree next to plugins/
