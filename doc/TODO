@@ -1,6 +1,4 @@
 1. For the upcoming release ===============================================================================
-	- API extensions (4.2.0)
-		- optional pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
 		- gixedr: infinite loop in pa_intersect_impl(): coord-ladder oscillation at 570;280
@@ -20,6 +18,7 @@
 		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
+	- implement pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- BUG: shift+arrow key in act_Cursor() does strante things both in pcb-rnd and sch-rnd [report: Vuokko]
 	- BUG: perma scripts are initialized too late
 		- sch-rnd postproc scripts won't run when invoked with ./sch-rnd a.rs
