@@ -87,6 +87,26 @@ RND_INLINE int pa_big_in_between(int ordered, pa_big_coord_t A, pa_big_coord_t B
 
 #define pa_big_vect_equ(a, b) ((big_signed_cmpn((a).x, (b).x, W) == 0) && (big_signed_cmpn((a).y, (b).y, W) == 0))
 
+/* Returns if c is +-1 bit near zero */
+RND_INLINE int pa_big_coord_near_zero(pa_big_coord_t c)
+{
+	static const pa_big_coord_t p1 = {1, 0, 0, 0, 0, 0};
+	int is_zero = 1, is_p1 = 1, is_n1 = 1;
+	int n;
+
+	/* search c from LSB and exclude is_zero, is_p1 or is_n1 if the number
+	   can not be 0, +1 (bit) or -1 (bit). A number is zero only if it's
+	   all 0, -1 if it's all BIG_IMAX; p1 is the tricky one. */
+	for(n = 0; n < W; n++) {
+		if (is_zero && (c[n] != 0)) is_zero = 0;
+		if (is_p1 && (c[n] != p1[n])) is_p1 = 0;
+		if (is_n1 && (c[n] != BIG_UMAX)) is_n1 = 0;
+		if (!is_zero && !is_p1 && !is_n1)
+			return 0;
+	}
+	return 1;
+}
+
 /* Compares pt's point to vn and returns 1 if they match (0 otherwise). If
    vn has a cvc, use its high precision coords */
 RND_INLINE int pa_big_vnode_vect_equ(rnd_vnode_t *vn, pa_big_vector_t pt)
@@ -169,3 +189,25 @@ int pa_small_big_xy_eq(rnd_coord_t smallx, rnd_coord_t smally, pa_big_coord_t bi
 	return (smallx == bigx[W/2]) && (smally == bigy[W/2]);
 }
 
+
+int pa_big_vmandist_small(pa_big_vector_t *a, rnd_vnode_t *vnode, int copy)
+{
+	pa_big_coord_t dx, dy;
+	pa_big_vector_t b;
+
+	rnd_pa_big_load_cvc(&b, vnode);
+
+	big_subn(dx, a->x, b.x, W, 0);
+	if (!pa_big_coord_near_zero(dx))
+		return 0;
+
+	big_subn(dy, a->y, b.y, W, 0);
+	if (!pa_big_coord_near_zero(dy))
+		return 0;
+
+
+	if (copy)
+		*a = b;
+
+	return 1;
+}

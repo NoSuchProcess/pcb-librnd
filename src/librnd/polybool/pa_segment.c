@@ -331,6 +331,11 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 		pa_big_vector_t *my_s = (num_isc == 1 ? &isc1 : &isc2);
 		rnd_vnode_t *new_node;
 
+		/* If intersection is very close to any of the endpoints, rather modify
+		   the intersection point to match that endpoint. This avoids a lot of nasty
+		   corner cases with shortest possible edges. Test case: gixedr* */
+		pa_big_vmandist_small(my_s, ctx->v, 1) || pa_big_vmandist_small(my_s, ctx->v->next, 1) || pa_big_vmandist_small(my_s, s->v, 1) || pa_big_vmandist_small(my_s, s->v->next, 1);
+
 		/* add new node on "i" */
 		new_node = pa_ensure_point_and_prealloc_cvc(ctx->v, *my_s);
 		pa_debug_print_isc2(num_isc, "ctx", my_s, new_node);

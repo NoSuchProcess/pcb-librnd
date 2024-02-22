@@ -3,12 +3,14 @@
 #		define BIG_DECIMAL_DIGITS 9
 #		define BIG_DECIMAL_BASE 1000000000UL
 #		define BIG_NEG_BASE 0x80000000UL
+#		define BIG_UMAX 0xFFFFFFFFUL
 #		define BIG_DBL_MULT ((double)4294967296.0)
 #	elif RND_COORD_MAX == ((1ULL<<63)-1)
 #		define BIG_BITS 64
 #		define BIG_DECIMAL_DIGITS 19
 #		define BIG_DECIMAL_BASE 10000000000000000000UL
 #		define BIG_NEG_BASE 0x8000000000000000UL
+#		define BIG_UMAX 0xFFFFFFFFFFFFFFFFUL
 #		define BIG_DBL_MULT ((double)18446744073709551616.0)
 #	else
 #		error "unsupported system: rnd_coord has to be 32 or 64 bits wide (checked: RND_COORD_MAX)"
@@ -102,6 +104,12 @@ int pa_big_coord_cmp(pa_big_coord_t a, pa_big_coord_t b);
 int pa_big2_coord_cmp(pa_big2_coord_t a, pa_big2_coord_t b);
 
 int pa_small_big_xy_eq(rnd_coord_t smallx, rnd_coord_t smally, pa_big_coord_t bigx, pa_big_coord_t bigy);
+
+
+/* Return 1 if a and vnode are very close; when they are close and copy is 1,
+   modify a to be the same as vnode's coord */
+int pa_big_vmandist_small(pa_big_vector_t *a, rnd_vnode_t *vnode, int copy);
+
 
 /* Round to nearest integer */
 void pa_big_round(pa_big_coord_t big);
