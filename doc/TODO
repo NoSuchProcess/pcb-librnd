@@ -3,6 +3,7 @@
 		- self touching input: fixedy5, fixedy7, fixedy8
 		- gixedr: infinite loop in pa_intersect_impl(): coord-ladder oscillation at 570;280
 			- gixedr2: similar case of iscs in a bunch
+		- gixeds: failed hole insertion
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
