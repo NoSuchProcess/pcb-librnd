@@ -2,7 +2,6 @@
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
 		- gixeds: failed hole insertion
-		- gixedt: nowhere to go
 		- gixedu: tree assert
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
