@@ -345,6 +345,29 @@ RND_INLINE int pa_eff_dir_forward(char dir1, char dir2)
 	return eff_dir;
 }
 
+
+/* Return startnd if it's not marked or if it is marked but has no cvc links.
+   If it's marked and has cvc links return another, unmarked node form the
+   cvc list for this point. If no unmarked forund, return startnd.
+   Used to revisit a node that multiple entries, see test case gixedt. */
+RND_INLINE rnd_vnode_t *get_cvc_unmarked(rnd_vnode_t *startnd)
+{
+	pa_conn_desc_t *c, *start;
+
+	if (!startnd->flg.mark)
+		return startnd;
+
+	start = startnd->cvclst_next;
+	if (start == NULL)
+		return startnd;
+
+	for(c = start->next; c != start; c = c->next)
+		if (!c->parent->flg.mark)
+			return c->parent;
+
+	return startnd;
+}
+
 /* Step from n to the next node according to dir, walking the outline (trying
    to achieve largest area) */
 RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
@@ -383,6 +406,8 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 			rnd_trace(" refuse (shared)\n");
 			continue;
 		}
+		if (onto->flg.mark)
+			onto = get_cvc_unmarked(onto);
 		if (!onto->flg.mark) {
 			*dir = eff_dir ? 'N' : 'P';
 			if (eff_dir)
@@ -638,6 +663,9 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			rnd_trace(" refuse (shared)\n");
 			continue;
 		}
+
+		if (onto->flg.mark)
+			onto = get_cvc_unmarked(onto);
 
 		if (!onto->flg.mark || onto->flg.start) { /* also accept flg.start here: greedy algorithm to find shortest loops */
 			if (!onto->flg.start) /* don't remember new direction going out from the endpoint; test case: gixedbo2 */
