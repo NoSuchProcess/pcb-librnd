@@ -593,7 +593,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 
 /* Step from n to the next node according to dir, walking a hole island (trying to
    get minimal area portions) */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first, rnd_vnode_t *real_start)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t **first, rnd_vnode_t *real_start, rnd_vnode_t *prev_node)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto, *shtest;
@@ -625,8 +625,11 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 	rnd_trace("CVC\n");
 
 	/* quick return: if we can get back to the starting point from this CVC, do
-	   that; other loops will be picked up separately. Test case: gixedj */
-	if (real_start != NULL) {
+	   that; other loops will be picked up separately. Test case: gixedj. But
+	   don't do it if it's the previous node we are coming from because
+	   that would only create a stub. Test case: gixeds:
+	   start = prev_node = 365;519  n = 364;516 (cvc)  onto = 365;519  -> rather proceed elsewhere */
+	if ((real_start != NULL) && (real_start != prev_node)) {
 		start = c = n->cvclst_prev->next;
 		do {
 			int eff_dir = pa_eff_dir_forward(c->side, *dir);
@@ -709,7 +712,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 {
 	int accept_pol = 0, has_selfisc = 0;
 	char dir = 'N';
-	rnd_vnode_t *n, *newn, *last, *started = NULL;
+	rnd_vnode_t *n, *newn, *last, *started = NULL, *prev_node = NULL, *prev2;
 	rnd_pline_t *dst;
 
 	dst = pa_pline_new(start->point);
@@ -717,8 +720,9 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 
 	rnd_trace("  island {:\n");
 	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
-	n = pa_selfisc_next_i(start, &dir, &started, NULL);
-	for(; (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started)) {
+	n = pa_selfisc_next_i(start, &dir, &started, NULL, NULL);
+	prev2 = n;
+	for(; (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started, prev_node)) {
 		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
@@ -727,6 +731,8 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 		newn->point[1] = n->point[1];
 		rnd_trace("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
 		rnd_poly_vertex_include(last, newn);
+		prev_node = prev2;
+		prev2 = n;
 		last = newn;
 	}
 	pa_pline_update(dst, 1);
