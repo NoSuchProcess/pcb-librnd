@@ -305,7 +305,7 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	pa_seg_seg_t *ctx = (pa_seg_seg_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2;
-	int num_isc;
+	int num_isc, adjacent = 0;
 
 	/* When new nodes are added at the end of a pass due to an intersection
 	   the segments may be altered. If either segment we're looking at has
@@ -313,8 +313,19 @@ static rnd_r_dir_t seg_in_seg_cb(const rnd_box_t *b, void *cl)
 	if (s->intersected || ctx->s->intersected)
 		return RND_R_DIR_NOT_FOUND;
 
+	/* ignore overlap if the two edges are the same */
+	if (s->v == ctx->v)
+		return RND_R_DIR_NOT_FOUND;
+
+	if ((s->v == ctx->v->next) || (s->v->next == ctx->v))
+		adjacent = 1;
+
 	num_isc = pa_isc_edge_edge_(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
 	if (!num_isc)
+		return RND_R_DIR_NOT_FOUND;
+
+	/* ignore adjacent edge single endpoint overlap, but don't ignore longer overlaps */
+	if ((num_isc == 1) && adjacent)
 		return RND_R_DIR_NOT_FOUND;
 
  /* if checking touches the first intersection decides the result */
