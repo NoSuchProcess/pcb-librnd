@@ -327,6 +327,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				tmpa->from_selfisc = 1;
 				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
 
+				assert(tmpc != NULL);
+
 				if (pa_remain != NULL) {
 					/* put back tmpc into pa_remain and make the combined result *pa again */
 					*pa = pa_remain;
