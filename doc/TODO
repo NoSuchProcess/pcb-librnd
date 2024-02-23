@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
-		- gixedw: labelling issue
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
