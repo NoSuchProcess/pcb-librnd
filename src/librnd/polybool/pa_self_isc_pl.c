@@ -1117,8 +1117,15 @@ RND_INLINE void split_selfisc_pline_resolved(rnd_polyarea_t **pa, rnd_pline_t *p
 		/* make sure all islands are updated so they have an area */
 		for(n = 0; n < posneg->subseq_pos.used; n++) {
 			rnd_pline_t *island = posneg->subseq_pos.array[n];
-			if (island->area <= 0)
+			if (island->area <= 0) {
+				if (island->tree != NULL) { /* pa_pline_update() will recalc the tree - test case: gixedu */
+					rnd_rtree_t *r = island->tree;
+					rnd_r_free_tree_data(r, free);
+					rnd_r_destroy_tree(&r);
+					island->tree = NULL;
+				}
 				pa_pline_update(island, 0);
+			}
 		}
 
 		/* sort islands so that the largest is first; there are only
