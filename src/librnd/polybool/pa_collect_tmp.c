@@ -212,6 +212,8 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 		pa_error(pa_err_bad_parm);
 	}
 
+	pl->flg.orphaned = 0;
+
 	/* Search the heap for the container. */
 	*insh_ctx = (pa_insert_holes_t *)rnd_heap_remove_smallest(heap);
 
