@@ -2,6 +2,7 @@
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
 		- gixedu: tree assert
+		- gixedv: polyline length issue
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
