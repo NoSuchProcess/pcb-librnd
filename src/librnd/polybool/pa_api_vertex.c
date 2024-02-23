@@ -58,6 +58,7 @@ void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node)
 		/* when removing head which was the last node in pline */
 		parent->head = NULL;
 	}
+	parent->Count--;
 }
 
 /* Add node without side effects/optimization (add even if it's colinear with
