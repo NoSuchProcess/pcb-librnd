@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- self touching input: fixedy5, fixedy7, fixedy8
-		- gixeds: failed hole insertion
 		- gixedu: tree assert
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
