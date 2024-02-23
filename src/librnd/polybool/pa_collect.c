@@ -517,7 +517,7 @@ RND_INLINE rnd_bool pa_contour_in_box(rnd_pline_t *pl, rnd_box_t box)
 RND_INLINE void pa_polyarea_update_primary_del_inside(jmp_buf *e, rnd_box_t box, rnd_polyarea_t **islands, rnd_pline_t **holes, rnd_polyarea_t *bpa)
 {
 	rnd_polyarea_t *pa, *panext;
-	rnd_pline_t *pl;
+	rnd_pline_t *pl, *ph;
 	int finished = 0;
 
 	for(pa = *islands; !finished && (*islands != NULL); pa = panext) {
@@ -530,6 +530,9 @@ RND_INLINE void pa_polyarea_update_primary_del_inside(jmp_buf *e, rnd_box_t box,
 			/* Delete this contour, move all children to the pending holes list */
 
 			pl = pa->contours;
+			for(ph = pl->next; ph != NULL; ph = ph->next)
+				ph->flg.orphaned = 1; /* test case: gixedy */
+
 			remove_contour(pa, NULL, pl, rnd_false);
 			pa_pline_free(&pl);
 			/* rtree deleted in pa_polyarea_free_all() */
@@ -547,7 +550,7 @@ RND_INLINE void pa_polyarea_update_primary_del_inside(jmp_buf *e, rnd_box_t box,
 			}
 
 			pa_polyarea_unlink(islands, pa);
-			pa_polyarea_free_all(&pa);
+ 			pa_polyarea_free_all(&pa);
 			continue;
 		}
 

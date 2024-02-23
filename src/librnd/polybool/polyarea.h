@@ -88,6 +88,7 @@ struct rnd_pline_s {
 		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
 		unsigned int risky:1;  /* need to run selfisc resolver in postproc */
+		unsigned orphaned:1;   /* parent island got deleted */
 	} flg;
 };
 

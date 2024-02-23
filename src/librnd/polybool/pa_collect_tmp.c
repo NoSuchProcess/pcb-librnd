@@ -183,6 +183,8 @@ RND_INLINE void pa_inshole_build_rtree(rnd_polyarea_t *src, pa_insert_holes_t *a
 }
 
 
+static rnd_pline_t orp_cont;
+
 /* Search for the container of pl. Also loads insh_ctx as a side effect */
 RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *dst, rnd_rtree_t *tree, rnd_pline_t *pl, pa_insert_holes_t **insh_ctx, int *risky)
 {
@@ -193,12 +195,20 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 	heap = rnd_heap_create();
 	rnd_r_search(tree, (rnd_box_t *)pl, NULL, pa_inshole_heap_it_cb, heap, NULL);
 	if (rnd_heap_is_empty(heap)) {
+		int orp = pl->flg.orphaned;
 #ifndef NDEBUG
 #ifdef DEBUG
 		pa_poly_dump(dst);
 #endif
 #endif
 		pa_pline_free(&pl);
+		rnd_heap_destroy(&heap);
+
+		/* do not panic if a hole of an removed-island (oprhaned hole) didn't
+		   find a container. Test case: gixedy */
+		if (orp)
+			return &orp_cont;
+
 		pa_error(pa_err_bad_parm);
 	}
 
@@ -252,6 +262,9 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 		*src = pl->next;
 
 		container = pa_inshole_find_container(e, dst, tree, pl, &insh_ctx, &risky);
+		if (container == &orp_cont)
+			continue;
+
 		if (container == NULL) {
 #ifndef NDEBUG
 #ifdef DEBUG
