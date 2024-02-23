@@ -3,6 +3,7 @@
 		- self touching input: fixedy5, fixedy7, fixedy8
 		- gixedx: labeling
 		- gixedx2: probably the same as gixedx but segfault instead of assert
+		- gixedy: empty output
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
