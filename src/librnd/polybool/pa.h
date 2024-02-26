@@ -148,3 +148,6 @@ pa_conn_desc_t *pa_add_conn_desc_at(rnd_vnode_t *node, char poly, pa_conn_desc_t
 pa_conn_desc_t *pa_prealloc_conn_desc(pa_big_vector_t isc);
 
 int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op);
+
+int pa_pline_is_point_on_seg(pa_seg_t *s, rnd_vector_t pt);
+

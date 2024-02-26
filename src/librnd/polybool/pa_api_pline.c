@@ -204,7 +204,7 @@ static rnd_r_dir_t pa_cin_crossing_small(pa_cin_ctx_t *p, pa_seg_t *s)
 #define bigcmp(a, b) pa_big_coord_cmp(a, b)
 
 /* same as above, but with big coords */
-static rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
+RND_INLINE rnd_r_dir_t pa_cin_crossing_big(pa_cin_ctx_t *p, pa_seg_t *s)
 {
 	pa_big_vector_t sv, sv_next;
 
@@ -331,6 +331,29 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
 
 	return ctx.f;
+}
+
+int pa_pline_is_point_on_seg(pa_seg_t *s, rnd_vector_t pt)
+{
+	pa_cin_ctx_t ctx;
+#define ON_EDGE_COOKIE 1234
+
+	/* run a horizontal ray from the point to x->infinity and count (in ctx.f)
+	   how it crosses poly edges with different winding */
+	ctx.f = 0;
+	ctx.point_on_edge_is_in = ON_EDGE_COOKIE;
+	ctx.p[0] = pt[0];
+	ctx.p[1] = pt[1];
+	ctx.p_is_big = ctx.p_has_big = 0;
+	ctx.compatibility = 0;
+
+#ifdef PA_BIGCOORD_ISC
+	pa_cin_crossing_big(&ctx, s);
+#else
+	pa_cin_crossing_small(&ctx, s)
+#endif
+
+	return ctx.f == ON_EDGE_COOKIE;
 }
 
 
