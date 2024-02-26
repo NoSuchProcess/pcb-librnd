@@ -349,6 +349,8 @@ static rnd_r_dir_t olap_edges_cb(const rnd_box_t *b, void *cl)
 	if (ctx->nd == s->v->next)
 		return RND_R_DIR_NOT_FOUND;
 
+	TODO("Arc: happens only on line-line or arc-arc; for arc-arc: radius and center match are required for an overlap");
+
 	cnt++;
 	rnd_trace(" S: %ld;%ld -> %ld;%ld pt= %ld;%ld [%d]\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->nd->point[0], ctx->nd->point[1], cnt);
 
