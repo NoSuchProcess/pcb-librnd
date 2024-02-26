@@ -35,6 +35,7 @@
  *
  */
 
+int rnd_polybool_disable_autocheck = 0;
 
 /* If vertices have high precision coords, the actual output will differ
    slightly after rounding the coords. In other words rounding moves vertices.
@@ -146,7 +147,7 @@ int rnd_polyarea_boolean_free(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyar
 {
 	int code = rnd_polyarea_boolean_free_nochk(a_, b_, res, op);
 
-	if ((code == 0) && (*res != NULL)) {
+	if ((code == 0) && (*res != NULL) && !rnd_polybool_disable_autocheck) {
 		assert(rnd_poly_valid(*res));
 	}
 

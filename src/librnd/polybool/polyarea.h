@@ -286,6 +286,10 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
 int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in);
 
+/* When true, do not run assert() autocheck after operations. Useful for
+   autotest */
+extern int rnd_polybool_disable_autocheck;
+
 /*** generic geo ***/
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
 
