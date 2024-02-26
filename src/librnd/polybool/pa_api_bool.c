@@ -41,10 +41,10 @@ int rnd_polybool_disable_autocheck = 0;
    slightly after rounding the coords. In other words rounding moves vertices.
    In some cases this may change the topology and cause self-intersecting
    polygons or zero-length edges. Remove them here. */
-RND_INLINE void pa_bool_postproc(rnd_polyarea_t **pa, int from_selfisc)
+RND_INLINE void pa_bool_postproc(rnd_polyarea_t **pa, int from_selfisc, int papa_touch_risk)
 {
 #ifdef PA_BIGCOORD_ISC
-	pa_big_bool_postproc(pa, from_selfisc);
+	pa_big_bool_postproc(pa, from_selfisc, papa_touch_risk);
 #endif
 	/* else don't do naything: this happens only with big coords */
 }
@@ -71,6 +71,7 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 	rnd_pline_t *a_isected = NULL, *holes = NULL;
 	jmp_buf e;
 	int code, from_selfisc = a_->from_selfisc && b_->from_selfisc;
+	int papa_touch_risk = 0;
 
 	*res = NULL;
 
@@ -111,7 +112,7 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 #endif
 
 		/* intersect needs to make a list of the contours in a and b which are intersected */
-		pa_polyarea_intersect(&e, a, b, rnd_true);
+		pa_polyarea_intersect(&e, a, b, op, rnd_true, &papa_touch_risk);
 
 		/* We could speed things up a lot here if we only processed the relevant contours */
 		/* (Relevant parts of a are labeled below) */
@@ -138,7 +139,7 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 	}
 
 	if (*res != NULL)
-		pa_bool_postproc(res, from_selfisc);
+		pa_bool_postproc(res, from_selfisc, papa_touch_risk);
 
 	return code;
 }
@@ -186,8 +187,10 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 
 	code = setjmp(e);
 	if (code == 0) {
+		int papa_touch_risk = 0;
+
 		/* map and label */
-		pa_polyarea_intersect(&e, a, b, rnd_true);
+		pa_polyarea_intersect(&e, a, b, RND_PBO_ISECT, rnd_true, &papa_touch_risk);
 		pa_polyarea_label(a, b, rnd_false);
 		pa_polyarea_label(b, a, rnd_false);
 
@@ -208,6 +211,8 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 
 		pa_polyarea_free_all(&a);
 		pa_polyarea_free_all(&b);
+
+		TODO("postproc with papa_touch_risk");
 	}
 
 	rnd_poly_plines_free(&holes); /* delete holes if any left (not inserted) */

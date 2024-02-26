@@ -89,8 +89,10 @@ double pa_big2_double(pa_big2_coord_t crd);
 double pa_big_vnxd(rnd_vnode_t *vn);
 double pa_big_vnyd(rnd_vnode_t *vn);
 
-/* Contour postprocessing; see pa_bool_postproc() for explanation */
-void pa_big_bool_postproc(rnd_polyarea_t **pa, int from_selfisc);
+/* Contour postprocessing; see pa_bool_postproc() for explanation. Set
+   papa_touch_risk to 1 if there were overlapping islands within A or B
+   during a non-SUB operation */
+void pa_big_bool_postproc(rnd_polyarea_t **pa, int from_selfisc, int papa_touch_risk);
 
 
 void rnd_pa_big_load_cvc(pa_big_vector_t *dst, rnd_vnode_t *src);

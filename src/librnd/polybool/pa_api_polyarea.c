@@ -85,7 +85,7 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
 #ifdef DEBUG
 		if (!rnd_poly_valid(a) || !rnd_poly_valid(b)) return -1;
 #endif
-		pa_polyarea_intersect(&e, a, b, rnd_false);
+		pa_polyarea_intersect(&e, a, b, -1, rnd_false, NULL);
 
 		if (pa_polyarea_label(a, b, rnd_true)) return rnd_true;
 		if (pa_polyarea_label(b, a, rnd_true)) return rnd_true;

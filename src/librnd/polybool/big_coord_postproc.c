@@ -331,8 +331,74 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 	return res;
 }
 
+/* Figures if an edge from a given node overlaps with another edge */
+typedef struct {
+	rnd_vnode_t *nd;
+	int res;
+} olap_edges_t;
+
+static rnd_r_dir_t olap_edges_cb(const rnd_box_t *b, void *cl)
+{
+	pa_seg_t *s = (pa_seg_t *)b;
+	olap_edges_t *ctx = cl;
+	int on_edge;
+	static int cnt;
+
+	if (ctx->nd == s->v)
+		return RND_R_DIR_NOT_FOUND;
+	if (ctx->nd == s->v->next)
+		return RND_R_DIR_NOT_FOUND;
+
+	cnt++;
+	rnd_trace(" S: %ld;%ld -> %ld;%ld pt= %ld;%ld [%d]\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->nd->point[0], ctx->nd->point[1], cnt);
+
+	on_edge = pa_pline_is_point_on_seg(s, ctx->nd->point);
+	if (on_edge) {
+		rnd_trace(" N: %ld;%ld -> %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
+		if (pa_pline_is_point_on_seg(s, ctx->nd->next->point)) {
+			rnd_trace(" n %ld;%ld\n", ctx->nd->point[0], ctx->nd->point[1]);
+			ctx->res = 1;
+			return RND_R_DIR_CANCEL;
+		}
+
+		rnd_trace(" P: %ld;%ld -> %ld;%ld\n", s->v->prev->point[0], s->v->prev->point[1], s->v->point[0], s->v->point[1]);
+		if (pa_pline_is_point_on_seg(s, ctx->nd->prev->point)) {
+			rnd_trace(" p %ld;%ld\n", ctx->nd->point[0], ctx->nd->point[1]);
+			ctx->res = 1;
+			return RND_R_DIR_CANCEL;
+		}
+	}
+	return RND_R_DIR_NOT_FOUND;
+}
+
+
+/* return 1 if pl has self-overlapping edge segments */
+RND_INLINE int big_bool_self_olap(rnd_polyarea_t *pn, rnd_pline_t *pl)
+{
+	olap_edges_t ctx;
+
+	ctx.res = 0;
+
+	ctx.nd = pl->head;
+	do {
+		rnd_box_t ptbx;
+
+		ptbx.X1 = ctx.nd->point[0];   ptbx.Y1 = ctx.nd->point[1];
+		ptbx.X2 = ctx.nd->point[0]+1; ptbx.Y2 = ctx.nd->point[1]+1;
+
+		rnd_trace("fixedy8: %ld;%ld -> %ld;%ld\n", ctx.nd->point[0], ctx.nd->point[1], ctx.nd->next->point[0], ctx.nd->next->point[1]);
+
+		rnd_r_search(pl->tree, &ptbx, NULL, olap_edges_cb, &ctx, NULL);
+		if (ctx.res)
+			return 1;
+	} while((ctx.nd = ctx.nd->next) != pl->head);
+
+
+	return 0;
+}
+
 /* Does an iteration of postprocessing; returns whether pa changed (0 or 1) */
-RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa, int from_selfisc)
+RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa, int from_selfisc, int papa_touch_risk)
 {
 	int res = 0;
 	rnd_polyarea_t *pn = *pa;
@@ -350,12 +416,27 @@ RND_INLINE int big_bool_ppa_(rnd_polyarea_t **pa, int from_selfisc)
 					res = 1; /* can not return here, need to clear all the risk flags */
 		}
 	} while ((pn = pn->f) != *pa);
+
+ /* fixedy8: when papa_touch_risk is set, there erre multiple, potentially
+    overlapping islands on either input polygon. They could not intersect,
+    that would have made them invalid, but there could have been overlapping
+    line segments between two different islands. Now that they are merged
+    into a single contour, the contour can have overlapping edge segments.
+    Search for them; if found, flag this for self isc resolving */
+	if ((res == 0) && papa_touch_risk) {
+		pn = *pa;
+		do {
+			rnd_pline_t *pl = pn->contours;
+			res = big_bool_self_olap(pn, pl);
+		} while (!res && ((pn = pn->f) != *pa));
+	}
+
 	return res;
 }
 
-void pa_big_bool_postproc(rnd_polyarea_t **pa, int from_selfisc)
+void pa_big_bool_postproc(rnd_polyarea_t **pa, int from_selfisc, int papa_touch_risk)
 {
-	if (big_bool_ppa_(pa, from_selfisc))
+	if (big_bool_ppa_(pa, from_selfisc, papa_touch_risk))
 		rnd_polyarea_split_selfisc(pa);
 }
 

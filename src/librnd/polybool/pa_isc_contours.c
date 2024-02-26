@@ -234,10 +234,31 @@ static void pa_conn_list_remove_stubs(pa_conn_desc_t **head)
 	} while((n = next) != *head);
 }
 
+#define PA_ISECTED(x) ((x)->contours->flg.llabel & PA_PLL_ISECTED)
+static int pa_polyarea_assess_papa_touch_risk(rnd_polyarea_t *start, const char poly_id)
+{
+	rnd_polyarea_t *a = start, *b;
+	do {
+/*		rnd_trace("yfixed8 %c: %d\n", poly_id, PA_ISECTED(a));*/
+		if (PA_ISECTED(a)) {
+			b = a->f;
+			do {
+				if (pa_polyarea_box_overlap(a, b)) {
+/*					rnd_trace(" box overlap!\n");*/
+					return 1;
+				}
+			}
+			while ((b = b->f) != start);
+		}
+	} while ((a = a->f) != start);
+	return 0;
+}
+
+
 /* Compute intersections between all islands of pa_a and pa_b. If all_iscs is
    true, collect and label all intersections, else stop after the first
    (usefule if only the fact of the intersection is interesting) */
-static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea_t *pa_b, int all_iscs)
+static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea_t *pa_b, int op, int all_iscs, int *papa_touch_risk)
 {
 	rnd_polyarea_t *a = pa_a, *b = pa_b;
 	pa_conn_desc_t *conn_list = NULL;
@@ -262,6 +283,16 @@ static void pa_polyarea_intersect(jmp_buf *e, rnd_polyarea_t *pa_a, rnd_polyarea
 		conn_list = pa_polyarea_list_intersected(e, conn_list, b, 'B');
 		pa_debug_print_cvc(conn_list);
 	} while (all_iscs && (b = b->f) != pa_b);
+
+	/* Corner case: fixedy8. If more than one island of the same polyare
+	   participates in a non-sub operation, if those islands have overlapping
+	   edges (valid) after the operation a single island of the resulting poly
+	   will have overlapping edges (invalid). Mark this risk if:
+	     - pa_a or pa_b has multiple isnalds intersected
+	     - and any two of those islands have overlapping bboxes
+	*/
+	if ((papa_touch_risk != NULL) && (op != RND_PBO_SUB))
+		*papa_touch_risk = (pa_polyarea_assess_papa_touch_risk(pa_a, 'A') || pa_polyarea_assess_papa_touch_risk(pa_b, 'B'));
 
 	/* add all intersections of all of pa_a's islands to the conn list */
 	do {
