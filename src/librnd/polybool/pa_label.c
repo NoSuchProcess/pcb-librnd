@@ -67,7 +67,7 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 	for(l1 = l; (l->poly == this_poly) && (l != l1->prev); l = l->next) ;
 
 	assert(l != NULL);
-	assert(l->poly != this_poly);
+/*	assert(l->poly != this_poly); this happens when self-intersections are found; see gixedx hole */
 	assert(pa_angle_valid(l->angle));
 
 	if (l->poly != this_poly) {
@@ -107,6 +107,9 @@ static pa_plinept_label_t pa_node_label(rnd_vnode_t *pn)
 			}
 		}
 	}
+
+	if (region == PA_PTL_UNKNWN)
+		region = PA_PTL_OUTSIDE; /* this happens when self-intersections are found; see gixedx hole */
 
 	assert(region != PA_PTL_UNKNWN);
 	assert((pn->flg.plabel == PA_PTL_UNKNWN) || (pn->flg.plabel == region));
