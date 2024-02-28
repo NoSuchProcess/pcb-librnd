@@ -245,18 +245,18 @@ static pa_conn_desc_t *pa_insert_conn_desc(pa_conn_desc_t *cd, rnd_vnode_t *a, c
 
 RND_INLINE pa_conn_desc_t *pa_add_conn_desc_at_(rnd_vnode_t *node, char poly, pa_conn_desc_t *list)
 {
-			pa_conn_desc_t *p = node->cvclst_prev, *n = node->cvclst_next;
+	pa_conn_desc_t *p = node->cvclst_prev, *n = node->cvclst_next;
 
-			/* must be preliminary allocation that we are finalizing here */
-			assert((p->prelim) && (n->prelim));
+	/* must be preliminary allocation that we are finalizing here */
+	assert((p->prelim) && (n->prelim));
 
-			list = node->cvclst_prev = pa_insert_conn_desc(p, node, poly, 'P', list);
-			if (node->cvclst_prev == NULL)
-				return NULL;
+	list = node->cvclst_prev = pa_insert_conn_desc(p, node, poly, 'P', list);
+	if (node->cvclst_prev == NULL)
+		return NULL;
 
-			list = node->cvclst_next = pa_insert_conn_desc(n, node, poly, 'N', list);
-			if (node->cvclst_next == NULL)
-				return NULL;
+	list = node->cvclst_next = pa_insert_conn_desc(n, node, poly, 'N', list);
+	if (node->cvclst_next == NULL)
+		return NULL;
 
 	return list;
 }
