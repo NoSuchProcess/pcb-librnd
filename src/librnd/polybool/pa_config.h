@@ -10,6 +10,9 @@
    distance^2 within the isc point is moved to the endpoint */
 /*#define PA_TWEAK_ISC 4*/
 
+/* When 1: each rtree add verifies the entry is not already added */
+#define PA_VERIFY_RTREE_ADD 0
+
 /* debug control */
 #define DEBUG_JUMP 0
 #define DEBUG_GATHER 0
@@ -18,6 +21,7 @@
 #define DEBUG_ISC 0
 #define DEBUG_PAISC_DUMP 0
 #define DEBUG_DUMP 0
+
 #undef DEBUG
 
 /* only when DEBUG is enabled */

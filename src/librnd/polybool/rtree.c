@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include <librnd/core/unit.h>
+#include "pa_config.h"
 #include "rtree.h"
 
 #include <genrtree/genrtree_impl.h>
@@ -54,9 +55,26 @@ void rnd_r_destroy_tree(rnd_rtree_t **tree)
 	*tree = NULL;
 }
 
+#if PA_VERIFY_RTREE_ADD
+static int in_tree(rnd_rtree_t *rtree, const rnd_box_t *which)
+{
+	rnd_rtree_it_t it;
+	rnd_box_t *b;
+
+	for(b = rnd_rtree_first(&it, rtree, which); b != NULL; b = rnd_rtree_next(&it))
+		if (b == which)
+			return 1;
+
+	return 0;
+}
+#endif
+
 void rnd_r_insert_entry(rnd_rtree_t *rtree, const rnd_box_t *which)
 {
 	assert(which != NULL);
+#if PA_VERIFY_RTREE_ADD
+	assert(!in_tree(rtree, which));
+#endif
 	rnd_rtree_insert(rtree, (void *)which, (rnd_rtree_box_t *)which); /* assumes first field is the bounding box */
 }
 
