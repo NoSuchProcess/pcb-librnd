@@ -1,7 +1,6 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
 		- rnd_polyarea_and_subtract_free() should call the postprocessor
-		- gixedx2: probably the same as gixedx but segfault instead of assert
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
