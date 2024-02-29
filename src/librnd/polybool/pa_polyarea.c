@@ -106,7 +106,14 @@ static int pa_is_pline_in_polyarea(rnd_pline_t *pl, rnd_polyarea_t *pa, rnd_bool
 
 void pa_polyarea_del_pline(rnd_polyarea_t *pa, rnd_pline_t *pl)
 {
-	rnd_pline_t *n, *prev;
+	rnd_pline_t *n, *prev, *hole;
+
+	/* remove holes of a positive contour from the contour tree; when pl is a
+	   hole, assume only the hole is removed from pl (rtree done at the end of
+	   this function) */
+	if (pl->flg.orient == RND_PLF_DIR)
+		for(hole = pl->next; hole != NULL; hole = hole->next)
+			rnd_r_delete_entry(pa->contour_tree, (rnd_box_t *)hole);
 
 	/* unlink */
 	for(n = pa->contours, prev = NULL; n != NULL; n = n->next) {
