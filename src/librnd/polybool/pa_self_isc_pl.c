@@ -918,7 +918,7 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 
 /* Build the outer contour of self-intersecting pl. Return
    whether there was a self intersection (and posneg got loaded). */
-static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
+static rnd_bool rnd_pline_split_selfisc_o(rnd_polyarea_t *parent, pa_posneg_t *posneg, rnd_pline_t *pl)
 {
 	rnd_vnode_t *start;
 	pa_selfisc_t ctx = {0};
@@ -939,7 +939,13 @@ static rnd_bool rnd_pline_split_selfisc_o(pa_posneg_t *posneg, rnd_pline_t *pl)
 
 	/* preserve original holes as negatives */
 	if (pl->next != NULL) {
+		rnd_pline_t *h;
 		posneg_append_pline(posneg, -1, pl->next);
+
+		/* get the detached holes removed from the parent contour tree so there
+		   are no ghosts left behind; test case: gixedx */
+		for(h = pl->next; h != NULL; h = h->next)
+			rnd_r_delete_entry(parent->contour_tree, (rnd_box_t *)h);
 		pl->next = NULL;
 	}
 
@@ -1222,7 +1228,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline(rnd_polyarea_t **pa)
 
 		/* pline intersects itself: outline */
 		pl = (*pa)->contours;
-		has_selfisc += rnd_pline_split_selfisc_o(&posneg, pl);
+		has_selfisc += rnd_pline_split_selfisc_o(*pa, &posneg, pl);
 
 		if (has_selfisc != 0)
 			split_selfisc_pline_resolved(pa, pl, &posneg);
