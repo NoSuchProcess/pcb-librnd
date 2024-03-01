@@ -510,7 +510,7 @@ RND_INLINE int is_node_in_stub(rnd_vnode_t **start, rnd_vnode_t **sprev, rnd_vno
 */
 static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 {
-	rnd_vnode_t *n, *loop_start, *sprev, *stop_at, *next;
+	rnd_vnode_t *n, *loop_start, *sprev, *stop_at, *next, *removed1, *removed2;
 
 /*	rnd_trace("STUB removal\n");*/
 
@@ -533,6 +533,7 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 				start = n->next;
 
 /*rnd_trace("    stub removal1: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+			removed1 = n;
 			rnd_poly_vertex_exclude(ctx->pl, n);
 
 			/* now we have two points at the new stub endpoint: next and next->prev;
@@ -540,11 +541,12 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 			n = next;
 			next = n->prev;
 /*rnd_trace("    stub removal2: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+			removed2 = n;
 			rnd_poly_vertex_exclude(ctx->pl, n);
 
 			start = NULL;
 
-			if (n == loop_start) {
+			if ((loop_start == removed1) || (loop_start == removed2)) {
 				loop_start = next;
 				n = next;
 				goto bypass_restart;
