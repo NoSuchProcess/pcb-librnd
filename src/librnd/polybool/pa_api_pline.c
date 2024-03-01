@@ -501,8 +501,8 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	   very small triangle, the "inner" point typically falls slightly outside.
 	   Do a slower but more reliable check corner by corner. Use majority vote
 	   because one point may be outside while majority of the poly is inside.
-	   Related test case: gixedo, gixedq */
-	if (inner->area < 3) {
+	   Related test case: gixedo, gixedq* */
+	if (inner->area < 6) {
 		rnd_vnode_t *n = inner->head;
 		int p_in = 0, p_out = 0;
 		do {
