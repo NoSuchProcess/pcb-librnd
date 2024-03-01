@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- gixedz: asserts
 		- gixed0: inf loop
 		- gixed1: checker false positive?
 		- rnd_polyarea_and_subtract_free() should call the postprocessor
