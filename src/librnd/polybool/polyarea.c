@@ -45,3 +45,5 @@
 #include "pa_self_isc.c"
 
 #include "pa_compat.c"
+
+int rnd_polybool_assert_on_error_code = 0;
