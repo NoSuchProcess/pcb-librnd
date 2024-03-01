@@ -104,7 +104,12 @@ typedef enum pa_plinept_label_e {
 /* ugly hack: long-jump out to the error handler e (assumed to exist in
    current scope, normally received as a function argument) with a
    non-zero error code */
-#define pa_error(code)  longjmp(*(e), code)
+#define pa_error(code) \
+	do { \
+		if (rnd_polybool_assert_on_error_code) \
+			assert(!"error code: " #code); \
+		longjmp(*(e), code); \
+	} while(0)
 
 /* standard error codes for pa_error() */
 enum {
