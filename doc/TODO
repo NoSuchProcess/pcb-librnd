@@ -2,6 +2,7 @@
 	- polybool:
 		- gixedz: bad crossing at 749;273
 		- gixed1: infinite loop
+		- gixed2: multi island poly inshole assert
 		- rnd_polyarea_and_subtract_free() should call the postprocessor
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
