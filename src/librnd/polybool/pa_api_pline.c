@@ -429,7 +429,7 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int p
    [O'Rourke]: Computational Geometry in C (2nd Ed.)
                Joseph O'Rourke, Cambridge University Press 1998,
                ISBN 0-521-64010-5 Pbk, ISBN 0-521-64976-5 Hbk */
-RND_INLINE void pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
+RND_INLINE int pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
 {
 	rnd_vnode_t *pt1, *pt2, *pt3, *n, *min_n = NULL;
 	double dist, min_dist = 0.0, dir = (poly->flg.orient == RND_PLF_DIR) ? 1.0 : -1.0;
@@ -472,6 +472,8 @@ RND_INLINE void pa_pline_interior_pt(rnd_pline_t *poly, rnd_vector_t v)
 		v[0] = (pt2->point[0] + min_n->point[0]) / 2;
 		v[1] = (pt2->point[1] + min_n->point[1]) / 2;
 	}
+
+	return point_in_triangle(pt1->point, pt2->point, pt3->point, v) ? 0 : -1;
 }
 
 rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
@@ -503,22 +505,26 @@ rnd_bool pa_pline_inside_pline(rnd_pline_t *outer, rnd_pline_t *inner)
 	   because one point may be outside while majority of the poly is inside.
 	   Related test case: gixedo, gixedq* */
 	if (inner->area < 6) {
-		rnd_vnode_t *n = inner->head;
-		int p_in = 0, p_out = 0;
-		do {
-			int r = pa_pline_is_point_inside(outer, n->point);
-			if (r)
-				p_in++;
-			else
-				p_out++;
-		} while((n = n->next) != inner->head);
-		return (p_in >= p_out);
+		broke:;
+		{
+			rnd_vnode_t *n = inner->head;
+			int p_in = 0, p_out = 0;
+			do {
+				int r = pa_pline_is_point_inside(outer, n->point);
+				if (r)
+					p_in++;
+				else
+					p_out++;
+			} while((n = n->next) != inner->head);
+			return (p_in >= p_out);
+		}
 	}
 
 	/* ...but that may still be only a shared point while the rest of inner
 	   is simply all outside. Since they are not intersecting if a random
 	   internal point of inner is inside outer, the whole inner is inside outer */
-	pa_pline_interior_pt(inner, ipt);
+	if (pa_pline_interior_pt(inner, ipt) != 0)
+		goto broke; /* evade corner cases where pa_pline_interior_pt() breaks */
 	return pa_pline_is_point_inside(outer, ipt);
 }
 
