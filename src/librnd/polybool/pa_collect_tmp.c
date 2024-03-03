@@ -190,12 +190,13 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 {
 	rnd_heap_t *heap;
 	rnd_pline_t *container = NULL;
+	int orp;
 
 	/* build a heap of all of the polys that the hole is inside its bounding box */
 	heap = rnd_heap_create();
 	rnd_r_search(tree, (rnd_box_t *)pl, NULL, pa_inshole_heap_it_cb, heap, NULL);
+	orp = pl->flg.orphaned;
 	if (rnd_heap_is_empty(heap)) {
-		int orp = pl->flg.orphaned;
 #ifndef NDEBUG
 #ifdef DEBUG
 		pa_poly_dump(dst);
@@ -235,6 +236,13 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 		}
 	}
 	rnd_heap_destroy(&heap);
+
+	/* if we had a non-empty heap and didn't find anything and our pl is orphaned
+	   that's all fine, that only means the parent fully got removed. Test case:
+	   gixedy2 */
+	if (orp && container == NULL)
+		return &orp_cont;
+
 	return container;
 }
 
