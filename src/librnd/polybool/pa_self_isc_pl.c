@@ -664,6 +664,11 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			return NULL; /* arrived back to the starting point - finish normally */
 		}
 
+		if (onto == prev_node) { /* test case: gixed1 */
+			rnd_trace(" refuse (prev_node, coming from)\n");
+			continue;
+		}
+
 		if (shtest->shared) {
 			rnd_trace(" refuse (shared)\n");
 			continue;
