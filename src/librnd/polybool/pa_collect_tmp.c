@@ -256,7 +256,13 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 	pa_insert_holes_t *all_insh_ctx, *insh_ctx;
 
 	if (*src == NULL) return; /* empty hole list */
-	if (dst == NULL) pa_error(pa_err_bad_parm); /* empty contour list */
+	if (dst == NULL) {
+		for(pl = *src; pl != NULL; pl = pl->next) {
+			if (!pl->flg.orphaned)
+				pa_error(pa_err_bad_parm); /* empty output contour list, nothing to insert into */
+		}
+		return; /* all holes are orphaned, no need to insert them anyway; test case: gixed2b */
+	}
 
 	num_polyareas = pa_polyarea_count(dst);
 
