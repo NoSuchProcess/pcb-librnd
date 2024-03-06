@@ -283,6 +283,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 	return 0;
 }
 
+int cnt;
+
 RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 {
 	rnd_polyarea_t *pa_start;
@@ -325,16 +327,25 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				   Sub tmpa from *pa and put the result in tmpc */
 				(*pa)->from_selfisc = 1;
 				tmpa->from_selfisc = 1;
+				cnt++;
 				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
-
+				rnd_trace("CNT1 {%d}\n", cnt);
 				assert(tmpc != NULL);
+				assert(rnd_poly_valid(tmpc));
 
 				if (pa_remain != NULL) {
 					/* put back tmpc into pa_remain and make the combined result *pa again */
 					*pa = pa_remain;
 					(*pa)->from_selfisc = 1;
 					tmpc->from_selfisc = 1;
+					remove_all_cvc(pa);
+					remove_all_cvc(&tmpc);
+
+					cnt++;
+					rnd_trace("CNT2 {%d} in: pa=%d tmpc=%d\n", cnt, rnd_poly_valid(*pa), rnd_poly_valid(tmpc));
 					rnd_polyarea_boolean_free_nochk(*pa, tmpc, &tmpd, RND_PBO_UNITE);
+					rnd_trace("CNT3 {%d}\n", cnt);
+/*					assert(rnd_poly_valid(tmpd));*/
 					*pa = tmpd;
 				}
 				else
@@ -402,6 +413,8 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_cardinal_t cnt;
+
+	rnd_trace("== selfisc ==\n");
 
 	cnt = split_selfisc_pline(pa);
 
