@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- gixedz: bad crossing at 749;273
 		- rnd_polyarea_and_subtract_free() should call the postprocessor
 		- bf fails on OSX (repro can reproduce it): infinite loop?
 		- finish self intersecting holes: sih_*
