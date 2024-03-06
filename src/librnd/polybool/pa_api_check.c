@@ -183,6 +183,46 @@ RND_INLINE int pa_chk_ll_olap(rnd_vnode_t *isc, rnd_vnode_t *pt, rnd_vnode_t *ot
 	return 0;
 }
 
+RND_INLINE int chk_on_same_pt(rnd_vnode_t *va, rnd_vnode_t *vb)
+{
+	if (va == vb) return 1;
+	return (va->point[0] == vb->point[0]) && (va->point[1] == vb->point[1]);
+}
+
+/* Walk the polyline from start, either jumping on ->next (dir>0) or on ->prev
+   (dir<0) and compute the polarity of that loop. Returns +1 for outline, -1
+   for hole. */
+RND_INLINE pa_chk_loop_polarity(rnd_vnode_t *start, int dir)
+{
+	double area = 0;
+	rnd_vnode_t *c, *p;
+
+	p = start;
+	c = (dir > 0) ? p->next : p->prev;
+/*	rnd_trace("LOOP POLARITY: %d;%d dir=%d ", c->point[0], c->point[1], dir);*/
+	for(; !chk_on_same_pt(c, start); c = (dir > 0) ? c->next : c->prev) {
+		area += (double)(p->point[0] - c->point[0]) * (double)(p->point[1] + c->point[1]);
+		p = c;
+	}
+
+	/* close the loop */
+	c = start;
+	area += (double)(p->point[0] - c->point[0]) * (double)(p->point[1] + c->point[1]);
+
+
+/*	rnd_trace(" area=%f -> ", area);
+	if (dir > 0)
+		rnd_trace(" %d\n", area > 0 ? +1 : -1);
+	else
+		rnd_trace(" %d\n", area > 0 ? -1 : +1);
+*/
+
+	if (dir > 0)
+		return area > 0 ? +1 : -1;
+
+	return area > 0 ? -1 : +1;
+}
+
 /*** Contour check ***/
 
 /* returns rnd_true if contour is invalid: a self-touching contour is valid, but
@@ -275,9 +315,24 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 			else {
 				/* Same as the above two cases, but compare hit1 to hit2 to find if it's a crossing */
 				if (pa_vect_inside_sect(hit1, hit2->prev->point) != pa_vect_inside_sect(hit1, hit2->next->point)) {
-					PA_CHK_MARK(hit1->point[0], hit2->point[1]);
-					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (3) at %mm;%mm (%ld;%ld) or %mm;%mm (%ld;%ld)", hit1->point[0], hit1->point[1], hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1], hit2->point[0], hit2->point[1]);
+					int polarity[4];
+
+					/* This might be the polyline crossing itself. But there is a corner
+					   case, gixedz2, that technically does cross itself but really yields
+					   3 (or generally an odd number of) valid polygon fans. The simplest
+					   invalid case is bowtie. Check all fan blade areas if: blades have
+					   the same polarity, this is a valid crossing; any flip/twist makes
+					   the crossing invalid. */
+					polarity[0] = pa_chk_loop_polarity(hit1, -1);
+					polarity[1] = pa_chk_loop_polarity(hit1, +1);
+					polarity[2] = pa_chk_loop_polarity(hit2, -1);
+					polarity[3] = pa_chk_loop_polarity(hit2, +1);
+
+					if ((polarity[1] != polarity[0]) || (polarity[2] != polarity[0]) || (polarity[3] != polarity[0])) {
+						PA_CHK_MARK(hit1->point[0], hit2->point[1]);
+						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
+						return PA_CHK_ERROR(res, "plines crossing/twisting (3) at %mm;%mm (%ld;%ld) or %mm;%mm (%ld;%ld)", hit1->point[0], hit1->point[1], hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1], hit2->point[0], hit2->point[1]);
+					}
 				}
 			}
 		} while((a2 = a2->next) != a->head);
