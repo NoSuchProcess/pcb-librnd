@@ -243,7 +243,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline_pline(rnd_polyarea_t **pa)
 				if (rnd_pline_isc_pline(pl, pl2)) {
 					rnd_polyarea_t *tmpa, *tmpb, *tmpc = NULL, *na;
 
-					rnd_trace("selfisc class 2a hole-hole\n");
+					DEBUG_SELFISC("selfisc class 2a hole-hole\n");
 					pa_polyarea_del_pline(*pa, pl);
 					pa_polyarea_del_pline(*pa, pl2);
 
@@ -300,7 +300,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				rnd_polyarea_t *tmpa, *tmpc = NULL, *tmpd = NULL;
 				rnd_polyarea_t *pa_remain;
 
-				rnd_trace("selfisc class 2b hole-contour\n");
+				DEBUG_SELFISC("selfisc class 2b hole-contour\n");
 
 				pa_polyarea_del_pline(*pa, pl);
 
@@ -329,7 +329,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 				tmpa->from_selfisc = 1;
 				cnt++;
 				rnd_polyarea_boolean_free_nochk(*pa, tmpa, &tmpc, RND_PBO_SUB);
-				rnd_trace("CNT1 {%d}\n", cnt);
+				DEBUG_SELFISC("CNT1 {%d}\n", cnt);
 				assert(tmpc != NULL);
 				assert(rnd_poly_valid(tmpc));
 
@@ -342,9 +342,9 @@ RND_INLINE rnd_cardinal_t split_selfisc_hole_outline(rnd_polyarea_t **pa)
 					remove_all_cvc(&tmpc);
 
 					cnt++;
-					rnd_trace("CNT2 {%d} in: pa=%d tmpc=%d\n", cnt, rnd_poly_valid(*pa), rnd_poly_valid(tmpc));
+					DEBUG_SELFISC("CNT2 {%d} in: pa=%d tmpc=%d\n", cnt, rnd_poly_valid(*pa), rnd_poly_valid(tmpc));
 					rnd_polyarea_boolean_free_nochk(*pa, tmpc, &tmpd, RND_PBO_UNITE);
-					rnd_trace("CNT3 {%d}\n", cnt);
+					DEBUG_SELFISC("CNT3 {%d}\n", cnt);
 /*					assert(rnd_poly_valid(tmpd));*/
 					*pa = tmpd;
 				}
@@ -378,7 +378,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 			int touching;
 
 			pab_next = pab->f;
-			rnd_trace("pa-pa %p %p\n", paa, pab);
+			DEBUG_SELFISC("pa-pa %p %p\n", paa, pab);
 
 			touching = rnd_polyarea_island_isc(paa, pab); /* this call doesn't add cvcs */
 			if (touching) {
@@ -386,7 +386,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 				pa_polyarea_unlink(pa, pab);
 				vtp0_append(&floating, pab);
 
-				rnd_trace("pa-pa isc! -> resolving with an union (later)\n");
+				DEBUG_SELFISC("pa-pa isc! -> resolving with an union (later)\n");
 			}
 		}
 	} while((paa = paa->f) != *pa);
@@ -396,13 +396,13 @@ RND_INLINE rnd_cardinal_t split_selfisc_pa_pa(rnd_polyarea_t **pa)
 		int res;
 		rnd_polyarea_t *tmp = NULL, *fl = floating.array[n];
 
-		rnd_trace("pa-pa isc union:\n");
+		DEBUG_SELFISC("pa-pa isc union:\n");
 		(*pa)->from_selfisc = 1;
 		fl->from_selfisc = 1;
 		res = rnd_polyarea_boolean_free(*pa, fl, &tmp, RND_PBO_UNITE);
 		*pa = tmp;
 
-		rnd_trace("  pa-pa isc union result: %d -> %p\n", res, *pa);
+		DEBUG_SELFISC("  pa-pa isc union result: %d -> %p\n", res, *pa);
 		cnt++;
 	}
 	vtp0_uninit(&floating);
@@ -414,7 +414,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 {
 	rnd_cardinal_t cnt;
 
-	rnd_trace("== selfisc ==\n");
+	DEBUG_SELFISC("== selfisc ==\n");
 
 	cnt = split_selfisc_pline(pa);
 

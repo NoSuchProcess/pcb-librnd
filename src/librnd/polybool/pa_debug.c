@@ -345,3 +345,12 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 #	undef DEBUG_GATHER
 #	define DEBUG_GATHER PA_DEBUGP_DUMMY
 #endif
+
+
+#if DEBUG_SELFISC
+#	undef DEBUG_SELFISC
+#	define DEBUG_SELFISC DEBUGP
+#else
+#	undef DEBUG_SELFISC
+#	define DEBUG_SELFISC PA_DEBUGP_DUMMY
+#endif

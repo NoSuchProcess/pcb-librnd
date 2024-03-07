@@ -152,13 +152,13 @@ RND_INLINE int on_same_seg_mark(rnd_vnode_t *va, rnd_vnode_t *vb)
 	if (on_same_pt(va, vb) && on_same_pt(va->next, vb->next)) {
 		va->shared = vb;
 		vb->shared = va;
-		rnd_trace("     shared+={%p} {%p}", va, vb);
+		DEBUG_SELFISC("     shared+={%p} {%p}", va, vb);
 		return 1;
 	}
 	if (on_same_pt(va->next, vb) && on_same_pt(va, vb->next)) {
 		va->shared = vb;
 		vb->shared = va;
-		rnd_trace("     shared+={%p} {%p}", va, vb);
+		DEBUG_SELFISC("     shared+={%p} {%p}", va, vb);
 		return 1;
 	}
 	return 0;
@@ -181,12 +181,12 @@ static rnd_r_dir_t pa_selfisc_map_cross_cb(const rnd_box_t *b, void *cl)
 	if ((s->v == ctx->v) || (s->v == ctx->v->next) || (s->v == ctx->v->prev))
 		return RND_R_DIR_NOT_FOUND;
 
-rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:\n", NODE_CRDS(s->v), NODE_CRDS(s->v->next));
+DEBUG_SELFISC("  ISC vs %.2f;%.2f  %.2f;%.2f:\n", NODE_CRDS(s->v), NODE_CRDS(s->v->next));
 
 	if (on_same_seg_mark(ctx->v, s->v)) {
 		/* avoid infinite loop of re-discovering the same shared segment, plus
 		   optimization for trivial shared lines */
-		rnd_trace("   shared seg marked (quick)\n");
+		DEBUG_SELFISC("   shared seg marked (quick)\n");
 		ctx->num_isc++;
 		return RND_R_DIR_NOT_FOUND;
 	}
@@ -210,11 +210,11 @@ rnd_trace("  ISC vs %.2f;%.2f  %.2f;%.2f:\n", NODE_CRDS(s->v), NODE_CRDS(s->v->n
 		return RND_R_DIR_NOT_FOUND;
 
 
-rnd_trace("   [%d] %.2f;%.2f", num_isc, pa_big_double(isc1.x), pa_big_double(isc1.y));
+DEBUG_SELFISC("   [%d] %.2f;%.2f", num_isc, pa_big_double(isc1.x), pa_big_double(isc1.y));
 if (num_isc > 1)
-	rnd_trace("  and   %.2f;%.2f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
+	DEBUG_SELFISC("  and   %.2f;%.2f\n", pa_big_double(isc2.x), pa_big_double(isc2.y));
 else
-	rnd_trace("\n");
+	DEBUG_SELFISC("\n");
 
 	/* Having two intersections means line-line overlap: class 5 */
 	if (num_isc == 2) {
@@ -257,7 +257,7 @@ else
 		shb->shared = sha;
 		sha->shared = shb;
 
-		rnd_trace("   shared seg marked (alloced=%d)\n", alloced);
+		DEBUG_SELFISC("   shared seg marked (alloced=%d)\n", alloced);
 		ctx->num_isc++;
 		if (alloced)
 			return RND_R_DIR_CANCEL; /* modified the tree, need to restart the search at this node */
@@ -314,7 +314,7 @@ static rnd_r_dir_t pa_selfisc_install_cvc_cb(const rnd_box_t *b, void *cl)
 		ctx->v->cvclst_next = pa_prealloc_conn_desc(pt);
 		list = pa_add_conn_desc_at(ctx->v, 's', NULL);
 
-		rnd_trace("  include initial:  %ld;%ld - %ld;%ld\n",
+		DEBUG_SELFISC("  include initial:  %ld;%ld - %ld;%ld\n",
 			(long)ctx->v->point[0], (long)ctx->v->point[1],
 			(long)ctx->v->next->point[0], (long)ctx->v->next->point[1]);
 	}
@@ -323,7 +323,7 @@ static rnd_r_dir_t pa_selfisc_install_cvc_cb(const rnd_box_t *b, void *cl)
 		memcpy(&pt, &ctx->v->cvclst_prev->isc, sizeof(pt));
 	}
 
-	rnd_trace("  include offender: %ld;%ld - %ld;%ld\n",
+	DEBUG_SELFISC("  include offender: %ld;%ld - %ld;%ld\n",
 		(long)offender->point[0], (long)offender->point[1],
 		(long)offender->next->point[0], (long)offender->next->point[1]);
 
@@ -375,7 +375,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto, *shtest;
 
-	rnd_trace(" next: ");
+	DEBUG_SELFISC(" next: ");
 	if (n->cvclst_prev == NULL) {
 		if (*dir == 'N') {
 			onto = n->next;
@@ -385,13 +385,13 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 			onto = n->prev;
 			onto->flg.mark = 1;
 		}
-		rnd_trace("straight to %.2f %.2f\n", NODE_CRDS(onto));
+		DEBUG_SELFISC("straight to %.2f %.2f\n", NODE_CRDS(onto));
 
 		return onto;
 	}
 
 	start = c = n->cvclst_prev->next;
-	rnd_trace("CVC (c->side=%c *dir=%c)\n", c->side, *dir);
+	DEBUG_SELFISC("CVC (c->side=%c *dir=%c)\n", c->side, *dir);
 	do {
 		int eff_dir = pa_eff_dir_forward(c->side, *dir);
 
@@ -401,9 +401,9 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		}
 		else shtest = onto = c->parent->prev;
 
-		rnd_trace("  %.2f %.2f '%c' eff_dir=%d sh?={%p}", NODE_CRDS(onto), c->side, eff_dir, c->parent);
+		DEBUG_SELFISC("  %.2f %.2f '%c' eff_dir=%d sh?={%p}", NODE_CRDS(onto), c->side, eff_dir, c->parent);
 		if (shtest->shared) {
-			rnd_trace(" refuse (shared)\n");
+			DEBUG_SELFISC(" refuse (shared)\n");
 			continue;
 		}
 		if (onto->flg.mark)
@@ -415,10 +415,10 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 			else
 				onto->flg.mark = 1;
 			
-			rnd_trace(" accept, dir '%c' (onto) {%p}!\n", *dir, onto);
+			DEBUG_SELFISC(" accept, dir '%c' (onto) {%p}!\n", *dir, onto);
 			return onto;
 		}
-		rnd_trace(" refuse (marked) {%p}\n", onto);
+		DEBUG_SELFISC(" refuse (marked) {%p}\n", onto);
 	} while((c = c->prev) != start);
 
 	/* corner case: bowtie-kind of self-isc with the original 'start' node
@@ -435,7 +435,7 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		else onto = c->parent->prev;
 
 		if (onto->flg.start) {
-			rnd_trace(" accept, dir '%c' (start %.2f;%.2f)!\n", *dir, NODE_CRDS(onto));
+			DEBUG_SELFISC(" accept, dir '%c' (start %.2f;%.2f)!\n", *dir, NODE_CRDS(onto));
 			if (eff_dir)
 				c->parent->flg.mark = 1;
 			else
@@ -512,7 +512,7 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n, *loop_start, *sprev, *stop_at, *next, *removed1, *removed2;
 
-/*	rnd_trace("STUB removal\n");*/
+/*	DEBUG_SELFISC("STUB removal\n");*/
 
 	/* don't start from a stub */
 	loop_start = start;
@@ -527,12 +527,12 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 			pa_conn_desc_t *c1, *c2;
 
 			/* n is the endpoint of a stub */
-/*			rnd_trace("STUB  found endpoint at: %ld;%ld prev=%ld;%ld next=%ld;%ld\n", n->point[0], n->point[1], n->prev->point[0], n->prev->point[1], n->next->point[0], n->next->point[1]);*/
+/*			DEBUG_SELFISC("STUB  found endpoint at: %ld;%ld prev=%ld;%ld next=%ld;%ld\n", n->point[0], n->point[1], n->prev->point[0], n->prev->point[1], n->next->point[0], n->next->point[1]);*/
 
 			if (n == start)
 				start = n->next;
 
-/*rnd_trace("    stub removal1: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+/*DEBUG_SELFISC("    stub removal1: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
 			removed1 = n;
 			rnd_poly_vertex_exclude(ctx->pl, n);
 
@@ -540,7 +540,7 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 			   Remove one of them. */
 			n = next;
 			next = n->prev;
-/*rnd_trace("    stub removal2: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
+/*DEBUG_SELFISC("    stub removal2: %ld;%ld -> %ld;%ld\n", n->point[0], n->point[1], n->next->point[0], n->next->point[1]);*/
 			removed2 = n;
 			rnd_poly_vertex_exclude(ctx->pl, n);
 
@@ -569,7 +569,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	start->flg.start = 1;
 	dst = pa_pline_new(start->point);
 
-	rnd_trace("selfi collect outline from %.2f %.2f\n", NODE_CRDS(start));
+	DEBUG_SELFISC("selfi collect outline from %.2f %.2f\n", NODE_CRDS(start));
 
 	/* append dst to the list of plines */
 	posneg_append_pline(posneg, +1, dst);
@@ -580,7 +580,7 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	n = pa_selfisc_next_o(start, &dir);
 
 	for(; (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir)) {
-		rnd_trace(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
+		DEBUG_SELFISC(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
 		*/
@@ -600,12 +600,12 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_i(rnd_vnode_t *n, char *dir, rnd_vnode_t
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto, *shtest;
 
-	rnd_trace("    next (first:%p dir='%c'): ", first, *dir);
+	DEBUG_SELFISC("    next (first:%p dir='%c'): ", first, *dir);
 	if (n->cvclst_prev == NULL) {
 		if (*dir == 'N') {
 			onto = n->prev;
 			onto->flg.mark = 1;
-rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(onto));
+DEBUG_SELFISC("[mark %.2f;%.2f] ", NODE_CRDS(onto));
 			if (first) {
 				*first = onto;
 				onto->flg.start = 1;
@@ -614,17 +614,17 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(onto));
 		else {
 			onto = n->next;
 			n->flg.mark = 1;
-rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
+DEBUG_SELFISC("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			if (first) {
 				*first = n;
 				n->flg.start = 1;
 			}
 		}
-		rnd_trace("straight to %.2f %.2f\n", NODE_CRDS(onto));
+		DEBUG_SELFISC("straight to %.2f %.2f\n", NODE_CRDS(onto));
 		return onto;
 	}
 
-	rnd_trace("CVC\n");
+	DEBUG_SELFISC("CVC\n");
 
 	/* quick return: if we can get back to the starting point from this CVC, do
 	   that; other loops will be picked up separately. Test case: gixedj. But
@@ -658,19 +658,19 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 			shtest = c->parent;
 		}
 
-		rnd_trace("     %.2f %.2f '%c' m%d s%d %d onto={%p} parent={%p}", NODE_CRDS(onto), c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
+		DEBUG_SELFISC("     %.2f %.2f '%c' m%d s%d %d onto={%p} parent={%p}", NODE_CRDS(onto), c->side, onto->flg.mark, onto->flg.start, c->parent->flg.start, onto, c->parent);
 		if (c->parent->flg.start) {
 			if (first) continue; /* tried to start onto an already mapped path; try the next */
 			return NULL; /* arrived back to the starting point - finish normally */
 		}
 
 		if (onto == prev_node) { /* test case: gixed1 */
-			rnd_trace(" refuse (prev_node, coming from)\n");
+			DEBUG_SELFISC(" refuse (prev_node, coming from)\n");
 			continue;
 		}
 
 		if (shtest->shared) {
-			rnd_trace(" refuse (shared)\n");
+			DEBUG_SELFISC(" refuse (shared)\n");
 			continue;
 		}
 
@@ -686,7 +686,7 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 					*first = onto;
 					onto->flg.start = 1;
 				}
-				rnd_trace(" mark %.2f %.2f M1a s%d {%p}", NODE_CRDS(onto), first, onto);
+				DEBUG_SELFISC(" mark %.2f %.2f M1a s%d {%p}", NODE_CRDS(onto), first, onto);
 			}
 			else {
 				c->parent->flg.mark = 1;
@@ -694,13 +694,13 @@ rnd_trace("[mark %.2f;%.2f] ", NODE_CRDS(n));
 					*first = c->parent;
 					c->parent->flg.start = 1;
 				}
-				rnd_trace(" mark %.2f %.2f M1b s%d {%p}", NODE_CRDS(c->parent), first, c->parent);
+				DEBUG_SELFISC(" mark %.2f %.2f M1b s%d {%p}", NODE_CRDS(c->parent), first, c->parent);
 			}
 
-			rnd_trace("    accept, dir '%c' (onto)!\n", *dir);
+			DEBUG_SELFISC("    accept, dir '%c' (onto)!\n", *dir);
 			return onto;
 		}
-		rnd_trace("    refuse (marked)\n");
+		DEBUG_SELFISC("    refuse (marked)\n");
 	} while((c = c->prev) != start);
 
 	if (!first) {
@@ -725,18 +725,18 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 	dst = pa_pline_new(start->point);
 	last = dst->head;
 
-	rnd_trace("  island {:\n");
-	rnd_trace("   IS1 %.2f %.2f\n", NODE_CRDS(start));
+	DEBUG_SELFISC("  island {:\n");
+	DEBUG_SELFISC("   IS1 %.2f %.2f\n", NODE_CRDS(start));
 	n = pa_selfisc_next_i(start, &dir, &started, NULL, NULL);
 	prev2 = n;
 	for(; (n != start) && (n != NULL); n = pa_selfisc_next_i(n, &dir, 0, started, prev_node)) {
-		rnd_trace("   IS2 %.2f %.2f\n", NODE_CRDS(n));
+		DEBUG_SELFISC("   IS2 %.2f %.2f\n", NODE_CRDS(n));
 
 		/* This is rounding n->cvc into newn->point */
 		newn = calloc(sizeof(rnd_vnode_t), 1);
 		newn->point[0] = n->point[0];
 		newn->point[1] = n->point[1];
-		rnd_trace("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
+		DEBUG_SELFISC("      appn: %ld;%ld %p\n", newn->point[0], newn->point[1], newn);
 		rnd_poly_vertex_include(last, newn);
 		prev_node = prev2;
 		prev2 = n;
@@ -755,7 +755,7 @@ RND_INLINE void pa_selfisc_collect_island(pa_posneg_t *posneg, rnd_vnode_t *star
 		else if ((dir == 'P') && (dst->flg.orient == RND_PLF_DIR))
 			accept_pol = +1;
 	}
-	rnd_trace("\n  } (end island: len=%d dir=%c PLF=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, accept_pol);
+	DEBUG_SELFISC("\n  } (end island: len=%d dir=%c PLF=%d accept=%d)\n", dst->Count, dir, dst->flg.orient == RND_PLF_DIR, accept_pol);
 	if (started != NULL)
 		started->flg.start = 0;
 
@@ -781,7 +781,7 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 {
 	rnd_vnode_t *n;
 
-	rnd_trace("selfi collect islands from %d %d\n", start->point[0], start->point[1]);
+	DEBUG_SELFISC("selfi collect islands from %d %d\n", start->point[0], start->point[1]);
 
 	/* detect uncollected loops */
 	n = start;
@@ -791,7 +791,7 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 		if ((cstart == NULL) || n->flg.mark)
 			continue;
 		
-		rnd_trace(" at isl %.2f %.2f\n", NODE_CRDS(n));
+		DEBUG_SELFISC(" at isl %.2f %.2f\n", NODE_CRDS(n));
 		c = cstart;
 		do {
 			if (!c->parent->flg.mark)
@@ -805,17 +805,17 @@ RND_INLINE void pa_selfisc_collect_islands(pa_posneg_t *posneg, rnd_vnode_t *sta
 int stub_from(rnd_vnode_t *nd)
 {
 	pa_conn_desc_t *c = nd->cvclst_prev;
-/*	rnd_trace("STUB at %ld %ld:\n", nd->point[0], nd->point[1]);*/
+/*	DEBUG_SELFISC("STUB at %ld %ld:\n", nd->point[0], nd->point[1]);*/
 	do {
 #if 0
-		rnd_trace(" %f %d ", pa_big_double(c->angle), (int)c->prelim);
-		rnd_trace("P %p (%ld %ld) ", c->parent->prev, (long)c->parent->prev->point[0], (long)c->parent->prev->point[1]);
-		rnd_trace("N %p (%ld %ld)\n", c->parent->next, (long)c->parent->next->point[0], (long)c->parent->next->point[1]);
+		DEBUG_SELFISC(" %f %d ", pa_big_double(c->angle), (int)c->prelim);
+		DEBUG_SELFISC("P %p (%ld %ld) ", c->parent->prev, (long)c->parent->prev->point[0], (long)c->parent->prev->point[1]);
+		DEBUG_SELFISC("N %p (%ld %ld)\n", c->parent->next, (long)c->parent->next->point[0], (long)c->parent->next->point[1]);
 #endif
 		if (pa_big_coord_cmp(c->angle, c->prev->angle) == 0) {
 			/* test case: gixedd at 836;559 <-> 835;559 */
 TODO("arc: simply having the same angle works for lines but won't work for arcs; check if the outgoing edges fully overlap");
-			rnd_trace("(STUB detected at %ld %ld)\n", nd->point[0], nd->point[1]);
+			DEBUG_SELFISC("(STUB detected at %ld %ld)\n", nd->point[0], nd->point[1]);
 			return 1;
 		}
 	} while((c = c->next) != nd->cvclst_prev);
@@ -828,7 +828,7 @@ TODO("arc: simply having the same angle works for lines but won't work for arcs;
    Test case: fixedo at 225;215. Detect the X case and mark ctx self-isc */
 static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
 {
-	rnd_trace(" CVC cross detect: %ld;%ld\n", nd->point[0], nd->point[1]);
+	DEBUG_SELFISC(" CVC cross detect: %ld;%ld\n", nd->point[0], nd->point[1]);
 
 #if 0
 	pa_conn_desc_t *c;
@@ -836,8 +836,8 @@ static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
 	c = nd->cvclst_prev;
 	do {
 		rnd_vnode_t *cn = c->parent;
-		rnd_trace("  LS:   %p == %p\n", c->parent, nd);
-		rnd_trace("  ls:   %ld;%ld {%ld;%ld} %ld;%ld (%d) %c\n",
+		DEBUG_SELFISC("  LS:   %p == %p\n", c->parent, nd);
+		DEBUG_SELFISC("  ls:   %ld;%ld {%ld;%ld} %ld;%ld (%d) %c\n",
 			cn->prev->point[0], cn->prev->point[1],
 			cn->point[0], cn->point[1],
 			cn->next->point[0], cn->next->point[1],
@@ -848,14 +848,14 @@ static void selfisc_detect_cvc_crossing(pa_selfisc_t *ctx, rnd_vnode_t *nd)
 
 	if (pa_cvc_crossing_at_node(nd)) {
 		ctx->num_isc++;
-		rnd_trace("  -> X crossing\n");
+		DEBUG_SELFISC("  -> X crossing\n");
 	}
 	else if (stub_from(nd)) {
-		rnd_trace("  -> no crossing, >< topology but found stub\n");
+		DEBUG_SELFISC("  -> no crossing, >< topology but found stub\n");
 		ctx->num_isc++;
 	}
 	else
-		rnd_trace("  -> no crossing, >< topology\n");
+		DEBUG_SELFISC("  -> no crossing, >< topology\n");
 }
 
 
@@ -867,12 +867,12 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	/* the outline mapper needs minnode anyway, best if we figure that early
 	   so all output is deterministic */
 	n = start = pa_find_minnode(ctx->pl);
-	rnd_trace("self-isc: map_cross start\n");
+	DEBUG_SELFISC("self-isc: map_cross start\n");
 	do {
 		rnd_box_t box;
 		int rr;
 
-		rnd_trace(" map cross: %.2f;%.2f - %.2f;%.2f\n", NODE_CRDS(n), NODE_CRDS(n->next));
+		DEBUG_SELFISC(" map cross: %.2f;%.2f - %.2f;%.2f\n", NODE_CRDS(n), NODE_CRDS(n->next));
 
 		next = n->next;
 		ctx->v = n;
@@ -889,11 +889,11 @@ static rnd_vnode_t *split_selfisc_map(pa_selfisc_t *ctx)
 	   newly added points. It's (probably) the cheapest to just do a search from
 	   each point and add CVCs to any that ahs more than 2 edges coming in . */
 	n = start;
-	rnd_trace("self-isc: install cvc start\n");
+	DEBUG_SELFISC("self-isc: install cvc start\n");
 	do {
 		rnd_box_t box;
 
-		rnd_trace(" inst cvc: %.2f;%.2f\n", NODE_CRDS(n));
+		DEBUG_SELFISC(" inst cvc: %.2f;%.2f\n", NODE_CRDS(n));
 
 		n->flg.mark = 0;
 		ctx->v = n;
@@ -1210,7 +1210,7 @@ RND_INLINE rnd_cardinal_t split_selfisc_pline(rnd_polyarea_t **pa)
 		pa_posneg_t posneg = {0};
 		int has_selfisc;
 
-		rnd_trace("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
+		DEBUG_SELFISC("^ pa %p (f=%p in=%p)\n", *pa, (*pa)->f, pa_start);
 
 		/* remember pa->f so that new positive islands we are inserting after (*pa)
 		   are not affected */
