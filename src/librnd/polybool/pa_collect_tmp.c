@@ -220,8 +220,14 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 
 	if (rnd_heap_is_empty(heap)) {
 		/* only one possibility it must be the right one */
-		if (!pa_pline_inside_pline((*insh_ctx)->pa->contours, pl))
+		if (!pa_pline_inside_pline((*insh_ctx)->pa->contours, pl)) {
+			if (orp) {
+				/* orphaned hole did not fit in any of the remaining contours, just
+				   drop it. Test case: gixed3 */
+				return &orp_cont;
+			}
 			*risky = 1;
+		}
 		container = (*insh_ctx)->pa->contours;
 	}
 	else {
