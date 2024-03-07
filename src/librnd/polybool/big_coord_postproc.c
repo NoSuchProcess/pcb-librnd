@@ -352,20 +352,15 @@ static rnd_r_dir_t olap_edges_cb(const rnd_box_t *b, void *cl)
 	TODO("Arc: happens only on line-line or arc-arc; for arc-arc: radius and center match are required for an overlap");
 
 	cnt++;
-	rnd_trace(" S: %ld;%ld -> %ld;%ld pt= %ld;%ld [%d]\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->nd->point[0], ctx->nd->point[1], cnt);
 
 	on_edge = pa_pline_is_point_on_seg(s, ctx->nd->point);
 	if (on_edge) {
-		rnd_trace(" N: %ld;%ld -> %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1]);
 		if (pa_pline_is_point_on_seg(s, ctx->nd->next->point)) {
-			rnd_trace(" n %ld;%ld\n", ctx->nd->point[0], ctx->nd->point[1]);
 			ctx->res = 1;
 			return RND_R_DIR_CANCEL;
 		}
 
-		rnd_trace(" P: %ld;%ld -> %ld;%ld\n", s->v->prev->point[0], s->v->prev->point[1], s->v->point[0], s->v->point[1]);
 		if (pa_pline_is_point_on_seg(s, ctx->nd->prev->point)) {
-			rnd_trace(" p %ld;%ld\n", ctx->nd->point[0], ctx->nd->point[1]);
 			ctx->res = 1;
 			return RND_R_DIR_CANCEL;
 		}
@@ -387,8 +382,6 @@ RND_INLINE int big_bool_self_olap(rnd_polyarea_t *pn, rnd_pline_t *pl)
 
 		ptbx.X1 = ctx.nd->point[0];   ptbx.Y1 = ctx.nd->point[1];
 		ptbx.X2 = ctx.nd->point[0]+1; ptbx.Y2 = ctx.nd->point[1]+1;
-
-		rnd_trace("fixedy8: %ld;%ld -> %ld;%ld\n", ctx.nd->point[0], ctx.nd->point[1], ctx.nd->next->point[0], ctx.nd->next->point[1]);
 
 		rnd_r_search(pl->tree, &ptbx, NULL, olap_edges_cb, &ctx, NULL);
 		if (ctx.res)
