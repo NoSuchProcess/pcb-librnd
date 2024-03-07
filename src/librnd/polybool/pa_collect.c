@@ -242,10 +242,11 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 /*	orig_dir = pa_pline_update_big2small(*result);
 	rnd_trace("Bad orig=%d ", orig_dir);*/
 	pa_pline_update(*result, 1);
+#ifdef PA_BIGCOORD_ISC
 	pa_big_area_incremental(big_area, first_nd, prev_nd);
+
 	orig_dir = pa_big_area2ori(big_area);
 
-#ifdef PA_BIGCOORD_ISC
 	/* triangle flip special case; test case: fixedd, fixedi. The implicit rounding when
 	   nd is copied to newnd and cvc high resolution isc is dropped may cause
 	   self intersections in polygons that have more than 3 corners (this is
@@ -257,6 +258,11 @@ RND_INLINE int pa_coll_gather(rnd_vnode_t *start, rnd_pline_t **result, pa_jump_
 /*		rnd_trace(" triangle flip: [%d] orig_dir=%d res_dir=%d flipped=%d\n", (*result)->Count, orig_dir, (*result)->flg.orient, ((*result)->flg.orient != orig_dir));*/
 		if ((*result)->flg.orient != orig_dir)
 			pa_pline_invert(*result);
+	}
+	else {
+		/* Determine pline orient from the high resolution input instead of
+		   pa_pline_update()'s low resolution area computation. Test case: gixed2 */
+		(*result)->flg.orient = orig_dir;
 	}
 #endif
 
