@@ -22,6 +22,7 @@
 #define DEBUG_PAISC_DUMP 0
 #define DEBUG_DUMP 0
 #define DEBUG_SELFISC 0
+#define DEBUG_RISK 0
 
 #undef DEBUG
 

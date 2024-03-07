@@ -26,10 +26,22 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include "pa_config.h"
+
 #include "rtree.h"
 #include "rtree2_compat.h"
 
 #include <librnd/core/error.h>
+
+
+#if DEBUG_RISK
+#	undef DEBUG_RISK
+#	define DEBUG_RISK rnd_trace
+#else
+RND_INLINE PA_RISK_DUMMY(const char *fmt, ...) {}
+#	undef DEBUG_RISK
+#	define DEBUG_RISK PA_RISK_DUMMY
+#endif
 
 
 int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2);
@@ -58,12 +70,12 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	/* detect point-point overlap of rounded coords; this can be the basis of
 	   an X-topology self-intersection, see test case fixedo */
 	if ((s->v->next != ctx->v) && (s->v->next->point[0] == ctx->v->point[0]) && (s->v->next->point[1] == ctx->v->point[1])) {
-		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
+		DEBUG_RISK("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
 		ctx->pp_overlap = 1;
 		pp_other = s->v->next;
 	}
 	else if ((s->v != ctx->v) && (s->v->point[0] == ctx->v->point[0]) && (s->v->point[1] == ctx->v->point[1])) {
-		rnd_trace("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
+		DEBUG_RISK("   pp-overlap at %ld %ld\n", ctx->v->point[0], ctx->v->point[1]);
 		ctx->pp_overlap = 1;
 		pp_other = s->v;
 	}
@@ -90,14 +102,14 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 	if ((s->v->next == ctx->v) || (s->v == ctx->v)) {
 		if ((s->v == ctx->v) && (s->v->next == ctx->v->next)) {
 			/* if endpoints fully match by pointer that means we've found the very same line - skip this check, it's not a self intersection */
-			rnd_trace("  skip same edge isc 1\n");
+			DEBUG_RISK("  skip same edge isc 1\n");
 			refuse_2isc = 1;
 			goto skip1;
 		}
 
 		if (pa_big_is_node_on_line(ctx->v->next, s->v, s->v->next)) {
-			rnd_trace("   offend T 1: %ld;%ld - %ld;%ld ctx=%ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
-			rnd_trace("               %p - %p       %p - %p\n", s->v, s->v->next, ctx->v, ctx->v->next);
+			DEBUG_RISK("   offend T 1: %ld;%ld - %ld;%ld ctx=%ld;%ld - %ld;%ld\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1]);
+			DEBUG_RISK("               %p - %p       %p - %p\n", s->v, s->v->next, ctx->v, ctx->v->next);
 			return rnd_RTREE_DIR_FOUND_STOP;
 		}
 		return RND_R_DIR_NOT_FOUND;
@@ -105,12 +117,12 @@ static rnd_r_dir_t pa_pp_isc_cb(const rnd_box_t *b, void *cl)
 
 	skip1:;
 	num_isc = pa_isc_edge_edge(s->v, s->v->next, ctx->v, ctx->v->next, &isc1, &isc2);
-/*rnd_trace(" num_isc=%d refuse_2isc=%d\n", num_isc, refuse_2isc);*/
+/*DEBUG_RISK(" num_isc=%d refuse_2isc=%d\n", num_isc, refuse_2isc);*/
 	if (refuse_2isc && (num_isc == 2))
 		return RND_R_DIR_NOT_FOUND;
 
 /*
-rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
+DEBUG_RISK("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 	s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1],
 	ctx->v->point[0], ctx->v->point[1], ctx->v->next->point[0], ctx->v->next->point[1],
 	num_isc);
@@ -126,13 +138,13 @@ rnd_trace("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 		pa_big_load_cvc(&s2, s->v->next);
 		pa_big_load_cvc(&c1, ctx->v);
 		pa_big_load_cvc(&c2, ctx->v->next);
-/*rnd_trace("    IGNORE: %d %d %d %d\n", pa_big_vect_equ(s1, isc1), pa_big_vect_equ(s2, isc1), pa_big_vect_equ(c1, isc1), pa_big_vect_equ(c2, isc1));*/
+/*DEBUG_RISK("    IGNORE: %d %d %d %d\n", pa_big_vect_equ(s1, isc1), pa_big_vect_equ(s2, isc1), pa_big_vect_equ(c1, isc1), pa_big_vect_equ(c2, isc1));*/
 		if (pa_big_vect_equ(s1, isc1) || pa_big_vect_equ(s2, isc1) || pa_big_vect_equ(c1, isc1) || pa_big_vect_equ(c2, isc1))
 			num_isc--;
 	}
 
 	if (num_isc > 0) {
-		rnd_trace("   offend0: %ld;%ld - %ld;%ld numisc=%d\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], num_isc);
+		DEBUG_RISK("   offend0: %ld;%ld - %ld;%ld numisc=%d\n", s->v->point[0], s->v->point[1], s->v->next->point[0], s->v->next->point[1], num_isc);
 		return rnd_RTREE_DIR_FOUND_STOP;
 	}
 
@@ -164,12 +176,12 @@ RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t
 			if ((plother->xmax < box.X1) || (plother->ymax < box.Y1)) continue;
 			if ((plother->xmin > box.X2) || (plother->ymin > box.Y2)) continue;
 
-rnd_trace(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
+DEBUG_RISK(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
 
 			tmp.v = v;
 			tmp.pp_overlap = 0;
 			res = rnd_r_search(plother->tree, &box, NULL, pa_pp_isc_cb, &tmp, NULL);
-			rnd_trace("  res=%d %d (intersected: %d pp-overlap: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND), tmp.pp_overlap);
+			DEBUG_RISK("  res=%d %d (intersected: %d pp-overlap: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND), tmp.pp_overlap);
 			if (tmp.pp_overlap)
 				*pp_overlap_out = 1;
 			if (res & rnd_RTREE_DIR_FOUND)
@@ -212,7 +224,7 @@ RND_INLINE int seg_is_stub(rnd_vnode_t *edge1, rnd_vnode_t *edge2, rnd_vnode_t *
 		rnd_poly_vertex_include_force(edge1, new_node);
 	}
 
-/*	rnd_trace("STUB CHECK for %ld;%ld: %d\n", pt->point[0], pt->point[1], res);*/
+/*	DEBUG_RISK("STUB CHECK for %ld;%ld: %d\n", pt->point[0], pt->point[1], res);*/
 	
 	return res;
 }
@@ -226,7 +238,7 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 	int res = 0, rebuild_tree = 0, pp_overlap = 0;
 
 	if (pl->flg.risky) {
-		rnd_trace("pline marked risky earlier - schedule selfisc\n");
+		DEBUG_RISK("pline marked risky earlier - schedule selfisc\n");
 		res = 1;
 		pl->flg.risky = 0;
 	}
@@ -234,7 +246,7 @@ RND_INLINE int big_bool_ppl_(rnd_polyarea_t *pa, rnd_pline_t *pl, int already_ba
 	do {
 		if (v->flg.risk) {
 			v->flg.risk = 0;
-rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
+DEBUG_RISK("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->point[1]);
 			if (!res && !from_selfisc && (seg_too_short(v->prev, v) || seg_too_short(v, v->next))) {
 				/* Related test case: fixedx; causes triangle flip; can't happen
 				   if the length of the edge of the triangle is larger than our rounding
@@ -243,16 +255,16 @@ rnd_trace("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->poin
 				   that will then do a real triangle-flip detection.
 				   Skip this test if we are called back from the selfisc code through
 				   bool algebra: could send us into infinite loop, see test case fixedz */
-				rnd_trace("  segment too short next to a rounded corner! Shedule selfi-resolve\n");
+				DEBUG_RISK("  segment too short next to a rounded corner! Shedule selfi-resolve\n");
 				res = 1;
 			}
 			else if (!res && (seg_is_stub(v->prev, v, v->prev->prev) || seg_is_stub(v, v->next, v->next->next))) {
 				/* see description in seg_is_stub */
-				rnd_trace("  segment deflected into a stub! Shedule selfi-resolve\n");
+				DEBUG_RISK("  segment deflected into a stub! Shedule selfi-resolve\n");
 				res = 1;
 			}
 			else if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
-rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
+DEBUG_RISK("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
 		}
@@ -294,23 +306,23 @@ rnd_trace("  self-intersection occured! Shedule selfi-resolve\n");
 		   that point. We need to build the cvc lists to figure. */
 		rnd_vnode_t *n, *pp_other;
 
-		rnd_trace(" pp-overlap X-crossing risk...\n");
+		DEBUG_RISK(" pp-overlap X-crossing risk...\n");
 		pa_add_conn_desc(pl, 'A', NULL);
 
 		/* evaluate crossings */
 		n = pl->head;
 		do {
 			if (n->cvclst_prev != NULL) {
-				rnd_trace("  X-crossing check at %ld;%ld\n", n->point[0], n->point[1]);
+				DEBUG_RISK("  X-crossing check at %ld;%ld\n", n->point[0], n->point[1]);
 				pp_other = n->cvclst_prev->PP_OTHER;
 
 				if (pa_cvc_crossing_at_node(n)) {
 					res = 1;
-					rnd_trace("   X-crossing detected!! schedule selfisc\n");
+					DEBUG_RISK("   X-crossing detected!! schedule selfisc\n");
 				}
 				else if (pa_cvc_line_line_overlap(n, pp_other)) {
 					res = 1;
-					rnd_trace("   LL-overlap detected!! schedule selfisc\n");
+					DEBUG_RISK("   LL-overlap detected!! schedule selfisc\n");
 				}
 			}
 		} while((res == 0) && (n = n->next) != pl->head);
