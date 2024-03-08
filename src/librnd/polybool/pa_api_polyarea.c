@@ -102,7 +102,7 @@ typedef enum pa_island_isc_e {
 } pa_island_isc_t;
 
 
-/* Iterates through the nodes of small figuring if small is fully within big. */
+/* Iterates through the nodes of plines figuring if small is fully within big. */
 static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_pline_t *small, int point_on_edge_is_in)
 {
 	int got_in = 0, got_out = 0;
@@ -124,6 +124,14 @@ static pa_island_isc_t pa_pline_pline_isc(const rnd_pline_t *big, const rnd_plin
 		if (got_in && got_out) /* we are both inside and outside -> that's a crossing */
 			return PA_ISLAND_ISC_CROSS;
 	} while((n = n->next) != small->head);
+
+	/* Corner case: the big one can have a node within the small without the
+	   small having a node within the big. Test case: chk_hole_cntr */
+	n = big->head;
+	do {
+		if (pa_pline_is_vnode_inside(small, n, 0))
+			return PA_ISLAND_ISC_CROSS;
+	} while((n = n->next) != big->head);
 
 	/* if we got here, small is either full inside or fully outside */
 	return got_in ? PA_ISLAND_ISC_IN : PA_ISLAND_ISC_OUT;
