@@ -1,6 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool:
-		- gixed5: classic
+		- gixed5: classic (narrow bridge)
+		- gixed5b: nowhere to go (narrow bridge)
 		- rnd_polyarea_and_subtract_free() should call the postprocessor
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
 		- finish self intersecting holes: sih_*
