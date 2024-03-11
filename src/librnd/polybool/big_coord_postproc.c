@@ -44,11 +44,49 @@ RND_INLINE PA_RISK_DUMMY(const char *fmt, ...) {}
 #endif
 
 
+/* There's a line between vnodes l1 and l2, with an isc point in the middle;
+   sp-s-sn is another line touching isc in s; return 1 if s polyline is
+   actually going through (crossing) l, return 0 if it's bouncing back.
+   Similar to pa_cvc_crossing_at_node(), but this happened after rounding
+   so l1 doesn't have any node at isc and thus doesn't have a CVC to work from. */
+static int pa_pp_crossing_in_touchpoint(pa_big_vector_t isc, rnd_vnode_t *l1, rnd_vnode_t *l2, rnd_vnode_t *sp, rnd_vnode_t *s, rnd_vnode_t *sn)
+{
+#if 1
+	pa_big_angle_t al, asp, asn;
+	rnd_coord_t qsp, qsn, side_sp, side_sn;
+
+	DEBUG_RISK("   Bounce back? l: %ld;%ld .. %ld;%ld; s:  %ld;%ld .. %ld;%ld .. %ld;%ld\n",
+		l1->point[0], l1->point[1], l2->point[0], l2->point[1],
+		sp->point[0], sp->point[1], s->point[0], s->point[1], sn->point[0], sn->point[1]);
+
+	pa_big_calc_angle_nn(&al, l1, l2);
+	pa_big_calc_angle_nn(&asp, s, sp);
+	pa_big_calc_angle_nn(&asn, s, sn);
+
+	pa_angle_sub(asp, asp, al);
+	pa_angle_sub(asn, asn, al);
+
+	qsp = asp[4]; if (qsp < 0) qsp += 4;
+	qsn = asn[4]; if (qsn < 0) qsn += 4;
+
+	side_sp = qsp < 2;
+	side_sn = qsn < 2;
+
+	DEBUG_RISK("    angles: qsp:%d qsn:%d side_sp:%d side_sn:%d\n", qsp, qsn, side_sp, side_sn);
+	if (side_sp != side_sn)
+		return 1;
+#endif
+
+	return 0;
+}
+
+
 int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, pa_big_vector_t *isc1, pa_big_vector_t *isc2);
 
 typedef struct pa_pp_isc_s {
 	rnd_vnode_t *v;         /* input: first node of the edge we are checking */
 	int pp_overlap;
+	int from_selfisc;
 } pa_pp_isc_t;
 
 /* Report if there's an intersection between the edge starting from cl->v
@@ -133,13 +171,49 @@ DEBUG_RISK("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 	   with the same vertex in the center, but that's not self-intersection.
 	   Note: num_isc == 2 means overlapping lines, that needs to be handled. */
 	if (num_isc == 1) {
+		int on_s, on_c, on_s2, on_c2;
 		pa_big_vector_t s1, s2, c1, c2;
 		pa_big_load_cvc(&s1, s->v);
 		pa_big_load_cvc(&s2, s->v->next);
 		pa_big_load_cvc(&c1, ctx->v);
 		pa_big_load_cvc(&c2, ctx->v->next);
 /*DEBUG_RISK("    IGNORE: %d %d %d %d\n", pa_big_vect_equ(s1, isc1), pa_big_vect_equ(s2, isc1), pa_big_vect_equ(c1, isc1), pa_big_vect_equ(c2, isc1));*/
-		if (pa_big_vect_equ(s1, isc1) || pa_big_vect_equ(s2, isc1) || pa_big_vect_equ(c1, isc1) || pa_big_vect_equ(c2, isc1))
+
+		/* Special case: there may be an edge that goes through a node without
+		   having a node there with CVC. This can be detected as: there is only
+		   one isc point and it's the endpoint of s or c, but not both. */
+		on_s = pa_big_vect_equ(s1, isc1) || (on_s2 = pa_big_vect_equ(s2, isc1));
+		on_c = pa_big_vect_equ(c1, isc1) || (on_c2 = pa_big_vect_equ(c2, isc1));
+		if (!ctx->from_selfisc && on_s && (on_s != on_c)) {
+			/* In that case, there are two possibilities: the 2-segment line
+			   that's having its middle point on the other line is either
+			   "bouncing back" or crossing the line.
+			   Test case for crossing: gixed5 around 265;586, where the line
+			   is 256;587..265;585 */
+			if (on_s) {
+				/* Line is ctx, 2-seg line is s */
+				if (on_s2) {
+					if (pa_pp_crossing_in_touchpoint(isc1, ctx->v, ctx->v->next,  s->v, s->v->next, s->v->next->next))
+						return rnd_RTREE_DIR_FOUND_STOP;
+				}
+				else {
+					if (pa_pp_crossing_in_touchpoint(isc1, ctx->v, ctx->v->next,  s->v->prev, s->v, s->v->next))
+						return rnd_RTREE_DIR_FOUND_STOP;
+				}
+			}
+			else if (on_c) {
+				/* Line is s, 2-seg line is ctx */
+				if (on_c2) {
+					if (pa_pp_crossing_in_touchpoint(isc1, s->v, s->v->next,  ctx->v, ctx->v->next, ctx->v->next->next))
+						return rnd_RTREE_DIR_FOUND_STOP;
+				}
+				else {
+					if (pa_pp_crossing_in_touchpoint(isc1, s->v, s->v->next,  ctx->v->prev, ctx->v, ctx->v->next))
+						return rnd_RTREE_DIR_FOUND_STOP;
+				}
+			}
+		}
+		if (on_s || on_c)
 			num_isc--;
 	}
 
@@ -154,7 +228,7 @@ DEBUG_RISK("  ? isc? %ld;%ld %ld;%ld   with  %ld;%ld %ld;%ld -> %d\n",
 /* Return 1 if there's any intersection between pl and any island
    of pa (including self intersection within the pa). Sets *pp_overlap_out
    to 1 if there's a point-point overlap is detected */
-RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v, int *pp_overlap_out)
+RND_INLINE int big_bool_ppl_isc(rnd_polyarea_t *pa, rnd_pline_t *pl, rnd_vnode_t *v, int *pp_overlap_out, int from_selfisc)
 {
 	pa_pp_isc_t tmp;
 	rnd_polyarea_t *paother;
@@ -180,6 +254,7 @@ DEBUG_RISK(" checking: %ld;%ld - %ld;%ld\n", v->point[0], v->point[1], v->next->
 
 			tmp.v = v;
 			tmp.pp_overlap = 0;
+			tmp.from_selfisc = from_selfisc;
 			res = rnd_r_search(plother->tree, &box, NULL, pa_pp_isc_cb, &tmp, NULL);
 			DEBUG_RISK("  res=%d %d (intersected: %d pp-overlap: %d)\n", res, rnd_RTREE_DIR_FOUND, (res & rnd_RTREE_DIR_FOUND), tmp.pp_overlap);
 			if (tmp.pp_overlap)
@@ -263,7 +338,7 @@ DEBUG_RISK("check risk for self-intersection at %ld;%ld:\n", v->point[0], v->poi
 				DEBUG_RISK("  segment deflected into a stub! Shedule selfi-resolve\n");
 				res = 1;
 			}
-			else if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap) || big_bool_ppl_isc(pa, pl, v, &pp_overlap))) {
+			else if (!res && (big_bool_ppl_isc(pa, pl, v->prev, &pp_overlap, from_selfisc) || big_bool_ppl_isc(pa, pl, v, &pp_overlap, from_selfisc))) {
 DEBUG_RISK("  self-intersection occured! Shedule selfi-resolve\n");
 				res = 1; /* can't return here, we need to clear all the v->flg.risk bits */
 			}
