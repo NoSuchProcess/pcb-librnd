@@ -30,6 +30,7 @@ int pa_angle_equ(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_lt(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_gte(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_lte(pa_big_angle_t a, pa_big_angle_t b);
+void pa_angle_sub(pa_big_angle_t res, pa_big_angle_t a, pa_big_angle_t b); /* res = a-b */
 int pa_angle_valid(pa_big_angle_t a);
 
 
@@ -62,6 +63,7 @@ rnd_vnode_t *pa_big_node_add_single(rnd_vnode_t *dst, pa_big_vector_t ptv);
 
 /* Fill ion cd->angle assuming big coord */
 void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side);
+void pa_big_calc_angle_nn(pa_big_angle_t *dst, rnd_vnode_t *nfrom, rnd_vnode_t *nto);
 
 
 void pa_big_load(pa_big_coord_t dst, rnd_coord_t src);

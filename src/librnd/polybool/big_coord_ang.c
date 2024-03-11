@@ -53,37 +53,27 @@ int pa_angle_lte(pa_big_angle_t a, pa_big_angle_t b)
 	return big_signed_cmpn(a, b, W) <= 0;
 }
 
+void pa_angle_sub(pa_big_angle_t res, pa_big_angle_t a, pa_big_angle_t b)
+{
+	big_subn(res, a, b, W, 0);
+}
+
+
 int pa_angle_valid(pa_big_angle_t a)
 {
 	static const pa_big_angle_t a4 = {0, 0, 0, 0, 4, 0};
 	return !big_is_neg(a, W) && (big_signed_cmpn(a, (big_word *)a4, W) <= 0);
 }
 
-
-void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
+RND_INLINE void pa_big_calc_angle_(pa_big_angle_t *dst, pa_big_vector_t PT, pa_big_vector_t OTHER)
 {
-	pa_big_vector_t D, PT, OTHER;
+	pa_big_vector_t D;
 	pa_big_coord_t dxdy, tmp;
 	pa_big2_coord_t dy2, ang2, ang2tmp, *ang2res;
 	pa_big3_coord_t ang3, dy3;
 	int xneg = 0, yneg = 0, n;
 	static const pa_big_angle_t a2 = {0, 0, 0, 0, 2, 0};
 	static const pa_big_angle_t a4 = {0, 0, 0, 0, 4, 0};
-
-
-#if DEBUG_ANGLE
-	static int cnt;
-	cnt++;
-/*	rnd_fprintf(stderr, "ANG [%d] ---------------\n", cnt);*/
-#endif
-
-
-	pa_big_load_cvc(&PT, pt);
-
-	if (side == 'P') /* previous */
-		pa_big_load_cvc(&OTHER, pt->prev);
-	else /* next */
-		pa_big_load_cvc(&OTHER, pt->next);
 
 	big_subn(D.x, OTHER.x, PT.x, W, 0);
 	big_subn(D.y, OTHER.y, PT.y, W, 0);
@@ -140,9 +130,39 @@ void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side
 	else if (!xneg && yneg)    big_subn(ang2tmp, (big_word *)a4, ang2, W, 0);  /* 4th quadrant */
 	else                       ang2res = &ang2;                                /* 1st quadrant */
 
-	memcpy(cd->angle, ang2res, sizeof(cd->angle)); /* truncate */
+	memcpy(dst, ang2res, sizeof(pa_big_angle_t)); /* truncate */
 
-	assert(pa_angle_valid(cd->angle));
+	assert(pa_angle_valid(*dst));
+}
+
+void pa_big_calc_angle_nn(pa_big_angle_t *dst, rnd_vnode_t *nfrom, rnd_vnode_t *nto)
+{
+	pa_big_vector_t NF, NT;
+	pa_big_load_cvc(&NF, nfrom);
+	pa_big_load_cvc(&NT, nto);
+
+
+	pa_big_calc_angle_(dst, NF, NT);
+}
+
+void pa_big_calc_angle(pa_conn_desc_t *cd, rnd_vnode_t *pt, char poly, char side)
+{
+	pa_big_vector_t PT, OTHER;
+
+#if DEBUG_ANGLE
+	static int cnt;
+	cnt++;
+/*	rnd_fprintf(stderr, "ANG [%d] ---------------\n", cnt);*/
+#endif
+	pa_big_load_cvc(&PT, pt);
+
+
+	if (side == 'P') /* previous */
+		pa_big_load_cvc(&OTHER, pt->prev);
+	else /* next */
+		pa_big_load_cvc(&OTHER, pt->next);
+
+	pa_big_calc_angle_(&cd->angle, PT, OTHER);
 
 #if DEBUG_ANGLE
 	rnd_fprintf(stderr, "Angle [%d]: %c %.19f;%.19f %.19f;%.19f assigned angle ", cnt, poly,
