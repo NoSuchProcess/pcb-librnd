@@ -38,7 +38,7 @@
 #	undef DEBUG_RISK
 #	define DEBUG_RISK rnd_trace
 #else
-RND_INLINE PA_RISK_DUMMY(const char *fmt, ...) {}
+RND_INLINE void PA_RISK_DUMMY(const char *fmt, ...) {}
 #	undef DEBUG_RISK
 #	define DEBUG_RISK PA_RISK_DUMMY
 #endif
