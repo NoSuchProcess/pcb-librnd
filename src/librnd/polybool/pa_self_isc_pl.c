@@ -370,7 +370,7 @@ RND_INLINE rnd_vnode_t *get_cvc_unmarked(rnd_vnode_t *startnd)
 
 /* Step from n to the next node according to dir, walking the outline (trying
    to achieve largest area) */
-RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
+RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir, rnd_vnode_t *prev_node)
 {
 	pa_conn_desc_t *c, *start;
 	rnd_vnode_t *onto, *shtest;
@@ -402,6 +402,13 @@ RND_INLINE rnd_vnode_t *pa_selfisc_next_o(rnd_vnode_t *n, char *dir)
 		else shtest = onto = c->parent->prev;
 
 		DEBUG_SELFISC("  %.2f %.2f '%c' eff_dir=%d sh?={%p}", NODE_CRDS(onto), c->side, eff_dir, c->parent);
+
+		if ((onto == prev_node) || ((prev_node != NULL) && on_same_pt(onto, prev_node))) {
+			/* test case: gixed1b at 730;408 not going back to 738;399 */
+			DEBUG_SELFISC(" refuse (prev_node, coming from)\n");
+			continue;
+		}
+
 		if (shtest->shared) {
 			DEBUG_SELFISC(" refuse (shared)\n");
 			continue;
@@ -560,7 +567,7 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 /* Collect the outline, largest area possible; remember islands cut off */
 RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src, rnd_vnode_t *start)
 {
-	rnd_vnode_t *n, *last, *newn;
+	rnd_vnode_t *n, *last, *newn, *prev2, *prev_node = NULL;
 	rnd_pline_t *dst;
 	char dir = 'N';
 
@@ -577,9 +584,9 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 	/* collect a closed loop */
 	last = dst->head;
 
-	n = pa_selfisc_next_o(start, &dir);
-
-	for(; (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir)) {
+	n = pa_selfisc_next_o(start, &dir, NULL);
+	prev2 = n;
+	for(; (n != start) && (n != NULL); n = pa_selfisc_next_o(n, &dir, prev_node)) {
 		DEBUG_SELFISC(" at out %.2f %.2f {%p}", NODE_CRDS(n), n);
 		/* Can't assert for this: in the bowtie case the same crossing point has two roles
 			assert(!n->flg.mark); (should face marked nodes only as outgoing edges of intersections)
@@ -589,6 +596,9 @@ RND_INLINE void pa_selfisc_collect_outline(pa_posneg_t *posneg, rnd_pline_t *src
 		newn->point[1] = n->point[1];
 		rnd_poly_vertex_include(last, newn);
 		last = newn;
+
+		prev_node = prev2;
+		prev2 = n;
 	}
 	start->flg.start = 0;
 }
