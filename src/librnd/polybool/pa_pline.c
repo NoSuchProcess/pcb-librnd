@@ -235,7 +235,7 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 	if (c != p) {
 		do {
 			/* calculate area for orientation */
-			area += (double)(p->point[0] - c->point[0]) * (double)(p->point[1] + c->point[1]);
+			area += ((double)p->point[0] - (double)c->point[0]) * ((double)p->point[1] + (double)c->point[1]);
 			pa_pline_box_bump(pl, c->point);
 			pl->Count++;
 		}
