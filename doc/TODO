@@ -2,7 +2,6 @@
 	- polybool:
 		- gixed6: nowhere to go
 		- gixed7: infloop
-		- rnd_polyarea_and_subtract_free() should call the postprocessor
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
