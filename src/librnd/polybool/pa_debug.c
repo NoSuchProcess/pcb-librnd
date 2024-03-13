@@ -300,6 +300,15 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 	fprintf(f, " End\n\n");
 }
 
+#undef fopen
+void pa_dump_pa(rnd_polyarea_t *pa, const char *fn)
+{
+	FILE *f = fopen(fn, "w");
+	pa_debug_dump(f, NULL, pa, 0);
+	fclose(f);
+}
+
+
 #else
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra) {}
 
