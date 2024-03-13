@@ -197,6 +197,10 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 		/* calculate aandb */
 		pa_polyarea_collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
 		rnd_poly_insert_holes(&e, *aandb, &holes, RND_PBO_ISECT);
+
+		if (*aandb != NULL)
+			pa_bool_postproc(*aandb, 0, papa_touch_risk);
+
 		assert(rnd_poly_valid(*aandb));
 
 		/* clean up temporary marks and hole list */
@@ -207,6 +211,10 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 		/* calculate aminusb */
 		pa_polyarea_collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
 		rnd_poly_insert_holes(&e, *aminusb, &holes, RND_PBO_SUB);
+
+		if (*aminusb != NULL)
+			pa_bool_postproc(*aminusb, 0, papa_touch_risk);
+
 		assert(rnd_poly_valid(*aminusb));
 
 		pa_polyarea_free_all(&a);
