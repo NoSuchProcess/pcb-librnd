@@ -128,7 +128,7 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 		pa_polyarea_free_all(&b);
 		rnd_poly_plines_free(&a_isected);
 
-		rnd_poly_insert_holes(&e, *res, &holes);
+		rnd_poly_insert_holes(&e, *res, &holes, op);
 	}
 
 	rnd_poly_plines_free(&holes); /* delete holes if any left (they are already inserted) */
@@ -196,7 +196,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 
 		/* calculate aandb */
 		pa_polyarea_collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
-		rnd_poly_insert_holes(&e, *aandb, &holes);
+		rnd_poly_insert_holes(&e, *aandb, &holes, RND_PBO_ISECT);
 		assert(rnd_poly_valid(*aandb));
 
 		/* clean up temporary marks and hole list */
@@ -206,7 +206,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 
 		/* calculate aminusb */
 		pa_polyarea_collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
-		rnd_poly_insert_holes(&e, *aminusb, &holes);
+		rnd_poly_insert_holes(&e, *aminusb, &holes, RND_PBO_SUB);
 		assert(rnd_poly_valid(*aminusb));
 
 		pa_polyarea_free_all(&a);

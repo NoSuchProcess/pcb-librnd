@@ -254,7 +254,7 @@ RND_INLINE rnd_pline_t *pa_inshole_find_container(jmp_buf *e, rnd_polyarea_t *ds
 
 /* Src is a list of holes; try inserting them in dst; in *src return holes that
    are not inserted  */
-void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
+void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src, int op)
 {
 	rnd_pline_t *pl, *container;
 	rnd_rtree_t *tree;
@@ -288,6 +288,10 @@ void rnd_poly_insert_holes(jmp_buf *e, rnd_polyarea_t *dst, rnd_pline_t **src)
 			continue;
 
 		if (container == NULL) {
+			if (op == RND_PBO_SUB) {
+				/* we probably have removed the section where this hole was in; test case: gixed3b */
+				continue;
+			}
 #ifndef NDEBUG
 #ifdef DEBUG
 			pa_poly_dump(dst);
