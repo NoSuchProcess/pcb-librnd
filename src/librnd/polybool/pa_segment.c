@@ -148,6 +148,8 @@ static void rnd_poly_copy_edge_tree_(rnd_rtree_t *dst, rnd_rtree_t *parent, cons
 
 void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src)
 {
+	if (src->tree == NULL)
+		return;
 	/* copy the tree recursively */
 	dst->tree = rnd_r_create_tree();
 	rnd_poly_copy_edge_tree_(dst->tree, NULL, src->tree, dst);
