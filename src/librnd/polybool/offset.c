@@ -41,15 +41,23 @@ static void rndo_trace(char *fmt, ...) {}
 void rnd_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
-	*nx = -dy / len;
-	*ny = dx / len;
+	if (len != 0) {
+		*nx = -dy / len;
+		*ny = dx / len;
+	}
+	else
+		*nx = *ny = 0;
 }
 
 void rnd_polo_normd(double *nx, double *ny, double x1, double y1, double x2, double y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
-	*nx = -dy / len;
-	*ny = dx / len;
+	if (len != 0) {
+		*nx = -dy / len;
+		*ny = dx / len;
+	}
+	else
+		*nx = *ny = 0;
 }
 
 static long warp(long n, long len)
@@ -73,28 +81,37 @@ void rnd_polo_edge_shift(double offs,
 	ax = (*x0) - prev_x;
 	ay = (*y0) - prev_y;
 	al = sqrt(ax*ax + ay*ay);
-	ax /= al;
-	ay /= al;
-	a1l = ax*nx + ay*ny;
-	a1x = offs / a1l * ax;
-	a1y = offs / a1l * ay;
+	if (al != 0) {
+		ax /= al;
+		ay /= al;
+		a1l = ax*nx + ay*ny;
+		if (a1l != 0) {
+			a1x = offs / a1l * ax;
+			a1y = offs / a1l * ay;
 
-	(*x0) += a1x;
-	(*y0) += a1y;
+			(*x0) += a1x;
+			(*y0) += a1y;
+		}
+	}
 
 	/* next edge's endpoint offset */
 	ax = next_x - (*x1);
 	ay = next_y - (*y1);
 	al = sqrt(ax*ax + ay*ay);
-	ax /= al;
-	ay /= al;
+	if (al != 0) {
+		ax /= al;
+		ay /= al;
 
-	a1l = ax*nx + ay*ny;
-	a1x = offs / a1l * ax;
-	a1y = offs / a1l * ay;
+		a1l = ax*nx + ay*ny;
 
-	(*x1) += a1x;
-	(*y1) += a1y;
+		if (a1l != 0) {
+			a1x = offs / a1l * ax;
+			a1y = offs / a1l * ay;
+
+			(*x1) += a1x;
+			(*y1) += a1y;
+		}
+	}
 }
 
 void rnd_polo_offs(double offs, rnd_polo_t *pcsh, long num_pts)
