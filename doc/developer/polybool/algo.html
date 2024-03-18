@@ -446,7 +446,7 @@ in Table 2.
 
 
 <p>
-1. If Pc.flags == <a href="#pc_flags">ISECTED<a>, the polyline intersects
+2. If Pc.flags == <a href="#pc_flags">ISECTED<a>, the polyline intersects
 with another polyline. We need to find all edges in Pc which resulting
 contour section can start from. n is the number of vertices in Pc,
 E[] are edges of Pc; each E has a field called Mark that inidicates if
@@ -545,10 +545,10 @@ void Jump(vertex *v, enum *dir)
 Figure 9 shows the resulting contour segments for the four operations on the
 example fom Figure 4:
 <ul>
-	<li> <i>union<i>: singe island (one outer pline) with two inner plines (holes)
-	<li> <i>intersection<i>: two islands (one outer plines), no inner plines (holes)
-	<li> <i>difference<i>: two islands (one outer plines), no inner plines (holes)
-	<li> <i>xor<i>: thre islands (one outer plines), no inner plines (holes)
+	<li> <i>union</i>: singe island (one outer pline) with two inner plines (holes)
+	<li> <i>intersection</i>: two islands (one outer plines), no inner plines (holes)
+	<li> <i>difference</i>: two islands (one outer plines), no inner plines (holes)
+	<li> <i>xor</i>: thre islands (one outer plines), no inner plines (holes)
 </ul>
 
 <p>
