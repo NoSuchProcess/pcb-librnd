@@ -678,7 +678,7 @@ RND_INLINE void pa_polyarea_update_primary(jmp_buf *e, rnd_polyarea_t **islands,
 	assert(0);
 }
 
-RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_bool maybe)
+RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_polyarea_t **contours, rnd_pline_t **holes, int op, rnd_bool maybe, rnd_polyarea_t *B)
 {
 	rnd_pline_t **pl, **next;
 
@@ -686,6 +686,20 @@ RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_po
 		next = &((*pl)->next);
 		if (pa_collect_contour(e, pl, contours, holes, op, NULL, NULL, NULL))
 			next = pl; /* if a contour is removed, don't advance "next" twice */
+	}
+
+	/* Island got removed because being fully under another, bit leaving behind
+	   a hole; this hole did not get labelled but if it intersects b, it will
+	   still change the final output. Test case: bdale1* and bdale2 */
+	{
+		rnd_pline_t *pl, **next;
+		for(pl = *holes; pl != NULL; pl = next) {
+			next = pl->next;
+			if ((pl->flg.orphaned) && (pl->flg.llabel == PA_PLL_ISECTED) && (pl->head->flg.plabel == PA_PTL_UNKNWN)) {
+				pa_label_pline_vs_polyarea(pl, B, 0);
+				pa_collect_contour(e, &pl, contours, holes, op, NULL, NULL, NULL);
+			}
+		}
 	}
 }
 
