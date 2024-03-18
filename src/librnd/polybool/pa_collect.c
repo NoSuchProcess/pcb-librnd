@@ -690,7 +690,7 @@ RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_po
 
 	/* Island got removed because being fully under another, bit leaving behind
 	   a hole; this hole did not get labelled but if it intersects b, it will
-	   still change the final output. Test case: bdale1* and bdale2 */
+	   still change the final output. Test case: bdale1 and bdale2 */
 	{
 		rnd_pline_t *pl, **next;
 		for(pl = *holes; pl != NULL; pl = next) {
