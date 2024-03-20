@@ -429,6 +429,21 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	rnd_pline_t *n;
 	pa_chk_res_t chk;
 
+	/* Broken cyclic list: if p's prev or next is itself, then the other neighbour
+	   ptr needs to be itself too */
+	if ((p->b == p) && (p->f != p)) {
+#ifndef NDEBUG
+		rnd_fprintf(stderr, "Invalid polyarea ->f\n");
+#endif
+		return rnd_false;
+	}
+	if ((p->f == p) && (p->b != p)) {
+#ifndef NDEBUG
+		rnd_fprintf(stderr, "Invalid polyarea ->f\n");
+#endif
+		return rnd_false;
+	}
+
 	if ((p == NULL) || (p->contours == NULL)) {
 		/* technically an empty polyarea should be valid, tho */
 		return rnd_false;
