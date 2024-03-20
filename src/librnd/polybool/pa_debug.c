@@ -60,7 +60,7 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #	define DEBUG_ANGLE_EN 0
 #endif
 
-#if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
+#if defined(DEBUG) || DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
 
 static const char *node_label_to_str(rnd_vnode_t *v)
 {
@@ -125,7 +125,7 @@ RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a)
 RND_INLINE void pa_debug_print_pline_labels(rnd_pline_t *a) {}
 #endif
 
-#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
 RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 {
 #ifdef PA_BIGCOORD_ISC
@@ -138,7 +138,7 @@ RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 }
 #endif
 
-#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN || DEBUG_PA_DUMP_PA
 void pa_debug_print_angle(pa_big_angle_t a)
 {
 #ifdef PA_BIGCOORD_ISC
@@ -149,7 +149,7 @@ DEBUGP("%.09f", a);
 }
 #endif
 
-#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP
+#if DEBUG_CVC || DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
 RND_INLINE void pa_debug_print_cvc_(pa_conn_desc_t *head, const char *ind)
 {
 	pa_conn_desc_t *n = head;
