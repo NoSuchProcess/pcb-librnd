@@ -198,8 +198,12 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 		pa_polyarea_collect(&e, a, aandb, &holes, RND_PBO_ISECT, rnd_false);
 		rnd_poly_insert_holes(&e, *aandb, &holes, RND_PBO_ISECT);
 
+#if 0
+		/* breaks test case work/test_poly/dicer1.lht; this function is used only
+		   in the dicer with vertical cutting edges, it is safe to skip this */
 		if (*aandb != NULL)
 			pa_bool_postproc(*aandb, 0, papa_touch_risk);
+#endif
 
 		assert(rnd_poly_valid(*aandb));
 
@@ -212,8 +216,12 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 		pa_polyarea_collect(&e, a, aminusb, &holes, RND_PBO_SUB, rnd_false);
 		rnd_poly_insert_holes(&e, *aminusb, &holes, RND_PBO_SUB);
 
+#if 0
+		/* breaks test case work/test_poly/dicer1.lht; this function is used only
+		   in the dicer with vertical cutting edges, it is safe to skip this */
 		if (*aminusb != NULL)
 			pa_bool_postproc(*aminusb, 0, papa_touch_risk);
+#endif
 
 		assert(rnd_poly_valid(*aminusb));
 
