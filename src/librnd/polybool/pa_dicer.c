@@ -85,6 +85,20 @@ RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side,
 	(*iscs)++;
 }
 
+TODO("rewrite these with big_coords to make the 64-bit-coord safe");
+rnd_coord_t pa_line_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
+{
+	double dx = (double)(lx2 - lx1) / (double)(ly2 - ly1);
+	return rnd_round(lx1 + (y - ly1) * dx);
+}
+
+rnd_coord_t pa_line_y_for_x(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t x)
+{
+	double dy = (double)(ly2 - ly1) / (double)(lx2 - lx1);
+	return rnd_round(ly1 + (x - lx1) * dy);
+}
+
+
 /* Horizontal box edge intersection with seg */
 static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t y)
 {
@@ -120,6 +134,22 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 	}
 	else {
 		/* normal case: sloped line */
+		rnd_coord_t x;
+
+		if (ly1 > ly2) {
+			rnd_swap(rnd_coord_t, ly1, ly2);
+			rnd_swap(rnd_coord_t, lx1, lx2);
+		}
+
+		if (y == ly1)
+			x = lx1;
+		else if (y == ly2)
+			x = lx2;
+		else if (crd_in_between(y, ly1, ly2))
+			x = pa_line_x_for_y(lx1, ly1, lx2, ly2, y);
+		else
+			return 0;
+		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0);
 	}
 
 	return iscs;
@@ -159,6 +189,22 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 	}
 	else {
 		/* normal case: sloped line */
+		rnd_coord_t y;
+
+		if (lx1 > lx2) {
+			rnd_swap(rnd_coord_t, lx1, lx2);
+			rnd_swap(rnd_coord_t, ly1, ly2);
+		}
+
+		if (x == lx1)
+			x = ly1;
+		else if (x == lx2)
+			x = ly2;
+		else if (crd_in_between(x, lx1, lx2))
+			x = pa_line_y_for_x(lx1, ly1, lx2, ly2, x);
+		else
+			return 0;
+		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0);
 	}
 
 	return iscs;
