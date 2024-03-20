@@ -324,6 +324,43 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	pl->flg.llabel = PA_PLD_AWAY;
 }
 
+static int cmp_xmin(const void *A, const void *B)
+{
+	const pa_dic_isc_t * const *a = A, * const *b = B;
+	assert((*a)->x != (*b)->x);
+	return ((*a)->x < (*b)->x) ? -1 : +1;
+}
+
+static int cmp_ymin(const void *A, const void *B)
+{
+	const pa_dic_isc_t * const *a = A, * const *b = B;
+	assert((*a)->y != (*b)->y);
+	return ((*a)->y < (*b)->y) ? -1 : +1;
+}
+
+static int cmp_xmax(const void *A, const void *B)
+{
+	const pa_dic_isc_t * const *a = A, * const *b = B;
+	assert((*a)->x != (*b)->x);
+	return ((*a)->x > (*b)->x) ? -1 : +1;
+}
+
+static int cmp_ymax(const void *A, const void *B)
+{
+	const pa_dic_isc_t * const *a = A, * const *b = B;
+	assert((*a)->y != (*b)->y);
+	return ((*a)->y > (*b)->y) ? -1 : +1;
+}
+
+RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
+{
+	qsort(&ctx->side[PA_DIC_H1].array, ctx->side[PA_DIC_H1].used, sizeof(void *), cmp_xmin);
+	qsort(&ctx->side[PA_DIC_V1].array, ctx->side[PA_DIC_V1].used, sizeof(void *), cmp_ymin);
+	qsort(&ctx->side[PA_DIC_H2].array, ctx->side[PA_DIC_H2].used, sizeof(void *), cmp_xmax);
+	qsort(&ctx->side[PA_DIC_V2].array, ctx->side[PA_DIC_V2].used, sizeof(void *), cmp_ymax);
+
+}
+
 RND_INLINE void pa_dic_emit_whole_pline(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 {
 	rnd_vnode_t *vn;
@@ -348,12 +385,39 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 }
 
 
+/* In this case the box is filled and holes are cut out */
+RND_INLINE void pa_dic_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	assert("!implement me");
+}
+
+/* The box cuts into the outer contour of the island; we are basically
+   drawing the contour of the island except for the box sections */
+RND_INLINE void pa_dic_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	assert("!implement me");
+}
+
 /* Dice up a single island that is intersected or has holes.
    The contour is already labelled, but holes are not */
 RND_INLINE void pa_dic_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	rnd_pline_t *smallest_wrapper = NULL; /* smallest pline around the clipping box within this island */
-	
+	rnd_pline_t *pl;
+
+	/* label all holes */
+	for(pl = pa->contours->next; pl != NULL; pl = pl->next) {
+		pa_dic_pline_label(ctx, pl);
+		if (pl->flg.llabel == PA_PLD_WRAPPER)
+			return; /* if the box is within a hole, it surely won't contain anything */
+	}
+
+	pa_dic_sort_sides(ctx);
+
+	pl = pa->contours;
+	if (pl->flg.llabel == PA_PLD_WRAPPER)
+		pa_dic_island_inverted(ctx, pa);
+	else
+		pa_dic_island_normal(ctx, pa);
 }
 
 /* Dice up a single island (potentially with holes) */
