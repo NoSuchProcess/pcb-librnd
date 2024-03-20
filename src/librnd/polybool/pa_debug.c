@@ -230,7 +230,7 @@ typedef enum { /* bitfield of extra info the dump should contain */
 	PA_DBG_DUMP_CVC = 1
 } pa_debug_dump_extra_t;
 
-#if DEBUG_DUMP || DEBUG_PAISC_DUMP
+#if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
 
 RND_INLINE void pa_debug_dump_vnode_coord(FILE *f, rnd_vnode_t *n, pa_debug_dump_extra_t extra)
 {
@@ -268,7 +268,7 @@ RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extr
 	pa_debug_dump_pline_from(f, pl->head, extra);
 }
 
-static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
+static void pa_debug_dump_(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
 {
 	rnd_pline_t *pl;
 	rnd_polyarea_t *pn = pa;
@@ -304,14 +304,18 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 void pa_dump_pa(rnd_polyarea_t *pa, const char *fn)
 {
 	FILE *f = fopen(fn, "w");
-	pa_debug_dump(f, NULL, pa, 0);
+	pa_debug_dump_(f, NULL, pa, 0);
 	fclose(f);
 }
+#endif
 
-
+#if DEBUG_DUMP || DEBUG_PAISC_DUMP
+static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
+{
+	pa_debug_dump_(f, title, pa, extra);
+}
 #else
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra) {}
-
 #endif
 
 #if DEBUG_GATHER || DEBUG_JUMP
