@@ -51,8 +51,9 @@ typedef enum pa_dic_side_s {
 
 typedef struct pa_dic_isc_s {
 	pa_seg_t *seg;
+	rnd_coord_t x, y;
 	int isc_idx;     /* first or second, from the perspective of the clip box line; second means overlapping line or arc */
-	unsigned olap:1; /* overlapping line */
+	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
 } pa_dic_isc_t;
 
 typedef struct pa_dic_ctx_s {
@@ -60,10 +61,35 @@ typedef struct pa_dic_ctx_s {
 	vtp0_t side[PA_DIC_sides];
 } pa_dic_ctx_t;
 
+/* Returns whether c is in between low and high without being equal to either */
+RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
+{
+	return (c > low) && (c < high);
+}
+
+/* Record an intersection */
+RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t isc_x, rnd_coord_t isc_y, int *iscs, int coax)
+{
+	pa_dic_isc_t *isc = malloc(sizeof(pa_dic_isc_t));
+
+	assert(*iscs < 2);
+
+	isc->seg = seg;
+	isc->x = isc_x;
+	isc->y = isc_y;
+	isc->isc_idx = *iscs;
+	isc->coax = coax;
+
+	vtp0_append(&ctx->side[side], isc);
+
+	(*iscs)++;
+}
+
 /* Horizontal box edge intersection with seg */
 static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t y)
 {
 	rnd_coord_t lx1, ly1, lx2, ly2;
+	int iscs = 0;
 
 	TODO("arc: needs special code here");
 
@@ -72,18 +98,38 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 
 	if (ly1 == ly2) {
 		/* special case: horizontal line, may overlap */
+		if (ly1 != y)
+			return 0;
+		if (lx1 > lx2)
+			rnd_swap(rnd_coord_t, lx1, lx2);
+		if ((lx1 > ctx->clip.X2) || (lx2 < ctx->clip.X1))
+			return 0;
+
+		if (crd_in_between(lx1, ctx->clip.X1, ctx->clip.X2))
+			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1);
+		if (crd_in_between(lx2, ctx->clip.X1, ctx->clip.X2))
+			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1);
+		if (crd_in_between(ctx->clip.X1, lx1, lx2))
+			pa_dic_isc(ctx, seg, side, ctx->clip.X1, y, &iscs, 1);
+		if (crd_in_between(ctx->clip.X2, lx1, lx2))
+			pa_dic_isc(ctx, seg, side, ctx->clip.X2, y, &iscs, 1);
+		if (ctx->clip.X1 == lx1)
+			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1);
+		if (ctx->clip.X2 == lx2)
+			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1);
 	}
 	else {
 		/* normal case: sloped line */
 	}
 
-	return 0;
+	return iscs;
 }
 
 /* Vertical box edge intersection with seg */
 static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t x)
 {
 	rnd_coord_t lx1, ly1, lx2, ly2;
+	int iscs = 0;
 
 	TODO("arc: needs special code here");
 
@@ -93,12 +139,29 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 
 	if (lx1 == lx2) {
 		/* special case: vertical line, may overlap */
+		if (lx1 != x)
+			return 0;
+		if (ly1 > ly2)
+			rnd_swap(rnd_coord_t, ly1, ly2);
+
+		if (crd_in_between(ly1, ctx->clip.Y1, ctx->clip.Y2))
+			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1);
+		if (crd_in_between(ly2, ctx->clip.Y1, ctx->clip.Y2))
+			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1);
+		if (crd_in_between(ctx->clip.Y1, ly1, ly2))
+			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y1, &iscs, 1);
+		if (crd_in_between(ctx->clip.Y2, ly1, ly2))
+			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y2, &iscs, 1);
+		if (ctx->clip.Y1 == ly1)
+			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1);
+		if (ctx->clip.Y2 == ly2)
+			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1);
 	}
 	else {
 		/* normal case: sloped line */
 	}
 
-	return 0;
+	return iscs;
 }
 
 /* Consider a ray specified as a box of rx*;ry* and compute all intersections;
