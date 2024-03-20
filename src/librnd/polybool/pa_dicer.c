@@ -56,13 +56,18 @@ typedef struct pa_dic_isc_s {
 	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
 } pa_dic_isc_t;
 
-typedef struct pa_dic_ctx_s {
+typedef struct pa_dic_ctx_s pa_dic_ctx_t;
+
+struct pa_dic_ctx_s {
 	rnd_box_t clip;
 	vtp0_t side[PA_DIC_sides];
 
-	/* smallest pline around the clipping box within this island */
-	rnd_pline_t *smallest_wrapper;
-} pa_dic_ctx_t;
+	void (*begin_pline)(pa_dic_ctx_t *ctx);
+	void (*append_coord)(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y);
+	void (*end_pline)(pa_dic_ctx_t *ctx);
+	void *user_data;
+
+};
 
 /* Returns whether c is in between low and high without being equal to either */
 RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
@@ -200,11 +205,11 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 		}
 
 		if (x == lx1)
-			x = ly1;
+			y = ly1;
 		else if (x == lx2)
-			x = ly2;
+			y = ly2;
 		else if (crd_in_between(x, lx1, lx2))
-			x = pa_line_y_for_x(lx1, ly1, lx2, ly2, x);
+			y = pa_line_y_for_x(lx1, ly1, lx2, ly2, x);
 		else
 			return 0;
 		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0);
@@ -318,4 +323,82 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	   outside */
 	pl->flg.llabel = PA_PLD_AWAY;
 }
+
+RND_INLINE void pa_dic_emit_whole_pline(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
+{
+	rnd_vnode_t *vn;
+	ctx->begin_pline(ctx);
+
+	vn = pl->head;
+	do {
+		ctx->append_coord(ctx, vn->point[0], vn->point[1]);
+	} while((vn = vn->next) != pl->head);
+
+	ctx->end_pline(ctx);
+}
+
+RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
+{
+	ctx->begin_pline(ctx);
+	ctx->append_coord(ctx, ctx->clip.X1, ctx->clip.Y1);
+	ctx->append_coord(ctx, ctx->clip.X2, ctx->clip.Y1);
+	ctx->append_coord(ctx, ctx->clip.X2, ctx->clip.Y2);
+	ctx->append_coord(ctx, ctx->clip.X1, ctx->clip.Y2);
+	ctx->end_pline(ctx);
+}
+
+
+/* Dice up a single island that is intersected or has holes.
+   The contour is already labelled, but holes are not */
+RND_INLINE void pa_dic_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	rnd_pline_t *smallest_wrapper = NULL; /* smallest pline around the clipping box within this island */
+	
+}
+
+/* Dice up a single island (potentially with holes) */
+RND_INLINE void pa_dic_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	rnd_pline_t *pl;
+
+	pl = pa->contours;
+	pa_dic_pline_label(ctx, pl);
+
+	/* first handle a few cheap common cases */
+	switch(pl->flg.llabel) {
+		case PA_PLD_UNKNWN:
+			assert(!"dic label failed");
+			goto fin;
+		case PA_PLD_AWAY:
+			goto fin; /* no need to emit anything */
+
+		case PA_PLD_INSIDE:
+			if (pl->next == NULL) {
+				/* there are no holes and the whole thig is inside -> plain emit */
+				pa_dic_emit_whole_pline(ctx, pl);
+				goto fin;
+			}
+			break;
+		case PA_PLD_WRAPPER:
+			if (pl->next == NULL) {
+				/* there are no holes and it covers the whole area: emit the box */
+				pa_dic_emit_clipbox(ctx);
+				goto fin;
+			}
+			break;
+
+		case PA_PLD_ISECTED:
+			break;
+	}
+
+	/* have to do the full thing */
+	pa_dic_island_expensive(ctx, pa);
+
+	fin:;
+	/* Reset the only flag we changed in the input */
+	for(pl = pa->contours; pl != NULL; pl = pl->next)
+		pl->flg.llabel = PA_PLL_UNKNWN;
+}
+
+
 
