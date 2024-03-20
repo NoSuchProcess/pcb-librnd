@@ -35,7 +35,7 @@
 typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 	PA_PLD_UNKNWN  = 0,
 	PA_PLD_INSIDE  = 1,    /* pline is fully inside the box */
-	PA_PLD_AROUND  = 2,    /* the box is fully included within the pline */
+	PA_PLD_WRAPPER = 2,    /* the box is fully included within the pline */
 	PA_PLD_ISECTED = 3,    /* they are crossing */
 	PA_PLD_AWAY = 4        /* pline is fully outside but not wrapping the box */
 } pa_dic_pline_label_t;
@@ -59,6 +59,9 @@ typedef struct pa_dic_isc_s {
 typedef struct pa_dic_ctx_s {
 	rnd_box_t clip;
 	vtp0_t side[PA_DIC_sides];
+
+	/* smallest pline around the clipping box within this island */
+	rnd_pline_t *smallest_wrapper;
 } pa_dic_ctx_t;
 
 /* Returns whether c is in between low and high without being equal to either */
@@ -229,11 +232,41 @@ RND_INLINE void pa_dic_pline_label_side(pa_dic_ctx_t *ctx, rnd_pline_t *pl, pa_d
 		pl->flg.llabel = PA_PLD_ISECTED;
 }
 
+typedef enum pa_dic_pt_box_relation_e { /* bitfield */
+	PA_DPT_INSIDE = 1,
+	PA_DPT_OUTSIDE = 2,
+	PA_DPT_ON_EDGE = 3
+} pa_dic_pt_box_relation_t;
+
+RND_INLINE pa_dic_pt_box_relation_t pa_dic_pt_in_box(rnd_coord_t ptx, rnd_coord_t pty, rnd_box_t *box)
+{
+	if (((ptx == box->X1) || (ptx == box->X2)) && (pty >= box->Y1) && (pty <= box->Y2))
+		return PA_DPT_ON_EDGE;
+	if (((pty == box->Y1) || (pty == box->Y2)) && (ptx >= box->X1) && (ptx <= box->X2))
+		return PA_DPT_ON_EDGE;
+
+	if (crd_in_between(ptx, box->X1, box->X2) && crd_in_between(pty, box->Y1, box->Y2))
+		return PA_DPT_INSIDE;
+
+	return PA_DPT_OUTSIDE;
+}
+
+RND_INLINE int pa_dic_pt_inside_pl(rnd_coord_t ptx, rnd_coord_t pty, rnd_pline_t *pl)
+{
+	rnd_vector_t pt;
+
+	pt[0] = ptx; pt[1] = pty;
+
+	return pa_pline_is_point_inside(pl, pt);
+}
+
 /* Compute all intersections between the label and pl, allocate pa_dic_isc_t *
    for them and append them in ctx->side[] in random order. Also set
    pl->flg.llabel */
 RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 {
+	pa_dic_pt_box_relation_t rel;
+
 	pl->flg.llabel = PA_PTL_UNKNWN;
 
 	TODO("Cheap tests for pl bbox fully inside or fully away");
@@ -247,6 +280,25 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	if (pl->flg.llabel == PA_PLD_ISECTED)
 		return;
 
-	TODO("Figure if PA_PLD_INSIDE, PA_PLD_AROUND or PA_PLD_AWAY");
+	/* Cheap: if any point of the pline is inside the box, the whole pline is
+	   inside as there was no intersection */
+	rel = pa_dic_pt_in_box(pl->head->point[0], pl->head->point[1], &ctx->clip);
+	assert(rel != PA_DPT_ON_EDGE); /* would have to be labelled ISECTED */
+	if (rel == PA_DPT_INSIDE) {
+		pl->flg.llabel = PA_PLD_INSIDE;
+		return;
+	}
+
+	/* If all four corners of the box are inside the pline, the box is inside
+	   the pline */
+	if (pa_dic_pt_inside_pl(ctx->clip.X1, ctx->clip.Y1, pl) &&
+		pa_dic_pt_inside_pl(ctx->clip.X2, ctx->clip.Y1, pl) &&
+		pa_dic_pt_inside_pl(ctx->clip.X2, ctx->clip.Y2, pl) &&
+		pa_dic_pt_inside_pl(ctx->clip.X1, ctx->clip.Y2, pl)) {
+			pl->flg.llabel = PA_PLD_WRAPPER;
+			return;
+	}
+
+	pl->flg.llabel = PA_PLD_AWAY;
 }
 
