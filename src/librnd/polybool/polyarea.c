@@ -34,6 +34,7 @@
 #include "pa_label.c"
 #include "pa_collect_tmp.c"
 #include "pa_collect.c"
+#include "pa_dicer.c"
 
 #include "pa_api_bool.c"
 #include "pa_api_vertex.c"
