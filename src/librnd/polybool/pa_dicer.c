@@ -269,16 +269,30 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 
 	pl->flg.llabel = PA_PTL_UNKNWN;
 
-	TODO("Cheap tests for pl bbox fully inside or fully away");
+	/* Cheap bbox test: if the bbox of pl is fully within the clipbox, it's surely inside */
+	if ((pl->xmin > ctx->clip.X1) && (pl->ymin > ctx->clip.Y1) && (pl->xmax < ctx->clip.X2) && (pl->ymax < ctx->clip.Y2)) {
+		pl->flg.llabel = PA_PLD_INSIDE;
+		return;
+	}
 
+	/* Cheap bbox test: fully outside and not wrapping */
+	if ((pl->xmin < ctx->clip.X1) || (pl->xmax > ctx->clip.X2) || (pl->ymin < ctx->clip.Y1) || (pl->ymax > ctx->clip.Y2)) {
+		pl->flg.llabel = PA_PLD_AWAY;
+		return;
+	}
+
+	/* Note: can't cheap-bbox-test for pl wrapping clipbox because they may intersect */
+
+	/* Edge intersection tests */
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_H1, pa_dic_isc_h, ctx->clip.Y1, ctx->clip.X1, ctx->clip.Y1, ctx->clip.X2, ctx->clip.Y1);
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_V1, pa_dic_isc_v, ctx->clip.X1, ctx->clip.X2, ctx->clip.Y1, ctx->clip.X2, ctx->clip.Y2);
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_H2, pa_dic_isc_h, ctx->clip.Y2, ctx->clip.X1, ctx->clip.Y2, ctx->clip.X2, ctx->clip.Y2);
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_V2, pa_dic_isc_v, ctx->clip.X2, ctx->clip.X1, ctx->clip.Y1, ctx->clip.X1, ctx->clip.Y2);
-
-
 	if (pl->flg.llabel == PA_PLD_ISECTED)
 		return;
+
+	/* Now that we know there's no intersection, things are fully inside/outside
+	   or are far away */
 
 	/* Cheap: if any point of the pline is inside the box, the whole pline is
 	   inside as there was no intersection */
@@ -299,6 +313,9 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 			return;
 	}
 
+	/* The only remaining case is the expensive-away case: there was no
+	   intersection or wrapping so pl has an overlapping bbox but is fully
+	   outside */
 	pl->flg.llabel = PA_PLD_AWAY;
 }
 
