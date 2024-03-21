@@ -515,6 +515,8 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	pa_dic_isc_t *si;
 	char walkdir;
 
+	assert(start_isc->seg != NULL); /* need to have a pline to start with */
+
 	walkdir = pa_dic_pline_walkdir(start_isc->seg->p);
 
 	n = start;
@@ -586,7 +588,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		for(sd = 0; sd < PA_DIC_sides; sd++) {
 			for(m = 0; m < ctx->side[sd].used; m++) {
 				pa_dic_isc_t *isc = ctx->side[sd].array[m];
-				if (isc->seg->p == from->seg->p)
+				if ((isc->seg != NULL) && (isc->seg->p == from->seg->p))
 					from->collected = 1;
 			}
 		}
@@ -603,6 +605,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 
 	i = from;
 	do {
+		assert(i->seg != NULL); /* we need a pline intersection to start from */
 		vn = i->seg->v;
 		PA_DIC_STEP(vn, walkdir);
 		i = pa_dic_gather_pline(ctx, vn, i);
