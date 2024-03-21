@@ -42,6 +42,8 @@ typedef enum pa_dic_side_s {
 	PA_DIC_sides
 } pa_dic_side_t;
 
+typedef struct pa_dic_isc_s pa_dic_isc_t;
+
 struct pa_dic_ctx_s {
 	/* configuration and user input */
 	rnd_box_t clip;
@@ -52,6 +54,8 @@ struct pa_dic_ctx_s {
 
 	/* private: per pa cache */
 	vtp0_t side[PA_DIC_sides];
+	pa_dic_isc_t *head;
+	pa_dic_isc_t *corner[4];
 };
 
 /* Clip a the rectangular area defined by ctx->clip out of multi-island pa

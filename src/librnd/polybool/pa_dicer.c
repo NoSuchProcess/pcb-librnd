@@ -42,14 +42,14 @@ typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 	PA_PLD_AWAY = 4        /* pline is fully outside but not wrapping the box */
 } pa_dic_pline_label_t;
 
-
-typedef struct pa_dic_isc_s {
+struct pa_dic_isc_s {
 	pa_seg_t *seg;
 	rnd_coord_t x, y;
 	int isc_idx;     /* first or second, from the perspective of the clip box line; second means overlapping line or arc */
 	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
 	unsigned collected:1; /* already emitted in the output */
-} pa_dic_isc_t;
+	pa_dic_isc_t *next;
+};
 
 TODO("cache allocations");
 RND_INLINE pa_dic_isc_t *pa_dic_isc_alloc(pa_dic_ctx_t *ctx)
@@ -64,14 +64,18 @@ RND_INLINE void pa_dic_isc_free(pa_dic_ctx_t *ctx, pa_dic_isc_t *isc, int destro
 
 RND_INLINE void pa_dic_reset_ctx_pa_(pa_dic_ctx_t *ctx, int destroy)
 {
-	int n, m;
-	for(n = 0; n < PA_DIC_sides; n++) {
-		for(m = 0; m < ctx->side[n].used; m++)
-			pa_dic_isc_free(ctx, ctx->side[n].array[m], destroy);
-		ctx->side[n].used = NULL;
+	int sd;
+	long m;
+
+	for(sd = 0; sd < PA_DIC_sides; sd++) {
+		for(m = 0; m < ctx->side[sd].used; m++)
+			pa_dic_isc_free(ctx, ctx->side[sd].array[m], destroy);
+		ctx->side[sd].used = 0;
 		if (destroy)
-			vtp0_uninit(&ctx->side[n]);
+			vtp0_uninit(&ctx->side[sd]);
 	}
+	for(sd = 0; sd < 4; sd++)
+		pa_dic_isc_free(ctx, ctx->corner[sd], destroy);
 }
 
 RND_INLINE void pa_dic_reset_ctx_pa(pa_dic_ctx_t *ctx)
@@ -93,7 +97,7 @@ RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
 }
 
 /* Record an intersection */
-RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t isc_x, rnd_coord_t isc_y, int *iscs, int coax)
+RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t isc_x, rnd_coord_t isc_y, int *iscs, int coax)
 {
 	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
 
@@ -102,13 +106,16 @@ RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side,
 	isc->seg = seg;
 	isc->x = isc_x;
 	isc->y = isc_y;
-	isc->isc_idx = *iscs;
+	isc->isc_idx = (iscs == NULL ? 0 : *iscs);
 	isc->coax = coax;
 	isc->collected = 0;
 
 	vtp0_append(&ctx->side[side], isc);
 
-	(*iscs)++;
+	if (iscs != NULL)
+		(*iscs)++;
+
+	return isc;
 }
 
 TODO("rewrite these with big_coords to make the 64-bit-coord safe");
@@ -372,11 +379,36 @@ static int cmp_ymax(const void *A, const void *B)
 
 RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 {
+	int sd;
+	long m;
+
+	pa_dic_isc_t *last = NULL;
+
 	qsort(&ctx->side[PA_DIC_H1].array, ctx->side[PA_DIC_H1].used, sizeof(void *), cmp_xmin);
 	qsort(&ctx->side[PA_DIC_V1].array, ctx->side[PA_DIC_V1].used, sizeof(void *), cmp_ymin);
 	qsort(&ctx->side[PA_DIC_H2].array, ctx->side[PA_DIC_H2].used, sizeof(void *), cmp_xmax);
 	qsort(&ctx->side[PA_DIC_V2].array, ctx->side[PA_DIC_V2].used, sizeof(void *), cmp_ymax);
 
+	/* create dummy intersetions for corners for easier walkarounds */
+	ctx->corner[0] = pa_dic_isc(ctx, NULL, PA_DIC_H1, ctx->clip.X1, ctx->clip.Y1, NULL, 0);
+	ctx->corner[1] = pa_dic_isc(ctx, NULL, PA_DIC_V1, ctx->clip.X2, ctx->clip.Y1, NULL, 0);
+	ctx->corner[2] = pa_dic_isc(ctx, NULL, PA_DIC_H2, ctx->clip.X2, ctx->clip.Y2, NULL, 0);
+	ctx->corner[3] = pa_dic_isc(ctx, NULL, PA_DIC_V2, ctx->clip.X1, ctx->clip.Y2, NULL, 0);
+
+	/* link ordered iscs into a cyclic list */
+	for(sd = 0; sd < PA_DIC_sides; sd++) {
+		if (last != NULL)
+			last->next = ctx->corner[sd];
+		last = ctx->corner[sd];
+		for(m = 0; m < ctx->side[sd].used; m++) {
+			pa_dic_isc_t *isc = ctx->side[sd].array[m];
+			last->next = isc;
+			last = isc;
+		}
+	}
+
+	last->next = ctx->corner[0];
+	ctx->head = ctx->corner[0];
 }
 
 RND_INLINE void pa_dic_emit_whole_pline(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
@@ -454,7 +486,8 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	rnd_vnode_t *vn;
 	pa_dic_isc_t *i;
 	char walkdir;
-	int m, sd;
+	int sd;
+	long m;
 
 	/* Check where we can get from this intersection */
 	walkdir = pa_dic_pline_walkdir(from->seg->p);
