@@ -386,21 +386,21 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 
 
 /* In this case the box is filled and holes are cut out */
-RND_INLINE void pa_dic_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	assert("!implement me");
 }
 
 /* The box cuts into the outer contour of the island; we are basically
    drawing the contour of the island except for the box sections */
-RND_INLINE void pa_dic_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	assert("!implement me");
 }
 
 /* Dice up a single island that is intersected or has holes.
    The contour is already labelled, but holes are not */
-RND_INLINE void pa_dic_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+RND_INLINE void pa_dic_emit_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	rnd_pline_t *pl;
 
@@ -415,13 +415,13 @@ RND_INLINE void pa_dic_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 
 	pl = pa->contours;
 	if (pl->flg.llabel == PA_PLD_WRAPPER)
-		pa_dic_island_inverted(ctx, pa);
+		pa_dic_emit_island_inverted(ctx, pa);
 	else
-		pa_dic_island_normal(ctx, pa);
+		pa_dic_emit_island_normal(ctx, pa);
 }
 
-/* Dice up a single island (potentially with holes) */
-RND_INLINE void pa_dic_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+/* Emit a rectangular area of a single island (potentially with holes) */
+RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	rnd_pline_t *pl;
 
@@ -456,7 +456,7 @@ RND_INLINE void pa_dic_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	}
 
 	/* have to do the full thing */
-	pa_dic_island_expensive(ctx, pa);
+	pa_dic_emit_island_expensive(ctx, pa);
 
 	fin:;
 	/* Reset the only flag we changed in the input */
