@@ -48,6 +48,7 @@ typedef struct pa_dic_isc_s {
 	rnd_coord_t x, y;
 	int isc_idx;     /* first or second, from the perspective of the clip box line; second means overlapping line or arc */
 	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
+	unsigned collected:1; /* already emitted in the output */
 } pa_dic_isc_t;
 
 TODO("cache allocations");
@@ -103,6 +104,7 @@ RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side,
 	isc->y = isc_y;
 	isc->isc_idx = *iscs;
 	isc->coax = coax;
+	isc->collected = 0;
 
 	vtp0_append(&ctx->side[side], isc);
 
@@ -400,6 +402,100 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 	ctx->end_pline(ctx);
 }
 
+#define PA_DIC_STEP(n, dir) n = (dir == 'N' ? n->next : n->prev)
+
+/* Start from a node that's on the edge; go as far as needed to find the first
+   node that's not on edge and return the relation of that node to the box.
+   Dir is either N or P for ->next or ->prev traversal */
+RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start, char dir)
+{
+	rnd_vnode_t *n;
+
+	for(n = start->next; n != start; PA_DIC_STEP(n, dir))  {
+		pa_dic_pt_box_relation_t dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
+		if (dir != PA_DPT_ON_EDGE)
+			return dir;
+	}
+
+	return PA_DPT_ON_EDGE; /* arrived back to start which is surely on the edge */
+}
+
+RND_INLINE char pa_dic_pline_walkdir(rnd_pline_t *pl)
+{
+	return pl->flg.orient == RND_PLF_INV ? 'P' : 'N';
+}
+
+RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc)
+{
+	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
+	rnd_vnode_t *prev = NULL;
+	rnd_vnode_t *n;
+
+	n = start;
+	do {
+		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
+		if (dir == PA_DPT_OUTSIDE) {
+			TODO("find the seg for prev and then the isc that was the last point");
+			/* Maybe it's simpler: the only overlapping case is when one of the corners is on the seg? */
+			return NULL;
+		}
+		ctx->append_coord(ctx, n->point[0], n->point[1]);
+		prev = n;
+		PA_DIC_STEP(n, dir);
+	} while(n != start);
+
+	return start_isc;
+}
+
+
+RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t *from)
+{
+	pa_dic_pt_box_relation_t ptst;
+	rnd_vnode_t *vn;
+	pa_dic_isc_t *i;
+	char walkdir;
+	int m, sd;
+
+	/* Check where we can get from this intersection */
+	walkdir = pa_dic_pline_walkdir(from->seg->p);
+	ptst = pa_dic_emit_island_predict(ctx, from->seg->v, walkdir);
+
+	if (ptst == PA_DPT_ON_EDGE) {
+		/* corner case: all nodes of the pline are on the clipbox but it could take
+		   shortcuts - emit the pline and mark all of its segs collected */
+		pa_dic_emit_whole_pline(ctx, from->seg->p);
+		for(sd = 0; sd < PA_DIC_sides; sd++) {
+			for(m = 0; m < ctx->side[sd].used; m++) {
+				pa_dic_isc_t *isc = ctx->side[sd].array[m];
+				if (isc->seg->p == from->seg->p)
+					from->collected = 1;
+			}
+		}
+		return;
+	}
+
+	if (ptst != PA_DPT_INSIDE)
+		return; /* ignore intersection that has an edge going outside */
+
+	/* it's safe to start here, next deviation is going inside */
+	ctx->begin_pline(ctx);
+	ctx->append_coord(ctx, from->x, from->y);
+	from->collected = 1;
+
+	i = from;
+	do {
+		vn = i->seg->v;
+		PA_DIC_STEP(vn, walkdir);
+		i = pa_dic_gather_pline(ctx, vn, from);
+		if (i->collected)
+			break;
+
+		TODO("gather edges until a pline going inside is found");
+	} while(0);
+
+	ctx->end_pline(ctx);
+
+}
 
 /* In this case the box is filled and holes are cut out */
 RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
@@ -411,7 +507,7 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
    drawing the contour of the island except for the box sections */
 RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	assert("!implement me");
+	int sd = 0;
 }
 
 /* Dice up a single island that is intersected or has holes.
