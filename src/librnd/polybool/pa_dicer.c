@@ -659,6 +659,7 @@ RND_INLINE void pa_dic_emit_pa(pa_dic_ctx_t *ctx, rnd_polyarea_t *start)
 		pa_dic_reset_ctx_pa(ctx);
 		pa_dic_emit_island(ctx, pa);
 	} while((pa = pa->f) != start);
+	pa_dic_free_ctx(ctx);
 }
 
 /* API */
