@@ -459,6 +459,17 @@ RND_INLINE char pa_dic_pline_walkdir(rnd_pline_t *pl)
 	return pl->flg.orient == RND_PLF_INV ? 'P' : 'N';
 }
 
+RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t *vn)
+{
+	pa_dic_isc_t *i;
+	i = ctx->head;
+	do {
+		if ((i->seg != NULL) && (i->seg->v == vn))
+			return i;
+	} while((i = i->next) != ctx->head);
+	return NULL;
+}
+
 /* Emit pline vnodes as long as they are all inside the box. Return the
    intersection where the edge went outside */
 RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc)
@@ -466,18 +477,23 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
 	rnd_vnode_t *prev = NULL;
 	rnd_vnode_t *n;
+	pa_dic_isc_t *si;
+	char walkdir;
+
+	walkdir = pa_dic_pline_walkdir(start_isc->seg->p);
 
 	n = start;
 	do {
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_OUTSIDE) {
-			TODO("find the seg for prev and then the isc that was the last point");
-			/* Maybe it's simpler: the only overlapping case is when one of the corners is on the seg? */
-			return NULL;
+			TODO("Handle overlap on boc corner: the only overlapping case is when one of the corners is on the seg?");
+			si = pa_dic_find_isc_for_node(ctx, prev);
+			ctx->append_coord(ctx, si->x, si->y);
+			return si;
 		}
 		ctx->append_coord(ctx, n->point[0], n->point[1]);
 		prev = n;
-		PA_DIC_STEP(n, dir);
+		PA_DIC_STEP(n, walkdir);
 	} while(n != start);
 
 	return start_isc;
