@@ -306,7 +306,7 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	}
 
 	/* Cheap bbox test: fully outside and not wrapping */
-	if ((pl->xmin < ctx->clip.X1) || (pl->xmax > ctx->clip.X2) || (pl->ymin < ctx->clip.Y1) || (pl->ymax > ctx->clip.Y2)) {
+	if ((pl->xmax < ctx->clip.X1) || (pl->xmin > ctx->clip.X2) || (pl->ymax < ctx->clip.Y1) || (pl->ymin > ctx->clip.Y2)) {
 		pl->flg.llabel = PA_PLD_AWAY;
 		return;
 	}
