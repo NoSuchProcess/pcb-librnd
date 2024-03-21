@@ -101,7 +101,9 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 {
 	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
 
-	assert(*iscs < 2);
+	if (iscs != NULL) {
+		assert(*iscs < 2);
+	}
 
 	isc->seg = seg;
 	isc->x = isc_x;
