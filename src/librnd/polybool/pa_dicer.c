@@ -526,12 +526,25 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 			TODO("Handle overlap on boc corner: the only overlapping case is when one of the corners is on the seg?");
 			si = pa_dic_find_isc_for_node(ctx, prev);
 			pa_dic_append(ctx, si->x, si->y);
+			si->collected = 1;
 			return si;
 		}
+		if (dir == PA_DPT_ON_EDGE) {
+			/* arrived back on an edge; there may be a double isc here if the box crosses
+			   a node, see test case clip04; mark the second isc */
+			si = pa_dic_find_isc_for_node(ctx, prev);
+			si->collected = 1;
+		}
+
 		pa_dic_append(ctx, n->point[0], n->point[1]);
 		prev = n;
 		PA_DIC_STEP(n, walkdir);
 	} while(n != start);
+
+	/* arrived back; there may be a double isc here if the box crosses
+	   a node, see test case clip04; mark the second isc */
+	si = pa_dic_find_isc_for_node(ctx, prev);
+	si->collected = 1;
 
 	return start_isc;
 }
