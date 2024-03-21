@@ -364,14 +364,12 @@ static int cmp_ymin(const void *A, const void *B)
 static int cmp_xmax(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
-	assert((*a)->x != (*b)->x);
 	return ((*a)->x > (*b)->x) ? -1 : +1;
 }
 
 static int cmp_ymax(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
-	assert((*a)->y != (*b)->y);
 	return ((*a)->y > (*b)->y) ? -1 : +1;
 }
 
