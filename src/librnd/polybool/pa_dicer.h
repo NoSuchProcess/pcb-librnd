@@ -30,6 +30,9 @@
  *  runs for rendering at every frame at least in sw-render.
  *
  *  The code is not reentrant: it temporary modifies pline flags of the input.
+ *
+ *  This file is the new API in polybool, not part of the original poly lib.
+ *  It is based on callbacks instead of allocating new polylines.
  */
 
 typedef struct pa_dic_ctx_s pa_dic_ctx_t;
