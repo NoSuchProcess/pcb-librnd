@@ -529,7 +529,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 			si->collected = 1;
 			return si;
 		}
-		if (dir == PA_DPT_ON_EDGE) {
+		if ((dir == PA_DPT_ON_EDGE) && (prev != NULL)) {
 			/* arrived back on an edge; there may be a double isc here if the box crosses
 			   a node, see test case clip04; mark the second isc */
 			si = pa_dic_find_isc_for_node(ctx, prev);
