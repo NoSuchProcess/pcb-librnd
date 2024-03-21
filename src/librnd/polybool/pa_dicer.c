@@ -386,31 +386,31 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 
 	pa_dic_isc_t *last = NULL;
 
-	qsort(ctx->side[PA_DIC_H1].array, ctx->side[PA_DIC_H1].used, sizeof(void *), cmp_xmin);
-	qsort(ctx->side[PA_DIC_V1].array, ctx->side[PA_DIC_V1].used, sizeof(void *), cmp_ymin);
-	qsort(ctx->side[PA_DIC_H2].array, ctx->side[PA_DIC_H2].used, sizeof(void *), cmp_xmax);
-	qsort(ctx->side[PA_DIC_V2].array, ctx->side[PA_DIC_V2].used, sizeof(void *), cmp_ymax);
-
 	/* create dummy intersetions for corners for easier walkarounds */
 	ctx->corner[0] = pa_dic_isc(ctx, NULL, PA_DIC_H1, ctx->clip.X1, ctx->clip.Y1, NULL, 0);
 	ctx->corner[1] = pa_dic_isc(ctx, NULL, PA_DIC_V1, ctx->clip.X2, ctx->clip.Y1, NULL, 0);
 	ctx->corner[2] = pa_dic_isc(ctx, NULL, PA_DIC_H2, ctx->clip.X2, ctx->clip.Y2, NULL, 0);
 	ctx->corner[3] = pa_dic_isc(ctx, NULL, PA_DIC_V2, ctx->clip.X1, ctx->clip.Y2, NULL, 0);
 
+	qsort(ctx->side[PA_DIC_H1].array, ctx->side[PA_DIC_H1].used, sizeof(void *), cmp_xmin);
+	qsort(ctx->side[PA_DIC_V1].array, ctx->side[PA_DIC_V1].used, sizeof(void *), cmp_ymin);
+	qsort(ctx->side[PA_DIC_H2].array, ctx->side[PA_DIC_H2].used, sizeof(void *), cmp_xmax);
+	qsort(ctx->side[PA_DIC_V2].array, ctx->side[PA_DIC_V2].used, sizeof(void *), cmp_ymax);
+
 	/* link ordered iscs into a cyclic list */
 	for(sd = 0; sd < PA_DIC_sides; sd++) {
-		if (last != NULL)
-			last->next = ctx->corner[sd];
-		last = ctx->corner[sd];
 		for(m = 0; m < ctx->side[sd].used; m++) {
 			pa_dic_isc_t *isc = ctx->side[sd].array[m];
-			last->next = isc;
+			if (last != NULL)
+				last->next = isc;
 			last = isc;
 		}
 	}
 
 	last->next = ctx->corner[0];
 	ctx->head = ctx->corner[0];
+
+	TODO("Filter loop: remove redundancies from the list");
 }
 
 RND_INLINE void pa_dic_emit_whole_pline(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
