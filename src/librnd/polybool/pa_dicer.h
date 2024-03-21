@@ -59,6 +59,10 @@ struct pa_dic_ctx_s {
 	vtp0_t side[PA_DIC_sides];
 	pa_dic_isc_t *head;
 	pa_dic_isc_t *corner[4];
+	rnd_coord_t first_x, first_y;
+	rnd_coord_t last_x, last_y;
+	unsigned first:1;
+	unsigned has_coord:1; /* last_* is waiting to be printed out */
 };
 
 /* Clip a the rectangular area defined by ctx->clip out of multi-island pa

@@ -352,14 +352,12 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 static int cmp_xmin(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
-	assert((*a)->x != (*b)->x);
 	return ((*a)->x < (*b)->x) ? -1 : +1;
 }
 
 static int cmp_ymin(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
-	assert((*a)->y != (*b)->y);
 	return ((*a)->y < (*b)->y) ? -1 : +1;
 }
 
@@ -381,7 +379,6 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 {
 	int sd;
 	long m;
-
 	pa_dic_isc_t *last = NULL;
 
 	/* create dummy intersetions for corners for easier walkarounds */
@@ -407,21 +404,63 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 
 	last->next = ctx->corner[0];
 	ctx->head = ctx->corner[0];
+}
 
-	TODO("Filter loop: remove redundancies from the list");
+RND_INLINE void pa_dic_append(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
+{
+	if (ctx->first) {
+		ctx->first_x = ctx->last_x = x;
+		ctx->first_y = ctx->last_y = y;
+		ctx->first = 0;
+		ctx->has_coord = 1;
+		return;
+	}
+
+	/* delay printing the coords; always print the last one that's not yet printed;
+	   this allows pa_dic_end() to print the last coords and can omit them if
+	   they match the first */
+	if (ctx->has_coord) {
+		ctx->append_coord(ctx, ctx->last_x, ctx->last_y);
+		ctx->has_coord = 0;
+	}
+
+	if ((ctx->last_x != x) || (ctx->last_y != y)) {
+		ctx->last_x = x;
+		ctx->last_y = y;
+		ctx->has_coord = 1;
+	}
+}
+
+
+RND_INLINE void pa_dic_begin(pa_dic_ctx_t *ctx)
+{
+	ctx->begin_pline(ctx);
+	ctx->first = 1;
+	ctx->has_coord = 0;
+}
+
+RND_INLINE void pa_dic_end(pa_dic_ctx_t *ctx)
+{
+	if (ctx->has_coord && ((ctx->last_x != ctx->first_x) || (ctx->last_y != ctx->first_y)))
+		ctx->append_coord(ctx, ctx->last_x, ctx->last_y);
+
+	ctx->first = 0;
+	ctx->has_coord = 0;
+
+	ctx->end_pline(ctx);
 }
 
 RND_INLINE void pa_dic_emit_whole_pline(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 {
 	rnd_vnode_t *vn;
-	ctx->begin_pline(ctx);
+	pa_dic_begin(ctx);
 
 	vn = pl->head;
 	do {
-		ctx->append_coord(ctx, vn->point[0], vn->point[1]);
+		pa_dic_append(ctx, vn->point[0], vn->point[1]);
 	} while((vn = vn->next) != pl->head);
 
-	ctx->end_pline(ctx);
+	pa_dic_end(ctx);
 }
 
 RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
@@ -486,10 +525,10 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 		if (dir == PA_DPT_OUTSIDE) {
 			TODO("Handle overlap on boc corner: the only overlapping case is when one of the corners is on the seg?");
 			si = pa_dic_find_isc_for_node(ctx, prev);
-			ctx->append_coord(ctx, si->x, si->y);
+			pa_dic_append(ctx, si->x, si->y);
 			return si;
 		}
-		ctx->append_coord(ctx, n->point[0], n->point[1]);
+		pa_dic_append(ctx, n->point[0], n->point[1]);
 		prev = n;
 		PA_DIC_STEP(n, walkdir);
 	} while(n != start);
@@ -506,7 +545,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 	for(i = start_isc->next;; i = i->next) {
 		if (i->collected)
 			break;
-		ctx->append_coord(ctx, i->x, i->y);
+		pa_dic_append(ctx, i->x, i->y);
 		if ((i->seg != NULL) && (pa_dic_emit_island_predict(ctx, i->seg->v, pa_dic_pline_walkdir(i->seg->p)) == PA_DPT_INSIDE))
 			break;
 	}
@@ -547,8 +586,8 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		return; /* ignore intersection that has an edge going outside */
 
 	/* it's safe to start here, next deviation is going inside */
-	ctx->begin_pline(ctx);
-	ctx->append_coord(ctx, from->x, from->y);
+	pa_dic_begin(ctx);
+	pa_dic_append(ctx, from->x, from->y);
 	from->collected = 1;
 
 	i = from;
@@ -563,7 +602,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 			break;
 	} while(0);
 
-	ctx->end_pline(ctx);
+	pa_dic_end(ctx);
 }
 
 /* In this case the box is filled and holes are cut out */
