@@ -656,6 +656,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "$(LIBRND)/plugin.state" "$(HL_SHAREDIR)/plugin.state"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd4/puplug"
+	$(SCCBOX) $(HOW) "librnd/polybool/pa_dicer.h" "$(HL_INCDIR)/polybool/pa_dicer.h"
 	$(SCCBOX) $(HOW) "$(SPHASH)" "$(HL_LIBDIR)/librnd4/sphash"
 	$(SCCBOX) $(HOW) "librnd/scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd4/scconfig/gen_conf.sh"
 	$(SCCBOX) $(HOW) "../scconfig/cquote"                              "$(HL_LIBDIR)/librnd4/scconfig/cquote"
