@@ -32,6 +32,8 @@
  *  The code is not reentrant: it temporary modifies pline flags of the input.
  */
 
+#include "pa_dicer.h"
+
 typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 	PA_PLD_UNKNWN  = 0,
 	PA_PLD_INSIDE  = 1,    /* pline is fully inside the box */
@@ -41,14 +43,6 @@ typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 } pa_dic_pline_label_t;
 
 
-typedef enum pa_dic_side_s {
-	PA_DIC_H1 = 0, /* in pcb-rnd/svg coord system: north; in doc coord system: south */
-	PA_DIC_V1,     /* in pcb-rnd/svg coord system: east; in doc coord system: east */
-	PA_DIC_H2,     /* in pcb-rnd/svg coord system: south; in doc coord system: north */
-	PA_DIC_V2,     /* in pcb-rnd/svg coord system: west; in doc coord system: west */
-	PA_DIC_sides
-} pa_dic_side_t;
-
 typedef struct pa_dic_isc_s {
 	pa_seg_t *seg;
 	rnd_coord_t x, y;
@@ -56,18 +50,40 @@ typedef struct pa_dic_isc_s {
 	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
 } pa_dic_isc_t;
 
-typedef struct pa_dic_ctx_s pa_dic_ctx_t;
+TODO("cache allocations");
+RND_INLINE pa_dic_isc_t *pa_dic_isc_alloc(pa_dic_ctx_t *ctx)
+{
+	return malloc(sizeof(pa_dic_isc_t));
+}
 
-struct pa_dic_ctx_s {
-	rnd_box_t clip;
-	vtp0_t side[PA_DIC_sides];
+RND_INLINE void pa_dic_isc_free(pa_dic_ctx_t *ctx, pa_dic_isc_t *isc, int destroy)
+{
+	free(isc);
+}
 
-	void (*begin_pline)(pa_dic_ctx_t *ctx);
-	void (*append_coord)(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y);
-	void (*end_pline)(pa_dic_ctx_t *ctx);
-	void *user_data;
+RND_INLINE void pa_dic_reset_ctx_pa_(pa_dic_ctx_t *ctx, int destroy)
+{
+	int n, m;
+	for(n = 0; n < PA_DIC_sides; n++) {
+		for(m = 0; m < ctx->side[n].used; m++)
+			pa_dic_isc_free(ctx, ctx->side[n].array[m], destroy);
+		ctx->side[n].used = NULL;
+		if (destroy)
+			vtp0_uninit(&ctx->side[n]);
+	}
+}
 
-};
+RND_INLINE void pa_dic_reset_ctx_pa(pa_dic_ctx_t *ctx)
+{
+	pa_dic_reset_ctx_pa_(ctx, 0);
+}
+
+
+RND_INLINE void pa_dic_free_ctx(pa_dic_ctx_t *ctx)
+{
+	pa_dic_reset_ctx_pa_(ctx, 1);
+}
+
 
 /* Returns whether c is in between low and high without being equal to either */
 RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
@@ -78,7 +94,7 @@ RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
 /* Record an intersection */
 RND_INLINE void pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t isc_x, rnd_coord_t isc_y, int *iscs, int coax)
 {
-	pa_dic_isc_t *isc = malloc(sizeof(pa_dic_isc_t));
+	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
 
 	assert(*iscs < 2);
 
@@ -464,5 +480,19 @@ RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 		pl->flg.llabel = PA_PLL_UNKNWN;
 }
 
+RND_INLINE void pa_dic_emit_pa(pa_dic_ctx_t *ctx, rnd_polyarea_t *start)
+{
+	rnd_polyarea_t *pa;
 
+	pa = start;
+	do {
+		pa_dic_reset_ctx_pa(ctx);
+		pa_dic_emit_island(ctx, pa);
+	} while((pa = pa->f) != start);
+}
 
+/* API */
+void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	pa_dic_emit_pa(ctx, pa);
+}
