@@ -74,8 +74,6 @@ RND_INLINE void pa_dic_reset_ctx_pa_(pa_dic_ctx_t *ctx, int destroy)
 		if (destroy)
 			vtp0_uninit(&ctx->side[sd]);
 	}
-	for(sd = 0; sd < 4; sd++)
-		pa_dic_isc_free(ctx, ctx->corner[sd], destroy);
 }
 
 RND_INLINE void pa_dic_reset_ctx_pa(pa_dic_ctx_t *ctx)
