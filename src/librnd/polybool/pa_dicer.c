@@ -457,6 +457,8 @@ RND_INLINE char pa_dic_pline_walkdir(rnd_pline_t *pl)
 	return pl->flg.orient == RND_PLF_INV ? 'P' : 'N';
 }
 
+/* Emit pline vnodes as long as they are all inside the box. Return the
+   intersection where the edge went outside */
 RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc)
 {
 	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
@@ -479,6 +481,21 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	return start_isc;
 }
 
+/* Emit edge points; stop after reaching one that's already collected
+   (arrived back at start) or reaching one that's going inside. Return
+   this intersection */
+RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *start_isc)
+{
+	pa_dic_isc_t *i;
+	for(i = start_isc->next;; i = i->next) {
+		if (i->collected)
+			break;
+		ctx->append_coord(ctx, i->x, i->y);
+		if ((i->seg != NULL) && (pa_dic_emit_island_predict(ctx, i->seg->v, pa_dic_pline_walkdir(i->seg->p)) == PA_DPT_INSIDE))
+			break;
+	}
+	return i;
+}
 
 RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t *from)
 {
@@ -488,6 +505,9 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	char walkdir;
 	int sd;
 	long m;
+
+	if (from->seg == NULL)
+		return;
 
 	/* Check where we can get from this intersection */
 	walkdir = pa_dic_pline_walkdir(from->seg->p);
@@ -519,20 +539,21 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	do {
 		vn = i->seg->v;
 		PA_DIC_STEP(vn, walkdir);
-		i = pa_dic_gather_pline(ctx, vn, from);
+		i = pa_dic_gather_pline(ctx, vn, i);
 		if (i->collected)
 			break;
-
-		TODO("gather edges until a pline going inside is found");
+		i = pa_dic_gather_edge(ctx, i);
+		if (i->collected)
+			break;
 	} while(0);
 
 	ctx->end_pline(ctx);
-
 }
 
 /* In this case the box is filled and holes are cut out */
 RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
+	TODO("implement me");
 	assert("!implement me");
 }
 
@@ -540,7 +561,11 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
    drawing the contour of the island except for the box sections */
 RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	int sd = 0;
+	pa_dic_isc_t *i;
+	for(i = ctx->head->next; i != ctx->head; i = i->next) {
+		if ((i->seg != NULL) && (!i->collected))
+			pa_dic_emit_island_collect_from(ctx, i);
+	}
 }
 
 /* Dice up a single island that is intersected or has holes.
