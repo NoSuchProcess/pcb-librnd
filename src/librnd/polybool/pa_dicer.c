@@ -589,7 +589,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 			for(m = 0; m < ctx->side[sd].used; m++) {
 				pa_dic_isc_t *isc = ctx->side[sd].array[m];
 				if ((isc->seg != NULL) && (isc->seg->p == from->seg->p))
-					from->collected = 1;
+					isc->collected = 1;
 			}
 		}
 		return;
