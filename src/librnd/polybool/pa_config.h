@@ -23,7 +23,7 @@
 #define DEBUG_DUMP 0
 #define DEBUG_SELFISC 0
 #define DEBUG_RISK 0
-#define DEBUG_CLIP 1
+#define DEBUG_CLIP 0
 
 /* enable compiling pa_dump_pa() for gdb (but no automatic dump from the code) */
 #define DEBUG_PA_DUMP_PA 1
