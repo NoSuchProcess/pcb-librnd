@@ -369,3 +369,11 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 #	undef DEBUG_SELFISC
 #	define DEBUG_SELFISC PA_DEBUGP_DUMMY
 #endif
+
+#if DEBUG_CLIP
+#	undef DEBUG_CLIP
+#	define DEBUG_CLIP DEBUGP
+#else
+#	undef DEBUG_CLIP
+#	define DEBUG_CLIP PA_DEBUGP_DUMMY
+#endif

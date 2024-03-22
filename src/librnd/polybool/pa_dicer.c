@@ -577,6 +577,8 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	if (from->seg == NULL)
 		return;
 
+	DEBUG_CLIP("     collect from: %ld;%ld\n", (long)from->x, (long)from->y);
+
 	/* Check where we can get from this intersection */
 	walkdir = pa_dic_pline_walkdir(from->seg->p);
 	ptst = pa_dic_emit_island_predict(ctx, from->seg->v, walkdir);
@@ -615,9 +617,11 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		assert(i->seg != NULL); /* we need a pline intersection to start from */
 		vn = i->seg->v;
 		PA_DIC_STEP(vn, walkdir);
+		DEBUG_CLIP("      gather pline: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
 		i = pa_dic_gather_pline(ctx, vn, i);
 		if (i->collected)
 			break;
+		DEBUG_CLIP("      gather edge: %ld;%ld\n", (long)i->x, (long)i->y);
 		i = pa_dic_gather_edge(ctx, i);
 		if (i->collected)
 			break;
@@ -638,6 +642,7 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
 RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	pa_dic_isc_t *i;
+	DEBUG_CLIP("    emit island normal\n");
 	for(i = ctx->head->next; i != ctx->head; i = i->next) {
 		if ((i->seg != NULL) && (!i->collected))
 			pa_dic_emit_island_collect_from(ctx, i);
@@ -650,6 +655,7 @@ RND_INLINE void pa_dic_emit_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *
 {
 	rnd_pline_t *pl;
 
+	DEBUG_CLIP("   emit island expensive\n");
 	/* label all holes */
 	for(pl = pa->contours->next; pl != NULL; pl = pl->next) {
 		pa_dic_pline_label(ctx, pl);
@@ -672,6 +678,7 @@ RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	rnd_pline_t *pl;
 
 	pl = pa->contours;
+	DEBUG_CLIP("  emit island: %ld;%ld\n", (long)pl->head->point[0], (long)pl->head->point[1]);
 	pa_dic_pline_label(ctx, pl);
 
 	/* first handle a few cheap common cases */
