@@ -612,16 +612,13 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 	ctx->end_pline(ctx);
 }
 
-#define PA_DIC_STEP(n, dir) n = (dir == 'N' ? n->next : n->prev)
-
 /* Start from a node that's on the edge; go as far as needed to find the first
-   node that's not on edge and return the relation of that node to the box.
-   Dir is either N or P for ->next or ->prev traversal */
-RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start, char dir)
+   node that's not on edge and return the relation of that node to the box. */
+RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start)
 {
 	rnd_vnode_t *n;
 
-	for(n = start->next; n != start; PA_DIC_STEP(n, dir))  {
+	for(n = start->next; n != start; n = n->next)  {
 		pa_dic_pt_box_relation_t dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_INSIDE)
 			return PA_DPT_INSIDE; /* going inside the box: always accept */
@@ -640,11 +637,6 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 	}
 
 	return PA_DPT_ON_EDGE; /* arrived back to start which is surely on the edge */
-}
-
-RND_INLINE char pa_dic_pline_walkdir(rnd_pline_t *pl)
-{
-	return pl->flg.orient == RND_PLF_INV ? 'P' : 'N';
 }
 
 RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t *vn)
@@ -666,11 +658,8 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	rnd_vnode_t *prev = NULL;
 	rnd_vnode_t *n;
 	pa_dic_isc_t *si, *last_si = NULL, *pending_si = NULL;
-	char walkdir;
 
 	assert(start_isc->vn != NULL); /* need to have a pline to start with */
-
-	walkdir = pa_dic_pline_walkdir(start_isc->pl);
 
 	n = start;
 	do {
@@ -691,7 +680,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
 		prev = n;
-		PA_DIC_STEP(n, walkdir);
+		n = n->next;
 	} while(n != start);
 
 	return start_isc;
@@ -707,7 +696,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 		if (i->collected)
 			break;
 		pa_dic_append(ctx, i->x, i->y);
-		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, pa_dic_pline_walkdir(i->pl)) == PA_DPT_INSIDE))
+		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn) == PA_DPT_INSIDE))
 			break;
 		i->collected = 1;
 	}
@@ -719,7 +708,6 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	pa_dic_pt_box_relation_t ptst;
 	rnd_vnode_t *vn;
 	pa_dic_isc_t *i;
-	char walkdir;
 
 	if (from->vn == NULL)
 		return;
@@ -727,8 +715,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	DEBUG_CLIP("     collect from: %ld;%ld\n", (long)from->x, (long)from->y);
 
 	/* Check where we can get from this intersection */
-	walkdir = pa_dic_pline_walkdir(from->pl);
-	ptst = pa_dic_emit_island_predict(ctx, from->vn, walkdir);
+	ptst = pa_dic_emit_island_predict(ctx, from->vn);
 
 	if (ptst == PA_DPT_ON_EDGE) {
 		/* corner case: all nodes of the pline are on the clipbox but it could take
@@ -755,8 +742,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	i = from;
 	do {
 		assert(i->vn != NULL); /* we need a pline intersection to start from */
-		vn = i->vn;
-		PA_DIC_STEP(vn, walkdir);
+		vn = i->vn->next;
 		DEBUG_CLIP("      gather pline from: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
 		i = pa_dic_gather_pline(ctx, vn, i);
 		if (i->collected)
