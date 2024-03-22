@@ -647,7 +647,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
 	rnd_vnode_t *prev = NULL;
 	rnd_vnode_t *n;
-	pa_dic_isc_t *si, *last_si = NULL;
+	pa_dic_isc_t *si, *last_si = NULL, *pending_si = NULL;
 	char walkdir;
 
 	assert(start_isc->vn != NULL); /* need to have a pline to start with */
@@ -659,10 +659,16 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_OUTSIDE)
 			return last_si;
+
+		if (pending_si != NULL) {
+			pending_si->collected = 1;
+			pending_si = NULL;
+		}
+
 		if (dir == PA_DPT_ON_EDGE) {
 			si = pa_dic_find_isc_for_node(ctx, n);
-			si->collected = 1;
 			last_si = si;
+			pending_si = si; /* mark it later, only if this is the last si before the pline goes outside */
 		}
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
