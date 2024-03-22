@@ -154,8 +154,9 @@ RND_INLINE rnd_vnode_t *pa_dic_split_seg(pa_dic_ctx_t *ctx, pa_seg_t *seg, rnd_c
 
 }
 
-/* Record an intersection, potentially creating a new temporary node in seg */
-RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t x, rnd_coord_t y, int *iscs, int coax)
+/* Record an intersection, potentially creating a new temporary node in seg;
+   first and second are the first and second real (non-temporary) node of seg */
+RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t x, rnd_coord_t y, int *iscs, int coax, rnd_vnode_t *first, rnd_vnode_t *second)
 {
 	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
 	rnd_vnode_t *nd = NULL;
@@ -164,11 +165,12 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 		assert(*iscs < 2);
 	}
 
+
 	if (seg != NULL) {
-		if ((seg->v->point[0] == x) && (seg->v->point[1] == y))
-			nd = seg->v;
-		else if ((seg->v->next->point[0] == x) && (seg->v->next->point[1] == y))
-			nd = seg->v->next;
+		if ((first->point[0] == x) && (first->point[1] == y))
+			nd = first;
+		else if ((second->point[0] == x) && (second->point[1] == y))
+			nd = second;
 		else
 			nd = pa_dic_split_seg(ctx, seg, x, y);
 		isc->vn = nd;
@@ -214,11 +216,17 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 {
 	rnd_coord_t lx1, ly1, lx2, ly2;
 	int iscs = 0;
+	rnd_vnode_t *first, *second;
+
+	/* remember the two real endpoints of the segment; for the second endpoint
+	   we need to skip through the temporary points already inserted */
+	first = seg->v;
+	for(second = first->next; second->flg.TEMPORARY; second = second->next) ;
 
 	TODO("arc: needs special code here");
 
-	lx1 = seg->v->point[0]; ly1 = seg->v->point[1];
-	lx2 = seg->v->next->point[0]; ly2 = seg->v->next->point[1];
+	lx1 = first->point[0]; ly1 = first->point[1];
+	lx2 = second->point[0]; ly2 = second->point[1];
 
 	if (ly1 == ly2) {
 		/* special case: horizontal line, may overlap */
@@ -230,17 +238,17 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			return 0;
 
 		if (crd_in_between(lx1, ctx->clip.X1, ctx->clip.X2))
-			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1, first, second);
 		if (crd_in_between(lx2, ctx->clip.X1, ctx->clip.X2))
-			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1, first, second);
 		if (crd_in_between(ctx->clip.X1, lx1, lx2))
-			pa_dic_isc(ctx, seg, side, ctx->clip.X1, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, ctx->clip.X1, y, &iscs, 1, first, second);
 		if (crd_in_between(ctx->clip.X2, lx1, lx2))
-			pa_dic_isc(ctx, seg, side, ctx->clip.X2, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, ctx->clip.X2, y, &iscs, 1, first, second);
 		if (ctx->clip.X1 == lx1)
-			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, lx1, y, &iscs, 1, first, second);
 		if (ctx->clip.X2 == lx2)
-			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, lx2, y, &iscs, 1, first, second);
 	}
 	else {
 		/* normal case: sloped line */
@@ -259,7 +267,7 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			x = pa_line_x_for_y(lx1, ly1, lx2, ly2, y);
 		else
 			return 0;
-		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0);
+		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
 	}
 
 	return iscs;
@@ -271,10 +279,17 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 	rnd_coord_t lx1, ly1, lx2, ly2;
 	int iscs = 0;
 
+	rnd_vnode_t *first, *second;
+
+	/* remember the two real endpoints of the segment; for the second endpoint
+	   we need to skip through the temporary points already inserted */
+	first = seg->v;
+	for(second = first->next; second->flg.TEMPORARY; second = second->next) ;
+
 	TODO("arc: needs special code here");
 
-	lx1 = seg->v->point[0]; ly1 = seg->v->point[1];
-	lx2 = seg->v->next->point[0]; ly2 = seg->v->next->point[1];
+	lx1 = first->point[0]; ly1 = first->point[1];
+	lx2 = second->point[0]; ly2 = second->point[1];
 
 
 	if (lx1 == lx2) {
@@ -285,17 +300,17 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			rnd_swap(rnd_coord_t, ly1, ly2);
 
 		if (crd_in_between(ly1, ctx->clip.Y1, ctx->clip.Y2))
-			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1, first, second);
 		if (crd_in_between(ly2, ctx->clip.Y1, ctx->clip.Y2))
-			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1, first, second);
 		if (crd_in_between(ctx->clip.Y1, ly1, ly2))
-			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y1, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y1, &iscs, 1, first, second);
 		if (crd_in_between(ctx->clip.Y2, ly1, ly2))
-			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y2, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ctx->clip.Y2, &iscs, 1, first, second);
 		if (ctx->clip.Y1 == ly1)
-			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1, first, second);
 		if (ctx->clip.Y2 == ly2)
-			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1);
+			pa_dic_isc(ctx, seg, side, x, ly2, &iscs, 1, first, second);
 	}
 	else {
 		/* normal case: sloped line */
@@ -314,7 +329,7 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			y = pa_line_y_for_x(lx1, ly1, lx2, ly2, x);
 		else
 			return 0;
-		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0);
+		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
 	}
 
 	return iscs;
@@ -461,10 +476,10 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	pa_dic_isc_t *last = NULL, *i, *next, *prev;
 
 	/* create dummy intersetions for corners for easier walkarounds */
-	ctx->corner[0] = pa_dic_isc(ctx, NULL, PA_DIC_H1, ctx->clip.X1, ctx->clip.Y1, NULL, 0);
-	ctx->corner[1] = pa_dic_isc(ctx, NULL, PA_DIC_V1, ctx->clip.X2, ctx->clip.Y1, NULL, 0);
-	ctx->corner[2] = pa_dic_isc(ctx, NULL, PA_DIC_H2, ctx->clip.X2, ctx->clip.Y2, NULL, 0);
-	ctx->corner[3] = pa_dic_isc(ctx, NULL, PA_DIC_V2, ctx->clip.X1, ctx->clip.Y2, NULL, 0);
+	ctx->corner[0] = pa_dic_isc(ctx, NULL, PA_DIC_H1, ctx->clip.X1, ctx->clip.Y1, NULL, 0, NULL, NULL);
+	ctx->corner[1] = pa_dic_isc(ctx, NULL, PA_DIC_V1, ctx->clip.X2, ctx->clip.Y1, NULL, 0, NULL, NULL);
+	ctx->corner[2] = pa_dic_isc(ctx, NULL, PA_DIC_H2, ctx->clip.X2, ctx->clip.Y2, NULL, 0, NULL, NULL);
+	ctx->corner[3] = pa_dic_isc(ctx, NULL, PA_DIC_V2, ctx->clip.X1, ctx->clip.Y2, NULL, 0, NULL, NULL);
 
 	qsort(ctx->side[PA_DIC_H1].array, ctx->side[PA_DIC_H1].used, sizeof(void *), cmp_xmin);
 	qsort(ctx->side[PA_DIC_V1].array, ctx->side[PA_DIC_V1].used, sizeof(void *), cmp_ymin);
