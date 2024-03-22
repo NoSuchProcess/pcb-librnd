@@ -523,7 +523,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	do {
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_OUTSIDE) {
-			TODO("Handle overlap on boc corner: the only overlapping case is when one of the corners is on the seg?");
+			TODO("Handle overlap on box corner: the only overlapping case is when one of the corners is on the seg?");
 			si = pa_dic_find_isc_for_node(ctx, prev);
 			pa_dic_append(ctx, si->x, si->y);
 			si->collected = 1;
