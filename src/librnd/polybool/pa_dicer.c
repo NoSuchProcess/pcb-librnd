@@ -505,9 +505,9 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	i = ctx->head;
 	do {
 		next = i->next;
-		if ((i->vn == i->next->vn) && (i->vn != NULL))
+		if ((i->vn == prev->vn) && (i->vn != NULL))
 			goto del;
-		else if ((i->x == next->x) && (i->y == next->y) && (i->vn == NULL)) {
+		else if ((i->x == prev->x) && (i->y == prev->y) && (i->vn == NULL)) {
 			/* remove dummy corner if there's a real node on it as well */
 			del:;
 			prev->next = next;
