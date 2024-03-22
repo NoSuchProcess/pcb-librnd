@@ -780,8 +780,13 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 /* In this case the box is filled and holes are cut out */
 RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	TODO("implement me");
-	assert("!implement me");
+	pa_dic_isc_t *i;
+	TODO("This is the same as the normal case... maybe just merge them");
+	DEBUG_CLIP("    emit island inverted\n");
+	for(i = ctx->head->next; i != ctx->head; i = i->next) {
+		if ((i->vn != NULL) && (!i->collected))
+			pa_dic_emit_island_collect_from(ctx, i);
+	}
 }
 
 /* The box cuts into the outer contour of the island; we are basically
