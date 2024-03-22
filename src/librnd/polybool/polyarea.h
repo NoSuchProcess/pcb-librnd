@@ -113,8 +113,10 @@ void pa_pline_invert(rnd_pline_t *c); /* invert contour */
 
 rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v);
 
+/* NOTE: these don't increase pline->Count */
 void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node);
 void rnd_poly_vertex_include_force(rnd_vnode_t *after, rnd_vnode_t *node); /* do not remove nodes even if on the same line */
+
 void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node);
 
 /* this should be an internal function but it's also used in self-isc code */
