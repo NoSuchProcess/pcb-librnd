@@ -501,6 +501,14 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	last->next = ctx->corner[0];
 	ctx->head = ctx->corner[0];
 
+#if DEBUG_CLIP_DUMP_LOOP != 0
+	rnd_trace("isc loop #1:\n");
+	i = ctx->head;
+	do {
+		rnd_trace(" %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn, i->pl);
+	} while((i = i->next) != ctx->head);
+#endif
+
 	/* merge adjacent iscs if the are the same; last is still the last on the list */
 	restart:;
 	prev = last;
@@ -522,6 +530,14 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 		}
 		prev = i;
 	} while((i = next) != ctx->head);
+
+#if DEBUG_CLIP_DUMP_LOOP != 0
+	rnd_trace("isc loop #2:\n");
+	i = ctx->head;
+	do {
+		rnd_trace(" %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn, i->pl);
+	} while((i = i->next) != ctx->head);
+#endif
 
 	/* reset sides but keep the allocation as cache */
 	for(sd = 0; sd < PA_DIC_sides; sd++)
