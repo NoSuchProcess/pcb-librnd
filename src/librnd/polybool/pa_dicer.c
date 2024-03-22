@@ -633,6 +633,32 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 			   we are good to go */
 			if (crd_in_between(midx, ctx->clip.X1, ctx->clip.X2) && crd_in_between(midy, ctx->clip.Y1, ctx->clip.Y2))
 				return PA_DPT_INSIDE;
+
+			/* special case: for a coaxial overlapping segment: if pline direction
+			   matches clip box edge direction, the polyline surely has points within
+			   the box in the svg-right-hand-side neighborhood */
+			if ((n->point[0] == n->prev->point[0]) && (n->point[1] != n->prev->point[1])) {
+				/* vertical */
+				if (n->point[0] == ctx->clip.X1) {
+					if (n->point[1] < n->prev->point[1])
+						return PA_DPT_INSIDE;
+				}
+				else if (n->point[0] == ctx->clip.X2) {
+					if (n->point[1] > n->prev->point[1])
+						return PA_DPT_INSIDE;
+				}
+			}
+			if ((n->point[0] != n->prev->point[0]) && (n->point[1] == n->prev->point[1])) {
+				/* horizontal */
+				if (n->point[1] == ctx->clip.Y1) {
+					if (n->point[0] < n->prev->point[0])
+						return PA_DPT_INSIDE;
+				}
+				else if (n->point[1] == ctx->clip.Y2) {
+					if (n->point[0] > n->prev->point[0])
+						return PA_DPT_INSIDE;
+				}
+			}
 		}
 	}
 
