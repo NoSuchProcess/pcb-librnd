@@ -590,8 +590,20 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 
 	for(n = start->next; n != start; PA_DIC_STEP(n, dir))  {
 		pa_dic_pt_box_relation_t dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
-		if (dir != PA_DPT_ON_EDGE)
-			return dir;
+		if (dir == PA_DPT_INSIDE)
+			return PA_DPT_INSIDE; /* going inside the box: always accept */
+		if (dir == PA_DPT_OUTSIDE)
+			return PA_DPT_OUTSIDE; /* going outside the box: always refuse */
+		if (dir == PA_DPT_ON_EDGE) {
+			rnd_coord_t midx = (n->point[0] + n->prev->point[0]) / 2;
+			rnd_coord_t midy = (n->point[1] + n->prev->point[1]) / 2;
+			TODO("Corner case: if difference is only 1 above, the midpoint is rounded badly - use bigcoord");
+			/* special case: a pline seg sloping across two edge iscs, test case 
+			   clip01b; if the center of the line is inside the box (not on edge)
+			   we are good to go */
+			if (crd_in_between(midx, ctx->clip.X1, ctx->clip.X2) && crd_in_between(midy, ctx->clip.Y1, ctx->clip.Y2))
+				return PA_DPT_INSIDE;
+		}
 	}
 
 	return PA_DPT_ON_EDGE; /* arrived back to start which is surely on the edge */
