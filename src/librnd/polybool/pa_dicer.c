@@ -691,6 +691,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 		pa_dic_append(ctx, i->x, i->y);
 		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, pa_dic_pline_walkdir(i->pl)) == PA_DPT_INSIDE))
 			break;
+		i->collected = 1;
 	}
 	return i;
 }
@@ -738,15 +739,17 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		assert(i->vn != NULL); /* we need a pline intersection to start from */
 		vn = i->vn;
 		PA_DIC_STEP(vn, walkdir);
-		DEBUG_CLIP("      gather pline: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
+		DEBUG_CLIP("      gather pline from: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
 		i = pa_dic_gather_pline(ctx, vn, i);
 		if (i->collected)
 			break;
-		DEBUG_CLIP("      gather edge: %ld;%ld\n", (long)i->x, (long)i->y);
+		i->collected = 1;
+		DEBUG_CLIP("      gather edge from: %ld;%ld\n", (long)i->x, (long)i->y);
 		i = pa_dic_gather_edge(ctx, i);
 		if (i->collected)
 			break;
-	} while(0);
+		i->collected = 1;
+	} while(1);
 
 	pa_dic_end(ctx);
 }
