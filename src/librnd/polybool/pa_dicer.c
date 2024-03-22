@@ -744,16 +744,9 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	ptst = pa_dic_emit_island_predict(ctx, from->vn);
 
 	if (ptst == PA_DPT_ON_EDGE) {
-		/* corner case: all nodes of the pline are on the clipbox but it could take
-		   shortcuts - emit the pline and mark all of its segs collected */
-		pa_dic_isc_t *i;
-
-		pa_dic_emit_whole_pline(ctx, from->pl);
-		i = ctx->head;
-		do {
-			if ((i->vn != NULL) && (i->pl == from->pl))
-				i->collected = 1;
-		} while((i = i->next) != ctx->head);
+		/* corner case: all nodes of the pline are on the clipbox but not in
+		   the right direction to have point inside the box -> impossible;
+		   it's a safe bet to return empty */
 		return;
 	}
 
