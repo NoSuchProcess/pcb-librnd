@@ -43,11 +43,14 @@ typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 } pa_dic_pline_label_t;
 
 struct pa_dic_isc_s {
-	pa_seg_t *seg;
-	rnd_coord_t x, y;
-	int isc_idx;     /* first or second, from the perspective of the clip box line; second means overlapping line or arc */
-	unsigned coax:1; /* set if line is coaxial (may overlap with) the edge */
-	unsigned collected:1; /* already emitted in the output */
+	rnd_vnode_t *vn;
+	rnd_pline_t *pl;
+
+	rnd_coord_t x, y;      /* corners have vn==NULL pl==NULL but we still need to remember the coords */
+
+	unsigned temporary:1;  /* inserted by the dicer code, shall be removed at the end */
+	unsigned coax:1;       /* set if line is coaxial (may overlap with) the edge */
+	unsigned collected:1;  /* already emitted in the output */
 	pa_dic_isc_t *next;
 };
 
@@ -64,15 +67,32 @@ RND_INLINE void pa_dic_isc_free(pa_dic_ctx_t *ctx, pa_dic_isc_t *isc, int destro
 
 RND_INLINE void pa_dic_reset_ctx_pa_(pa_dic_ctx_t *ctx, int destroy)
 {
-	int sd;
-	long m;
+	if (destroy) {
+		int sd;
+		long m;
 
-	for(sd = 0; sd < PA_DIC_sides; sd++) {
-		for(m = 0; m < ctx->side[sd].used; m++)
-			pa_dic_isc_free(ctx, ctx->side[sd].array[m], destroy);
-		ctx->side[sd].used = 0;
-		if (destroy)
-			vtp0_uninit(&ctx->side[sd]);
+		/* free up cached side[] vectors */
+		for(sd = 0; sd < PA_DIC_sides; sd++)
+			for(m = 0; m < ctx->side[sd].used; m++)
+				vtp0_uninit(&ctx->side[sd]);
+	}
+
+
+	/* free ISCs and temporary pline nodes */
+	if (ctx->head != NULL) {
+		pa_dic_isc_t *i, *next;
+
+		i = ctx->head;
+		do {
+			next = i->next;
+			if (i->temporary) {
+				rnd_poly_vertex_exclude(i->pl, i->vn);
+				free(i->vn);
+			}
+			pa_dic_isc_free(ctx, i, destroy);
+		} while((i = next) != ctx->head);
+
+		ctx->head = NULL;
 	}
 }
 
@@ -94,21 +114,78 @@ RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
 	return (c > low) && (c < high);
 }
 
-/* Record an intersection */
-RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t isc_x, rnd_coord_t isc_y, int *iscs, int coax)
+/* Returns whether c is in between low and high, inclusive, fix order of
+   low,high if needed */
+RND_INLINE int crd_in_between_auto(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
+{
+	if (low > high)
+		rnd_swap(rnd_coord_t, low, high);
+	return (c >= low) && (c <= high);
+}
+
+/* Reuse a flag of vnode for indiciating temporary nodes */
+#define TEMPORARY mark
+
+/* insert a new temporary node in seg */
+RND_INLINE rnd_vnode_t *pa_dic_split_seg(pa_dic_ctx_t *ctx, pa_seg_t *seg, rnd_coord_t x, rnd_coord_t y)
+{
+	rnd_vnode_t *after, *next, *newnd;
+	for(after = seg->v;;after = next) {
+		next = after->next;
+		if ((after != seg->v) && !after->flg.TEMPORARY) {
+			assert(!"ran out of the seg without finding where to insert");
+		}
+		if ((x == after->point[0]) && (y == after->point[1]))
+			return after;
+		if (crd_in_between_auto(x, after->point[0], next->point[0]) && crd_in_between_auto(y, after->point[1], next->point[1])) {
+			/* insert a new temporayr node between after and next */
+			newnd = calloc(sizeof(rnd_vnode_t), 1);
+			newnd->point[0] = x;
+			newnd->point[1] = y;
+			newnd->flg.TEMPORARY = 1;
+			rnd_poly_vertex_include_force(after, newnd);
+			seg->p->Count++; /* vertex exclude will decrease it back at the end when we are removing temporaries */
+
+			/* NOTE: segment and rtree are intentionally not updated as this node is temporary only */
+
+			return newnd;
+		}
+	}
+
+}
+
+/* Record an intersection, potentially creating a new temporary node in seg */
+RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t x, rnd_coord_t y, int *iscs, int coax)
 {
 	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
+	rnd_vnode_t *nd = NULL;
 
 	if (iscs != NULL) {
 		assert(*iscs < 2);
 	}
 
-	isc->seg = seg;
-	isc->x = isc_x;
-	isc->y = isc_y;
-	isc->isc_idx = (iscs == NULL ? 0 : *iscs);
+	if (seg != NULL) {
+		if ((seg->v->point[0] == x) && (seg->v->point[1] == y))
+			nd = seg->v;
+		else if ((seg->v->next->point[0] == x) && (seg->v->next->point[1] == y))
+			nd = seg->v->next;
+		else
+			nd = pa_dic_split_seg(ctx, seg, x, y);
+		isc->vn = nd;
+		isc->pl = seg->p;
+		isc->temporary = nd->flg.TEMPORARY;
+	}
+	else {
+		/* creating the box */
+		isc->vn = NULL;
+		isc->pl = NULL;
+		isc->temporary = 0;
+	}
+
 	isc->coax = coax;
 	isc->collected = 0;
+	isc->x = x;
+	isc->y = y;
 
 	vtp0_append(&ctx->side[side], isc);
 
@@ -317,7 +394,7 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_H1, pa_dic_isc_h, ctx->clip.Y1, ctx->clip.X1, ctx->clip.Y1, ctx->clip.X2, ctx->clip.Y1);
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_V1, pa_dic_isc_v, ctx->clip.X1, ctx->clip.X2, ctx->clip.Y1, ctx->clip.X2, ctx->clip.Y2);
 	pa_dic_pline_label_side(ctx, pl, PA_DIC_H2, pa_dic_isc_h, ctx->clip.Y2, ctx->clip.X1, ctx->clip.Y2, ctx->clip.X2, ctx->clip.Y2);
-	pa_dic_pline_label_side(ctx, pl, PA_DIC_V2, pa_dic_isc_v, ctx->clip.X2, ctx->clip.X1, ctx->clip.Y1, ctx->clip.X1, ctx->clip.Y2);
+	pa_dic_pline_label_side(ctx, pl, PA_DIC_V2, pa_dic_isc_v, ctx->clip.X2, ctx->clip.X2, ctx->clip.Y1, ctx->clip.X2, ctx->clip.Y2);
 	if (pl->flg.llabel == PA_PLD_ISECTED)
 		return;
 
@@ -352,24 +429,28 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 static int cmp_xmin(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
+	if ((*a)->x == (*b)->x) return ((*a)->vn < (*b)->vn ? -1 : +1);
 	return ((*a)->x < (*b)->x) ? -1 : +1;
 }
 
 static int cmp_ymin(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
+	if ((*a)->y == (*b)->y) return ((*a)->vn < (*b)->vn ? -1 : +1);
 	return ((*a)->y < (*b)->y) ? -1 : +1;
 }
 
 static int cmp_xmax(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
+	if ((*a)->x == (*b)->x) return ((*a)->vn < (*b)->vn ? -1 : +1);
 	return ((*a)->x > (*b)->x) ? -1 : +1;
 }
 
 static int cmp_ymax(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
+	if ((*a)->y == (*b)->y) return ((*a)->vn < (*b)->vn ? -1 : +1);
 	return ((*a)->y > (*b)->y) ? -1 : +1;
 }
 
@@ -377,7 +458,7 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 {
 	int sd;
 	long m;
-	pa_dic_isc_t *last = NULL;
+	pa_dic_isc_t *last = NULL, *i, *next, *prev;
 
 	/* create dummy intersetions for corners for easier walkarounds */
 	ctx->corner[0] = pa_dic_isc(ctx, NULL, PA_DIC_H1, ctx->clip.X1, ctx->clip.Y1, NULL, 0);
@@ -402,6 +483,33 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 
 	last->next = ctx->corner[0];
 	ctx->head = ctx->corner[0];
+
+	/* merge adjacent iscs if the are the same; last is still the last on the list */
+	restart:;
+	prev = last;
+	i = ctx->head;
+	do {
+		next = i->next;
+		if ((i->vn == i->next->vn) && (i->vn != NULL))
+			goto del;
+		else if ((i->x == next->x) && (i->y == next->y) && (i->vn == NULL)) {
+			/* remove dummy corner if there's a real node on it as well */
+			del:;
+			prev->next = next;
+			pa_dic_isc_free(ctx, i, 1);
+			if (i == ctx->head) {
+				ctx->head = next;
+				goto restart;
+			}
+			i = prev;
+		}
+		prev = i;
+	} while((i = next) != ctx->head);
+
+	/* reset sides but keep the allocation as cache */
+	for(sd = 0; sd < PA_DIC_sides; sd++)
+		for(m = 0; m < ctx->side[sd].used; m++)
+			ctx->side[sd].used = 0;
 }
 
 RND_INLINE void pa_dic_append(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
@@ -499,7 +607,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t
 	pa_dic_isc_t *i;
 	i = ctx->head;
 	do {
-		if ((i->seg != NULL) && (i->seg->v == vn))
+		if (i->vn == vn)
 			return i;
 	} while((i = i->next) != ctx->head);
 	return NULL;
@@ -512,39 +620,28 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
 	rnd_vnode_t *prev = NULL;
 	rnd_vnode_t *n;
-	pa_dic_isc_t *si;
+	pa_dic_isc_t *si, *last_si = NULL;
 	char walkdir;
 
-	assert(start_isc->seg != NULL); /* need to have a pline to start with */
+	assert(start_isc->vn != NULL); /* need to have a pline to start with */
 
-	walkdir = pa_dic_pline_walkdir(start_isc->seg->p);
+	walkdir = pa_dic_pline_walkdir(start_isc->pl);
 
 	n = start;
 	do {
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
-		if (dir == PA_DPT_OUTSIDE) {
-			TODO("Handle overlap on box corner: the only overlapping case is when one of the corners is on the seg?");
-			si = pa_dic_find_isc_for_node(ctx, prev);
-			pa_dic_append(ctx, si->x, si->y);
+		if (dir == PA_DPT_OUTSIDE)
+			return last_si;
+		if (dir == PA_DPT_ON_EDGE) {
+			si = pa_dic_find_isc_for_node(ctx, n);
 			si->collected = 1;
-			return si;
-		}
-		if ((dir == PA_DPT_ON_EDGE) && (prev != NULL)) {
-			/* arrived back on an edge; there may be a double isc here if the box crosses
-			   a node, see test case clip04; mark the second isc */
-			si = pa_dic_find_isc_for_node(ctx, prev);
-			si->collected = 1;
+			last_si = si;
 		}
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
 		prev = n;
 		PA_DIC_STEP(n, walkdir);
 	} while(n != start);
-
-	/* arrived back; there may be a double isc here if the box crosses
-	   a node, see test case clip04; mark the second isc */
-	si = pa_dic_find_isc_for_node(ctx, prev);
-	si->collected = 1;
 
 	return start_isc;
 }
@@ -559,7 +656,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 		if (i->collected)
 			break;
 		pa_dic_append(ctx, i->x, i->y);
-		if ((i->seg != NULL) && (pa_dic_emit_island_predict(ctx, i->seg->v, pa_dic_pline_walkdir(i->seg->p)) == PA_DPT_INSIDE))
+		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, pa_dic_pline_walkdir(i->pl)) == PA_DPT_INSIDE))
 			break;
 	}
 	return i;
@@ -571,29 +668,27 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	rnd_vnode_t *vn;
 	pa_dic_isc_t *i;
 	char walkdir;
-	int sd;
-	long m;
 
-	if (from->seg == NULL)
+	if (from->vn == NULL)
 		return;
 
 	DEBUG_CLIP("     collect from: %ld;%ld\n", (long)from->x, (long)from->y);
 
 	/* Check where we can get from this intersection */
-	walkdir = pa_dic_pline_walkdir(from->seg->p);
-	ptst = pa_dic_emit_island_predict(ctx, from->seg->v, walkdir);
+	walkdir = pa_dic_pline_walkdir(from->pl);
+	ptst = pa_dic_emit_island_predict(ctx, from->vn, walkdir);
 
 	if (ptst == PA_DPT_ON_EDGE) {
 		/* corner case: all nodes of the pline are on the clipbox but it could take
 		   shortcuts - emit the pline and mark all of its segs collected */
-		pa_dic_emit_whole_pline(ctx, from->seg->p);
-		for(sd = 0; sd < PA_DIC_sides; sd++) {
-			for(m = 0; m < ctx->side[sd].used; m++) {
-				pa_dic_isc_t *isc = ctx->side[sd].array[m];
-				if ((isc->seg != NULL) && (isc->seg->p == from->seg->p))
-					isc->collected = 1;
-			}
-		}
+		pa_dic_isc_t *i;
+
+		pa_dic_emit_whole_pline(ctx, from->pl);
+		i = ctx->head;
+		do {
+			if ((i->vn != NULL) && (i->pl == from->pl))
+				i->collected = 1;
+		} while((i = i->next) != ctx->head);
 		return;
 	}
 
@@ -605,17 +700,10 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	pa_dic_append(ctx, from->x, from->y);
 	from->collected = 1;
 
-	/* also mark the edge coming from outside (test case clip09) so we are not
-	   gathering the same shape again */
-	i = pa_dic_find_isc_for_node(ctx, (walkdir == 'N') ? from->seg->v->prev : from->seg->v->next);
-	if ((i != NULL) && (i->x == from->x) && (i->y == from->y))
-		i->collected = 1;
-
-
 	i = from;
 	do {
-		assert(i->seg != NULL); /* we need a pline intersection to start from */
-		vn = i->seg->v;
+		assert(i->vn != NULL); /* we need a pline intersection to start from */
+		vn = i->vn;
 		PA_DIC_STEP(vn, walkdir);
 		DEBUG_CLIP("      gather pline: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
 		i = pa_dic_gather_pline(ctx, vn, i);
@@ -644,7 +732,7 @@ RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	pa_dic_isc_t *i;
 	DEBUG_CLIP("    emit island normal\n");
 	for(i = ctx->head->next; i != ctx->head; i = i->next) {
-		if ((i->seg != NULL) && (!i->collected))
+		if ((i->vn != NULL) && (!i->collected))
 			pa_dic_emit_island_collect_from(ctx, i);
 	}
 }
