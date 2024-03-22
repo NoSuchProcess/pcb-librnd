@@ -267,7 +267,8 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			x = pa_line_x_for_y(lx1, ly1, lx2, ly2, y);
 		else
 			return 0;
-		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
+		if ((x >= ctx->clip.X1) && (x <= ctx->clip.X2))
+			pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
 	}
 
 	return iscs;
@@ -329,7 +330,8 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 			y = pa_line_y_for_x(lx1, ly1, lx2, ly2, x);
 		else
 			return 0;
-		pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
+		if ((y >= ctx->clip.Y1) && (y <= ctx->clip.Y2))
+			pa_dic_isc(ctx, seg, side, x, y, &iscs, 0, first, second);
 	}
 
 	return iscs;
