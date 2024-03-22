@@ -603,6 +603,13 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	pa_dic_append(ctx, from->x, from->y);
 	from->collected = 1;
 
+	/* also mark the edge coming from outside (test case clip09) so we are not
+	   gathering the same shape again */
+	i = pa_dic_find_isc_for_node(ctx, (walkdir == 'N') ? from->seg->v->prev : from->seg->v->next);
+	if ((i != NULL) && (i->x == from->x) && (i->y == from->y))
+		i->collected = 1;
+
+
 	i = from;
 	do {
 		assert(i->seg != NULL); /* we need a pline intersection to start from */
