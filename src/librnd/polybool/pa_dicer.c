@@ -682,7 +682,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t
 
 /* Emit pline vnodes as long as they are all inside the box. Return the
    intersection where the edge went outside */
-RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc)
+RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc, pa_dic_isc_t *term)
 {
 	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
 	rnd_vnode_t *prev = NULL;
@@ -693,6 +693,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 
 	n = start;
 	do {
+
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_OUTSIDE)
 			return last_si;
@@ -704,6 +705,10 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 
 		if (dir == PA_DPT_ON_EDGE) {
 			si = pa_dic_find_isc_for_node(ctx, n);
+
+			if (si == term)
+				return term;
+
 			last_si = si;
 			pending_si = si; /* mark it later, only if this is the last si before the pline goes outside */
 		}
@@ -719,10 +724,10 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 /* Emit edge points; stop after reaching one that's already collected
    (arrived back at start) or reaching one that's going inside. Return
    this intersection */
-RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *start_isc)
+RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *start_isc, pa_dic_isc_t *term)
 {
 	pa_dic_isc_t *i;
-	for(i = start_isc->next;; i = i->next) {
+	for(i = start_isc->next; i != term; i = i->next) {
 		if (i->collected)
 			break;
 		pa_dic_append(ctx, i->x, i->y);
@@ -767,12 +772,12 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		assert(i->vn != NULL); /* we need a pline intersection to start from */
 		vn = i->vn->next;
 		DEBUG_CLIP("      gather pline from: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
-		i = pa_dic_gather_pline(ctx, vn, i);
+		i = pa_dic_gather_pline(ctx, vn, i, from);
 		if (i == from)
 			break;
 		i->collected = 1;
 		DEBUG_CLIP("      gather edge from: %ld;%ld\n", (long)i->x, (long)i->y);
-		i = pa_dic_gather_edge(ctx, i);
+		i = pa_dic_gather_edge(ctx, i, from);
 		if (i == from)
 			break;
 		i->collected = 1;
