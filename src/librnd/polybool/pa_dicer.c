@@ -768,12 +768,12 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		vn = i->vn->next;
 		DEBUG_CLIP("      gather pline from: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
 		i = pa_dic_gather_pline(ctx, vn, i);
-		if (i->collected)
+		if (i == from)
 			break;
 		i->collected = 1;
 		DEBUG_CLIP("      gather edge from: %ld;%ld\n", (long)i->x, (long)i->y);
 		i = pa_dic_gather_edge(ctx, i);
-		if (i->collected)
+		if (i == from)
 			break;
 		i->collected = 1;
 	} while(1);
