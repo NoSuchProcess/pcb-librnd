@@ -130,13 +130,17 @@ RND_INLINE int crd_in_between_auto(rnd_coord_t c, rnd_coord_t low, rnd_coord_t h
 RND_INLINE rnd_vnode_t *pa_dic_split_seg(pa_dic_ctx_t *ctx, pa_seg_t *seg, rnd_coord_t x, rnd_coord_t y)
 {
 	rnd_vnode_t *after, *next, *newnd;
+
+	if ((x == seg->v->point[0]) && (y == seg->v->point[1]))
+		return seg->v;
+
 	for(after = seg->v;;after = next) {
 		next = after->next;
 		if ((after != seg->v) && !after->flg.TEMPORARY) {
 			assert(!"ran out of the seg without finding where to insert");
 		}
-		if ((x == after->point[0]) && (y == after->point[1]))
-			return after;
+		if ((x == next->point[0]) && (y == next->point[1]))
+			return next;
 		if (crd_in_between_auto(x, after->point[0], next->point[0]) && crd_in_between_auto(y, after->point[1], next->point[1])) {
 			/* insert a new temporayr node between after and next */
 			newnd = calloc(sizeof(rnd_vnode_t), 1);
