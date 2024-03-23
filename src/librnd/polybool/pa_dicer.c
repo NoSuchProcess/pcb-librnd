@@ -659,7 +659,7 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 						return PA_DPT_INSIDE;
 				}
 				else if (n->point[1] == ctx->clip.Y2) {
-					if (n->point[0] > n->prev->point[0])
+					if (n->prev->point[0] > n->point[0])
 						return PA_DPT_INSIDE;
 				}
 			}
