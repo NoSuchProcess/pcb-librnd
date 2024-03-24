@@ -618,7 +618,7 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 
 /* Start from a node that's on the edge; go as far as needed to find the first
    node that's not on edge and return the relation of that node to the box. */
-RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start)
+RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start, rnd_pline_t *pl)
 {
 	rnd_vnode_t *n;
 
@@ -643,6 +643,8 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 			   the box in the svg-right-hand-side neighborhood */
 			if ((n->point[0] == n->prev->point[0]) && (n->point[1] != n->prev->point[1])) {
 				/* vertical */
+				if (pl->flg.orient == RND_PLF_INV)
+					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
 				if (n->point[0] == ctx->clip.X1) {
 					if (n->point[1] < n->prev->point[1])
 						return PA_DPT_INSIDE;
@@ -654,6 +656,8 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 			}
 			if ((n->point[0] != n->prev->point[0]) && (n->point[1] == n->prev->point[1])) {
 				/* horizontal */
+				if (pl->flg.orient == RND_PLF_INV)
+					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
 				if (n->point[1] == ctx->clip.Y1) {
 					if (n->point[0] < n->prev->point[0])
 						return PA_DPT_INSIDE;
@@ -709,6 +713,14 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 			if (si == term)
 				return term;
 
+			if (si->pl->flg.orient == RND_PLF_INV) {
+				/* break at hole overlapping edge; test case: clip21c */
+				if (pa_dic_emit_island_predict(ctx, n, si->pl) == PA_DPT_OUTSIDE) {
+					pa_dic_append(ctx, n->point[0], n->point[1]);
+					return si;
+				}
+			}
+
 			last_si = si;
 			pending_si = si; /* mark it later, only if this is the last si before the pline goes outside */
 		}
@@ -733,7 +745,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 			break;
 		pa_dic_append(ctx, i->x, i->y);
 		DEBUG_CLIP("       append: %ld;%ld\n", (long)i->x, (long)i->y);
-		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn) == PA_DPT_INSIDE))
+		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, i->pl) == PA_DPT_INSIDE))
 			break;
 		i->collected = 1;
 	}
@@ -752,7 +764,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	DEBUG_CLIP("     collect from: %ld;%ld\n", (long)from->x, (long)from->y);
 
 	/* Check where we can get from this intersection */
-	ptst = pa_dic_emit_island_predict(ctx, from->vn);
+	ptst = pa_dic_emit_island_predict(ctx, from->vn, from->pl);
 
 	if (ptst == PA_DPT_ON_EDGE) {
 		/* corner case: all nodes of the pline are on the clipbox but not in
@@ -767,6 +779,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	/* it's safe to start here, next deviation is going inside */
 	pa_dic_begin(ctx);
 	pa_dic_append(ctx, from->x, from->y);
+	DEBUG_CLIP("       append: %ld;%ld\n", (long)from->x, (long)from->y);
 	from->collected = 1;
 
 	i = from;
