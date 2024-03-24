@@ -714,6 +714,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 		}
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
+		DEBUG_CLIP("       append: %ld;%ld\n", (long)n->point[0], (long)n->point[1]);
 		prev = n;
 		n = n->next;
 	} while(n != start);
@@ -731,6 +732,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 		if (i->collected)
 			break;
 		pa_dic_append(ctx, i->x, i->y);
+		DEBUG_CLIP("       append: %ld;%ld\n", (long)i->x, (long)i->y);
 		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn) == PA_DPT_INSIDE))
 			break;
 		i->collected = 1;
