@@ -61,6 +61,7 @@ struct pa_dic_ctx_s {
 	pa_dic_isc_t *corner[4];
 	rnd_coord_t first_x, first_y;
 	rnd_coord_t last_x, last_y;
+	long num_emits;
 	unsigned first:1;
 	unsigned has_coord:1; /* last_* is waiting to be printed out */
 };

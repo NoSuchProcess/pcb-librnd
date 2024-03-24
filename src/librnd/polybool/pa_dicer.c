@@ -551,6 +551,8 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 
 RND_INLINE void pa_dic_append(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
 {
+	ctx->num_emits++;
+
 	if (ctx->first) {
 		ctx->first_x = ctx->last_x = x;
 		ctx->first_y = ctx->last_y = y;
@@ -801,15 +803,27 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	pa_dic_end(ctx);
 }
 
-/* In this case the box is filled and holes are cut out */
-RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+RND_INLINE void pa_dic_emit_island_common(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	pa_dic_isc_t *i;
-	TODO("This is the same as the normal case... maybe just merge them");
-	DEBUG_CLIP("    emit island inverted\n");
 	for(i = ctx->head->next; i != ctx->head; i = i->next) {
 		if ((i->vn != NULL) && (!i->collected))
 			pa_dic_emit_island_collect_from(ctx, i);
+	}
+}
+
+/* In this case the box is filled and holes are cut out */
+RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
+{
+	long num_pts = ctx->num_emits;
+	TODO("This is the same as the normal case... maybe just merge them");
+	DEBUG_CLIP("    emit island inverted\n");
+	pa_dic_emit_island_common(ctx, pa);
+	if (num_pts == ctx->num_emits) {
+		/* Special case: technically there was an intersection but the walk-around
+		   decided not to include anything so our output is empty; in an inverted
+		   situation this means the whole box should be filled. Test case: clip21d */
+		pa_dic_emit_clipbox(ctx);
 	}
 }
 
@@ -817,12 +831,8 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
    drawing the contour of the island except for the box sections */
 RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	pa_dic_isc_t *i;
 	DEBUG_CLIP("    emit island normal\n");
-	for(i = ctx->head->next; i != ctx->head; i = i->next) {
-		if ((i->vn != NULL) && (!i->collected))
-			pa_dic_emit_island_collect_from(ctx, i);
-	}
+	pa_dic_emit_island_common(ctx, pa);
 }
 
 /* Dice up a single island that is intersected or has holes.
