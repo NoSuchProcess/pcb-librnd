@@ -50,7 +50,8 @@ struct pa_dic_isc_s {
 
 	unsigned temporary:1;  /* inserted by the dicer code, shall be removed at the end */
 	unsigned coax:1;       /* set if line is coaxial (may overlap with) the edge */
-	unsigned collected:1;  /* already emitted in the output */
+	unsigned pcollected:1; /* already emitted the outgoing pline (->next) in the output */
+	unsigned ecollected:1; /* already emitted the outgoing clipbox edge in the output */
 	pa_dic_isc_t *next;
 };
 
@@ -189,7 +190,8 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 	}
 
 	isc->coax = coax;
-	isc->collected = 0;
+	isc->pcollected = 0;
+	isc->ecollected = 0;
 	isc->x = x;
 	isc->y = y;
 
@@ -664,7 +666,7 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
 
 				isc = pa_dic_find_isc_for_node(ctx, n);
-				if (isc->collected)
+				if (isc->pcollected)
 					return PA_DPT_OUTSIDE; /* don't start collecting something that's already collected; test case: clip25c 50;30 -> 50;70 */
 
 				if (n->point[0] == ctx->clip.X1) {
@@ -682,7 +684,7 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
 
 				isc = pa_dic_find_isc_for_node(ctx, n);
-				if (isc->collected)
+				if (isc->pcollected)
 					return PA_DPT_OUTSIDE; /* don't start collecting something that's already collected; test case: clip25c 50;30 -> 50;70 */
 
 				if (n->point[1] == ctx->clip.Y1) {
@@ -700,6 +702,55 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 	return PA_DPT_ON_EDGE; /* arrived back to start which is surely on the edge */
 }
 
+/* en is on the edge at intersection point si; return 1 if n->next is taking the
+   wrong turn (see test case clip26*) */
+RND_INLINE int pa_dic_wrong_turn(pa_dic_ctx_t *ctx, rnd_vnode_t *en, pa_dic_isc_t *si)
+{
+	static const pa_big_angle_t zero = {0,0,0,0,0,0};
+	static const pa_big_angle_t one  = {0,0,0,0,1,0};
+	static const pa_big_angle_t four = {0,0,0,0,4,0};
+	pa_big_angle_t incoming, outgoing;
+
+	pa_big_calc_angle_nn(&incoming, en, en->prev);
+	pa_big_calc_angle_nn(&outgoing, en, en->next);
+
+	if (si->y == ctx->clip.Y1) {
+		if (pa_angle_gte(outgoing, incoming))
+			return 1;
+	}
+
+	if (si->x == ctx->clip.X2) {
+		if (pa_angle_gte(outgoing, incoming))
+			return 1;
+	}
+
+	if (si->y == ctx->clip.Y2) {
+		/* range of angles is 2..4, but 0 should be counted as 4 */
+		if (pa_angle_equ(outgoing, zero))
+			memcpy(outgoing, four, sizeof(four));
+
+		if (pa_angle_equ(incoming, zero))
+			memcpy(incoming, four, sizeof(four));
+
+		if (pa_angle_gte(outgoing, incoming))
+			return 1;
+	}
+
+	if (si->x == ctx->clip.X1) {
+		/* range of angles is 0..1 and 3..4; for the comparison normal the 3..4
+		   angles back to the -1..0 region */
+		if (pa_angle_gt(outgoing, one))
+			pa_angle_sub(outgoing, outgoing, four);
+
+		if (pa_angle_gt(incoming, one))
+			pa_angle_sub(incoming, incoming, four);
+
+		if (pa_angle_gte(outgoing, incoming))
+			return 1;
+	}
+
+	return 0;
+}
 
 /* Emit pline vnodes as long as they are all inside the box. Return the
    intersection where the edge went outside */
@@ -716,23 +767,39 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 	do {
 
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
-		if (dir == PA_DPT_OUTSIDE)
+		if (dir == PA_DPT_OUTSIDE) {
+			DEBUG_CLIP("        break: going outside\n");
 			return last_si;
+		}
 
 		if (pending_si != NULL) {
-			pending_si->collected = 1;
+			pending_si->pcollected = 1;
 			pending_si = NULL;
 		}
 
 		if (dir == PA_DPT_ON_EDGE) {
 			si = pa_dic_find_isc_for_node(ctx, n);
 
-			if (si == term)
+			if (si == term) {
+				DEBUG_CLIP("        break: term\n");
 				return term;
+			}
+
+			if (pa_dic_wrong_turn(ctx, n, si)) {
+				if ((n->point[0] != term->x) || (n->point[1] != term->y)) {
+					/* Append the last valid point before the wrong turn is made
+					   so we can pass on to the edge tracer; do not append
+					   when not returned to the starting point (test case: clip09) */
+					pa_dic_append(ctx, n->point[0], n->point[1]);
+				}
+				DEBUG_CLIP("        break: wrong turn\n");
+				return si;
+			}
 
 			/* break at hole/island overlapping edge; test case: clip21c/clip25c */
 			if (pa_dic_emit_island_predict(ctx, n, si->pl) == PA_DPT_OUTSIDE) {
 				pa_dic_append(ctx, n->point[0], n->point[1]);
+				DEBUG_CLIP("        break: overlapping edg\n");
 				return si;
 			}
 
@@ -755,14 +822,24 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *start_isc, pa_dic_isc_t *term)
 {
 	pa_dic_isc_t *i;
-	for(i = start_isc->next; i != term; i = i->next) {
-		if (i->collected)
+	for(i = start_isc->next;; i = i->next) {
+		if (i == term) {
+			if (i == start_isc->next)
+				pa_dic_append(ctx, start_isc->x, start_isc->y); /* test case: clip26, 45;80..55;70..65;80 */
+			DEBUG_CLIP("        break: term\n");
 			break;
+		}
+		if (i->ecollected) {
+			DEBUG_CLIP("        break: already ecollected\n");
+			break;
+		}
 		pa_dic_append(ctx, i->x, i->y);
 		DEBUG_CLIP("       append: %ld;%ld\n", (long)i->x, (long)i->y);
-		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, i->pl) == PA_DPT_INSIDE))
+		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, i->pl) == PA_DPT_INSIDE)) {
+			DEBUG_CLIP("        break: pline going inside\n");
 			break;
-		i->collected = 1;
+		}
+		i->ecollected = 1;
 	}
 	return i;
 }
@@ -795,7 +872,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	pa_dic_begin(ctx);
 	pa_dic_append(ctx, from->x, from->y);
 	DEBUG_CLIP("       append: %ld;%ld\n", (long)from->x, (long)from->y);
-	from->collected = 1;
+	from->pcollected = 1;
 
 	i = from;
 	do {
@@ -805,12 +882,12 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 		i = pa_dic_gather_pline(ctx, vn, i, from);
 		if (i == from)
 			break;
-		i->collected = 1;
+		i->ecollected = 1;
 		DEBUG_CLIP("      gather edge from: %ld;%ld\n", (long)i->x, (long)i->y);
 		i = pa_dic_gather_edge(ctx, i, from);
 		if (i == from)
 			break;
-		i->collected = 1;
+		i->pcollected = 1;
 	} while(1);
 
 	pa_dic_end(ctx);
@@ -820,7 +897,7 @@ RND_INLINE void pa_dic_emit_island_common(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	pa_dic_isc_t *i;
 	for(i = ctx->head->next; i != ctx->head; i = i->next) {
-		if ((i->vn != NULL) && (!i->collected))
+		if ((i->vn != NULL) && (!i->pcollected))
 			pa_dic_emit_island_collect_from(ctx, i);
 	}
 }
