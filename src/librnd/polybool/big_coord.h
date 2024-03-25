@@ -28,6 +28,7 @@ typedef pa_big_coord_t pa_big_angle_t;
 
 int pa_angle_equ(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_lt(pa_big_angle_t a, pa_big_angle_t b);
+int pa_angle_gt(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_gte(pa_big_angle_t a, pa_big_angle_t b);
 int pa_angle_lte(pa_big_angle_t a, pa_big_angle_t b);
 void pa_angle_sub(pa_big_angle_t res, pa_big_angle_t a, pa_big_angle_t b); /* res = a-b */

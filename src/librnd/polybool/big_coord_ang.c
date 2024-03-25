@@ -38,6 +38,11 @@ int pa_angle_equ(pa_big_angle_t a, pa_big_angle_t b)
 	return big_signed_cmpn(a, b, W) == 0;
 }
 
+int pa_angle_gt(pa_big_angle_t a, pa_big_angle_t b)
+{
+	return big_signed_cmpn(a, b, W) > 0;
+}
+
 int pa_angle_lt(pa_big_angle_t a, pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) < 0;
