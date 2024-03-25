@@ -618,6 +618,17 @@ RND_INLINE void pa_dic_emit_clipbox(pa_dic_ctx_t *ctx)
 	ctx->end_pline(ctx);
 }
 
+RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t *vn)
+{
+	pa_dic_isc_t *i;
+	i = ctx->head;
+	do {
+		if (i->vn == vn)
+			return i;
+	} while((i = i->next) != ctx->head);
+	return NULL;
+}
+
 /* Start from a node that's on the edge; go as far as needed to find the first
    node that's not on edge and return the relation of that node to the box. */
 RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx, rnd_vnode_t *start, rnd_pline_t *pl)
@@ -631,8 +642,11 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 		if (dir == PA_DPT_OUTSIDE)
 			return PA_DPT_OUTSIDE; /* going outside the box: always refuse */
 		if (dir == PA_DPT_ON_EDGE) {
+			pa_dic_isc_t *isc;
 			rnd_coord_t midx = (n->point[0] + n->prev->point[0]) / 2;
 			rnd_coord_t midy = (n->point[1] + n->prev->point[1]) / 2;
+
+
 			TODO("Corner case: if difference is only 1 above, the midpoint is rounded badly - use bigcoord");
 			/* special case: a pline seg sloping across two edge iscs, test case 
 			   clip01b; if the center of the line is inside the box (not on edge)
@@ -645,8 +659,14 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 			   the box in the svg-right-hand-side neighborhood */
 			if ((n->point[0] == n->prev->point[0]) && (n->point[1] != n->prev->point[1])) {
 				/* vertical */
+
 				if (pl->flg.orient == RND_PLF_INV)
 					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
+
+				isc = pa_dic_find_isc_for_node(ctx, n);
+				if (isc->collected)
+					return PA_DPT_OUTSIDE; /* don't start collecting something that's already collected; test case: clip25c 50;30 -> 50;70 */
+
 				if (n->point[0] == ctx->clip.X1) {
 					if (n->point[1] < n->prev->point[1])
 						return PA_DPT_INSIDE;
@@ -660,6 +680,11 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 				/* horizontal */
 				if (pl->flg.orient == RND_PLF_INV)
 					return PA_DPT_OUTSIDE; /* hole edge overlap: always refuse; test case clip21c */
+
+				isc = pa_dic_find_isc_for_node(ctx, n);
+				if (isc->collected)
+					return PA_DPT_OUTSIDE; /* don't start collecting something that's already collected; test case: clip25c 50;30 -> 50;70 */
+
 				if (n->point[1] == ctx->clip.Y1) {
 					if (n->prev->point[0] < n->point[0])
 						return PA_DPT_INSIDE;
@@ -675,16 +700,6 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 	return PA_DPT_ON_EDGE; /* arrived back to start which is surely on the edge */
 }
 
-RND_INLINE pa_dic_isc_t *pa_dic_find_isc_for_node(pa_dic_ctx_t *ctx, rnd_vnode_t *vn)
-{
-	pa_dic_isc_t *i;
-	i = ctx->head;
-	do {
-		if (i->vn == vn)
-			return i;
-	} while((i = i->next) != ctx->head);
-	return NULL;
-}
 
 /* Emit pline vnodes as long as they are all inside the box. Return the
    intersection where the edge went outside */
@@ -715,12 +730,10 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 			if (si == term)
 				return term;
 
-			if (si->pl->flg.orient == RND_PLF_INV) {
-				/* break at hole overlapping edge; test case: clip21c */
-				if (pa_dic_emit_island_predict(ctx, n, si->pl) == PA_DPT_OUTSIDE) {
-					pa_dic_append(ctx, n->point[0], n->point[1]);
-					return si;
-				}
+			/* break at hole/island overlapping edge; test case: clip21c/clip25c */
+			if (pa_dic_emit_island_predict(ctx, n, si->pl) == PA_DPT_OUTSIDE) {
+				pa_dic_append(ctx, n->point[0], n->point[1]);
+				return si;
 			}
 
 			last_si = si;
