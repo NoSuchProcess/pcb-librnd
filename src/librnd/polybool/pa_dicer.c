@@ -449,6 +449,11 @@ RND_INLINE void pa_dic_pline_label(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	pl->flg.llabel = PA_PLD_AWAY;
 }
 
+/* Multiple iscs in the same point are sorted by pointer value so that
+   redundant entries are adjacent after the sort (the filter depends on it).
+   In theory a by-angle-sort would be needed here on vn->next, but as
+   the walkaround is following pline ->next it is taking the right turn anyway.
+   Test case: clip27a. */
 static int cmp_xmin(const void *A, const void *B)
 {
 	const pa_dic_isc_t * const *a = A, * const *b = B;
