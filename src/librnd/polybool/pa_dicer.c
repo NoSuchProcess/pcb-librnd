@@ -511,7 +511,10 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	rnd_trace("isc loop #1:\n");
 	i = ctx->head;
 	do {
-		rnd_trace(" %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn, i->pl);
+		if (i->vn != NULL)
+			rnd_trace(" %ld;%ld .. %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn->next->point[0], i->vn->next->point[1], i->vn, i->pl);
+		else
+			rnd_trace(" %ld;%ld (E)\n", i->x, i->y);
 	} while((i = i->next) != ctx->head);
 #endif
 
@@ -541,7 +544,10 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	rnd_trace("isc loop #2:\n");
 	i = ctx->head;
 	do {
-		rnd_trace(" %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn, i->pl);
+		if (i->vn != NULL)
+			rnd_trace(" %ld;%ld .. %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn->next->point[0], i->vn->next->point[1], i->vn, i->pl);
+		else
+			rnd_trace(" %ld;%ld (E)\n", i->x, i->y);
 	} while((i = i->next) != ctx->head);
 #endif
 
