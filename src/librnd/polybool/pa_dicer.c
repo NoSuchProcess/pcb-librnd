@@ -33,6 +33,9 @@
  */
 
 #include "pa_dicer.h"
+#include <librnd/core/vtc0.h>
+
+/*** clipper ***/
 
 typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 	PA_PLD_UNKNWN  = 0,
@@ -1016,8 +1019,123 @@ RND_INLINE void pa_dic_emit_pa(pa_dic_ctx_t *ctx, rnd_polyarea_t *start)
 	pa_dic_free_ctx(ctx);
 }
 
-/* API */
+/*** slicer ***/
+typedef struct pa_slc_endp_s {
+	rnd_pline_t *pl;   /* the hole creating this segment */
+	rnd_coord_t x;
+	long height;       /* stack height after (to the right of) this endpoint */
+	unsigned side:1;   /* 0 for start/left, 1 for end/right */
+	unsigned sliced:1; /* only when side == 0 */
+} pa_slc_endp_t;
+
+#define GVT(x) vtslc_ ## x
+#define GVT_ELEM_TYPE pa_slc_endp_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 4096
+#define GVT_START_SIZE 128
+#define GVT_FUNC
+#define GVT_SET_NEW_BYTES_TO 0
+
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
+
+/* map endpoints of the holes of a single contour */
+RND_INLINE void pa_slc_map_pline_holes(vtslc_t *ctx, rnd_pline_t *contour)
+{
+	rnd_pline_t *hole;
+	for(hole = contour->next; hole != NULL; hole = hole->next) {
+		pa_slc_endp_t *ep = vtslc_alloc_append(ctx, 2);
+		ep[0].pl = hole;
+		ep[0].x = hole->xmin;
+		ep[0].side = 0;
+		ep[1].pl = hole;
+		ep[1].x = hole->xmax;
+		ep[1].side = 1;
+	}
+}
+
+/* map endpoints of all islands */
+RND_INLINE pa_slc_map_pline_pa(vtslc_t *ctx, rnd_polyarea_t *start)
+{
+	rnd_polyarea_t *pa = start;
+	do {
+		pa_slc_map_pline_holes(ctx, pa->contours);
+	} while((pa = pa->f) != start);
+}
+
+static int cmp_slc_endp(const void *a_, const void *b_)
+{
+	pa_slc_endp_t *a = a_, *b = b_;
+	return (a->x < b->x) ? -1 : +1;
+}
+
+/* sort endpoints from left to right and fill in ->height */
+RND_INLINE void pa_slc_sort_and_compute_heights(vtslc_t *ctx)
+{
+	long n, h;
+	pa_slc_endp_t *ep;
+
+	qsort(ctx->array, ctx->used, sizeof(pa_slc_endp_t), cmp_slc_endp);
+	for(n = h = 0, ep = ctx->array; n < ctx->used; n++,ep++) {
+		if (ep->side == 0)
+			h++;
+		else
+			h--;
+		ep->height = h;
+	}
+	assert(h == 0);
+}
+
+/* figure a relatively low number of cuts */
+RND_INLINE void pa_slc_find_cuts(vtslc_t *ctx, vtc0_t *cuts)
+{
+	long remaining;
+
+	pa_slc_sort_and_compute_heights(ctx);
+
+	for(remaining = ctx->used; remaining > 0; ) {
+		long n, best_n, best_h = -1;
+		pa_slc_endp_t *ep;
+
+		/* find highest tower to slice */
+		for(n = 0, ep = ctx->array; n < ctx->used; n++,ep++) {
+			if (ep->height > best_h) {
+				best_h = ep->height;
+				best_n = n;
+			}
+		}
+
+		assert(best_h > 0);
+
+		TODO("insert a cut after best_n");
+		TODO("decrease heights and remaining");
+	}
+}
+
+RND_INLINE void pa_slc_slice(vtc0_t *cuts, rnd_polyarea_t *pa)
+{
+
+}
+
+/*** API ***/
 void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	pa_dic_emit_pa(ctx, pa);
 }
+
+void rnd_polyarea_slice_noholes(rnd_polyarea_t *pa)
+{
+	vtslc_t ctx;
+	vtc0_t cuts = {0};
+
+	pa_slc_map_pline_pa(&ctx, pa);
+	pa_slc_find_cuts(&ctx, &cuts);
+	pa_slc_slice(&cuts, pa);
+
+	vtslc_uninit(&ctx);
+	vtc0_uninit(&cuts);
+}
+
