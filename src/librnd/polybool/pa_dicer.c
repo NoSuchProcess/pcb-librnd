@@ -1178,8 +1178,11 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 				remaining--;
 				DEBUG_SLICE(" remove %d..%d\n", ep->pl->xmin, ep->pl->xmax);
 				/* decrease height over this pline */
-				for(m = n, ep2 = ep; (m < ctx->v.used) && (ep2->x < ep->pl->xmax); m++,ep2++)
+				for(m = n, ep2 = ep; (m < ctx->v.used); m++,ep2++) {
+					if ((ep2->pl == ep->pl) && (ep2->x == ep->pl->xmax))
+						break;
 					ep2->height--;
+				}
 			}
 		}
 
