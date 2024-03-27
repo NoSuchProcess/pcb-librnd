@@ -1247,7 +1247,9 @@ static void pa_nhdic_end_pline(pa_dic_ctx_t *ctx)
 	pa_pline_update(cctx->pl, 0);
 
 	cctx->emit_pline(cctx->pl, cctx->user_data);
-	pa_pline_free(&cctx->pl); /* also sets it NULL */
+
+	/* cctx->pl ownership has been passed over to emit_pline() above */
+	cctx->pl = NULL;
 }
 
 
