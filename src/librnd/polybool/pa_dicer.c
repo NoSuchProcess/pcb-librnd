@@ -1090,6 +1090,11 @@ RND_INLINE void pa_slc_sort_and_compute_heights(vtslc_t *ctx)
 	assert(h == 0);
 }
 
+static int pa_slc_cmp_coord(const void *a_, const void *b_)
+{
+	const rnd_coord_t *a = a_, *b = b_;
+	return (*a < *b) ? -1 : +1;
+}
 
 /* figure a relatively low number of cuts */
 RND_INLINE void pa_slc_find_cuts(vtslc_t *ctx, vtc0_t *cuts)
@@ -1135,6 +1140,15 @@ RND_INLINE void pa_slc_find_cuts(vtslc_t *ctx, vtc0_t *cuts)
 	/* reset pline flags */
 	for(n = 0, ep = ctx->array; n < ctx->used-1; n++,ep++)
 		ep->pl->flg.sliced = 0;
+
+	/* sort and remove redundancies */
+	qsort(cuts->array, cuts->used, sizeof(rnd_coord_t), pa_slc_cmp_coord);
+	for(n = 0; n < cuts->used-1; n++) {
+		if (cuts->array[n] == cuts->array[n+1]) {
+			vtc0_remove(cuts, n, 1);
+			n--;
+		}
+	}
 }
 
 RND_INLINE void pa_slc_slice(vtc0_t *cuts, rnd_polyarea_t *pa)
