@@ -1046,7 +1046,7 @@ typedef struct pa_slc_ctx_s {
 	/* input */
 	rnd_polyarea_t *pa;
 	vtslc_t v;
-	rnd_coord_t minx, maxx;
+	rnd_coord_t minx, miny, maxx, maxy;
 
 	/* output */
 	vtc0_t cuts;
@@ -1059,7 +1059,7 @@ RND_INLINE void pa_slc_map_pline_holes(pa_slc_ctx_t *ctx, rnd_pline_t *contour)
 	for(hole = contour->next; hole != NULL; hole = hole->next) {
 		pa_slc_endp_t *ep;
 
-		if ((hole->xmin > ctx->maxx) && (hole->xmax < ctx->minx))
+		if ((hole->xmin > ctx->maxx) || (hole->xmax < ctx->minx) || (hole->ymin > ctx->maxy) || (hole->ymax < ctx->miny))
 			continue; /* ignore holes that are fully outside of the clipping area */
 
 		ep = vtslc_alloc_append(&ctx->v, 2);
@@ -1205,8 +1205,8 @@ void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	pa_slc_ctx_t slc = {0};
 	long n;
 
-	slc.minx = ctx->clip.X1;
-	slc.maxx = ctx->clip.X2;
+	slc.minx = ctx->clip.X1; slc.miny = ctx->clip.Y1;
+	slc.maxx = ctx->clip.X2; slc.maxy = ctx->clip.Y2;
 	slc.pa = pa;
 
 	/* so that edges are no special case */
