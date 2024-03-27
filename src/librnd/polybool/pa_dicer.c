@@ -1068,7 +1068,7 @@ RND_INLINE void pa_slc_map_pline_holes(pa_slc_ctx_t *ctx, rnd_pline_t *contour)
 		ep[0].side = 0;
 		ep[1].pl = hole;
 		ep[1].x = RND_MIN(hole->xmax, ctx->maxx);
-		ep[0].side = 1;
+		ep[1].side = 1;
 		hole->flg.sliced = 0;
 	}
 }
