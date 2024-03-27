@@ -1111,6 +1111,17 @@ static int pa_slc_cmp_coord(const void *a_, const void *b_)
 	return (*a < *b) ? -1 : +1;
 }
 
+RND_INLINE void pa_slc_dump(pa_slc_ctx_t *ctx)
+{
+	long n;
+	pa_slc_endp_t *ep;
+
+	for(n = 0, ep = ctx->v.array; n < ctx->v.used; n++,ep++)
+		rnd_trace(" %c @%d ^%d", ep->side==0 ? '{' : '}', ep->x, ep->height);
+
+	rnd_trace("\n");
+}
+
 /* figure a relatively low number of cuts */
 RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 {
@@ -1120,9 +1131,11 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	pa_slc_endp_t *ep, *ep2;
 
 	pa_slc_sort_and_compute_heights(ctx);
-
 	for(remaining = ctx->v.used/2; remaining > 0; ) {
 		long best_n, best_h = -1;
+
+		rnd_trace(" slc [%d] ", remaining);
+		pa_slc_dump(ctx);
 
 		/* find highest tower to slice */
 		for(n = 0, ep = ctx->v.array; n < ctx->v.used-1; n++,ep++) {
@@ -1151,6 +1164,10 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 			}
 		}
 	}
+
+
+	rnd_trace("slc post ");
+	pa_slc_dump(ctx);
 
 	/* reset pline flags */
 	for(n = 0, ep = ctx->v.array; n < ctx->v.used-1; n++,ep++)
