@@ -1211,11 +1211,6 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	}
 }
 
-RND_INLINE void pa_slc_slice(pa_slc_ctx_t *ctx)
-{
-
-}
-
 /*** API ***/
 void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
@@ -1238,7 +1233,6 @@ void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 
 	pa_slc_map_pline_pa(&slc);
 	pa_slc_find_cuts(&slc);
-	pa_slc_slice(&slc);
 
 	for(n = 1; n < slc.cuts.used; n++) {
 		ctx->clip.X1 = slc.cuts.array[n-1];
