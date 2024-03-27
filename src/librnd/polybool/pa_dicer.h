@@ -70,3 +70,9 @@ struct pa_dic_ctx_s {
    calling the emit callbacks defined in ctx */
 void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa);
 
+
+/* New, emit API; slice up the region of pa addressed in ctx->clip into
+   no-hole polylines that are mitted through ctx callbacks. Overwrites
+   ctx->clip */
+void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa);
+
