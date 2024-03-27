@@ -1139,6 +1139,9 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	rnd_coord_t x1, x2, xc;
 	pa_slc_endp_t *ep, *ep2;
 
+	if (ctx->v.used < 2)
+		return;
+
 	pa_slc_sort_and_compute_heights(ctx);
 	for(remaining = ctx->v.used/2; remaining > 0; ) {
 		long best_n, best_h = -1;
