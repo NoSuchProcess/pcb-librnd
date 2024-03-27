@@ -1153,13 +1153,16 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 		xc = (x1+x2)/2;
 		vtc0_append(&ctx->cuts, xc);
 
+		rnd_trace("best: @%d ^%d cut at %d\n", best_n, best_h, xc);
+
 		/* mark all affected plines already sliced and decrease heights and remaining */
 		for(n = 0, ep = ctx->v.array; n < ctx->v.used-1; n++,ep++) {
-			if ((xc >= ep->pl->xmin) && (xc <= ep->pl->ymin)) {
+			if ((ep->side == 0) && !ep->pl->flg.sliced && (xc >= ep->pl->xmin) && (xc <= ep->pl->xmax)) {
 				ep->pl->flg.sliced = 1;
 				remaining--;
+				rnd_trace(" remove %d..%d\n", ep->pl->xmin, ep->pl->xmax);
 				/* decrease height over this pline */
-				for(m = n, ep2 = ep; (ep2->pl == ep->pl) && (m < ctx->v.used-1); m++,ep2++)
+				for(m = n, ep2 = ep; ep2->x < ep->pl->xmax; m++,ep2++)
 					ep2->height--;
 			}
 		}
