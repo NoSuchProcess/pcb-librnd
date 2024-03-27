@@ -1053,7 +1053,8 @@ RND_INLINE void pa_slc_map_pline_holes(vtslc_t *ctx, rnd_pline_t *contour)
 		ep[0].side = 0;
 		ep[1].pl = hole;
 		ep[1].x = hole->xmax;
-		ep[1].side = 1;
+		ep[0].side = 1;
+		hole->flg.sliced = 0;
 	}
 }
 
@@ -1089,19 +1090,22 @@ RND_INLINE void pa_slc_sort_and_compute_heights(vtslc_t *ctx)
 	assert(h == 0);
 }
 
+
 /* figure a relatively low number of cuts */
 RND_INLINE void pa_slc_find_cuts(vtslc_t *ctx, vtc0_t *cuts)
 {
-	long remaining;
+	long n, m;
+	long remaining; /* number of plines still waiting for a cut */
+	rnd_coord_t x1, x2, xc;
+	pa_slc_endp_t *ep, *ep2;
 
 	pa_slc_sort_and_compute_heights(ctx);
 
-	for(remaining = ctx->used; remaining > 0; ) {
-		long n, best_n, best_h = -1;
-		pa_slc_endp_t *ep;
+	for(remaining = ctx->used/2; remaining > 0; ) {
+		long best_n, best_h = -1;
 
 		/* find highest tower to slice */
-		for(n = 0, ep = ctx->array; n < ctx->used; n++,ep++) {
+		for(n = 0, ep = ctx->array; n < ctx->used-1; n++,ep++) {
 			if (ep->height > best_h) {
 				best_h = ep->height;
 				best_n = n;
@@ -1110,9 +1114,27 @@ RND_INLINE void pa_slc_find_cuts(vtslc_t *ctx, vtc0_t *cuts)
 
 		assert(best_h > 0);
 
-		TODO("insert a cut after best_n");
-		TODO("decrease heights and remaining");
+		/* insert a cut halfway in between best_n and the next endpoint */
+		x1 = ctx->array[best_n].x;
+		x2 = ctx->array[best_n+1].x;
+		xc = (x1+x2)/2;
+		vtc0_append(cuts, xc);
+
+		/* mark all affected plines already sliced and decrease heights and remaining */
+		for(n = 0, ep = ctx->array; n < ctx->used-1; n++,ep++) {
+			if ((xc >= ep->pl->xmin) && (xc <= ep->pl->ymin)) {
+				ep->pl->flg.sliced = 1;
+				remaining--;
+				/* decrease height over this pline */
+				for(m = n, ep2 = ep; (ep2->pl == ep->pl) && (m < ctx->used-1); m++,ep2++)
+					ep2->height--;
+			}
+		}
 	}
+
+	/* reset pline flags */
+	for(n = 0, ep = ctx->array; n < ctx->used-1; n++,ep++)
+		ep->pl->flg.sliced = 0;
 }
 
 RND_INLINE void pa_slc_slice(vtc0_t *cuts, rnd_polyarea_t *pa)

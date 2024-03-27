@@ -89,6 +89,7 @@ struct rnd_pline_s {
 		unsigned int orient:1;
 		unsigned int risky:1;  /* need to run selfisc resolver in postproc */
 		unsigned orphaned:1;   /* parent island got deleted */
+		unsigned sliced:1;     /* used by the slicer */
 	} flg;
 };
 
