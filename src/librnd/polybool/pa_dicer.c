@@ -1113,13 +1113,15 @@ static int pa_slc_cmp_coord(const void *a_, const void *b_)
 
 RND_INLINE void pa_slc_dump(pa_slc_ctx_t *ctx)
 {
+#ifdef WANT_DEBUG_SLICE
 	long n;
 	pa_slc_endp_t *ep;
 
 	for(n = 0, ep = ctx->v.array; n < ctx->v.used; n++,ep++)
-		rnd_trace(" %c @%d ^%d", ep->side==0 ? '{' : '}', ep->x, ep->height);
+		DEBUG_SLICE(" %c @%d ^%d", ep->side==0 ? '{' : '}', ep->x, ep->height);
 
-	rnd_trace("\n");
+	DEBUG_SLICE("\n");
+#endif
 }
 
 /* figure a relatively low number of cuts */
@@ -1134,7 +1136,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	for(remaining = ctx->v.used/2; remaining > 0; ) {
 		long best_n, best_h = -1;
 
-		rnd_trace(" slc [%d] ", remaining);
+		DEBUG_SLICE(" slc [%d] ", remaining);
 		pa_slc_dump(ctx);
 
 		/* find highest tower to slice */
@@ -1153,14 +1155,14 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 		xc = (x1+x2)/2;
 		vtc0_append(&ctx->cuts, xc);
 
-		rnd_trace("best: @%d ^%d cut at %d\n", best_n, best_h, xc);
+		DEBUG_SLICE("best: @%d ^%d cut at %d\n", best_n, best_h, xc);
 
 		/* mark all affected plines already sliced and decrease heights and remaining */
 		for(n = 0, ep = ctx->v.array; n < ctx->v.used-1; n++,ep++) {
 			if ((ep->side == 0) && !ep->pl->flg.sliced && (xc >= ep->pl->xmin) && (xc <= ep->pl->xmax)) {
 				ep->pl->flg.sliced = 1;
 				remaining--;
-				rnd_trace(" remove %d..%d\n", ep->pl->xmin, ep->pl->xmax);
+				DEBUG_SLICE(" remove %d..%d\n", ep->pl->xmin, ep->pl->xmax);
 				/* decrease height over this pline */
 				for(m = n, ep2 = ep; ep2->x < ep->pl->xmax; m++,ep2++)
 					ep2->height--;
@@ -1169,7 +1171,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	}
 
 
-	rnd_trace("slc post ");
+	DEBUG_SLICE("slc post ");
 	pa_slc_dump(ctx);
 
 	/* reset pline flags */

@@ -27,6 +27,7 @@
 #define DEBUG_SELFISC 0
 #define DEBUG_RISK 0
 #define DEBUG_CLIP 0
+#define DEBUG_SLICE 0
 
 /* dump sorted dicer frame iscs before and after redundancy check */
 #define DEBUG_CLIP_DUMP_LOOP 0
