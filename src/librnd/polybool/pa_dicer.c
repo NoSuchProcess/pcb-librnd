@@ -71,14 +71,21 @@ RND_INLINE void pa_dic_isc_free(pa_dic_ctx_t *ctx, pa_dic_isc_t *isc, int destro
 
 RND_INLINE void pa_dic_reset_ctx_pa_(pa_dic_ctx_t *ctx, int destroy)
 {
-	if (destroy) {
-		int sd;
-		long m;
+	int sd, m;
 
-		/* free up cached side[] vectors */
+	for(sd = 0; sd < PA_DIC_sides; sd++)
+		for(m = 0; m < ctx->side[sd].used; m++)
+			pa_dic_isc_free(ctx, ctx->side[sd].array[m], destroy);
+
+
+	if (destroy) {
+		/* free cached side[] vectors */
 		for(sd = 0; sd < PA_DIC_sides; sd++)
-			for(m = 0; m < ctx->side[sd].used; m++)
-				vtp0_uninit(&ctx->side[sd]);
+			vtp0_uninit(&ctx->side[sd]);
+	}
+	else {
+		for(sd = 0; sd < PA_DIC_sides; sd++)
+			ctx->side[sd].used = 0;
 	}
 
 
@@ -1298,5 +1305,6 @@ void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coo
 
 	rnd_polyarea_slice_noholes(&ctx, pa);
 	pa_polyarea_free_all(&pa);
+	pa_dic_free_ctx(&ctx);
 }
 #endif
