@@ -1177,19 +1177,44 @@ void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	pa_dic_emit_pa(ctx, pa);
 }
 
-void rnd_polyarea_slice_noholes(rnd_polyarea_t *pa, rnd_coord_t minx, rnd_coord_t maxx)
+/* New, emit API; overwrites ctx->clip */
+void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	pa_slc_ctx_t ctx = {0};
+	pa_slc_ctx_t slc = {0};
+	long n;
 
-	ctx.minx = minx;
-	ctx.maxx = maxx;
-	ctx.pa = pa;
+	slc.minx = ctx->clip.X1;
+	slc.maxx = ctx->clip.X2;
+	slc.pa = pa;
 
-	pa_slc_map_pline_pa(&ctx);
-	pa_slc_find_cuts(&ctx);
-	pa_slc_slice(&ctx);
+	/* so that edges are no special case */
+	vtc0_append(&slc.cuts, ctx->clip.X1);
+	vtc0_append(&slc.cuts, ctx->clip.X2);
 
-	vtslc_uninit(&ctx.v);
-	vtc0_uninit(&ctx.cuts);
+	pa_slc_map_pline_pa(&slc);
+	pa_slc_find_cuts(&slc);
+	pa_slc_slice(&slc);
+
+	for(n = 1; n < slc.cuts.used; n++) {
+		ctx->clip.X1 = slc.cuts.array[n-1];
+		ctx->clip.X2 = slc.cuts.array[n];
+		pa_dic_emit_pa(ctx, pa);
+	}
+
+	vtslc_uninit(&slc.v);
+	vtc0_uninit(&slc.cuts);
 }
 
+
+#if 0
+/* Old, compatibility API */
+void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data)
+{
+	if ((clipX1 == clipX2) && (clipY1 == clipY2)) {
+		clipX1 = clipY1 = -RND_COORD_MAX;
+		clipX2 = clipY2 = +RND_COORD_MAX;
+	}
+
+	rnd_polyarea_slice_noholes(pa, clipX1, clipY1, clipX2, clipY2);
+}
+#endif
