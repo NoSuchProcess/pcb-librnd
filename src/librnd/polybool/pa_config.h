@@ -1,6 +1,9 @@
 /* Copy edge tree on pline_dup() instead of re-creating the tree on geometric basis */
 #define PB_OPTIMIZE_TREE_COPY
 
+/* When 1, use the new dicer behind the old, compatibility api */
+#define PA_USE_NEW_DICER 0
+
 /* If defined, use fixed point numbers with multi-word integers (bigint) to
    represent true coordinates of intersection points at high precision */
 #define PA_BIGCOORD_ISC

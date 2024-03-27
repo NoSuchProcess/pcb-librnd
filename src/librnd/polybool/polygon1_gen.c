@@ -39,6 +39,8 @@
 
 #include <librnd/rnd_config.h>
 
+#include "pa_config.h"
+
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
@@ -420,7 +422,7 @@ rnd_polyarea_t *rnd_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 }
 
 /*** recursive polygon dicer ***/
-
+#if PA_USE_NEW_DICER == 0
 static void pa_polyarea_dicer_no_hole_1(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data);
 
 static void pa_polyarea_dicer_recurse(rnd_polyarea_t *pa, void (*emit)(rnd_pline_t *, void *), void *user_data)
@@ -489,3 +491,4 @@ void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coo
 	}
 	while((pan = next) != pa);
 }
+#endif

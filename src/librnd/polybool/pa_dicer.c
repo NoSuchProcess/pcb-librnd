@@ -1206,15 +1206,72 @@ void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 }
 
 
-#if 0
+#if PA_USE_NEW_DICER
 /* Old, compatibility API */
+
+typedef struct {
+	/* user config: */
+	void (*emit_pline)(rnd_pline_t *, void *);
+	void *user_data;
+
+	/* transient/cache: */
+	rnd_pline_t *pl;
+} pa_nhdic_ctx_t;
+
+static void pa_nhdic_begin_pline(pa_dic_ctx_t *ctx)
+{
+	pa_nhdic_ctx_t *cctx = ctx->user_data;
+	assert(cctx->pl == NULL);
+}
+
+static void pa_nhdic_append_coord(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t y)
+{
+	pa_nhdic_ctx_t *cctx = ctx->user_data;
+	rnd_vector_t v;
+
+	v[0] = x;
+	v[1] = y;
+
+	if (cctx->pl == NULL)
+		cctx->pl = rnd_poly_contour_new(v);
+	else
+		rnd_poly_vertex_include(cctx->pl->head->prev, rnd_poly_node_create(v));
+}
+
+static void pa_nhdic_end_pline(pa_dic_ctx_t *ctx)
+{
+	rnd_polyarea_t *new_pa;
+	pa_nhdic_ctx_t *cctx = ctx->user_data;
+	assert(cctx->pl != NULL);
+
+	rnd_poly_contour_pre(cctx->pl, 0);
+	cctx->emit_pline(cctx->pl, cctx->user_data);
+	pa_pline_free(&cctx->pl); /* also sets it NULL */
+}
+
+
+
 void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data)
 {
+	pa_dic_ctx_t ctx = {0};;
+	pa_nhdic_ctx_t nh = {0};
+
+	nh.emit_pline = emit;
+	nh.user_data = user_data;
+
 	if ((clipX1 == clipX2) && (clipY1 == clipY2)) {
 		clipX1 = clipY1 = -RND_COORD_MAX;
 		clipX2 = clipY2 = +RND_COORD_MAX;
 	}
 
-	rnd_polyarea_slice_noholes(pa, clipX1, clipY1, clipX2, clipY2);
+	ctx.clip.X1 = clipX1; ctx.clip.Y1 = clipY1;
+	ctx.clip.X2 = clipX2; ctx.clip.Y2 = clipY2;
+	ctx.begin_pline = pa_nhdic_begin_pline;
+	ctx.append_coord = pa_nhdic_append_coord;
+	ctx.end_pline = pa_nhdic_end_pline;
+	ctx.user_data = &nh;
+
+	rnd_polyarea_slice_noholes(&ctx, pa);
+	pa_polyarea_free_all(&pa);
 }
 #endif
