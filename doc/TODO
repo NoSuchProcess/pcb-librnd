@@ -30,6 +30,7 @@
 
 3. Long term ===============================================================================
 	- API deletion (5.0.0)
+		- remove the old poly lib
 		- DAD close buttons can't have tooltips (for sch-rnd)
 			- need to add an optional tooltip field at the _end_ of rnd_hid_dad_buttons_t
 			- need to add spares in rnd_hid_dad_buttons_t
