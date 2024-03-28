@@ -1297,6 +1297,12 @@ static void pa_nhdic_end_pline(pa_dic_ctx_t *ctx)
 	assert(cctx->pl != NULL);
 
 	pa_pline_update(cctx->pl, 0);
+	assert(cctx->pl->flg.orient == RND_PLF_DIR);
+
+/* Alternatively, if it turns out it's legal to get inverted plines:
+	if (cctx->pl->flg.orient != RND_PLF_DIR)
+		pa_pline_invert(cctx->pl);
+*/
 
 	cctx->emit_pline(cctx->pl, cctx->user_data);
 
