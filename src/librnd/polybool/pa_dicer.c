@@ -1227,6 +1227,7 @@ void rnd_pline_solid_clip_box_emit(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 	/*cheat: if there are no holes, nothing will use other fields of pa */
 	pa.contours = pl;
 	pa_dic_emit_island(ctx, &pa);
+	pa_dic_reset_ctx_pa(ctx); /* restore input after temporary mods */
 }
 
 /* New, emit API; overwrites ctx->clip */
