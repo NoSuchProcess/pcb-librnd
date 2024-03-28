@@ -1227,7 +1227,7 @@ void rnd_pline_solid_clip_box_emit(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 
 	/*cheat: if there are no holes, nothing will use other fields of pa */
 	orig_pln = pl->next;
-	pl->next = NULL;
+	pl->next = NULL; /* some callers (e.g. pcb-rnd) abuse the ->next field for listing contours; since the API says it's a single solid polyline, ignore any ->next */
 	pa.contours = pl;
 	pa.f = pa.b = &pa;
 	pa_dic_emit_island(ctx, &pa);
