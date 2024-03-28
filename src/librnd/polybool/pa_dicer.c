@@ -1223,11 +1223,16 @@ void rnd_polyarea_clip_box_emit(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 void rnd_pline_solid_clip_box_emit(pa_dic_ctx_t *ctx, rnd_pline_t *pl)
 {
 	rnd_polyarea_t pa = {0};
+	rnd_pline_t *orig_pln;
 
 	/*cheat: if there are no holes, nothing will use other fields of pa */
+	orig_pln = pl->next;
+	pl->next = NULL;
 	pa.contours = pl;
+	pa.f = pa.b = &pa;
 	pa_dic_emit_island(ctx, &pa);
 	pa_dic_reset_ctx_pa(ctx); /* restore input after temporary mods */
+	pl->next = orig_pln;
 }
 
 /* New, emit API; overwrites ctx->clip */
