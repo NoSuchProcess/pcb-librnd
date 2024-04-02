@@ -42,6 +42,7 @@
 #include <librnd/core/globalconst.h>
 
 #include "wt_preview.h"
+#include "dialogs.h"
 
 #include "FillBox.h"
 

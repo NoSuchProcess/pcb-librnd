@@ -1088,7 +1088,7 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h
 ../src/librnd/plugins/hid_lesstif/main.o: \
- ../src/librnd/plugins/hid_lesstif/main.c \
+ ../src/librnd/plugins/hid_lesstif/main.c ../src/librnd/plugins/hid_lesstif/dialogs.h \
  ../src/librnd/plugins/hid_lesstif/xincludes.h ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/math_helper.h ../src/librnd/core/rnd_conf.h \
  ../src/librnd/core/conf.h ../src/librnd/config.h ../src/librnd/core/global_typedefs.h \

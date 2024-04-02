@@ -1,3 +1,6 @@
+#ifndef LIBRND_HID_LESSTIF_DIALOGS_H
+#define LIBRND_HID_LESSTIF_DIALOGS_H
+
 #include <genlist/gendlist.h>
 
 typedef struct {
@@ -21,3 +24,8 @@ typedef struct {
 	unsigned creating:1;
 	gdl_elem_t link; /* in ltf_dad_dialogs  */
 } lesstif_attr_dlg_t;
+
+void lesstif_attr_sub_update_hidlib(void *hid_ctx, rnd_design_t *new_dsg);
+void lesstif_attr_dlg_free_all(void);
+
+#endif
