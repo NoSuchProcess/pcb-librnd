@@ -69,6 +69,7 @@ DISTCLEAN_FILES= \
 	../Makefile.conf \
 	../src/Makefile \
 	../src/librnd/poly/polyconf.h \
+	../src/librnd/polybool/polyconf.h \
 	../util/gsch2pcb-rnd/Makefile \
 	config.cache \
 	config.log \
