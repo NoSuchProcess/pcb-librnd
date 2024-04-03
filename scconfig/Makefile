@@ -68,15 +68,19 @@ DISTCLEAN_FILES= \
 	../config.h \
 	../Makefile.conf \
 	../src/Makefile \
+	../src/librnd/poly/polyconf.h \
 	../util/gsch2pcb-rnd/Makefile \
 	config.cache \
 	config.log \
 	Rev.stamp \
 	sccbox \
+	aru \
+	aru.o \
 	gmon.out \
 	../src_3rd/puplug/Makefile \
 	../src_3rd/puplug/config.h \
-	../src_plugins/lib_hid_gl/opengl.h
+	../src/librnd/plugins/lib_hid_gl/opengl.h \
+	../src/librnd/plugins/lib_hid_gl/draw_INIT.h
 
 all: configure revtest sccbox aru
 
