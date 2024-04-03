@@ -247,7 +247,7 @@ append /local/librnd/OBJS /local/librnd/OBJS_HIDLIB
 #---- modules ----#
 # extra rules for modules
 put /local/rnd/RULES {}
-put /local/rnd/CLEANFILES {test-rnd$(EXE)}
+put /local/rnd/CLEANFILES {test-rnd.o test-rnd$(EXE)}
 put /local/librnd/CLEANRULES {}
 put /local/librnd/all {}
 put /local/librnd/buildin_init {}
