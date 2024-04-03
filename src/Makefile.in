@@ -551,6 +551,15 @@ HIDLIB_CLEAN_FILES_SO=\
 	librnd-font2.so.$(PCB_RND_VER) \
 	librnd-hid.so.$(PCB_RND_VER)
 
+HIDLIB_CLEAN_FILES_SO_MAJOR=\
+	librnd-core.so.$(PCB_RND_VER_MAJOR) \
+	librnd-3rd.so.$(PCB_RND_VER_MAJOR) \
+	librnd-poly.so.$(PCB_RND_VER_MAJOR) \
+	librnd-polybool.so.$(PCB_RND_VER_MAJOR) \
+	librnd-font.so.$(PCB_RND_VER_MAJOR) \
+	librnd-font2.so.$(PCB_RND_VER_MAJOR) \
+	librnd-hid.so.$(PCB_RND_VER_MAJOR)
+
 HIDLIB_CLEAN_FILES_SO_SY=\
 	librnd-core.so \
 	librnd-3rd.so \
@@ -572,9 +581,10 @@ HIDLIB_CLEAN_FILES_A=\
 	librnd-font2.a \
 	librnd-hid.a
 
-HIDLIB_CLEAN_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
+HIDLIB_BUILD_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
+HIDLIB_CLEAN_FILES=$(HIDLIB_BUILD_FILES) $(HIDLIB_CLEAN_FILES_SO_MAJOR)
 
-librnd: $(HIDLIB_CLEAN_FILES) ../src_3rd/genht/version.h
+librnd: $(HIDLIB_BUILD_FILES) ../src_3rd/genht/version.h
 
 librnd_a: $(HIDLIB_CLEAN_FILES_A) ../src_3rd/genht/version.h
 
