@@ -1,3 +1,6 @@
-librnd 4.1.1
+librnd 4.2.0
 ~~~~~~~~~~~~
-Minor bugfix release (focus is on the yet unused polybool lib).
+Minor bugfix release (focus is on the yet unused polybool lib) with a few
+API extensions for future features. Also add support for scrollbar-free
+unlimited pan (for osm-rnd)
+
