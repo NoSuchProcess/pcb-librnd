@@ -778,8 +778,7 @@ static void rnd_ltf_draw_pixmap_(rnd_design_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 				XRenderFreePicture(display, lpm->p_img_scaled);
 			if (lpm->p_mask_scaled != 0)
 				XRenderFreePicture(display, lpm->p_mask_scaled);
-
-			lpm->p_img_scaled = XRenderCreatePicture(display, lpm->img_scaled, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
+			lpm->p_img_scaled = XRenderCreatePicture(display, lpm->pm_scaled, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
 			if (lpm->pxm->has_transp)
 				lpm->p_mask_scaled = XRenderCreatePicture(display, lpm->mask_scaled, XRenderFindVisualFormat(display, DefaultVisual(display, screen)), 0, 0);
 			else
