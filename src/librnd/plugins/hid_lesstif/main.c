@@ -789,8 +789,8 @@ static void rnd_ltf_draw_pixmap_(rnd_design_t *hidlib, rnd_ltf_pixmap_t *lpm, rn
 
 #ifdef RND_HAVE_XRENDER
 	if (use_xrender) {
-		fprintf(stderr, "clip xrender\n");
 		XRenderPictureAttributes pa;
+/*		fprintf(stderr, "clip xrender\n");*/
 		pa.clip_mask = mask_bitmap;
 		XRenderChangePicture(display, lpm->p_img_scaled, CPClipMask, &pa);
 		XRenderComposite(display, PictOpOver, lpm->p_img_scaled, lpm->p_mask_scaled, main_picture, 0, 0, 0, 0, Vx(ox), Vy(ox), w, h);
