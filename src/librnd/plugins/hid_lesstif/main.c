@@ -2877,7 +2877,7 @@ static int ltf_clip_set(rnd_hid_t *hid, const char *str)
 {
 	static long cnt = 0;
 	long item_id, data_id;
-	XmString lab = XmStringCreateLocalized(rnd_app.package);
+	XmString lab = XmStringCreateLocalized((char *)rnd_app.package);
 	
 	
 	if (XmClipboardStartCopy(display, window, lab, CurrentTime, 0, NULL, &item_id) != XmClipboardSuccess) {
