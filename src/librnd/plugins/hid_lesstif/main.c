@@ -2854,7 +2854,7 @@ static void ltf_confchg_fullscreen(rnd_conf_native_t *cfg, int arr_idx, void *us
 
 static rnd_conf_hid_id_t lesstif_conf_id = -1;
 
-static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int))
+static void init_conf_watch(rnd_conf_hid_callbacks_t *cbs, const char *path, void (*func)(rnd_conf_native_t *, int, void *))
 {
 	rnd_conf_native_t *n = rnd_conf_get_field(path);
 	if (n != NULL) {
