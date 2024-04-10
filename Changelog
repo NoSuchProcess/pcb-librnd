@@ -1,4 +1,4 @@
-librnd 4.2.0 (r36864)
+librnd 4.2.0 (r36857)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
 		-Cleanup: move scconfig distclean file list into a make variable to make it easier to handle (the list is getting long)
