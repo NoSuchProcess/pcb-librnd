@@ -410,7 +410,7 @@ static inline void gtkc_table_attach1(GtkWidget *table, GtkWidget *child, int ro
 #define gtk4c_bind_win_resize(widget, ev) \
 	g_signal_connect(G_OBJECT(gtkc_win_surface(GTK_WIDGET(widget))), "layout", G_CALLBACK(gtkc_win_resize_cb), ev)
 
-static inline gint gtkc_bind_win_destroy(GtkWidget *widget, void *ev)
+static inline gint gtkc_bind_win_destroy(void *widget, void *ev)
 {
 	g_object_set_data(G_OBJECT(widget), RND_GTK4_WIN_DESTROY_DATA, ev);
 	return g_signal_connect(G_OBJECT(widget), "destroy", G_CALLBACK(gtkc_win_destroy_cb), ev);
