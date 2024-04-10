@@ -219,7 +219,7 @@ static void pa_conn_list_remove_stubs(pa_conn_desc_t **head)
 		next = n->next;
 
 		/* a stub has two edges of the same poly in the same direction... */
-		if ((n->poly == n->next->poly) && pa_angle_equ(n, n->next)) {
+		if ((n->poly == n->next->poly) && pa_angle_equ(n->angle, n->next->angle)) {
 			rnd_vnode_t *remote_curr, *remote_next;
 
 			n2 = n->next;
