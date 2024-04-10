@@ -59,7 +59,7 @@ struct pa_dic_isc_s {
 	pa_dic_isc_t *next;
 };
 
-TODO("cache allocations");
+TODO("cache allocations")
 RND_INLINE pa_dic_isc_t *pa_dic_isc_alloc(pa_dic_ctx_t *ctx)
 {
 	return malloc(sizeof(pa_dic_isc_t));
@@ -214,7 +214,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 	return isc;
 }
 
-TODO("rewrite these with big_coords to make the 64-bit-coord safe");
+TODO("rewrite these with big_coords to make the 64-bit-coord safe")
 rnd_coord_t pa_line_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
 {
 	double dx = (double)(lx2 - lx1) / (double)(ly2 - ly1);
@@ -1319,7 +1319,7 @@ static void pa_nhdic_end_pline(pa_dic_ctx_t *ctx)
 
 void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(rnd_pline_t *, void *), void *user_data)
 {
-	pa_dic_ctx_t ctx = {0};;
+	pa_dic_ctx_t ctx = {0};
 	pa_nhdic_ctx_t nh = {0};
 
 	nh.emit_pline = emit;
