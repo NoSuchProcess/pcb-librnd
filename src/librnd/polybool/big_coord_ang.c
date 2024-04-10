@@ -33,38 +33,38 @@ void pa_debug_print_angle(pa_big_angle_t a);
 #endif
 
 
-int pa_angle_equ(pa_big_angle_t a, pa_big_angle_t b)
+int pa_angle_equ(const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) == 0;
 }
 
-int pa_angle_gt(pa_big_angle_t a, pa_big_angle_t b)
+int pa_angle_gt(const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) > 0;
 }
 
-int pa_angle_lt(pa_big_angle_t a, pa_big_angle_t b)
+int pa_angle_lt(const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) < 0;
 }
 
-int pa_angle_gte(pa_big_angle_t a, pa_big_angle_t b)
+int pa_angle_gte(const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) >= 0;
 }
 
-int pa_angle_lte(pa_big_angle_t a, pa_big_angle_t b)
+int pa_angle_lte(const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	return big_signed_cmpn(a, b, W) <= 0;
 }
 
-void pa_angle_sub(pa_big_angle_t res, pa_big_angle_t a, pa_big_angle_t b)
+void pa_angle_sub(pa_big_angle_t res, const pa_big_angle_t a, const pa_big_angle_t b)
 {
 	big_subn(res, a, b, W, 0);
 }
 
 
-int pa_angle_valid(pa_big_angle_t a)
+int pa_angle_valid(const pa_big_angle_t a)
 {
 	static const pa_big_angle_t a4 = {0, 0, 0, 0, 4, 0};
 	return !big_is_neg(a, W) && (big_signed_cmpn(a, (big_word *)a4, W) <= 0);
