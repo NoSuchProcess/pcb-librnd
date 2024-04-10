@@ -26,9 +26,6 @@ librnd 4.2.0 (r36864)
 		-Add: support for config node editor.hide_hid_crosshair
 		-Fix: initial view setup still executes under unlimited pan
 		-Fix: implicit declarations
-		-Fix: passed the wrong pixmap ID to xrender (when xrender is enabled and present)
-		-Fix: r34636 (adding user data ptr to config change callbacks) missed a function ptr type passed in argument
-		-Fix: missing cast: X API too old to be const-correct
 
 	[lib_exp_pixmap]
 		-Add: pixmap object export option in the API (not yet implemented)
