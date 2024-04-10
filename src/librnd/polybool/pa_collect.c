@@ -692,7 +692,7 @@ RND_INLINE void pa_polyarea_collect_separated(jmp_buf *e, rnd_pline_t *A, rnd_po
 	   a hole; this hole did not get labelled but if it intersects b, it will
 	   still change the final output. Test case: bdale1 and bdale2 */
 	{
-		rnd_pline_t *pl, **next;
+		rnd_pline_t *pl, *next;
 		for(pl = *holes; pl != NULL; pl = next) {
 			next = pl->next;
 			if ((pl->flg.orphaned) && (pl->flg.llabel == PA_PLL_ISECTED) && (pl->head->flg.plabel == PA_PTL_UNKNWN)) {
