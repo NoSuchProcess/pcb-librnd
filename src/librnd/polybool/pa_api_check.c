@@ -192,7 +192,7 @@ RND_INLINE int chk_on_same_pt(rnd_vnode_t *va, rnd_vnode_t *vb)
 /* Walk the polyline from start, either jumping on ->next (dir>0) or on ->prev
    (dir<0) and compute the polarity of that loop. Returns +1 for outline, -1
    for hole. */
-RND_INLINE pa_chk_loop_polarity(rnd_vnode_t *start, int dir)
+RND_INLINE int pa_chk_loop_polarity(rnd_vnode_t *start, int dir)
 {
 	double area = 0;
 	rnd_vnode_t *c, *p;
