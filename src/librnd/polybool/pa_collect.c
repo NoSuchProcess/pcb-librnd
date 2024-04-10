@@ -159,6 +159,7 @@ static int pa_coll_jump(rnd_vnode_t **cur, pa_direction_t *cdir, pa_jump_rule_t 
 		if (!e->flg.mark && rule(d->poly, e, &newdir)) {
 			if (((d->side == 'N') && (newdir == PA_FORWARD)) || ((d->side == 'P') && (newdir == PA_BACKWARD))) {
 				rnd_vnode_t *nnd = (newdir == PA_FORWARD) ? e->next : e;
+				(void)nnd; /* suppress warning on unused */
 				DEBUG_JUMP_COORDS("jump leaving node", nnd, "");
 
 				*cur = d->parent;

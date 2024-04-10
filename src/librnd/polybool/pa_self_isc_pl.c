@@ -174,8 +174,7 @@ static rnd_r_dir_t pa_selfisc_map_cross_cb(const rnd_box_t *b, void *cl)
 	pa_selfisc_t *ctx = (pa_selfisc_t *)cl;
 	pa_seg_t *s = (pa_seg_t *)b;
 	pa_big_vector_t isc1, isc2, start;
-	rnd_vector_t isc1_small,isc2_small;
-	int num_isc, num_isc_small, got_isc = 0;
+	int num_isc, got_isc = 0;
 	rnd_vnode_t *ip1, *ip2;
 
 	if ((s->v == ctx->v) || (s->v == ctx->v->next) || (s->v == ctx->v->prev))
@@ -531,9 +530,7 @@ static rnd_vnode_t *stub_remover(pa_selfisc_t *ctx, rnd_vnode_t *start)
 		bypass_restart:;
 		next = n->next;
 		if ((n->next->cvclst_next != NULL) && (n->prev->cvclst_next != NULL) && pa_vnode_equ(n->prev, n->next)) {
-			pa_conn_desc_t *c1, *c2;
-
-			/* n is the endpoint of a stub */
+				/* n is the endpoint of a stub */
 /*			DEBUG_SELFISC("STUB  found endpoint at: %ld;%ld prev=%ld;%ld next=%ld;%ld\n", n->point[0], n->point[1], n->prev->point[0], n->prev->point[1], n->next->point[0], n->next->point[1]);*/
 
 			if (n == start)
@@ -1019,8 +1016,6 @@ static rnd_bool rnd_pline_split_selfisc_i(pa_posneg_t *posneg, rnd_polyarea_t **
 
 
 		if (posneg->neg_head != NULL) { /* add cutouts */
-			rnd_pline_t *ng;
-
 			/* link in new islands after the original cutout */
 			posneg->neg_tail->next = pl->next;
 			pl->next = posneg->neg_head;

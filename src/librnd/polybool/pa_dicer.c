@@ -778,8 +778,7 @@ RND_INLINE int pa_dic_wrong_turn(pa_dic_ctx_t *ctx, rnd_vnode_t *en, pa_dic_isc_
    intersection where the edge went outside */
 RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *start, pa_dic_isc_t *start_isc, pa_dic_isc_t *term)
 {
-	pa_dic_pt_box_relation_t state = PA_DPT_ON_EDGE, dir;
-	rnd_vnode_t *prev = NULL;
+	pa_dic_pt_box_relation_t dir;
 	rnd_vnode_t *n;
 	pa_dic_isc_t *si, *last_si = NULL, *pending_si = NULL;
 
@@ -831,7 +830,6 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
 		DEBUG_CLIP("       append: %ld;%ld\n", (long)n->point[0], (long)n->point[1]);
-		prev = n;
 		n = n->next;
 	} while(n != start);
 
@@ -1297,7 +1295,6 @@ static void pa_nhdic_append_coord(pa_dic_ctx_t *ctx, rnd_coord_t x, rnd_coord_t 
 
 static void pa_nhdic_end_pline(pa_dic_ctx_t *ctx)
 {
-	rnd_polyarea_t *new_pa;
 	pa_nhdic_ctx_t *cctx = ctx->user_data;
 	assert(cctx->pl != NULL);
 
