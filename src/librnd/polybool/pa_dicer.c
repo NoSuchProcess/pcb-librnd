@@ -1092,7 +1092,7 @@ RND_INLINE void pa_slc_map_pline_pa(pa_slc_ctx_t *ctx)
 
 static int cmp_slc_endp(const void *a_, const void *b_)
 {
-	pa_slc_endp_t *a = a_, *b = b_;
+	const pa_slc_endp_t *a = a_, *b = b_;
 	return (a->x < b->x) ? -1 : +1;
 }
 
