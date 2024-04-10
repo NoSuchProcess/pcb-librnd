@@ -28,23 +28,23 @@ const char *pcb_board_get_name(void)
 }
 
 
-void watch_pre(rnd_conf_native_t *cfg, int idx)
+void watch_pre(rnd_conf_native_t *cfg, int idx, void *udata)
 {
 	printf("watch_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void watch_post(rnd_conf_native_t *cfg, int idx)
+void watch_post(rnd_conf_native_t *cfg, int idx, void *udata)
 {
 	printf("watch_post: '%s' new value\n", cfg->hash_path);
 }
 
-void notify_pre(rnd_conf_native_t *cfg, int idx)
+void notify_pre(rnd_conf_native_t *cfg, int idx, void *udata)
 {
 	if (global_notify)
 		printf("notify_pre:  '%s' old value\n", cfg->hash_path);
 }
 
-void notify_post(rnd_conf_native_t *cfg, int idx)
+void notify_post(rnd_conf_native_t *cfg, int idx, void *udata)
 {
 	if (global_notify)
 		printf("notify_post: '%s' new value\n", cfg->hash_path);
