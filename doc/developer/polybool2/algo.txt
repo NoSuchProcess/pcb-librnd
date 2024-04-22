@@ -17,7 +17,12 @@ Def: output tree [of regions]: a tree of regions; each node is a region with
 	1.2. split segments at intersections; mark the new vertex introduced
 	     at the intersection as "intersected"
 	1.3. collect segments into curves between intersections
-	1.4. remove curves that are in full overlap with one another
+	1.4. handle overlaps
+		1.4.1. map curves that are fully overlapping; their endpoints must match
+		1.4.2. take a group of all overlapping curves for a single pair of endpoints
+			- if there is at least one other curve ends on both endpoints, remove all
+			  but once instance of the overlapping curves of this group
+			- else this is a stub: remove all curves of this group
 
 2. split: list clean regions:
 	2.1. map all possible regions
