@@ -20,8 +20,9 @@ Def: output tree [of regions]: a tree of regions; each node is a region with
 	1.4. handle overlaps
 		1.4.1. map curves that are fully overlapping; their endpoints must match
 		1.4.2. take a group of all overlapping curves for a single pair of endpoints
-			- if there is at least one other curve ends on both endpoints, remove all
-			  but once instance of the overlapping curves of this group
+			- if there is at least one other curve ends on both endpoints:
+				- if there are even number of curves in the group, remove all curves
+				- otherwise remove all curves from this group except one
 			- else this is a stub: remove all curves of this group
 
 2. split: list clean regions:
