@@ -6,11 +6,11 @@ Def: canon: an unary operator on a single input polygon that resolves the
      self intersections and irregularities of that polygon
 Def: segment is a line or an arc
 Def: curve is an ordered list of segments with no intersection
-Def: region: a closed loop of curves (represented by an ordered list of
+Def: face: a closed loop of curves (represented by an ordered list of
      curve IDs)
-Def: clean region: a region that has no curve crossing its perimeter curves
-Def: output tree [of regions]: a tree of regions; each node is a region with
-     child nodes that are smaller regions fully within
+Def: clean face: a face that has no curve crossing its perimeter curves
+Def: output tree [of faces]: a tree of faces; each node is a face with
+     child nodes that are smaller faces fully within
 
 1. switch to topology
 	1.1. compute intersections of any two segments (using both A and B)
@@ -28,23 +28,23 @@ Def: output tree [of regions]: a tree of regions; each node is a region with
 			- else this is a stub: remove all curves of this group
 )
 
-2. split: list clean regions:
-	2.1. map all possible regions
+2. split: list clean faces:
+	2.1. map all possible faces
 	     Note: overlapping lines, e.g. in a bone, O--O, case may result in
-	     having a curve that's not part of any region; ignore such curves
-	2.2. for each region starting frome ach intersection (curve-endpoint)
-	     check each curve that's not part of the region permiter; if that
-	     curve goes into the region, discard the region (as it is non-clean)
-	2.3. for curves of clean regions, each curve should have a list of
-	     regions that use the curve (this is at most two regions per curve)
+	     having a curve that's not part of any face; ignore such curves
+	2.2. for each face starting frome ach intersection (curve-endpoint)
+	     check each curve that's not part of the face permiter; if that
+	     curve goes into the face, discard the face (as it is non-clean)
+	2.3. for curves of clean faces, each curve should have a list of
+	     faces that use the curve (this is at most two faces per curve)
 
-3. mark input polarity: for each clean region
-	3.1. choose an internal point of the region
-	3.2. region->inA := 1 or 0 depending on if the point is inside input polygon A
-	3.3. region->inB := 1 or 0 depending on if the point is inisde input polygon B
+3. mark input polarity: for each clean face
+	3.1. choose an internal point of the face
+	3.2. face->inA := 1 or 0 depending on if the point is inside input polygon A
+	3.3. face->inB := 1 or 0 depending on if the point is inisde input polygon B
 
-4. compute polarity of regions: for each clean region compute region->out from
-   region->inA and region->inB, depending on the operator, as:
+4. compute polarity of faces: for each clean face compute face->out from
+   face->inA and face->inB, depending on the operator, as:
 		- A union B:     out = inA or inB
 		- A sub B:       out = inA and not inB
 		- A intersect B: out = inA and inB
@@ -52,45 +52,45 @@ Def: output tree [of regions]: a tree of regions; each node is a region with
 		- canon A:       out = inA
 
 5. figure which curves to keep: for each curve:
-	- if the curve has two adjacent regions, keep the curve the ->out of those
-	  two regions are not equal
-	- if the curve has only one adjacent region, keep the curve if the
-	  region's ->out is 1
+	- if the curve has two adjacent faces, keep the curve the ->out of those
+	  two faces are not equal
+	- if the curve has only one adjacent face, keep the curve if the
+	  face's ->out is 1
 	Discarded curves are removed and freed.
 
-6. gather curves into output regions:
+6. gather curves into output faces:
 	6.1. take a the leftmost/topmost curve and put it on an output curve list
 	     list, and mark the curve visited
 	6.2. check the adjacent curves on the other endpoint:
-		- if any of the curves is already marked visited, we have a closed region;
-		  convert the output curve list into an output region, clear the output region
+		- if any of the curves is already marked visited, we have a closed face;
+		  convert the output curve list into an output face, clear the output face
 		  and start over at 6.1.
 		- ignore any curves that are already marked visited
 		- pick one of the remaining curves, append it to the outpt curve list
 		  and jump back to 6.2
 
-	The result is an unordered "list of output regions".
+	The result is an unordered "list of output faces".
 
-7. stack output regions, building the output tree of regions:
+7. stack output faces, building the output tree of faces:
 	7.0. create an output tree with the root node being an infinitely large
-	     negative region
-	7.1. take the largest remaining output region "off the list of output regions"
-	7.2. iterate over the existing tree to see whether the output region is
+	     negative face
+	7.1. take the largest remaining output face "off the list of output faces"
+	7.2. iterate over the existing tree to see whether the output face is
 	     within any of the leaves
-		- if yes: insert the output region as a child region of that leaf region,
-		  with polarity being the inverse of the leaf region
-		- if not: the output region is a new root in the output tree with
+		- if yes: insert the output face as a child face of that leaf face,
+		  with polarity being the inverse of the leaf face
+		- if not: the output face is a new root in the output tree with
 		  positive polarity
-	7.3. go back to 7.1. if "list of output regions" is not empty
+	7.3. go back to 7.1. if "list of output faces" is not empty
 
 	The result is the output tree.
 
-	(This is to figure the polarity of each output region)
+	(This is to figure the polarity of each output face)
 
 8. flatten the tree:
-	Iterate over each region in the output tree; for positive regions create
-	a polygon island; for negative regions create a polygon hole within the
-	island previously created for the parent region.
+	Iterate over each face in the output tree; for positive faces create
+	a polygon island; for negative faces create a polygon hole within the
+	island previously created for the parent face.
 
 9. cleanup
 	9.1. optional: visit each output contour and look at each interesected 
@@ -98,5 +98,5 @@ Def: output tree [of regions]: a tree of regions; each node is a region with
 	     a single segment (e.g. coaxial lines or arcs on the same circle), merge
 	     them to reduce the number of vertices
 	9.2. discard and free the output tree (created in 7.)
-	9.3. discard and free the list of output region (created in 6., should be empty by now)
-	9.4. free all curves and regions used
+	9.3. discard and free the list of output face (created in 6., should be empty by now)
+	9.4. free all curves and faces used
