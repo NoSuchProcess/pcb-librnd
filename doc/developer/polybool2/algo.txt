@@ -28,12 +28,11 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 )
 
 2. map faces
-	2.1. map all possible faces;
-	     Algo: https://cp-algorithms.com/geometry/planar.html
-	     Note: overlapping lines, e.g. in a bone, O--O case may result in
-	     having a curve that's not part of any face; ignore such curves
-	2.2. for curves of faces, each curve should have a list of
-	     faces that use the curve (this is at most two faces per curve)
+	- Algo: https://cp-algorithms.com/geometry/planar.html
+	- Note: overlapping lines, e.g. in a bone, O--O case may result in
+	        having a curve that's not part of any face; ignore such curves
+	- Note: for curves of faces, each curve should have a list of
+	        faces that use the curve (this is at most two faces per curve)
 
 3. mark input polarity: for each face
 	3.1. choose an internal point of the face
