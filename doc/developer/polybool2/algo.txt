@@ -28,10 +28,11 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 )
 
 2. split: list clean faces:
-	2.1. map all possible faces
-	     Note: overlapping lines, e.g. in a bone, O--O, case may result in
+	2.1. map all possible faces;
+	     Algo: https://cp-algorithms.com/geometry/planar.html
+	     Note: overlapping lines, e.g. in a bone, O--O case may result in
 	     having a curve that's not part of any face; ignore such curves
-	2.2. for each face starting frome ach intersection (curve-endpoint)
+	2.2. for each face starting from each intersection (curve-endpoint)
 	     check each curve that's not part of the face permiter; if that
 	     curve goes into the face, discard the face (as it is non-clean)
 	2.3. for curves of clean faces, each curve should have a list of
