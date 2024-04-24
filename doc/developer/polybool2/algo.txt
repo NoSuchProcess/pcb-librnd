@@ -27,23 +27,20 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 			- else this is a stub: remove all curves of this group
 )
 
-2. split: list clean faces:
+2. map faces
 	2.1. map all possible faces;
 	     Algo: https://cp-algorithms.com/geometry/planar.html
 	     Note: overlapping lines, e.g. in a bone, O--O case may result in
 	     having a curve that's not part of any face; ignore such curves
-	2.2. for each face starting from each intersection (curve-endpoint)
-	     check each curve that's not part of the face permiter; if that
-	     curve goes into the face, discard the face (as it is non-clean)
-	2.3. for curves of clean faces, each curve should have a list of
+	2.2. for curves of faces, each curve should have a list of
 	     faces that use the curve (this is at most two faces per curve)
 
-3. mark input polarity: for each clean face
+3. mark input polarity: for each face
 	3.1. choose an internal point of the face
 	3.2. face->inA := 1 or 0 depending on if the point is inside input polygon A
 	3.3. face->inB := 1 or 0 depending on if the point is inisde input polygon B
 
-4. compute polarity of faces: for each clean face compute face->out from
+4. compute polarity of faces: for each face compute face->out from
    face->inA and face->inB, depending on the operator, as:
 		- A union B:     out = inA or inB
 		- A sub B:       out = inA and not inB
