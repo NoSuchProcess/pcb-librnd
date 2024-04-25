@@ -50,7 +50,7 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	- if the curve has two adjacent faces, mark the curve visited if the
 	  ->out of those two faces are equal
 	- if the curve has only one adjacent face, mark the curve visited if
-	  face's ->out is negaive (not filled)
+	  face's ->out is 0 (not filled)
 
 5. gather curves into output faces:
 	5.1. take a the leftmost/topmost curve and put it on an output curve list
