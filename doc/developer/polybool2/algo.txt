@@ -47,11 +47,10 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 		- canon A:       out = inA
 
 4. figure which curves to keep: for each curve:
-	- if the curve has two adjacent faces, keep the curve the ->out of those
-	  two faces are not equal
-	- if the curve has only one adjacent face, keep the curve if the
-	  face's ->out is 1
-	Discarded curves are removed and freed.
+	- if the curve has two adjacent faces, mark the curve visited if the
+	  ->out of those two faces are equal
+	- if the curve has only one adjacent face, mark the curve visited if
+	  face's ->out is negaive (not filled)
 
 5. gather curves into output faces:
 	5.1. take a the leftmost/topmost curve and put it on an output curve list
