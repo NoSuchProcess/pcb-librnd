@@ -53,8 +53,8 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	  face's ->out is 0 (not filled)
 
 5. gather curves into output faces:
-	5.1. take a the leftmost/topmost curve and put it on an output curve list
-	     list, and mark the curve visited
+	5.1. take a non-visited curve and start an output face from it and mark it
+	     visited
 	5.2. check the adjacent curves on the other endpoint:
 		- if any of the curves is already marked visited, we have a closed face;
 		  convert the output curve list into an output face, clear the output face
