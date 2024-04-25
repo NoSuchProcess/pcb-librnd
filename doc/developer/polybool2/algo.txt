@@ -7,8 +7,8 @@ Def: canon: an unary operator on a single input polygon that resolves the
 Def: segment is a line or an arc
 Def: curve is an ordered list of segments with no intersection
 Def: face: a closed loop of curves (represented by an ordered list of
-     curve IDs)
-Def: clean face: a face that has no curve crossing its perimeter curves
+     curve IDs), without any curve crossing it; may embed other faces but
+     the curves of those faces may not touch the curves of the outer face
 Def: output tree [of faces]: a tree of faces; each node is a face with
      child nodes that are smaller faces fully within
 
