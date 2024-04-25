@@ -38,26 +38,25 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	3.1. choose an internal point of the face
 	3.2. face->inA := 1 or 0 depending on if the point is inside input polygon A
 	3.3. face->inB := 1 or 0 depending on if the point is inisde input polygon B
-
-4. compute polarity of faces: for each face compute face->out from
-   face->inA and face->inB, depending on the operator, as:
+	3.4. compute polarity of faces: for each face compute face->out from
+       face->inA and face->inB, depending on the operator, as:
 		- A union B:     out = inA or inB
 		- A sub B:       out = inA and not inB
 		- A intersect B: out = inA and inB
 		- A xor B:       out = inA xor inB
 		- canon A:       out = inA
 
-5. figure which curves to keep: for each curve:
+4. figure which curves to keep: for each curve:
 	- if the curve has two adjacent faces, keep the curve the ->out of those
 	  two faces are not equal
 	- if the curve has only one adjacent face, keep the curve if the
 	  face's ->out is 1
 	Discarded curves are removed and freed.
 
-6. gather curves into output faces:
-	6.1. take a the leftmost/topmost curve and put it on an output curve list
+5. gather curves into output faces:
+	5.1. take a the leftmost/topmost curve and put it on an output curve list
 	     list, and mark the curve visited
-	6.2. check the adjacent curves on the other endpoint:
+	5.2. check the adjacent curves on the other endpoint:
 		- if any of the curves is already marked visited, we have a closed face;
 		  convert the output curve list into an output face, clear the output face
 		  and start over at 6.1.
@@ -67,32 +66,32 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 
 	The result is an unordered "list of output faces".
 
-7. stack output faces, building the output tree of faces:
-	7.0. create an output tree with the root node being an infinitely large
+6. stack output faces, building the output tree of faces:
+	6.0. create an output tree with the root node being an infinitely large
 	     negative face
-	7.1. take the largest remaining output face "off the list of output faces"
-	7.2. iterate over the existing tree to see whether the output face is
+	6.1. take the largest remaining output face "off the list of output faces"
+	6.2. iterate over the existing tree to see whether the output face is
 	     within any of the leaves
 		- if yes: insert the output face as a child face of that leaf face,
 		  with polarity being the inverse of the leaf face
 		- if not: the output face is a new root in the output tree with
 		  positive polarity
-	7.3. go back to 7.1. if "list of output faces" is not empty
+	6.3. go back to 7.1. if "list of output faces" is not empty
 
 	The result is the output tree.
 
 	(This is to figure the polarity of each output face)
 
-8. flatten the tree:
+7. flatten the tree:
 	Iterate over each face in the output tree; for positive faces create
 	a polygon island; for negative faces create a polygon hole within the
 	island previously created for the parent face.
 
-9. cleanup
-	9.1. optional: visit each output contour and look at each interesected 
+8. cleanup
+	8.1. optional: visit each output contour and look at each interesected 
 	     vertex; if the two segments on the two sides can be converted into
 	     a single segment (e.g. coaxial lines or arcs on the same circle), merge
 	     them to reduce the number of vertices
-	9.2. discard and free the output tree (created in 7.)
-	9.3. discard and free the list of output face (created in 6., should be empty by now)
-	9.4. free all curves and faces used
+	8.2. discard and free the output tree (created in 7.)
+	8.3. discard and free the list of output face (created in 6., should be empty by now)
+	8.4. free all curves and faces used
