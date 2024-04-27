@@ -39,7 +39,7 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 3. mark input polarity: for each face
 	3.1. choose an internal point of the face
 	3.2. face->inA := 1 or 0 depending on if the point is inside input polygon A
-	3.3. face->inB := 1 or 0 depending on if the point is inisde input polygon B
+	3.3. face->inB := 1 or 0 depending on if the point is inside input polygon B
 	3.4. compute polarity of faces: for each face compute face->out from
        face->inA and face->inB, depending on the operator, as:
 		- A union B:     out = inA or inB
