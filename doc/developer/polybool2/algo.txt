@@ -33,6 +33,8 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	        having a curve that's not part of any face; ignore such curves
 	- Note: for curves of faces, each curve should have a list of
 	        faces that use the curve (this is at most two faces per curve)
+	- Note: calculate the approximate area of each face to throw away the outer
+	        one that overlaps all
 
 3. mark input polarity: for each face
 	3.1. choose an internal point of the face
@@ -47,21 +49,13 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 		- canon A:       out = inA
 
 4. figure which curves to keep: for each curve:
-	- if the curve has two adjacent faces, mark the curve visited if the
+	- if the curve has two adjacent faces, mark the curve "pruned" if the
 	  ->out of those two faces are equal
-	- if the curve has only one adjacent face, mark the curve visited if
+	- if the curve has only one adjacent face, mark the curve "pruned" if
 	  face's ->out is 0 (not filled)
 
 5. gather curves into output faces:
-	5.1. take a non-visited curve and start an output face from it and mark it
-	     visited
-	5.2. check the adjacent curves on the other endpoint:
-		- if any of the curves is already marked visited, we have a closed face;
-		  convert the output curve list into an output face, clear the output face
-		  and start over at 6.1.
-		- ignore any curves that are already marked visited
-		- pick one of the remaining curves, append it to the outpt curve list
-		  and jump back to 6.2
+	Re-run step 2 but ignore curves marked "pruned".
 
 	The result is an unordered "list of output faces".
 
