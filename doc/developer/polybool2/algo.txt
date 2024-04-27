@@ -55,7 +55,9 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	  face's ->out is 0 (not filled)
 
 5. gather curves into output faces:
-	Re-run step 2 but ignore curves marked "pruned".
+	Re-run step 2 but ignore curves marked "pruned". This step can be skipped if
+	there was no pruning in step 4 (and the face list from step 2 can be used as
+	output faces).
 
 	The result is an unordered "list of output faces".
 
