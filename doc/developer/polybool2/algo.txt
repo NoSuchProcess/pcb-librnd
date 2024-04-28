@@ -69,8 +69,8 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	     within any of the leaves
 		- if yes: insert the output face as a child face of that leaf face,
 		  with polarity being the inverse of the leaf face
-		- if not: the output face is a new root in the output tree with
-		  positive polarity
+		- if not: when face->out==1 the output face is a new root in the
+		  output tree with positive polarity otherwise discard it
 	6.3. go back to 7.1. if "list of output faces" is not empty
 
 	The result is the output tree.
