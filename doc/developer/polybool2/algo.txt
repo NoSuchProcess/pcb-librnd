@@ -65,12 +65,14 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	6.0. create an output tree with the root node being an infinitely large
 	     negative face
 	6.1. take the largest remaining output face "off the list of output faces"
-	6.2. iterate over the existing tree to see whether the output face is
-	     within any of the leaves
+	6.2. check whether the output face is within any of the leaves
 		- if yes: insert the output face as a child face of that leaf face,
 		  with polarity being the inverse of the leaf face
 		- if not: when face->out==1 the output face is a new root in the
 		  output tree with positive polarity otherwise discard it
+		Note: since there are no intersections, this is real cheap: start a ray
+		      from any point of the face and pick the first face it hits in odd
+		      number of times
 	6.3. go back to 7.1. if "list of output faces" is not empty
 
 	The result is the output tree.
