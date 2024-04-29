@@ -2,10 +2,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" width="1824.0000" height="1088.0000" viewBox="-2.0000 -2.0000 62.0000 39.0000">
 <g id="layer_3_top-fab" opacity="0.66">
 <!--normal-->
- <polygon points="20.0000,17.0000 17.0000,8.0000 14.0000,9.0000 14.0000,5.0000 23.0000,5.0000 23.0000,26.0000 14.0000,26.0000 14.0000,23.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
- <polygon points="8.0000,11.0000 14.0000,23.0000 14.0000,26.0000 5.0000,26.0000 5.0000,5.0000 14.0000,5.0000 14.0000,9.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
- <polygon points="49.0000,23.0000 46.0000,17.0000 46.0000,11.0000 43.0000,8.0000 43.0000,5.0000 52.0000,5.0000 52.0000,26.0000 43.0000,26.0000 43.0000,23.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
- <polygon points="37.0000,23.0000 43.0000,23.0000 43.0000,26.0000 34.0000,26.0000 34.0000,5.0000 43.0000,5.0000 43.0000,8.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="23.0000,5.0000 23.0000,26.0000 14.0000,26.0000 14.0000,23.0000 20.0000,17.0000 17.0000,8.0000 14.0000,9.0000 14.0000,5.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="14.0000,5.0000 14.0000,9.0000 8.0000,11.0000 14.0000,23.0000 14.0000,26.0000 5.0000,26.0000 5.0000,5.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="52.0000,5.0000 52.0000,26.0000 43.0000,26.0000 43.0000,23.0000 49.0000,23.0000 46.0000,17.0000 46.0000,11.0000 43.0000,8.0000 43.0000,5.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="43.0000,5.0000 43.0000,8.0000 37.0000,23.0000 43.0000,23.0000 43.0000,26.0000 34.0000,26.0000 34.0000,5.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
 </g>
 <g id="layer_4_top" opacity="0.66">
 <!--normal-->
@@ -18,6 +18,20 @@
  <line x1="19.6350" y1="12.3810" x2="19.6350" y2="12.6350" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="19.0000" y1="13.2700" x2="19.6350" y2="12.6350" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="19.0000" y1="13.2700" x2="19.6350" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="16.1778" y1="13.2700" x2="16.5080" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="16.0000" y1="13.0922" x2="16.1778" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="16.0000" y1="12.4318" x2="16.0000" y2="13.0922" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="16.0000" y1="12.4318" x2="16.1778" y2="12.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="16.1778" y1="12.2540" x2="16.5080" y2="12.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.0000" y1="16.6430" x2="11.1270" y2="16.7700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.0000" y1="15.8810" x2="11.0000" y2="16.6430" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.0000" y1="15.8810" x2="11.1270" y2="15.7540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.1270" y1="15.7540" x2="11.3810" y2="15.7540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.3810" y1="15.7540" x2="11.5080" y2="15.8810" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.5080" y1="15.8810" x2="11.5080" y2="16.6430" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.3810" y1="16.7700" x2="11.5080" y2="16.6430" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.1270" y1="16.7700" x2="11.3810" y2="16.7700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
+ <line x1="11.0000" y1="16.5160" x2="11.5080" y2="16.0080" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="18.0000" y1="19.3810" x2="18.1270" y2="19.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="18.1270" y1="19.2540" x2="18.3810" y2="19.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="18.3810" y1="19.2540" x2="18.5080" y2="19.3810" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
@@ -32,11 +46,6 @@
  <line x1="23.0000" y1="12.8890" x2="23.5080" y2="12.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="23.0000" y1="12.8890" x2="23.6350" y2="12.8890" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="23.5080" y1="12.2540" x2="23.5080" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="16.1778" y1="13.2700" x2="16.5080" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="16.0000" y1="13.0922" x2="16.1778" y2="13.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="16.0000" y1="12.4318" x2="16.0000" y2="13.0922" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="16.0000" y1="12.4318" x2="16.1778" y2="12.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="16.1778" y1="12.2540" x2="16.5080" y2="12.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="16.1270" y1="18.2540" x2="16.1270" y2="19.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="16.4572" y1="18.2540" x2="16.6350" y2="18.4318" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="16.6350" y1="18.4318" x2="16.6350" y2="19.0922" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
@@ -143,6 +152,25 @@
  <line x1="44.1270" y1="23.7620" x2="44.5080" y2="23.7620" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
 </g>
 <g id="layer_5_top" opacity="0.66">
+<!--normal-->
+ <line x1="8.0000" y1="11.5000" x2="8.0000" y2="10.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="7.5000" y1="11.0000" x2="8.5000" y2="11.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="17.0000" y1="8.5000" x2="17.0000" y2="7.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="16.5000" y1="8.0000" x2="17.5000" y2="8.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="17.0000" y1="14.5000" x2="17.0000" y2="13.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="16.5000" y1="14.0000" x2="17.5000" y2="14.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="17.0000" y1="17.5000" x2="17.0000" y2="16.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="16.5000" y1="17.0000" x2="17.5000" y2="17.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="37.0000" y1="23.5000" x2="37.0000" y2="22.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="36.5000" y1="23.0000" x2="37.5000" y2="23.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="40.0000" y1="23.5000" x2="40.0000" y2="22.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="43.0000" y1="8.5000" x2="43.0000" y2="7.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="42.5000" y1="8.0000" x2="43.5000" y2="8.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="46.0000" y1="14.5000" x2="46.0000" y2="13.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="45.5000" y1="14.0000" x2="46.5000" y2="14.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="39.5000" y1="23.0000" x2="40.5000" y2="23.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="49.0000" y1="23.5000" x2="49.0000" y2="22.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="48.5000" y1="23.0000" x2="49.5000" y2="23.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
 </g>
 <g id="layer_6_top" opacity="0.66">
 </g>
