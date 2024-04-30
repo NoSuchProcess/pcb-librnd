@@ -473,16 +473,8 @@ ha:pcb-rnd-board-v8 {
           thickness = 0.1mm
           rot = 0.000000
          }
-         ha:text.1249 {
-          string=14; x=20.0mm; y=57.0mm; scale=100; fid=0;
-          ha:flags {
-           clearline=1
-          }
-          thickness = 0.1mm
-          rot = 0.000000
-         }
          ha:text.1250 {
-          string=15; x=24.0mm; y=56.0mm; scale=100; fid=0;
+          string=15; x=23.0mm; y=52.0mm; scale=100; fid=0;
           ha:flags {
            clearline=1
           }
@@ -498,7 +490,7 @@ ha:pcb-rnd-board-v8 {
           rot = 0.000000
          }
          ha:text.1252 {
-          string=17; x=37.0mm; y=50.0mm; scale=100; fid=0;
+          string=17; x=36.0mm; y=51.0mm; scale=100; fid=0;
           ha:flags {
            clearline=1
           }
