@@ -55,8 +55,8 @@ The algorithm casts an infinite horizontal ray from RP to the right and
 counts how many edge segments of the polygon it would hit if it was cast
 from VP.
 <p>
-[step 1] Set up a counter CNT with initial value 0. Take each contour segment SEG the
-ray intersects and:
+[step 1] Set up a counter CNT with initial value 0. In arbitrary order take
+each contour segment SEG the ray intersects and:
 <ul>
 	<li> if SEG is horizontal, ignore it
 	<li> otherwise if Ry matches one of the SEG's endpoint y coords, and
