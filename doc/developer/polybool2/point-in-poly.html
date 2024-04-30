@@ -1,0 +1,171 @@
+<html>
+<body>
+<h1> Reliable point-in-polygon test </h1>
+
+<h2> the input </h2>
+<p>
+Input is a contour based description of a multi-island polygon and polygon
+holes and a virtual point (VP), all in 2d space with integer points. The
+virtual point is infinitely close, but is to the left of RP, which is
+a point specified by integer coordinates RPx and RPy.
+
+<h2> Helper function: v-test </h2>
+<p>
+Given a vertex V in a polygon contour the v-test function returns an integer
+score. First the two closest vertices on the contour (to the left and right)
+with y coordinate different from the styarting vertex are located. These
+are called L and R, their y coordinates are Ly and Ry while the input vertex's
+y coordinate is Vy.
+<p>
+V, as a vertex, will be found by a search ray hitting a segment (called SEG)
+at the endpoint of that segment. One of the adjacent segments (called ASEG)
+on the contour shares the same V as its endpoint.
+<p>
+If both SEG and ASEG are horizontal, return 0.
+<p>
+If both Ly &gt; Vy and Ry &gt; Vy, return 0.
+<p>
+If both Ly &lt; Vy and Ry &lt; Vy, return 0.
+<p>
+If either SEG is horizontal return 0, else return 2.
+
+<p>
+<center>
+<img src="v-test.svg" width="800px">
+<br>
+Figure 1. v-test examples.
+</center>
+<p>
+For example on Figure 1, v-test for vertex A, B, C, D, E and F will
+return 0 because the closest Ry and Ly, skipping over horizontal segments,
+are either both higher or both lower than the y in the vertex point.
+<p>
+At G, H, J, K, Q and R v-test returns 2 because neither of the direct
+adjacent segment is horizontal while Ry is on the oppposite side of the
+starting vertex compared to Ly.
+<p>
+At L, M, N and P v-test returns either 1 (horizontal segment queried) or
+2 (sloped segment queried) because Ly-Ry opoosite side is true but
+one of the immediate adjacent segments is horizontal.
+
+
+<h2> the algorithm </h2>
+<p>
+The algorithm casts an infinite horizontal ray from RP to the right and
+counts how many edge segments of the polygon it would hit if it was cast
+from VP.
+<p>
+[step 1] Set up a counter CNT with initial value 0. Take each contour segment SEG the
+ray intersects and:
+<ul>
+	<li> if SEG is horizontal, ignore it
+	<li> otherwise if Ry matches one of the SEG's endpoint y coords, and
+	     that endpoint's x is &gt;= RPx: increase CNT by v-test result at that
+	     endpoint
+	<li> otherwise if the ray crosses SEG in the middle (which also means the
+	     x coordinate of this crossing point is &gt;= RPx) increase CNT by 4.
+</ul>
+<p>
+Note: orientation of SEG or whether it's a polygon hole or outer contour
+does not matter; it is assumed there are no overlapping segments or odd stubs
+and there are no zero length segments. There are no open loops in the input.
+<p>
+[step 2] Divide CNT by 2.
+<p>
+[step 3] If VP is on a horizontal segment with a non-zero v-test on endpoints
+and is not on the left endpoint of the segment, increase CNT by 1.
+<p>
+[step 4] If the resulting CNT value is odd, increase it by one.
+<p>
+[step 5] Divide CNT by 2 again. If the new CNT value is:
+<p>
+[step 6] Result:
+<ul>
+	<li> odd:  VP is inside  the filled area of the input polygon
+	<li> even: VP is outside the filled area of the input polygon
+</ul>
+<p>
+Note: in practice this test is ran on a rightmost point of a polybool2 face
+contour; if input polygon has a point or edge at that point, VP is a fraction
+of integer left of that edge or point.
+<p>
+Note: value 0 is considered an even number.
+
+<h2> Examples </h2>
+<p>
+On the figure below, the integer coordinate grid is drawn with thin black lines
+and an input polygon with a single hole is drawn in red. Straight line segments
+making up the outer contours and hole contours are labeled with green integers.
+Test RPs are marked with blue crosses and are labelled from A..J.
+<p>
+<center>
+<img src="point-in-poly.svg" width="800px">
+<br>
+Figure 2. point-in-poly tests
+</center>
+<p>
+From RP 'A' the ray crosses the endpoints of segments 0 and 1, each increasing
+CNT by two. Then the ray is crossing edge 2 in the middle adding four to CNT,
+then crossing edge 4 in the middle addong another four to CNT. CNT is 2+2+4+4=12
+at the end. Half of CNT is 6, which is even already. Half of 6 is 3, and
+since 3 is odd, VP (the point very close to but left of RP) is inside the
+red polygon.
+<p>
+From RP 'B': first the ray hits the shared endpoint of 1 and then
+the endpoint of 2, but "v-test" returns 0 on both cases since the adjacent
+edges, 1 and 2, are both going downward Thus CNT is not
+increased. The the ray hits 4's midpoint and increased by 4. At the end
+CNT=0+0+4, half CNT is 2 (even), half of that is 1 (odd), thus VP is inside.
+<p>
+From RP 'C': hits midpoint 2 (CNT+=4) then midpoint 4 (CNT+=4); Final CNT is
+8, half of it is 4, half of that is even: VP is outside (as it is sitting in
+a hole).
+<p>
+From RP 'D': hits 2 and 3 (CNT+=2+2) then midpoint 4 (CNT+=4); Final CNT is
+8, half of it is 4, half of that is even: VP is outside (as it is sitting
+in a hole).
+<p>
+From RP 'F': CNT=4+4=8; 8/2=4; 4/2 is even, it's outside (sitting in a hole).
+<p>
+From RP 'G': left side of 9 adds 0 to CNT, 5 adds 0, right side of 9 adds 0, 8
+adds 0 (because both 5 and 8 go upward), then crossing 10 in the middle
+adds 4 CNT=0+0+0+0+4=4. CNT/2 is
+2, which is even. Divide 2 by 2, result is 1, which is odd: result is inside.
+<p>
+From 'H': 9, 8 and 10; CNT=0+0+4=4; even: 4/2 is
+2, add one because of [step 3]: 3 which is odd so add one (in [step 4]).
+4/2 is 2, which is even so H is outside (inside the hole, the bottom contour of
+the hole is considered to be part of the hole.
+<p>
+From 'J': 9's x2, 8, 10; same result as H.
+<p>
+From 'K': 11 adds 4; 15, 16 (twice) and 17 add 0 because of both 15 and 16
+going down; 19 and 20 add 4 each. CNT=4+0+0+0+0+4+4=12; 12/2=6; 6/2=3; odd so
+inside.
+<p>
+From 'L', 'M', 'N', 'P' and 'Q': same as 'K' without 11; CNT=4+4=8; 8/2=4
+which is even; 4/2=2 which is even so these are outside (all are within
+the hole).
+<p>
+From 'R': 20 adds 4; 4/2=2; 2/2=1, odd = inside.
+<p>
+From 'S': CNT=0; 0/2=0; 0/2=0; 0 is considered even so VP at S is outside.
+<p>
+From 'T': 11 adds 4, 12 adds 2, 13 adds 2*0, 15 adds 2, 20 adds 4.
+CNT=4+2+2+4=12; 12/2=6; 6/2=3; odd means inside
+<p>
+From 'U': same as T without 11's 4: CNT=2+2+4=8; 8/2=4; 4/2=2; even so outside
+<p>
+From 'V': same as U
+<p>
+From 'X': 15 adds 2, 20 adds 4; CNT=2+4=6; 6/2=3; add one for [step 3]; 4/2=2;
+even means outside (X is considered to be in the hole).
+<p>
+From 'Y': same as X
+
+
+
+
+
+
+
