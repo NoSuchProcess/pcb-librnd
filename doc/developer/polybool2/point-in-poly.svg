@@ -7,7 +7,7 @@
  <polygon points="49.0000,23.0000 46.0000,17.0000 46.0000,11.0000 43.0000,8.0000 43.0000,5.0000 52.0000,5.0000 52.0000,26.0000 43.0000,26.0000 43.0000,23.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
  <polygon points="37.0000,23.0000 43.0000,23.0000 43.0000,26.0000 34.0000,26.0000 34.0000,5.0000 43.0000,5.0000 43.0000,8.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
  <polygon points="35.0000,49.0000 38.0000,52.0000 44.0000,52.0000 47.0000,43.0000 27.5000,43.0000 27.5000,40.0000 50.0000,40.0000 50.0000,61.0000 27.5000,61.0000 27.5000,49.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
- <polygon points="8.0000,43.0000 11.0000,58.0000 14.0000,55.0000 20.0000,55.0000 23.0000,58.0000 26.0000,49.0000 27.5000,49.0000 27.5000,61.0000 5.0000,61.0000 5.0000,40.0000 27.5000,40.0000 27.5000,43.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
+ <polygon points="8.0000,43.0000 11.0000,58.0000 14.0000,55.0000 20.0000,55.0000 26.0000,49.0000 27.5000,49.0000 27.5000,61.0000 5.0000,61.0000 5.0000,40.0000 27.5000,40.0000 27.5000,43.0000 " stroke-width="0.010" stroke="#ff0000" fill="#ff0000"/>
 </g>
 <g id="layer_4_top" opacity="0.66">
 <!--normal-->
@@ -177,9 +177,6 @@
  <line x1="20.0000" y1="53.2540" x2="20.2540" y2="53.7620" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="20.2540" y1="53.7620" x2="20.5080" y2="53.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="20.2540" y1="53.7620" x2="20.2540" y2="54.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="23.0000" y1="53.2540" x2="23.6350" y2="53.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="23.0000" y1="54.2700" x2="23.6350" y2="53.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
- <line x1="23.0000" y1="54.2700" x2="23.6350" y2="54.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="52.0000" y1="15.4572" x2="52.2032" y2="15.2540" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="52.2032" y1="15.2540" x2="52.2032" y2="16.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
  <line x1="52.0000" y1="16.2700" x2="52.3810" y2="16.2700" stroke-width="0.1000" stroke="#00ff00" stroke-linecap="round"/>
@@ -338,11 +335,9 @@
  <line x1="14.0000" y1="55.5000" x2="14.0000" y2="54.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="13.5000" y1="55.0000" x2="14.5000" y2="55.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="17.0000" y1="55.5000" x2="17.0000" y2="54.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
- <line x1="20.0000" y1="55.5000" x2="20.0000" y2="54.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="19.5000" y1="55.0000" x2="20.5000" y2="55.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
- <line x1="23.0000" y1="55.5000" x2="23.0000" y2="54.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
- <line x1="22.5000" y1="55.0000" x2="23.5000" y2="55.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="23.0000" y1="49.5000" x2="23.0000" y2="48.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
+ <line x1="20.0000" y1="55.5000" x2="20.0000" y2="54.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="22.5000" y1="49.0000" x2="23.5000" y2="49.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="26.0000" y1="49.5000" x2="26.0000" y2="48.5000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>
  <line x1="25.5000" y1="49.0000" x2="26.5000" y2="49.0000" stroke-width="0.2540" stroke="#0000ff" stroke-linecap="round"/>

@@ -267,7 +267,6 @@ ha:pcb-rnd-board-v8 {
             { 11.0mm; 58.0mm }
             { 14.0mm; 55.0mm }
             { 20.0mm; 55.0mm }
-            { 23.0mm; 58.0mm }
             { 26.0mm; 49.0mm }
             { 35.0mm; 49.0mm }
             { 38.0mm; 52.0mm }
@@ -634,14 +633,6 @@ ha:pcb-rnd-board-v8 {
           thickness = 0.1mm
           rot = 0.000000
          }
-         ha:text.1269 {
-          string=Z; x=23.0mm; y=53.0mm; scale=100; fid=0;
-          ha:flags {
-           clearline=1
-          }
-          thickness = 0.1mm
-          rot = 0.000000
-         }
         }
         color = {#00ff00}
       }
@@ -816,18 +807,6 @@ ha:pcb-rnd-board-v8 {
          }
          ha:line.1168 {
           x1=19.5mm; y1=55.0mm; x2=20.5mm; y2=55.0mm; thickness=10.0mil; clearance=24.0mil;
-          ha:flags {
-           clearline=1
-          }
-         }
-         ha:line.1171 {
-          x1=23.0mm; y1=55.5mm; x2=23.0mm; y2=54.5mm; thickness=10.0mil; clearance=24.0mil;
-          ha:flags {
-           clearline=1
-          }
-         }
-         ha:line.1174 {
-          x1=22.5mm; y1=55.0mm; x2=23.5mm; y2=55.0mm; thickness=10.0mil; clearance=24.0mil;
           ha:flags {
            clearline=1
           }
