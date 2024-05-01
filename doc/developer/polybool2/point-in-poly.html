@@ -8,6 +8,10 @@ Input is a contour based description of a multi-island polygon and polygon
 holes and a virtual point (VP), all in 2d space with integer points. The
 virtual point is infinitely close, but is to the left of RP, which is
 a point specified by integer coordinates RPx and RPy.
+<p>
+More specifically, some tweaks are included to make sure the result is
+correct when ran on a rightmost vertex of an island, in the sense that
+the VP is always assumed to be within the island.
 
 <h2> Helper function: v-test </h2>
 <p>
@@ -71,10 +75,13 @@ Note: orientation of SEG or whether it's a polygon hole or outer contour
 does not matter; it is assumed there are no overlapping segments or odd stubs
 and there are no zero length segments. There are no open loops in the input.
 <p>
-[step 2] Divide CNT by 2.
+[step 2] Divide CNT by 2. If VP is on an enpoint-pair that was scored 0
+by the v-test because of being both-down or both-up, increase CNT by 1.
+(This is a tweak assuming the query is on a right-most vertex.)
 <p>
-[step 3] If VP is on a horizontal segment and is not on the left
-endpoint of the segment, increase CNT by 1.
+[step 3] If step 2 did not increase CNT: if VP is on a horizontal segment
+and is not on the left endpoint of the segment, increase CNT by 1.
+(This is a tweak assuming the query is on a right-most vertex.)
 <p>
 [step 4] If the resulting CNT value is odd, increase it by one.
 <p>
