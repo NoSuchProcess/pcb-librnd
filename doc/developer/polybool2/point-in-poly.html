@@ -21,14 +21,15 @@ V, as a vertex, will be found by a search ray hitting a segment (called SEG)
 at the endpoint of that segment. One of the adjacent segments (called ASEG)
 on the contour shares the same V as its endpoint.
 <p>
+If SEG is horizontal return 0.
+<p>
 If both SEG and ASEG are horizontal, return 0.
 <p>
 If both Ly &gt; Vy and Ry &gt; Vy, return 0.
 <p>
 If both Ly &lt; Vy and Ry &lt; Vy, return 0.
 <p>
-If SEG is horizontal return 0, else return 2.
-
+Return 2.
 <p>
 <center>
 <img src="v-test.svg" width="800px">
