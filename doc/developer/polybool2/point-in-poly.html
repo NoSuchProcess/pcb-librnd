@@ -73,8 +73,8 @@ and there are no zero length segments. There are no open loops in the input.
 <p>
 [step 2] Divide CNT by 2.
 <p>
-[step 3] If VP is on a horizontal segment with a non-zero v-test on endpoints
-and is not on the left endpoint of the segment, increase CNT by 1.
+[step 3] If VP is on a horizontal segment and is not on the left
+endpoint of the segment, increase CNT by 1.
 <p>
 [step 4] If the resulting CNT value is odd, increase it by one.
 <p>
@@ -144,9 +144,15 @@ From 'K': 11 adds 4; 15, 16 (twice) and 17 add 0 because of both 15 and 16
 going down; 19 and 20 add 4 each. CNT=4+0+0+0+0+4+4=12; 12/2=6; 6/2=3; odd so
 inside.
 <p>
-From 'L', 'M', 'N', 'P' and 'Q': same as 'K' without 11; CNT=4+4=8; 8/2=4
+From 'L', 'M' and 'Q': same as 'K' without 11; CNT=4+4=8; 8/2=4
 which is even; 4/2=2 which is even so these are outside (all are within
 the hole).
+<p>
+From 'N' and 'P' it's almost the same as from 'L', except step 3 adds one
+which makes 'N' and 'P' look like they are inside the filled area; in other
+words this horizontal edge is taken as part of the solid, not part of the hole.
+Note: in practice this is not a problem because the query is ran on a rightmost
+corner in which case this bug is not triggered even with a horizontal line.
 <p>
 From 'R': 20 adds 4; 4/2=2; 2/2=1, odd = inside.
 <p>
