@@ -2,56 +2,17 @@
 <body>
 <h1> Reliable point-in-polygon test </h1>
 
-<h2> the input </h2>
+<h2> Input and output </h2>
 <p>
-Input is a contour based description of a multi-island polygon and polygon
-holes and a virtual point (VP), all in 2d space with integer points. The
-virtual point is infinitely close, but is to the left of RP, which is
-a point specified by integer coordinates RPx and RPy.
+Input is a contour based description of a multi-island polygon with holes
+and a virtual point (VP), all in 2d space with integer coordinates. The
+virtual point is infinitely close, but is shifted a tiny bit left and up
+or down from RP; RP is a point specified by integer coordinates RPx and
+RPy. The location of VP relative to RP is specified by an input direction
+vector, whose scale is ignored but angle is used.
 <p>
-More specifically, some tweaks are included to make sure the result is
-correct when ran on a rightmost vertex of an island, in the sense that
-the VP is always assumed to be within the island.
-
-<h2> Helper function: v-test </h2>
-<p>
-Given a vertex V in a polygon contour the v-test function returns an integer
-score. First the two closest vertices on the contour (to the left and right)
-with y coordinate different from the starting vertex are located. These
-are called L and R, their y coordinates are Ly and Ry while the input vertex's
-y coordinate is Vy.
-<p>
-V, as a vertex, will be found by a search ray hitting a segment (called SEG)
-at the endpoint of that segment. One of the adjacent segments (called ASEG)
-on the contour shares the same V as its endpoint.
-<p>
-If SEG is horizontal return 0.
-<p>
-If both SEG and ASEG are horizontal, return 0.
-<p>
-If both Ly &gt; Vy and Ry &gt; Vy, return 0.
-<p>
-If both Ly &lt; Vy and Ry &lt; Vy, return 0.
-<p>
-Return 2.
-<p>
-<center>
-<img src="v-test.svg" width="800px">
-<br>
-Figure 1. v-test examples.
-</center>
-<p>
-For example on Figure 1, v-test for vertex A, B, C, D, E and F will
-return 0 because the closest Ry and Ly, skipping over horizontal segments,
-are either both higher or both lower than the y in the vertex point.
-<p>
-At G, H, J, K, Q and R v-test returns 2 because neither of the direct
-adjacent segment is horizontal while Ry is on the oppposite side of the
-starting vertex compared to Ly.
-<p>
-At L, M, N and P v-test returns either 1 (horizontal segment queried) or
-2 (sloped segment queried) because Ly-Ry opoosite side is true but
-one of the immediate adjacent segments is horizontal.
+The output is a boolean value that is true if VP is in a solid ("filled")
+portion of the input polygon.
 
 
 <h2> the algorithm </h2>
@@ -60,42 +21,40 @@ The algorithm casts an infinite horizontal ray from RP to the right and
 counts how many edge segments of the polygon it would hit if it was cast
 from VP.
 <p>
-[step 1] Set up a counter CNT with initial value 0. In arbitrary order take
+Set up a counter CNT with initial value 0. In arbitrary order take
 each contour segment SEG the ray intersects and:
 <ul>
-	<li> if SEG is horizontal, ignore it
-	<li> otherwise if Ry matches one of the SEG's endpoint y coords, and
-	     that endpoint's x is &gt;= RPx: increase CNT by v-test result at that
-	     endpoint
-	<li> otherwise if the ray crosses SEG in the middle (which also means the
-	     x coordinate of this crossing point is &gt;= RPx) increase CNT by 4.
+	<li> [H1] if SEG is horizontal, ignore it
+	<li> [H2] otherwise if RP matches one of the SEG's endpoint:
+		<Ul>
+			<li> [H2.1] compute dy, the difference of y component the other
+			     endpoint if SEG (that's not RP) and RP; if dy's sign is not
+			     equal to the y component of the direction vector, skip this SEG
+			<li> [H2.2] take an infinite line L that SEG is part of, then check
+			     which side of L the direction vector's far end falls on; if
+			     it's the left side of L, increase CNT by 1 (else ignore the SEG).
+		</ul>
+	<li> [H3] otherwise if the ray crosses SEG in the middle (which also means the
+	     x coordinate of this crossing point is &gt;= RPx) increase CNT by 1.
+	<li> [H4] otherwise ignore the SEG
 </ul>
 <p>
 Note: orientation of SEG or whether it's a polygon hole or outer contour
 does not matter; it is assumed there are no overlapping segments or odd stubs
 and there are no zero length segments. There are no open loops in the input.
 <p>
-[step 2] Divide CNT by 2. If VP is on an enpoint-pair that was scored 0
-by the v-test because of being both-down or both-up, increase CNT by 1.
-(This is a tweak assuming the query is on a right-most vertex.)
+Note: the ray is travelling on a non-integer y coordinate (topologically
+speaking) so it never actually hits a vertex, only SEGs, sometimes very close
+to their endpoints.
 <p>
-[step 3] If step 2 did not increase CNT: if VP is on a horizontal segment
-and is not on the left endpoint of the segment, increase CNT by 1.
-(This is a tweak assuming the query is on a right-most vertex.)
-<p>
-[step 4] If the resulting CNT value is odd, increase it by one.
-<p>
-[step 5] Divide CNT by 2 again. If the new CNT value is:
-<p>
-[step 6] Result:
+After dealing with all intersection the result is:
 <ul>
-	<li> odd:  VP is inside  the filled area of the input polygon
-	<li> even: VP is outside the filled area of the input polygon
+	<li> CNT is odd:  VP is inside  the filled area of the input polygon
+	<li> CNT is even: VP is outside the filled area of the input polygon
 </ul>
 <p>
 Note: in practice this test is ran on a rightmost point of a polybool2 face
-contour; if input polygon has a point or edge at that point, VP is a fraction
-of integer left of that edge or point.
+contour with a direction vector pointing inside the face.
 <p>
 Note: value 0 is considered an even number.
 
@@ -112,74 +71,112 @@ Test RPs are marked with blue crosses and are labelled from A..J.
 Figure 2. point-in-poly tests
 </center>
 <p>
-From RP 'A' the ray crosses the endpoints of segments 0 and 1, each increasing
-CNT by two. Then the ray is crossing edge 2 in the middle adding four to CNT,
-then crossing edge 4 in the middle addong another four to CNT. CNT is 2+2+4+4=12
-at the end. Half of CNT is 6, which is even already. Half of 6 is 3, and
-since 3 is odd, VP (the point very close to but left of RP) is inside the
-red polygon.
+From RP 'A', with a direction vector pointing up-left 45 degrees:
+RP falls on the endpoint of segment 0 and 1. Segment 0 is ignored
+because of [H2.1] (segment going down from RP, direction pointing up). 
+Segment 1 increases CNT because of [H2.2] as the end of the upward pointing
+direction vector is left of it. Then the ray is crossing edges 2 and 4 in the
+middle, each increasing CNT because of [H3]. CNT is 0+1+1+1=3 at the end.
+3 is odd, VP (the point very close to but up-left of 'A') is inside the
+solid of the red polygon.
 <p>
-From RP 'B': first the ray hits the shared endpoint of 1 and then
-the endpoint of 2, but "v-test" returns 0 on both cases since the adjacent
-edges, 1 and 2, are both going downward Thus CNT is not
-increased. The the ray hits 4's midpoint and increased by 4. At the end
-CNT=0+0+4, half CNT is 2 (even), half of that is 1 (odd), thus VP is inside.
+From RP 'B' with a direction vector pointing up-left 45 degrees:
+RP is at the shared endpoint of 1 and 2. They are both ignored
+because of [H2.1]: (SEGs are pointing downward, dir vector upward). Then
+the ray crosses 4 in the middle so CNT is increased according to [H3].
+CNT is 0+0+1=1 at the end. 1 is odd, VP (the point very close to but up-left of 'B')
+is inside the solid of the red polygon.
 <p>
-From RP 'C': hits midpoint 2 (CNT+=4) then midpoint 4 (CNT+=4); Final CNT is
-8, half of it is 4, half of that is even: VP is outside (as it is sitting in
-a hole).
+From RP 'B' with a direction vector pointing down-left 45 degrees:
+<ul>
+	<li> seg 1: [H2.2]; ignored because it is left of the dir vector's end
+	<li> seg 2: [H2.2]; CNT++ because it is right of the dir vector's end
+	<li> seg 4: [H3]; CNT++ for middle crossing
+</ul>
 <p>
-From RP 'D': hits 2 and 3 (CNT+=2+2) then midpoint 4 (CNT+=4); Final CNT is
-8, half of it is 4, half of that is even: VP is outside (as it is sitting
-in a hole).
+Resulting CNT is 2, even: VP down-left of 'B' is outside of the solid red
+(sitting in the hole).
 <p>
-From RP 'F': CNT=4+4=8; 8/2=4; 4/2 is even, it's outside (sitting in a hole).
+From RP 'C' dir pointing left-up or left-down: RP is not on any vertex; ray hits
+midpoint 2 (CNT++) then midpoint 4 (CNT++); Final CNT is 2 which is even: VP
+is outside (as it is sitting in a hole).
 <p>
-From RP 'G': left side of 9 adds 0 to CNT, 5 adds 0, right side of 9 adds 0, 8
-adds 0 (because both 5 and 8 go upward), then crossing 10 in the middle
-adds 4 CNT=0+0+0+0+4=4. CNT/2 is
-2, which is even. Divide 2 by 2, result is 1, which is odd: result is inside.
+From RP 'D' dir pointing left-up:
+<ul>
+	<li> RP is not on any vertex
+	<li> seg 2: [H3]; ray crossing a tiny bit above the lower endpoint; CNT++
+	<li> seg 3: [H4]; ray misses the upper endpoint of the seg, going a tiny bit above
+	<li> seg 4: [H3]; clean middle crossing, CNT++.
+</ul>
 <p>
-From 'H': 9, 8 and 10; CNT=0+0+4=4; even: 4/2 is
-2, add one because of [step 3]: 3 which is odd so add one (in [step 4]).
-4/2 is 2, which is even so H is outside (inside the hole, the bottom contour of
-the hole is considered to be part of the hole.
+Resulting CNT is 2, even: VP left-up of 'D' is outside of the solid red
+(sitting in the hole).
 <p>
-From 'J': 9's x2, 8, 10; same result as H.
+From RP 'D' dir pointing left-down: same as the previous example, except
+seg 2 is ignored and seg 3 is intersected because the ray is now a tiny
+bit under their shared vertex. Same result.
 <p>
-From 'K': 11 adds 4; 15, 16 (twice) and 17 add 0 because of both 15 and 16
-going down; 19 and 20 add 4 each. CNT=4+0+0+0+0+4+4=12; 12/2=6; 6/2=3; odd so
-inside.
+From RP 'F', dir left-up or left-down: RP is not on a vertex; normal
+[H3] mid-crossing for seg 7 and 10; resulting CNT is 2, even, VP is outside
+(sitting in the hole on the left side of seg 7).
 <p>
-From 'L', 'M' and 'Q': same as 'K' without 11; CNT=4+4=8; 8/2=4
-which is even; 4/2=2 which is even so these are outside (all are within
-the hole).
+From RP 'G' dir pointing up-left:
+<ul>
+	<li> seg 9: [H1]; ignored because it is horizontal
+	<li> seg 5: [H2.2]; both dir and seg going upward from RP, dir's endpoint is left of segment; CNT++
+	<li> seg 8: [H3]; CNT++ for middle crossing (a tiny bit above the lower endpoint)
+	<li> seg 10: [H3]; CNT++ for middle crossing
+</ul>
 <p>
-From 'N' and 'P' it's almost the same as from 'L', except step 3 adds one
-which makes 'N' and 'P' look like they are inside the filled area; in other
-words this horizontal edge is taken as part of the solid, not part of the hole.
-Note: in practice this is not a problem because the query is ran on a rightmost
-corner in which case this bug is not triggered even with a horizontal line.
+Resulting CNT is 3, VP is in solid red.
 <p>
-From 'R': 20 adds 4; 4/2=2; 2/2=1, odd = inside.
+From RP 'H' dir pointing up-left:
+<ul>
+	<li> seg 9: [H1]; ignored because it is horizontal
+	<li> seg 8: [H3]; CNT++ for middle crossing (a tiny bit above the lower endpoint)
+	<li> seg 10: [H3]; CNT++ for middle crossing
+</ul>
 <p>
-From 'S': CNT=0; 0/2=0; 0/2=0; 0 is considered even so VP at S is outside.
-<p>
-From 'T': 11 adds 4, 12 adds 2, 13 adds 2*0, 15 adds 2, 20 adds 4.
-CNT=4+2+2+4=12; 12/2=6; 6/2=3; odd means inside
-<p>
-From 'U': same as T without 11's 4: CNT=2+2+4=8; 8/2=4; 4/2=2; even so outside
-<p>
-From 'V': same as U
-<p>
-From 'X': 15 adds 2, 20 adds 4; CNT=2+4=6; 6/2=3; add one for [step 3]; 4/2=2;
-even means outside (X is considered to be in the hole).
-<p>
-From 'Y': same as X
+Resulting CNT is 2, VP is outside (sitting in the hole above H)
 
-
-
-
-
-
-
+<p>
+From RP 'J' dir pointing up-left 45 degree:
+<ul>
+	<li> seg 9: [H1]; ignored because it is horizontal
+	<li> seg 8: [H2.2]; dir and seg both upward, dir's end being left of the seg: CNT++
+	<li> seg 10: [H3]; CNT++ for middle crossing
+</ul>
+<p>
+Resulting CNT is 2, VP is outside (sitting in the hole above J, left of 8)
+<p>
+From RP 'J' dir pointing up-left 1 degree (almost vertical):
+same as the previous example, except seg 8 is ignored because the dir
+endpoint is on the right side of it so the final CNT is 1 and the result is
+"inside the red solid": VP is above J, between seg 8 and the vertical black
+grid line crossing J, close to the grid line.
+<p>
+From RP 'K' dir pointing up-left or down-left: RP is not on vertex;
+16 is ignored ([H1] horizontal). [H3] middle crossing for 11, 19 and 20; 
+resulting CNT is 3, odd, VP is inside the red solid.
+<p>
+From RP 'L' left-up or left down: same, except the ray is not hitting 11
+so the resulting CNT is 2, even, VP is outside the red solid.
+<p>
+From RP 'M' left-up:
+<ul>
+	<li> [H2.1] ignore 15
+	<li> [H1] ignore 16
+	<li> [H3] middle cross 19 and 20
+<ul>
+<p> Resulting CNT is 2 (outside)
+<p>
+From RP 'M' left-down near-vertical:
+<ul>
+	<li> [H2.2] ignore 15 (dir is right of)
+	<li> [H1] ignore 16
+	<li> [H3] middle cross 17, 19 and 20
+<ul>
+<p> Resulting CNT is 3 (inside)
+<p>
+The reset of the points are marked and labelled to serve as an exercise
+for the reader.
