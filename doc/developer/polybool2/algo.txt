@@ -48,6 +48,13 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 		- A xor B:       out = inA xor inB
 		- canon A:       out = inA
 
+	Note: in point 3.2. anmd 3.3. tests the search needs to use the new geometry
+	      created in step 1, not the original input vertices. The difference is
+	      that the new model may have some extra vertices that are integer-rounded
+	      changing the slope of some edges slightly so the "internal point"
+	      chosen using this model may not be an internal point in the original
+	      input.
+
 4. figure which curves to keep: for each curve:
 	- if the curve has two adjacent faces, mark the curve "pruned" if the
 	  ->out of those two faces are equal
