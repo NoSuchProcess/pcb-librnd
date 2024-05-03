@@ -14,7 +14,9 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 
 1. switch to topology
 	1.1. compute intersections of any two segments (using both A and B)
-	1.2. split segments at intersections
+	1.2. split segments at intersections; NOTE: intersection coords should be
+	     integer which means spliting a segment in the middle can change the
+	     slope of the two new segments and introduce new interscetions.
 	1.3. collect segments into curves between intersections
 	1.4. handle overlaps
 		1.4.1. map curves that are fully overlapping; their endpoints must match
