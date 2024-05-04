@@ -57,6 +57,10 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	      chosen using this model may not be an internal point in the original
 	      input.
 
+	Note: for point 3.2. anmd 3.3. the algorithm is specified in
+	      point-in-poly.html; the direction vector is taken to point inside the
+	      triangle at the bottom of the right-most face corners.
+
 4. figure which curves to keep: for each curve:
 	- if the curve has two adjacent faces, mark the curve "pruned" if the
 	  ->out of those two faces are equal
