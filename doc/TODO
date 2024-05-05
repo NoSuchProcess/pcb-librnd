@@ -5,6 +5,21 @@
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
+	- poltybool2:
+		- fixedh, fixedi, fixedj: warning on rtree size
+		- fixedk, gixedb3: assert
+		- fixedm, fixedq, fixedx3, gixed4, gixedg2: segf
+		- fixedo, fixedz: missing hole
+		- fixedz2: self-touching
+			- fixedy7, gixedf: false positive invalid?
+		- fixedy2 (easy to debug), fixedy, fixedy3, fixedy8, gixedk: broken hole
+			- fixedu: self isc hole (bowtie)
+			- fixedr: overlapping holes on out -> probably false positive from the checker
+		- gixed0, gixed1: step6 assert
+		- gixedb2o: infloop (NEW ISC)
+		- gixedg, gixedj: angle assert
+		- verify:
+			- gixed2 strange small spike
 	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
