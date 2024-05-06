@@ -7,8 +7,7 @@
 		- olap_spiral: buggy input not detected
 	- poltybool2:
 		- fixedh, fixedi, fixedj: warning on rtree size
-		- fixedk, gixedb3: assert
-		- gixed4 segf: C88: only one side face is found because no wrapping face is searched for
+		- gixed4, fixedk, gixedb3: assert
 		- fixedo, fixedz: missing hole
 		- fixedz2: self-touching
 			- fixedy7, gixedf, gixedq2: false positive invalid?
