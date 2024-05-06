@@ -12,9 +12,9 @@
 			- fixedr: overlapping holes on out -> probably false positive from the checker
 		- gixed0, gixed1, gixed4: step7 assert (parent polarity)
 		- gixedb2o, gixedm5: infloop (NEW ISC)
-		- gixedg, gixedj, gixedp: angle assert
-		- verify:
+		- not-really-bugs: strange intersections probably depending on order of intersection mapping
 			- gixed2 strange small spike
+			- gixedj hole too small
 	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
