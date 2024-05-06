@@ -7,7 +7,6 @@
 		- olap_spiral: buggy input not detected
 	- poltybool2:
 		- fixedh, fixedi, fixedj: warning on rtree size
-		- gixedb: step1 assert: not found
 		- fixedo, fixedz: missing hole
 		- fixedz2: self-touching
 			- fixedy7, gixedf, gixedq2: false positive invalid?
