@@ -37,6 +37,7 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	        faces that use the curve (this is at most two faces per curve)
 	- Note: calculate the approximate area of each face to throw away the outer
 	        one that overlaps all
+	- Note: throw away curves that do not have at least one face associated
 
 3. mark input polarity: for each face
 	3.1. choose an internal point of the face
