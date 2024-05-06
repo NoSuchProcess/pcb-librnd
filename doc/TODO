@@ -8,7 +8,7 @@
 	- poltybool2:
 		- fixedh, fixedi, fixedj: warning on rtree size
 		- fixedk, gixedb3: assert
-		- fixedq, gixed4 segf
+		- gixed4 segf
 		- fixedo, fixedz: missing hole
 		- fixedz2: self-touching
 			- fixedy7, gixedf, gixedq2: false positive invalid?
