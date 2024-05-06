@@ -7,14 +7,14 @@
 		- olap_spiral: buggy input not detected
 	- poltybool2:
 		- fixedh, fixedi, fixedj: warning on rtree size
-		- gixed4, fixedk, gixedb3: assert
+		- gixedb: step1 assert: not found
 		- fixedo, fixedz: missing hole
 		- fixedz2: self-touching
 			- fixedy7, gixedf, gixedq2: false positive invalid?
 		- fixedy2 (easy to debug), fixedy, fixedy3, fixedy8, gixedk: broken hole
 			- fixedu: self isc hole (bowtie)
 			- fixedr: overlapping holes on out -> probably false positive from the checker
-		- gixed0, gixed1: step6 assert
+		- gixed0, gixed1, gixed4: step7 assert (parent polarity)
 		- gixedb2o, gixedm5: infloop (NEW ISC)
 		- gixedg, gixedj, gixedp: angle assert
 		- verify:
