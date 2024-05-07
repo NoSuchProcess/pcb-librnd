@@ -6,7 +6,6 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- poltybool2:
-		- fixedz: missing hole
 		- fixedz2: self-touching
 			- fixedy7, gixedf, gixedq2: false positive invalid?
 			- fixedr: overlapping holes on out -> probably false positive from the checker
