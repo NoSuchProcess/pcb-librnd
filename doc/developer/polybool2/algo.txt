@@ -25,6 +25,7 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 
 2. map faces
 	- Algo: https://cp-algorithms.com/geometry/planar.html
+		TODO: the actual algorithm is slightly different, document from scratch
 	- Note: overlapping lines, e.g. in a bone, O--O case may result in
 	        having a curve that's not part of any face; ignore such curves
 	- Note: for curves of faces, each curve should have a list of
