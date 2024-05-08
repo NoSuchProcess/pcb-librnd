@@ -27,7 +27,7 @@ Def: output tree [of faces]: a tree of faces; each node is a face with
 	- Algo: https://cp-algorithms.com/geometry/planar.html
 		TODO: the actual algorithm is slightly different, document from scratch
 	- Note: overlapping lines, e.g. in a bone, O--O case may result in
-	        having a curve that's not part of any face; ignore such curves
+	        having a curve that's not part of any face; prune such curves
 	- Note: for curves of faces, each curve should have a list of
 	        faces that use the curve (this is at most two faces per curve)
 	- Note: calculate the approximate area of each face to throw away the outer
