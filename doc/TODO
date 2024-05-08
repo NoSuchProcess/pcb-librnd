@@ -6,7 +6,6 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- poltybool2:
-		- gixed4: step7 assert (parent polarity)
 		- not-really-bugs: strange intersections probably depending on order of intersection mapping
 			- gixed2 strange small spike
 			- gixedj hole too small
