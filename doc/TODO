@@ -10,7 +10,6 @@
 			- fixedy7, gixedf, gixedq2: false positive invalid?
 			- fixedr: overlapping holes on out -> probably false positive from the checker
 		- gixed0, gixed1, gixed4: step7 assert (parent polarity)
-		- gixedb2o, gixedm5: infloop (NEW ISC)
 		- not-really-bugs: strange intersections probably depending on order of intersection mapping
 			- gixed2 strange small spike
 			- gixedj hole too small
