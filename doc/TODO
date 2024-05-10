@@ -5,7 +5,11 @@
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
-	- poltybool2:
+	- polybool2:
+		- fixedk, fixedz, gixed4: missing hole
+		- gixede, gixede2: missing tiny positive area
+		- si_class1b1, si_class1b2, si_class2a: poalirty
+		- sih_class1b1, st_i, st_ic: missing hole (polarity?)
 		- not-really-bugs: strange intersections probably depending on order of intersection mapping
 			- gixed2 strange small spike
 			- gixedj hole too small
