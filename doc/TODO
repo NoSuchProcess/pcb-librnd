@@ -6,8 +6,8 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- polybool2:
-		- fixedk, fixedz, gixed4: missing hole
-		- gixede, gixede2, gixedi, rounding3: missing positive area
+		- fixedk, fixedz, gixed4: missing hole (when input optimization turned off?)
+		- gixede, gixede2, gixedi, rounding3: missing positive area (when input optimization turned off)
 		- si_class1b1, si_class1b2, si_class2a: poalirty
 		- sih_class1b1, st_i, st_ic: missing hole (polarity?)
 		- not-really-bugs: strange intersections probably depending on order of intersection mapping
