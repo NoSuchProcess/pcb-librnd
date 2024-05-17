@@ -75,28 +75,20 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *pa, rnd_vector_t pt)
 }
 
 /* determine if two polygons touch or overlap; used in pcb-rnd */
-rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
+rnd_bool rnd_polyarea_touching(rnd_polyarea_t *A, rnd_polyarea_t *B)
 {
-#if 0
-	jmp_buf e;
-	int code;
+	rnd_polyarea_t *a, *b;
 
-	code = setjmp(e);
-	if (code == 0) {
-#ifdef DEBUG
-		if (!rnd_poly_valid(a) || !rnd_poly_valid(b)) return -1;
-#endif
-		pa_polyarea_intersect(&e, a, b, -1, rnd_false, NULL);
+	a = A;
+	do {
+		b = B;
+		do {
+			if (rnd_polyarea_island_isc(a, b)) /* cheap bbox check is done in this call */
+				return 1;
+		} while((b = b->f) != B);
+	} while((a = a->f) != A);
 
-		if (pa_polyarea_label(a, b, rnd_true)) return rnd_true;
-		if (pa_polyarea_label(b, a, rnd_true)) return rnd_true;
-	}
-	else if (code == PA_ISC_TOUCHES)
-		return rnd_true;
-	return rnd_false;
-#endif
-TODO("API: reimplement this the simple way");
-abort();
+	return 0;
 }
 
 typedef enum pa_island_isc_e {
