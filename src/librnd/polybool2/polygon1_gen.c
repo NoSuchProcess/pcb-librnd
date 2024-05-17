@@ -37,7 +37,7 @@
 
 /* functions for generating polygons or polygon slices */
 
-#include <librnd/core/config.h>
+#include <librnd/rnd_config.h>
 
 #include "pa_config.h"
 

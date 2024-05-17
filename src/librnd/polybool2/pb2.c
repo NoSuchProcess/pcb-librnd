@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <librnd/core/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/misc_util.h>
 #include <math.h>
 #include "pa_math.c"

@@ -142,6 +142,14 @@ put /local/librnd/OBJS_POLYBOOLLIB [@
 	$(LIBRND)/polybool/rtree.o
 @]
 
+put /local/librnd/OBJS_POLYBOOL2LIB [@
+	$(LIBRND)/polybool2/offset.o
+	$(LIBRND)/polybool2/pb2.o
+	$(LIBRND)/polybool2/polyarea.o
+	$(LIBRND)/polybool2/polygon1_gen.o
+	$(LIBRND)/polybool2/rtree.o
+@]
+
 put /local/librnd/OBJS_FONTLIB [@
 	$(LIBRND)/font/font.o
 	$(LIBRND)/font/vtgla.o
@@ -289,6 +297,7 @@ uniq /local/librnd/OBJS_3RDLIB
 uniq /local/librnd/OBJS_3RDLIB_NOAUTO
 uniq /local/librnd/OBJS_POLYLIB
 uniq /local/librnd/OBJS_POLYBOOLLIB
+uniq /local/librnd/OBJS_POLYBOOL2LIB
 uniq /local/librnd/OBJS_FONTLIB
 uniq /local/librnd/OBJS_FONT2LIB
 uniq /local/librnd/OBJS_CORELIB
@@ -321,6 +330,7 @@ gsub /local/librnd/SRCS {.o } {.c }
 #put /local/librnd/POLYBOOLLIB_SRCS ?/local/librnd/OBJS_POLYBOOLLIB
 #gsub /local/librnd/POLYBOOLLIB_SRCS {.o } {.c }
 append /local/librnd/DEPSRCS /local/librnd/OBJS_POLYBOOLLIB
+append /local/librnd/DEPSRCS /local/librnd/OBJS_POLYBOOL2LIB
 
 
 # apple requires multiple "-framework something" instead of -lsomething
@@ -366,6 +376,7 @@ OBJS=@/local/librnd/OBJS@ @/local/librnd/OBJS_3RDLIB_NOAUTO@
 OBJS_C99=@/local/librnd/OBJS_C99@
 OBJS_POLYLIB=@/local/librnd/OBJS_POLYLIB@
 OBJS_POLYBOOLLIB=@/local/librnd/OBJS_POLYBOOLLIB@
+OBJS_POLYBOOL2LIB=@/local/librnd/OBJS_POLYBOOL2LIB@
 OBJS_FONTLIB=@/local/librnd/OBJS_FONTLIB@
 OBJS_FONT2LIB=@/local/librnd/OBJS_FONT2LIB@
 OBJS_3RDLIB=@/local/librnd/OBJS_3RDLIB@ ../src_3rd/puplug/*.o
@@ -403,6 +414,7 @@ all:
 	$(MAKE) all_exe
 	$(MAKE) librnd
 	$(MAKE) librnd-polybool.a
+	$(MAKE) librnd-polybool2.a
 
 include $(ROOT)/Makefile.conf
 
@@ -438,6 +450,7 @@ SONAME_CORE=@cc/soname@librnd-core.so.$(PCB_RND_VER_MAJOR)
 SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
 SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
 SONAME_POLYBOOL=@cc/soname@librnd-polybool.so.$(PCB_RND_VER_MAJOR)
+SONAME_POLYBOOL2=@cc/soname@librnd-polybool2.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT=@cc/soname@librnd-font.so.$(PCB_RND_VER_MAJOR)
 SONAME_FONT2=@cc/soname@librnd-font2.so.$(PCB_RND_VER_MAJOR)
 SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
@@ -462,6 +475,10 @@ librnd-poly.a: $(OBJS_POLYLIB)
 librnd-polybool.a: $(OBJS_POLYBOOLLIB)
 	$(ARU) $(AR) rvu librnd-polybool.a $(OBJS_POLYBOOLLIB)
 	$(RANLIB) librnd-polybool.a
+
+librnd-polybool2.a: $(OBJS_POLYBOOL2LIB)
+	$(ARU) $(AR) rvu librnd-polybool2.a $(OBJS_POLYBOOL2LIB)
+	$(RANLIB) librnd-polybool2.a
 
 librnd-font.a: $(OBJS_FONTLIB)
 	$(ARU) $(AR) rvu librnd-font.a $(OBJS_FONTLIB)
@@ -489,6 +506,9 @@ librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB) librnd-poly.a
 
 librnd-polybool.so.$(PCB_RND_VER): $(OBJS_POLYBOOLLIB) librnd-polybool.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLYBOOL) -o librnd-polybool.so.$(PCB_RND_VER) $(OBJS_POLYBOOLLIB) $(LDFLAGS) -lm
+
+librnd-polybool2.so.$(PCB_RND_VER): $(OBJS_POLYBOOL2LIB) librnd-polybool2.a
+	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLYBOOL2) -o librnd-polybool2.so.$(PCB_RND_VER) $(OBJS_POLYBOOL2LIB) $(LDFLAGS) -lm
 
 librnd-font.so.$(PCB_RND_VER): $(OBJS_FONTLIB) librnd-font.a
 	$(CC) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_FONT) -o librnd-font.so.$(PCB_RND_VER) $(OBJS_FONTLIB) $(LDFLAGS) -lm
@@ -519,6 +539,10 @@ librnd-polybool.so: librnd-polybool.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-polybool.so.$(PCB_RND_VER) librnd-polybool.so
 	$(SCCBOX) ln -f librnd-polybool.so.$(PCB_RND_VER) librnd-polybool.so.$(PCB_RND_VER_MAJOR)
 
+librnd-polybool2.so: librnd-polybool2.so.$(PCB_RND_VER)
+	$(SCCBOX) ln -f librnd-polybool2.so.$(PCB_RND_VER) librnd-polybool2.so
+	$(SCCBOX) ln -f librnd-polybool2.so.$(PCB_RND_VER) librnd-polybool2.so.$(PCB_RND_VER_MAJOR)
+
 librnd-font.so: librnd-font.so.$(PCB_RND_VER)
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so
 	$(SCCBOX) ln -f librnd-font.so.$(PCB_RND_VER) librnd-font.so.$(PCB_RND_VER_MAJOR)
@@ -547,6 +571,7 @@ HIDLIB_CLEAN_FILES_SO=\
 	librnd-3rd.so.$(PCB_RND_VER) \
 	librnd-poly.so.$(PCB_RND_VER) \
 	librnd-polybool.so.$(PCB_RND_VER) \
+	librnd-polybool2.so.$(PCB_RND_VER) \
 	librnd-font.so.$(PCB_RND_VER) \
 	librnd-font2.so.$(PCB_RND_VER) \
 	librnd-hid.so.$(PCB_RND_VER)
@@ -556,6 +581,7 @@ HIDLIB_CLEAN_FILES_SO_MAJOR=\
 	librnd-3rd.so.$(PCB_RND_VER_MAJOR) \
 	librnd-poly.so.$(PCB_RND_VER_MAJOR) \
 	librnd-polybool.so.$(PCB_RND_VER_MAJOR) \
+	librnd-polybool2.so.$(PCB_RND_VER_MAJOR) \
 	librnd-font.so.$(PCB_RND_VER_MAJOR) \
 	librnd-font2.so.$(PCB_RND_VER_MAJOR) \
 	librnd-hid.so.$(PCB_RND_VER_MAJOR)
@@ -565,6 +591,7 @@ HIDLIB_CLEAN_FILES_SO_SY=\
 	librnd-3rd.so \
 	librnd-poly.so \
 	librnd-polybool.so \
+	librnd-polybool2.so \
 	librnd-font.so \
 	librnd-font2.so \
 	librnd-hid.so
@@ -577,12 +604,13 @@ HIDLIB_CLEAN_FILES_A=\
 	librnd-3rd.a \
 	librnd-poly.a \
 	librnd-polybool.a \
+	librnd-polybool2.a \
 	librnd-font.a \
 	librnd-font2.a \
 	librnd-hid.a
 
 # these are alternative APIs that are buidl but not cleaned automatically
-HIDLIB_CLEAN_EXTRA_O=$(OBJS_FONTLIB) $(OBJS_POLYBOOLLIB)
+HIDLIB_CLEAN_EXTRA_O=$(OBJS_FONTLIB) $(OBJS_POLYBOOLLIB) $(OBJS_POLYBOOL2LIB)
 
 HIDLIB_BUILD_FILES=$(HIDLIB_CLEAN_FILES_A) $(HIDLIB_CLEAN_FILES_SO) $(HIDLIB_CLEAN_FILES_SO_SY)
 HIDLIB_CLEAN_FILES=$(HIDLIB_BUILD_FILES) $(HIDLIB_CLEAN_FILES_SO_MAJOR) $(HIDLIB_CLEAN_EXTRA_O)
@@ -657,11 +685,12 @@ install_librnd: librnd
 	$(MAKE) install_librnd_ LIBDIR=$(HL_LIBDIR)/librnd4
 
 install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/polybool" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/font2" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
+	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd4/plugins" "$(HL_LIBDIR)/librnd4/scconfig/template" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/polybool" "$(HL_INCDIR)/polybool2" "$(HL_INCDIR)/hid" "$(HL_INCDIR)/font" "$(HL_INCDIR)/font2" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/libualloc" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/ureglex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)" "$(HL_INCDIR)/plugins/lib_hid_common" "$(HL_INCDIR)/plugins/lib_wget" "$(HL_INCDIR)/plugins/lib_exp_text" "$(HL_INCDIR)/plugins/lib_exp_pixmap"
 	$(SCCBOX) $(HOW) "librnd-core.a" "$(HL_LIBDIR)/librnd-core.a"
 	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
 	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "librnd-polybool.a" "$(HL_LIBDIR)/librnd-polybool.a"
+	$(SCCBOX) $(HOW) "librnd-polybool2.a" "$(HL_LIBDIR)/librnd-polybool2.a"
 	$(SCCBOX) $(HOW) "librnd-font.a" "$(HL_LIBDIR)/librnd-font.a"
 	$(SCCBOX) $(HOW) "librnd-font2.a" "$(HL_LIBDIR)/librnd-font2.a"
 	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
@@ -670,6 +699,7 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd4/puplug"
 	$(SCCBOX) $(HOW) "librnd/polybool/pa_dicer.h" "$(HL_INCDIR)/polybool/pa_dicer.h"
+	$(SCCBOX) $(HOW) "librnd/polybool2/pa_dicer.h" "$(HL_INCDIR)/polybool2/pa_dicer.h"
 	$(SCCBOX) $(HOW) "$(SPHASH)" "$(HL_LIBDIR)/librnd4/sphash"
 	$(SCCBOX) $(HOW) "librnd/scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd4/scconfig/gen_conf.sh"
 	$(SCCBOX) $(HOW) "../scconfig/cquote"                              "$(HL_LIBDIR)/librnd4/scconfig/cquote"
@@ -699,6 +729,7 @@ else
 	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)"
+	$(SCCBOX) $(HOW) "librnd-polybool2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool2.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)"
 	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
@@ -710,6 +741,7 @@ put /local/librnd/HDRS_3RDLIB /local/librnd/OBJS_3RDLIB
 put /local/librnd/HDRS_CORELIB /local/librnd/OBJS_CORELIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOLLIB
+append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_POLYBOOL2LIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONTLIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_FONT2LIB
 append /local/librnd/HDRS_CORELIB /local/librnd/OBJS_HIDLIB
@@ -812,6 +844,8 @@ install_librnd_sy:
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool.so"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool2.so.$(PCB_RND_VER_MAJOR)"
+	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-polybool2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-polybool2.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER_MAJOR)"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font.so"
 	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-font2.so.$(PCB_RND_VER_MAJOR)"
@@ -858,6 +892,7 @@ put /local/comp/C89FLAGS {$(C89FLAGS)}
 put /local/comp/C99FLAGS {$(CFLAGS)}
 # TODO: remove this once POLYBOLLIB is part of OBJS
 append /local/comp/OBJS_C89 /local/librnd/OBJS_POLYBOOLLIB
+append /local/comp/OBJS_C89 /local/librnd/OBJS_POLYBOOL2LIB
 include {librnd/scconfig/template/compile.tmpasm}
 
 print [@

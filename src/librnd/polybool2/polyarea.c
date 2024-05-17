@@ -7,7 +7,7 @@
 #include <setjmp.h>
 #include <string.h>
 
-#include <librnd/core/config.h>
+#include <librnd/rnd_config.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/heap.h>
 #include <librnd/core/rnd_printf.h>
