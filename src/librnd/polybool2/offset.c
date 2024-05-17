@@ -192,7 +192,7 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 	free(pcsh);
 
 	from = dst->used;
-TODO("Figure when to resolve self isc with the new code");
+TODO("API: Figure when to resolve self isc with the new code");
 #if 0
 	if (rnd_pline_is_selfint(res)) {
 		rnd_pline_split_selfint(res, dst);

@@ -95,7 +95,7 @@ rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
 		return rnd_true;
 	return rnd_false;
 #endif
-TODO("reimplement this the simple way");
+TODO("API: reimplement this the simple way");
 abort();
 }
 
