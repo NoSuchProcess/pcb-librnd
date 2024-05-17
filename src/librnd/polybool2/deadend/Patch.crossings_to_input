@@ -1,0 +1,471 @@
+Index: Makefile
+===================================================================
+--- Makefile	(revision 37199)
++++ Makefile	(working copy)
+@@ -7,12 +7,12 @@
+ 
+ OBJS = pb2.o polyarea.o polygon1_gen.o rtree.o offset.o
+ STEPS = pb2_1.c pb2_2.c pb2_3.c pb2_4.c pb2_5.c pb2_6.c pb2_7.c pb2_8.c
+-INFRA = pb2_debug_txt.c pb2_debug_svg.c pb2_admin.c pb2_geo.c pb2_glue_pa.c
++INFRA = pb2_debug_txt.c pb2_debug_svg.c pb2_admin.c pb2_geo.c
+ 
+ polybool2.a: $(OBJS)
+ 	ar r polybool2.a $(OBJS)
+ 
+-polyarea.o: polyarea.c pa_*.c pa_*.h polyarea.h
++polyarea.o: polyarea.c pa_*.c pa_*.h polyarea.h pb2_glue_pa.c
+ 
+ pb2.o: pb2.c pb2.h polyarea.h $(INFRA) $(STEPS)
+ 
+Index: pa_api_bool.c
+===================================================================
+--- pa_api_bool.c	(revision 37199)
++++ pa_api_bool.c	(working copy)
+@@ -53,8 +53,8 @@
+ 	ctx.op = op;
+ 	ctx.has_B = 1;
+ 
+-	pb2_pa_map_polyarea(&ctx, A, 'A');
+-	pb2_pa_map_polyarea(&ctx, B, 'B');
++	pb2_pa_map_polyarea(&ctx, A, 'A', B, 1);
++	pb2_pa_map_polyarea(&ctx, B, 'B', NULL, 1); /* don't compare against A for iscs, the previois call A->B already marked all risky segments */
+ 
+ 	return pb2_exec(&ctx, res);
+ }
+@@ -70,7 +70,7 @@
+ 	ctx.input_A = *pa;
+ 	ctx.op = RND_PBO_CANON;
+ 
+-	pb2_pa_map_polyarea(&ctx, *pa, 'A');
++	pb2_pa_map_polyarea(&ctx, *pa, 'A', NULL, 1);
+ 
+ 	res = pb2_exec(&ctx, &respa);
+ 
+Index: pb2_1.c
+===================================================================
+--- pb2_1.c	(revision 37199)
++++ pb2_1.c	(working copy)
+@@ -1,58 +1,3 @@
+-typedef struct {
+-	pb2_seg_t *seg;
+-	int num_isc;
+-	rnd_vector_t isc[2];
+-} pb2_isc_t;
+-
+-#define GVT(x) vtisc_ ## x
+-#define GVT_ELEM_TYPE pb2_isc_t
+-#define GVT_SIZE_TYPE size_t
+-#define GVT_DOUBLING_THRS 1024
+-#define GVT_START_SIZE 32
+-#define GVT_FUNC
+-#define GVT_SET_NEW_BYTES_TO 0
+-
+-#include <genvector/genvector_impl.h>
+-#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+-#define GVT_FREE(vect, ptr)           free(ptr)
+-#include <genvector/genvector_impl.c>
+-#include <genvector/genvector_undef.h>
+-
+-#define ISCS ((vtisc_t *)(&ctx->iscs))
+-
+-typedef struct {
+-	double offs; /* distance^2 from the search object's starting point (for sorting) */
+-	rnd_vector_t isc;
+-} pb2_split_at_t;
+-
+-
+-#define GVT(x) vtsplit_ ## x
+-#define GVT_ELEM_TYPE pb2_split_at_t
+-#define GVT_SIZE_TYPE size_t
+-#define GVT_DOUBLING_THRS 1024
+-#define GVT_START_SIZE 32
+-#define GVT_FUNC
+-#define GVT_SET_NEW_BYTES_TO 0
+-
+-#include <genvector/genvector_impl.h>
+-#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+-#define GVT_FREE(vect, ptr)           free(ptr)
+-#include <genvector/genvector_impl.c>
+-#include <genvector/genvector_undef.h>
+-
+-#define SPLITS ((vtsplit_t *)(&ctx->splits))
+-
+-RND_INLINE void p2b_split_at_new(pb2_ctx_t *ctx, double offs, rnd_vector_t pt)
+-{
+-	pb2_split_at_t *split;
+-
+-	split = vtsplit_alloc_append(SPLITS, 1);
+-	split->offs = offs;
+-	split->isc[0] = pt[0];
+-	split->isc[1] = pt[1];
+-}
+-
+-
+ RND_INLINE void seg_inc_poly(pb2_seg_t *seg, char poly_id)
+ {
+ 	if (poly_id == 'A') seg->cntA++;
+@@ -66,211 +11,11 @@
+ 	discard->discarded = 1;
+ }
+ 
+-
+-/* Return 1 if line a1:a2 is the same as isc->isc[] */
+-RND_INLINE int pb2_1_ends_match(const pb2_isc_t *isc, const rnd_vector_t a1, const rnd_vector_t a2)
+-{
+-	if (isc->num_isc != 2) return 0;
+-
+-	if (Vequ2(a1, isc->isc[0]) && Vequ2(a2, isc->isc[1])) return 1;
+-	if (Vequ2(a1, isc->isc[1]) && Vequ2(a2, isc->isc[0])) return 1;
+-	return 0;
+-}
+-
+-typedef struct {
+-	pb2_ctx_t *ctx;
+-	rnd_vector_t p1, p2;
+-} isc_ctx_t;
+-
+-static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+-{
+-	isc_ctx_t *ictx = udata;
+-	pb2_seg_t *seg = obj;
+-	pb2_ctx_t *ctx = ictx->ctx;
+-	int num_isc;
+-	rnd_vector_t iscpt[2];
+-	pb2_isc_t *isc;
+-
+-	if (seg->discarded)
+-		return 0;
+-
+-	TODO("arc: this assumes seg is a line; move most of this into pb2_geo.c");
+-	num_isc = rnd_vect_inters2(seg->start, seg->end, ictx->p1, ictx->p2, iscpt[0], iscpt[1]);
+-	if (num_isc == 0)
+-		return 0;
+-
+-	isc = vtisc_alloc_append(ISCS, 1);
+-	isc->seg = seg;
+-	isc->num_isc = num_isc;
+-	memcpy(isc->isc, iscpt, sizeof(iscpt));
+-
+-	p2b_split_at_new(ctx, rnd_vect_dist2(ictx->p1, iscpt[0]), iscpt[0]);
+-	if (num_isc > 1) {
+-		assert(!Vequ2(iscpt[0], iscpt[1])); /* can not be the same coord */
+-		p2b_split_at_new(ctx, rnd_vect_dist2(ictx->p1, iscpt[1]), iscpt[1]);
+-	}
+-
+-	return rnd_RTREE_DIR_FOUND;
+-}
+-
+-RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
+-{
+-	rnd_vector_t orig_end;
+-	int isc1_bad = 0, isc2_bad = 0, num_isc;
+-	rnd_vector_t ip0, ip1;
+-	pb2_seg_t *news;
+-
+-	num_isc = isc->num_isc;
+-	Vcpy2(orig_end, isc->seg->end);
+-	Vcpy2(ip0, isc->isc[0]);
+-	Vcpy2(ip1, isc->isc[1]);
+-
+-
+-	if (Vequ2(ip0, isc->seg->start)) isc1_bad = 1;
+-	else if (Vequ2(ip0, orig_end)) isc1_bad = 1;
+-
+-	/* don't split at endpoints: remove 1 or 2 bad intersections
+-	   from num_isc:ip0:ip1 */
+-	if (num_isc == 2) {
+-		if (Vequ2(ip1, isc->seg->start)) isc2_bad = 1;
+-		else if (Vequ2(ip1, orig_end)) isc2_bad = 1;
+-
+-		if (isc2_bad && isc1_bad)
+-			return; /* 2 intersections at exactly the endpoints */
+-
+-		if (isc1_bad) {
+-			/* ip0 is a bad intersection, drop it but preserve ip1 as that's still valid */
+-			Vcpy2(ip0, ip1);
+-			num_isc--;
+-		}
+-		else if (isc2_bad)
+-			num_isc--;
+-	}
+-	else /* (num_isc == 1) */ {
+-		if (isc1_bad)
+-			return; /* 1 intersection at exactly one of the endpoints */
+-	}
+-
+-
+-	TODO("arc: implement this for arcs; below is the line-only implementation; move most of this in pb2_geo.c");
+-
+-	rnd_rtree_delete(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+-	if (num_isc == 2) {
+-		double d1, d2;
+-		rnd_vector_t *i1, *i2;
+-		
+-		/* order iscs to this: seg->start .. isc[0] .. isc[1] .. orig_end */
+-		d1 = rnd_vect_dist2(isc->seg->start, ip0);
+-		d2 = rnd_vect_dist2(isc->seg->start, ip1);
+-		if (d2 > d1) {
+-			/* normal order */
+-			i1 = &ip0;
+-			i2 = &ip1;
+-		}
+-		else {
+-			/* reverse order */
+-			i1 = &ip1;
+-			i2 = &ip0;
+-		}
+-
+-		/* reuse the original segment for the first part */
+-		Vcpy2(isc->seg->end, *i1);
+-		pb2_1_seg_bbox(isc->seg);
+-		if (!pb2_1_ends_match(isc, isc->seg->start, *i1)) {
+-			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+-			isc->seg->risky = 1;
+-		}
+-		else
+-			isc->seg->discarded = 1;
+-
+-		/* two more segments after the two intersections */
+-		if (!pb2_1_ends_match(isc, *i1, *i2)) {
+-			news = pb2_seg_new_alike(ctx, *i1, *i2, isc->seg);
+-			news->risky = 1;
+-		}
+-		if (!pb2_1_ends_match(isc, *i2, orig_end)) {
+-			news = pb2_seg_new_alike(ctx, *i2, orig_end, isc->seg);
+-			news->risky = 1;
+-		}
+-	}
+-	else if (num_isc == 1) {
+-		/* reuse the original segment for the first part */
+-		Vcpy2(isc->seg->end, ip0);
+-		pb2_1_seg_bbox(isc->seg);
+-		if (!pb2_1_ends_match(isc, isc->seg->start, ip0)) {
+-			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+-			isc->seg->risky = 1;
+-		}
+-		else
+-			isc->seg->discarded = 1;
+-
+-
+-		/* plus add the extra segment */
+-		if (!pb2_1_ends_match(isc, ip0, orig_end)) {
+-			news = pb2_seg_new_alike(ctx, ip0, orig_end, isc->seg);
+-			news->risky = 1;
+-		}
+-	}
+-	else {
+-		assert(!"invalid isc->num_isc");
+-		abort();
+-	}
+-}
+-
+-static int cmp_split_cb(const void *A, const void *B)
+-{
+-	const pb2_split_at_t *a = A, *b = B;
+-	return (a->offs < b->offs) ? -1 : +1;
+-}
+-
+ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id, int isected)
+ {
+-	rnd_rtree_box_t bbox;
+-	isc_ctx_t ictx;
+-	long n;
+-	pb2_split_at_t *ss, *se;
+-
+-	ictx.ctx = ctx;
+-	ictx.p1[0] = p1[0]; ictx.p1[1] = p1[1];
+-	ictx.p2[0] = p2[0]; ictx.p2[1] = p2[1];
+-
+-	bbox.x1 = pa_min(p1[0], p2[0]); bbox.y1 = pa_min(p1[1], p2[1]);
+-	bbox.x2 = pa_max(p1[0], p2[0]); bbox.y2 = pa_max(p1[1], p2[1]);
+-
+-	ISCS->used = 0;
+-	SPLITS->used = 0;
+-	ss = vtsplit_alloc_append(SPLITS, 1);
+-	ss->offs = 0;
+-	Vcpy2(ss->isc, p1);
+-
+-	rnd_rtree_search_obj(&ctx->seg_tree, &bbox, pb2_1_isc_line_cb, &ictx);
+-
+-	if (SPLITS->used > 1) { /* intersected */
+-		/* split up existing segments */
+-		for(n = 0; n < ISCS->used; n++)
+-			pb2_1_split_seg_at_iscs(ctx, &ISCS->array[n]);
+-
+-		qsort(SPLITS->array, SPLITS->used, sizeof(pb2_split_at_t), cmp_split_cb);
+-
+-		/* create a new segment for each part of the input segment that has
+-		   intersections thus has at least 2 parts */
+-
+-		se = vtsplit_alloc_append(SPLITS, 1);
+-		se->offs = RND_COORD_MAX;
+-		Vcpy2(se->isc, p2);
+-
+-		for(n = 0; n < SPLITS->used-1; n++) {
+-			if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
+-				pb2_seg_t *seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc);
+-				seg->risky = 1;
+-				seg_inc_poly(seg, poly_id);
+-			}
+-		}
+-	}
+-	else  {
+-		pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2);
+-		seg_inc_poly(seg, poly_id);
+-	}
++	pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2);
++	seg->risky = isected;
++	seg_inc_poly(seg, poly_id);
+ }
+ 
+ RND_INLINE int pb2_new_split(pb2_ctx_t *ctx, pb2_seg_t *seg, rnd_vector_t ip0)
+@@ -703,9 +448,6 @@
+ 	/* step 1.2. */
+ 	pb2_1_handle_new_iscs(ctx);
+ 
+-	vtisc_uninit(ISCS);
+-	vtsplit_uninit(SPLITS);
+-
+ 	if (pb2_debug_draw_steps)
+ 		pb2_draw(ctx, "step0.svg", PB2_DRAW_INPUT_POLY | PB2_DUMP_SEGS | PB2_DUMP_CURVES | PB2_DUMP_CURVE_GRAPH);
+ 
+Index: pb2_glue_pa.c
+===================================================================
+--- pb2_glue_pa.c	(revision 37199)
++++ pb2_glue_pa.c	(working copy)
+@@ -1,23 +1,117 @@
+ #include "polyarea.h"
+ #include "pa.h"
+ 
++static rnd_rtree_dir_t mask_isc_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
++{
++	rnd_vnode_t *vn = udata;
++	pa_seg_t *seg = obj;
++	int num_isc;
++	rnd_vector_t isc1, isc2;
++
++	if (vn == seg->v)
++		return 0;
++
++	/* adjacent segments need to be checked for overlap; note: we never get
++	   this callback for adjacents if chk_self_isc was 0 */
++	if ((vn == seg->v->next) || (vn == seg->v->prev)) {
++		num_isc = rnd_vect_inters2(vn->point, vn->next->point, seg->v->point, seg->v->next->point, isc1, isc2);
++		if (num_isc == 2)
++			goto got_isc;
++		return 0;
++	}
++
++	TODO("optimize: a cheaper yes/no test would be enough here");
++	num_isc = rnd_vect_inters2(vn->point, vn->next->point, seg->v->point, seg->v->next->point, isc1, isc2);
++
++	if (num_isc == 0)
++		return 0;
++
++	got_isc:;
++	vn->flg.isected = 1;
++	seg->v->flg.isected = 1;
++	return 0;
++}
++
++/* List all intersections between vn and any seg in pl; return 1 if there was
++   any. Mark affected vnodes in pl isected. */
++RND_INLINE int mark_iscs_pl(pb2_ctx_t *ctx, rnd_vnode_t *vn, const rnd_pline_t *pl)
++{
++	rnd_rtree_box_t sb, plb;
++	int isected;
++
++	TODO("arc: this bbox assumes lines");
++
++	sb.x1 = vn->point[0]; sb.y1 = vn->point[1];
++	sb.x2 = vn->next->point[0]; sb.y2 = vn->next->point[1];
++	if (sb.x1 > sb.x2) rnd_swap(rnd_coord_t, sb.x1, sb.x2);
++	if (sb.y1 > sb.y2) rnd_swap(rnd_coord_t, sb.y1, sb.y2);
++
++	plb.x1 = pl->xmin; plb.y1 = pl->ymin;
++	plb.x2 = pl->xmax; plb.y2 = pl->ymax;
++
++	if (!rnd_rtree_box_touch(&sb, &plb))
++		return 0;
++
++	vn->flg.isected = 0;
++
++	rnd_rtree_search_obj(pl->tree, &sb, mask_isc_cb, vn);
++
++	isected = vn->flg.isected;
++	vn->flg.isected = 0;
++
++	return isected;
++}
++
++/* List all intersections between vn and anything in pa1; return 1 if there was
++   any. Mark affected vnodes in pa1 isected. */
++RND_INLINE int mark_iscs_pa(pb2_ctx_t *ctx, rnd_vnode_t *vn, const rnd_polyarea_t *pa1)
++{
++	const rnd_polyarea_t *pa = pa1;
++	int res = 0;
++
++	do {
++		rnd_pline_t *pl;
++		for(pl = pa->contours; pl != NULL; pl = pl->next)
++			res |= mark_iscs_pl(ctx, vn, pl);
++	} while((pa = pa->f) != pa1);
++
++	return res;
++}
++
+ /* place all segments from pline into ctx, splitting segments on intersections */
+-RND_INLINE void pb2_1_map_pline(pb2_ctx_t *ctx, const rnd_pline_t *pline, char poly_id)
++RND_INLINE void pb2_1_map_pline(pb2_ctx_t *ctx, const rnd_pline_t *pline, char poly_id, const rnd_polyarea_t *me, const rnd_polyarea_t *other, int chk_self_isc)
+ {
+ 	rnd_vnode_t *vn = pline->head;
+ 	do {
+-		pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id, 0);
++		int isected = 0;
++
++		if (vn->flg.isected) {
++			vn->flg.isected = 0;
++			isected = 1;
++		}
++
++		/* when running for A isected is 0; when running for B, other is NULL; run
++		   this first because in the 'running for A' case we need to mark all
++		   intersections in 'B' and a self-isc-check setting isected=1 would
++		   block that */
++		if (!isected && (other != NULL))
++			isected = mark_iscs_pa(ctx, vn, other);
++
++		if (!isected && chk_self_isc)
++			isected = mark_iscs_pa(ctx, vn, me);
++
++		pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id, isected);
+ 	} while((vn = vn->next) != pline->head);
+ }
+ 
+ /* place all segments from polyarea into ctx, splitting segments on intersections */
+-void pb2_pa_map_polyarea(pb2_ctx_t *ctx, const rnd_polyarea_t *start, char poly_id)
++void pb2_pa_map_polyarea(pb2_ctx_t *ctx, const rnd_polyarea_t *start, char poly_id, const rnd_polyarea_t *other, int chk_self_isc)
+ {
+ 	const rnd_polyarea_t *pa = start;
+ 	do {
+ 		rnd_pline_t *pl;
+ 		for(pl = pa->contours; pl != NULL; pl = pl->next)
+-			pb2_1_map_pline(ctx, pl, poly_id);
++			pb2_1_map_pline(ctx, pl, poly_id, start, other, chk_self_isc);
+ 	} while((pa = pa->f) != start);
+ }
+ 
+Index: polyarea.h
+===================================================================
+--- polyarea.h	(revision 37199)
++++ polyarea.h	(working copy)
+@@ -48,7 +48,8 @@
+ 	struct {
+ 		unsigned plabel:3;     /* one of pa_plinept_label_t; for the edge {v to v->next} (the edge forward of v) */
+ 		unsigned mark:1;
+-		unsigned curve_type:4; /* one of rnd_vnode_curve_type_t */
++		unsigned isected:1;    /* for pb mapping */
++		unsigned curve_type:3; /* one of rnd_vnode_curve_type_t */
+ 	} flg;
+ 	pa_conn_desc_t *cvclst_prev, *cvclst_next; /* "cross vertex connection list" - not used in polybool2, provided for compatibility */
+ 	rnd_vector_t point; /* startpoint; endpoint is ->next.point */
