@@ -40,12 +40,48 @@
 #include "pb2_glue_pa.c"
 
 int rnd_polybool_disable_autocheck = 0;
+int rnd_polybool_dump_boolops = 0;
+
+#ifndef NDEBUG
+#include <librnd/core/safe_fs.h>
+RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int op)
+{
+	if (rnd_polybool_dump_boolops != 0) {
+		char fn[256], *opname;
+		FILE *f;
+
+		switch (op) {
+			case RND_PBO_XOR:    opname = "xor"; break;
+			case RND_PBO_UNITE:  opname = "unite"; break;
+			case RND_PBO_SUB:    opname = "sub"; break;
+			case RND_PBO_ISECT:  opname = "isect"; break;
+			default:             opname = "UNKNOWN"; break;
+		}
+
+		sprintf(fn, "pb_%08d.A.poly", rnd_polybool_dump_boolops);
+		pa_dump_pa(A, fn);
+		fn[12] = 'B';
+		pa_dump_pa(B, fn);
+
+		strcpy(fn+12, opname);
+		f = rnd_fopen(NULL, fn, "w");
+		fclose(f);
+
+		rnd_polybool_dump_boolops++;
+		rnd_trace("dumped %s\n", fn);
+	}
+}
+#else
+RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int op) {}
+#endif
 
 
 static int rnd_polyarea_boolean_(rnd_polyarea_t *A, rnd_polyarea_t *B, rnd_polyarea_t **res, int op)
 {
 	pb2_ctx_t ctx = {0};
 	int retval;
+
+	pa_polyarea_bool_dbg(A, B, op);
 
 	*res = NULL;
 	rnd_rtree_init(&ctx.seg_tree);
