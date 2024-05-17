@@ -28,6 +28,7 @@
 
 #include <genvector/vtp0.h>
 
+#include <librnd/polybool2/polyarea.h>
 
 /* Calculate the offset plines of src and append the resulting plines to dst.
    Yields multiple islands in some corner cases. */

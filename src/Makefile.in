@@ -790,6 +790,7 @@ append /local/librnd/HDRS_3RDLIB {../src_3rd/genlist/ }
 
 sub /local/librnd/HDRS_CORELIB {$(LIBRND)/hid/buildin.hidlib.h } {}
 sub /local/librnd/HDRS_CORELIB {buildin.hidlib.h } {}
+sub /local/librnd/HDRS_CORELIB {$(LIBRND)/polybool2/pb2.h} {}
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/librnd/HDRS_CORELIB
