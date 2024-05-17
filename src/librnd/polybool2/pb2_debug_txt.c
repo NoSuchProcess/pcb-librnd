@@ -11,6 +11,7 @@ typedef enum {
 	PB2_DRAW_INPUT_POLY = 32
 } pb2_dump_what_t;
 
+#ifndef NDEBUG
 static void pb2_dump_segs(pb2_ctx_t *ctx)
 {
 	rnd_rtree_it_t it;
@@ -145,3 +146,6 @@ static void pb2_dump(pb2_ctx_t *ctx, pb2_dump_what_t what)
 	if (what & PB2_DUMP_FACES) pb2_dump_faces(ctx);
 	if (what & PB2_DUMP_FACE_TREE) pb2_dump_face_tree(ctx);
 }
+#else
+static void pb2_dump(pb2_ctx_t *ctx, pb2_dump_what_t what) {}
+#endif

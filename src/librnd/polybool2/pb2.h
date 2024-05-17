@@ -7,11 +7,13 @@
 #ifndef NDEBUG
 #	define PB2_UID           long uid;
 #	define PB2_UID_SET(obj)  (obj)->uid = (++(ctx)->uid)
+#	define PB2_UID_CLR(obj)  (obj)->uid = -1
 #	define PB2_UID_GET(obj)  ((long)(obj)->uid)
 #else
 #	define PB2_UID
-#	define PB2_UID_SET
-#	define PB2_UID_GET(obj)  ((long)(obj))
+#	define PB2_UID_SET(obj)
+#	define PB2_UID_CLR(obj)
+#	define PB2_UID_GET(obj) ((long)(obj))
 #endif
 
 typedef struct pb2_seg_s pb2_seg_t;

@@ -16,10 +16,10 @@ RND_INLINE void pb2_6_ray_face_hit(pb2_6_ray_t *rctx, pb2_face_t *f, pb2_seg_t *
 {
 	TODO("remove seg from the arg list, not needed");
 
-	if ((f == NULL) || (f == rctx->newf) || (f->uid <= 0))
+	if ((f == NULL) || (f == rctx->newf))
 		return;
 
-	wr_trace(" H S%ld F%ld\n", seg->uid, f->uid);
+	wr_trace(" H S%ld F%ld\n", PB2_UID_GET(seg), PB2_UID_GET(f));
 
 	f->step6.hit++;
 	if (f->step6.link.parent == NULL)
@@ -101,14 +101,14 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 	   point is safe for that) and remember what other faces got hit */
 	rctx.ctx = ctx;
 	rctx.newf = newf;
-	wr_trace("WR: F%ld ray from: %ld;%ld:\n", newf->uid, newf->polarity_pt[0], newf->polarity_pt[1]);
+	wr_trace("WR: F%ld ray from: %ld;%ld:\n", PB2_UID_GET(newf), newf->polarity_pt[0], newf->polarity_pt[1]);
 	pb2_3_ray_cast(ctx, newf->polarity_pt, 'F', newf->polarity_dir, pb2_6_ray_seg_hit, &rctx);
 
 	/* process the list of faces hit: find the odd-hit one with the largest
 	   area and reset hit counts and step6.link */
 	while((f = gdl_first(&rctx.faces_hit)) != NULL) {
 		gdl_remove(&rctx.faces_hit, f, step6.link);
-		wr_trace(" F%ld hit=%ld area=%f (best_area=%f)\n", f->uid, f->step6.hit, f->area, best_area);
+		wr_trace(" F%ld hit=%ld area=%f (best_area=%f)\n", PB2_UID_GET(f), f->step6.hit, f->area, best_area);
 		if (((f->step6.hit % 2) == 1) && ((best_area < 0) || (f->area < best_area))) {
 			bestf = f;
 			best_area = f->area;
@@ -128,7 +128,7 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 		bestf = &ctx->root;
 	}
 
-	wr_trace(" -> %ld\n", bestf->uid);
+	wr_trace(" -> %ld\n", PB2_UID_GET(bestf));
 
 	return bestf;
 }
@@ -140,13 +140,13 @@ RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 	pb2_face_t *bestf = pb2_wrapping_face(ctx, newf, &is_implicit);
 
 	if (bestf == NULL) {
-		if_trace("pb2_6_insert_face: skip F%ld: no parent\n", newf->uid);
+		if_trace("pb2_6_insert_face: skip F%ld: no parent\n", PB2_UID_GET(newf));
 		return;
 	}
 
 	if ((newf->out == 0) && !is_implicit) {
 		/* test case: fixed03 */
-		if_trace("pb2_6_insert_face: skip F%ld: hole already drawn by parent\n", newf->uid);
+		if_trace("pb2_6_insert_face: skip F%ld: hole already drawn by parent\n", PB2_UID_GET(newf));
 		return;
 	}
 
@@ -172,7 +172,7 @@ RND_INLINE void pb2_6_polarity(pb2_ctx_t *ctx)
 	ctx->root.inA = ctx->root.inB = ctx->root.out = 0;
 	ctx->root.children = ctx->root.next = NULL;
 	ctx->root.num_curves = 0;
-	ctx->root.uid = -1;
+	PB2_UID_CLR(&ctx->root);
 
 	/* sort faces by area */
 	faces = &ctx->outtmp; /* reuse outtmp, hopefully avoids a malloc */

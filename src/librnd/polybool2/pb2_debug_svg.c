@@ -1,5 +1,7 @@
 #include <librnd/core/safe_fs.h>
 
+#ifndef NDEBUG
+
 static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 {
 	rnd_rtree_it_t it;
@@ -264,3 +266,6 @@ static void pb2_draw(pb2_ctx_t *ctx, const char *fn, pb2_dump_what_t what)
 
 	fclose(F);
 }
+#else
+static void pb2_draw(pb2_ctx_t *ctx, const char *fn, pb2_dump_what_t what) {}
+#endif
