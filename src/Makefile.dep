@@ -723,7 +723,8 @@
  ../src/librnd/polybool/big_coord_isc.c \
  ../src/librnd/polybool/big_coord_ang.c \
  ../src/librnd/polybool/big_coord_postproc.c \
- ../src/librnd/polybool/rtree.h ../src_3rd/genrtree/genrtree_api.h \
+ ../src/librnd/polybool/pa_config.h ../src/librnd/polybool/rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h \
  ../src/librnd/polybool/rtree2_compat.h ../src/librnd/core/error.h \
  ../src/librnd/polybool/big_coord_poly.c
 ../src/librnd/polybool/offset.o: ../src/librnd/polybool/offset.c \
@@ -748,27 +749,30 @@
  ../src/librnd/polybool/pa_config.h ../src/librnd/polybool/big_coord.h \
  ../src/librnd/polybool/pa_math.c ../src/librnd/polybool/pa_vect.c \
  ../src/librnd/polybool/pa_debug.c ../src/librnd/polybool/pa_pline.c \
- ../src/librnd/polybool/pa_dicer.c ../src/librnd/polybool/pa_dicer.h \
  ../src/librnd/polybool/pa_polyarea.c \
  ../src/librnd/polybool/pa_conn_desc.c \
  ../src/librnd/polybool/pa_segment.c \
  ../src/librnd/polybool/pa_isc_contours.c \
  ../src/librnd/polybool/pa_label.c \
  ../src/librnd/polybool/pa_collect_tmp.c \
- ../src/librnd/polybool/pa_collect.c ../src/librnd/polybool/pa_api_bool.c \
+ ../src/librnd/polybool/pa_collect.c ../src/librnd/polybool/pa_dicer.c \
+ ../src/librnd/polybool/pa_dicer.h ../src/librnd/core/vtc0.h ../src/librnd/core/error.h \
+ ../src_3rd/genvector/genvector_impl.c \
+ ../src/librnd/polybool/pa_api_bool.c \
  ../src/librnd/polybool/pa_api_vertex.c \
  ../src/librnd/polybool/pa_api_pline.c \
  ../src/librnd/polybool/pa_api_polyarea.c \
  ../src/librnd/polybool/pa_api_check.c \
  ../src/librnd/polybool/pa_api_misc.c \
- ../src/librnd/polybool/pa_self_isc.c ../src/librnd/core/error.h \
+ ../src/librnd/polybool/pa_self_isc.c \
  ../src/librnd/polybool/pa_self_isc_pl.c \
  ../src/librnd/polybool/pa_compat.c
 ../src/librnd/polybool/polygon1_gen.o: \
  ../src/librnd/polybool/polygon1_gen.c ../src/librnd/rnd_config.h \
- ../src/librnd/config.h ../src/librnd/core/global_typedefs.h ../src/librnd/config.h \
- ../src/librnd/core/rnd_bool.h ../src/librnd/polybool/polyarea.h \
- ../src/librnd/core/math_helper.h ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
+ ../src/librnd/config.h ../src/librnd/polybool/pa_config.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/polybool/polyarea.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool/pa_math.c \
  ../src/librnd/polybool/polygon1_gen.h ../src/librnd/polybool/polyarea.h
@@ -776,7 +780,8 @@
  ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/unit.h \
  ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool/rtree.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src/librnd/polybool/pa_config.h ../src/librnd/polybool/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h \
  ../src_3rd/genrtree/genrtree_search.h \
  ../src_3rd/genrtree/genrtree_delete.h \
@@ -792,6 +797,81 @@
  ../src/librnd/polybool/pa.h ../src/librnd/polybool/pa_config.h \
  ../src/librnd/polybool/big_coord.h ../src/librnd/core/math_helper.h \
  ../src/librnd/core/box.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h
+../src/librnd/polybool2/offset.o: ../src/librnd/polybool2/offset.c \
+ ../src/librnd/core/compat_misc.h ../src/librnd/config.h \
+ ../src/librnd/polybool2/rtree.h ../src/librnd/core/global_typedefs.h \
+ ../src/librnd/core/rnd_bool.h ../src_3rd/genrtree/genrtree_api.h \
+ ../src/librnd/polybool2/polyarea.h ../src/librnd/polybool2/offset.h \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h
+../src/librnd/polybool2/pb2.o: ../src/librnd/polybool2/pb2.c \
+ ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/misc_util.h \
+ ../src/librnd/core/unit.h ../src/librnd/core/global_typedefs.h ../src/librnd/config.h \
+ ../src/librnd/core/rnd_bool.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool2/pa_math.c \
+ ../src/librnd/polybool2/rtree.h ../src_3rd/genrtree/genrtree_api.h \
+ ../src/librnd/polybool2/polyarea.h ../src/librnd/polybool2/pb2.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/polybool2/pa.h \
+ ../src/librnd/polybool2/pa_config.h \
+ ../src/librnd/polybool2/pb2_debug_txt.c ../src/librnd/core/error.h \
+ ../src/librnd/polybool2/pb2_debug_svg.c ../src/librnd/core/safe_fs.h \
+ ../src/librnd/core/conf.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src/librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/polybool2/pb2_admin.c \
+ ../src/librnd/polybool2/pb2_geo.c ../src/librnd/polybool2/pb2_1.c \
+ ../src_3rd/genvector/genvector_impl.c ../src/librnd/polybool2/pb2_2.c \
+ ../src/librnd/polybool2/pb2_3.c ../src/librnd/polybool2/pb2_4.c \
+ ../src/librnd/polybool2/pb2_5.c ../src/librnd/polybool2/pb2_6.c \
+ ../src/librnd/polybool2/pb2_7.c ../src/librnd/polybool2/pb2_8.c
+../src/librnd/polybool2/polyarea.o: ../src/librnd/polybool2/polyarea.c \
+ ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/heap.h ../src/librnd/config.h ../src/librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/core/rnd_bool.h \
+ ../src_3rd/genvector/vtp0.h ../src/librnd/core/box.h ../src/librnd/core/misc_util.h \
+ ../src/librnd/polybool2/polyconf.h ../src/librnd/polybool2/polyarea.h \
+ ../src/librnd/polybool2/rtree.h ../src_3rd/genrtree/genrtree_api.h \
+ ../src/librnd/polybool2/rtree2_compat.h ../src/librnd/polybool2/pa.h \
+ ../src/librnd/polybool2/pa_config.h ../src/librnd/polybool2/pa_math.c \
+ ../src/librnd/polybool2/pa_vect.c ../src/librnd/polybool2/pa_debug.c \
+ ../src/librnd/polybool2/pa_pline.c ../src/librnd/polybool2/pa_polyarea.c \
+ ../src/librnd/polybool2/pa_segment.c ../src/librnd/polybool2/pa_dicer.c \
+ ../src/librnd/polybool2/pa_dicer.h ../src/librnd/core/vtc0.h \
+ ../src/librnd/core/error.h ../src_3rd/genvector/genvector_impl.c \
+ ../src/librnd/polybool2/pa_api_bool.c ../src/librnd/polybool2/pb2.h \
+ ../src_3rd/genlist/gendlist.h ../src/librnd/polybool2/pb2_glue_pa.c \
+ ../src/librnd/polybool2/pa_api_vertex.c \
+ ../src/librnd/polybool2/pa_api_pline.c \
+ ../src/librnd/polybool2/pa_api_polyarea.c \
+ ../src/librnd/polybool2/pa_api_check.c \
+ ../src/librnd/polybool2/pa_api_misc.c \
+ ../src/librnd/polybool2/pa_compat.c
+../src/librnd/polybool2/polygon1_gen.o: \
+ ../src/librnd/polybool2/polygon1_gen.c ../src/librnd/rnd_config.h \
+ ../src/librnd/config.h ../src/librnd/polybool2/pa_config.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
+ ../src/librnd/polybool2/polyarea.h ../src/librnd/core/math_helper.h \
+ ../src/librnd/core/unit.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h ../src/librnd/polybool2/pa_math.c \
+ ../src/librnd/polybool2/polygon1_gen.h ../src/librnd/polybool/polyarea.h
+../src/librnd/polybool2/rtree.o: ../src/librnd/polybool2/rtree.c \
+ ../src/librnd/rnd_config.h ../src/librnd/config.h ../src/librnd/core/unit.h \
+ ../src/librnd/core/global_typedefs.h ../src/librnd/config.h ../src/librnd/core/rnd_bool.h \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src/librnd/polybool2/pa_config.h ../src/librnd/polybool2/rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h \
+ ../src_3rd/genrtree/genrtree_search.h \
+ ../src_3rd/genrtree/genrtree_delete.h \
+ ../src_3rd/genrtree/genrtree_debug.h \
+ ../src/librnd/polybool2/rtree2_compat.h
 ../src/librnd/plugins/diag_rnd/diag_rnd.o: \
  ../src/librnd/plugins/diag_rnd/diag_rnd.c ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../config.h ../src/librnd/config.h ../src/librnd/core/actions.h \
@@ -1088,7 +1168,7 @@
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h
 ../src/librnd/plugins/hid_lesstif/main.o: \
- ../src/librnd/plugins/hid_lesstif/main.c ../src/librnd/plugins/hid_lesstif/dialogs.h \
+ ../src/librnd/plugins/hid_lesstif/main.c \
  ../src/librnd/plugins/hid_lesstif/xincludes.h ../src/librnd/rnd_config.h \
  ../src/librnd/config.h ../src/librnd/core/math_helper.h ../src/librnd/core/rnd_conf.h \
  ../src/librnd/core/conf.h ../src/librnd/config.h ../src/librnd/core/global_typedefs.h \
@@ -1116,6 +1196,7 @@
  ../src/librnd/core/actions.h ../src/librnd/plugins/hid_lesstif/ltf_stdarg.h \
  ../src/librnd/hid/grid.h ../src/librnd/hid/tool.h ../src/librnd/core/globalconst.h \
  ../src/librnd/plugins/hid_lesstif/wt_preview.h \
+ ../src/librnd/plugins/hid_lesstif/dialogs.h \
  ../src/librnd/plugins/hid_lesstif/FillBox.h \
  ../src/librnd/plugins/lib_hid_common/lib_hid_common.h \
  ../src/librnd/plugins/lib_hid_common/dialogs_conf.h \
@@ -1123,8 +1204,7 @@
  ../src/librnd/plugins/lib_hid_common/cli_history.h \
  ../src/librnd/plugins/hid_lesstif/mouse.c \
  ../src_3rd/genvector/genvector_impl.c \
- ../src/librnd/plugins/hid_lesstif/wt_preview.c \
- ../src/librnd/plugins/hid_lesstif/dialogs.h
+ ../src/librnd/plugins/hid_lesstif/wt_preview.c
 ../src/librnd/plugins/hid_lesstif/menu.o: \
  ../src/librnd/plugins/hid_lesstif/menu.c \
  ../src/librnd/plugins/hid_lesstif/xincludes.h ../src/librnd/rnd_config.h \
