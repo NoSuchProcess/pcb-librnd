@@ -104,13 +104,19 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	pb2_seg_t *seg = obj;
 	rnd_vector_t p1, p2;
 
-	if ((pctx->poly == 'A') && (seg->cntA == 0))
-		return 0;
-	if ((pctx->poly == 'B') && (seg->cntB == 0))
-		return 0;
-	if ((pctx->poly == 'F') && seg->discarded) /* operate on faces, not input polygons */
+	if (seg->discarded)
 		return 0;
 
+	/* even number of overlapping edges (of the target poly) crossed is no-op;
+	   this happens with overlapping edges, e.g. on stubs. An odd number
+	   of overlaps (most typically 1 edge) matters */
+	if ((pctx->poly == 'A') && ((seg->cntA % 2)  == 0))
+		return 0;
+	if ((pctx->poly == 'B') && ((seg->cntB % 2) == 0))
+		return 0;
+
+	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
+	   non-discarded seg counts as 1 as we have already remvoed stubs*/
 
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
