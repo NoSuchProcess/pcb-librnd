@@ -18,7 +18,7 @@ void pb2_pa_map_polyarea(pb2_ctx_t *ctx, const rnd_polyarea_t *start, char poly_
 		if (force || pa->overlap) {
 			rnd_pline_t *pl;
 			for(pl = pa->contours; pl != NULL; pl = pl->next)
-				if ((poly_id == 'B') || pl->flg.overlap)
+				if (force || (poly_id == 'B') || pl->flg.overlap)
 					pb2_1_map_pline(ctx, pl, poly_id);
 		}
 	} while((pa = pa->f) != start);
