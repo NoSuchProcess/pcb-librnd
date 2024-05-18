@@ -85,6 +85,7 @@ struct rnd_pline_s {
 		unsigned int llabel:3; /* one of pa_pline_label_t */
 		unsigned int orient:1;
 		unsigned sliced:1;     /* used by the slicer */
+		unsigned overlap:1;    /* island-hole bbox overlap between A and B */
 	} flg;
 };
 
