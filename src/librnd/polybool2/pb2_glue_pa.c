@@ -83,7 +83,7 @@ void pb2_pa_map_overlaps(rnd_polyarea_t *A, rnd_polyarea_t *B)
 	} while((a = a->f) != A);
 }
 
-RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t *start, int overlap_val)
+RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t *start, int overlap_val, rnd_bool preserve)
 {
 	rnd_polyarea_t *pa = start;
 	do {
@@ -98,7 +98,7 @@ RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t *start, int o
    it is untouched by pb2, it surely isn't cut in half. The host island of
    A may have been removed tho (e.g. if operation was an isect). Search
    each island of res and find the first one pl fits into. */
-RND_INLINE pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl)
+RND_INLINE void pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl, rnd_bool preserve)
 {
 	rnd_polyarea_t *pa = *res;
 	do {
@@ -123,7 +123,7 @@ RND_INLINE pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl)
 /* Take all islands of A that was marked overlapping; they may have
    non-overlapping holes that were not participating in pb2 (to save CPU).
    Put those non-overlapping holes back in res. */
-RND_INLINE void pa_reinstall_nonolap_holes(rnd_polyarea_t **res, rnd_polyarea_t *start)
+RND_INLINE void pa_reinstall_nonolap_holes(rnd_polyarea_t **res, rnd_polyarea_t *start, rnd_bool preserve)
 {
 	rnd_polyarea_t *pa = start;
 	rnd_pline_t *pl;
@@ -132,25 +132,25 @@ RND_INLINE void pa_reinstall_nonolap_holes(rnd_polyarea_t **res, rnd_polyarea_t 
 		if (pa->overlap == 1)
 			for(pl = pa->contours; pl != NULL; pl = pl->next)
 				if (pl->flg.overlap == 0)
-					pa_reinstall_hole(res, pl);
+					pa_reinstall_hole(res, pl, preserve);
 	} while((pa = pa->f) != start);
 }
 
-void pb2_pa_apply_nonoverlaps(rnd_polyarea_t **res, rnd_polyarea_t *A, rnd_polyarea_t *B, int op)
+void pb2_pa_apply_nonoverlaps(rnd_polyarea_t **res, rnd_polyarea_t *A, rnd_polyarea_t *B, int op, rnd_bool preserve)
 {
 	switch (op) {
 		case RND_PBO_XOR:
 		case RND_PBO_UNITE:
-			pa_include_if(res, A, 0);
-			pa_include_if(res, B, 0);
+			pa_include_if(res, A, 0, preserve);
+			pa_include_if(res, B, 0, preserve);
 			break;
 		case RND_PBO_SUB:
-			pa_include_if(res, A, 0);
+			pa_include_if(res, A, 0, preserve);
 			break;
 		case RND_PBO_ISECT:
 			break;
 	}
 
-	pa_reinstall_nonolap_holes(res, A);
+	pa_reinstall_nonolap_holes(res, A, preserve);
 }
 
