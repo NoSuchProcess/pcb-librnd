@@ -76,27 +76,27 @@ RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int o
 #endif
 
 
-static int rnd_polyarea_boolean_(rnd_polyarea_t *A, rnd_polyarea_t *B, rnd_polyarea_t **res, int op, rnd_bool preserve)
+static int rnd_polyarea_boolean_(rnd_polyarea_t **A, rnd_polyarea_t **B, rnd_polyarea_t **res, int op, rnd_bool preserve)
 {
 	pb2_ctx_t ctx = {0};
 	int retval;
 
-	pa_polyarea_bool_dbg(A, B, op);
+	pa_polyarea_bool_dbg(*A, *B, op);
 
 	*res = NULL;
 	rnd_rtree_init(&ctx.seg_tree);
 
-	ctx.input_A = A;
-	ctx.input_B = B;
+	ctx.input_A = *A;
+	ctx.input_B = *B;
 	ctx.op = op;
 	ctx.has_B = 1;
 
-	pb2_pa_clear_overlaps(A);
-	pb2_pa_clear_overlaps(B);
-	pb2_pa_map_overlaps(A, B);
+	pb2_pa_clear_overlaps(*A);
+	pb2_pa_clear_overlaps(*B);
+	pb2_pa_map_overlaps(*A, *B);
 
-	pb2_pa_map_polyarea(&ctx, A, 'A', 0);
-	pb2_pa_map_polyarea(&ctx, B, 'B', 0);
+	pb2_pa_map_polyarea(&ctx, *A, 'A', 0);
+	pb2_pa_map_polyarea(&ctx, *B, 'B', 0);
 
 
 	retval = pb2_exec(&ctx, res);
@@ -108,7 +108,7 @@ static int rnd_polyarea_boolean_(rnd_polyarea_t *A, rnd_polyarea_t *B, rnd_polya
 
 int rnd_polyarea_boolean(const rnd_polyarea_t *A, const rnd_polyarea_t *B, rnd_polyarea_t **res, int op)
 {
-	return rnd_polyarea_boolean_((rnd_polyarea_t *)A, (rnd_polyarea_t *)B, res, op, 1);
+	return rnd_polyarea_boolean_((rnd_polyarea_t **)&A, (rnd_polyarea_t **)&B, res, op, 1);
 }
 
 
@@ -170,10 +170,12 @@ int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_
 		}
 	}
 
-	code = rnd_polyarea_boolean_(a_, b_, res, op, 0);
+	code = rnd_polyarea_boolean_(&a_, &b_, res, op, 0);
 
-	pa_polyarea_free_all(&a_);
-	pa_polyarea_free_all(&b_);
+	if (a_ != NULL)
+		pa_polyarea_free_all(&a_);
+	if (b_ != NULL)
+		pa_polyarea_free_all(&b_);
 
 	return code;
 }

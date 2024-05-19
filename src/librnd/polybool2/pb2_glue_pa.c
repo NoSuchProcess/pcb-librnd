@@ -83,22 +83,46 @@ void pb2_pa_map_overlaps(rnd_polyarea_t *A, rnd_polyarea_t *B)
 	} while((a = a->f) != A);
 }
 
-RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t *start, int overlap_val, rnd_bool preserve)
+RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t **start, int overlap_val, rnd_bool preserve)
 {
-	rnd_polyarea_t *pa = start;
+	rnd_polyarea_t *pa, *paf;
+
+	restart:;
+	pa = *start;
 	do {
+		paf = pa->f;
 		if (pa->overlap == overlap_val) {
-			rnd_polyarea_t *newpa = rnd_polyarea_dup(pa);
-			rnd_polyarea_m_include(res, newpa);
+			if (preserve) {
+				rnd_polyarea_t *newpa = rnd_polyarea_dup(pa);
+				rnd_polyarea_m_include(res, newpa);
+			}
+			else {
+				int removed_start = (pa == *start), only1;
+
+				/* check if there is only one polyarea left in start */
+				only1 = (removed_start && (*start == paf));
+
+				pa_polyarea_unlink(start, pa);
+				rnd_polyarea_m_include(res, pa);
+
+				if (only1)
+					return;
+				if (removed_start) {
+					*start = paf;
+					goto restart;
+				}
+				
+			}
 		}
-	} while((pa = pa->f) != start);
+	} while((pa = paf) != *start);
 }
 
 /* Put back an 'A' hole into res; since the hole is not overlapping with 'B',
    it is untouched by pb2, it surely isn't cut in half. The host island of
    A may have been removed tho (e.g. if operation was an isect). Search
-   each island of res and find the first one pl fits into. */
-RND_INLINE void pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl, rnd_bool preserve)
+   each island of res and find the first one pl fits into. Returns 1 if
+   reinstalled. */
+RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd_pline_t *prev, rnd_pline_t *pl, rnd_bool preserve)
 {
 	rnd_polyarea_t *pa = *res;
 	do {
@@ -113,11 +137,18 @@ RND_INLINE void pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl, rnd_boo
 		   touch and a hole in one of them has a point on the boundary; but the hole
 		   can not have two points on the same boundary without making the input invalid */
 		if (pa_pline_is_vnode_inside(pa->contours, pl->head, 1) && pa_pline_is_vnode_inside(pa->contours, pl->head->next, 1)) {
-			rnd_pline_t *newpl = pa_pline_dup(pl);
-			pa_polyarea_insert_pline(pa, newpl);
-			return;
+			if (preserve) {
+				rnd_pline_t *newpl = pa_pline_dup(pl);
+				pa_polyarea_insert_pline(pa, newpl);
+			}
+			else {
+				pa_pline_unlink(plpa, prev, pl);
+				pa_polyarea_insert_pline(pa, pl);
+			}
+			return 1;
 		}
 	} while((pa = pa->f) != *res);
+	return 0;
 }
 
 /* Take all islands of A that was marked overlapping; they may have
@@ -126,17 +157,23 @@ RND_INLINE void pa_reinstall_hole(rnd_polyarea_t **res, rnd_pline_t *pl, rnd_boo
 RND_INLINE void pa_reinstall_nonolap_holes(rnd_polyarea_t **res, rnd_polyarea_t *start, rnd_bool preserve)
 {
 	rnd_polyarea_t *pa = start;
-	rnd_pline_t *pl;
+	rnd_pline_t *pl, *prev, *next;
 
 	do {
-		if (pa->overlap == 1)
-			for(pl = pa->contours; pl != NULL; pl = pl->next)
-				if (pl->flg.overlap == 0)
-					pa_reinstall_hole(res, pl, preserve);
+		if (pa->overlap == 1) {
+			prev = pa->contours;
+			for(pl = prev->next; pl != NULL; pl = next) {
+				next = pl->next;
+				if (pl->flg.overlap == 0) {
+					if (!pa_reinstall_hole(res, pa, prev, pl, preserve))
+						prev = pl;
+				}
+			}
+		}
 	} while((pa = pa->f) != start);
 }
 
-void pb2_pa_apply_nonoverlaps(rnd_polyarea_t **res, rnd_polyarea_t *A, rnd_polyarea_t *B, int op, rnd_bool preserve)
+void pb2_pa_apply_nonoverlaps(rnd_polyarea_t **res, rnd_polyarea_t **A, rnd_polyarea_t **B, int op, rnd_bool preserve)
 {
 	switch (op) {
 		case RND_PBO_XOR:
@@ -151,6 +188,7 @@ void pb2_pa_apply_nonoverlaps(rnd_polyarea_t **res, rnd_polyarea_t *A, rnd_polya
 			break;
 	}
 
-	pa_reinstall_nonolap_holes(res, A, preserve);
+	if (*A != NULL)
+		pa_reinstall_nonolap_holes(res, *A, preserve);
 }
 
