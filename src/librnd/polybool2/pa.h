@@ -53,11 +53,11 @@ typedef double pa_angle_t;
 #define pa_vnode_equ(vna, vnb) Vequ2((vna)->point, (vnb)->point)
 
 typedef enum pa_pline_label_e {
-	PA_PLL_UNKNWN  = 0,
+	PA_PLL_UNKNWN  = 0
 } pa_pline_label_t;
 
 typedef enum pa_plinept_label_e {
-	PA_PTL_UNKNWN  = 0,
+	PA_PTL_UNKNWN  = 0
 } pa_plinept_label_t;
 
 #define PA_ISC_TOUCHES 99
