@@ -797,7 +797,7 @@
  ../src/librnd/polybool/pa.h ../src/librnd/polybool/pa_config.h \
  ../src/librnd/polybool/big_coord.h ../src/librnd/core/math_helper.h \
  ../src/librnd/core/box.h ../src/librnd/core/misc_util.h ../src/librnd/core/unit.h
-../src/librnd/polybool2/offset.o: ../src/librnd/polybool2/offset.c \
+../src/librnd/polybool2/offset.o: ../src/librnd/polybool2/offset.c ../src/librnd/polybool2/offset2.c \
  ../src/librnd/core/compat_misc.h ../src/librnd/config.h \
  ../src/librnd/polybool2/rtree.h ../src/librnd/core/global_typedefs.h \
  ../src/librnd/core/rnd_bool.h ../src_3rd/genrtree/genrtree_api.h \
