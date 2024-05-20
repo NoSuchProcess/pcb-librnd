@@ -37,6 +37,11 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 /* Same, but returns the largest island only */
 rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs);
 
+/* Return a new pline that's a copy of src with an offset of offs on each seg;
+   a positive offset means the area grows and round corners are added.
+   Returns NULL if resulting polyline is smaller than 0 and flipped. */
+rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t offs);
+
 
 /* low level */
 

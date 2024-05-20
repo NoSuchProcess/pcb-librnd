@@ -90,6 +90,11 @@ RND_INLINE int pa_vertices_are_coaxial(rnd_vnode_t *node)
 	return fabs(a - b) < PA_EPSILON;
 }
 
+int rnd_vertices_are_coaxial(rnd_vnode_t *node)
+{
+	return pa_vertices_are_coaxial(node);
+}
+
 TODO("rename: it's a pline function")
 int rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node)
 {

@@ -445,3 +445,5 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 	} while((v = v->next) != dst->head);
 }
 
+
+#include "offset2.c"
