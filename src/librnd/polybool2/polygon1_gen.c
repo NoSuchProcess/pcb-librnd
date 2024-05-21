@@ -149,6 +149,8 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 			dq += 8;
 	}
 
+/*rnd_printf("        %mm;%mm %d\n", v[0], v[1], dq);*/
+
 	if (dq > end_dq)
 		return 1;
 
@@ -205,6 +207,11 @@ void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coor
 	v[0] = start[0]; v[1] = start[1];
 	ex = (v[0]-cx) * RND_POLY_CIRC_RADIUS_ADJ; ey = (v[1]-cy) * RND_POLY_CIRC_RADIUS_ADJ;
 
+/*
+rnd_printf("frac circ at %mm;%mm: %mm;%mm %d .. %mm;%mm %d\n",
+	cx, cy, start[0], start[1], start_dq, end[0], end[1], end_dq);
+*/
+
 	for(n = 0; n <= RND_POLY_CIRC_SEGS_F; n++) { /* defensive programming: avoid infinite loop to full circle */
 		double tmp;
 		rnd_vector_t er;
@@ -218,7 +225,7 @@ void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coor
 		er[1] = PA_ROUND(ey);
 
 		/* stop if went beyond end */
-		if (went_beyond_end(start_dq, end, end_dq, rollover, er))
+		if (went_beyond_end(start_dq, rel_e, end_dq, rollover, er))
 			break;
 
 		v[0] = cx + er[0]; v[1] = cy + er[1];
