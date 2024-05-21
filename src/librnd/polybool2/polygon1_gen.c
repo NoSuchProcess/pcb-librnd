@@ -102,6 +102,133 @@ static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t cx, rnd_coord_t c
 	}
 }
 
+/* Return v's double-quarter ID in rnd (screen) coord system:
+        6
+
+        |
+     5  |  7
+        |
+ 4 -----+----->  0
+        |     x
+     3  |  1
+        |
+        v y
+
+        2
+*/
+RND_INLINE int dquarter(rnd_vector_t v)
+{
+	if (v[0] == 0) {
+		if (v[1] == 0) return -1;
+		if (v[1] > 0) return 2;
+		/*if (v[1] < 0)*/ return 6;
+	}
+	if (v[1] == 0) {
+		if (v[0] == 0) return -1;
+		if (v[0] > 0) return 0;
+		/*if (v[0] < 0)*/ return 4;
+	}
+	if (v[0] > 0) {
+		if (v[1] > 0) return 1;
+		/*if (v[1] < 0)*/ return 7;
+	}
+	/*if (v[0] < 0)*/ {
+		if (v[1] > 0) return 3;
+		/*if (v[1] < 0)*/ return 5;
+	}
+}
+
+/* Return 1 if v reached or webt beyond end, assuming CW direction in the
+   rnd (screen) coord system */
+RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v)
+{
+	int dq = dquarter(v);
+
+	if (rollover) {
+		if (dq < start_dq)
+			dq += 8;
+	}
+
+	if (dq > end_dq)
+		return 1;
+
+	if (dq == end_dq) { /* in the same dquarter */
+
+		switch (dq) {
+			/* axis aligned end vector */
+			case 0:
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+				return 1;
+
+			/* diagonal end vector */
+			case 1: if (v[1] >= end[1]) return 1; break;
+			case 3: if (v[1] <= end[1]) return 1; break;
+			case 5: if (v[1] <= end[1]) return 1; break;
+			case 7: if (v[1] >= end[1]) return 1; break;
+		}
+	}
+
+	return 0;
+}
+
+void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end)
+{
+	double ex, ey, rad1_x, rad1_y;
+	int n, start_dq, end_dq, rollover;
+	rnd_vector_t rel_s, rel_e, v;
+	rnd_vnode_t *new_node;
+
+	rel_s[0] = start[0] - cx;
+	rel_s[1] = start[1] - cy;
+	rel_e[0] = end[0] - cx;
+	rel_e[1] = end[1] - cy;
+	start_dq = dquarter(rel_s);
+	end_dq = dquarter(rel_e);
+
+	rad1_x = rel_s[0]; rad1_y = rel_s[1];
+
+	/* degenerate case: zero length vector */
+	if (end_dq < 0)
+		return;
+
+	/* dq must increase from start to end */
+	rollover = (start_dq > end_dq);
+	if (rollover)
+		end_dq += 8;
+
+	init_rotate_cache();
+
+	/* move vector to origin */
+	v[0] = start[0]; v[1] = start[1];
+	ex = (v[0]-cx) * RND_POLY_CIRC_RADIUS_ADJ; ey = (v[1]-cy) * RND_POLY_CIRC_RADIUS_ADJ;
+
+	for(n = 0; n <= RND_POLY_CIRC_SEGS_F; n++) { /* defensive programming: avoid infinite loop to full circle */
+		double tmp;
+		rnd_vector_t er;
+
+		/* rotate e */
+		tmp = rotate_circle_seg[0] * ex + rotate_circle_seg[1] * ey;
+		ey = rotate_circle_seg[2] * ex + rotate_circle_seg[3] * ey;
+		ex = tmp;
+
+		er[0] = PA_ROUND(ex);
+		er[1] = PA_ROUND(ey);
+
+		/* stop if went beyond end */
+		if (went_beyond_end(start_dq, end, end_dq, rollover, er))
+			break;
+
+		v[0] = cx + er[0]; v[1] = cy + er[1];
+		new_node = rnd_poly_node_create(v);
+		rnd_poly_vertex_include(insert_after, new_node);
+		insert_after = new_node;
+	}
+}
+
+
 void rnd_poly_frac_circle(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range)
 {
 	rnd_poly_frac_circle_(c, cx, cy, v, range, 0);
