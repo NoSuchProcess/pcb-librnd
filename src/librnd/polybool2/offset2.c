@@ -1,3 +1,4 @@
+#include "polygon1_gen.h"
 int rnd_vertices_are_coaxial(rnd_vnode_t *node);
 
 RND_INLINE rnd_vnode_t *pl_append_xy(rnd_pline_t *dst, rnd_coord_t x, rnd_coord_t y)
@@ -79,7 +80,9 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 			}
 			else {
 				/* convex: add a rounded corner */
+				rnd_coord_t cx = curr->point[0], cy = curr->point[1];
 				rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
+				rnd_poly_frac_circle_to(dst, next->prev, cx, cy, next->prev->point, next->point);
 			}
 		}
 
