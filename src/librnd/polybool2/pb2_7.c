@@ -44,7 +44,8 @@ RND_INLINE void pb2_7_mkpline_and_insert(pb2_ctx_t *ctx, rnd_polyarea_t **res, r
 	}
 	else {
 		/* insert hole in parent positive */
-		pa_polyarea_insert_pline(*parent_pa, pl);
+		if (!pa_polyarea_insert_pline(*parent_pa, pl))
+			pa_pline_free(&pl);
 	}
 }
 
