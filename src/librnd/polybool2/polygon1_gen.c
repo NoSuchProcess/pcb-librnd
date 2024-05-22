@@ -149,20 +149,19 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 			dq += 8;
 	}
 
-/*rnd_printf("        %mm;%mm %d\n", v[0], v[1], dq);*/
+/* rnd_printf("        %.9mm;%.9mm %d end: %.9mm;%.9mm %d \n", v[0], v[1], dq, end[0], end[1], end_dq); */
 
 	if (dq > end_dq)
 		return 1;
 
 	if (dq == end_dq) { /* in the same dquarter */
 
-		switch (dq) {
+		switch (dq % 8) {
 			/* axis aligned end vector */
 			case 0:
 			case 2:
 			case 4:
 			case 6:
-			case 8:
 				return 1;
 
 			/* diagonal end vector */
