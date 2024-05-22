@@ -168,6 +168,8 @@ RND_INLINE void pa_reinstall_nonolap_holes(rnd_polyarea_t **res, rnd_polyarea_t 
 					if (!pa_reinstall_hole(res, pa, prev, pl, preserve))
 						prev = pl;
 				}
+				else
+					prev = pl;
 			}
 		}
 	} while((pa = pa->f) != start);
