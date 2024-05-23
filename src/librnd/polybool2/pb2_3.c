@@ -300,6 +300,12 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 	f->polarity_dir[0] = (dir_end[0] - best[0]*2);
 	f->polarity_dir[1] = (dir_end[1] - best[1]*2);
 
+	/* Corner case: all three points (best_left, best, best_right) are on the
+	   same vertical line; make sure the direction vector is pointing left.
+	   Test case: fixedy3, upper left part */
+	if ((best[0] == best_left[0]) && (best[0] == best_right[0]))
+		f->polarity_dir[0] = -1;
+
 	/* horizontal direction vector is invalid, the ray has to be shifted a tiny
 	   bit up or down */
 	if (f->polarity_dir[1] == 0) {
