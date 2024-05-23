@@ -100,9 +100,9 @@ static void dump_face(pb2_face_t *f)
 {
 	long n;
 
-	rnd_trace("  F%ld: pp=%ld;%ld inA=%d inB=%d out=%d area=%.2f%s\n",
-		f->uid, f->polarity_pt[0], f->polarity_pt[1], f->inA, f->inB, f->out, f->area,
-		(f->destroy ? " {destroy}" : ""));
+	rnd_trace("  F%ld: pp=%ld;%ld dir=%ld;%ld inA=%d inB=%d out=%d area=%.2f%s\n",
+		f->uid, f->polarity_pt[0], f->polarity_pt[1], (long)f->polarity_dir[0], (long)f->polarity_dir[1],
+		f->inA, f->inB, f->out, f->area, (f->destroy ? " {destroy}" : ""));
 	for(n = 0; n < f->num_curves; n++)
 		rnd_trace("   O%ld C%ld %s cmark=%d\n", f->outs[n]->uid, f->outs[n]->curve->uid,
 			f->outs[n]->reverse ? "rev" : "fwd", f->outs[n]->corner_mark);
