@@ -556,7 +556,7 @@ RND_INLINE void cg_postproc_node(pb2_ctx_t *ctx, pb2_cgnode_t *node)
 
 	/* finalzie node out edges (now sorted) */
 	for(n = 0; n < node->num_edges; n++) {
-		pb2_seg_t *seg = (pb2_seg_t *)node->edges[n].node;
+		pb2_seg_t *seg = (pb2_seg_t *)node->edges[n].node, *first, *last;
 		pb2_curve_t *curve = pb2_seg_parent_curve(seg);
 		int found = 0;
 
@@ -567,13 +567,35 @@ RND_INLINE void cg_postproc_node(pb2_ctx_t *ctx, pb2_cgnode_t *node)
 		node->edges[n].curve = curve;
 		node->edges[n].nd_idx = n;
 
+		first = gdl_first(&curve->segs); last = gdl_last(&curve->segs);
+
+		/* corner case: we may have a loop with a T junction that falls not at
+		   the end but one seg after the start or before the end. This is because
+		   the curve builder has no idea where the end of loops should be. Detect
+		   this and fix it up by "rotating" the loop
+		   Test case: fixedx */
+		if ((last != first) && (first->start[0] == last->end[0]) && (first->start[1] == last->end[1])) {
+			if ((seg == first) && (seg->end[0] == node->bbox.x1) && (seg->end[1] == node->bbox.y1)) {
+				/* move from first to last */
+				gdl_remove(&curve->segs, seg, link);
+				gdl_append(&curve->segs, seg, link);
+				first = gdl_first(&curve->segs); last = gdl_last(&curve->segs);
+			}
+			else if ((seg == last) && (seg->start[0] == node->bbox.x1) && (seg->start[1] == node->bbox.y1)) {
+				/* move from last to first */
+				gdl_remove(&curve->segs, seg, link);
+				gdl_insert(&curve->segs, seg, link);
+				first = gdl_first(&curve->segs); last = gdl_last(&curve->segs);
+			}
+		}
+
 		/* figure if curve start/end is connected to this out by the seg that was temporarily bound to the out */
-		if (seg == gdl_first(&curve->segs) && (seg->start[0] == node->bbox.x1) && (seg->start[1] == node->bbox.y1)) {
+		if ((seg == first) && (seg->start[0] == node->bbox.x1) && (seg->start[1] == node->bbox.y1)) {
 			curve->out_start = &node->edges[n];
 			node->edges[n].reverse = 0;
 			found = 1;
 		}
-		if (seg == gdl_last(&curve->segs) && (seg->end[0] == node->bbox.x1) && (seg->end[1] == node->bbox.y1)) {
+		if ((seg == last) && (seg->end[0] == node->bbox.x1) && (seg->end[1] == node->bbox.y1)) {
 			curve->out_end = &node->edges[n];
 			node->edges[n].reverse = 1;
 			found = 1;
