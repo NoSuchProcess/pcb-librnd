@@ -52,6 +52,7 @@ struct pb2_seg_s {
 
 	gdl_elem_t link;      /* within a curve */
 	pb2_seg_t *next_all;  /* within ctx */
+	pb2_seg_t *nexts, *nexte; /* endpoint list hash in step 1 */
 	PB2_UID
 };
 

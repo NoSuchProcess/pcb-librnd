@@ -18,6 +18,9 @@ typedef struct {
 #include <genvector/genvector_impl.c>
 #include <genvector/genvector_undef.h>
 
+#include "htvlist.h"
+#include "htvlist.c"
+
 #define ISCS ((vtisc_t *)(&ctx->iscs))
 
 typedef struct {
@@ -580,55 +583,69 @@ RND_INLINE void cg_postproc_node(pb2_ctx_t *ctx, pb2_cgnode_t *node)
 	}
 }
 
-/* Look at a segment:
-   - discard it if it is in overlap with any other non-discarded segment
-   - otherwise list endpoint connections and put the segment into a curve
-   - if there are more than 2 segments occupy an endpoint, make that a cg node */
-RND_INLINE void pb2_1_build_cg_seg(pb2_ctx_t *ctx, pb2_seg_t *seg, vtp0_t *nstart, vtp0_t *nend)
+/* Link in segments into endpoint lists in an endpoint hash table;
+   discard it if it is in overlap with any other non-discarded segment */
+RND_INLINE void pb2_1_build_cg_seg(pb2_ctx_t *ctx, pb2_seg_t *seg, htvlist_t *htl)
 {
-	rnd_rtree_box_t pbox;
-	rnd_rtree_it_t it;
+	htvlist_key_t k;
+	htvlist_entry_t *e;
 	pb2_seg_t *s;
-
-	nstart->used = nend->used = 0;
 
 	if (seg->discarded)
 		return;
 
-	/* list other non-discarded segments with connected start and end */
-	pbox.x1 = seg->start[0];   pbox.y1 = seg->start[1];
-	pbox.x2 = seg->end[0]+1;   pbox.y2 = seg->end[1]+1;
-	if (pbox.x1 > pbox.x2)
-		rnd_swap(rnd_coord_t, pbox.x1, pbox.x2);
-	if (pbox.y1 > pbox.y2)
-		rnd_swap(rnd_coord_t, pbox.y1, pbox.y2);
-
-	for(s = rnd_rtree_first(&it, &ctx->seg_tree, &pbox); s != NULL; s = rnd_rtree_next(&it)) {
-		if (s->discarded)
-			continue;
-
-		if ((s != seg) && seg_seg_olap(seg, s)) {
-			seg_merge_into(s, seg);
-			return;
+	k.x = seg->start[0]; k.y = seg->start[1];
+	e = htvlist_getentry(htl, k);
+	if (e == NULL) {
+		htvlist_value_t v = {0};
+		htvlist_set(htl, k, v);
+		e = htvlist_getentry(htl, k);
+	}
+	else {
+		for(s = e->value.heads; s != NULL; s = s->nexts) {
+			if (seg_seg_olap(seg, s)) {
+				seg_merge_into(s, seg);
+				return;
+			}
 		}
-
-		if (Vequ2(seg->start, s->start) || Vequ2(seg->start, s->end))
-			vtp0_append(nstart, s);
-
-		if (Vequ2(seg->end, s->start) || Vequ2(seg->end, s->end))
-			vtp0_append(nend, s);
+		for(s = e->value.heade; s != NULL; s = s->nexte) {
+			if (seg_seg_olap(seg, s)) {
+				seg_merge_into(s, seg);
+				return;
+			}
+		}
 	}
 
-	if (nstart->used == 2)
-		curve_glue_segs(ctx, nstart->array[0], nstart->array[1]);
-	else if (nstart->used > 2)
-		cg_create_node_from_segs(ctx, seg->start, nstart);
 
-	if (nend->used == 2)
-		curve_glue_segs(ctx, nend->array[0], nend->array[1]);
-	else if (nend->used > 2)
-		cg_create_node_from_segs(ctx, seg->end, nend);
+	seg->nexts = e->value.heads;
+	e->value.heads = seg;
+
+	k.x = seg->end[0]; k.y = seg->end[1];
+	e = htvlist_getentry(htl, k);
+	if (e == NULL) {
+		htvlist_value_t v = {0};
+		htvlist_set(htl, k, v);
+		e = htvlist_getentry(htl, k);
+	}
+	else {
+			for(s = e->value.heads; s != NULL; s = s->nexts) {
+			if (seg_seg_olap(seg, s)) {
+				seg_merge_into(s, seg);
+				return;
+			}
+		}
+			for(s = e->value.heade; s != NULL; s = s->nexte) {
+			if (seg_seg_olap(seg, s)) {
+				seg_merge_into(s, seg);
+				return;
+			}
+		}
+	}
+
+	seg->nexte = e->value.heade;
+	e->value.heade = seg;
 }
+
 
 RND_INLINE void pb2_1_dummy_node_for_loop(pb2_ctx_t *ctx, pb2_curve_t *c, vtp0_t *tmp)
 {
@@ -663,13 +680,39 @@ RND_INLINE void pb2_1_dummy_node_for_loop(pb2_ctx_t *ctx, pb2_curve_t *c, vtp0_t
 RND_INLINE void pb2_1_build_cg(pb2_ctx_t *ctx)
 {
 	pb2_seg_t *seg;
-	vtp0_t nstart = {0}, nend = {0}; /* neighbor list */
 	pb2_curve_t *c;
 	pb2_cgnode_t *node;
-	
+	htvlist_t htl;
+	htvlist_entry_t *e;
+	vtp0_t vtmp = {0};
 
+	htvlist_init(&htl, htvlist_keyhash, htvlist_keyeq);
+
+	/* build the endpoint hash list (htl) */
 	for(seg = ctx->all_segs; seg != NULL; seg = seg->next_all)
-		pb2_1_build_cg_seg(ctx, seg, &nstart, &nend);
+		pb2_1_build_cg_seg(ctx, seg, &htl);
+
+	/* build the actual cg from the endpoint hash list; look at each endpoint:
+	   if there are more than 2 segments occupy an endpoint,
+	   make that a cg node, otherwise glue segs together into a curve */
+	for(e = htvlist_first(&htl); e != NULL; e = htvlist_next(&htl, e)) {
+		vtmp.used = 0;
+
+		for(seg = e->value.heads; seg != NULL; seg = seg->nexts)
+			vtp0_append(&vtmp, seg);
+		for(seg = e->value.heade; seg != NULL; seg = seg->nexte)
+			vtp0_append(&vtmp, seg);
+
+		if (vtmp.used == 2) {
+			curve_glue_segs(ctx, vtmp.array[0], vtmp.array[1]);
+		}
+		else if (vtmp.used > 2) {
+			rnd_vector_t v;
+			v[0] = e->key.x;
+			v[1] = e->key.y;
+			cg_create_node_from_segs(ctx, v, &vtmp);
+		}
+	}
 
 	/* handle curves that are single loop stand-alone so they don't have a node */
 	for(c = gdl_first(&ctx->curves); c != NULL; c = gdl_next(&ctx->curves, c)) {
@@ -679,7 +722,7 @@ RND_INLINE void pb2_1_build_cg(pb2_ctx_t *ctx)
 		last  = gdl_last(&c->segs);
 
 		if (!first->in_graph && !last->in_graph)
-			pb2_1_dummy_node_for_loop(ctx, c, &nstart);
+			pb2_1_dummy_node_for_loop(ctx, c, &vtmp);
 	}
 
 	for(node = gdl_first(&ctx->cgnodes); node != NULL; node = gdl_next(&ctx->cgnodes, node))
@@ -691,8 +734,8 @@ RND_INLINE void pb2_1_build_cg(pb2_ctx_t *ctx)
 		if ((c->out_start == NULL) || (c->out_end == NULL))
 			c->pruned = 1;
 
-	vtp0_uninit(&nstart);
-	vtp0_uninit(&nend);
+	htvlist_uninit(&htl);
+	vtp0_uninit(&vtmp);
 }
 
 /*** Switching to topology: execute section 1 of the algo ***/
