@@ -9,7 +9,7 @@ typedef struct {
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 1024
 #define GVT_START_SIZE 32
-#define GVT_FUNC
+#define GVT_FUNC RND_INLINE
 #define GVT_SET_NEW_BYTES_TO 0
 
 #include <genvector/genvector_impl.h>
@@ -34,7 +34,7 @@ typedef struct {
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 1024
 #define GVT_START_SIZE 32
-#define GVT_FUNC
+#define GVT_FUNC RND_INLINE
 #define GVT_SET_NEW_BYTES_TO 0
 
 #include <genvector/genvector_impl.h>
