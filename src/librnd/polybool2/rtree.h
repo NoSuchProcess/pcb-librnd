@@ -35,7 +35,7 @@ typedef rnd_coord_t rnd_rtree_coord_t;
 /* Instantiate an rtree */
 #define RTR(n)  rnd_rtree_ ## n
 #define RTRU(n) rnd_RTREE_ ## n
-#define rnd_rtree_privfunc static
+#define rnd_rtree_privfunc RND_INLINE
 #define rnd_rtree_size 6
 #define rnd_rtree_stack_max 4096
 
