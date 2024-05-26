@@ -74,7 +74,6 @@ typedef struct pa_seg_s {
 	rnd_box_t box;
 	rnd_vnode_t *v;
 	rnd_pline_t *p;
-	int intersected;
 } pa_seg_t;
 
 void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src);

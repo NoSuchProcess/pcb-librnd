@@ -69,7 +69,6 @@ static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 	rnd_r_delete_entry(tree, (const rnd_box_t *)sg);
 
 	/* init and insert newly allocated seg from v */
-	newseg->intersected = 0;
 	newseg->v = sg->v;
 	newseg->p = sg->p;
 	pa_seg_update_bbox(newseg);
@@ -77,7 +76,6 @@ static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
 
 	/* instead of free(sg) and malloc() newseg, repurpose sg as newseg for v->next */
 	newseg = sg;
-	newseg->intersected = 0;
 	newseg->v = sg_v_next;
 /*	newseg->p = sg->p; - it's still the same*/
 	pa_seg_update_bbox(newseg);
@@ -93,7 +91,6 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
 
 	do {
 		pa_seg_t *s = malloc(sizeof(pa_seg_t));
-		s->intersected = 0;
 		s->v = bv;
 		s->p = pl;
 		pa_seg_update_bbox(s);
