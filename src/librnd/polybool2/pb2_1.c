@@ -252,6 +252,9 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 	rnd_rtree_search_obj(&ctx->seg_tree, &bbox, pb2_1_isc_line_cb, &ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
+		int found = 0;
+		pb2_seg_t *seg;
+
 		/* split up existing segments */
 		for(n = 0; n < ISCS->used; n++)
 			pb2_1_split_seg_at_iscs(ctx, &ISCS->array[n]);
@@ -267,10 +270,18 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 
 		for(n = 0; n < SPLITS->used-1; n++) {
 			if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
-				pb2_seg_t *seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc);
+				seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc);
 				seg->risky = 1;
 				seg_inc_poly(seg, poly_id);
+				found++;
 			}
+		}
+		if (found < 2) {
+			/* if we ended up creating only one segment and that is the original
+			   segment, that means it did not intersect with rounding so no further
+			   checking is needed */
+			if (Vequ2(p1, seg->start) && Vequ2(p2, seg->end))
+				seg->risky = 0;
 		}
 	}
 	else  {
