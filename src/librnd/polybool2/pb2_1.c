@@ -1,3 +1,4 @@
+
 typedef struct {
 	pb2_seg_t *seg;
 	int num_isc;
@@ -22,6 +23,8 @@ typedef struct {
 #include "htvlist.c"
 
 #define ISCS ((vtisc_t *)(&ctx->iscs))
+
+#include "pa_vect_inline.c"
 
 typedef struct {
 	double offs; /* distance^2 from the search object's starting point (for sorting) */
@@ -98,7 +101,7 @@ static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree
 		return 0;
 
 	TODO("arc: this assumes seg is a line; move most of this into pb2_geo.c");
-	num_isc = rnd_vect_inters2(seg->start, seg->end, ictx->p1, ictx->p2, iscpt[0], iscpt[1]);
+	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->p1, ictx->p2, iscpt[0], iscpt[1], 0);
 	if (num_isc == 0)
 		return 0;
 
@@ -317,7 +320,7 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 
 			if ((s1 == s2 || s2->discarded)) continue;
 
-			num_isc = rnd_vect_inters2(s1->start, s1->end, s2->start, s2->end, isc1, isc2);
+			num_isc = pa_vect_inters2(s1->start, s1->end, s2->start, s2->end, isc1, isc2, 0);
 			if (num_isc == 0) continue;
 
 			/* ignore simple endpoint-endpoint isc */

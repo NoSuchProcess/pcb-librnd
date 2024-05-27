@@ -68,7 +68,7 @@ static rnd_r_dir_t pline_isect_line_cb(const rnd_box_t * b, void *cl)
 	pa_seg_t *s = (pa_seg_t *)b;
 	rnd_vector_t S1, S2;
 
-	if (rnd_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2)) {
+	if (pa_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2, 0)) {
 		ctx->cx = S1[0];
 		ctx->cy = S1[1];
 		return RND_R_DIR_CANCEL; /* found */
@@ -417,7 +417,7 @@ static rnd_r_dir_t pline_isect_circ_cb(const rnd_box_t * b, void *cl)
 	ray1[0] = ctx->cx - ox; ray1[1] = ctx->cy - oy;
 	ray2[0] = ctx->cx + ox; ray2[1] = ctx->cy + oy;
 
-	if (rnd_vect_inters2(s->v->point, s->v->next->point, ray1, ray2, S1, S2))
+	if (pa_vect_inters2(s->v->point, s->v->next->point, ray1, ray2, S1, S2, 0))
 		return RND_R_DIR_CANCEL; /* found */
 
 	return RND_R_DIR_NOT_FOUND;
