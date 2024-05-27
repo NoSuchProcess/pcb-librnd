@@ -5,6 +5,10 @@
 
 #define HT_INVALID_VALUE (htvlist_value_t){0}
 
+#ifdef RND_HAS_INLINE
+#define GENHT_WANT_INLINE
+#endif
+
 typedef struct {
 	rnd_coord_t x, y;
 } htvlist_key_t;
