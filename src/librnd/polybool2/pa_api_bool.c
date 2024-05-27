@@ -41,6 +41,7 @@
 
 int rnd_polybool_disable_autocheck = 0;
 int rnd_polybool_dump_boolops = 0;
+int rnd_pb2_inhibit_edge_tree = 0;
 
 #ifndef NDEBUG
 #include <librnd/core/safe_fs.h>
@@ -90,6 +91,7 @@ static int rnd_polyarea_boolean_(rnd_polyarea_t **A, rnd_polyarea_t **B, rnd_pol
 	ctx.input_B = *B;
 	ctx.op = op;
 	ctx.has_B = 1;
+	ctx.inhibit_edge_tree = rnd_pb2_inhibit_edge_tree;
 
 	pb2_pa_clear_overlaps(*A);
 	pb2_pa_clear_overlaps(*B);
@@ -122,6 +124,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 
 	ctx.input_A = *pa;
 	ctx.op = RND_PBO_CANON;
+	ctx.inhibit_edge_tree = rnd_pb2_inhibit_edge_tree;
 
 	pb2_pa_map_polyarea(&ctx, *pa, 'A', 1);
 

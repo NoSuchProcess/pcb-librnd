@@ -134,6 +134,7 @@ struct pb2_face_s {
 struct pb2_ctx_s {
 	rnd_poly_bool_op_t op;
 	unsigned has_B:1;           /* set by the caller if there's a 'B' poly (binop) */
+	unsigned inhibit_edge_tree:1; /* do not generate pline edge tree when generating output */
 
 	/* step 1 output: segs and curves */
 	rnd_rtree_t seg_tree;       /* haystack of segments */

@@ -320,4 +320,7 @@ void rnd_polyarea_init(rnd_polyarea_t *p);
 rnd_polyarea_t *rnd_polyarea_create(void);
 void rnd_polyarea_free(rnd_polyarea_t **p);
 
+/* [4.3.2] optimization: do not compute pline edge trees */
+extern int rnd_pb2_inhibit_edge_tree;
+
 #endif /* RND_POLYAREA_H */

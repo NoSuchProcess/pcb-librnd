@@ -23,7 +23,10 @@ RND_INLINE rnd_pline_t *pb2_7_mkpline(pb2_ctx_t *ctx, pb2_face_t *f, int positiv
 	pl->area = f->area;
 	pl->Count = count;
 	pl->flg.orient = positive ? RND_PLF_DIR : RND_PLF_INV;
-	pl->tree = rnd_poly_make_edge_tree(pl);
+	if (!ctx->inhibit_edge_tree)
+		pl->tree = rnd_poly_make_edge_tree(pl);
+	else
+		printf("no edge tree\n");
 
 	return pl;
 }
