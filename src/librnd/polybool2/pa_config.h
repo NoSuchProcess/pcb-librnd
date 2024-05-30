@@ -7,6 +7,10 @@
 /* When 1: each rtree add verifies the entry is not already added */
 #define PA_VERIFY_RTREE_ADD 0
 
+/* When 1: do not skip plines that are not intersecting but include
+   every bit of the input in a large PB2 model */
+#define PB2_DISABLE_PLINE_INPUT_OPTIMIZATION 0
+
 /* EPSILON^2 for endpoint matching; the bool algebra code is not
    perfect and causes tiny self intersections at the end of sharp
    spikes. Accept at most 10 nanometer of such intersection */

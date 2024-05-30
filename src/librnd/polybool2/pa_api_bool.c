@@ -97,8 +97,8 @@ static int rnd_polyarea_boolean_(rnd_polyarea_t **A, rnd_polyarea_t **B, rnd_pol
 	pb2_pa_clear_overlaps(*B);
 	pb2_pa_map_overlaps(*A, *B);
 
-	pb2_pa_map_polyarea(&ctx, *A, 'A', 0);
-	pb2_pa_map_polyarea(&ctx, *B, 'B', 0);
+	pb2_pa_map_polyarea(&ctx, *A, 'A', PB2_DISABLE_PLINE_INPUT_OPTIMIZATION);
+	pb2_pa_map_polyarea(&ctx, *B, 'B', PB2_DISABLE_PLINE_INPUT_OPTIMIZATION);
 
 
 	retval = pb2_exec(&ctx, res);
@@ -126,7 +126,7 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa)
 	ctx.op = RND_PBO_CANON;
 	ctx.inhibit_edge_tree = rnd_pb2_inhibit_edge_tree;
 
-	pb2_pa_map_polyarea(&ctx, *pa, 'A', 1);
+	pb2_pa_map_polyarea(&ctx, *pa, 'A', 1); /* force-add everyting into the PB2 model so all self intersections are detected */
 
 	res = pb2_exec(&ctx, &respa);
 
