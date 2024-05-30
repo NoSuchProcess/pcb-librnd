@@ -62,8 +62,6 @@ RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *ne
 
 		if (c->face[0] == newf) {
 			other = c->face[1];
-			if (is_implicit != NULL)
-				*is_implicit = c->face_1_implicit;
 		}
 		else if (c->face[1] == newf) {
 			other = c->face[0];
@@ -73,14 +71,29 @@ RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *ne
 			abort();
 		}
 
+		if (other == &ctx->root)
+			return NULL; /* face has an outside curve */
+
 		if (other->area <= newf->area)
-			return NULL; /* A wrapping face is always larger */
+			continue; /* A wrapping face is always larger; we may still touch a smaller face in self-intersecting cases so go on searching */
 
 		/* bestf is our candidate for the outer face */
 		if (bestf == NULL)
 			bestf = other;
 		else if (bestf != other)
 			return NULL;
+	}
+
+	/* Implicit means there is any curve which newf and bestf share and that
+	   curve was marked implicit hole */
+	if (is_implicit != NULL) {
+		for(n = 0; n < newf->num_curves; n++) {
+			pb2_cgout_t *o = newf->outs[n];
+			pb2_curve_t *c = o->curve;
+			if (((c->face[0] == newf) && (c->face[1] == bestf)) || ((c->face[1] == newf) && (c->face[0] == bestf))) {
+				*is_implicit = c->face_1_implicit;
+			}
+		}
 	}
 
 	return bestf;
@@ -151,8 +164,20 @@ RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 	}
 
 	/* link in under bestf */
+	if (bestf->parent == NULL) {
+		/* we went from bigger to smaller; if we are to insert a smaller positive
+		   into a bigger negative and the negative, that means an island within a
+		   hole. If the negative is not in the output that means it's an implicit
+		   hole, created by the C shaped positive outline; in this case put newf
+		   under the root (because the negative is going to be omitted anyway).
+		   Test case: class2bc2 */
+		bestf = &ctx->root;
+	}
+
 	newf->next = bestf->children;
 	bestf->children = newf;
+	newf->parent = bestf;
+
 }
 
 static int cmp_face_area(const void *a_, const void *b_)

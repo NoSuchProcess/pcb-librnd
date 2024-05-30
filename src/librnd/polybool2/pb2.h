@@ -114,7 +114,7 @@ struct pb2_face_s {
 	rnd_vector_t polarity_dir;   /* relative direction of the virtual piont from polarity_pt (direction only: the VP is infinitely close) */
 
 	pb2_face_t *children, *next; /* output face tree */
-
+	pb2_face_t *parent;          /* output face tree */
 
 	/* step 6 temporary data */
 	struct {
