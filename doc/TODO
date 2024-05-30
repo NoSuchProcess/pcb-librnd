@@ -6,6 +6,23 @@
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
 	- polybool2:
+		- breaks with PB2_DISABLE_PLINE_INPUT_OPTIMIZATION 1
+			- fixed9
+			- fixedq
+			- fixedq2
+			- fixedr
+			- fixedz2
+			- gixedk
+			- gixedo
+			- gixedo2
+			- gixedr2
+			- gixeds
+			- gixedw
+			- gixedx
+			- gixedx2
+			- gixedy
+			- gixedz
+			- gixedz2
 		- si_class2a: assert
 		- sih_class1b1, st_i, st_ic: missing hole (heaping?)
 	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
