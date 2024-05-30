@@ -103,7 +103,10 @@ static int rnd_polyarea_boolean_(rnd_polyarea_t **A, rnd_polyarea_t **B, rnd_pol
 
 	retval = pb2_exec(&ctx, res);
 
+	/* Put back non-intersected plines only if input optimization is not disabled */
+#if ! PB2_DISABLE_PLINE_INPUT_OPTIMIZATION
 	pb2_pa_apply_nonoverlaps(res, A, B, op, preserve);
+#endif
 
 	return retval;
 }
