@@ -45,7 +45,7 @@ static void pb2_6_ray_seg_hit(void *udata, pb2_seg_t *seg)
    face (e.g. a simple poly hole) can be detected: all curves of the face has
    one face the same as newf and the other face the same as the outer face,
    plus the outer face is larger than the inner face */
-RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit)
+RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit, int keep_all)
 {
 	pb2_face_t *bestf = NULL, *other;
 	long n;
@@ -78,8 +78,15 @@ RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *ne
 			continue; /* A wrapping face is always larger; we may still touch a smaller face in self-intersecting cases so go on searching */
 
 		/* bestf is our candidate for the outer face */
-		if (bestf == NULL)
+		if (bestf == NULL) {
 			bestf = other;
+			if (keep_all) {
+				/* test case: bottom triangle hole in si_class2a; inner positive
+				   island would be found next and the bestf != other check below
+				   woudl return NULL before setting is_implicit */
+				break;
+			}
+		}
 		else if (bestf != other)
 			return NULL;
 	}
@@ -99,14 +106,14 @@ RND_INLINE pb2_face_t *pb2_wrapping_face_implicit(pb2_ctx_t *ctx, pb2_face_t *ne
 	return bestf;
 }
 
-RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit)
+RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit, int keep_all)
 {
 	pb2_6_ray_t rctx = {0};
 	pb2_face_t *f, *bestf = NULL;
 	double best_area = -1;
 
 	/* cheapest test: implicit attachment of a fully wrapped face */
-	bestf = pb2_wrapping_face_implicit(ctx, newf, is_implicit);
+	bestf = pb2_wrapping_face_implicit(ctx, newf, is_implicit, keep_all);
 	if (bestf != NULL)
 		return bestf;
 
@@ -150,7 +157,7 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 {
 	int is_implicit;
-	pb2_face_t *bestf = pb2_wrapping_face(ctx, newf, &is_implicit);
+	pb2_face_t *bestf = pb2_wrapping_face(ctx, newf, &is_implicit, !newf->out);
 
 	if (bestf == NULL) {
 		if_trace("pb2_6_insert_face: skip F%ld: no parent\n", PB2_UID_GET(newf));

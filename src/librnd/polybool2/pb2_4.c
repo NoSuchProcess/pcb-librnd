@@ -1,11 +1,11 @@
-RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit);
+RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *is_implicit, int keep_all);
 
 /* corner case: current face may be fully within another face without any
    connection. Test case: fixed00, gixed0 */
 RND_INLINE void pb2_4_curve_other_face(pb2_ctx_t *ctx, pb2_curve_t *c)
 {
 	if (c->face[1] == NULL) {
-		c->face[1] = pb2_wrapping_face(ctx, c->face[0], NULL);
+		c->face[1] = pb2_wrapping_face(ctx, c->face[0], NULL, 0);
 		c->face_1_implicit = 1;
 	}
 }

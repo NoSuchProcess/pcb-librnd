@@ -53,14 +53,46 @@ RND_INLINE void pb2_7_mkpline_and_insert(pb2_ctx_t *ctx, rnd_polyarea_t **res, r
 }
 
 
+RND_INLINE int pb2_7_face_is_sorrunded_by_holes(pb2_face_t *f)
+{
+	long n;
+
+	for(n = 0; n < f->num_curves; n++) {
+		pb2_cgout_t *o = f->outs[n];
+		pb2_curve_t *c = o->curve;
+		pb2_face_t *other = NULL;
+
+		if (c->face[0] == f)
+			other = c->face[1];
+		else if (c->face[1] == f)
+			other = c->face[0];
+
+		if ((other != NULL) && (other->out))
+			return 0;
+
+	}
+	return 1;
+}
+
+
 RND_INLINE void pb2_7_output_subtree(pb2_ctx_t *ctx, rnd_polyarea_t **res, pb2_face_t *parent, rnd_polyarea_t *parent_pa)
 {
 	pb2_face_t *f;
 
 	for(f = parent->children; f != NULL; f = f->next) {
-		assert(f->out != parent->out);
-		pb2_7_mkpline_and_insert(ctx, res, &parent_pa, f, f->out);
-		pb2_7_output_subtree(ctx, res, f, parent_pa);
+		if (f->out && parent->out && pb2_7_face_is_sorrunded_by_holes(f)) {
+			/* corner case: in self-intersection resolvemenent of test case si_class2a
+			   a central positive area is formed that's not part of any larger hole but
+			   is sorrunded by smaller holes. It appears as a positive island but
+			   does not need to be exported. */
+			/* if we wanted to output it as a new island: rnd_polyarea_t *parent_pa = NULL; pb2_7_output_subtree(ctx, res, f, new_parent_pa); */
+			if_trace("omitting F%ld: positive-in-positive, sorrunded by islands\n", PB2_UID_GET(f));
+		}
+		else {
+			assert(f->out != parent->out);
+			pb2_7_mkpline_and_insert(ctx, res, &parent_pa, f, f->out);
+			pb2_7_output_subtree(ctx, res, f, parent_pa);
+		}
 	}
 }
 
