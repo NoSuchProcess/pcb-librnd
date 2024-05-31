@@ -94,7 +94,7 @@ RND_INLINE int pb2_4_prune_curves(pb2_ctx_t *ctx)
 				pb2_face_t *f0 = c->face[0], *f1 = c->face[1]; /* need to cache because pb2_4_destroy_curve_face() changes c->face[] */
 
 				if (f0 != NULL) pb2_4_destroy_curve_face(ctx, f0);
-				if (f1 != NULL) 	pb2_4_destroy_curve_face(ctx, f1);
+				if (f1 != NULL) pb2_4_destroy_curve_face(ctx, f1);
 				c->face_destroy = 0;
 			}
 		}
