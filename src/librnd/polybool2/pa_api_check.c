@@ -492,7 +492,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 #endif
 			return rnd_false;
 		}
-		if (!pa_pline_inside_pline(p->contours, n)) {
+		if ((p->contours->tree != NULL) && (!pa_pline_inside_pline(p->contours, n))) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner (hole): overlap with outer\n");
 			rnd_poly_valid_report(n, n->head, NULL);
