@@ -455,7 +455,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 		return rnd_false;
 	}
 
-	if (p->contours->Count != p->contours->tree->size) {
+	if ((p->contours->tree != NULL) && (p->contours->Count != p->contours->tree->size)) {
 #ifndef NDEBUG
 		rnd_fprintf(stderr, "Invalid Outer pline: rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
 #endif
@@ -479,7 +479,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 #endif
 			return rnd_false;
 		}
-		if (p->contours->Count != p->contours->tree->size) {
+		if ((p->contours->tree != NULL) && (p->contours->Count != p->contours->tree->size)) {
 #ifndef NDEBUG
 			rnd_fprintf(stderr, "Invalid Inner (hole): pline rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
 #endif
