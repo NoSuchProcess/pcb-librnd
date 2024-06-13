@@ -586,19 +586,21 @@ RND_INLINE void cg_postproc_node(pb2_ctx_t *ctx, pb2_cgnode_t *node)
 		/* corner case: we may have a loop with a T junction that falls not at
 		   the end but one seg after the start or before the end. This is because
 		   the curve builder has no idea where the end of loops should be. Detect
-		   this and fix it up by "rotating" the loop
+		   this and fix it up by "rotating" the loop until seg is either first
+		   or last.
 		   Test case: fixedx */
 		if ((last != first) && (first->start[0] == last->end[0]) && (first->start[1] == last->end[1])) {
-			if ((seg == first) && (seg->end[0] == node->bbox.x1) && (seg->end[1] == node->bbox.y1)) {
+			long remaining;
+
+			for(remaining = gdl_length(&curve->segs)+1; remaining > 0; remaining--) {
+				if ((seg == first) && (seg->start[0] == node->bbox.x1) && (seg->start[1] == node->bbox.y1))
+					break;
+				if ((seg == last) && (seg->end[0] == node->bbox.x1) && (seg->end[1] == node->bbox.y1))
+					break;
+
 				/* move from first to last */
-				gdl_remove(&curve->segs, seg, link);
-				gdl_append(&curve->segs, seg, link);
-				first = gdl_first(&curve->segs); last = gdl_last(&curve->segs);
-			}
-			else if ((seg == last) && (seg->start[0] == node->bbox.x1) && (seg->start[1] == node->bbox.y1)) {
-				/* move from last to first */
-				gdl_remove(&curve->segs, seg, link);
-				gdl_insert(&curve->segs, seg, link);
+				gdl_remove(&curve->segs, first, link);
+				gdl_append(&curve->segs, first, link);
 				first = gdl_first(&curve->segs); last = gdl_last(&curve->segs);
 			}
 		}
