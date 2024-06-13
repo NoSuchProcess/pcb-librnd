@@ -591,7 +591,7 @@ TODO(": maybe expose these through the object API so the caller can set it up?")
 
 	gtkc_setup_events(GTK_WIDGET(prv), 1, 1, 1, 1, 1, 1);
 
-	gtkc_bind_widget_destroy(prv, rnd_gtkc_xy_ev(&prv->ev_destroy, preview_destroy_cb, ctx));
+	gtkc_bind_widget_destroy(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->ev_destroy, preview_destroy_cb, ctx));
 
 	gtkc_bind_mouse_scroll(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->rs, preview_scroll_cb, NULL));
 	gtkc_bind_mouse_motion(GTK_WIDGET(prv), rnd_gtkc_xy_ev(&prv->motion, preview_motion_cb, NULL));
