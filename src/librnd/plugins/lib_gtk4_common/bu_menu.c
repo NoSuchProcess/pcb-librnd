@@ -590,13 +590,16 @@ static void menu_close_subs(rnd_gtk_menu_ctx_t *ctx, lht_node_t *mnd)
 {
 	open_menu_t *om, *next;
 
+	restart:;
 	for(om = gdl_first(&open_menu); om != NULL; om = next) {
 		next = om->link.next;
 		if (om->parent == NULL) continue;
 /*		printf("open: %s (%s == %s) popov=%p om=%p\n", om->parent->name, om->parent->parent->parent->name, mnd->name, om->popov, om);*/
-		if (!om->floating && (om->parent->parent->parent == mnd)) {
+		if (!om->destroying && !om->floating && (om->parent->parent->parent == mnd)) {
 /*			printf(" Close!\n");*/
+			om->destroying = 1;
 			gtk_popover_popdown(GTK_POPOVER(om->popwin)); /* this will also call gtkc_open_menu_del() from unmap */
+			goto restart; /* popdown() may have free'd next and the list should be short anyway so rather restart the search */
 		}
 	}
 }
@@ -766,7 +769,7 @@ void gtkc_menu_popup(void *gctx_, lht_node_t *mnd)
 		evw = gctx->topwin.drawing_area;
 
 	p = gtkci_menu_open(&gctx->topwin.menu, NULL, mnd, rnd_hid_cfg_menu_field(mnd, RND_MF_SUBMENU, NULL), 0, 0, 1);
-	gtk_widget_set_parent(p, gtkc_event_widget);
+	gtk_widget_set_parent(p, gtkc_event_widget); TODO("should be: gctx->topwin.drawing_area to avoid a crash with newer gtk4?");
 	gtk_popover_set_pointing_to(GTK_POPOVER(p), &rect);
 	gtk_popover_set_position(GTK_POPOVER(p), GTK_POS_RIGHT);
 	gtk_popover_set_has_arrow(GTK_POPOVER(p), 1);

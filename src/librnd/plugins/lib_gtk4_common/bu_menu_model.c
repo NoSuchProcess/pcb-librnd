@@ -10,6 +10,7 @@ typedef struct {
 	vti0_t flag;              /* open_menu_flag_t for each menu item */
 	unsigned int floating:1;  /* tear-off menu; 0=popover, 1=non-modal dialog */
 	unsigned int ctx_popup:1; /* context popup menu; 0=normal, 1=context popup; context popups can not be teared off as they should be modal */
+	unsigned int destroying:1;/* set to 1 to indicate the menu is being destroyed */
 	gdl_elem_t link;          /* in list of all open menus */
 } open_menu_t;
 
