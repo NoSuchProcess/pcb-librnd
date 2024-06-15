@@ -972,6 +972,14 @@ RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	rnd_pline_t *pl;
 
 	pl = pa->contours;
+
+	/* no output for a zero or negative sized box */
+	if ((ctx->clip.X1 >= ctx->clip.X2) || (ctx->clip.Y1 >= ctx->clip.Y2)) return;
+
+	/* if clipbox doesn't include pl's bbox at all, output is empty */
+	if ((ctx->clip.X1 >= pl->xmax) || (ctx->clip.Y1 >= pl->ymax)) return;
+	if ((ctx->clip.X2 <= pl->xmin) || (ctx->clip.Y2 <= pl->ymin)) return;
+
 	DEBUG_CLIP("  emit island: %ld;%ld\n", (long)pl->head->point[0], (long)pl->head->point[1]);
 	pa_dic_pline_label(ctx, pl);
 
