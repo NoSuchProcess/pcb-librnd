@@ -46,11 +46,12 @@ typedef enum pa_dic_pline_label_e { /* pline's flg.label */
 	PA_PLD_AWAY = 4        /* pline is fully outside but not wrapping the box */
 } pa_dic_pline_label_t;
 
+TODO("x and y should be big-coord instead of double")
 struct pa_dic_isc_s {
 	rnd_vnode_t *vn;
 	rnd_pline_t *pl;
 
-	rnd_coord_t x, y;      /* corners have vn==NULL pl==NULL but we still need to remember the coords */
+	double x, y;      /* corners have vn==NULL pl==NULL but we still need to remember the coords */
 
 	unsigned temporary:1;  /* inserted by the dicer code, shall be removed at the end */
 	unsigned coax:1;       /* set if line is coaxial (may overlap with) the edge */
@@ -172,7 +173,7 @@ RND_INLINE rnd_vnode_t *pa_dic_split_seg(pa_dic_ctx_t *ctx, pa_seg_t *seg, rnd_c
 
 /* Record an intersection, potentially creating a new temporary node in seg;
    first and second are the first and second real (non-temporary) node of seg */
-RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rnd_coord_t x, rnd_coord_t y, int *iscs, int coax, rnd_vnode_t *first, rnd_vnode_t *second)
+RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, double x, double y, int *iscs, int coax, rnd_vnode_t *first, rnd_vnode_t *second)
 {
 	pa_dic_isc_t *isc = pa_dic_isc_alloc(ctx);
 	rnd_vnode_t *nd = NULL;
@@ -214,17 +215,17 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 	return isc;
 }
 
-TODO("rewrite these with big_coords to make the 64-bit-coord safe")
-rnd_coord_t pa_line_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
+TODO("rewrite these with big_coords to make the 64-bit-coord safe (replace dobule)")
+double pa_line_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
 {
 	double dx = (double)(lx2 - lx1) / (double)(ly2 - ly1);
-	return rnd_round(lx1 + (y - ly1) * dx);
+	return (double)lx1 + (double)(y - ly1) * dx;
 }
 
-rnd_coord_t pa_line_y_for_x(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t x)
+double pa_line_y_for_x(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t x)
 {
 	double dy = (double)(ly2 - ly1) / (double)(lx2 - lx1);
-	return rnd_round(ly1 + (x - lx1) * dy);
+	return (double)ly1 + (double)(x - lx1) * dy;
 }
 
 
@@ -269,7 +270,7 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 	}
 	else {
 		/* normal case: sloped line */
-		rnd_coord_t x;
+		double x;
 
 		if (ly1 > ly2) {
 			rnd_swap(rnd_coord_t, ly1, ly2);
@@ -332,7 +333,7 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 	}
 	else {
 		/* normal case: sloped line */
-		rnd_coord_t y;
+		double y;
 
 		if (lx1 > lx2) {
 			rnd_swap(rnd_coord_t, lx1, lx2);
@@ -845,7 +846,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 	for(i = start_isc->next;; i = i->next) {
 		if (i == term) {
 			if (i == start_isc->next)
-				pa_dic_append(ctx, start_isc->x, start_isc->y); /* test case: clip26, 45;80..55;70..65;80 */
+				pa_dic_append(ctx, rnd_round(start_isc->x), rnd_round(start_isc->y)); /* test case: clip26, 45;80..55;70..65;80 */
 			DEBUG_CLIP("        break: term\n");
 			break;
 		}
@@ -853,8 +854,8 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 			DEBUG_CLIP("        break: already ecollected\n");
 			break;
 		}
-		pa_dic_append(ctx, i->x, i->y);
-		DEBUG_CLIP("       append: %ld;%ld\n", (long)i->x, (long)i->y);
+		pa_dic_append(ctx, rnd_round(i->x), rnd_round(i->y));
+		DEBUG_CLIP("       append: %ld;%ld\n", (long)rnd_round(i->x), (long)rnd_round(i->y));
 		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, i->pl) == PA_DPT_INSIDE)) {
 			DEBUG_CLIP("        break: pline going inside\n");
 			break;
@@ -890,8 +891,8 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 
 	/* it's safe to start here, next deviation is going inside */
 	pa_dic_begin(ctx);
-	pa_dic_append(ctx, from->x, from->y);
-	DEBUG_CLIP("       append: %ld;%ld\n", (long)from->x, (long)from->y);
+	pa_dic_append(ctx, rnd_round(from->x), rnd_round(from->y));
+	DEBUG_CLIP("       append: %ld;%ld\n", (long)rnd_round(from->x), (long)rnd_round(from->y));
 	from->pcollected = 1;
 
 	i = from;
