@@ -3,8 +3,11 @@
 		- gixed6: nowhere to go
 		- gixed7: infloop
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
+			- happens in pcb-rnd make test RTT too, had to disable polybool in ./configure
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
+	- polybool2:
+		- test on OSX, if works, enable in pcb-rnd cec.d
 	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 	- FEATURE: font v2: upgrade aussiefont:
 		- step #1: make sure drawing atom andd glyph advance are round mil numbers (use >=1 mil grid)
