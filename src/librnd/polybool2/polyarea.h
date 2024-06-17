@@ -295,6 +295,18 @@ extern int rnd_polybool_disable_autocheck;
 /* When true, assert instead of returning error code */
 extern int rnd_polybool_assert_on_error_code;
 
+/*** low level pline geo ***/
+/* [4.3.0] Returns whether a zero width line intersects with pl; if cx;cy are
+   not NULL copy the coords of the first intersection detected into them.
+   Only contour intersection is checked, if the line is fully contained by
+   the area of pl false is returned. */
+rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
+
+/* [4.3.0] Returns whether a circle of r intersects with pline.
+   Only contour intersection is checked, if the line is fully contained by
+   the area of pl false is returned. */
+rnd_bool rnd_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r);
+
 /*** generic geo ***/
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
 
