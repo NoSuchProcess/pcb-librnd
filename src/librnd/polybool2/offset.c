@@ -167,12 +167,25 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs
 		num_pts++;
 	} while((v = v->next) != src->head);
 
-	/* allocate the cache and copy all data */
+	/* allocate the cache and copy all data, except coaxial (redundant) vnodes */
 	pcsh = malloc(sizeof(rnd_polo_t) * num_pts);
-	for(n = 0, v = src->head; n < num_pts; n++, v = v->next) {
-		pcsh[n].x = v->point[0];
-		pcsh[n].y = v->point[1];
-		rnd_polo_norm(&pcsh[n].nx, &pcsh[n].ny, v->point[0], v->point[1], v->next->point[0], v->next->point[1]);
+	v = src->head;
+	n = 0;
+	do {
+		if (!rnd_vertices_are_coaxial(v->next)) {
+			pcsh[n].x = v->point[0];
+			pcsh[n].y = v->point[1];
+			n++;
+		}
+	} while((v = v->next) != src->head);
+
+	/* compute normals */
+	num_pts = n;
+	for(n = 0; n < num_pts; n++) {
+		long nn = n+1;
+		if (nn == num_pts)
+			nn = 0;
+		rnd_polo_norm(&pcsh[n].nx, &pcsh[n].ny, pcsh[n].x, pcsh[n].y, pcsh[nn].x, pcsh[nn].y);
 	}
 
 	/* offset the cache */
@@ -349,7 +362,6 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 		rnd_rtree_box_t pb;
 		void *seg;
 		int inside = 0;
-
 
 		retry:;
 		pb.x1 = v->point[0] - offs+1; pb.y1 = v->point[1] - offs+1;
