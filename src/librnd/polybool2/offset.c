@@ -252,6 +252,8 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 
 	dxn = dx / len;
 	dyn = dy / len;
+	*odx = dxn;
+	*ody = dyn;
 
 	o = (ax * dxn + ay * dyn) / len;
 	if (o <= 0.0) {
@@ -268,8 +270,6 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 	tmp1 = dy*x0 - dx*y0 + x2*y1 - y2*x1;
 	d2 = dx*dx + dy*dy;
 
-	*odx = dxn;
-	*ody = dyn;
 	return (tmp1 * tmp1) / d2;
 }
 
