@@ -125,12 +125,13 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 	int isc1_bad = 0, isc2_bad = 0, num_isc;
 	rnd_vector_t ip0, ip1;
 	pb2_seg_t *news;
+	static int cnt = 0;
 
 	num_isc = isc->num_isc;
 	Vcpy2(orig_end, isc->seg->end);
 	Vcpy2(ip0, isc->isc[0]);
 	Vcpy2(ip1, isc->isc[1]);
-
+	cnt++;
 
 	if (Vequ2(ip0, isc->seg->start)) isc1_bad = 1;
 	else if (Vequ2(ip0, orig_end)) isc1_bad = 1;
@@ -190,11 +191,11 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 			isc->seg->discarded = 1;
 
 		/* two more segments after the two intersections */
-		if (!pb2_1_ends_match(isc, *i1, *i2)) {
+		if (!Vequ2(*i1, *i2)) {
 			news = pb2_seg_new_alike(ctx, *i1, *i2, isc->seg);
 			news->risky = 1;
 		}
-		if (!pb2_1_ends_match(isc, *i2, orig_end)) {
+		if (!Vequ2(*i2, orig_end)) {
 			news = pb2_seg_new_alike(ctx, *i2, orig_end, isc->seg);
 			news->risky = 1;
 		}
@@ -212,7 +213,7 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 
 
 		/* plus add the extra segment */
-		if (!pb2_1_ends_match(isc, ip0, orig_end)) {
+		if (!Vequ2(ip0, orig_end)) {
 			news = pb2_seg_new_alike(ctx, ip0, orig_end, isc->seg);
 			news->risky = 1;
 		}
