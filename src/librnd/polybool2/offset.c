@@ -290,6 +290,9 @@ RND_INLINE int pull_back(rnd_vnode_t *v, const rnd_vnode_t *vp, double tune, dou
 
 	prx = v->point[0] - prjx;
 	pry = v->point[1] - prjy;
+	if ((prx == 0) && (pry == 0))
+		return -1;
+
 	prlen = sqrt(prx*prx + pry*pry);
 	prx /= prlen;
 	pry /= prlen;
