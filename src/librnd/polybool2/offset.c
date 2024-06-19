@@ -37,6 +37,10 @@
 static void rndo_trace(char *fmt, ...) {}
 #endif
 
+/* This is not yet in any API */
+int rnd_vertices_are_coaxial(rnd_vnode_t *node);
+
+
 void rnd_polo_norm(double *nx, double *ny, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1, len = sqrt(dx*dx + dy*dy);
