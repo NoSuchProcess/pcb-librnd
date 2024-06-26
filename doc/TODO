@@ -18,6 +18,9 @@
 		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
+	- BUG: import_pixmap_pnm: [aron]
+		- use P5 maxval to scale input values to 0..255; if >255 it's 2-byte MSB
+		- P4: row end padding when (width % 8) != 0
 	- implement pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- BUG: shift+arrow key in act_Cursor() does strante things both in pcb-rnd and sch-rnd [report: Vuokko]
 	- BUG: perma scripts are initialized too late
