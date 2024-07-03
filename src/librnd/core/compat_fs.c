@@ -461,6 +461,7 @@ int rnd_rmtree(rnd_design_t *dsg, gds_t *dst)
 				if ((de->d_name[1] == '.') && (de->d_name[2] == '\0')) continue;
 			}
 
+			gds_append(dst, '/');
 			gds_append_str(dst, de->d_name);
 			rnd_rmtree(dsg, dst);
 			dst->array[save] = '\0';
