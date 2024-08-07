@@ -1,6 +1,3 @@
-librnd 4.2.0
+librnd 4.3.0
 ~~~~~~~~~~~~
-Minor bugfix release (focus is on the yet unused polybool lib) with a few
-API extensions for future features. Also add support for scrollbar-free
-unlimited pan (for osm-rnd)
-
+Release for the second rewrite of the polygon clipping lib, polybool2.

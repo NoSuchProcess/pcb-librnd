@@ -1,3 +1,48 @@
+librnd 4.3.0 (r37300)
+~~~~~~~~~~~~~~~~~~~~~
+	[build]
+		-Add: #define RND_HAS_INLINE if keyword 'inline' is availble to ease optimization
+
+	[core]
+		-Fix: rnd_rmtree() failed to remvoe files and subdirs because of a path build bug (path separator not added)
+
+	[gtk]
+		-Fix: cast preview widget's custom pointer to GTK_WIDGET for compatibility-binding the destroy function - this avoids an incompatible pointer warning with recent versions of gtk4 (which in turn can become an error on some systems)
+
+	[gtk4]
+		-Cleanup: warning on incompatible ptr types on gtkc_bind_win_destroy(): first arg is always cast to G_OBJECT so it can accept any widget type; removes a warning
+		-Fix: safer mechanism for closing a submenu: in some cases gtk4 may destroy open-menu list items synchronously in other cases asynchronously; make sure not to access elements of the list potentially destroyed by gtk4 during the loop
+
+	[hid_lesstif]
+		-Fix: passed the wrong pixmap ID to xrender (when xrender is enabled and present)
+
+	[lesstif]
+		-Fix: r34636 (adding user data ptr to config change callbacks) missed a function ptr type passed in argument
+		-Fix: missing cast: X API too old to be const-correct
+
+	[poly]
+		-Add: publish rnd_pline_isect_line() and rnd_pline_isect_circ()
+
+	[polybool]
+		-Fix: passing wrong poitner type to angle cmp
+		-Fix: dicer: don't perform any clipping if clip box is outside of the box of the contour pline
+		-Fix: dicer: don't perform clipping if clipbox has a zero or negative size
+		-Cleanup: C89 violations
+		-Cleanup: const correctness, remove unused vars
+		-Cleanup: missing/implicit function return type
+		-Cleanup: suppress warning on intentionally unused result
+		-Add: point-in-poly: SEGs are taken in arbitrary order
+		-Add: publish rnd_pline_isect_line() and rnd_pline_isect_circ()
+		-Merge: port r37277 from polybool2 (higher resolution isc)
+		-Merge: port r37278 from polybool2 (inverted island in slice output)
+
+	[polybool2]
+		-Add: rewrite of polybool in an area based approach (immune to self-intersection problems)
+
+	[test]
+		-Fix: conftest shouldn't use the old API for conf callbacks (wrong number of args in function pointers)
+
+
 librnd 4.2.0 (r36857)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
