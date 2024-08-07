@@ -1,9 +1,24 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=4.2.0
+  ver=4.3.0
   cd /tmp
   svn export svn://repo.hu/librnd/trunk librnd-$ver
   tar -cf librnd-$ver.tar librnd-$ver
+
+Packaging changes between 4.3.0 and 4.2.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. a few more header files are installed for the -dev package for polybool2
+   (but these should be all picked up by the directory anyway)
+
+B. changes that probably DO need action
+
+1. a few more .so files are installed for polybool2; *.so.* files should
+   go in package librnd4, the *.so files should go in librnd4-dev; we already
+   had these wildcard rules but please double check that all polybool2
+   .so files are present in the right packages.
+
 
 Packaging changes between 4.2.0 and 4.1.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
