@@ -18,6 +18,7 @@
 		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
+	- BUG: {z e} in camv-rnd for bug_files/negcoord.gbr doesn't do the right thing because vertical negative coords [report: hzeller]
 	- BUG: gtk4 {tab} jumpyness [report: hzeller]
 		- local experimental patch in cancer:gtk4, lib_gtk4_common, gtkc_widget_window_origin
 		- instead of finding top window through parent, pass on gctx->wtop_window
