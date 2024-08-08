@@ -18,7 +18,10 @@
 		- step #8: line_height; test with first line with descend chars like jjjj, second line with tall ascend chars like @@@@; rule of thumb: there should be about 1/10th of "max_height" free space between lines
 
 2. For later releases ===============================================================================
-	- BUG: import_pixmap_pnm: [aron]
+	- BUG: gtk4 {tab} jumpyness [report: hzeller]
+		- local experimental patch in cancer:gtk4, lib_gtk4_common, gtkc_widget_window_origin
+		- instead of finding top window through parent, pass on gctx->wtop_window
+	- BUG: import_pixmap_pnm: [report: aron]
 		- use P5 maxval to scale input values to 0..255; if >255 it's 2-byte MSB
 		- P4: row end padding when (width % 8) != 0
 	- implement pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
