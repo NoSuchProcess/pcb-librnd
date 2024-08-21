@@ -30,6 +30,9 @@
 
 /* misc functions used by several modules */
 
+/* this is required by win32 stdlib.h for rand_s() */
+#define _CRT_RAND_S
+
 #define RND_SAFE_FS
 #include <librnd/rnd_config.h>
 
