@@ -53,6 +53,7 @@
 #include <librnd/core/globalconst.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
+#include <librnd/core/paths.h>
 
 #include <genvector/gds_char.h>
 
@@ -131,10 +132,6 @@ int rnd_spawnvp(const char **argv)
 #	error Do not know how to run a background process.
 #endif
 }
-
-#ifdef __WIN32__
-extern char *rnd_w32_cachedir;
-#endif
 
 /* Hopefully the operating system
  * provides a mkdtemp() function to securely create a temporary
