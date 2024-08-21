@@ -57,6 +57,7 @@ static void help1(void)
 	printf(" --workaround-gtk-ctrl      enable GTK control key query workaround\n");
 	printf(" --disable-so               do not compile or install dynamic libs (.so files)\n");
 	printf(" --static-librnd            static link librnd (will fail with plugins!)\n");
+	printf(" --floating-fhs             do not assume fixed FHS $PREFIX, detect runtime\n");
 }
 
 int want_coord_bits;
@@ -103,6 +104,10 @@ int hook_custom_arg(const char *key, const char *value)
 	if (strcmp(key, "static-librnd") == 0) {
 		put("/local/librnd/want_static_librnd", strue);
 		pup_set_debug(strue);
+		return 1;
+	}
+	if (strcmp(key, "floating-fhs") == 0) {
+		put("/local/librnd/want_floating_fhs", strue);
 		return 1;
 	}
 
@@ -554,6 +559,7 @@ int hook_generate()
 	print_sum_setting("/local/librnd/debug",          "Compilation for debugging");
 	print_sum_setting_or("/local/librnd/symbols",     "Include debug symbols", istrue(get("/local/rnd/debug")));
 	print_sum_cfg_val("/local/librnd/coord_bits",     "Coordinate type bits");
+	print_sum_setting("/local/librnd/want_floating_fhs", "floating-fhs (runtime $PREFIX detection)");
 
 #undef plugin_def
 #undef plugin_header
