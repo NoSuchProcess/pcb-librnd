@@ -54,6 +54,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/paths.h>
+#include <librnd/core/misc_util.h>
 
 #include <genvector/gds_char.h>
 
