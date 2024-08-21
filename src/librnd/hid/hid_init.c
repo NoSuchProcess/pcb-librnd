@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 2004 harry eaton
- *  Copyright (C) 2016..2021 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2021,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,10 +34,6 @@
 #include <locale.h>
 #include <ctype.h>
 
-#ifdef __WIN32__
-#include <wchar.h>
-#endif
-
 #include <genvector/vts0.h>
 
 #include <puplug/os_dep_fs.h>
@@ -62,6 +58,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/paths.h>
 #include <librnd/core/project.h>
 #include <librnd/hid/grid.h>
 #include <librnd/core/funchash.h>
@@ -830,26 +827,6 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 	return 0;
 }
 
-#ifdef __WIN32__
-/* truncate the last dir segment; returns remaining length or 0 on failure */
-static int truncdir(char *dir)
-{
-	char *s;
-
-	for(s = dir + strlen(dir) - 1; s >= dir; s--) {
-		if ((*s == '/') || (*s == '\\')) {
-			*s = '\0';
-			return s - dir;
-		}
-	}
-	*dir = '\0';
-	return 0;
-}
-extern int rnd_mkdir_(const char *path, int mode);
-char *rnd_w32_root;
-char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
-#endif
-
 void rnd_fix_locale_and_env_()
 {
 	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
@@ -863,39 +840,7 @@ void rnd_fix_locale_and_env_()
 
 	setlocale(LC_ALL, "C");
 
-
-#ifdef __WIN32__
-	{
-		char *s, exedir[MAX_PATH];
-		wchar_t *w, wexedir[MAX_PATH];
-
-		if (!GetModuleFileNameW(NULL, wexedir, MAX_PATH)) {
-			fprintf(stderr, "%s: GetModuleFileNameW(): failed to determine executable full path\n", rnd_app.package);
-			exit(1);
-		}
-
-		for(w = wexedir, s = exedir; *w != 0; w++)
-			s += wctomb(s, *w);
-		*s = '\0';
-
-		truncdir(exedir);
-
-		for(s = exedir; *s != '\0'; s++)
-			if (*s == '\\')
-				*s = '/';
-
-		rnd_w32_bindir = rnd_strdup(exedir);
-		truncdir(exedir);
-		rnd_w32_root = rnd_strdup(exedir);
-		rnd_w32_libdir = rnd_concat(exedir, "/lib/pcb-rnd", NULL);
-		rnd_w32_sharedir = rnd_concat(exedir, "/share/pcb-rnd", NULL);
-
-		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
-		rnd_mkdir_(rnd_w32_cachedir, 0755);
-
-/*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
-	}
-#endif
+	rnd_path_init();
 }
 
 static int rnd_pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)

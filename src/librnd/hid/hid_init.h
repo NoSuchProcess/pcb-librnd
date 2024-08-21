@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 2004 harry eaton
- *  Copyright (C) 2016..2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2019,2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
 #include <puplug/puplug.h>
 #include <genvector/vtp0.h>
 #include <librnd/hid/hid.h>
+
+/* for compatibility reasons (for rnd_w32* paths that got moved to core): */
+#include <librnd/core/paths.h>
 
 #define RND_ACTION_ARGS_WIDTH 5
 
@@ -172,14 +175,6 @@ int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[]);
 /* true if main() is called for printing or exporting (no interactive HID
    shall be invoked) */
 #define rnd_main_exporting (rnd_gui->printer || rnd_gui->exporter)
-
-#ifdef __WIN32__
-extern char *rnd_w32_root;     /* installation prefix; what would be $PREFIX on FHS, e.g. /usr/local */
-extern char *rnd_w32_libdir;   /* on FHS this would be $PREFIX/lib*/
-extern char *rnd_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 this also hosts the dlls */
-extern char *rnd_w32_sharedir; /* on FHS this would be $PREFIX/share */
-extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
-#endif
 
 /* Runtime checks that need to be compiled into the host application. Do not
    use this directly. Invoked by rnd_fix_locale_and_env(). */

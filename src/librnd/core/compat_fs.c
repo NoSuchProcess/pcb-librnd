@@ -132,6 +132,9 @@ int rnd_spawnvp(const char **argv)
 #endif
 }
 
+#ifdef __WIN32__
+extern char *rnd_w32_cachedir;
+#endif
 
 /* Hopefully the operating system
  * provides a mkdtemp() function to securely create a temporary

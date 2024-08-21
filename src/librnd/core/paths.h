@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016, 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016, 2017, 2024 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,10 +24,21 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#ifndef LIBRND_CORE_PATHS_H
+#define LIBRND_CORE_PATHS_H
+
 /* Resolve paths, build paths using template */
 
 #include <genvector/gds_char.h>
 #include <librnd/core/global_typedefs.h>
+
+/* Normally called from hid's rnd_fix_locale_and_env(); if hid is not used
+   or rnd_fix_locale_and_env() is not called, call this early on so that
+   paths are figured before used e.g. in loading configs. When configured
+   with --floating-fhs, this functio figures the exec root dir and
+   sets rnd_w32_* variables */
+void rnd_path_init(void);
+
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
    If extra_room is non-zero, allocate this many bytes extra for each slot;
@@ -81,3 +92,13 @@ char *rnd_build_argfn(const char *template, rnd_build_argfn_t *arg);
 
 int rnd_build_argfn_cb(void *ctx, gds_t *s, const char **input);
 
+/* Used when ./configured with --floating-fhs: $PREFIX is not a fixed dir */
+#ifdef __WIN32__
+extern char *rnd_w32_root;     /* installation prefix; what would be $PREFIX on FHS, e.g. /usr/local */
+extern char *rnd_w32_libdir;   /* on FHS this would be $PREFIX/lib*/
+extern char *rnd_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 this also hosts the dlls */
+extern char *rnd_w32_sharedir; /* on FHS this would be $PREFIX/share */
+extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
+#endif
+
+#endif
