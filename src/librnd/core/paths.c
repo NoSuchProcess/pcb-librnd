@@ -482,23 +482,21 @@ static void rnd_w32_init(char *bindir)
 		return;
 
 #ifdef RND_WANT_FLOATING_FHS
-	{
-		rnd_w32_bindir = rnd_strdup(bindir);
+	rnd_w32_bindir = rnd_strdup(bindir);
 
-		rnd_w32_root = rnd_strdup(bindir);
-		truncdir(rnd_w32_root);
-		rnd_w32_libdir = rnd_concat(rnd_w32_root, "/lib/pcb-rnd", NULL);
-		rnd_w32_sharedir = rnd_concat(rnd_w32_root, "/share/pcb-rnd", NULL);
+	rnd_w32_root = rnd_strdup(bindir);
+	truncdir(rnd_w32_root);
+	rnd_w32_libdir = rnd_concat(rnd_w32_root, "/lib/pcb-rnd", NULL);
+	rnd_w32_sharedir = rnd_concat(rnd_w32_root, "/share/pcb-rnd", NULL);
 
 #ifdef __WIN32__
-		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
-		rnd_mkdir_(rnd_w32_cachedir, 0755);
+	rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
+	rnd_mkdir_(rnd_w32_cachedir, 0755);
 #else
-		rnd_w32_cachedir = rnd_strdup("/tmp");
+	rnd_w32_cachedir = rnd_strdup("/tmp");
 #endif
 
 /*		printf("floating-fhs root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
-	}
 #endif
 
 	rnd_w32_inited = 1;
@@ -513,37 +511,37 @@ static char *search_path_for_bindir(const char *argv0, int *found_bindir)
 	struct stat sb;
 	int r;
 
-		tmps = getenv("PATH");
+	tmps = getenv("PATH");
 
-		if (tmps != NULL) {
-			path = rnd_strdup(tmps);
+	if (tmps != NULL) {
+		path = rnd_strdup(tmps);
 
-			/* search through the font path for a font file */
-			for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
+		/* search through the font path for a font file */
+		for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
 #ifdef DEBUG
-				printf("Looking for %s in %s\n", argv0, p);
+			printf("Looking for %s in %s\n", argv0, p);
 #endif
-				if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
-					fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
-					exit(1);
-				}
-				sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
-				r = stat(tmps, &sb);
-				if (r == 0) {
-#ifdef DEBUG
-					printf("Found it:  \"%s\"\n", tmps);
-#endif
-					bindir = rnd_lrealpath(tmps);
-					if (bindir == NULL)
-						bindir = rnd_strdup(tmps);
-					found_bindir = 1;
-					free(tmps);
-					break;
-				}
-				free(tmps);
+			if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
+				fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
+				exit(1);
 			}
-			free(path);
+			sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
+			r = stat(tmps, &sb);
+			if (r == 0) {
+#ifdef DEBUG
+				printf("Found it:  \"%s\"\n", tmps);
+#endif
+				bindir = rnd_lrealpath(tmps);
+				if (bindir == NULL)
+					bindir = rnd_strdup(tmps);
+				found_bindir = 1;
+				free(tmps);
+				break;
+			}
+			free(tmps);
 		}
+		free(path);
+	}
 
 	return bindir;
 }
