@@ -356,13 +356,21 @@ char *rnd_path_resolve_inplace(rnd_design_t *hidlib, char *in, unsigned int extr
 
 
 #ifdef RND_WANT_FLOATING_FHS
+
+#ifdef __WIN32__
+#	define CHK_PSEP(c) ((c == '/') || (c == '\\'))
+#else
+#	define CHK_PSEP(c) (c == '/')
+#endif
+
+
 /* truncate the last dir segment; returns remaining length or 0 on failure */
 static int truncdir(char *dir)
 {
 	char *s;
 
 	for(s = dir + strlen(dir) - 1; s >= dir; s--) {
-		if ((*s == '/') || (*s == '\\')) {
+		if (CHK_PSEP(*s)) {
 			*s = '\0';
 			return s - dir;
 		}
@@ -370,24 +378,19 @@ static int truncdir(char *dir)
 	*dir = '\0';
 	return 0;
 }
+
 extern int rnd_mkdir_(const char *path, int mode);
 char *rnd_w32_root;
 char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
 #endif
 
 
-
-/* [4.3.1] Internal: called from rnd_exec_prefix().
-   When configured with --floating-fhs, this function figures the exec
-   root dir and sets rnd_w32_* variables */
-static int rnd_w32_inited = 0;
-static void rnd_w32_init(void)
+/* Figure 'bindir', which is the path to the directory the executable is in;
+   on windows there's a special call to start from because argv[0] won't reveal
+   the path; on UNIX start from argv[0] and if that fails search $PATH */
+#ifdef __WIN32__
+static char *get_bindir_win32(char *argv0, const char *bin_dir)
 {
-	if (rnd_w32_inited)
-		return;
-
-#ifdef RND_WANT_FLOATING_FHS
-	{
 		char *s, exedir[PATH_INIT_MAX_PATH];
 		wchar_t *w, wexedir[PATH_INIT_MAX_PATH];
 
@@ -406,31 +409,16 @@ static void rnd_w32_init(void)
 			if (*s == '\\')
 				*s = '/';
 
-		rnd_w32_bindir = rnd_strdup(exedir);
-		truncdir(exedir);
-		rnd_w32_root = rnd_strdup(exedir);
-		rnd_w32_libdir = rnd_concat(exedir, "/lib/pcb-rnd", NULL);
-		rnd_w32_sharedir = rnd_concat(exedir, "/share/pcb-rnd", NULL);
-
-		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
-		rnd_mkdir_(rnd_w32_cachedir, 0755);
-
-/*		printf("floating-fhs root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
-	}
-#endif
-
-	rnd_w32_inited = 1;
+	return strdup(exedir);
 }
-
-char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
+#define get_bindir get_bindir_win32
+#else
+static char *get_bindir_unix(char *argv0, const char *bin_dir)
 {
-	size_t l;
 	int haspath;
 	char *t1, *t2;
 	int found_bindir = 0;
-	char *exec_prefix = NULL;
 	char *bindir = NULL;
-
 
 	/* see if argv0 has enough of a path to let lrealpath give the
 	   real path.  This should be the case if you invoke pcb with
@@ -449,10 +437,81 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 			bindir = rnd_strdup(argv0);
 		found_bindir = 1;
 	}
+	else
+		bindir = search_path_for_bindir(argv0, &found_bindir);
+
+	if (found_bindir) {
+		/* strip off the executable name leaving only the path */
+		t2 = NULL;
+		t1 = strchr(bindir, RND_DIR_SEPARATOR_C);
+		while (t1 != NULL && *t1 != '\0') {
+			t2 = t1;
+			t1 = strchr(t2 + 1, RND_DIR_SEPARATOR_C);
+		}
+		if (t2 != NULL)
+			*t2 = '\0';
+	}
 	else {
-		char *path, *p, *tmps;
-		struct stat sb;
-		int r;
+		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
+
+		/* special case: substitute $(HOME) for ~ */
+		if ((bin_dir[0] == '~') && (bin_dir[1] == '/')) {
+			const char *home = getenv("HOME");
+			if ((home == NULL) || (*home == '\0')) {
+				fprintf(stderr, "rnd_exec_prefix(): failed to resolve bin_dir '%s': there's no $HOME set\n", bin_dir);
+				exit(1);
+			}
+			bindir = rnd_concat(home, bin_dir+1, NULL);
+		}
+		else
+			bindir = rnd_strdup(bin_dir);
+	}
+
+	return bindir;
+}
+#define get_bindir get_bindir_unix
+#endif
+
+/* [4.3.1] Internal: called from rnd_exec_prefix().
+   When configured with --floating-fhs, this function figures the exec
+   root dir and sets rnd_w32_* variables */
+static int rnd_w32_inited = 0;
+static void rnd_w32_init(char *bindir)
+{
+	if (rnd_w32_inited)
+		return;
+
+#ifdef RND_WANT_FLOATING_FHS
+	{
+		rnd_w32_bindir = rnd_strdup(bindir);
+
+		rnd_w32_root = rnd_strdup(bindir);
+		truncdir(rnd_w32_root);
+		rnd_w32_libdir = rnd_concat(rnd_w32_root, "/lib/pcb-rnd", NULL);
+		rnd_w32_sharedir = rnd_concat(rnd_w32_root, "/share/pcb-rnd", NULL);
+
+#ifdef __WIN32__
+		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
+		rnd_mkdir_(rnd_w32_cachedir, 0755);
+#else
+		rnd_w32_cachedir = rnd_strdup("/tmp");
+#endif
+
+/*		printf("floating-fhs root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
+	}
+#endif
+
+	rnd_w32_inited = 1;
+}
+
+/* search $PATH for the executable and assume it was started from there;
+   argv0 is the file name of the executable (without path). If found,
+   returns full path to the executable */
+static char *search_path_for_bindir(const char *argv0, int *found_bindir)
+{
+	char *path, *p, *tmps, *bindir = NULL;
+	struct stat sb;
+	int r;
 
 		tmps = getenv("PATH");
 
@@ -485,36 +544,18 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 			}
 			free(path);
 		}
-	}
 
-	if (found_bindir) {
-		/* strip off the executable name leaving only the path */
-		t2 = NULL;
-		t1 = strchr(bindir, RND_DIR_SEPARATOR_C);
-		while (t1 != NULL && *t1 != '\0') {
-			t2 = t1;
-			t1 = strchr(t2 + 1, RND_DIR_SEPARATOR_C);
-		}
-		if (t2 != NULL)
-			*t2 = '\0';
-	}
-	else {
-		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
+	return bindir;
+}
 
-		/* special case: substitute $(HOME) for ~ */
-		if ((bin_dir[0] == '~') && (bin_dir[1] == '/')) {
-			const char *home = getenv("HOME");
-			if ((home == NULL) || (*home == '\0')) {
-				fprintf(stderr, "rnd_exec_prefix(): failed to resolve bin_dir '%s': there's no $HOME set\n", bin_dir);
-				exit(1);
-			}
-			bindir = rnd_concat(home, bin_dir+1, NULL);
-		}
-		else
-			bindir = rnd_strdup(bin_dir);
-	}
+char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
+{
+	size_t l;
+	char *exec_prefix = NULL;
+	char *bindir = NULL;
 
-	rnd_w32_init();
+	bindir = get_bindir(argv0, bin_dir);
+	rnd_w32_init(bindir);
 
 	/* now find the path to exec_prefix */
 	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;
