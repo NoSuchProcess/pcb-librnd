@@ -500,7 +500,18 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 	}
 	else {
 		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
-		bindir = rnd_strdup(bin_dir);
+
+		/* special case: substitute $(HOME) for ~ */
+		if ((bin_dir[0] == '~') && (bin_dir[1] == '/')) {
+			const char *home = getenv("HOME");
+			if ((home == NULL) || (*home == '\0')) {
+				fprintf(stderr, "rnd_exec_prefix(): failed to resolve bin_dir '%s': there's no $HOME set\n", bin_dir);
+				exit(1);
+			}
+			bindir = rnd_concat(home, bin_dir+1, NULL);
+		}
+		else
+			bindir = rnd_strdup(bin_dir);
 	}
 
 	rnd_w32_init();
