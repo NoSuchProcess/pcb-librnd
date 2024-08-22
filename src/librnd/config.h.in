@@ -166,7 +166,7 @@ else
 print {\n/* Not emitted in release */\n#define TODO(x)\n}
 end
 
-print {\n\n/* Define to 1 if you want $PREFIX detected runtime (floating-fhs). */\n}
+print {\n\n/* [4.3.1] Define to 1 if you want $PREFIX detected runtime (floating-fhs). */\n}
 print_ternary ?/local/librnd/want_floating_fhs {#define RND_WANT_FLOATING_FHS 1} {/* #undef RND_WANT_FLOATING_FHS */}
 
 print [@
