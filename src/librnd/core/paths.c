@@ -534,7 +534,7 @@ static char *search_path_for_bindir(const char *argv0, int *found_bindir)
 				bindir = rnd_lrealpath(tmps);
 				if (bindir == NULL)
 					bindir = rnd_strdup(tmps);
-				found_bindir = 1;
+				*found_bindir = 1;
 				free(tmps);
 				break;
 			}
