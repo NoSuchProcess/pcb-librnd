@@ -376,11 +376,14 @@ char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
 #endif
 
 
-static int rnd_path_inited = 0;
 
-void rnd_path_init(void)
+/* [4.3.1] Internal: called from rnd_exec_prefix().
+   When configured with --floating-fhs, this function figures the exec
+   root dir and sets rnd_w32_* variables */
+static int rnd_w32_inited = 0;
+static void rnd_w32_init(void)
 {
-	if (rnd_path_inited)
+	if (rnd_w32_inited)
 		return;
 
 #ifdef RND_WANT_FLOATING_FHS
@@ -416,7 +419,7 @@ void rnd_path_init(void)
 	}
 #endif
 
-	rnd_path_inited = 1;
+	rnd_w32_inited = 1;
 }
 
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
@@ -500,7 +503,7 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 		bindir = rnd_strdup(bin_dir);
 	}
 
-	rnd_path_init();
+	rnd_w32_init();
 
 	/* now find the path to exec_prefix */
 	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;

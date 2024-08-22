@@ -101,10 +101,4 @@ extern char *rnd_w32_sharedir; /* on FHS this would be $PREFIX/share */
 extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
 #endif
 
-/* [4.3.1] Internal, do not call; called from hid's rnd_exec_prefix().
-   When configured with --floating-fhs, this functio figures the exec
-   root dir and sets rnd_w32_* variables */
-void rnd_path_init(void);
-
-
 #endif
