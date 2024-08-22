@@ -412,7 +412,54 @@ static char *get_bindir_win32(char *argv0, const char *bin_dir)
 	return strdup(exedir);
 }
 #define get_bindir get_bindir_win32
-#else
+
+#else /* UNIX */
+
+/* search $PATH for the executable and assume it was started from there;
+   argv0 is the file name of the executable (without path). If found,
+   returns full path to the executable */
+static char *search_path_for_bindir(const char *argv0, int *found_bindir)
+{
+	char *path, *p, *tmps, *bindir = NULL;
+	struct stat sb;
+	int r;
+
+	tmps = getenv("PATH");
+
+	if (tmps != NULL) {
+		path = rnd_strdup(tmps);
+
+		/* search through the font path for a font file */
+		for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
+#ifdef DEBUG
+			printf("Looking for %s in %s\n", argv0, p);
+#endif
+			if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
+				fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
+				exit(1);
+			}
+			sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
+			r = stat(tmps, &sb);
+			if (r == 0) {
+#ifdef DEBUG
+				printf("Found it:  \"%s\"\n", tmps);
+#endif
+				bindir = rnd_lrealpath(tmps);
+				if (bindir == NULL)
+					bindir = rnd_strdup(tmps);
+				*found_bindir = 1;
+				free(tmps);
+				break;
+			}
+			free(tmps);
+		}
+		free(path);
+	}
+
+	return bindir;
+}
+
+
 static char *get_bindir_unix(char *argv0, const char *bin_dir)
 {
 	int haspath;
@@ -500,50 +547,6 @@ static void rnd_w32_init(char *bindir)
 #endif
 
 	rnd_w32_inited = 1;
-}
-
-/* search $PATH for the executable and assume it was started from there;
-   argv0 is the file name of the executable (without path). If found,
-   returns full path to the executable */
-static char *search_path_for_bindir(const char *argv0, int *found_bindir)
-{
-	char *path, *p, *tmps, *bindir = NULL;
-	struct stat sb;
-	int r;
-
-	tmps = getenv("PATH");
-
-	if (tmps != NULL) {
-		path = rnd_strdup(tmps);
-
-		/* search through the font path for a font file */
-		for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
-#ifdef DEBUG
-			printf("Looking for %s in %s\n", argv0, p);
-#endif
-			if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
-				fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
-				exit(1);
-			}
-			sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
-			r = stat(tmps, &sb);
-			if (r == 0) {
-#ifdef DEBUG
-				printf("Found it:  \"%s\"\n", tmps);
-#endif
-				bindir = rnd_lrealpath(tmps);
-				if (bindir == NULL)
-					bindir = rnd_strdup(tmps);
-				*found_bindir = 1;
-				free(tmps);
-				break;
-			}
-			free(tmps);
-		}
-		free(path);
-	}
-
-	return bindir;
 }
 
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
