@@ -32,8 +32,8 @@
 #include <genvector/gds_char.h>
 #include <librnd/core/global_typedefs.h>
 
-/* Normally called from hid's rnd_fix_locale_and_env(); if hid is not used
-   or rnd_fix_locale_and_env() is not called, call this early on so that
+/* Normally called from hid's rnd_exec_prefix(); if hid is not used
+   or rnd_exec_prefix() is not called, call this early on so that
    paths are figured before used e.g. in loading configs. When configured
    with --floating-fhs, this functio figures the exec root dir and
    sets rnd_w32_* variables */

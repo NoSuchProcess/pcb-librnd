@@ -574,6 +574,8 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 		bindir = rnd_strdup(bin_dir);
 	}
 
+	rnd_path_init();
+
 	/* now find the path to exec_prefix */
 	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;
 	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
@@ -839,8 +841,6 @@ void rnd_fix_locale_and_env_()
 		rnd_setenv(*lc, "C", 1);
 
 	setlocale(LC_ALL, "C");
-
-	rnd_path_init();
 }
 
 static int rnd_pcbhl_main_arg_match(const char *in, const char *shrt, const char *lng)

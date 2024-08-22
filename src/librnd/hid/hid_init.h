@@ -138,6 +138,7 @@ void rnd_fix_locale_and_env_();
    and return malloc'ed exec prefix that should be saved in the config
    bin_dir is the full installation path of the bin dir, e.g. "/usr/local/bin"
    bin_dir_to_execprefix is relative path between the two, typically ".."
+   Also calls rnd_path_init().
    */
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix);
 
