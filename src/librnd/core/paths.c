@@ -560,7 +560,7 @@ char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_e
 
 	/* now find the path to exec_prefix */
 	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;
-	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
+	if ((exec_prefix = malloc(l)) == NULL) {
 		fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
 		exit(1);
 	}
