@@ -93,7 +93,7 @@ char *rnd_build_argfn(const char *template, rnd_build_argfn_t *arg);
 int rnd_build_argfn_cb(void *ctx, gds_t *s, const char **input);
 
 /* Used when ./configured with --floating-fhs: $PREFIX is not a fixed dir */
-#ifdef __WIN32__
+#ifdef RND_WANT_FLOATING_FHS
 extern char *rnd_w32_root;     /* installation prefix; what would be $PREFIX on FHS, e.g. /usr/local */
 extern char *rnd_w32_libdir;   /* on FHS this would be $PREFIX/lib*/
 extern char *rnd_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 this also hosts the dlls */

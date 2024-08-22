@@ -151,7 +151,7 @@ int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 	if (*template == '?')
 		template++;
 
-#ifdef __WIN32__
+#ifdef RND_WANT_FLOATING_FHS
 	if (*template == '@') {
 		gds_append_str(s, rnd_w32_root);
 		template++;
@@ -254,7 +254,7 @@ int rnd_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								}
 								if (cn->val.string[0] != NULL) {
 									if (*cn->val.string[0] == '@') {
-#ifdef __WIN32__
+#ifdef RND_WANT_FLOATING_FHS
 										gds_append_str(s, rnd_w32_root);
 										gds_append_str(s, cn->val.string[0]+1);
 #else
@@ -353,7 +353,7 @@ char *rnd_path_resolve_inplace(rnd_design_t *hidlib, char *in, unsigned int extr
 #endif
 
 
-#ifdef __WIN32__
+#ifdef RND_WANT_FLOATING_FHS
 /* truncate the last dir segment; returns remaining length or 0 on failure */
 static int truncdir(char *dir)
 {
@@ -381,7 +381,7 @@ void rnd_path_init(void)
 	if (rnd_path_inited)
 		return;
 
-#ifdef __WIN32__
+#ifdef RND_WANT_FLOATING_FHS
 	{
 		char *s, exedir[PATH_INIT_MAX_PATH];
 		wchar_t *w, wexedir[PATH_INIT_MAX_PATH];
@@ -410,7 +410,7 @@ void rnd_path_init(void)
 		rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
 		rnd_mkdir_(rnd_w32_cachedir, 0755);
 
-/*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
+/*		printf("floating-fhs root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
 	}
 #endif
 
