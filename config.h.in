@@ -31,10 +31,6 @@ print [@
 /* Paths */
 @]
 
-print {\n\n/* Define to 1 if you want $PREFIX detected runtime (floating-fhs). */\n}
-print_ternary ?/local/librnd/want_floating_fhs {#define RND_WANT_FLOATING_FHS 1} {/* #undef RND_WANT_FLOATING_FHS */}
-
-
 switch sys/class
 	case {win32}
 		print [@
