@@ -37,7 +37,8 @@
 		- sch-rnd doc: trunk/doc/user/07_io/alien/index.html: look for <!--TODO#1--> and update it (from which version of librnd it works and how)
 
 3. Long term ===============================================================================
-	- API deletion (5.0.0)
+	- API deletion and renames (5.0.0)
+		- rename rnd_w32_*: more generic, for ./configure --floating-fhs (binpack)
 		- remove the old poly lib
 		- DAD close buttons can't have tooltips (for sch-rnd)
 			- need to add an optional tooltip field at the _end_ of rnd_hid_dad_buttons_t
