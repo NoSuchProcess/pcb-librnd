@@ -416,3 +416,97 @@ void rnd_path_init(void)
 
 	rnd_path_inited = 1;
 }
+
+char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix)
+{
+	size_t l;
+	int haspath;
+	char *t1, *t2;
+	int found_bindir = 0;
+	char *exec_prefix = NULL;
+	char *bindir = NULL;
+
+
+	/* see if argv0 has enough of a path to let lrealpath give the
+	   real path.  This should be the case if you invoke pcb with
+	   something like /usr/local/bin/pcb or ./pcb or ./foo/pcb
+	   but if you just use pcb and it exists in your path, you'll
+	   just get back pcb again. */
+	haspath = (strchr(argv0, RND_DIR_SEPARATOR_C) != NULL);
+
+#ifdef DEBUG
+	printf("rnd_exec_prefix (%s): haspath = %d\n", argv0, haspath);
+#endif
+
+	if (haspath) {
+		bindir = rnd_lrealpath(argv0);
+		if (bindir == NULL)
+			bindir = rnd_strdup(argv0);
+		found_bindir = 1;
+	}
+	else {
+		char *path, *p, *tmps;
+		struct stat sb;
+		int r;
+
+		tmps = getenv("PATH");
+
+		if (tmps != NULL) {
+			path = rnd_strdup(tmps);
+
+			/* search through the font path for a font file */
+			for (p = strtok(path, RND_PATH_DELIMETER); p && *p; p = strtok(NULL, RND_PATH_DELIMETER)) {
+#ifdef DEBUG
+				printf("Looking for %s in %s\n", argv0, p);
+#endif
+				if ((tmps = (char *) malloc((strlen(argv0) + strlen(p) + 2) * sizeof(char))) == NULL) {
+					fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
+					exit(1);
+				}
+				sprintf(tmps, "%s%s%s", p, RND_DIR_SEPARATOR_S, argv0);
+				r = stat(tmps, &sb);
+				if (r == 0) {
+#ifdef DEBUG
+					printf("Found it:  \"%s\"\n", tmps);
+#endif
+					bindir = rnd_lrealpath(tmps);
+					if (bindir == NULL)
+						bindir = rnd_strdup(tmps);
+					found_bindir = 1;
+					free(tmps);
+					break;
+				}
+				free(tmps);
+			}
+			free(path);
+		}
+	}
+
+	if (found_bindir) {
+		/* strip off the executable name leaving only the path */
+		t2 = NULL;
+		t1 = strchr(bindir, RND_DIR_SEPARATOR_C);
+		while (t1 != NULL && *t1 != '\0') {
+			t2 = t1;
+			t1 = strchr(t2 + 1, RND_DIR_SEPARATOR_C);
+		}
+		if (t2 != NULL)
+			*t2 = '\0';
+	}
+	else {
+		/* we have failed to find out anything from argv[0] so fall back to the original install prefix */
+		bindir = rnd_strdup(bin_dir);
+	}
+
+	rnd_path_init();
+
+	/* now find the path to exec_prefix */
+	l = strlen(bindir) + 1 + strlen(bin_dir_to_execprefix) + 1;
+	if ((exec_prefix = (char *) malloc(l * sizeof(char))) == NULL) {
+		fprintf(stderr, "rnd_exec_prefix():  malloc failed\n");
+		exit(1);
+	}
+	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, bin_dir_to_execprefix);
+	free(bindir);
+	return exec_prefix;
+}

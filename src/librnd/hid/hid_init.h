@@ -134,12 +134,7 @@ typedef struct {
 /* This is called by the macro, do not call this directly */
 void rnd_fix_locale_and_env_();
 
-/* Figure out the canonical name of the executed program
-   and return malloc'ed exec prefix that should be saved in the config
-   bin_dir is the full installation path of the bin dir, e.g. "/usr/local/bin"
-   bin_dir_to_execprefix is relative path between the two, typically ".."
-   Also calls rnd_path_init().
-   */
+/* As of 4.3.1 this has been moved to core/paths.h and kept here only for compatibility */
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix);
 
 void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */

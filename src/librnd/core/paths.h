@@ -32,12 +32,12 @@
 #include <genvector/gds_char.h>
 #include <librnd/core/global_typedefs.h>
 
-/* [4.3.1] Normally called from hid's rnd_exec_prefix(); if hid is not used
-   or rnd_exec_prefix() is not called, call this early on so that
-   paths are figured before used e.g. in loading configs. When configured
-   with --floating-fhs, this functio figures the exec root dir and
-   sets rnd_w32_* variables */
-void rnd_path_init(void);
+/* Figure out the canonical name of the executed program
+   and return malloc'ed exec prefix that should be saved in the config
+   bin_dir is the full installation path of the bin dir, e.g. "/usr/local/bin"
+   bin_dir_to_execprefix is relative path between the two, typically ".."
+   Moved from hid to core at 4.3.1 to resolve core->hid dependency */
+char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix);
 
 
 /* Allocate *out and copy the path from in to out, replacing ~ with conf_core.rc.path.home
@@ -100,5 +100,11 @@ extern char *rnd_w32_bindir;   /* on FHS this would be $PREFIX/bin - on win32 th
 extern char *rnd_w32_sharedir; /* on FHS this would be $PREFIX/share */
 extern char *rnd_w32_cachedir; /* where to store cache files, e.g. gdk pixbuf loader cache; persistent, but not part of the distribution */
 #endif
+
+/* [4.3.1] Internal, do not call; called from hid's rnd_exec_prefix().
+   When configured with --floating-fhs, this functio figures the exec
+   root dir and sets rnd_w32_* variables */
+void rnd_path_init(void);
+
 
 #endif
