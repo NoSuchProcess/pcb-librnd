@@ -35,6 +35,8 @@
 #include <librnd/core/rnd_conf.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_inc.h>
+#include <librnd/core/compat_lrealpath.h>
 
 #ifdef __WIN32__
 #	include <wchar.h>

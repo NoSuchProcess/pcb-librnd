@@ -52,7 +52,6 @@
 #include <librnd/hid/hid_dad_unit.h>
 #include <librnd/core/misc_util.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/compat_inc.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/hidlib.h>
@@ -63,7 +62,6 @@
 #include <librnd/hid/grid.h>
 #include <librnd/core/funchash.h>
 #include <librnd/hid/hid_menu.h>
-#include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/hid/buildin.hidlib.h>
 #include <librnd/hid/tool.h>
