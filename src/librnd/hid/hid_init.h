@@ -134,8 +134,12 @@ typedef struct {
 /* This is called by the macro, do not call this directly */
 void rnd_fix_locale_and_env_();
 
-/* As of 4.3.1 this has been moved to core/paths.h and kept here only for compatibility */
+/* As of 4.3.1 this have been moved to core/paths.h and kept here only for compatibility */
 char *rnd_exec_prefix(char *argv0, const char *bin_dir, const char *bin_dir_to_execprefix);
+#ifdef RND_WANT_FLOATING_FHS
+extern char *rnd_w32_root, *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
+#endif
+
 
 void rnd_hidlib_init1(void (*conf_core_init)(void), const char *exec_prefix); /* before CLI argument parsing; conf_core_init should conf_reg() at least the hidlib related nodes */
 void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins); /* after CLI argument parsing */
