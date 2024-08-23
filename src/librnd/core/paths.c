@@ -533,8 +533,8 @@ static void rnd_w32_init(char *bindir)
 
 	rnd_w32_root = rnd_strdup(bindir);
 	truncdir(rnd_w32_root);
-	rnd_w32_libdir = rnd_concat(rnd_w32_root, "/lib/pcb-rnd", NULL);
-	rnd_w32_sharedir = rnd_concat(rnd_w32_root, "/share/pcb-rnd", NULL);
+	rnd_w32_libdir = rnd_concat(rnd_w32_root, "/lib/", rnd_app.package, NULL);
+	rnd_w32_sharedir = rnd_concat(rnd_w32_root, "/share/", rnd_app.package, NULL);
 
 #ifdef __WIN32__
 	rnd_w32_cachedir = rnd_concat(rnd_w32_root, "/cache", NULL);
