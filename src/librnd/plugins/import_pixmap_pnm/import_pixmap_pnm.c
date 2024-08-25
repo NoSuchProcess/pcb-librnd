@@ -134,10 +134,13 @@ static int pnm_load(rnd_design_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 				ADDPX(pxm, fgetc(f), fgetc(f), fgetc(f), 0);
 			break;
 		case '5':
-			fgets(line, sizeof(line) - 1, f);
-			for(; n>0; n--) {
-				int px = fgetc(f);
-				ADDPX(pxm, px, px, px, 0);
+			if (fgets(line, sizeof(line) - 1, f) != 0) {
+				for(; n>0; n--) {
+					int px = fgetc(f);
+					ADDPX(pxm, px, px, px, 0);
+				}
+				rnd_message(RND_MSG_ERROR, "pnm_load(): premature EOF in '5'\n");
+				goto error;
 			}
 			break;
 		case '4':
