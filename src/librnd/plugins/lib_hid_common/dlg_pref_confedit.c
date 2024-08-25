@@ -365,6 +365,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 
 					RND_DAD_BEGIN_VBOX(ctx->dlg);
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+						ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 						rnd_conflist_foreach(hlist, &it, i) {
 							lht_node_t *rule = i->prop.src;
 							RND_DAD_BUTTON(ctx->dlg, rule->name);
