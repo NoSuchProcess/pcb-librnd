@@ -78,7 +78,7 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 				rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)discard);
 				curr->next->point[0] = isc1[0];
 				curr->next->point[1] = isc1[1];
-				free(curr);
+				free((rnd_vnode_t *)curr); /* curr is from dst now so it's safe to free it */
 				free(discard);
 			}
 			else {
@@ -86,7 +86,7 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 				rnd_coord_t cx = curr->point[0], cy = curr->point[1];
 				rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
 				rnd_poly_frac_circle_to(dst, next->prev, cx, cy, next->prev->point, next->point);
-				free(curr);
+				free((rnd_vnode_t *)curr); /* curr is from dst now so it's safe to free it */
 			}
 		}
 
