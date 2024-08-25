@@ -2091,7 +2091,8 @@ int rnd_conf_save_file(rnd_design_t *hidlib, const char *project_fn, const char 
 
 			if (path == NULL) {
 				rnd_message(RND_MSG_ERROR, "Error: failed to calculate the project file name (design file name or allocation error)\n");
-				fclose(f);
+				if (f != NULL)
+					fclose(f);
 				return -1;
 			}
 
