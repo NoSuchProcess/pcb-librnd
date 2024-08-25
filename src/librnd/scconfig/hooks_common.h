@@ -212,7 +212,8 @@ static int plugin_dep_set_recurse(const char *parent_plugin, const char *target_
 static int plugin_dep_set_rec1(const char *plg, const char *on, const char *parent_plugin, const char *target_state, int depth)
 {
 	int chg = 0;
-	char buff[1024], *st_child;
+	char buff[1024];
+	const char *st_child;
 
 	if (strcmp(on, parent_plugin) == 0) {
 		sprintf(buff, "/local/module/%s/controls", plg);
