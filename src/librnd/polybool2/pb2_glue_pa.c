@@ -120,13 +120,16 @@ RND_INLINE void pa_include_if(rnd_polyarea_t **res, rnd_polyarea_t **start, int 
 /* Put back an 'A' hole into res; since the hole is not overlapping with 'B',
    it is untouched by pb2, it surely isn't cut in half. The host island of
    A may have been removed tho (e.g. if operation was an isect). Search
-   each island of res and find the first one pl fits into. Returns 1 if
+   each island of res and find the smallest one pl fits into. Returns 1 if
    reinstalled. */
 RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd_pline_t *prev, rnd_pline_t *pl, rnd_bool preserve)
 {
-	rnd_polyarea_t *pa = *res;
-	do {
+	rnd_polyarea_t *pa = *res, *smallest = NULL;
 
+	/* find the smallest island of *res the hole is inside; this matters in
+	   case of pos-neg-pos stacking where the hole needs to be inserted
+	   in the bottom pos */
+	do {
 		if (pa->contours->area < pl->area)
 			continue; /* cheap test: won't fit */
 
@@ -136,18 +139,23 @@ RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd
 		/* have to check two adjacent nodes: rare corner case is when two islands
 		   touch and a hole in one of them has a point on the boundary; but the hole
 		   can not have two points on the same boundary without making the input invalid */
-		if (pa_pline_is_vnode_inside(pa->contours, pl->head, 1) && pa_pline_is_vnode_inside(pa->contours, pl->head->next, 1)) {
+		if (pa_pline_is_vnode_inside(pa->contours, pl->head, 1) && pa_pline_is_vnode_inside(pa->contours, pl->head->next, 1))
+			if ((smallest == NULL) || (pa->contours->area < smallest->contours->area))
+				smallest = pa;
+	} while((pa = pa->f) != *res);
+
+	if (smallest != NULL) {
 			if (preserve) {
 				rnd_pline_t *newpl = pa_pline_dup(pl);
-				pa_polyarea_insert_pline(pa, newpl);
+				pa_polyarea_insert_pline(smallest, newpl);
 			}
 			else {
 				pa_pline_unlink(plpa, prev, pl);
-				pa_polyarea_insert_pline(pa, pl);
+				pa_polyarea_insert_pline(smallest, pl);
 			}
 			return 1;
-		}
-	} while((pa = pa->f) != *res);
+	}
+
 	return 0;
 }
 
