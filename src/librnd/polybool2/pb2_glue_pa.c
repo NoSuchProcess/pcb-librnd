@@ -145,15 +145,15 @@ RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd
 	} while((pa = pa->f) != *res);
 
 	if (smallest != NULL) {
-			if (preserve) {
-				rnd_pline_t *newpl = pa_pline_dup(pl);
-				pa_polyarea_insert_pline(smallest, newpl);
-			}
-			else {
-				pa_pline_unlink(plpa, prev, pl);
-				pa_polyarea_insert_pline(smallest, pl);
-			}
-			return 1;
+		if (preserve) {
+			rnd_pline_t *newpl = pa_pline_dup(pl);
+			pa_polyarea_insert_pline(smallest, newpl);
+		}
+		else {
+			pa_pline_unlink(plpa, prev, pl);
+			pa_polyarea_insert_pline(smallest, pl);
+		}
+		return 1;
 	}
 
 	return 0;
