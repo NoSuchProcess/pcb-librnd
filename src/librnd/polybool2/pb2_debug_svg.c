@@ -2,10 +2,24 @@
 
 #ifndef NDEBUG
 
+/* Auto determine thickness and annotation scale; if dimensions of the seg_tree
+   is large enough, assume an export from pcb-rnd */
+#define ANNOT_SCALE() \
+do { \
+	if (ctx->annot_scale <= 0) { \
+		rnd_coord_t __size__ = (ctx->seg_tree.bbox.x2 - ctx->seg_tree.bbox.x1) + (ctx->seg_tree.bbox.y2 - ctx->seg_tree.bbox.y1); \
+		ctx->annot_scale = (__size__ > 30000) ? 100 : 1; \
+	} \
+} while(0)
+
+#define ANNOT(x)  ((double)x * ctx->annot_scale)
+
 static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 {
 	rnd_rtree_it_t it;
 	pb2_seg_t *seg;
+
+	ANNOT_SCALE();
 
 	fprintf(F, "\n<!-- segments -->\n");
 	for(seg = rnd_rtree_all_first(&it, &ctx->seg_tree); seg != NULL; seg = rnd_rtree_all_next(&it)) {
@@ -15,8 +29,8 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 			case RND_VNODE_LINE:
 				{
 					const char *dash = (seg->discarded ? "stroke-dasharray=\"0.25\"" : "");
-					fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"0.02\" stroke=\"grey\" %s/>\n",
-						(long)seg->start[0], (long)seg->start[1], (long)seg->end[0], (long)seg->end[1], dash);
+					fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"grey\" %s/>\n",
+						(long)seg->start[0], (long)seg->start[1], (long)seg->end[0], (long)seg->end[1], ANNOT(0.02), dash);
 					labx = (double)(seg->start[0] + seg->end[0])/2.0;
 					laby = (double)(seg->start[1] + seg->end[1])/2.0;
 				}
@@ -30,7 +44,7 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 	}
 }
 
-RND_INLINE void draw_curve(pb2_curve_t *curve, FILE *F)
+RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
 {
 	pb2_seg_t *seg, *fs, *ls;
 	const char *dash = (curve->pruned ? "stroke-dasharray=\"0.35\"" : "");
@@ -66,8 +80,8 @@ RND_INLINE void draw_curve(pb2_curve_t *curve, FILE *F)
 			y2 -= vy;
 		}
 
-		fprintf(F, " <line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" stroke-width=\"0.05\" stroke=\"purple\" %s/>\n",
-			x1, y1, x2, y2, dash);
+		fprintf(F, " <line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" stroke-width=\"%.3f\" stroke=\"purple\" %s/>\n",
+			x1, y1, x2, y2, ANNOT(0.05), dash);
 	}
 
 	fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"purple\" font-size=\"0.5px\">C%ld</text>\n",
@@ -85,7 +99,7 @@ static void pb2_draw_curves(pb2_ctx_t *ctx, FILE *F)
 
 	fprintf(F, "\n<!-- curves -->\n");
 	for(c = gdl_first(&ctx->curves); c != NULL; c = gdl_next(&ctx->curves, c))
-		draw_curve(c, F);
+		draw_curve(ctx, c, F);
 }
 
 RND_INLINE void draw_cgnode(pb2_cgnode_t *cgn, FILE *F)
@@ -138,7 +152,7 @@ static void pb2_draw_curve_graph(pb2_ctx_t *ctx, FILE *F)
 		draw_cgnode(n, F);
 }
 
-RND_INLINE void draw_face(pb2_face_t *f, FILE *F)
+RND_INLINE void draw_face(pb2_ctx_t *ctx, pb2_face_t *f, FILE *F)
 {
 	double dx, dy, len;
 
@@ -149,16 +163,16 @@ RND_INLINE void draw_face(pb2_face_t *f, FILE *F)
 		dx /= len;
 		dy /= len;
 	}
-	dx *= 0.75;
-	dy *= 0.75;
+	dx *= ANNOT(0.75);
+	dy *= ANNOT(0.75);
 	dx += f->polarity_pt[0];
 	dy += f->polarity_pt[1];
 
-	fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%.2f\" y2=\"%.2f\" stroke-width=\"0.05\" stroke=\"red\"/>\n",
-		(long)f->polarity_pt[0], (long)f->polarity_pt[1], dx, dy);
+	fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%.2f\" y2=\"%.2f\" stroke-width=\"%.3f\" stroke=\"red\"/>\n",
+		(long)f->polarity_pt[0], (long)f->polarity_pt[1], dx, dy, ANNOT(0.05));
 
-		fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"red\" font-size=\"0.35px\">F%ld%s%s%s</text>\n",
-			dx, dy, f->uid, f->inA ? "A" : "", f->inB ? "B" : "", f->out ? "o" : "");
+		fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"red\" font-size=\"%.3fpx\">F%ld%s%s%s</text>\n",
+			dx, dy, ANNOT(0.35), f->uid, f->inA ? "A" : "", f->inB ? "B" : "", f->out ? "o" : "");
 }
 
 static void pb2_draw_faces(pb2_ctx_t *ctx, FILE *F)
@@ -167,7 +181,7 @@ static void pb2_draw_faces(pb2_ctx_t *ctx, FILE *F)
 
 	fprintf(F, "\n<!-- faces -->\n");
 	for(f = gdl_first(&ctx->faces); f != NULL; f = gdl_next(&ctx->faces, f))
-		draw_face(f, F);
+		draw_face(ctx, f, F);
 }
 
 #if 0
