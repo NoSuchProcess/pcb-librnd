@@ -155,6 +155,7 @@ struct pb2_ctx_s {
 
 	/* debug */
 	const void *input_A, *input_B; /* for debug draw */
+	double annot_scale;
 
 	PB2_UID               /* next UID to use */
 };
