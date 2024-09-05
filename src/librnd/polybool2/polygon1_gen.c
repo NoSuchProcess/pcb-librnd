@@ -140,7 +140,7 @@ RND_INLINE int dquarter(rnd_vector_t v)
 
 /* Return 1 if v reached or webt beyond end, assuming CW direction in the
    rnd (screen) coord system */
-RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v)
+RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v, int *was_in_same)
 {
 	int dq = dquarter(v);
 
@@ -155,7 +155,7 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 		return 1;
 
 	if (dq == end_dq) { /* in the same dquarter */
-
+		*was_in_same = 1;
 		switch (dq % 8) {
 			/* axis aligned end vector */
 			case 0:
@@ -171,6 +171,11 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 			case 7: if (v[1] >= end[1]) return 1; break;
 		}
 	}
+	else if (*was_in_same) {
+		/* if we were in the same quarter as end previously and left the quarter,
+		   we are surely beyond end; test case: pcb02 */
+		return 1;
+	}
 
 	return 0;
 }
@@ -178,7 +183,7 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end)
 {
 	double ex, ey, rad1_x, rad1_y;
-	int n, start_dq, end_dq, rollover;
+	int n, start_dq, end_dq, rollover, was_in_same = 0;
 	rnd_vector_t rel_s, rel_e, v;
 	rnd_vnode_t *new_node;
 
@@ -224,7 +229,7 @@ rnd_printf("frac circ at %mm;%mm: %mm;%mm %d .. %mm;%mm %d\n",
 		er[1] = PA_ROUND(ey);
 
 		/* stop if went beyond end */
-		if (went_beyond_end(start_dq, rel_e, end_dq, rollover, er))
+		if (went_beyond_end(start_dq, rel_e, end_dq, rollover, er, &was_in_same))
 			break;
 
 		v[0] = cx + er[0]; v[1] = cy + er[1];
