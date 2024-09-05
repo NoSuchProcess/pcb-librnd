@@ -153,11 +153,33 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 	return bestf;
 }
 
+/* return whether there's any curve that's explicitly part of both fchld and fparent */
+RND_INLINE int pb2_face_face_have_shared_curve(pb2_ctx_t *ctx, pb2_face_t *fchld, pb2_face_t *fparent)
+{
+	long n;
+
+	for(n = 0; n < fchld->num_curves; n++) {
+		pb2_cgout_t *o = fchld->outs[n];
+		pb2_curve_t *c = o->curve;
+		if (!c->face_1_implicit && ((c->face[0] == fparent) || (c->face[1] == fparent)))
+			return 1;
+	}
+
+	return 0;
+}
+
 /* Insert newf into the face-tree at ctx->root */
 RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 {
 	int is_implicit;
 	pb2_face_t *bestf = pb2_wrapping_face(ctx, newf, &is_implicit, !newf->out);
+
+	/* Omit a hole child face if it has an explicit shared curve with its
+	   parent and that parent is not omitted; test case: pcb01's F43 */
+	if ((bestf->parent != NULL) && pb2_face_face_have_shared_curve(ctx, newf, bestf)) {
+		if_trace("pb2_6_insert_face: skip F%ld: shared curve with parent\n", PB2_UID_GET(newf));
+		return;
+	}
 
 	if (bestf == NULL) {
 		if_trace("pb2_6_insert_face: skip F%ld: no parent\n", PB2_UID_GET(newf));
