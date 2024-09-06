@@ -215,6 +215,7 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 		/* plus add the extra segment */
 		if (!Vequ2(ip0, orig_end)) {
 			news = pb2_seg_new_alike(ctx, ip0, orig_end, isc->seg);
+			news->discarded = 0; /* isc->seg may be discarded already but this shouldn't affect the new segment, but pb2_seg_new_alike() copies that flag too; test case: S9 of pcb03 */
 			news->risky = 1;
 		}
 	}
