@@ -72,8 +72,19 @@ RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int o
 		rnd_trace("dumped %s\n", fn);
 	}
 }
+
+RND_INLINE void pa_polyarea_bool_dbg2(rnd_polyarea_t **res)
+{
+	if (rnd_polybool_dump_boolops) {
+		char fn[256];
+		sprintf(fn, "pb_%08d.R.poly", rnd_polybool_dump_boolops-1);
+		pa_dump_pa(*res, fn);
+	}
+}
+
 #else
 RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int op) {}
+RND_INLINE void pa_polyarea_bool_dbg2(rnd_polyarea_t **res) {}
 #endif
 
 
@@ -107,6 +118,8 @@ static int rnd_polyarea_boolean_(rnd_polyarea_t **A, rnd_polyarea_t **B, rnd_pol
 #if ! PB2_DISABLE_PLINE_INPUT_OPTIMIZATION
 	pb2_pa_apply_nonoverlaps(res, A, B, op, preserve);
 #endif
+
+	pa_polyarea_bool_dbg2(res);
 
 	return retval;
 }
