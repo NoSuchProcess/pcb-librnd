@@ -126,6 +126,9 @@ RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd
 {
 	rnd_polyarea_t *pa = *res, *smallest = NULL;
 
+	if (pl->tree == NULL)
+		pa_pline_update(pl, 0);
+
 	/* find the smallest island of *res the hole is inside; this matters in
 	   case of pos-neg-pos stacking where the hole needs to be inserted
 	   in the bottom pos */
@@ -135,6 +138,9 @@ RND_INLINE int pa_reinstall_hole(rnd_polyarea_t **res, rnd_polyarea_t *plpa, rnd
 
 		if (!pl_pl_overlap(pl, pa->contours))
 			continue; /* cheap test: bbox not overlapping */
+
+		if (pa->contours->tree == NULL)
+			pa_pline_update(pa->contours, 0);
 
 		/* have to check two adjacent nodes: rare corner case is when two islands
 		   touch and a hole in one of them has a point on the boundary; but the hole
