@@ -46,36 +46,6 @@ RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 	s->box.Y2 = pa_max(s->v->point[1], s->v->next->point[1]) + 1;
 }
 
-/* Replace sg with two new segments in tree ; called after a vertex has
-   been added. Return 0 on success. */
-static int pa_adjust_tree(rnd_rtree_t *tree, pa_seg_t *sg)
-{
-	pa_seg_t *newseg;
-	rnd_vnode_t *sg_v_next = sg->v->next; /* remember original sg field because sg will be repurposed */
-
-	newseg = malloc(sizeof(pa_seg_t));
-	if (newseg == NULL)
-		return 1;
-
-	/* remove as we are replacing it with two objects */
-	rnd_r_delete_entry(tree, (const rnd_box_t *)sg);
-
-	/* init and insert newly allocated seg from v */
-	newseg->v = sg->v;
-	newseg->p = sg->p;
-	pa_seg_update_bbox(newseg);
-	rnd_r_insert_entry(tree, (const rnd_box_t *)newseg);
-
-	/* instead of free(sg) and malloc() newseg, repurpose sg as newseg for v->next */
-	newseg = sg;
-	newseg->v = sg_v_next;
-/*	newseg->p = sg->p; - it's still the same*/
-	pa_seg_update_bbox(newseg);
-	rnd_r_insert_entry(tree, (const rnd_box_t *)newseg);
-
-	return 0;
-}
-
 void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
 {
 	rnd_vnode_t *bv = pl->head;
@@ -152,25 +122,6 @@ typedef struct pa_seg_seg_s {
 	rnd_vnode_t *v;
 	pa_seg_t *s;
 } pa_seg_seg_t;
-
-/* Prune the search for boxes that don't intersect the segment's box. */
-static rnd_r_dir_t seg_in_region_cb(const rnd_box_t *b, void *cl)
-{
-	pa_seg_seg_t *ctx = (pa_seg_seg_t *)cl;
-	double y1, y2;
-
-	/* zero slope means axis aligned so it is already pruned */
-	if (ctx->m == 0.0)         return RND_R_DIR_FOUND_CONTINUE;
-
-	y1 = ctx->m * b->X1 + ctx->b;
-	y2 = ctx->m * b->X2 + ctx->b;
-
-	/* check if y1 or y2 is out of range */
-	if (pa_min(y1, y2) >= b->Y2)  return RND_R_DIR_NOT_FOUND;
-	if (pa_max(y1, y2) < b->Y1)   return RND_R_DIR_NOT_FOUND;
-
-	return RND_R_DIR_FOUND_CONTINUE;
-}
 
 /* manhattan distance^2 */
 RND_INLINE int man_dist_2(rnd_vector_t a, rnd_vector_t b)

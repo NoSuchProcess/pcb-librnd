@@ -61,12 +61,6 @@ rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dst, rnd_vector_t ptv)
 	return newnd;
 }
 
-TODO("remove this")
-static rnd_vnode_t *pa_node_add_single(rnd_vnode_t *dst, rnd_vector_t pt)
-{
-	return rnd_poly_node_add_single(dst, pt);
-}
-
 /* Returns whether pl1's bbox can overlap/intersect pl2's bbox */
 RND_INLINE rnd_bool pa_pline_box_inside(rnd_pline_t *pl1, rnd_pline_t *pl2)
 {
