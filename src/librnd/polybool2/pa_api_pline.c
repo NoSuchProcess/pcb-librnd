@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  libpolybool, 2D polygon bool operations
- *  Copyright (C) 2017, 2018, 2023 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017, 2018, 2023, 2024 Tibor 'Igor2' Palinkas
  *
  *  (Supported by NLnet NGI0 Entrust in 2023)
  *
