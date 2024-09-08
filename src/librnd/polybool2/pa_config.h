@@ -8,10 +8,9 @@
    every bit of the input in a large PB2 model */
 #define PB2_DISABLE_PLINE_INPUT_OPTIMIZATION 0
 
-/* EPSILON^2 for endpoint matching; the bool algebra code is not
-   perfect and causes tiny self intersections at the end of sharp
-   spikes. Accept at most 10 nanometer of such intersection */
-#define RND_POLY_ENDP_EPSILON 100
+/* EPSILON^2 for endpoint matching in validation code to overcome rounding
+   errors. Accept at most 2 units (nanometer) of such intersection. */
+#define RND_POLY_VALID_ENDP_EPSILON 4
 
 /* debug control */
 #define DEBUG_CLIP 0

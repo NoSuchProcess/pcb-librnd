@@ -137,16 +137,16 @@ rnd_vnode_t *pa_check_find_close_node(rnd_vector_t intersection, rnd_vnode_t *pn
 	d = rnd_vect_dist2(intersection, pn->point);
 	dn = rnd_vect_dist2(intersection, pn->next->point);
 
-	if ((d < RND_POLY_ENDP_EPSILON) && (dn < RND_POLY_ENDP_EPSILON)) {
+	if ((d < RND_POLY_VALID_ENDP_EPSILON) && (dn < RND_POLY_VALID_ENDP_EPSILON)) {
 		/* line segment too short both ends are close - return the closer one */
 		if (d < dn)
 			return pn;
 		return pn->next;
 	}
 
-	if (d < RND_POLY_ENDP_EPSILON)
+	if (d < RND_POLY_VALID_ENDP_EPSILON)
 		return pn;
-	if (dn < RND_POLY_ENDP_EPSILON)
+	if (dn < RND_POLY_VALID_ENDP_EPSILON)
 		return pn->next;
 	return NULL;
 }
