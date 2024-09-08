@@ -4,7 +4,7 @@
  *  libpolybool, 2D polygon bool operations
  *  Copyright (C) 2023,2024 Tibor 'Igor2' Palinkas
  *
- *  (Supported by NLnet NGI0 Entrust in 2023)
+ *  (Supported by NLnet NGI0 Entrust in 2023,2024)
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
