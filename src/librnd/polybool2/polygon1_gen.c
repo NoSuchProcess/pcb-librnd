@@ -174,7 +174,7 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 
 void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end)
 {
-	double ex, ey, rad1_x, rad1_y;
+	double ex, ey;
 	int n, start_dq, end_dq, rollover, was_in_same = 0;
 	rnd_vector_t rel_s, rel_e, v;
 	rnd_vnode_t *new_node;
@@ -185,8 +185,6 @@ void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coor
 	rel_e[1] = end[1] - cy;
 	start_dq = dquarter(rel_s);
 	end_dq = dquarter(rel_e);
-
-	rad1_x = rel_s[0]; rad1_y = rel_s[1];
 
 	/* degenerate case: zero length vector */
 	if (end_dq < 0)
