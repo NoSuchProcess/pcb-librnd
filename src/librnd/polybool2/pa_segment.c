@@ -147,20 +147,10 @@ void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src)
 
 /*** seg-in-seg search helpers */
 
-typedef struct pa_insert_node_task_s pa_insert_node_task_t;
-struct pa_insert_node_task_s {
-	pa_insert_node_task_t *next;
-	pa_seg_t *node_seg;
-	rnd_vnode_t *new_node;
-};
-
 typedef struct pa_seg_seg_s {
 	double m, b;
-	rnd_rtree_t *tree;
 	rnd_vnode_t *v;
 	pa_seg_t *s;
-	int need_restart;
-	pa_insert_node_task_t *node_insert_list;
 } pa_seg_seg_t;
 
 /* Prune the search for boxes that don't intersect the segment's box. */
@@ -180,48 +170,6 @@ static rnd_r_dir_t seg_in_region_cb(const rnd_box_t *b, void *cl)
 	if (pa_max(y1, y2) < b->Y1)   return RND_R_DIR_NOT_FOUND;
 
 	return RND_R_DIR_FOUND_CONTINUE;
-}
-
-/* Allocate and prepend a deferred node-insertion task to a task list */
-RND_INLINE pa_insert_node_task_t *prepend_node_task(pa_insert_node_task_t *list, pa_seg_t *seg, rnd_vnode_t *new_node)
-{
-	pa_insert_node_task_t *res = malloc(sizeof(pa_insert_node_task_t));
-
-	res->next = list;
-	res->node_seg = seg;
-	res->new_node = new_node;
-
-	return res;
-}
-
-/* Execute pending tasks from the tasklist (creating new nodes) and free
-   tasklist. Return number of tasks executed. */
-RND_INLINE long pa_exec_node_tasks(pa_insert_node_task_t *tasklist)
-{
-	pa_insert_node_task_t *t, *next;
-	long modified = 0;
-
-	for(t = tasklist; t != NULL; t = next) {
-		next = t->next;
-
-		/* perform the insertion */
-		t->new_node->prev = t->node_seg->v;
-		t->new_node->next = t->node_seg->v->next;
-		t->node_seg->v->next->prev = t->new_node;
-		t->node_seg->v->next = t->new_node;
-		t->node_seg->p->Count++;
-
-		pa_pline_box_bump(t->node_seg->p, t->new_node->point);
-
-		if (pa_adjust_tree(t->node_seg->p->tree, t->node_seg) != 0)
-			assert(0); /* failed memory allocation */
-
-		modified++;
-
-		free(t);
-	}
-
-	return modified;
 }
 
 /* manhattan distance^2 */
