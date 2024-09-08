@@ -185,7 +185,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 		double cross;
 		Vsub2(v1, p2, p1);
 		Vsub2(v2, pctx->pt, p1);
-		TODO("bingun: use big coords instead (maybe a generic cross-product sign code?)");
+		TODO("bignum: use big coords instead (maybe a generic cross-product sign code?)");
 		cross = (double)v1[0] * (double)v2[1] - (double)v2[0] * (double)v1[1];
 
 		if ((p1[1] > p2[1]) && (cross > 0)) {
