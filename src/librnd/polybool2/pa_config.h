@@ -1,9 +1,6 @@
 /* Copy edge tree on pline_dup() instead of re-creating the tree on geometric basis */
 #define PB_OPTIMIZE_TREE_COPY
 
-/* When 1, use the new dicer behind the old, compatibility api */
-#define PA_USE_NEW_DICER 1
-
 /* When 1: each rtree add verifies the entry is not already added */
 #define PA_VERIFY_RTREE_ADD 0
 

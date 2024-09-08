@@ -1267,8 +1267,7 @@ void rnd_polyarea_slice_noholes(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 }
 
 
-#if PA_USE_NEW_DICER
-/* Old, compatibility API */
+/*** Old, compatibility API ***/
 
 typedef struct {
 	/* user config: */
@@ -1343,4 +1342,4 @@ void rnd_polyarea_no_holes_dicer(rnd_polyarea_t *pa, rnd_coord_t clipX1, rnd_coo
 	pa_polyarea_free_all(&pa);
 	pa_dic_free_ctx(&ctx);
 }
-#endif
+
