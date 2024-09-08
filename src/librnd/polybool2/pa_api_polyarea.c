@@ -25,14 +25,6 @@
  *    lead developer: http://www.repo.hu/projects/librnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
- *  This is a full rewrite of pcb-rnd's (and PCB's) polygon lib originally
- *  written by Harry Eaton in 2006, in turn building on "poly_Boolean: a
- *  polygon clip library" by Alexey Nikitin, Michael Leonov from 1997 and
- *  "nclip: a polygon clip library" Klamer Schutte from 1993.
- *
- *  English translation of the original paper the lib is largely based on:
- *  https://web.archive.org/web/20160418014630/http://www.complex-a5.ru/polyboolean/downloads/polybool_eng.pdf
- *
  */
 
 /* High level polyarea API functions (called mostly or only from outside) */
