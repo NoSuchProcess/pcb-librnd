@@ -349,8 +349,8 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 	if (val < min) min = val; \
 	if (val > max) max = val;
 	if (chk != NULL)
-		rnd_fprintf(stderr, "Details: %s\n", chk->msg);
-	rnd_fprintf(stderr, "!!!animator start\n");
+		fprintf(stderr, "Details: %s\n", chk->msg);
+	fprintf(stderr, "!!!animator start\n");
 	v = pl;
 	do {
 		n = v->next;
@@ -362,17 +362,17 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 
 	small = is_small(minx) && is_small(miny) && is_small(maxx) && is_small(maxy);
 
-	rnd_fprintf(stderr, "scale 1 -1\n");
+	fprintf(stderr, "scale 1 -1\n");
 	if (small)
-		rnd_fprintf(stderr, "viewport %ld %ld - %ld %ld\n", (long)minx, (long)miny, (long)maxx, (long)maxy);
+		fprintf(stderr, "viewport %ld %ld - %ld %ld\n", (long)minx, (long)miny, (long)maxx, (long)maxy);
 	else
 		rnd_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
-	rnd_fprintf(stderr, "frame\n");
+	fprintf(stderr, "frame\n");
 	v = pl;
 	do {
 		n = v->next;
 		if (small)
-			rnd_fprintf(stderr, "line %ld %ld %ld %ld\n", (long)v->point[0], (long)v->point[1], (long)n->point[0], (long)n->point[1]);
+			fprintf(stderr, "line %ld %ld %ld %ld\n", (long)v->point[0], (long)v->point[1], (long)n->point[0], (long)n->point[1]);
 		else
 			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
 	}
@@ -383,9 +383,9 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 		fprintf(stderr, "color #770000\n");
 		for(n = 0; n < chk->marks; n++) {
 			if (small) {
-				rnd_fprintf(stderr, "! X at %ld %ld\n", (long)chk->x[n], (long)chk->y[n]);
-				rnd_fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]-MR, (long)chk->x[n]+MR, (long)chk->y[n]+MR);
-				rnd_fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]+MR, (long)chk->x[n]+MR, (long)chk->y[n]-MR);
+				fprintf(stderr, "! X at %ld %ld\n", (long)chk->x[n], (long)chk->y[n]);
+				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]-MR, (long)chk->x[n]+MR, (long)chk->y[n]+MR);
+				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]+MR, (long)chk->x[n]+MR, (long)chk->y[n]-MR);
 			}
 			else {
 				rnd_fprintf(stderr, "! X at %#mm %#mm\n", (long)chk->x[n], (long)chk->y[n]);
@@ -423,13 +423,13 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	   ptr needs to be itself too */
 	if ((p->b == p) && (p->f != p)) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid polyarea ->f\n");
+		fprintf(stderr, "Invalid polyarea ->f\n");
 #endif
 		return rnd_false;
 	}
 	if ((p->f == p) && (p->b != p)) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid polyarea ->f\n");
+		fprintf(stderr, "Invalid polyarea ->f\n");
 #endif
 		return rnd_false;
 	}
@@ -441,7 +441,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 
 	if (p->contours->flg.orient == RND_PLF_INV) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid Outer pline: wrong orientation (shall be positive)\n");
+		fprintf(stderr, "Invalid Outer pline: wrong orientation (shall be positive)\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, NULL);
 #endif
 		return rnd_false;
@@ -449,14 +449,14 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 
 	if ((p->contours->tree != NULL) && (p->contours->Count != p->contours->tree->size)) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid Outer pline: rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
+		fprintf(stderr, "Invalid Outer pline: rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
 #endif
 		return rnd_false;
 	}
 
 	if (pa_pline_check_(p->contours, &chk)) {
 #ifndef NDEBUG
-		rnd_fprintf(stderr, "Invalid Outer pline: self-intersection\n");
+		fprintf(stderr, "Invalid Outer pline: self-intersection\n");
 		rnd_poly_valid_report(p->contours, p->contours->head, &chk);
 #endif
 		return rnd_false;
@@ -466,27 +466,27 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	for(n = p->contours->next; n != NULL; n = n->next) {
 		if (n->flg.orient == RND_PLF_DIR) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner (hole): pline orient (shall be negative)\n");
+			fprintf(stderr, "Invalid Inner (hole): pline orient (shall be negative)\n");
 			rnd_poly_valid_report(n, n->head, NULL);
 #endif
 			return rnd_false;
 		}
 		if ((p->contours->tree != NULL) && (p->contours->Count != p->contours->tree->size)) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner (hole): pline rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
+			fprintf(stderr, "Invalid Inner (hole): pline rtree size mismatch %ld != %ld\n", (long)p->contours->Count, (long)p->contours->tree->size);
 #endif
 			return rnd_false;
 		}
 		if (pa_pline_check_(n, &chk)) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner (hole): self-intersection\n");
+			fprintf(stderr, "Invalid Inner (hole): self-intersection\n");
 			rnd_poly_valid_report(n, n->head, &chk);
 #endif
 			return rnd_false;
 		}
 		if ((p->contours->tree != NULL) && (!pa_pline_inside_pline(p->contours, n))) {
 #ifndef NDEBUG
-			rnd_fprintf(stderr, "Invalid Inner (hole): overlap with outer\n");
+			fprintf(stderr, "Invalid Inner (hole): overlap with outer\n");
 			rnd_poly_valid_report(n, n->head, NULL);
 #endif
 			return rnd_false;
@@ -514,7 +514,7 @@ rnd_bool rnd_poly_valid(rnd_polyarea_t *pa)
 			while(q != pa) {
 				if (rnd_polyarea_island_isc(p, q)) {
 #ifndef NDEBUG
-					rnd_fprintf(stderr, "island-island intersect\n");
+					fprintf(stderr, "island-island intersect\n");
 #endif
 					return rnd_false;
 				}
