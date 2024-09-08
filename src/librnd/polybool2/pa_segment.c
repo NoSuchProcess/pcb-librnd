@@ -159,7 +159,6 @@ typedef struct pa_seg_seg_s {
 	rnd_rtree_t *tree;
 	rnd_vnode_t *v;
 	pa_seg_t *s;
-	jmp_buf *env, sego, *touch;
 	int need_restart;
 	pa_insert_node_task_t *node_insert_list;
 } pa_seg_seg_t;

@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <setjmp.h>
 #include <string.h>
 
 #include <librnd/rnd_config.h>
