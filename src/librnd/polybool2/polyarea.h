@@ -42,6 +42,7 @@
 #define RND_PLF_MARK 1
 
 #include <math.h>
+#include <librnd/core/global_typedefs.h>
 
 /* x;y point coordinates; it's an array instead of a struct so it's
    guaranteed to be "packed", no padding, so that memcpy/memcmp work */
