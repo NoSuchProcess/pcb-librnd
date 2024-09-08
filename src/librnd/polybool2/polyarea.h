@@ -41,6 +41,8 @@
 #define RND_PLF_INV 0
 #define RND_PLF_MARK 1
 
+#include <math.h>
+
 /* x;y point coordinates; it's an array instead of a struct so it's
    guaranteed to be "packed", no padding, so that memcpy/memcmp work */
 typedef rnd_coord_t rnd_vertex_t[2];
