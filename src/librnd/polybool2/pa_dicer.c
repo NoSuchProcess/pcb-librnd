@@ -215,7 +215,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 	return isc;
 }
 
-TODO("rewrite these with big_coords to make the 64-bit-coord safe (replace dobule)")
+TODO("bignum: rewrite these with big_coords to make the 64-bit-coord safe (replace dobule)")
 double pa_line_x_for_y(rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t y)
 {
 	double dx = (double)(lx2 - lx1) / (double)(ly2 - ly1);
@@ -672,7 +672,7 @@ RND_INLINE pa_dic_pt_box_relation_t pa_dic_emit_island_predict(pa_dic_ctx_t *ctx
 			rnd_coord_t midy = (n->point[1] + n->prev->point[1]) / 2;
 
 
-			TODO("Corner case: if difference is only 1 above, the midpoint is rounded badly - use bigcoord");
+			TODO("bignum: Corner case: if difference is only 1 above, the midpoint is rounded badly - use bigcoord");
 			/* special case: a pline seg sloping across two edge iscs, test case 
 			   clip01b; if the center of the line is inside the box (not on edge)
 			   we are good to go */
@@ -924,7 +924,7 @@ RND_INLINE void pa_dic_emit_island_common(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
 	long num_pts = ctx->num_emits;
-	TODO("This is the same as the normal case... maybe just merge them");
+	TODO("This is the same as the normal case... maybe just merge them (pa_dic_emit_island_normal)");
 	DEBUG_CLIP("    emit island inverted\n");
 	pa_dic_emit_island_common(ctx, pa);
 	if (num_pts == ctx->num_emits) {
