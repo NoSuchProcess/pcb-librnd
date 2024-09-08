@@ -35,6 +35,7 @@
 #include "pa_dicer.h"
 #include <librnd/core/vtc0.h>
 #include <librnd/core/error.h>
+#include <librnd/core/misc_util.h>
 
 /*** clipper ***/
 

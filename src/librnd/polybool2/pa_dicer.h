@@ -35,6 +35,8 @@
  *  It is based on callbacks instead of allocating new polylines.
  */
 
+#include <genvector/vtp0.h>
+
 typedef struct pa_dic_ctx_s pa_dic_ctx_t;
 
 typedef enum pa_dic_side_s {
