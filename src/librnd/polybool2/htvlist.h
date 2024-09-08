@@ -3,7 +3,7 @@
 
 #include <genlist/gendlist.h>
 
-#define HT_INVALID_VALUE (htvlist_value_t){0}
+#define HT_INVALID_VALUE htvlist_invalid_value
 
 #ifdef RND_HAS_INLINE
 #define GENHT_WANT_INLINE
@@ -17,6 +17,7 @@ typedef struct {
 	struct pb2_seg_s *heads; /* head of list for seg starts */
 	struct pb2_seg_s *heade; /* head of list for seg ends */
 } htvlist_value_t;
+static const htvlist_value_t htvlist_invalid_value = {0};
 #define HT(x) htvlist_ ## x
 #include <genht/ht.h>
 #undef HT
