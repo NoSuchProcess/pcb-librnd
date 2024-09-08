@@ -43,8 +43,6 @@ typedef struct pb2_6_ray_s {
 /* remember a face that got hit by the ray */
 RND_INLINE void pb2_6_ray_face_hit(pb2_6_ray_t *rctx, pb2_face_t *f, pb2_seg_t *seg)
 {
-	TODO("remove seg from the arg list, not needed");
-
 	if ((f == NULL) || (f == rctx->newf))
 		return;
 
