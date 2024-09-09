@@ -318,13 +318,13 @@ static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, r
 	rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &endx2, &endy2);
 
 	/* start with inner radius */
-	rx = MAX(width - half, 0);
-	ry = MAX(height - half, 0);
+	rx = RND_MAX(width - half, 0);
+	ry = RND_MAX(height - half, 0);
 
 	segs = 1;
 	if (thick > 0)
-		segs = MAX(segs, adelta * M_PI / 360 * sqrt(sqrt((double)rx * (double)rx + (double)ry * (double)ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
-	segs = MAX(segs, adelta / ARC_ANGLE);
+		segs = RND_MAX(segs, adelta * M_PI / 360 * sqrt(sqrt((double)rx * (double)rx + (double)ry * (double)ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
+	segs = RND_MAX(segs, adelta / ARC_ANGLE);
 
 	ang = astart;
 	da = (double)adelta / (double)segs;

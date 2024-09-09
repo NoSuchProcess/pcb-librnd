@@ -75,10 +75,10 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 	rnd_box_t lbx;
 	ctx.l1[0] = lx1; ctx.l1[1] = ly1;
 	ctx.l2[0] = lx2; ctx.l2[1] = ly2;
-	lbx.X1 = MIN(lx1, lx2);
-	lbx.Y1 = MIN(ly1, ly2);
-	lbx.X2 = MAX(lx1, lx2);
-	lbx.Y2 = MAX(ly1, ly2);
+	lbx.X1 = RND_MIN(lx1, lx2);
+	lbx.Y1 = RND_MIN(ly1, ly2);
+	lbx.X2 = RND_MAX(lx1, lx2);
+	lbx.Y2 = RND_MAX(ly1, ly2);
 
 	if (pl->tree == NULL)
 		pl->tree = rnd_poly_make_edge_tree(pl);
