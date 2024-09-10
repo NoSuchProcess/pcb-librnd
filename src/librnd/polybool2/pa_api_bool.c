@@ -31,9 +31,9 @@
 
 #include "pb2_glue_pa.c"
 
-int rnd_polybool_disable_autocheck = 0;
-int rnd_polybool_dump_boolops = 0;
-int rnd_pb2_inhibit_edge_tree = 0;
+int rnd_polybool_disable_autocheck = DEBUG_DISABLE_AUTOCHECK;
+int rnd_polybool_dump_boolops = DEBUG_DUMP_BOOLOPS;
+int rnd_pb2_inhibit_edge_tree = DEBIG_INHIBIT_EDGE_TREE;
 
 #ifndef NDEBUG
 #include <librnd/core/safe_fs.h>

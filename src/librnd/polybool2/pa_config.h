@@ -13,13 +13,26 @@
 #define RND_POLY_VALID_ENDP_EPSILON 4
 
 /* debug control */
-#define DEBUG_CLIP 0
-#define DEBUG_SLICE 0
+#define DEBUG_CLIP 1
+#define DEBUG_SLICE 1
 
 /* dump sorted dicer frame iscs before and after redundancy check */
-#define DEBUG_CLIP_DUMP_LOOP 0
+#define DEBUG_CLIP_DUMP_LOOP 1
 
 /* enable compiling pa_dump_pa() for gdb (but no automatic dump from the code) */
 #define DEBUG_PA_DUMP_PA 1
+
+
+/*** these can be overridden runtime, these are the initial default values */
+
+/* When compield with debug (for assert()) if this is 0, run a check on the
+   output of each operation */
+#define DEBUG_DISABLE_AUTOCHECK 0
+
+/* Dump each input and result into poly files readable by the tester */
+#define DEBUG_DUMP_BOOLOPS 0
+
+/* If set to 1, do not create the edge rtree in step 7 */
+#define DEBIG_INHIBIT_EDGE_TREE 0
 
 #undef DEBUG
