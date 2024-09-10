@@ -52,7 +52,7 @@ RND_INLINE long Pprint_coord(const void *val, Pfmt_t *format, void (*put_ch)(voi
 }
 
 #define Pvnodep(val)       PMAGIC, PTYPE(' ', 'p'), Pprint_vnodep, NULL, (rnd_vnode_t *)(val)
-#define Pcoord(val)        PMAGIC, PTYPE(' ', 'C'), Pprint_vnodep, NULL, (rnd_coord_t)(val)
+#define Pcoord(val)        PMAGIC, PTYPE(' ', 'C'), Pprint_coord, NULL, (rnd_coord_t)(val)
 #define Pcoord2(x, y)      Pcoord(x), ";", Pcoord(y)
 #define Pdbl2(x, y)        Pdbl(x), ";", Pdbl(y)
 
