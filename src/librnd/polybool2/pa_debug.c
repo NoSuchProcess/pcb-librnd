@@ -52,37 +52,7 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #	define DEBUG_ANGLE_EN 0
 #endif
 
-#ifdef DEBUG
-
-static void pa_pline_dump(rnd_vnode_t *v)
-{
-	rnd_vnode_t *start = v;
-
-	do {
-		rnd_fprintf(stderr,
-			"Line [%#mS %#mS %#mS %#mS 10 10 \"%s\"]\n",
-			v->point[0], v->point[1],
-			v->next->point[0], v->next->point[1],
-			node_label_to_str(v));
-	} while((v = v->next) != start);
-}
-
-static void pa_poly_dump(rnd_polyarea_t *p)
-{
-	rnd_polyarea_t *start = p;
-
-	do {
-		rnd_pline_t *pl = p->contours;
-		do {
-			pa_pline_dump(pl->head);
-			fprintf(stderr, "NEXT rnd_pline_t\n");
-		}
-		while((pl = pl->next) != NULL);
-		fprintf(stderr, "NEXT POLY\n");
-	}
-	while((p = p->f) != start);
-}
-#else
+#ifndef DEBUG
 #	undef DEBUG_ALL_LABELS
 #	define DEBUG_ALL_LABELS 0
 #endif
