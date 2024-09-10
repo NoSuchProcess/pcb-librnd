@@ -27,7 +27,7 @@
  *
  */
 
-int pb2_face_polarity_at_verbose = 0;
+int pb2_face_polarity_at_verbose = DEBUG_STEP3_FACE_POLARITY_VERBOSE;
 
 typedef struct {
 	long cnt;

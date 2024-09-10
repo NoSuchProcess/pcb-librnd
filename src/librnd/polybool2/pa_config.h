@@ -35,4 +35,7 @@
 /* If set to 1, do not create the edge rtree in step 7 */
 #define DEBIG_INHIBIT_EDGE_TREE 0
 
+/* Print extra trace of the ray when determining face polarity */
+#define DEBUG_STEP3_FACE_POLARITY_VERBOSE 0
+
 #undef DEBUG
