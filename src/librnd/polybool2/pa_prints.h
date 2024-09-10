@@ -44,7 +44,7 @@ RND_INLINE long Pprint_coord(const void *val, Pfmt_t *format, void (*put_ch)(voi
 	if (pa_coord_is_mm(c))
 		len = rnd_sprintf(tmp, "%.012mm", c);
 	else
-		len = rnd_sprintf(tmp, "%ld", c);
+		len = rnd_sprintf(tmp, "%ld", (long)c);
 
 	P_PRINT_STR(tmp);
 
