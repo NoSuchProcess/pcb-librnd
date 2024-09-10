@@ -307,7 +307,7 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int p
    autotest */
 extern int rnd_polybool_disable_autocheck;
 
-/* When true, assert instead of returning error code */
+/* Obsolete - provided for compatibility only, doesn't do anything */
 extern int rnd_polybool_assert_on_error_code;
 
 /*** low level pline geo ***/
