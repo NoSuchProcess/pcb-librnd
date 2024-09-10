@@ -30,9 +30,10 @@
 #include "rtree.h"
 #include "polyarea.h"
 #include "offset.h"
+#include "pa_prints.h"
 
-#if 0
-#define rndo_trace rnd_trace
+#if 1
+#define rndo_trace pa_trace
 #else
 static void rndo_trace(char *fmt, ...) {}
 #endif
@@ -245,7 +246,7 @@ rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs)
 			res = pl;
 		}
 	}
-	rndo_trace("best area: %f out of %d\n", best, selfi.used);
+	rndo_trace("best area: ", Pdbl(best), " out of ", Plong(selfi.used), "\n", 0);
 	for(n = 0; n < selfi.used; n++) {
 		rnd_pline_t *pl = selfi.array[n];
 		if (res != pl)
@@ -316,16 +317,16 @@ RND_INLINE int pull_back(rnd_vnode_t *v, const rnd_vnode_t *vp, double tune, dou
 
 	c = (ldy * vx - ldx * vy);
 	if ((c < 0.0001) && (c > -0.0001)) {
-		rndo_trace("   par1: vp=%.12mm;%.12mm v=%.12mm;%.12mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-		rndo_trace("   par2: vx=%f;%f ld=%f;%f\n", vx, vy, ldx, ldy);
+		rndo_trace("   par1: vp=", Pvnodep(vp), " v=", Pvnodep(vp), "\n", 0);
+		rndo_trace("   par2: vx=", Pdbl2(vx,vy), " ld=", Pdbl2(ldx,ldx), "\n", 0);
 		return -1; /* perpendicular; no pullbakc could help */
 	}
 
 	c = tune * ((-pry * ldx + prx * ldy) / c);
 
-	rndo_trace("   vect: vp=%mm;%mm v=%mm;%mm\n", vp->point[0], vp->point[1], v->point[0], v->point[1]);
-	rndo_trace("   vect: vx=%f;%f prx=%f;%f tune=%.012mm\n", vx, vy, prx, pry, (rnd_coord_t)tune);
-	rndo_trace("   MOVE: c=%.012mm (%f) %mm;%mm\n", (rnd_coord_t)c, c, (rnd_coord_t)(v->point[0] + c * vx), (rnd_coord_t)(v->point[1] + c * vy));
+	rndo_trace("   vect: vp=", Pvnodep(vp), " v=", Pvnodep(v), "\n", 0);
+	rndo_trace("   vect: vx=", Pdbl2(vx,vy), " prx=", Pdbl2(prx,pry), " tune=", Pcoord(tune), "\n",  0);
+	rndo_trace("   MOVE: c=", Pcoord(c), " (", Pdbl(c), ") ", Pcoord2(v->point[0] + c * vx, v->point[1] + c * vy), "\n", 0);
 
 	if (c < 0) {
 		v->point[0] = vp->point[0];
@@ -389,7 +390,7 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 				dotp = ax * dx + ay * dy;
 				prjx = x1 + dx * dotp;
 				prjy = y1 + dy * dotp;
-				rndo_trace("dotp=%f dx=%f dy=%f res: %mm %mm inside=%d\n", dotp, dx, dy, (rnd_coord_t)prjx, (rnd_coord_t)prjy, inside);
+				rndo_trace("dotp=", Pdbl(dotp), " dx=", Pdbl(dx), " dy=", Pdbl(dy), " res: ", Pcoord2(prjx, prjy), " inside=", Pint(inside), "\n", 0);
 
 				/* this is how much the point needs to be moved away from the line */
 				if (inside)
@@ -399,9 +400,11 @@ void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_
 				if (tune < 5)
 					continue;
 
-				rndo_trace("close: %mm;%mm to %mm;%mm %mm;%mm: tune=%.012mm prj: %mm;%mm\n", v->point[0], v->point[1], x1, y1, x2, y2, (rnd_coord_t)tune, (rnd_coord_t)prjx, (rnd_coord_t)prjy);
-				rndo_trace(" tune=%.012mm dist=%.012mm\n", (rnd_coord_t)tune, (rnd_coord_t)sqrt(dist));
+				rndo_trace("close: ", Pvnodep(v), " to ", Pcoord2(x1, y1), " ", Pcoord2(x2, y2),
+					": tune=", Pcoord(tune), " prj: ", Pcoord2(prjx, prjy),
+					"\n", 0);
 
+				rndo_trace(" tune=", Pcoord(tune), " dist=", Pcoord(sqrt(dist)), "\n", 0);
 
 				/* corner case: if next segment is parallel to what we are compesing to
 				   (chamfed V with bottom horizontal being too close to target horizontal line),
