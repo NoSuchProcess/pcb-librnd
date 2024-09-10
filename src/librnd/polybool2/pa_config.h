@@ -13,11 +13,11 @@
 #define RND_POLY_VALID_ENDP_EPSILON 4
 
 /* debug control */
-#define DEBUG_CLIP 1
-#define DEBUG_SLICE 1
+#define DEBUG_CLIP 0
+#define DEBUG_SLICE 0
 
 /* dump sorted dicer frame iscs before and after redundancy check */
-#define DEBUG_CLIP_DUMP_LOOP 1
+#define DEBUG_CLIP_DUMP_LOOP 0
 
 /* enable compiling pa_dump_pa() for gdb (but no automatic dump from the code) */
 #define DEBUG_PA_DUMP_PA 1
