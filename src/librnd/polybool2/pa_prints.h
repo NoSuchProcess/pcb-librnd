@@ -27,7 +27,7 @@ RND_INLINE long P_print_vect_(rnd_vector_t v, Pfmt_t *format, void (*put_ch)(voi
 	if (pa_coord_is_mm(v[0]) || pa_coord_is_mm(v[1]))
 		len = rnd_sprintf(tmp, "%.012mm;%.012mm", v[0], v[1]);
 	else
-		len = rnd_sprintf(tmp, "%ld;%ld", v[0], v[1]);
+		len = rnd_sprintf(tmp, "%ld;%ld", (long)v[0], (long)v[1]);
 
 	P_PRINT_STR(tmp);
 
