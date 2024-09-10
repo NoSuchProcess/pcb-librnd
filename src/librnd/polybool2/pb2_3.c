@@ -52,23 +52,23 @@ RND_INLINE void pb2_3_seg_hit(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
 
 RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rnd_vector_t other_end, pb2_seg_t *seg)
 {
-	if (pb2_face_polarity_at_verbose) rnd_trace("  endpoint hit at %ld;%ld\n", p[0], p[1]);
+	if (pb2_face_polarity_at_verbose) pa_trace("  endpoint hit at ", Pvect(p), "\n", 0);
 
 	TODO("arc: think over other_end: for arcs it should probably be the tangent from p, the actual endpoint is probably not used below");
 
 	/* miss in x */
 	if (p[0] < pctx->pt[0]) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("   ignore: miss in x: %ld < %ld\n", p[0] < pctx->pt[0]);
+		if (pb2_face_polarity_at_verbose) pa_trace("   ignore: miss in x: ", Pcoord(p[0]), "<", Pcoord(pctx->pt[0]), "\n", 0);
 		return;
 	}
 
 	/* miss in y: our ray is always slightly below or above */
 	if ((pctx->dir[1] > 0) && (other_end[1] <= p[1]) ) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("   ignore: miss in y: ray is down, seg going up\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("   ignore: miss in y: ray is down, seg going up\n", 0);
 		return;
 	}
 	if ((pctx->dir[1] < 0) && (other_end[1] >= p[1]) ) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("   ignore: miss in y: ray is up, seg going down\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("   ignore: miss in y: ray is up, seg going down\n", 0);
 		return;
 	}
 
@@ -76,17 +76,17 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 	   back to the left faster, the ray is starting to the left of    */
 	if ((p[0] == pctx->pt[0]) && (p[1] == pctx->pt[1])) {
 		pb2_slope_t slp_seg = pb2_slope(p, other_end);
-		if (pb2_face_polarity_at_verbose) rnd_trace("   slope: dir=%f seg=%f\n", pctx->dir_slope, slp_seg);
+		if (pb2_face_polarity_at_verbose) pa_trace("   slope: dir=", Pdbl(pctx->dir_slope.s), " seg=", Pdbl(slp_seg.s), "\n", 0);
 
 		/* special case testing on vertical vetors where slope would be infinite */
 		if (pctx->dir[0] == 0) {
 			/* the ray startpoint's direction is vertical; the segment must be right of it (ray.x > 0) to get hit */
 			if (slp_seg.dx > 0) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir v1 is left of seg -> cnt=%ld\n", pctx->cnt);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v1 is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
 			}
 			else {
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir v1 is right of seg -> ignore\n");
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v1 is right of seg -> ignore\n", 0);
 			}
 			return;
 		}
@@ -94,10 +94,10 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 			/* the segment is vertical; ray startpoint must be left of it (ray.x < 0) to hit */
 			if ((long)pctx->dir[0] < 0) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir v2 is left of seg -> cnt=%ld\n", pctx->cnt);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v2 is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
 			}
 			else {
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir v2 is right of seg -> ignore\n");
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v2 is right of seg -> ignore\n", 0);
 			}
 			return;
 		}
@@ -105,26 +105,26 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 		if (pctx->dir[1] < 0) { /* dir pointing up */
 			if ((slp_seg.s < 0) || PB2_SLOPE_LT(pctx->dir_slope, slp_seg)) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir up  is left of seg -> cnt=%ld\n", pctx->cnt);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir up  is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
 					return;
 			}
 		}
 		else if (pctx->dir[1] > 0) { /* dir pointing down */
 			if ((slp_seg.s > 0) || PB2_SLOPE_LT(slp_seg, pctx->dir_slope)) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) rnd_trace("   slope dir dn  is left of seg -> cnt=%ld\n", pctx->cnt);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir dn  is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
 				return;
 			}
 		}
 
-		if (pb2_face_polarity_at_verbose) rnd_trace("   slope: dir is right of seg -> ignore\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("   slope: dir is right of seg -> ignore\n", 0);
 		return;
 	}
 
 	/* the ray is coming from more than 1 unit away from left, slightly
 	   into the seg in y direction: that's a hit */
 	pb2_3_seg_hit(pctx, seg);
-	if (pb2_face_polarity_at_verbose) rnd_trace("    cnt=%ld\n", pctx->cnt);
+	if (pb2_face_polarity_at_verbose) pa_trace("    cnt=", Plong(pctx->cnt), "\n", 0);
 }
 
 static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
@@ -150,22 +150,22 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
 
-	if (pb2_face_polarity_at_verbose) rnd_trace(" seg found: %ld;%ld .. %ld;%ld cntA=%ld cntB=%ld uid=%ld\n", p1[0], p1[1], p2[0], p2[1], seg->cntA, seg->cntB, PB2_UID_GET(seg));
+	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
 
 	/* ignore horizontal segs - it is enough to hiot its non-horizontal neighbors */
 	if (p1[1] == p2[1]) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("  horizontal (ignored)\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("  horizontal (ignored)\n", 0);
 		return 0;
 	}
 
 	/* hit a seg endpoint */
 	if (p1[1] == pctx->pt[1]) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("  (end p1)\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("  (end p1)\n", 0);
 		pb2_3_fp_at_endp(pctx, p1, p2, seg);
 		return 0;
 	}
 	if (p2[1] == pctx->pt[1]) {
-		if (pb2_face_polarity_at_verbose) rnd_trace("  (end p2)\n");
+		if (pb2_face_polarity_at_verbose) pa_trace("  (end p2)\n", 0);
 		pb2_3_fp_at_endp(pctx, p2, p1, seg);
 		return 0;
 	}
@@ -189,11 +189,11 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 		cross = (double)v1[0] * (double)v2[1] - (double)v2[0] * (double)v1[1];
 
 		if ((p1[1] > p2[1]) && (cross > 0)) {
-			if (pb2_face_polarity_at_verbose) rnd_trace("  midpoint miss 1 (not crossing)\n");
+			if (pb2_face_polarity_at_verbose) pa_trace("  midpoint miss 1 (not crossing)\n", 0);
 			return 0;
 		}
 		if ((p1[1] < p2[1]) && (cross < 0)) {
-			if (pb2_face_polarity_at_verbose) rnd_trace("  midpoint miss 2 (not crossing)\n");
+			if (pb2_face_polarity_at_verbose) pa_trace("  midpoint miss 2 (not crossing)\n", 0);
 			return 0;
 		}
 	}
@@ -201,7 +201,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 
 	/* real intersection in the middle */
 	pb2_3_seg_hit(pctx, seg);
-	if (pb2_face_polarity_at_verbose) rnd_trace("  midpoint hit\n cnt=%ld\n", pctx->cnt);
+	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n cnt=", Plong(pctx->cnt), "\n", 0);
 
 	return 0;
 }
@@ -213,7 +213,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	rnd_rtree_box_t sb;
 	static const rnd_vector_t pzero = {0};
 
-	if (pb2_face_polarity_at_verbose) rnd_trace("Polarity test from %ld;%ld dir %ld;%ld in poly %c\n", pt[0], pt[1], (long)direction[0], (long)direction[1], poly);
+	if (pb2_face_polarity_at_verbose) pa_trace("Polarity test from ", Pvect(pt), " dir ", Pvect(direction), " in poly ", Pchar(poly), "\n", 0);
 
 	assert(direction[0] <= 0);
 	assert(direction[1] != 0);
@@ -232,7 +232,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	rnd_rtree_search_obj(&ctx->seg_tree, &sb, pb2_3_fp_cb, &pctx);
 
 
-	if (pb2_face_polarity_at_verbose) rnd_trace(" cnt final=%ld (odd is in)\n\n", pctx.cnt);
+	if (pb2_face_polarity_at_verbose) pa_trace(" cnt final=", Plong(pctx.cnt), " (odd is in)\n\n", 0);
 
 	return (pctx.cnt % 2); /* odd means inside which should return 1 */
 }
@@ -314,7 +314,7 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 		best_right[1] = first[1];
 	}
 
-	if (pb2_face_polarity_at_verbose) rnd_trace("pb2_3_face_find_polarity_pt: %ld;%ld -> {%ld;%ld} -> %ld;%ld\n", best_left[0], best_left[1], best[0], best[1], best_right[0], best_right[1]);
+	if (pb2_face_polarity_at_verbose) pa_trace("pb2_3_face_find_polarity_pt: ", Pvect(best_left), " -> ", Pvect(best), " -> ", Pvect(best_right), "\n", 0);
 
 	f->polarity_pt[0] = best[0];
 	f->polarity_pt[1] = best[1];
@@ -342,7 +342,7 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 		f->polarity_dir[1] = 1;
 	}
 
-	if (pb2_face_polarity_at_verbose) rnd_trace("  dir_end=%ld;%ld dir=%ld;%ld\n", dir_end[0], dir_end[1], (long)f->polarity_dir[0], (long)f->polarity_dir[1]);
+	if (pb2_face_polarity_at_verbose) pa_trace("  dir_end=", Pvect(dir_end), " dir=", Pvect(f->polarity_dir), "\n", 0);
 }
 
 /* Map faces between curves */
