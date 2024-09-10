@@ -101,12 +101,12 @@ do { \
 #endif
 
 
-RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *fmt, ...)
+RND_INLINE rnd_bool PA_CHK_ERROR(pa_chk_res_t *res, const char *first, ...)
 {
 #ifndef NDEBUG
 	va_list ap;
-	va_start(ap, fmt);
-	rnd_vsnprintf(res->msg, sizeof(res->msg), fmt, ap);
+	va_start(ap, first);
+	vsnprints(res->msg, sizeof(res->msg), first, ap);
 	va_end(ap);
 #endif
 	return rnd_true;
@@ -233,7 +233,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 	assert(a != NULL);
 
 	if (a->Count < 3)
-		return PA_CHK_ERROR(res, "pline with points too few at %ld;%ld", a->head->point[0], a->head->point[1]);
+		return PA_CHK_ERROR(res, "pline with points too few at ", Pvnodep(a->head));
 
 	a1 = a->head;
 	do {
@@ -243,14 +243,14 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 		if ((a1->prev->point[0] == a1->next->point[0]) && (a1->prev->point[1] == a1->next->point[1])) {
 			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
 			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
-			return PA_CHK_ERROR(res, "lines overlap at stub %mm;%mm (full)", a1->point[0], a1->point[1]);
+			return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (full)", 0);
 		}
 
 		/* More expensive test: partly overlapping adjacent lines */
 		if (pa_is_node_on_line(a1->next, a1, a1->prev) || pa_is_node_on_line(a1->prev, a1, a1->next)) {
 			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
 			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
-			return PA_CHK_ERROR(res, "lines overlap at stub %mm;%mm (partial)", a1->point[0], a1->point[1]);
+			return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (partial)", 0);
 		}
 
 		do {
@@ -265,7 +265,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 			if (icnt > 1) { 
 				PA_CHK_MARK(a1->point[0], a1->point[1]);
 				PA_CHK_MARK(a2->point[0], a2->point[1]);
-				return PA_CHK_ERROR(res, "icnt > 1 (%d) at %ld;%ld or  %ld;%ld", icnt, a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+				return PA_CHK_ERROR(res, "icnt > 1 (", Pint(icnt) ,") at ", Pnodep(a1), " or ",  Pnodep(a2), 0);
 			}
 #endif
 
@@ -278,7 +278,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				/* intersection in the middle of two lines */
 				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
 				PA_CHK_LINE(a2->point[0], a2->point[1], a2->next->point[0], a2->next->point[1]);
-				return PA_CHK_ERROR(res, "lines cross between %mm;%mm and %mm;%mm", a1->point[0], a1->point[1], a2->point[0], a2->point[1]);
+				return PA_CHK_ERROR(res, "lines cross between ", Pvnodep(a1), " and ", Pvnodep(a2), 0);
 			}
 			else if (hit1 == NULL) {
 				/* An end-point of a2 touched somewhere along the length of a1. Check
@@ -288,7 +288,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				if ((pa_vect_inside_sect(hit2, a1->point) != pa_vect_inside_sect(hit2, a1->next->point)) && !pa_chk_ll_olap(hit2, a2, a1)) {
 					PA_CHK_MARK(a1->point[0], a1->point[1]);
 					PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (1) at %mm;%mm (%ld;%ld)", a1->point[0], a1->point[1], a1->point[0], a1->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (1) at ", Pvnodep(a1), 0);
 				}
 			}
 			else if (hit2 == NULL) {
@@ -299,7 +299,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				if ((pa_vect_inside_sect(hit1, a2->point) != pa_vect_inside_sect(hit1, a2->next->point)) && !pa_chk_ll_olap(hit1, a1, a2)) {
 					PA_CHK_MARK(a2->point[0], a2->point[1]);
 					PA_CHK_MARK(hit1->point[0], hit1->point[1]);
-					return PA_CHK_ERROR(res, "plines crossing (2) at %mm;%mm (%ld;%ld)", a2->point[0], a2->point[1], a2->point[0], a2->point[1]);
+					return PA_CHK_ERROR(res, "plines crossing (2) at ", Pvnodep(a2), 0);
 				}
 			}
 			else {
@@ -321,7 +321,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 					if ((polarity[1] != polarity[0]) || (polarity[2] != polarity[0]) || (polarity[3] != polarity[0])) {
 						PA_CHK_MARK(hit1->point[0], hit2->point[1]);
 						PA_CHK_MARK(hit2->point[0], hit2->point[1]);
-						return PA_CHK_ERROR(res, "plines crossing/twisting (3) at %mm;%mm (%ld;%ld) or %mm;%mm (%ld;%ld)", hit1->point[0], hit1->point[1], hit1->point[0], hit1->point[1], hit2->point[0], hit2->point[1], hit2->point[0], hit2->point[1]);
+						return PA_CHK_ERROR(res, "plines crossing/twisting (3) at ", Pvnodep(hit1), " or ", Pvnodep(hit2), 0);
 					}
 				}
 			}
