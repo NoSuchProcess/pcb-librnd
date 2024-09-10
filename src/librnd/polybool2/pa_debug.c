@@ -68,7 +68,7 @@ RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN || DEBUG_PA_DUMP_PA
 void pa_debug_print_angle(pa_angle_t a)
 {
-DEBUGP("%.09f", a);
+	DEBUGP("%.09f", a);
 }
 #endif
 
