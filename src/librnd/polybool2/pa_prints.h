@@ -19,20 +19,34 @@
 
 /*** types ***/
 
-RND_INLINE long Pprint_vnodep(const void *val, Pfmt_t *format, void (*put_ch)(void *pctx, int ch), void *pctx)
+RND_INLINE long P_print_vect_(rnd_vector_t v, Pfmt_t *format, void (*put_ch)(void *pctx, int ch), void *pctx)
 {
 	char tmp[128];
 	int len;
-	rnd_vnode_t *v = *((rnd_vnode_t **)val);
 
-	if (pa_coord_is_mm(v->point[0]) || pa_coord_is_mm(v->point[1]))
-		len = rnd_sprintf(tmp, "%.012mm;%.012mm", v->point[0], v->point[1]);
+	if (pa_coord_is_mm(v[0]) || pa_coord_is_mm(v[1]))
+		len = rnd_sprintf(tmp, "%.012mm;%.012mm", v[0], v[1]);
 	else
-		len = rnd_sprintf(tmp, "%ld;%ld", v->point[0], v->point[1]);
+		len = rnd_sprintf(tmp, "%ld;%ld", v[0], v[1]);
 
 	P_PRINT_STR(tmp);
 
 	return len;
+
+}
+
+
+RND_INLINE long Pprint_vectp(const void *val, Pfmt_t *format, void (*put_ch)(void *pctx, int ch), void *pctx)
+{
+	rnd_vector_t *v = *((rnd_vector_t **)val);
+	return P_print_vect_(*v, format, put_ch, pctx);
+}
+
+RND_INLINE long Pprint_vnodep(const void *val, Pfmt_t *format, void (*put_ch)(void *pctx, int ch), void *pctx)
+{
+	rnd_vnode_t *v = *((rnd_vnode_t **)val);
+
+	return P_print_vect_(v->point, format, put_ch, pctx);
 }
 
 RND_INLINE long Pprint_coord(const void *val, Pfmt_t *format, void (*put_ch)(void *pctx, int ch), void *pctx)
@@ -52,6 +66,7 @@ RND_INLINE long Pprint_coord(const void *val, Pfmt_t *format, void (*put_ch)(voi
 }
 
 #define Pvnodep(val)       PMAGIC, PTYPE(' ', 'p'), Pprint_vnodep, NULL, (rnd_vnode_t *)(val)
+#define Pvect(val)         PMAGIC, PTYPE(' ', 'p'), Pprint_vectp,  NULL, (rnd_coord_t *)(val)
 #define Pcoord(val)        PMAGIC, PTYPE(' ', 'C'), Pprint_coord, NULL, (rnd_coord_t)(val)
 #define Pcoord2(x, y)      Pcoord(x), ";", Pcoord(y)
 #define Pdbl2(x, y)        Pdbl(x), ";", Pdbl(y)
