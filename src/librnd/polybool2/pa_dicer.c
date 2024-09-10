@@ -526,13 +526,13 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	ctx->head = ctx->corner[0];
 
 #if DEBUG_CLIP_DUMP_LOOP != 0
-	rnd_trace("isc loop #1:\n");
+	pa_trace("isc loop #1:\n", 0);
 	i = ctx->head;
 	do {
 		if (i->vn != NULL)
-			rnd_trace(" %ld;%ld .. %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn->next->point[0], i->vn->next->point[1], i->vn, i->pl);
+			pa_trace(" ", Pdbl2(i->x, i->y), " .. ", Pvnodep(i->vn->next), " vn=", Pptr(i->vn), " pl=", Pptr(i->pl), "\n", 0);
 		else
-			rnd_trace(" %ld;%ld (E)\n", i->x, i->y);
+			pa_trace(" ", Pdbl2(i->x, i->y)," (E)\n", 0);
 	} while((i = i->next) != ctx->head);
 #endif
 
@@ -559,13 +559,13 @@ RND_INLINE void pa_dic_sort_sides(pa_dic_ctx_t *ctx)
 	} while((i = next) != ctx->head);
 
 #if DEBUG_CLIP_DUMP_LOOP != 0
-	rnd_trace("isc loop #2:\n");
+	pa_trace("isc loop #2:\n", 0);
 	i = ctx->head;
 	do {
 		if (i->vn != NULL)
-			rnd_trace(" %ld;%ld .. %ld;%ld vn=%p pl=%p\n", i->x, i->y, i->vn->next->point[0], i->vn->next->point[1], i->vn, i->pl);
+			pa_trace(" ", Pdbl2(i->x, i->y), " .. ", Pvnodep(i->vn->next), " vn=", Pptr(i->vn), " pl=", Pptr(i->pl), 0);
 		else
-			rnd_trace(" %ld;%ld (E)\n", i->x, i->y);
+			pa_trace(" ", Pdbl2(i->x, i->y), " (E)\n", 0);
 	} while((i = i->next) != ctx->head);
 #endif
 
