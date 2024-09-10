@@ -19,6 +19,7 @@
 #include "rtree.h"
 #include "rtree2_compat.h"
 #include "pa.h"
+#include "pa_prints.h"
 
 #include "pa_math.c"
 #include "pa_vect.c"
