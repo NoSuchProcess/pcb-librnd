@@ -45,6 +45,7 @@
 		(r)[1] = (a)[1] - (b)[1]; \
 	} while(0)
 
+#include "pa_prints.h"
 #include "pb2_debug_txt.c"
 #include "pb2_debug_svg.c"
 #include "pb2_admin.c"
