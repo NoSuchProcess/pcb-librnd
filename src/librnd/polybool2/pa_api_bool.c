@@ -61,7 +61,7 @@ RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int o
 		fclose(f);
 
 		rnd_polybool_dump_boolops++;
-		rnd_trace("dumped %s\n", fn);
+		pa_trace("dumped ", Pstr(fn), "\n", 0);
 	}
 }
 
