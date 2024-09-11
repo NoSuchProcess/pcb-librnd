@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <librnd/core/unit.h>
 #include "pa_config.h"
 #include "rtree.h"
 
