@@ -213,28 +213,6 @@ static void pb2_draw_faces(pb2_ctx_t *ctx, FILE *F)
 		draw_face(ctx, f, F);
 }
 
-#if 0
-RND_INLINE void pb2_draw_face_tree_(pb2_face_t *parent, int ind, FILE *F)
-{
-	pb2_face_t *f;
-	int n;
-
-	for(n = 0; n < ind; n++)
-		rnd_trace(" ");
-
-	rnd_trace("F%ld out=%d\n", parent->uid, parent->out);
-
-	for(f = parent->children; f != NULL; f = f->next)
-		pb2_draw_face_tree_(f, ind+1);
-}
-
-static void pb2_draw_face_tree(pb2_ctx_t *ctx, FILE *F)
-{
-	rnd_trace(" Face tree:\n");
-	pb2_draw_face_tree_(&ctx->root, 2);
-}
-#endif
-
 static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
 {
 	const rnd_vnode_t *v;
