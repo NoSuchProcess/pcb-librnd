@@ -27,8 +27,6 @@
  *
  */
 
-#include <librnd/core/error.h>
-
 typedef enum {
 	PB2_DUMP_SEGS = 1,
 	PB2_DUMP_CURVES = 2,

@@ -34,7 +34,6 @@
 
 #include "pa_dicer.h"
 #include <librnd/core/vtc0.h>
-#include <librnd/core/error.h>
 #include <librnd/core/misc_util.h>
 
 /*** clipper ***/
@@ -1195,7 +1194,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 		   that's a bug */
 		assert(removed != 0);
 		if (removed == 0) {
-			rnd_message(RND_MSG_ERROR, "dicer: failed to cut hole. Please report this bug sending the board file.\n");
+			pa_error("dicer: failed to cut hole. Please report this bug sending the file that caused it.\n");
 			break;
 		}
 

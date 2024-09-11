@@ -3,6 +3,8 @@
 
 #include <librnd/rnd_config.h>
 
+#include <librnd/core/error.h>
+
 #define GENPRINTS_INLINE RND_INLINE
 
 #define GENPRINTS_EXTRA_TYPE_DISPATCH \
@@ -91,6 +93,11 @@ RND_INLINE long pa_trace(const char *first, ...)
 
 	va_end(ap);
 	return len;
+}
+
+RND_INLINE void pa_error(const char *msg)
+{
+	rnd_message(RND_MSG_ERROR, "%s", msg);
 }
 
 #endif
