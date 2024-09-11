@@ -53,39 +53,6 @@ RND_INLINE void PA_DEBUGP_DUMMY(const char *first, ...) { }
 #	define DEBUG_ALL_LABELS 0
 #endif
 
-
-#if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
-RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
-{
-	DEBUGP(" ", Pvnodep(n), " ", 0);
-}
-#endif
-
-#if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN || DEBUG_PA_DUMP_PA
-void pa_debug_print_angle(pa_angle_t a)
-{
-	DEBUGP(PdblF(a, 0, 9, 0), 0);
-}
-#endif
-
-
-#if DEBUG_ISC
-RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
-{
-	DEBUGP("ISC ", Pstr(name), ": ", Pnodep(a1), "..", Pnodep(a2), " and ", Pnodep(b1), "..", Pnodep(b2), "\n", 0);
-	if (num_isc > 0) DEBUGP(" " PVector(isc1), "\n", 0);
-	if (num_isc > 1) DEBUGP(" " PVector(isc2), "\n", 0);
-}
-RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, rnd_vector_t *crd, rnd_vnode_t *nd)
-{
-	DEBUGP("  new node? isc=#", Pint(num_isc), " on ", Pstr(name), " ", Pvector(*crd), " -> ", Pptr(nd), "\n", 0);
-}
-
-#else
-RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2) {}
-RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, rnd_vector_t *crd, rnd_vnode_t *nd) {}
-#endif
-
 typedef enum { /* bitfield of extra info the dump should contain */
 	PA_DBG_DUMP_dummy = 1
 } pa_debug_dump_extra_t;
@@ -162,13 +129,6 @@ static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_deb
 }
 #else
 static void pa_debug_dump(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra) {}
-#endif
-
-#if DEBUG_GATHER || DEBUG_JUMP
-	static void DEBUG_COORDS(const char *prefix, rnd_vnode_t *n, const char *remark)
-	{
-		DEBUGP("%s at %ld %ld %s\n", prefix, (long)n->point[0], (long)n->point[1], remark);
-	}
 #endif
 
 #if DEBUG_CLIP
