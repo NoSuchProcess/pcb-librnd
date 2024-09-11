@@ -46,13 +46,13 @@ static void pb2_dump_segs(pb2_ctx_t *ctx)
 	rnd_rtree_it_t it;
 	pb2_seg_t *seg;
 
-	rnd_trace(" Segments:\n");
+	pa_trace(" Segments:\n", 0);
 	for(seg = rnd_rtree_all_first(&it, &ctx->seg_tree); seg != NULL; seg = rnd_rtree_all_next(&it)) {
-		rnd_trace("  S%ld %ld;%ld -> %ld;%ld%s A=%d B=%d", PB2_UID_GET(seg), seg->start[0], seg->start[1], seg->end[0], seg->end[1], (seg->discarded ? " DISCARDED:" : ":"), seg->cntA, seg->cntB);
+		pa_trace("  S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), (seg->discarded ? " DISCARDED:" : ":"), " A=", Pint(seg->cntA), " B=", Pint(seg->cntB), 0);
 		switch(seg->shape_type) {
-			case RND_VNODE_LINE: rnd_trace(" line\n"); break;
-			case RND_VNODE_ARC:  rnd_trace(" arc\n"); break;
-			default: rnd_trace("??? unknown type %d\n", seg->shape_type);
+			case RND_VNODE_LINE: pa_trace(" line\n", 0); break;
+			case RND_VNODE_ARC:  pa_trace(" arc\n", 0); break;
+			default: pa_trace("??? unknown type ", Pint(seg->shape_type), "\n", 0);
 		}
 	}
 }
@@ -65,40 +65,40 @@ static void dump_curve(pb2_curve_t *curve)
 	fs = gdl_first(&curve->segs);
 	ls = gdl_last(&curve->segs);
 
-	rnd_trace("  C%ld: %ld;%ld -> %ld;%ld:", curve->uid, fs->start[0], fs->start[1], ls->end[0], ls->end[1]);
+	pa_trace("  C", Plong(curve->uid), ": ", Pvect(fs->start), " -> ", Pvect(ls->end), ":", 0);
 
 	if (curve->out_start != NULL) {
-		rnd_trace(" (O%ld)", curve->out_start->uid);
+		pa_trace(" (O", Plong(curve->out_start->uid), ")", 0);
 		assert(curve->out_start->curve == curve);
 	}
 
 	for(seg = fs; seg != NULL; seg = gdl_next(&curve->segs, seg)) {
-		rnd_trace(" S%ld", seg->uid);
+		pa_trace(" S", Plong(seg->uid), 0);
 		assert(pb2_seg_parent_curve(seg) == curve);
 	}
 
 	if (curve->out_end != NULL) {
-		rnd_trace(" (O%ld)", curve->out_end->uid);
+		pa_trace(" (O", Plong(curve->out_end->uid), ")", 0);
 		assert(curve->out_end->curve == curve);
 	}
 
 	if (curve->pruned)
-		rnd_trace(" {pruned}");
+		pa_trace(" {pruned}", 0);
 	if (curve->face[0] != NULL)
-		rnd_trace("    #  F%ld", curve->face[0]->uid);
+		pa_trace("    #  F", Plong(curve->face[0]->uid), 0);
 	if (curve->face[1] != NULL)
-		rnd_trace(" F%ld", curve->face[1]->uid);
+		pa_trace(" F", Plong(curve->face[1]->uid), 0);
 	if (curve->face_1_implicit)
-		rnd_trace("i");
+		pa_trace("i", 0);
 
-	rnd_trace("\n");
+	pa_trace("\n", 0);
 }
 
 static void pb2_dump_curves(pb2_ctx_t *ctx)
 {
 	pb2_curve_t *c;
 
-	rnd_trace(" Curves:\n");
+	pa_trace(" Curves:\n", 0);
 	for(c = gdl_first(&ctx->curves); c != NULL; c = gdl_next(&ctx->curves, c))
 		dump_curve(c);
 }
@@ -108,17 +108,17 @@ static void dump_cgnode(pb2_cgnode_t *cgn)
 {
 	int n;
 
-	rnd_trace("  N%ld: %ld;%ld\n", cgn->uid, cgn->bbox.x1, cgn->bbox.y1);
+	pa_trace("  N", Plong(cgn->uid), ": ", Plong(cgn->bbox.x1), ";", Plong(cgn->bbox.y1), "\n", 0);
 
 	for(n = 0; n < cgn->num_edges; n++)
-		rnd_trace("   Edge: O%ld C%ld rev=%d mark=%d angle=%.3f\n", cgn->edges[n].uid, cgn->edges[n].curve->uid, cgn->edges[n].reverse, cgn->edges[n].corner_mark, cgn->edges[n].angle);
+		pa_trace("   Edge: O", Plong(cgn->edges[n].uid), " C", Plong(cgn->edges[n].curve->uid), " rev=", Pint(cgn->edges[n].reverse), " mark=", Pint(cgn->edges[n].corner_mark), " angle=", PdblF(cgn->edges[n].angle, 0,3, 0), "\n", 0);
 }
 
 static void pb2_dump_curve_graph(pb2_ctx_t *ctx)
 {
 	pb2_cgnode_t *n;
 
-	rnd_trace(" Curve graph:\n");
+	pa_trace(" Curve graph:\n", 0);
 	for(n = gdl_first(&ctx->cgnodes); n != NULL; n = gdl_next(&ctx->cgnodes, n))
 		dump_cgnode(n);
 
@@ -129,19 +129,18 @@ static void dump_face(pb2_face_t *f)
 {
 	long n;
 
-	rnd_trace("  F%ld: pp=%ld;%ld dir=%ld;%ld inA=%d inB=%d out=%d area=%.2f%s\n",
-		f->uid, f->polarity_pt[0], f->polarity_pt[1], (long)f->polarity_dir[0], (long)f->polarity_dir[1],
-		f->inA, f->inB, f->out, f->area, (f->destroy ? " {destroy}" : ""));
+	pa_trace("  F", Plong(f->uid), ": pp=", Pvect(f->polarity_pt), " dir=", Pvect(f->polarity_dir),
+		" inA=", Pint(f->inA), " inB=", Pint(f->inB)," out=", Pint(f->out),
+		" area=", PdblF(f->area, 0, 2, 0), (f->destroy ? " {destroy}\n" : "\n"), 0);
 	for(n = 0; n < f->num_curves; n++)
-		rnd_trace("   O%ld C%ld %s cmark=%d\n", f->outs[n]->uid, f->outs[n]->curve->uid,
-			f->outs[n]->reverse ? "rev" : "fwd", f->outs[n]->corner_mark);
+		pa_trace("   O", Plong(f->outs[n]->uid), " C", Plong(f->outs[n]->curve->uid), (f->outs[n]->reverse ? " rev" : " fwd"), " cmark=", Pint(f->outs[n]->corner_mark), "\n", 0);
 }
 
 static void pb2_dump_faces(pb2_ctx_t *ctx)
 {
 	pb2_face_t *f;
 
-	rnd_trace(" Faces:\n");
+	pa_trace(" Faces:\n", 0);
 	for(f = gdl_first(&ctx->faces); f != NULL; f = gdl_next(&ctx->faces, f))
 		dump_face(f);
 }
@@ -152,9 +151,9 @@ RND_INLINE void pb2_dump_face_tree_(pb2_face_t *parent, int ind)
 	int n;
 
 	for(n = 0; n < ind; n++)
-		rnd_trace(" ");
+		pa_trace(" ", 0);
 
-	rnd_trace("F%ld out=%d area=%.0f\n", parent->uid, parent->out, parent->area);
+	pa_trace("F", Plong(parent->uid), " out=", Pint(parent->out), " area=", PdblF(parent->area,0,0,0), "\n", 0);
 
 	for(f = parent->children; f != NULL; f = f->next)
 		pb2_dump_face_tree_(f, ind+1);
@@ -162,7 +161,7 @@ RND_INLINE void pb2_dump_face_tree_(pb2_face_t *parent, int ind)
 
 static void pb2_dump_face_tree(pb2_ctx_t *ctx)
 {
-	rnd_trace(" Face tree:\n");
+	pa_trace(" Face tree:\n", 0);
 	pb2_dump_face_tree_(&ctx->root, 2);
 }
 
