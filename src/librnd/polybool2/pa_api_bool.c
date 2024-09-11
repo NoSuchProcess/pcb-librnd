@@ -36,7 +36,11 @@ int rnd_polybool_dump_boolops = DEBUG_DUMP_BOOLOPS;
 int rnd_pb2_inhibit_edge_tree = DEBUG_INHIBIT_EDGE_TREE;
 
 #ifndef NDEBUG
+
+#ifdef RND_API_VER
 #include <librnd/core/safe_fs.h>
+#endif
+
 RND_INLINE void pa_polyarea_bool_dbg(rnd_polyarea_t *A, rnd_polyarea_t *B, int op)
 {
 	if (rnd_polybool_dump_boolops != 0) {

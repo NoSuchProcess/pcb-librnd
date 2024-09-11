@@ -27,7 +27,9 @@
  *
  */
 
+#ifdef RND_API_VER
 #include <librnd/core/safe_fs.h>
+#endif
 
 #ifndef NDEBUG
 

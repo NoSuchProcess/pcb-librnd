@@ -109,6 +109,8 @@ RND_INLINE void pa_error(const char *msg)
 #else
 /* pa_error() is supplied by the user */
 	extern void pa_error(const char *msg);
+
+#	define rnd_fopen(ctx, fn, mode) fopen(fn, mode)
 #endif
 
 #endif
