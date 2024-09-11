@@ -28,7 +28,12 @@
  */
 
 #include "polygon1_gen.h"
+#include "pa_config.h"
+
 int rnd_vertices_are_coaxial(rnd_vnode_t *node);
+void pa_dump_pl(rnd_pline_t *pl, const char *fn);
+
+long rnd_polybool_dump_offset_round = DEBUG_DUMP_OFFSET_ROUND;
 
 RND_INLINE rnd_vnode_t *pl_append_xy(rnd_pline_t *dst, rnd_coord_t x, rnd_coord_t y)
 {
@@ -57,9 +62,16 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 	rnd_vnode_t *vnew, *discard;
 	rnd_pline_t *dst = calloc(sizeof(rnd_pline_t), 1);
 	rnd_vector_t isc1, isc2;
+	char dumpfn[128];
 
 	if (dst == NULL)
 		return NULL;
+
+	if (rnd_polybool_dump_offset_round) {
+		rnd_polybool_dump_offset_round++;
+		sprintf(dumpfn, "off_%06ld.I.poly", rnd_polybool_dump_offset_round);
+		pa_dump_pl(src, dumpfn);
+	}
 
 	/* offset each edge also keeping the original corners but marked */
 	curr = src->head;
@@ -123,5 +135,11 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 
 
 	pa_pline_update(dst, 1);
+	if (rnd_polybool_dump_offset_round) {
+		sprintf(dumpfn, "off_%06ld.O.poly", rnd_polybool_dump_offset_round);
+		pa_dump_pl(dst, dumpfn);
+	}
+
+
 	return dst;
 }

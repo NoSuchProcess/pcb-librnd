@@ -36,9 +36,11 @@
 /* Dump each input and result into poly files readable by the tester */
 #define DEBUG_DUMP_BOOLOPS 0
 
+/* Dump each input and output pline of rnd_pline_dup_with_offset_round() in poly debug format */
+#define DEBUG_DUMP_OFFSET_ROUND 0
+
 /* Print extra trace of the ray when determining face polarity */
 #define DEBUG_STEP3_FACE_POLARITY_VERBOSE 0
-
 
 
 /* When compield with debug (for assert()) if this is 0, run a check on the
