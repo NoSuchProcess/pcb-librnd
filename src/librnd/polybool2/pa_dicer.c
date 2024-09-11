@@ -788,7 +788,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 
 		dir = pa_dic_pt_in_box(n->point[0], n->point[1], &ctx->clip);
 		if (dir == PA_DPT_OUTSIDE) {
-			DEBUG_CLIP("        break: going outside\n");
+			DEBUG_CLIP("        break: going outside\n", 0);
 			return last_si;
 		}
 
@@ -801,7 +801,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 			si = pa_dic_find_isc_for_node(ctx, n);
 
 			if (si == term) {
-				DEBUG_CLIP("        break: term\n");
+				DEBUG_CLIP("        break: term\n", 0);
 				return term;
 			}
 
@@ -812,14 +812,14 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 					   when not returned to the starting point (test case: clip09) */
 					pa_dic_append(ctx, n->point[0], n->point[1]);
 				}
-				DEBUG_CLIP("        break: wrong turn\n");
+				DEBUG_CLIP("        break: wrong turn\n", 0);
 				return si;
 			}
 
 			/* break at hole/island overlapping edge; test case: clip21c/clip25c */
 			if (pa_dic_emit_island_predict(ctx, n, si->pl) == PA_DPT_OUTSIDE) {
 				pa_dic_append(ctx, n->point[0], n->point[1]);
-				DEBUG_CLIP("        break: overlapping edg\n");
+				DEBUG_CLIP("        break: overlapping edg\n", 0);
 				return si;
 			}
 
@@ -828,7 +828,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_pline(pa_dic_ctx_t *ctx, rnd_vnode_t *sta
 		}
 
 		pa_dic_append(ctx, n->point[0], n->point[1]);
-		DEBUG_CLIP("       append: %ld;%ld\n", (long)n->point[0], (long)n->point[1]);
+		DEBUG_CLIP("       append: ", Pvnodep(n), "\n", 0);
 		n = n->next;
 	} while(n != start);
 
@@ -845,17 +845,17 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 		if (i == term) {
 			if (i == start_isc->next)
 				pa_dic_append(ctx, rnd_round(start_isc->x), rnd_round(start_isc->y)); /* test case: clip26, 45;80..55;70..65;80 */
-			DEBUG_CLIP("        break: term\n");
+			DEBUG_CLIP("        break: term\n", 0);
 			break;
 		}
 		if (i->ecollected) {
-			DEBUG_CLIP("        break: already ecollected\n");
+			DEBUG_CLIP("        break: already ecollected\n", 0);
 			break;
 		}
 		pa_dic_append(ctx, rnd_round(i->x), rnd_round(i->y));
-		DEBUG_CLIP("       append: %ld;%ld\n", (long)rnd_round(i->x), (long)rnd_round(i->y));
+		DEBUG_CLIP("       append: ", Pcoord2(rnd_round(i->x), rnd_round(i->y)), "\n", 0);
 		if ((i->vn != NULL) && (pa_dic_emit_island_predict(ctx, i->vn, i->pl) == PA_DPT_INSIDE)) {
-			DEBUG_CLIP("        break: pline going inside\n");
+			DEBUG_CLIP("        break: pline going inside\n", 0);
 			break;
 		}
 		i->ecollected = 1;
@@ -872,7 +872,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	if (from->vn == NULL)
 		return;
 
-	DEBUG_CLIP("     collect from: %ld;%ld\n", (long)from->x, (long)from->y);
+	DEBUG_CLIP("     collect from: ", Pcoord2(from->x, from->y), "\n", 0);
 
 	/* Check where we can get from this intersection */
 	ptst = pa_dic_emit_island_predict(ctx, from->vn, from->pl);
@@ -890,19 +890,19 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	/* it's safe to start here, next deviation is going inside */
 	pa_dic_begin(ctx);
 	pa_dic_append(ctx, rnd_round(from->x), rnd_round(from->y));
-	DEBUG_CLIP("       append: %ld;%ld\n", (long)rnd_round(from->x), (long)rnd_round(from->y));
+	DEBUG_CLIP("       append: ", Pcoord2(from->x, from->y), "\n", 0);
 	from->pcollected = 1;
 
 	i = from;
 	do {
 		assert(i->vn != NULL); /* we need a pline intersection to start from */
 		vn = i->vn->next;
-		DEBUG_CLIP("      gather pline from: %ld;%ld (%ld;%ld -> %ld;%ld)\n", (long)i->x, (long)i->y, (long)vn->point[0], (long)vn->point[1], (long)vn->next->point[0], (long)vn->next->point[1]);
+		DEBUG_CLIP("      gather pline from: ", Pcoord2(i->x, i->y), " (", Pvnodep(vn), " -> ", Pvnodep(vn->next), ")\n", 0);
 		i = pa_dic_gather_pline(ctx, vn, i, from);
 		if (i == from)
 			break;
 		i->ecollected = 1;
-		DEBUG_CLIP("      gather edge from: %ld;%ld\n", (long)i->x, (long)i->y);
+		DEBUG_CLIP("      gather edge from: ", Pcoord2(i->x, i->y), "\n", 0);
 		i = pa_dic_gather_edge(ctx, i, from);
 		if (i == from)
 			break;
@@ -926,7 +926,7 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
 {
 	long num_pts = ctx->num_emits;
 	TODO("This is the same as the normal case... maybe just merge them (pa_dic_emit_island_normal)");
-	DEBUG_CLIP("    emit island inverted\n");
+	DEBUG_CLIP("    emit island inverted\n", 0);
 	pa_dic_emit_island_common(ctx, pa);
 	if (num_pts == ctx->num_emits) {
 		/* Special case: technically there was an intersection but the walk-around
@@ -940,7 +940,7 @@ RND_INLINE void pa_dic_emit_island_inverted(pa_dic_ctx_t *ctx, rnd_polyarea_t *p
    drawing the contour of the island except for the box sections */
 RND_INLINE void pa_dic_emit_island_normal(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 {
-	DEBUG_CLIP("    emit island normal\n");
+	DEBUG_CLIP("    emit island normal\n", 0);
 	pa_dic_emit_island_common(ctx, pa);
 }
 
@@ -950,7 +950,7 @@ RND_INLINE void pa_dic_emit_island_expensive(pa_dic_ctx_t *ctx, rnd_polyarea_t *
 {
 	rnd_pline_t *pl;
 
-	DEBUG_CLIP("   emit island expensive\n");
+	DEBUG_CLIP("   emit island expensive\n", 0);
 	/* label all holes */
 	for(pl = pa->contours->next; pl != NULL; pl = pl->next) {
 		pa_dic_pline_label(ctx, pl);
@@ -981,7 +981,7 @@ RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 	if ((ctx->clip.X1 >= pl->xmax) || (ctx->clip.Y1 >= pl->ymax)) return;
 	if ((ctx->clip.X2 <= pl->xmin) || (ctx->clip.Y2 <= pl->ymin)) return;
 
-	DEBUG_CLIP("  emit island: %ld;%ld\n", (long)pl->head->point[0], (long)pl->head->point[1]);
+	DEBUG_CLIP("  emit island: ", Pvnodep(pl->head), "\n", 0);
 	pa_dic_pline_label(ctx, pl);
 
 	/* first handle a few cheap common cases */
@@ -1131,9 +1131,9 @@ RND_INLINE void pa_slc_dump(pa_slc_ctx_t *ctx)
 	pa_slc_endp_t *ep;
 
 	for(n = 0, ep = ctx->v.array; n < ctx->v.used; n++,ep++)
-		DEBUG_SLICE(" %c @%d ^%d", ep->side==0 ? '{' : '}', ep->x, ep->height);
+		DEBUG_SLICE(ep->side==0 ? " { @" : " } @", Pint(ep->x), " ^", Pint(ep->height), 0);
 
-	DEBUG_SLICE("\n");
+	DEBUG_SLICE("\n", 0);
 #endif
 }
 
@@ -1153,7 +1153,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 		long best_n, best_h = -1;
 		int removed;
 
-		DEBUG_SLICE(" slc [%d] ", remaining);
+		DEBUG_SLICE(" slc [", Plong(remaining), "] ", 0);
 		pa_slc_dump(ctx);
 
 		/* find highest tower to slice */
@@ -1172,7 +1172,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 		xc = (x1+x2)/2;
 		vtc0_append(&ctx->cuts, xc);
 
-		DEBUG_SLICE("best: @%d ^%d cut at %d\n", best_n, best_h, xc);
+		DEBUG_SLICE("best: @", Plong(best_n), " ^", Plong(best_h), " cut at ", Pcoord(xc), "\n", 0);
 
 		removed = 0;
 		/* mark all affected plines already sliced and decrease heights and remaining */
@@ -1181,7 +1181,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 				ep->pl->flg.sliced = 1;
 				removed = 1;
 				remaining--;
-				DEBUG_SLICE(" remove %d..%d\n", ep->pl->xmin, ep->pl->xmax);
+				DEBUG_SLICE(" remove ", Pcoord(ep->pl->xmin), "..", Pcoord(ep->pl->xmax), "\n", 0);
 				/* decrease height over this pline */
 				for(m = n, ep2 = ep; (m < ctx->v.used); m++,ep2++) {
 					if ((ep2->pl == ep->pl) && (ep2->x == ep->pl->xmax))
@@ -1202,7 +1202,7 @@ RND_INLINE void pa_slc_find_cuts(pa_slc_ctx_t *ctx)
 	}
 
 
-	DEBUG_SLICE("slc post ");
+	DEBUG_SLICE("slc post ", 0);
 	pa_slc_dump(ctx);
 
 	/* reset pline flags */
