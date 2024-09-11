@@ -3,7 +3,9 @@
 
 #include <librnd/rnd_config.h>
 
-#include <librnd/core/error.h>
+#ifdef RND_API_VER
+#	include <librnd/core/error.h>
+#endif
 
 #define GENPRINTS_INLINE RND_INLINE
 
@@ -26,10 +28,12 @@ RND_INLINE long P_print_vect_(rnd_vector_t v, Pfmt_t *format, void (*put_ch)(voi
 	char tmp[128];
 	int len;
 
+#ifdef RND_API_VER
 	if (pa_coord_is_mm(v[0]) || pa_coord_is_mm(v[1]))
 		len = rnd_sprintf(tmp, "%.012mm;%.012mm", v[0], v[1]);
 	else
-		len = rnd_sprintf(tmp, "%ld;%ld", (long)v[0], (long)v[1]);
+#endif
+		len = sprintf(tmp, "%ld;%ld", (long)v[0], (long)v[1]);
 
 	P_PRINT_STR(tmp);
 
@@ -57,10 +61,12 @@ RND_INLINE long Pprint_coord(const void *val, Pfmt_t *format, void (*put_ch)(voi
 	int len;
 	rnd_coord_t c = *((rnd_coord_t *)val);
 
+#ifdef RND_API_VER
 	if (pa_coord_is_mm(c))
 		len = rnd_sprintf(tmp, "%.012mm", c);
 	else
-		len = rnd_sprintf(tmp, "%ld", (long)c);
+#endif
+		len = sprintf(tmp, "%ld", (long)c);
 
 	P_PRINT_STR(tmp);
 
@@ -95,9 +101,13 @@ RND_INLINE long pa_trace(const char *first, ...)
 	return len;
 }
 
+#ifdef RND_API_VER
 RND_INLINE void pa_error(const char *msg)
 {
 	rnd_message(RND_MSG_ERROR, "%s", msg);
 }
+#else
+/* pa_error() is supplied by the user */
+#endif
 
 #endif
