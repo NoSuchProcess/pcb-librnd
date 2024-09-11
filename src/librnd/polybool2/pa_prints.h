@@ -108,6 +108,7 @@ RND_INLINE void pa_error(const char *msg)
 }
 #else
 /* pa_error() is supplied by the user */
+	extern void pa_error(const char *msg);
 #endif
 
 #endif
