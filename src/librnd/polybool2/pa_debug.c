@@ -27,18 +27,14 @@
  *
  */
 
-RND_INLINE void PA_DEBUGP_DUMMY(const char *fmt, ...) { }
+RND_INLINE void PA_DEBUGP_DUMMY(const char *first, ...) { }
+
 #ifndef NDEBUG
-#include <stdarg.h>
-RND_INLINE void DEBUGP(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	rnd_vfprintf(stderr, fmt, ap);
-	va_end(ap);
-}
+#	include <stdarg.h>
+#	include "pa_prints.h"
+#	define DEBUGP pa_trace
 #else
-RND_INLINE void DEBUGP(const char *fmt, ...) { }
+	RND_INLINE void DEBUGP(const char *first, ...) { }
 #endif
 
 
@@ -61,14 +57,14 @@ RND_INLINE void DEBUGP(const char *fmt, ...) { }
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_PA_DUMP_PA
 RND_INLINE void pa_debug_print_vnode_coord(rnd_vnode_t *n)
 {
-	DEBUGP(" %$mD ", n->point[0], n->point[1]);
+	DEBUGP(" ", Pvnodep(n), " ", 0);
 }
 #endif
 
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP || DEBUG_ANGLE_EN || DEBUG_PA_DUMP_PA
 void pa_debug_print_angle(pa_angle_t a)
 {
-	DEBUGP("%.09f", a);
+	DEBUGP(PdblF(a, 0, 9, 0), 0);
 }
 #endif
 
@@ -76,15 +72,13 @@ void pa_debug_print_angle(pa_angle_t a)
 #if DEBUG_ISC
 RND_INLINE void pa_debug_print_isc(int num_isc, const char *name, rnd_vector_t isc1, rnd_vector_t isc2, rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vnode_t *b1, rnd_vnode_t *b2)
 {
-	DEBUGP("ISC %s: %$mD..%$mD and %$mD..%$mD\n", name, a1->point[0], a1->point[1], a2->point[0], a2->point[1], b1->point[0], b1->point[1], b2->point[0], b2->point[1]);
-	if (num_isc > 0) DEBUGP(" %$mD\n", isc1[0], isc1[1]);
-	if (num_isc > 1) DEBUGP(" %$mD\n", isc2[0], isc2[1]);
+	DEBUGP("ISC ", Pstr(name), ": ", Pnodep(a1), "..", Pnodep(a2), " and ", Pnodep(b1), "..", Pnodep(b2), "\n", 0);
+	if (num_isc > 0) DEBUGP(" " PVector(isc1), "\n", 0);
+	if (num_isc > 1) DEBUGP(" " PVector(isc2), "\n", 0);
 }
 RND_INLINE void pa_debug_print_isc2(int num_isc, const char *name, rnd_vector_t *crd, rnd_vnode_t *nd)
 {
-	DEBUGP("  new node? isc=#%d on %s ", num_isc, name);
-	DEBUGP("%$mD", (*crd)[0], (*crd)[1]);
-	DEBUGP(" -> %p\n", nd);
+	DEBUGP("  new node? isc=#", Pint(num_isc), " on ", Pstr(name), " ", Pvector(*crd), " -> ", Pptr(nd), "\n", 0);
 }
 
 #else
