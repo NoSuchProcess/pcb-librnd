@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  libpolybool, 2D polygon bool operations
- *  Copyright (C) 2023 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2023,2024 Tibor 'Igor2' Palinkas
  *
  *  (Supported by NLnet NGI0 Entrust in 2023,2024)
  *
@@ -35,22 +35,6 @@ RND_INLINE void PA_DEBUGP_DUMMY(const char *first, ...) { }
 #	define DEBUGP pa_trace
 #else
 	RND_INLINE void DEBUGP(const char *first, ...) { }
-#endif
-
-
-#if DEBUG_ANGLE
-#	undef DEBUG_ANGLE
-#	define DEBUG_ANGLE DEBUGP
-#	define DEBUG_ANGLE_EN 1
-#else
-#	undef DEBUG_ANGLE
-#	define DEBUG_ANGLE PA_DEBUGP_DUMMY
-#	define DEBUG_ANGLE_EN 0
-#endif
-
-#ifndef DEBUG
-#	undef DEBUG_ALL_LABELS
-#	define DEBUG_ALL_LABELS 0
 #endif
 
 typedef enum { /* bitfield of extra info the dump should contain */
