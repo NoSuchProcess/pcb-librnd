@@ -257,6 +257,10 @@ void pa_polyarea_unlink(rnd_polyarea_t **list, rnd_polyarea_t *island)
 	island->f = island->b = island;
 }
 
+
+#define PA_MAKE_MIN(a,b)            if ((b) < (a)) (a) = (b)
+#define PA_MAKE_MAX(a,b)            if ((b) > (a)) (a) = (b)
+
 /* Calculate the bbox of a polyarea merging all islands' outer polyline bboxes */
 RND_INLINE void pa_polyarea_bbox(rnd_box_t *dst, const rnd_polyarea_t *src)
 {
@@ -265,10 +269,10 @@ RND_INLINE void pa_polyarea_bbox(rnd_box_t *dst, const rnd_polyarea_t *src)
 
 	for(pa = src; (pa = pa->f) != src; ) {
 		rnd_box_t *b_box = (rnd_box_t *)pa->contours;
-		RND_MAKE_MIN(box.X1, b_box->X1);
-		RND_MAKE_MIN(box.Y1, b_box->Y1);
-		RND_MAKE_MAX(box.X2, b_box->X2);
-		RND_MAKE_MAX(box.Y2, b_box->Y2);
+		PA_MAKE_MIN(box.X1, b_box->X1);
+		PA_MAKE_MIN(box.Y1, b_box->Y1);
+		PA_MAKE_MAX(box.X2, b_box->X2);
+		PA_MAKE_MAX(box.Y2, b_box->Y2);
 	}
 
 	*dst = box;

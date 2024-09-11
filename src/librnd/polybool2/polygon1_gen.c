@@ -39,12 +39,12 @@
 
 #include <librnd/core/global_typedefs.h>
 #include "polyarea.h"
-#include <librnd/core/math_helper.h>
 
 #include "pa_math.c"
 
 #include "polygon1_gen.h"
 
+#define PA_M180                 (M_PI/180.0)
 static double rotate_circle_seg[4];
 int rotate_circle_seg_inited = 0;
 
@@ -290,8 +290,8 @@ static void pa_poly_from_arc_stroke(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t
 
 	for(n = 0; n < num_segs; n++, ang += da) {
 		rnd_vector_t v;
-		v[0] = cx - rx * cos(ang * RND_M180);
-		v[1] = cy + ry * sin(ang * RND_M180);
+		v[0] = cx - rx * cos(ang * PA_M180);
+		v[1] = cy + ry * sin(ang * PA_M180);
 		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
 	}
 }
@@ -302,6 +302,8 @@ static void pa_poly_from_arc_stroke(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t
 #else
 #	define LAST_POINT_FAR_ENOUGH 1000.0
 #endif
+
+#define PA_MAX(a,b)  ((a) > (b) ? (a) : (b))
 
 #define ARC_ANGLE 5
 static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick, int end_caps)
@@ -324,20 +326,20 @@ static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, r
 	rnd_arc_get_endpt(cx, cy, width, height, astart, adelta, 1, &endx2, &endy2);
 
 	/* start with inner radius */
-	rx = RND_MAX(width - half, 0);
-	ry = RND_MAX(height - half, 0);
+	rx = PA_MAX(width - half, 0);
+	ry = PA_MAX(height - half, 0);
 
 	segs = 1;
 	if (thick > 0)
-		segs = RND_MAX(segs, adelta * M_PI / 360 * sqrt(sqrt((double)rx * (double)rx + (double)ry * (double)ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
-	segs = RND_MAX(segs, adelta / ARC_ANGLE);
+		segs = PA_MAX(segs, adelta * M_PI / 360 * sqrt(sqrt((double)rx * (double)rx + (double)ry * (double)ry) / RND_POLY_ARC_MAX_DEVIATION / 2 / thick));
+	segs = PA_MAX(segs, adelta / ARC_ANGLE);
 
 	ang = astart;
 	da = (double)adelta / (double)segs;
 	radius_adj = (M_PI * da / 360) * (M_PI * da / 360) / 2;
 
-	v[0] = cx - rx * cos(ang * RND_M180);
-	v[1] = cy + ry * sin(ang * RND_M180);
+	v[0] = cx - rx * cos(ang * PA_M180);
+	v[1] = cy + ry * sin(ang * PA_M180);
 
 	pl = pa_pline_new(v);
 	if (pl == NULL)
@@ -347,8 +349,8 @@ static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, r
 
 	/* find last point */
 	ang = astart + adelta;
-	v[0] = cx - rx * cos(ang * RND_M180) * (1 - radius_adj);
-	v[1] = cy + ry * sin(ang * RND_M180) * (1 - radius_adj);
+	v[0] = cx - rx * cos(ang * PA_M180) * (1 - radius_adj);
+	v[1] = cy + ry * sin(ang * PA_M180) * (1 - radius_adj);
 
 	/* add the round cap at the end */
 	if (end_caps)
@@ -362,8 +364,8 @@ static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, r
 
 	/* explicitly draw the last point if the manhattan-distance is large enough */
 	ang = astart;
-	v2[0] = cx - rx * cos(ang * RND_M180) * (1 - radius_adj);
-	v2[1] = cy + ry * sin(ang * RND_M180) * (1 - radius_adj);
+	v2[0] = cx - rx * cos(ang * PA_M180) * (1 - radius_adj);
+	v2[1] = cy + ry * sin(ang * PA_M180) * (1 - radius_adj);
 	edx = (v[0] - v2[0]);
 	edy = (v[1] - v2[1]);
 	if (edx < 0) edx = -edx;

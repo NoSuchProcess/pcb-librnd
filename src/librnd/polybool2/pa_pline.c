@@ -198,7 +198,7 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 		}
 		while ((c = (p = c)->next) != pl->head);
 	}
-	pl->area = RND_ABS(area);
+	pl->area = area > 0 ? area : -area;
 
 	/* inverse orientation results in negative area */
 	if (pl->Count > 2)

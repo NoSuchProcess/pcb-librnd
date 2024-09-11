@@ -30,6 +30,8 @@
 
 /* High level pline API functions (called mostly or only from outside) */
 
+#define PA_SQUARE(x)            ((float) (x) * (float) (x))
+
 void rnd_poly_contour_clear(rnd_pline_t *pl)
 {
 	rnd_vnode_t *n;
@@ -69,16 +71,19 @@ static rnd_r_dir_t pline_isect_line_cb(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
+#define PA_MIN(a,b)  ((a) < (b) ? (a) : (b))
+#define PA_MAX(a,b)  ((a) > (b) ? (a) : (b))
+
 rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy)
 {
 	pline_isect_line_t ctx;
 	rnd_box_t lbx;
 	ctx.l1[0] = lx1; ctx.l1[1] = ly1;
 	ctx.l2[0] = lx2; ctx.l2[1] = ly2;
-	lbx.X1 = RND_MIN(lx1, lx2);
-	lbx.Y1 = RND_MIN(ly1, ly2);
-	lbx.X2 = RND_MAX(lx1, lx2);
-	lbx.Y2 = RND_MAX(ly1, ly2);
+	lbx.X1 = PA_MIN(lx1, lx2);
+	lbx.Y1 = PA_MIN(ly1, ly2);
+	lbx.X2 = PA_MAX(lx1, lx2);
+	lbx.Y2 = PA_MAX(ly1, ly2);
 
 	if (pl->tree == NULL)
 		pl->tree = rnd_poly_make_edge_tree(pl);
@@ -395,14 +400,14 @@ static rnd_r_dir_t pline_isect_circ_cb(const rnd_box_t * b, void *cl)
 	double ox, oy, dx, dy, l;
 
 	/* Cheap: if either line endpoint is within the circle, we sure have an intersection */
-	if ((RND_SQUARE(s->v->point[0] - ctx->cx) + RND_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
+	if ((PA_SQUARE(s->v->point[0] - ctx->cx) + PA_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
 		return RND_R_DIR_CANCEL; /* found */
-	if ((RND_SQUARE(s->v->next->point[0] - ctx->cx) + RND_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
+	if ((PA_SQUARE(s->v->next->point[0] - ctx->cx) + PA_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
 		return RND_R_DIR_CANCEL; /* found */
 
 	dx = s->v->point[0] - s->v->next->point[0];
 	dy = s->v->point[1] - s->v->next->point[1];
-	l = sqrt(RND_SQUARE(dx) + RND_SQUARE(dy));
+	l = sqrt(PA_SQUARE(dx) + PA_SQUARE(dy));
 	ox = -dy / l * (double)ctx->r;
 	oy = dx / l * (double)ctx->r;
 

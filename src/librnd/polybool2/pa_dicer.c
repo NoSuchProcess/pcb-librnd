@@ -1063,6 +1063,9 @@ typedef struct pa_slc_ctx_s {
 	vtc0_t cuts;
 } pa_slc_ctx_t;
 
+#define PA_MIN(a,b)  ((a) < (b) ? (a) : (b))
+#define PA_MAX(a,b)  ((a) > (b) ? (a) : (b))
+
 /* map endpoints of the holes of a single contour */
 RND_INLINE void pa_slc_map_pline_holes(pa_slc_ctx_t *ctx, rnd_pline_t *contour)
 {
@@ -1075,10 +1078,10 @@ RND_INLINE void pa_slc_map_pline_holes(pa_slc_ctx_t *ctx, rnd_pline_t *contour)
 
 		ep = vtslc_alloc_append(&ctx->v, 2);
 		ep[0].pl = hole;
-		ep[0].x = RND_MAX(hole->xmin, ctx->minx);
+		ep[0].x = PA_MAX(hole->xmin, ctx->minx);
 		ep[0].side = 0;
 		ep[1].pl = hole;
-		ep[1].x = RND_MIN(hole->xmax, ctx->maxx);
+		ep[1].x = PA_MIN(hole->xmax, ctx->maxx);
 		ep[1].side = 1;
 		hole->flg.sliced = 0;
 	}
