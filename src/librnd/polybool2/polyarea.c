@@ -10,7 +10,6 @@
 #include <librnd/core/math_helper.h>
 #include <librnd/core/heap.h>
 #include <librnd/core/rnd_printf.h>
-#include <librnd/core/box.h>
 
 
 #include "polyconf.h"
