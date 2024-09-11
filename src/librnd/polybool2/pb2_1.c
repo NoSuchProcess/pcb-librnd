@@ -409,11 +409,11 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 			/* if there are two intersections, order them from start to end */
 			if (s1_ins2 != NULL)
 				if (rnd_vect_dist2(s1->start, *s1_ins2) < rnd_vect_dist2(s1->start, *s1_ins1))
-					rnd_swap(rnd_vector_t *, s1_ins1, s1_ins2);
+					pa_swap(rnd_vector_t *, s1_ins1, s1_ins2);
 
 			if (s2_ins2 != NULL)
 				if (rnd_vect_dist2(s2->start, *s2_ins2) < rnd_vect_dist2(s2->start, *s2_ins1))
-					rnd_swap(rnd_vector_t *, s2_ins1, s2_ins2);
+					pa_swap(rnd_vector_t *, s2_ins1, s2_ins2);
 
 			/* insert points in the right order: first the one that's farhter from
 			   start (*ins2) so that the closer one (ins1) still falls on the
@@ -510,8 +510,8 @@ RND_INLINE void curve_glue_segs(pb2_ctx_t *ctx, pb2_seg_t *sa, pb2_seg_t *sb)
 	}
 	else if ((cb != NULL) && (ca == NULL)) {
 		/* swap them */
-		rnd_swap(pb2_seg_t *, sa, sb);
-		rnd_swap(pb2_curve_t *, ca, cb);
+		pa_swap(pb2_seg_t *, sa, sb);
+		pa_swap(pb2_curve_t *, ca, cb);
 	}
 
 	/* glue sb to sa; sa has a curve, sb doesn't */

@@ -41,8 +41,8 @@ RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 /* swap start and end of a segment (reverse orientation); rtree doesn't change */
 RND_INLINE void seg_reverse(pb2_seg_t *s)
 {
-	rnd_swap(rnd_coord_t, s->start[0], s->end[0]);
-	rnd_swap(rnd_coord_t, s->start[1], s->end[1]);
+	pa_swap(rnd_coord_t, s->start[0], s->end[0]);
+	pa_swap(rnd_coord_t, s->start[1], s->end[1]);
 	TODO("arc: also need to swap angles");
 }
 

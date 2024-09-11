@@ -91,4 +91,11 @@ int pa_pline_is_point_on_seg(pa_seg_t *s, rnd_vector_t pt);
 
 void pa_calc_angle_nn(pa_angle_t *dst, rnd_vector_t PT, rnd_vector_t OTHER);
 
+#define pa_swap(type,a,b) \
+do { \
+	type __tmp__ = a; \
+	a = b; \
+	b = __tmp__; \
+} while(0)
+
 #endif

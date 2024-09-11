@@ -34,7 +34,6 @@
 
 #include "pa_dicer.h"
 #include <librnd/core/vtc0.h>
-#include <librnd/core/misc_util.h>
 
 /*** clipper ***/
 
@@ -132,7 +131,7 @@ RND_INLINE int crd_in_between(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
 RND_INLINE int crd_in_between_auto(rnd_coord_t c, rnd_coord_t low, rnd_coord_t high)
 {
 	if (low > high)
-		rnd_swap(rnd_coord_t, low, high);
+		pa_swap(rnd_coord_t, low, high);
 	return (c >= low) && (c <= high);
 }
 
@@ -251,7 +250,7 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 		if (ly1 != y)
 			return 0;
 		if (lx1 > lx2)
-			rnd_swap(rnd_coord_t, lx1, lx2);
+			pa_swap(rnd_coord_t, lx1, lx2);
 		if ((lx1 > ctx->clip.X2) || (lx2 < ctx->clip.X1))
 			return 0;
 
@@ -273,8 +272,8 @@ static int pa_dic_isc_h(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 		double x;
 
 		if (ly1 > ly2) {
-			rnd_swap(rnd_coord_t, ly1, ly2);
-			rnd_swap(rnd_coord_t, lx1, lx2);
+			pa_swap(rnd_coord_t, ly1, ly2);
+			pa_swap(rnd_coord_t, lx1, lx2);
 		}
 
 		if (y == ly1)
@@ -316,7 +315,7 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 		if (lx1 != x)
 			return 0;
 		if (ly1 > ly2)
-			rnd_swap(rnd_coord_t, ly1, ly2);
+			pa_swap(rnd_coord_t, ly1, ly2);
 
 		if (crd_in_between(ly1, ctx->clip.Y1, ctx->clip.Y2))
 			pa_dic_isc(ctx, seg, side, x, ly1, &iscs, 1, first, second);
@@ -336,8 +335,8 @@ static int pa_dic_isc_v(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_side_t side, rn
 		double y;
 
 		if (lx1 > lx2) {
-			rnd_swap(rnd_coord_t, lx1, lx2);
-			rnd_swap(rnd_coord_t, ly1, ly2);
+			pa_swap(rnd_coord_t, lx1, lx2);
+			pa_swap(rnd_coord_t, ly1, ly2);
 		}
 
 		if (x == lx1)
