@@ -33,7 +33,7 @@
 
 int rnd_polybool_disable_autocheck = DEBUG_DISABLE_AUTOCHECK;
 int rnd_polybool_dump_boolops = DEBUG_DUMP_BOOLOPS;
-int rnd_pb2_inhibit_edge_tree = DEBIG_INHIBIT_EDGE_TREE;
+int rnd_pb2_inhibit_edge_tree = DEBUG_INHIBIT_EDGE_TREE;
 
 #ifndef NDEBUG
 #include <librnd/core/safe_fs.h>
