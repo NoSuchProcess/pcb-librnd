@@ -104,6 +104,23 @@ void pa_dump_pa(rnd_polyarea_t *pa, const char *fn)
 	pa_debug_dump_(f, NULL, pa, 0);
 	fclose(f);
 }
+
+void pa_dump_pl(rnd_pline_t *pl, const char *fn)
+{
+	FILE *f = fopen(fn, "w");
+
+	if (pl == NULL) {
+		fprintf(f, " Polyarea\nEnd\n\n");
+		return;
+	}
+
+	fprintf(f, " Polyarea\n");
+	fprintf(f, "  Contour\n");
+	pa_debug_dump_pline(f, pl, 0);
+	fprintf(f, " End\n\n");
+
+	fclose(f);
+}
 #endif
 
 #if DEBUG_DUMP || DEBUG_PAISC_DUMP
