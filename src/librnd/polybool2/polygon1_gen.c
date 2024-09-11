@@ -40,7 +40,6 @@
 #include <librnd/core/global_typedefs.h>
 #include "polyarea.h"
 #include <librnd/core/math_helper.h>
-#include <librnd/core/unit.h>
 
 #include "pa_math.c"
 
@@ -297,6 +296,13 @@ static void pa_poly_from_arc_stroke(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t
 	}
 }
 
+#ifdef RND_API_VER
+#	include <librnd/core/unit.h>
+#	define LAST_POINT_FAR_ENOUGH RND_MM_TO_COORD(0.001)
+#else
+#	define LAST_POINT_FAR_ENOUGH 1000.0
+#endif
+
 #define ARC_ANGLE 5
 static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick, int end_caps)
 {
@@ -362,7 +368,7 @@ static rnd_polyarea_t *pa_poly_from_arc_no_isc(rnd_coord_t cx, rnd_coord_t cy, r
 	edy = (v[1] - v2[1]);
 	if (edx < 0) edx = -edx;
 	if (edy < 0) edy = -edy;
-	if (edx+edy > RND_MM_TO_COORD(0.001))
+	if (edx+edy > LAST_POINT_FAR_ENOUGH)
 		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v2));
 
 	/* now add other round cap */
