@@ -5,6 +5,7 @@
 
 #ifdef RND_API_VER
 #	include <librnd/core/error.h>
+#	include <librnd/core/rnd_printf.h>
 #endif
 
 #define GENPRINTS_INLINE RND_INLINE
@@ -17,7 +18,6 @@
 
 
 #include <genprints/genprints.h>
-#include <librnd/core/rnd_printf.h>
 
 #define pa_coord_is_mm(crd) ((crd) > 20000)
 
