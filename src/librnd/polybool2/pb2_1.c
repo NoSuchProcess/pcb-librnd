@@ -379,7 +379,7 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 				else if (Vequ2(s1->end, s2->start) && Vequ2(s1->start, s2->end)) same = 1;
 
 				if (same) {
-					/*rnd_trace("  NEW ISC full overlap S%ld S%ld, discard S%ld\n", s1->uid, s2->uid, s2->uid);*/
+					/*pa_trace("  NEW ISC full overlap S", Plong(s1->uid), " S", Plong(s2->uid), ", discard S", Plong(s2->uid), "\n", 0);*/
 					seg_merge_into(s1, s2);
 					goto restart;
 				}
