@@ -508,6 +508,11 @@ rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 
 /***/
 
+RND_INLINE int pa_box_intersect(const rnd_box_t *a, const rnd_box_t *b)
+{
+	return (a->X1 < b->X2) && (b->X1 < a->X2) && (a->Y1 < b->Y2) && (b->Y1 < a->Y2);
+}
+
 rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	rnd_box_t cbx, pbx;
@@ -517,7 +522,7 @@ rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	pbx.X2 = pl->xmax; pbx.Y2 = pl->ymax;
 
 	/* if there's no overlap in bounding boxes, don't do any expensive calc */
-	if (!(rnd_box_intersect(&cbx, &pbx)))
+	if (!(pa_box_intersect(&cbx, &pbx)))
 		return rnd_false;
 
 	if (pl->tree == NULL)
