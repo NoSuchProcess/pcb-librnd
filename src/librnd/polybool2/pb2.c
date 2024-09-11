@@ -60,7 +60,7 @@
 #include "pb2_7.c"
 #include "pb2_8.c"
 
-int pb2_debug_dump_steps = 0, pb2_debug_draw_steps = 0;
+int pb2_debug_dump_steps = DEBUG_DUMP_STEPS, pb2_debug_draw_steps = DEBUG_DRAW_STEPS;
 
 int pb2_exec(pb2_ctx_t *ctx, rnd_polyarea_t **res)
 {

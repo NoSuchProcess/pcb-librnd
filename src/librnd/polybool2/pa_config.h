@@ -25,6 +25,12 @@
 
 /*** these can be overridden runtime, these are the initial default values */
 
+/* Enable debug trace of pb2 steps - a lot of textual output with coords */
+#define DEBUG_DUMP_STEPS 0
+
+/* Enable debug draw in polybool format after steps */
+#define DEBUG_DRAW_STEPS 0
+
 /* When compield with debug (for assert()) if this is 0, run a check on the
    output of each operation */
 #define DEBUG_DISABLE_AUTOCHECK 0
