@@ -37,8 +37,13 @@
 #ifndef RND_POLYAREA_H
 #define RND_POLYAREA_H
 
+/* normal direction (outer contour) */
 #define RND_PLF_DIR 1
+
+/* reverse direction (hole) */
 #define RND_PLF_INV 0
+
+/* unused - present for backward compatibility with librnd4 */
 #define RND_PLF_MARK 1
 
 #include <math.h>
