@@ -154,7 +154,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
 
-	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: S", Plong(seg->uid), " ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
 
 	/* ignore horizontal segs - it is enough to hiot its non-horizontal neighbors */
 	if (p1[1] == p2[1]) {
