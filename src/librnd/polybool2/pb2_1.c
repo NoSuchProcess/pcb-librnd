@@ -359,13 +359,13 @@ RND_INLINE void pb2_1_handle_olap(pb2_ctx_t *ctx, pb2_seg_t *s1)
 	if (non0 == 0)
 		return; /* skip search for horizontal */
 
-	pa_trace("*** non0 OLAP: S", Plong(s1->uid), "\n", 0);
+/*	pa_trace("*** non0 OLAP: S", Plong(PB2_UID_GET(s1)), "\n", 0);*/
 	for(s2 = rnd_rtree_first(&its, &ctx->seg_tree, &s1->bbox); s2 != NULL; s2 = rnd_rtree_next(&its)) {
 		if ((s1 == s2 || s2->discarded)) continue;
 
 		/* found the full overlapping active segment */
 		if ((Vequ2(s1->start, s2->start) && Vequ2(s1->end, s2->end)) || (Vequ2(s1->start, s2->end) && Vequ2(s1->end, s2->start))) {
-			pa_trace("    with: S", Plong(s2->uid), "\n", 0);
+/*			pa_trace("    with: S", Plong(PB2_UID_GET(s2)), "\n", 0);*/
 			s2->non0 += non0;
 		}
 	}
