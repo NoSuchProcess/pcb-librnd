@@ -27,6 +27,15 @@
  *
  */
 
+RND_INLINE int pb2_seg_nonzero(pb2_seg_t *seg)
+{
+	if (seg->start[1] == seg->end[1])
+		return 0;
+	if (seg->start[1] > seg->end[1])
+		return +1;
+	return -1;
+}
+
 RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
 {
 	seg->bbox.x1 = pa_min(seg->start[0], seg->end[0]);   seg->bbox.y1 = pa_min(seg->start[1], seg->end[1]);
@@ -44,6 +53,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const r
 	assert((p1[0] != p2[0]) || (p1[1] != p2[1])); /* 0 length seg is bad */
 	seg->next_all = ctx->all_segs;
 	ctx->all_segs = seg;
+	seg->non0 = pb2_seg_nonzero(seg);
 	return seg;
 }
 

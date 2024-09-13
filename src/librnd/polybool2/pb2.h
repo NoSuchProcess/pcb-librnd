@@ -57,10 +57,12 @@ struct pb2_seg_s {
 
 	/* TODO("stub: this may need to be a vector if there are multiple B polys later; we probably don't need counters if we also keep discarded segments and count them as well") */
 	unsigned short cntA, cntB; /* how many times this segment is in polygon A or B (count of overlapping segs) */
+	int non0; /* sum of overlapping ups and downs for the non-zero rule */
 
 	unsigned shape_type:4; /* one of rnd_vnode_curve_type_t */
 	unsigned discarded:1;
 	unsigned risky:1;      /* endpoint moved to rounded coords - risk of new intersection */
+	unsigned olap:1;       /* set to 1 when a discarded segment is overlapping with another segment and will need to be merged in step1 post processing */
 	unsigned in_graph:1;  /* set to 1 when curve is inserted into the curve graph */
 	unsigned gr_start:1;  /* set to 1 when in_graph is 1 and ->start is connected to a node */
 	unsigned gr_end:1;    /* set to 1 when in_graph is 1 and ->end is connected to a node */
@@ -82,6 +84,7 @@ struct pb2_seg_s {
 	gdl_elem_t link;      /* within a curve */
 	pb2_seg_t *next_all;  /* within ctx */
 	pb2_seg_t *nexts, *nexte; /* endpoint list hash in step 1 */
+
 	PB2_UID
 };
 
@@ -160,10 +163,17 @@ struct pb2_face_s {
 
 
 /*** context ***/
+typedef enum pb2_olap_rule_e {
+	PB2_RULE_EVEN_ODD = 0,  /* odd number of overlapping areas get filled, evens are unfilled; doesn't depend on input edge directions */
+	PB2_RULE_NON0 = 1       /* non-zero winding; depends on input edge directions */
+} pb2_olap_rule_t;
+
 struct pb2_ctx_s {
 	rnd_poly_bool_op_t op;
+	unsigned rule:4;            /* of pb2_olap_rule_t */
 	unsigned has_B:1;           /* set by the caller if there's a 'B' poly (binop) */
 	unsigned inhibit_edge_tree:1; /* do not generate pline edge tree when generating output */
+
 
 	/* step 1 output: segs and curves */
 	rnd_rtree_t seg_tree;       /* haystack of segments */
