@@ -95,8 +95,10 @@ RND_INLINE void seg_inc_poly(pb2_seg_t *seg, char poly_id)
 
 RND_INLINE void seg_merge_into(pb2_seg_t *dst, pb2_seg_t *discard)
 {
+	/*pa_trace("seg merge into S", Plong(dst), " from S", Plong(discard), "\n", 0);*/
 	dst->cntA += discard->cntA;
 	dst->cntB += discard->cntB;
+	dst->non0 += discard->non0;
 	discard->discarded = 1;
 }
 
@@ -216,7 +218,7 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 			isc->seg->risky = 1;
 		}
 		else
-			isc->seg->discarded = 1;
+			isc->seg->discarded = isc->seg->olap = 1;
 
 		/* two more segments after the two intersections */
 		if (!Vequ2(*i1, *i2)) {
@@ -237,7 +239,7 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 			isc->seg->risky = 1;
 		}
 		else
-			isc->seg->discarded = 1;
+			isc->seg->discarded = isc->seg->olap = 1;
 
 
 		/* plus add the extra segment */
@@ -342,6 +344,34 @@ RND_INLINE int pb2_new_split(pb2_ctx_t *ctx, pb2_seg_t *seg, rnd_vector_t ip0)
 	return 1;
 }
 
+RND_INLINE void pb2_1_handle_olap(pb2_ctx_t *ctx, pb2_seg_t *s1)
+{
+	pb2_seg_t *s2;
+	rnd_rtree_it_t its;
+	int non0;
+
+	s1->olap = 0;
+
+	if (ctx->rule != PB2_RULE_NON0)
+		return;
+
+	non0 = pb2_seg_nonzero(s1);
+	if (non0 == 0)
+		return; /* skip search for horizontal */
+
+	pa_trace("*** non0 OLAP: S", Plong(s1->uid), "\n", 0);
+	for(s2 = rnd_rtree_first(&its, &ctx->seg_tree, &s1->bbox); s2 != NULL; s2 = rnd_rtree_next(&its)) {
+		if ((s1 == s2 || s2->discarded)) continue;
+
+		/* found the full overlapping active segment */
+		if ((Vequ2(s1->start, s2->start) && Vequ2(s1->end, s2->end)) || (Vequ2(s1->start, s2->end) && Vequ2(s1->end, s2->start))) {
+			pa_trace("    with: S", Plong(s2->uid), "\n", 0);
+			s2->non0 += non0;
+		}
+	}
+}
+
+
 RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 {
 	rnd_rtree_it_t its;
@@ -351,6 +381,7 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 
 	restart:;
 	for(s1 = ctx->all_segs; s1 != NULL; s1 = s1->next_all) {
+		if (s1->olap) pb2_1_handle_olap(ctx, s1);
 		if (!s1->risky) continue;
 		if (s1->discarded) continue;
 

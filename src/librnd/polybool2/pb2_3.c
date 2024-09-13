@@ -30,7 +30,7 @@
 int pb2_face_polarity_at_verbose = DEBUG_STEP3_FACE_POLARITY_VERBOSE;
 
 typedef struct {
-	long cnt;
+	long cnt, cnt_non0;
 	char poly;
 	rnd_vector_t pt;
 	rnd_vector_t dir;           /* relative direction of VP from RP */
@@ -43,8 +43,12 @@ typedef struct {
 
 RND_INLINE void pb2_3_seg_hit(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
 {
+	long multi;
+
 	TODO("stub: if we need to consider stubs, do this only if  the 'pctx->poly' counter of the seg is odd");
 	pctx->cnt++;
+
+	pctx->cnt_non0 += seg->non0;
 
 	if (pctx->seg_hit != NULL)
 		pctx->seg_hit(pctx->udata, seg);
@@ -83,7 +87,7 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 			/* the ray startpoint's direction is vertical; the segment must be right of it (ray.x > 0) to get hit */
 			if (slp_seg.dx > 0) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v1 is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v1 is left of seg -> cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 			}
 			else {
 				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v1 is right of seg -> ignore\n", 0);
@@ -94,7 +98,7 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 			/* the segment is vertical; ray startpoint must be left of it (ray.x < 0) to hit */
 			if ((long)pctx->dir[0] < 0) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v2 is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v2 is left of seg -> cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 			}
 			else {
 				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir v2 is right of seg -> ignore\n", 0);
@@ -105,14 +109,14 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 		if (pctx->dir[1] < 0) { /* dir pointing up */
 			if ((slp_seg.s < 0) || PB2_SLOPE_LT(pctx->dir_slope, slp_seg)) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir up  is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir up  is left of seg -> cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 					return;
 			}
 		}
 		else if (pctx->dir[1] > 0) { /* dir pointing down */
 			if ((slp_seg.s > 0) || PB2_SLOPE_LT(slp_seg, pctx->dir_slope)) {
 				pb2_3_seg_hit(pctx, seg);
-				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir dn  is left of seg -> cnt=", Plong(pctx->cnt), "\n", 0);
+				if (pb2_face_polarity_at_verbose) pa_trace("   slope dir dn  is left of seg -> cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 				return;
 			}
 		}
@@ -150,7 +154,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
 
-	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: S", Plong(seg->uid), " ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
 
 	/* ignore horizontal segs - it is enough to hiot its non-horizontal neighbors */
 	if (p1[1] == p2[1]) {
@@ -201,7 +205,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 
 	/* real intersection in the middle */
 	pb2_3_seg_hit(pctx, seg);
-	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n cnt=", Plong(pctx->cnt), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 
 	return 0;
 }
@@ -219,6 +223,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	assert(direction[1] != 0);
 
 	pctx.cnt = 0;
+	pctx.cnt_non0 = 0;
 	pctx.poly = poly;
 	pctx.dir[0] = direction[0]; pctx.dir[1] = direction[1];
 	pctx.pt[0] = pt[0]; pctx.pt[1] = pt[1];
@@ -232,9 +237,20 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	rnd_rtree_search_obj(&ctx->seg_tree, &sb, pb2_3_fp_cb, &pctx);
 
 
-	if (pb2_face_polarity_at_verbose) pa_trace(" cnt final=", Plong(pctx.cnt), " (odd is in)\n\n", 0);
 
-	return (pctx.cnt % 2); /* odd means inside which should return 1 */
+
+
+	switch(ctx->rule) {
+		case PB2_RULE_NON0:
+			if (pb2_face_polarity_at_verbose) pa_trace(" cnt_final non0=", Plong(pctx.cnt_non0), " (0 is out)\n", 0);
+			if (pctx.cnt_non0 == 0) return 0; /* outside only if number of ups and downs are equal */
+			return 1;
+
+		case PB2_RULE_EVEN_ODD:
+		default: /* because even-odd was the original approach */
+			if (pb2_face_polarity_at_verbose) pa_trace(" cnt final even-odd=", Plong(pctx.cnt), " (odd is in)\n\n", 0);
+			return (pctx.cnt % 2); /* odd means inside which should return 1 */
+	}
 }
 
 /* Returns the polarity of a face in an input polygon at a vritual point
