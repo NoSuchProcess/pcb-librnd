@@ -85,7 +85,7 @@ struct pb2_seg_s {
 	pb2_seg_t *next_all;  /* within ctx */
 	pb2_seg_t *nexts, *nexte; /* endpoint list hash in step 1 */
 
-	PB2_UID
+	PB2_UID;
 };
 
 
