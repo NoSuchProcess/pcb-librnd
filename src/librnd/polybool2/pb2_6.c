@@ -27,10 +27,16 @@
  *
  */
 
-RND_INLINE void NO_DEBUG(const char *fmt, ...) { }
-
-#define wr_trace NO_DEBUG
-#define if_trace NO_DEBUG
+#if 1
+	/* disable debug trace */
+	RND_INLINE void NO_DEBUG(const char *first, ...) { }
+#	define wr_trace NO_DEBUG
+#	define if_trace NO_DEBUG
+#else
+	/* enable debug trace */
+#	define wr_trace pa_trace
+#	define if_trace pa_trace
+#endif
 
 
 typedef struct pb2_6_ray_s {
@@ -46,7 +52,7 @@ RND_INLINE void pb2_6_ray_face_hit(pb2_6_ray_t *rctx, pb2_face_t *f, pb2_seg_t *
 	if ((f == NULL) || (f == rctx->newf))
 		return;
 
-	wr_trace(" H S%ld F%ld\n", PB2_UID_GET(seg), PB2_UID_GET(f));
+	wr_trace(" H S", Plong(PB2_UID_GET(seg)), " F", Plong(PB2_UID_GET(f)), "\n", 0);
 
 	f->step6.hit++;
 	if (f->step6.link.parent == NULL)
@@ -148,18 +154,18 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 	   point is safe for that) and remember what other faces got hit */
 	rctx.ctx = ctx;
 	rctx.newf = newf;
-	wr_trace("WR: F%ld ray from: %ld;%ld:\n", PB2_UID_GET(newf), newf->polarity_pt[0], newf->polarity_pt[1]);
+	wr_trace("WR: F", Plong(PB2_UID_GET(newf)), " ray from: ", Pvect(newf->polarity_pt), ":\n", 0);
 	pb2_3_ray_cast(ctx, newf->polarity_pt, 'F', newf->polarity_dir, pb2_6_ray_seg_hit, &rctx);
 
 	/* process the list of faces hit: find the odd-hit one with the largest
 	   area and reset hit counts and step6.link */
 	while((f = gdl_first(&rctx.faces_hit)) != NULL) {
 		gdl_remove(&rctx.faces_hit, f, step6.link);
-		wr_trace(" F%ld hit=%ld area=%f (best_area=%f)\n", PB2_UID_GET(f), f->step6.hit, f->area, best_area);
+		wr_trace(" F", Plong(PB2_UID_GET(f)), " hit=", Plong(f->step6.hit), " area=", Pdbl(f->area), " (best_area=", Pdbl(best_area), ")\n", 0);
 		if (((f->step6.hit % 2) == 1) && ((best_area < 0) || (f->area < best_area))) {
 			bestf = f;
 			best_area = f->area;
-		wr_trace("   best\n");
+			wr_trace("   best\n", 0);
 		}
 		f->step6.hit = 0;
 	}
@@ -167,7 +173,7 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 	if (bestf == NULL) {
 		/* there are no top level holes, remove them from the output (orphaned holes) */
 		if (newf->out == 0) {
-			wr_trace(" -> NULL\n");
+			wr_trace(" -> NULL\n", 0);
 			return NULL;
 		}
 
@@ -175,7 +181,7 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 		bestf = &ctx->root;
 	}
 
-	wr_trace(" -> %ld\n", PB2_UID_GET(bestf));
+	wr_trace(" -> ", Plong(PB2_UID_GET(bestf)), "\n", 0);
 
 	return bestf;
 }
@@ -204,18 +210,18 @@ RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 	/* Omit a hole child face if it has an explicit shared curve with its
 	   parent and that parent is not omitted; test case: pcb01's F43 */
 	if ((bestf->parent != NULL) && pb2_face_face_have_shared_curve(ctx, newf, bestf)) {
-		if_trace("pb2_6_insert_face: skip F%ld: shared curve with parent\n", PB2_UID_GET(newf));
+		if_trace("pb2_6_insert_face: skip F", Plong(PB2_UID_GET(newf)), ": shared curve with parent\n", 0);
 		return;
 	}
 
 	if (bestf == NULL) {
-		if_trace("pb2_6_insert_face: skip F%ld: no parent\n", PB2_UID_GET(newf));
+		if_trace("pb2_6_insert_face: skip F", Plong(PB2_UID_GET(newf)), ": no parent\n", 0);
 		return;
 	}
 
 	if ((newf->out == 0) && !is_implicit) {
 		/* test case: fixed03 */
-		if_trace("pb2_6_insert_face: skip F%ld: hole already drawn by parent\n", PB2_UID_GET(newf));
+		if_trace("pb2_6_insert_face: skip F", Plong(PB2_UID_GET(newf)), ": hole already drawn by parent\n", 0);
 		return;
 	}
 
