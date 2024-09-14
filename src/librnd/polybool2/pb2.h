@@ -56,8 +56,8 @@ struct pb2_seg_s {
 	rnd_rtree_box_t bbox; /* for rtree; first x;y are the actual points */
 
 	/* TODO("stub: this may need to be a vector if there are multiple B polys later; we probably don't need counters if we also keep discarded segments and count them as well") */
-	unsigned short cntA, cntB; /* how many times this segment is in polygon A or B (count of overlapping segs) */
-	int non0; /* sum of overlapping ups and downs for the non-zero rule */
+	unsigned short cntA, cntB;  /* how many times this segment is in polygon A or B (count of overlapping segs) */
+	signed short non0A, non0B;  /* sum of overlapping ups and downs for the non-zero rule */
 
 	unsigned shape_type:4; /* one of rnd_vnode_curve_type_t */
 	unsigned discarded:1;
@@ -85,7 +85,7 @@ struct pb2_seg_s {
 	pb2_seg_t *next_all;  /* within ctx */
 	pb2_seg_t *nexts, *nexte; /* endpoint list hash in step 1 */
 
-	PB2_UID;
+	PB2_UID
 };
 
 

@@ -42,7 +42,7 @@ RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
 	seg->bbox.x2 = pa_max(seg->start[0], seg->end[0])+1; seg->bbox.y2 = pa_max(seg->start[1], seg->end[1])+1;
 }
 
-RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2)
+RND_INLINE pb2_seg_t *pb2_seg_new_(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2)
 {
 	pb2_seg_t *seg = calloc(sizeof(pb2_seg_t), 1);
 	PB2_UID_SET(seg);
@@ -53,15 +53,33 @@ RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const r
 	assert((p1[0] != p2[0]) || (p1[1] != p2[1])); /* 0 length seg is bad */
 	seg->next_all = ctx->all_segs;
 	ctx->all_segs = seg;
-	seg->non0 = pb2_seg_nonzero(seg);
+	return seg;
+}
+
+RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly)
+{
+	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
+
+	switch(poly) {
+		case 'B':
+			seg->non0B = pb2_seg_nonzero(seg);
+			break;
+		case 'A':
+		default:
+			seg->non0A = pb2_seg_nonzero(seg);
+			break;
+	}
+
 	return seg;
 }
 
 RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const pb2_seg_t *copy_from)
 {
-	pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2);
+	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
 	seg->cntA = copy_from->cntA;
 	seg->cntB = copy_from->cntB;
+	seg->non0A = copy_from->non0A;
+	seg->non0B = copy_from->non0B;
 	seg->discarded = copy_from->discarded;
 	return seg;
 }

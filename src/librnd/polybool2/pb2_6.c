@@ -27,6 +27,7 @@
  *
  */
 
+/* 1 for silence, 0 for debug trace */
 #if 1
 	/* disable debug trace */
 	RND_INLINE void NO_DEBUG(const char *first, ...) { }
@@ -155,7 +156,7 @@ RND_INLINE pb2_face_t *pb2_wrapping_face(pb2_ctx_t *ctx, pb2_face_t *newf, int *
 	rctx.ctx = ctx;
 	rctx.newf = newf;
 	wr_trace("WR: F", Plong(PB2_UID_GET(newf)), " ray from: ", Pvect(newf->polarity_pt), ":\n", 0);
-	pb2_3_ray_cast(ctx, newf->polarity_pt, 'F', newf->polarity_dir, pb2_6_ray_seg_hit, &rctx);
+	pb2_3_ray_cast(ctx, newf->polarity_pt, 'F', newf->polarity_dir, PB2_RULE_EVEN_ODD, pb2_6_ray_seg_hit, &rctx);
 
 	/* process the list of faces hit: find the odd-hit one with the largest
 	   area and reset hit counts and step6.link */

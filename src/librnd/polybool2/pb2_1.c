@@ -98,7 +98,8 @@ RND_INLINE void seg_merge_into(pb2_seg_t *dst, pb2_seg_t *discard)
 	/*pa_trace("seg merge into S", Plong(dst), " from S", Plong(discard), "\n", 0);*/
 	dst->cntA += discard->cntA;
 	dst->cntB += discard->cntB;
-	dst->non0 += discard->non0;
+	dst->non0A += discard->non0A;
+	dst->non0B += discard->non0B;
 	discard->discarded = 1;
 }
 
@@ -302,7 +303,7 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 
 		for(n = 0; n < SPLITS->used-1; n++) {
 			if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
-				seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc);
+				seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc, poly_id);
 				seg->risky = 1;
 				seg_inc_poly(seg, poly_id);
 				found++;
@@ -317,7 +318,7 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 		}
 	}
 	else  {
-		pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2);
+		pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2, poly_id);
 		seg_inc_poly(seg, poly_id);
 	}
 }
@@ -366,7 +367,8 @@ RND_INLINE void pb2_1_handle_olap(pb2_ctx_t *ctx, pb2_seg_t *s1)
 		/* found the full overlapping active segment */
 		if ((Vequ2(s1->start, s2->start) && Vequ2(s1->end, s2->end)) || (Vequ2(s1->start, s2->end) && Vequ2(s1->end, s2->start))) {
 /*			pa_trace("    with: S", Plong(PB2_UID_GET(s2)), "\n", 0);*/
-			s2->non0 += non0;
+			s2->non0A += s1->non0A;
+			s2->non0B += s1->non0B;
 		}
 	}
 }

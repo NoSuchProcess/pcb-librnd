@@ -35,6 +35,7 @@ typedef struct {
 	rnd_vector_t pt;
 	rnd_vector_t dir;           /* relative direction of VP from RP */
 	pb2_slope_t dir_slope;
+	pb2_olap_rule_t rule;
 
 	/* optional callback on segment the ray is crossing */
 	void (*seg_hit)(void *udata, pb2_seg_t *seg);
@@ -48,7 +49,12 @@ RND_INLINE void pb2_3_seg_hit(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
 	TODO("stub: if we need to consider stubs, do this only if  the 'pctx->poly' counter of the seg is odd");
 	pctx->cnt++;
 
-	pctx->cnt_non0 += seg->non0;
+	if (pctx->poly == 'A')
+		pctx->cnt_non0 += seg->non0A;
+	else if (pctx->poly == 'B')
+		pctx->cnt_non0 += seg->non0B;
+	else
+		pctx->cnt_non0 += seg->non0A + seg->non0B;
 
 	if (pctx->seg_hit != NULL)
 		pctx->seg_hit(pctx->udata, seg);
@@ -128,7 +134,7 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 	/* the ray is coming from more than 1 unit away from left, slightly
 	   into the seg in y direction: that's a hit */
 	pb2_3_seg_hit(pctx, seg);
-	if (pb2_face_polarity_at_verbose) pa_trace("    cnt=", Plong(pctx->cnt), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace("     cnt=", Plong(pctx->cnt), "\n", 0);
 }
 
 static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
@@ -137,16 +143,40 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	pb2_seg_t *seg = obj;
 	rnd_vector_t p1, p2;
 
-	if (seg->discarded)
+	if (seg->discarded) {
+/*		if (pb2_face_polarity_at_verbose) pa_trace(" seg ignore: ", Plong(PB2_UID_GET(seg)), "\n", 0);*/
 		return 0;
+	}
 
-	/* even number of overlapping edges (of the target poly) crossed is no-op;
-	   this happens with overlapping edges, e.g. on stubs. An odd number
-	   of overlaps (most typically 1 edge) matters */
-	if ((pctx->poly == 'A') && ((seg->cntA % 2)  == 0))
-		return 0;
-	if ((pctx->poly == 'B') && ((seg->cntB % 2) == 0))
-		return 0;
+	/* optimization (early exit) */
+	switch(pctx->rule) {
+		case PB2_RULE_NON0:
+			/* adds both when poly is ' '*/
+			if (pctx->poly == 'A') {
+				if (seg->non0A == 0)
+					return 0;
+			}
+			else if (pctx->poly == 'B') {
+				if (seg->non0B == 0)
+					return 0;
+			}
+			else {
+				if ((seg->non0A + seg->non0B) == 0)
+					return 0;
+			}
+			break;
+
+		case PB2_RULE_EVEN_ODD:
+		default:
+			/* even number of overlapping edges (of the target poly) crossed is no-op;
+			   this happens with overlapping edges, e.g. on stubs. An odd number
+			   of overlaps (most typically 1 edge) matters */
+			if ((pctx->poly == 'A') && ((seg->cntA % 2)  == 0))
+				return 0;
+			if ((pctx->poly == 'B') && ((seg->cntB % 2) == 0))
+				return 0;
+			break;
+	}
 
 	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
 	   non-discarded seg counts as 1 as we have already remvoed stubs*/
@@ -154,7 +184,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
 
-	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " uid=", Plong(PB2_UID_GET(seg)), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " non0A=", Pint(seg->non0A), " non0B=", Pint(seg->non0B), " uid=S", Plong(PB2_UID_GET(seg)), "\n", 0);
 
 	/* ignore horizontal segs - it is enough to hiot its non-horizontal neighbors */
 	if (p1[1] == p2[1]) {
@@ -205,13 +235,13 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 
 	/* real intersection in the middle */
 	pb2_3_seg_hit(pctx, seg);
-	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n  cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 
 	return 0;
 }
 
 
-RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_vector_t direction, void (*seg_hit_cb)(void *udata, pb2_seg_t *s), void *udata)
+RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_vector_t direction, pb2_olap_rule_t rule, void (*seg_hit_cb)(void *udata, pb2_seg_t *s), void *udata)
 {
 	pb2_3_face_polarity_t pctx;
 	rnd_rtree_box_t sb;
@@ -230,7 +260,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	pctx.dir_slope = pb2_slope(pzero, direction);
 	pctx.seg_hit = seg_hit_cb;
 	pctx.udata = udata;
-
+	pctx.rule = rule;
 
 	sb.x1 = pt[0]; sb.y1 = pt[1];
 	sb.x2 = RND_COORD_MAX; sb.y2 = pt[1]+1;
@@ -258,7 +288,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
    rightmost point of the face */
 RND_INLINE int pb2_3_face_polarity_at(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_vector_t direction)
 {
-	return pb2_3_ray_cast(ctx, pt, poly, direction, NULL, NULL);
+	return pb2_3_ray_cast(ctx, pt, poly, direction, ctx->rule, NULL, NULL);
 }
 
 
@@ -330,7 +360,7 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 		best_right[1] = first[1];
 	}
 
-	if (pb2_face_polarity_at_verbose) pa_trace("pb2_3_face_find_polarity_pt: ", Pvect(best_left), " -> ", Pvect(best), " -> ", Pvect(best_right), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace("pb2_3_face_find_polarity_pt: F", Plong(PB2_UID_GET(f)), " ", Pvect(best_left), " -> ", Pvect(best), " -> ", Pvect(best_right), "\n", 0);
 
 	f->polarity_pt[0] = best[0];
 	f->polarity_pt[1] = best[1];
