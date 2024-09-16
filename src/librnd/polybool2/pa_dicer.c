@@ -861,10 +861,32 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 	return i;
 }
 
-/* return 1 if vn is part of a hole */
-RND_INLINE int pa_dic_is_hole(pa_dic_isc_t *i)
+/* returns 1 if ptx;pty is on the edge of the box */
+RND_INLINE int pa_dic_pt_on_box_edge(rnd_coord_t ptx, rnd_coord_t pty, rnd_box_t *box)
 {
-	return i->pl->flg.orient == RND_PLF_INV;
+	return (ptx == box->X1) || (ptx == box->X2) || (pty == box->Y1) || (ptx == box->Y2);
+}
+
+
+/* return 1 if vn is part of a hole */
+RND_INLINE int pa_dic_is_hole_predict(pa_dic_ctx_t *ctx, pa_dic_isc_t *i)
+{
+	rnd_vnode_t *vn;
+
+	if (i->pl->flg.orient != RND_PLF_INV)
+		return 0; /* accept: not a hole */
+
+	/* go around this hole; if we hit the box sooner than returning to the
+	   starting point, this will be part of the contour, otherwise it's
+	   a hole with one point toiching the contour (and in that case
+	   should be picked up starting from elsewhere). Note: by this point
+	   all intersections with the box have a temporary vnode inserted */
+	for(vn = i->vn->next; vn != i->vn; vn = vn->next)
+		if (pa_dic_pt_on_box_edge(vn->point[0], vn->point[1], &ctx->clip))
+			return 0; /* accept: part of contour */
+
+
+	return 1; /* refuse: would walk around a hole as a solid area */
 }
 
 RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t *from)
@@ -876,10 +898,12 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	if (from->vn == NULL)
 		return;
 
-	/* do not start from a hole because we may end up mapping a hole as a
-	   contour; test case: dicer03 starting from 476;2316, to the left side
-	   hole in the first mapping attempt */
-	if (pa_dic_is_hole(from))
+	/* do not start from a hole that is looping back to the starting point
+	   because we will end up mapping that hole as a contour; test case:
+	   dicer03 starting from 476;2316, to the left side hole in the first
+	   mapping attempt; hole that intersects the edge elsewhere should be
+	   accepted, see dicer04 */
+	if (pa_dic_is_hole_predict(ctx, from))
 		return;
 
 	DEBUG_CLIP("     collect from: ", Pcoord2(from->x, from->y), " clip box:", Pcoord2(ctx->clip.X1, ctx->clip.Y1), " .. ", Pcoord2(ctx->clip.X2, ctx->clip.Y2), "\n", 0);
