@@ -902,7 +902,7 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	   because we will end up mapping that hole as a contour; test case:
 	   dicer03 starting from 476;2316, to the left side hole in the first
 	   mapping attempt; hole that intersects the edge elsewhere should be
-	   accepted, see dicer04 */
+	   accepted, see dicer04's little triangle right of the middle slicing plane */
 	if (pa_dic_is_hole_predict(ctx, from))
 		return;
 
