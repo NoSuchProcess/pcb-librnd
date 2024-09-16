@@ -861,6 +861,12 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 	return i;
 }
 
+/* return 1 if vn is part of a hole */
+RND_INLINE int pa_dic_is_hole(pa_dic_isc_t *i)
+{
+	return i->pl->flg.orient == RND_PLF_INV;
+}
+
 RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t *from)
 {
 	pa_dic_pt_box_relation_t ptst;
@@ -870,7 +876,13 @@ RND_INLINE void pa_dic_emit_island_collect_from(pa_dic_ctx_t *ctx, pa_dic_isc_t 
 	if (from->vn == NULL)
 		return;
 
-	DEBUG_CLIP("     collect from: ", Pcoord2(from->x, from->y), "\n", 0);
+	/* do not start from a hole because we may end up mapping a hole as a
+	   contour; test case: dicer03 starting from 476;2316, to the left side
+	   hole in the first mapping attempt */
+	if (pa_dic_is_hole(from))
+		return;
+
+	DEBUG_CLIP("     collect from: ", Pcoord2(from->x, from->y), " clip box:", Pcoord2(ctx->clip.X1, ctx->clip.Y1), " .. ", Pcoord2(ctx->clip.X2, ctx->clip.Y2), "\n", 0);
 
 	/* Check where we can get from this intersection */
 	ptst = pa_dic_emit_island_predict(ctx, from->vn, from->pl);
