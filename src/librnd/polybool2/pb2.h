@@ -164,8 +164,8 @@ struct pb2_face_s {
 
 /*** context ***/
 typedef enum pb2_olap_rule_e {
-	PB2_RULE_EVEN_ODD = 0,  /* odd number of overlapping areas get filled, evens are unfilled; doesn't depend on input edge directions */
-	PB2_RULE_NON0 = 1       /* non-zero winding; depends on input edge directions */
+	PB2_RULE_EVEN_ODD = 1,  /* odd number of overlapping areas get filled, evens are unfilled; doesn't depend on input edge directions */
+	PB2_RULE_NON0 = 0       /* non-zero winding; depends on input edge directions */
 } pb2_olap_rule_t;
 
 struct pb2_ctx_s {
