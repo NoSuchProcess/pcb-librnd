@@ -183,12 +183,13 @@ RND_INLINE pa_dic_isc_t *pa_dic_isc(pa_dic_ctx_t *ctx, pa_seg_t *seg, pa_dic_sid
 
 
 	if (seg != NULL) {
-		if ((first->point[0] == x) && (first->point[1] == y))
+		rnd_coord_t cx = rnd_round(x), cy = rnd_round(y);
+		if ((first->point[0] == cx) && (first->point[1] == cy))
 			nd = first;
-		else if ((second->point[0] == x) && (second->point[1] == y))
+		else if ((second->point[0] == cx) && (second->point[1] == cy))
 			nd = second;
 		else
-			nd = pa_dic_split_seg(ctx, seg, x, y);
+			nd = pa_dic_split_seg(ctx, seg, cx, cy);
 		isc->vn = nd;
 		isc->pl = seg->p;
 		isc->temporary = nd->flg.TEMPORARY;
