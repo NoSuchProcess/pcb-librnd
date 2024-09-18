@@ -99,12 +99,23 @@ void rnd_hid_init()
 	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
 #ifdef LIBRNDLIBDIR
+#ifdef RND_WANT_FLOATING_FHS
+	tmp = rnd_concat(rnd_w32_libdir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	rnd_plugin_add_dir(tmp);
+	free(tmp);
+
+	tmp = rnd_concat(rnd_w32_libdir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+	rnd_plugin_add_dir(tmp);
+	free(tmp);
+
+#else
 	/* librnd's own */
 	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins" RND_DIR_SEPARATOR_S HOST;
 	rnd_plugin_add_dir(tmp);
 
 	tmp = LIBRNDLIBDIR RND_DIR_SEPARATOR_S "plugins";
 	rnd_plugin_add_dir(tmp);
+#endif
 #endif
 
 	/* host app's */
