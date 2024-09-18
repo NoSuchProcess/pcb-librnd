@@ -231,6 +231,8 @@ void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coor
 	rnd_vector_t rel_s, rel_e, v;
 	rnd_vnode_t *new_node;
 
+	if ((start[0] == end[0]) && (start[1] == end[1]))
+		return;
 
 	rotate_circle_seg = (how & RND_POLY_FCT_REVERSE) ? rotate_circle_seg_neg : rotate_circle_seg_pos;
 
@@ -255,6 +257,15 @@ void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coor
 	/* move vector to origin */
 	v[0] = start[0]; v[1] = start[1];
 	ex = (v[0]-cx) * RND_POLY_CIRC_RADIUS_ADJ; ey = (v[1]-cy) * RND_POLY_CIRC_RADIUS_ADJ;
+
+	if (how & RND_POLY_FCT_SKIP_TINY) {
+		double dist2 = rnd_vect_dist2(rel_s, rel_e), mindist;
+		mindist = (ex + ey) * M_PI / RND_POLY_CIRC_SEGS_F;
+		if (dist2 < 4*mindist*mindist)
+			return;
+	}
+
+
 
 /*
 rnd_printf("frac circ at %mm;%mm: %mm;%mm %d .. %mm;%mm %d\n",

@@ -42,7 +42,8 @@ void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rn
 
 typedef enum rnd_poly_fct_e { /* bitfield */
 	RND_POLY_FCT_REVERSE = 1,  /* normally the direction of the circle follows the direction of an outer contour; set this to go in reverse direction */
-	RND_POLY_FCT_REAL_ARC = 2  /* normally arcs are approximated with line segments; use this but to get real arcs in contour */
+	RND_POLY_FCT_SKIP_TINY = 2,/* arc too short are not drawn as arcs (but a straight line between start and end) */
+	RND_POLY_FCT_REAL_ARC = 4  /* normally arcs are approximated with line segments; use this but to get real arcs in contour */
 } rnd_poly_fct_t;
 
 /* Draw a fractional-circle from start to end (assuming start and end
