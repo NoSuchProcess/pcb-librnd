@@ -100,11 +100,11 @@ void rnd_hid_init()
 
 #ifdef LIBRNDLIBDIR
 #ifdef RND_WANT_FLOATING_FHS
-	tmp = rnd_concat(rnd_w32_libdir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = rnd_concat(rnd_w32_root, RND_DIR_SEPARATOR_S, LIBRNDLIBDIR_RELATIVE, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
-	tmp = rnd_concat(rnd_w32_libdir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = rnd_concat(rnd_w32_root, RND_DIR_SEPARATOR_S, LIBRNDLIBDIR_RELATIVE, RND_DIR_SEPARATOR_S, "plugins", NULL);
 	rnd_plugin_add_dir(tmp);
 	free(tmp);
 

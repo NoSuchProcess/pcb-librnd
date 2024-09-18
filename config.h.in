@@ -41,8 +41,10 @@ switch sys/class
 	default
 		print [@
 #define RND_PREFIX "@/local/prefix@"
-#define LIBRNDSHAREDIR RND_PREFIX "/share/librnd4"
-#define LIBRNDLIBDIR RND_PREFIX "/@/local/libarchdir@/librnd4"
+#define LIBRNDSHAREDIR_RELATIVE "/share/librnd4"
+#define LIBRNDSHAREDIR RND_PREFIX LIBRNDSHAREDIR_RELATIVE
+#define LIBRNDLIBDIR_RELATIVE RND_PREFIX "/@/local/libarchdir@/librnd4"
+#define LIBRNDLIBDIR RND_PREFIX LIBRNDLIBDIR_RELATIVE
 #define RND_BINDIR RND_PREFIX "/bin"
 @]
 		end;
