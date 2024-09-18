@@ -144,7 +144,7 @@ RND_INLINE int dquarter(rnd_vector_t v)
 
 /* Return 1 if v reached or webt beyond end, assuming CW direction in the
    rnd (screen) coord system */
-RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v, int *was_in_same)
+RND_INLINE int went_beyond_end_pos(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v, int *was_in_same)
 {
 	int dq = dquarter(v);
 
@@ -173,6 +173,46 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 			case 3: if (v[1] <= end[1]) return 1; break;
 			case 5: if (v[1] <= end[1]) return 1; break;
 			case 7: if (v[1] >= end[1]) return 1; break;
+		}
+	}
+	else if (*was_in_same) {
+		/* if we were in the same quarter as end previously and left the quarter,
+		   we are surely beyond end; test case: pcb02 */
+		return 1;
+	}
+
+	return 0;
+}
+
+/* Return 1 if v reached or webt beyond end, assuming CCW direction in the
+   rnd (screen) coord system */
+RND_INLINE int went_beyond_end_neg(int start_dq, rnd_vector_t end, int end_dq, int rollover, rnd_vector_t v, int *was_in_same)
+{
+	int dq = dquarter(v);
+
+	if (rollover) {
+		if (dq < start_dq)
+			dq += 8;
+	}
+
+	if (dq > end_dq)
+		return 1;
+
+	if (dq == end_dq) { /* in the same dquarter */
+		*was_in_same = 1;
+		switch (dq % 8) {
+			/* axis aligned end vector */
+			case 0:
+			case 2:
+			case 4:
+			case 6:
+				return 1;
+
+			/* diagonal end vector */
+			case 1: if (v[1] <= end[1]) return 1; break;
+			case 3: if (v[1] >= end[1]) return 1; break;
+			case 5: if (v[1] >= end[1]) return 1; break;
+			case 7: if (v[1] <= end[1]) return 1; break;
 		}
 	}
 	else if (*was_in_same) {
@@ -234,8 +274,14 @@ rnd_printf("frac circ at %mm;%mm: %mm;%mm %d .. %mm;%mm %d\n",
 		er[1] = PA_ROUND(ey);
 
 		/* stop if went beyond end */
-		if (went_beyond_end(start_dq, rel_e, end_dq, rollover, er, &was_in_same))
-			break;
+		if (how & RND_POLY_FCT_REVERSE) {
+			if (went_beyond_end_neg(start_dq, rel_e, end_dq, rollover, er, &was_in_same))
+				break;
+		}
+		else {
+			if (went_beyond_end_pos(start_dq, rel_e, end_dq, rollover, er, &was_in_same))
+				break;
+		}
 
 		v[0] = cx + er[0]; v[1] = cy + er[1];
 		new_node = rnd_poly_node_create(v);
