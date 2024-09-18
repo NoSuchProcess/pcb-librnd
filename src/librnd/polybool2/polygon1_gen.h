@@ -40,9 +40,14 @@ void rnd_poly_frac_circle(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_ve
 /* same but adds the last vertex as well, if range==4 */
 void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range);
 
-/* Draw a CCW fractional-circle from start to end (assuming start and end
+typedef enum rnd_poly_fct_e { /* bitfield */
+	RND_POLY_FCT_REVERSE = 1,  /* normally the direction of the circle follows the direction of an outer contour; set this to go in reverse direction */
+	RND_POLY_FCT_REAL_ARC = 2  /* normally arcs are approximated with line segments; use this but to get real arcs in contour */
+} rnd_poly_fct_t;
+
+/* Draw a fractional-circle from start to end (assuming start and end
    are added by the caller). Start and end must be on the same radius from cx;cy */
-void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_at, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end);
+void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_at, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end, rnd_poly_fct_t how);
 
 
 #endif

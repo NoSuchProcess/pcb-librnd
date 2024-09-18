@@ -45,29 +45,42 @@
 #include "polygon1_gen.h"
 
 #define PA_M180                 (M_PI/180.0)
-static double rotate_circle_seg[4];
+static double rotate_circle_seg_pos[4], rotate_circle_seg_neg[4];
 int rotate_circle_seg_inited = 0;
 
 static void init_rotate_cache(void)
 {
 	if (!rotate_circle_seg_inited) {
-		double cos_ang = cos(2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
-		double sin_ang = sin(2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
+		double cos_ang, sin_ang;
 
-		rotate_circle_seg[0] = cos_ang;
-		rotate_circle_seg[1] = -sin_ang;
-		rotate_circle_seg[2] = sin_ang;
-		rotate_circle_seg[3] = cos_ang;
+		cos_ang = cos(2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
+		sin_ang = sin(2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
+
+		rotate_circle_seg_pos[0] = cos_ang;
+		rotate_circle_seg_pos[1] = -sin_ang;
+		rotate_circle_seg_pos[2] = sin_ang;
+		rotate_circle_seg_pos[3] = cos_ang;
+
+		cos_ang = cos(-2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
+		sin_ang = sin(-2.0 * M_PI / RND_POLY_CIRC_SEGS_F);
+
+		rotate_circle_seg_neg[0] = cos_ang;
+		rotate_circle_seg_neg[1] = -sin_ang;
+		rotate_circle_seg_neg[2] = sin_ang;
+		rotate_circle_seg_neg[3] = cos_ang;
+
 		rotate_circle_seg_inited = 1;
 	}
 }
 
-static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range, int add_last)
+static void rnd_poly_frac_circle_(rnd_pline_t * c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range, int add_last, rnd_poly_fct_t how)
 {
-	double ex, ey, rad1_x = (v[0]-cx), rad1_y = (v[1]-cy);
+	double ex, ey, rad1_x = (v[0]-cx), rad1_y = (v[1]-cy), *rotate_circle_seg;
 	int n, end;
 
 	init_rotate_cache();
+
+	rotate_circle_seg = (how & RND_POLY_FCT_REVERSE) ? rotate_circle_seg_neg : rotate_circle_seg_pos;
 
 	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 
@@ -171,12 +184,15 @@ RND_INLINE int went_beyond_end(int start_dq, rnd_vector_t end, int end_dq, int r
 	return 0;
 }
 
-void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end)
+void rnd_poly_frac_circle_to(rnd_pline_t *c, rnd_vnode_t *insert_after, rnd_coord_t cx, rnd_coord_t cy, const rnd_vector_t start, const rnd_vector_t end, rnd_poly_fct_t how)
 {
-	double ex, ey;
+	double ex, ey, *rotate_circle_seg;
 	int n, start_dq, end_dq, rollover, was_in_same = 0;
 	rnd_vector_t rel_s, rel_e, v;
 	rnd_vnode_t *new_node;
+
+
+	rotate_circle_seg = (how & RND_POLY_FCT_REVERSE) ? rotate_circle_seg_neg : rotate_circle_seg_pos;
 
 	rel_s[0] = start[0] - cx;
 	rel_s[1] = start[1] - cy;
@@ -231,12 +247,12 @@ rnd_printf("frac circ at %mm;%mm: %mm;%mm %d .. %mm;%mm %d\n",
 
 void rnd_poly_frac_circle(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range)
 {
-	rnd_poly_frac_circle_(c, cx, cy, v, range, 0);
+	rnd_poly_frac_circle_(c, cx, cy, v, range, 0, 0);
 }
 
 void rnd_poly_frac_circle_end(rnd_pline_t *c, rnd_coord_t cx, rnd_coord_t cy, rnd_vector_t v, int range)
 {
-	rnd_poly_frac_circle_(c, cx, cy, v, range, 1);
+	rnd_poly_frac_circle_(c, cx, cy, v, range, 1, 0);
 }
 
 rnd_polyarea_t *rnd_poly_from_contour_nochk(rnd_pline_t *pl)
