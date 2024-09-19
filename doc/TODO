@@ -9,6 +9,8 @@
 	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 
 2. For later releases ===============================================================================
+	- librnd 4.4 (API additions):
+		- revise expose_preview; in sch-rnd and camv-rnd they are almost the same and pcb-rnd probably has the same in the middle; maybe have a central librnd call for this
 	- BUG: {z e} in camv-rnd for bug_files/negcoord.gbr doesn't do the right thing because vertical negative coords [report: hzeller]
 	- BUG: gtk4 {tab} jumpyness [report: hzeller]
 		- local experimental patch in cancer:gtk4, lib_gtk4_common, gtkc_widget_window_origin
