@@ -35,8 +35,6 @@
 		- remove the old poly lib
 		- DAD close buttons can't have tooltips (for sch-rnd)
 			- need to add an optional tooltip field at the _end_ of rnd_hid_dad_buttons_t
-			- need to add spares in rnd_hid_dad_buttons_t
-		- DAD: add spares in rnd_dad_retovr_t
 		- CLEANUP/BUG: remove -Dinline= from scconfig/, it breaks on mac: configure camv-rnd without --debug, it will yield multiple symbols in link (itwas for old versions of genht vs. c89)
 			- see bug_files/TODO/inline.patch
 			- requires API change because apps depend on -Dinline too
@@ -47,7 +45,10 @@
 			- maybe remove the whole old font/
 			- remove font2 rnd_font_fix_v1() - used by sch-rnd with font v1
 			- remove font2 rnd_font_draw_string_justify() - used by sch-rnd with font v1
-		- add spares to rnd_conf.h main structs else it's impossible to add new conf items
+		- add spares (missing spares):
+			- add spares to rnd_conf.h main structs else it's impossible to add new conf items
+			- need to add spares in rnd_hid_dad_buttons_t
+			- DAD: add spares in rnd_dad_retovr_t
 		- spare write back:
 			- rnd_app_t in hidlib.h
 			- attr_dlg_widget_focus in hid.h
