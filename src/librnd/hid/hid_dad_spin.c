@@ -474,6 +474,39 @@ void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 			if (!spin->no_unit_chg && (unit != NULL))
 				spin->unit = unit;
 			break;
+		case RND_DAD_SPIN_FREQ:
+			/* special case: 0 is okay without unit */
+			if (is_str_zero(str->val.str)) {
+				end->val.dbl = 0;
+				spin->last_good_dbl = 0;
+				break;
+			}
+			succ = rnd_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
+			if (succ) {
+				SPIN_CLAMP(d);
+				end->val.dbl = d;
+				spin->last_good_dbl = d;
+			}
+			else {
+				char *dend;
+				d = strtod(str->val.str, &dend);
+				while(isspace(*dend)) dend++;
+				if ((spin->empty_unit != NULL) && (*dend == '\0')) {
+					SPIN_CLAMP(d);
+					unit = spin->empty_unit;
+					d /= unit->scale_factor;
+					end->val.dbl = d;
+					spin->last_good_dbl = d;
+				}
+				else {
+					warn = "Invalid value or unit - result is truncated";
+					end->val.dbl = spin->last_good_dbl;
+				}
+			}
+			if (!spin->no_unit_chg && (unit != NULL))
+				spin->unit = unit;
+			break;
+
 		default: rnd_trace("INTERNAL ERROR: spin_set_num\n");
 	}
 
@@ -597,6 +630,13 @@ void rnd_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 			spin->unit = NULL;
 			free((char *)str->val.str);
 			str->val.str = gen_str_coord(spin, c, NULL, 0);
+			break;
+		case RND_DAD_SPIN_FREQ:
+			attr->val.dbl = d;
+			spin->last_good_dbl = d;
+			spin->unit = NULL;
+			free((char *)str->val.str);
+			str->val.str = gen_str_coord(spin, d, NULL, 0);
 			break;
 		default: rnd_trace("INTERNAL ERROR: spin_set_num\n");
 	}

@@ -61,7 +61,8 @@ typedef struct {
 	void (*spare_f1)(void), (*spare_f2)(void);
 	long spare_l1, spare_l2, spare_l3, spare_l4;
 	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
-	double spare_d1, spare_d2, spare_d3, spare_d4;
+	double spare_d1, spare_d2, spare_d3;
+	double last_good_dbl;
 	rnd_coord_t spare_c1, spare_c2, spare_c3, spare_c4;
 } rnd_hid_dad_spin_t;
 
@@ -150,6 +151,7 @@ do { \
 	spin->attrs = &table; \
 	spin->hid_ctx = &table ## _hid_ctx; \
 	spin->unit_family = unit_family_; \
+	spin->empty_unit = rnd_get_unit_struct("Hz"); \
 	\
 	if (typ == RND_DAD_SPIN_COORD) \
 		gdl_append(&rnd_dad_coord_spins, spin, link); \
