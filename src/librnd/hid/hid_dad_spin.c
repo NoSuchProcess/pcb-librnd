@@ -139,6 +139,7 @@ typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
 	rnd_hid_attribute_t *end;
 	int wout, wunit, wstick, wglob, valid;
+	unsigned is_dbl:1;
 	char buf[128];
 } spin_unit_t;
 
@@ -168,11 +169,15 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
 
-	rnd_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
+	if (su->is_dbl)
+		rnd_snprintf(su->buf, sizeof(su->buf), "%f %s", su->end->val.dbl * unit->scale_factor, unit->suffix);
+	else
+		rnd_snprintf(su->buf, sizeof(su->buf), "%$m*", unit->suffix, su->end->val.crd);
 	hv.str = su->buf;
 	rnd_gui->attr_dlg_set_value(hid_ctx, su->wout, &hv);
 	if (!is_globbing && can_glob) {
 		/* unit changed: disable global, accept the user wants to use this unit */
+		hv.dbl = 0;
 		hv.lng = 0;
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wglob, &hv);
 	}
@@ -188,6 +193,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 
 	memset(&ctx, 0, sizeof(ctx));
 	ctx.end = end;
+	ctx.is_dbl = (spin->type == RND_DAD_SPIN_FREQ);
 
 	def_unit = spin->empty_unit == NULL ? rnd_conf.editor.grid_unit : spin->empty_unit;
 
