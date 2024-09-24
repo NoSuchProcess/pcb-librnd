@@ -151,8 +151,8 @@ do { \
 	spin->attrs = &table; \
 	spin->hid_ctx = &table ## _hid_ctx; \
 	spin->unit_family = unit_family_; \
-	spin->empty_unit = rnd_get_unit_struct("Hz"); \
-	\
+	if (typ == RND_DAD_SPIN_FREQ) \
+		spin->empty_unit = rnd_get_unit_struct("Hz"); \
 	if (typ == RND_DAD_SPIN_COORD) \
 		gdl_append(&rnd_dad_coord_spins, spin, link); \
 } while(0)
