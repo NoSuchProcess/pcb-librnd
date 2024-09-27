@@ -69,8 +69,8 @@ static void lpr_ps_init(rnd_hid_t *ps_hid)
 {
 	if (lpr_options == 0) {
 		const rnd_export_opt_t *ps_opts = ps_hid->get_export_options(ps_hid, &num_lpr_options, NULL, NULL);
-		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
-		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
+		lpr_options = calloc(num_lpr_options, sizeof(rnd_export_opt_t));
+		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_export_opt_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
 		if (lpr_hid.argument_array == NULL) {
 			lpr_values = calloc(num_lpr_options, sizeof(rnd_hid_attr_val_t));
