@@ -1029,7 +1029,7 @@ RND_INLINE void pa_dic_emit_island(pa_dic_ctx_t *ctx, rnd_polyarea_t *pa)
 
 		case PA_PLD_INSIDE:
 			if (pl->next == NULL) {
-				/* there are no holes and the whole thig is inside -> plain emit */
+				/* there are no holes and the whole thing is inside -> plain emit */
 				pa_dic_emit_whole_pline(ctx, pl);
 				goto fin;
 			}
