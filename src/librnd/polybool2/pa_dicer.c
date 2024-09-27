@@ -865,7 +865,7 @@ RND_INLINE pa_dic_isc_t *pa_dic_gather_edge(pa_dic_ctx_t *ctx, pa_dic_isc_t *sta
 /* returns 1 if ptx;pty is on the edge of the box */
 RND_INLINE int pa_dic_pt_on_box_edge(rnd_coord_t ptx, rnd_coord_t pty, rnd_box_t *box)
 {
-	return (ptx == box->X1) || (ptx == box->X2) || (pty == box->Y1) || (ptx == box->Y2);
+	return (ptx == box->X1) || (ptx == box->X2) || (pty == box->Y1) || (pty == box->Y2);
 }
 
 
