@@ -88,7 +88,7 @@ static void pa_debug_dump_(FILE *f, const char *title, rnd_polyarea_t *pa, pa_de
 			pa_debug_dump_pline(f, pl, extra);
 
 			/* iterate over all holes within this island */
-			for(pl = pa->contours->next; pl != NULL; pl = pl->next) {
+			for(pl = pn->contours->next; pl != NULL; pl = pl->next) {
 				fprintf(f, "  Hole\n");
 				pa_debug_dump_pline(f, pl, extra);
 			}
