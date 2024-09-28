@@ -243,7 +243,7 @@ rnd_bool pa_is_vnode_in_pline_box(const rnd_pline_t *pl, const rnd_vnode_t *nd)
 	return pa_is_point_in_pline_box(pl, nd->point);
 }
 
-int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in)
+int pa_pline_is_vnode_inside(rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in)
 {
 	pa_cin_ctx_t ctx;
 	rnd_box_t ray;
@@ -262,6 +262,8 @@ int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int p
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = nd->point[1] + 1;
 
+	if (pl->tree == NULL)
+		pl->tree = rnd_poly_make_edge_tree(pl);
 
 	rnd_r_search(pl->tree, &ray, NULL, pa_cin_crossing, &ctx, NULL);
 
