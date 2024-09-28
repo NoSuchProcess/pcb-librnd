@@ -65,9 +65,26 @@ RND_INLINE void pa_debug_dump_pline(FILE *f, rnd_pline_t *pl, pa_debug_dump_extr
 	pa_debug_dump_pline_from(f, pl->head, extra);
 }
 
-static void pa_debug_dump_(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
+static void pa_debug_dump_single_pa(FILE *f, rnd_polyarea_t *pn, pa_debug_dump_extra_t extra)
 {
 	rnd_pline_t *pl;
+
+	pl = pn->contours;
+	if (pl == NULL)
+		return;
+
+	fprintf(f, "  Contour\n");
+	pa_debug_dump_pline(f, pl, extra);
+
+	/* iterate over all holes within this island */
+	for(pl = pn->contours->next; pl != NULL; pl = pl->next) {
+		fprintf(f, "  Hole\n");
+		pa_debug_dump_pline(f, pl, extra);
+	}
+}
+
+static void pa_debug_dump_(FILE *f, const char *title, rnd_polyarea_t *pa, pa_debug_dump_extra_t extra)
+{
 	rnd_polyarea_t *pn = pa;
 
 	if (title != NULL)
@@ -81,18 +98,7 @@ static void pa_debug_dump_(FILE *f, const char *title, rnd_polyarea_t *pa, pa_de
 	fprintf(f, " Polyarea\n");
 	do {
 	/* check if we have a contour for the given island */
-		pl = pn->contours;
-		if (pl != NULL) {
-
-			fprintf(f, "  Contour\n");
-			pa_debug_dump_pline(f, pl, extra);
-
-			/* iterate over all holes within this island */
-			for(pl = pn->contours->next; pl != NULL; pl = pl->next) {
-				fprintf(f, "  Hole\n");
-				pa_debug_dump_pline(f, pl, extra);
-			}
-		}
+		pa_debug_dump_single_pa(f, pn, extra);
 	} while ((pn = pn->f) != pa);
 	fprintf(f, " End\n\n");
 }
