@@ -66,8 +66,15 @@ rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *pa, rnd_vector_t pt)
 	return rnd_true;
 }
 
-/* determine if two polygons touch or overlap; used in pcb-rnd */
-rnd_bool rnd_polyarea_touching(rnd_polyarea_t *A, rnd_polyarea_t *B)
+/* determine if first islands of polygons touch or overlap; used in pcb-rnd */
+rnd_bool rnd_polyarea_touching(rnd_polyarea_t *a, rnd_polyarea_t *b)
+{
+	return rnd_polyarea_island_isc(a, b); /* cheap bbox check is done in this call */
+}
+
+/* determine if two polygons touch or overlap (all island check);
+   not published yet */
+rnd_bool rnd_polyarea_touching_all(rnd_polyarea_t *A, rnd_polyarea_t *B)
 {
 	rnd_polyarea_t *a, *b;
 
