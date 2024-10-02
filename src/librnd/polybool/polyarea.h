@@ -169,6 +169,8 @@ rnd_cardinal_t rnd_polyarea_split_selfisc(rnd_polyarea_t **pa);
 
 
 rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *c, rnd_vector_t v0);
+
+/* returns true if p1's first island touches/overlaps p2's first island */
 rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
 /* Returns whether two islands intersect or not. Only the first island of a and

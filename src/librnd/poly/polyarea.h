@@ -125,6 +125,8 @@ rnd_bool rnd_polyarea_contour_exclude(rnd_polyarea_t *p, rnd_pline_t *c);
 rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a);
 
 rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *c, rnd_vector_t v0);
+
+/* returns true if p1's first island touches/overlaps p2's first island */
 rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
 /*** tools for clipping ***/
