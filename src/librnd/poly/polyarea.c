@@ -3512,7 +3512,7 @@ static rnd_r_dir_t pline_embraces_circ_cb(const rnd_box_t * b, void *cl)
 		if (lx < e->cx)
 			e->cnt++;
 	}
-	else { /* going roght */
+	else { /* going right */
 		if (lx > e->cx)
 			e->cnt++;
 	}
