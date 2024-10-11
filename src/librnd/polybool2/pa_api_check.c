@@ -435,7 +435,9 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 
 rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 {
-	rnd_pline_t *n;
+	rnd_pline_t *n, *h;
+	rnd_rtree_it_t it;
+	rnd_rtree_box_t bbox;
 	pa_chk_res_t chk;
 
 	/* Broken cyclic list: if p's prev or next is itself, then the other neighbour
@@ -510,6 +512,26 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 #endif
 			return rnd_false;
 		}
+
+		/* verify that hole is not intersecting with other holes */
+		bbox.x1 = n->xmin; bbox.y1 = n->ymin;
+		bbox.x2 = n->xmax; bbox.y2 = n->ymax;
+		for(h = rnd_rtree_first(&it, p->contour_tree, &bbox); h != NULL; h = rnd_rtree_next(&it)) {
+			pa_island_isc_t ires;
+
+			if (h >= n) continue; /* check each pair only once; don't check hole against itself */
+			if (h->flg.orient != RND_PLF_INV) continue; /* check hole-hole only */
+
+			ires = pa_pline_pline_isc(h, n, 0);
+			if ((ires == PA_ISLAND_ISC_CROSS) || (ires == PA_ISLAND_ISC_IN)) {
+#ifndef NDEBUG
+				fprintf(stderr, "Invalid Inner (hole): overlaps with another hole\n");
+				rnd_poly_valid_report(n, n->head, NULL);
+#endif
+				return rnd_false;
+			}
+		}
+
 	}
 	return rnd_true;
 }
