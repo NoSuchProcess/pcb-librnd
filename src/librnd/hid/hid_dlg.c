@@ -35,7 +35,7 @@
 #include <librnd/hid/hid_dad.h>
 #include <librnd/hid/hid_nogui.h>
 
-static int hid_dlg_gui_inited = 0;
+int rnd_hid_dlg_gui_inited = 0;
 
 /* Action and wrapper implementation for dialogs. If GUI is available, the
    gui_ prefixed action is executed, else the cli_ prefixed one is used. If
@@ -247,7 +247,7 @@ int rnd_hid_progress(long so_far, long total, const char *message)
 {
 	if (rnd_gui == NULL)
 		return 0;
-	if ((rnd_gui->gui) && (RND_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
+	if ((rnd_gui->gui) && (RND_HAVE_GUI_ATTR_DLG) && (rnd_hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
 		return rnd_gui_progress(so_far, total, message);
 
 	return rnd_nogui_progress(so_far, total, message);
@@ -275,7 +275,7 @@ static const char *event_dlg_cookie = "hid_dlg";
 
 static void hid_dlg_log_gui_init_ev(rnd_design_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	hid_dlg_gui_inited = 1;
+	rnd_hid_dlg_gui_inited = 1;
 }
 
 void rnd_hid_dlg_uninit(void)
