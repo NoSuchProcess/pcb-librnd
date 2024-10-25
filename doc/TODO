@@ -1,5 +1,4 @@
 1. For the upcoming release ===============================================================================
-	- BUG: run zoom() from camv-rnd -s script -> crash because gui not inited [report: gpaubert]
 	- polybool:
 		- gixed6: nowhere to go
 		- gixed7: infloop
