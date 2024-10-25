@@ -1,16 +1,16 @@
 1. For the upcoming release ===============================================================================
-	- polybool:
+	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
+
+2. For later releases ===============================================================================
+	- librnd 4.4 (API additions):
+		- revise expose_preview; in sch-rnd and camv-rnd they are almost the same and pcb-rnd probably has the same in the middle; maybe have a central librnd call for this
+	- polybool: (probably WONTFIX as polybool2 works much better)
 		- gixed6: nowhere to go
 		- gixed7: infloop
 		- bf fails on OSX (repro can reproduce it): infinite loop? happens only with -O3
 			- happens in pcb-rnd make test RTT too, had to disable polybool in ./configure
 		- finish self intersecting holes: sih_*
 		- olap_spiral: buggy input not detected
-	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
-
-2. For later releases ===============================================================================
-	- librnd 4.4 (API additions):
-		- revise expose_preview; in sch-rnd and camv-rnd they are almost the same and pcb-rnd probably has the same in the middle; maybe have a central librnd call for this
 	- BUG: {z e} in camv-rnd for bug_files/negcoord.gbr doesn't do the right thing because vertical negative coords [report: hzeller]
 	- BUG: gtk4 {tab} jumpyness [report: hzeller]
 		- local experimental patch in cancer:gtk4, lib_gtk4_common, gtkc_widget_window_origin
