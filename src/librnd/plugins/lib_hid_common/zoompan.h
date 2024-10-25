@@ -26,11 +26,12 @@
 
 #include <librnd/hid/hid.h>
 
+extern int rnd_hid_dlg_gui_inited;
 /* Return error from an action if there's no GUI, or set result to 0
    if there's GUI */
 #define RND_GUI_NOGUI() \
 do { \
-	if ((rnd_gui == NULL) || (!rnd_gui->gui)) { \
+	if ((rnd_gui == NULL) || (!rnd_gui->gui) || !rnd_hid_dlg_gui_inited) { \
 		RND_ACT_IRES(1); \
 		return 0; \
 	} \
