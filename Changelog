@@ -1,3 +1,100 @@
+librnd 4.3.1 (r37504)
+~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Fix: rnd_rmtree() failed to remvoe files and subdirs because of a path build bug (path separator not added)
+		-Fix: move rnd_w32_* from hid/hid_init to core/paths because some of the core functionality depend on it and 'core' shall not depend on 'hid'
+		-Fix: implicit declaration on win32 because of missing #include
+		-Fix: implicit function declaraiton on win32 rand_s()
+		-Fix: move rnd_exec_prefix() from hid/ to core/ as path init of core depends on it
+		-Fix: merge old path_init and rnd_exec_prefix logics so they do the same; on win32 don't even look at argv[0] but directly go for the wndows-specific exe resolver call
+		-Fix: don't hardwire "pcb-rnd" when rendering rnd_w32_* in paths init, use rnd_app's package name
+		-Fix: potential fclose(NULL) on error handling
+		-Change: make rnd_w32_* depent on RND_WANT_FLOATING_FHS, not on __WIN32__ (it'll be used for binpack on any platform)
+		-Change: call path_init() from rnd_exec_prefix() instead of rnd_fix_locale_and_env() becaue argv[0] will be required on non-windows systems and that's where argv[0] is available
+		-Cleanup: rename and make rnd_path_init() internal now that rnd_exec_prefix is in the same compilation unit and calls it directly
+		-Add: comment on why rnd_exec_prefix() needs to be called early
+		-Add: rnd_exec_prefix() bin_dar fallback resolves ~/ prefix to $HOME/
+
+	[hid]
+		-Fix: restore rnd_w32_* externs in hid_init.h for compatibility
+		-Fix: don't hardwire compile-time prefix for librnd plugins in floating-fhs mode
+		-Fix: floating fhs: build libdir using a shorter, relative description and detected exec root
+		-Fix: freq spinbox: implement conversions; the value field used shall be .dbl
+		-Fix: freq spinbox: unit change uses the ->dbl field instead of the ->crd field because freqs are floating point
+		-Add: freq spinbox: default implicit unit is Hz on widget creation
+		-Add: allow core plugins to access rnd_hid_dlg_gui_inited
+
+	[import_pixmap_pnm]
+		-Add: error handling for P5 premature eof (fgets() returning NULL)
+
+	[lib_exp_text]
+		-Fix: lpr_ps_init() allocated and copied more data from the ps option table than required for filling up its own config table
+
+	[lib_hid_common]
+		-Fix: conf tree hlist value edit: disable only the entry buttons for read-only conf node, not the whole dialog box (so that the close button and warning text widgets are not disabled)
+		-Fix: Zoom() shall fail if GUI is not yet inited (rnd_hid_dlg_gui_inited)
+
+	[poly]
+		-Fix: comment highly surprising API detail of rnd_polyarea_touching(): it's dealing with the first islands only
+
+	[polybool2]
+		-Fix: don't use const struct * in free()
+		-Fix: pa_reinstall_hole() should reinstall holes into the smallest positive island they fit into - in a pos-neg-pos stacking case it's the bottom pos, not the top pos
+		-Fix: step 6: don't insert child face if it shares curve with parent (this is a typical case of redundant fill)
+		-Fix: frac_circle_to corner case: rotating vector leaves dq just when passing the coord of end
+		-Fix: don't accidentally discard new segments split off from intersected ones just because previous sections of the same segment are marked discarded (fixes pcb03)
+		-Fix: make sure pline edge trees are built at least for the outer contour before figuring which hole goes into which contour in the put-back part of the input optimization
+		-Fix: remove reference to the original polybool paper - this code implements a differet algorithm
+		-Fix: C89 violation on htvlist invalid value declaration
+		-Fix: polyarea.h needs to #include math.h because local inline functions use sin/cos
+		-Fix: don't #include from old polybool
+		-Fix: polyarea.h depends on types from global_typedefs, include it
+		-Fix: missing #includes so that files are self-contained
+		-Fix: Pcoord() used the wrong printer
+		-Fix: split seg's non0 count into two separate counters, one for poly A and one for poly B because the query will be done for on a per poly basis
+		-Fix: dicer: do not start a walk on a hole, that may lead to misinterpreting a hole as solid; if the hole intersects the outer contour of the box, it shall be found coming from another point on the box; shall trigger only if the hole is not intersected by the clip box elsewhere (in whichcase the hole will become part of the contour)
+		-Fix: dicer: rounding error when computing intersection point for creating the temporary node
+		-Fix: round offset: when offset is negative, round approx for concave corners need to be done in reverse orientation
+		-Fix: round offset with negative offset value needs to do the reached-end check inverted
+		-Fix: typo: pa_dic_pt_on_box_edge() point's y against bottom horizontal check used the x coord instead of the y of the point
+		-Fix: debug output: typo in pa_debug_dump_() caused subsequent islands getting the holes of the first island duplicated
+		-Fix: pa_pline_is_vnode_inside() builds pl->tree if it is NULL (else it couldn't run the raytrace)
+		-Fix: rnd_polyarea_touching() needs to check only first islands, that's the original API and that's what pcb-rnd is depending on
+		-Fix: validation shall figure island-island overlap
+		-Del: compile time config setting PA_USE_NEW_DICER: the old dicer doesn't work at all with polybool2, it always needs to use the new dicer
+		-Cleanup: repurpose RND_POLY_ENDP_EPSILON: it's only for the validation and only for local +-1 rounding errors - rename and decrease it to 2^2 units
+		-Cleanup: rewrite polyarea.h copyright banner, keeping copyright reference of the original
+		-Cleanup: remove unnecessary long jump leftovers; the code doesn't use long jump anywhere
+		-Cleanup: remove unused segment task infra
+		-Cleanup: remove unused functions originally copied from polybool
+		-Cleanup: avoid using rnd_fprintf() where plain old fprintf() would do
+		-Cleanup: use RND_MIN/RND_MAX instead of MIN/MAX (safer, avoiding naming clashes)
+		-Cleanup: remove old debug dump that used gEDA/pcb format (line objects)
+		-Cleanup: remove old debug helpers used in polybool but unused in polybool2
+		-Cleanup: macro pa_swap(), a local copy of rnd_swap() to break ties with librnd
+		-Cleanup: decouple debug code from safe_fs
+		-Cleanup: remove librnd dependency on mm-to-coord in poly generation
+		-Cleanup: remove math_helper.h dependency
+		-Add: svg debug output: automatically scale up thickness and font size when seg tree is large enough to assume the export is from pcb-rnd
+		-Add: also dump resulting poly of boolops when boolop debug dump is enabled
+		-Add: missing copyright banners
+		-Add: switch over from rnd_trace to genprints so polybool2 is less dependent on librnd core
+		-Add: centrally defined initial/default values for debug control
+		-Add: comment explaining rnd_polybool_assert_on_error_code
+		-Add: centrally defined initial/default value for the face polarity debug control
+		-Add: make default/initial valueof step debug dump/draw set from pa_config
+		-Add: move error reporting behind a pa_* API so it can be different when outside of librnd
+		-Add: implement pa_dump_pl() for dumping a single pline as a poly debug file
+		-Add: debug option to dump input and output poly of offset_round calls
+		-Add: pb2 context struct for configurable rule (non-zero or even-odd)
+		-Add: round offset: don't add arc if it would be too short, just use a straight line between start and endpoint instead
+		-Add: debug: split out pa_debug_dump_single_pa() from pa_debug_dump_() so it is possible to dump a single island of a polyarea
+		-Change: switch over default rule from even-oddto non-zero, required for pcb-rnd clearances to work properly
+
+	[scconfig]
+		-Cleanup: const correctness on handing get() result
+		-Add: --floating-fhs option (for win32 and binpack, runtime detection of $PREFIX would be decoupled from win32)
+
 librnd 4.3.0 (r37300)
 ~~~~~~~~~~~~~~~~~~~~~
 	[build]
