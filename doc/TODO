@@ -16,8 +16,8 @@
 		- local experimental patch in cancer:gtk4, lib_gtk4_common, gtkc_widget_window_origin
 		- instead of finding top window through parent, pass on gctx->wtop_window
 	- BUG: import_pixmap_pnm: [report: aron]
-		- use P5 maxval to scale input values to 0..255; if >255 it's 2-byte MSB
-		- P4: row end padding when (width % 8) != 0
+		- use P5 maxval to scale input values to 0..255 (svn://svn.repo.hu/libminipnm/trunk/test/P5-1.pgm); if >255 it's 2-byte MSB (svn://svn.repo.hu/libminipnm/trunk/test/P5-4.pgm)
+		- P4: row end padding when (width % 8) != 0 (svn://svn.repo.hu/libminipnm/trunk/test/P4-2.pbm)
 	- implement pixmap export: bitmap object export in png, ps, eps, svg (for osm-rnd)
 	- BUG: shift+arrow key in act_Cursor() does strante things both in pcb-rnd and sch-rnd [report: Vuokko]
 	- BUG: perma scripts are initialized too late
