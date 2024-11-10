@@ -1,5 +1,4 @@
 1. For the upcoming release ===============================================================================
-	? BUG: font2: load-save aussiefont v3 r1416: coordinates of $ atoms change [report: Erich]
 
 2. For later releases ===============================================================================
 	- librnd 4.4 (API additions):
