@@ -3,6 +3,14 @@
 #include <unistd.h>
 #include "libuirc.h"
 
+static int on_rawin(uirc_t *ctx, char *from, char *cmd, char *arg)
+{
+	if (strcmp(cmd, "353") == 0)
+		printf("### chan names: %s\n", arg);
+	return 0;
+}
+
+
 static void on_me_part(uirc_t *ctx, int query, char *chan)
 {
 	printf("### me left channel %s\n", chan);
@@ -60,12 +68,14 @@ int main()
 	uirc_t irc;
 
 	memset(&irc, 0, sizeof(irc));
+	irc.on_rawin = on_rawin;
 	irc.on_me_part = on_me_part;
 	irc.on_me_join = on_me_join;
 	irc.on_msg = on_msg;
 	irc.on_notice = on_notice;
 	irc.on_topic = on_topic;
 	irc.on_kick = on_kick;
+
 
 	irc.nick = strdup("libuirc");
 	if (uirc_connect(&irc, "10.0.0.2", 6667, "libuirc test client") != 0) {
