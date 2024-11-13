@@ -354,6 +354,9 @@ uirc_event_t uirc_poll(uirc_t *ctx, int *revents)
 	char *nl;
 	uirc_event_t res = 0;
 
+	if (ctx->sk < 0)
+		return 0;
+
 	fds[0].fd = ctx->sk;
 
 	for(;;) {
