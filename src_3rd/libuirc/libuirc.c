@@ -330,6 +330,9 @@ fprintf(stderr, "line='%s'\n", line);
 	if (end != NULL)
 		*end = '\0';
 
+	if ((ctx->on_rawin != NULL) && (ctx->on_rawin(ctx, from, cmd, arg) != 0))
+		return res;
+
 	if (strcmp(cmd, "001") == 0) return res | uirc_parse_001(ctx, arg);
 	if (irc_strcasecmp(cmd, "join") == 0) return res | uirc_parse_join(ctx, from, arg);
 	if (irc_strcasecmp(cmd, "part") == 0) return res | uirc_parse_part(ctx, from, arg);

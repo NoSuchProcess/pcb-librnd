@@ -66,7 +66,9 @@ struct uirc_s {
 	uirc_query_t query[UIRC_MAX_QUERIES]; /* query 0 is special: server "window" */
 	int curr_query, last_new_query;
 
+	/* any of these may be NULL */
 	void *user_data;
+	int (*on_rawin)(uirc_t *ctx, char *from, char *cmd, char *arg); /* returns non-zero to omit further/normal processing of the message */
 	void (*on_connect)(uirc_t *ctx);
 	void (*on_disconnect)(uirc_t *ctx);
 	void (*on_got_misc)(uirc_t *ctx, int query_to, const char *msg);
