@@ -62,7 +62,7 @@ typedef enum { /* bitfield */
 
 typedef struct uirc_s uirc_t;
 struct uirc_s {
-	char *nick;
+	char *nick; /* must be malloc'd */
 	uirc_query_t query[UIRC_MAX_QUERIES]; /* query 0 is special: server "window" */
 	int curr_query, last_new_query;
 
