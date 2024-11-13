@@ -806,6 +806,7 @@ static int rnd_dlg_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 		rnd_hid_attribute_t *inp = &ctx->dlg[ctx->wpath];
 		const char *fn = inp->val.str;
 
+		res->d.s = NULL;
 		if ((fn != NULL) && (*fn != '\0')) {
 			res->d.s = rnd_concat(ctx->cwd, "/", fn, NULL);
 			return 0;
