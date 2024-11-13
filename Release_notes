@@ -6,9 +6,9 @@ Minor bugfix release with strong focus on polybool2. Notable changes:
 - Polybool2: important bugfixes; implement selectable rule (non-zero or
   even-odd)
 
-- Polybool2: start decopuling the code from librnd-core so it can be moved
+- Polybool2: start decoupling the code from librnd-core so it can be moved
   out to a stand-alone poly clipping library later
 
-- Imrpove "floating-fhs" mode (when sch-rnd is installed in an FHS-compatible
+- Improve "floating-fhs" mode (when sch-rnd is installed in an FHS-compatible
   directory tree but not under root of the file system but in /opt or
   /home/user or /tmp or anywhere else)
