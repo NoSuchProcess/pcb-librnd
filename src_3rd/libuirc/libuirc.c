@@ -342,7 +342,12 @@ printf("line='%s'\n", line);
 	return res;
 }
 
-uirc_event_t uirc_poll(uirc_t *ctx)
+int uirc_get_poll_events(uirc_t *ctx)
+{
+	return P_POLLIN | ((ctx->obuf.used > 0) ? P_POLLOUT : 0);
+}
+
+uirc_event_t uirc_poll(uirc_t *ctx, int *revents)
 {
 	struct P_pollfd fds[1];
 	int new_data = 0;
@@ -352,12 +357,13 @@ uirc_event_t uirc_poll(uirc_t *ctx)
 	fds[0].fd = ctx->sk;
 
 	for(;;) {
-		fds[0].events = P_POLLIN;
-		if (ctx->obuf.used > 0)
-			fds[0].events |= P_POLLOUT;
-		
-		if (P_poll(fds, 1, 0) < 1)
-			break;
+		if (revents == NULL) {
+			fds[0].events = uirc_get_poll_events(ctx);
+			if (P_poll(fds, 1, 0) < 1)
+				break;
+		}
+		else
+			fds[0].revents = *revents;
 
 		if (fds[0].revents & P_POLLIN) {
 			P_size_t len, oused = ctx->ibuf.used;
@@ -399,6 +405,9 @@ uirc_event_t uirc_poll(uirc_t *ctx)
 			uirc_disconnect(ctx);
 			return res | UIRC_DISCONNECT;
 		}
+
+		if (revents != NULL)
+			break;
 	}
 
 	/* call the protocol parse */

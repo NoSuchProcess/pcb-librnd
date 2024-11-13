@@ -92,10 +92,15 @@ struct uirc_s {
 
 int uirc_connect(uirc_t *ctx, const char *server, int port, char *user);
 void uirc_disconnect(uirc_t *ctx);
-uirc_event_t uirc_poll(uirc_t *ctx);
+
+int uirc_get_poll_events(uirc_t *ctx);
+
+
+/* if revents is NULL, do local non-blocking polll otherwise accept *revents
+   as poll results for ctx->sk for events returned by uirc_get_poll_events(). */
+uirc_event_t uirc_poll(uirc_t *ctx, int *revents);
 
 void uirc_join(uirc_t *ctx, const char *chan);
 void uirc_close(uirc_t *ctx, int query);
 void uirc_privmsg(uirc_t *ctx, const char *target, const char *msg);
 void uirc_raw(uirc_t *ctx, const char *msg);
-

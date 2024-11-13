@@ -98,7 +98,7 @@ do { \
 
 static void irc_poll(void)
 {
-	uirc_event_t ev = uirc_poll(&irc_ctx.irc);
+	uirc_event_t ev = uirc_poll(&irc_ctx.irc, NULL);
 
 	if (ev & UIRC_CONNECT) {
 		char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);

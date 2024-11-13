@@ -74,7 +74,7 @@ int main()
 	}
 
 	for(;irc.alive;) {
-		uirc_event_t ev = uirc_poll(&irc);
+		uirc_event_t ev = uirc_poll(&irc, NULL);
 		if (ev & UIRC_CONNECT) {
 			printf("joining\n");
 			uirc_raw(&irc, "join :#dev");
