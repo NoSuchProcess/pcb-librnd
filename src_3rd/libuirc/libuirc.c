@@ -72,6 +72,7 @@ void uirc_disconnect(uirc_t *ctx)
 {
 	P_net_close(ctx->sk);
 	ctx->alive = 0;
+	ctx->sk = -1;
 }
 
 
