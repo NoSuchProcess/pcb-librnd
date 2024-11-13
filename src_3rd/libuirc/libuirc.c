@@ -291,7 +291,7 @@ static uirc_event_t uirc_parse(uirc_t *ctx, char *line)
 	uirc_event_t res = 0;
 
 #ifdef LIBUIRC_TRACE
-printf("line='%s'\n", line);
+fprintf(stderr, "line='%s'\n", line);
 #endif
 
 	if (strncmp(line, "PING", 4) == 0) {
