@@ -1,4 +1,4 @@
-librnd 4.3.1 (r37504)
+librnd 4.3.1 (r37514)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-Fix: rnd_rmtree() failed to remvoe files and subdirs because of a path build bug (path separator not added)
