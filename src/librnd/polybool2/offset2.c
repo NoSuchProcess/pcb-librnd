@@ -30,11 +30,72 @@
 #include <assert.h>
 #include "polygon1_gen.h"
 #include "pa_config.h"
+#include "pa_math.c"
 
 int rnd_vertices_are_coaxial(rnd_vnode_t *node);
 void pa_dump_pl(rnd_pline_t *pl, const char *fn);
 
 long rnd_polybool_dump_offset_round = DEBUG_DUMP_OFFSET_ROUND;
+
+#define Vequ2(a,b)       (memcmp((a),   (b),   sizeof(rnd_vector_t)) == 0)
+
+#define Vsub2(r, a, b) \
+	do { \
+		(r)[0] = (a)[0] - (b)[0]; \
+		(r)[1] = (a)[1] - (b)[1]; \
+	} while(0)
+
+/* Corner case handler: when p1..p2 and q1..q2 are parallel */
+RND_INLINE int rnd_iline_inters2_par(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2)
+{
+	rnd_vector_t q1p1, q1q2;
+
+	Vsub2(q1p1, q1, p1);
+	Vsub2(q1q2, q1, q2);
+
+	/* check if p1..p2 and q1..q2 are not on same line (no intersections then) */
+	if (rnd_vect_det2(q1p1, q1q2) != 0)
+		return 0;
+
+	return -1; /* coaxial lines */
+}
+
+/* same as pa_vect_inters2 but for infinitely extended lines, but return
+   value differs:
+    -1: coaxial lines (infinite number of intersections; Sout is not filled in)
+     0: no intersection (prallel lines; Sout is not filled in)
+     1: single intersection (Sout filled in) */
+RND_INLINE int pa_iline_inters2(rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t q1, rnd_vector_t q2, rnd_vector_t Sout)
+{
+	double t, divider;
+	double pdx, pdy, qdx, qdy;
+
+	/* calculate and cache delta_x/delta_y for p and q */
+	pdx = p2[0] - p1[0]; pdy = p2[1] - p1[1];
+	qdx = q2[0] - q1[0]; qdy = q2[1] - q1[1];
+
+	/* for the actual algorithm see comments in pa_vect_inters2() */
+	divider = pdy * qdx - pdx * qdy;
+	if (divider == 0) /* divider is zero if the lines are parallel */
+		return rnd_iline_inters2_par(p1, p2, q1, q2);
+
+	/* degenerate cases: endpoint on the other line */
+	if (Vequ2(q1, p1) || Vequ2(q1, p2)) {
+		Sout[0] = q1[0]; Sout[1] = q1[1];
+		return 1;
+	}
+	if (Vequ2(q2, p1) || Vequ2(q2, p2)) {
+		Sout[0] = q2[0]; Sout[1] = q2[1];
+		return 1;
+	}
+
+	t = (pdy * (p1[0] - q1[0]) + pdx * (q1[1] - p1[1])) / divider;
+	Sout[0] = q1[0] + PA_ROUND(t * qdx);
+	Sout[1] = q1[1] + PA_ROUND(t * qdy);
+	return 1;
+}
+
+
 
 RND_INLINE rnd_vnode_t *pl_append_xy(rnd_pline_t *dst, rnd_coord_t x, rnd_coord_t y)
 {
@@ -57,9 +118,12 @@ RND_INLINE rnd_vnode_t *pl_append_xy(rnd_pline_t *dst, rnd_coord_t x, rnd_coord_
 	return vn;
 }
 
+/* how to handle conerns where the two offseted edges don't intersect */
 typedef enum {
 	RND_PLINE_CORNER_ROUND = 1,
-	RND_PLINE_CORNER_FLAT,
+	RND_PLINE_CORNER_SHARP,     /* sharp corner with only the intersection point of the two edges */
+	RND_PLINE_CORNER_SHARP2,    /* semi-sharp corner with the offseted original endpoints and the intersection point of the two edges; this keeps edge slopes intact but introduces 2 extra points */
+	RND_PLINE_CORNER_FLAT,      /* keep the offseted original endpoints and connect them with a straight line */
 } rnd_pline_corner_type;
 
 static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coord_t offs, rnd_pline_corner_type ct)
@@ -130,6 +194,8 @@ static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coo
 			}
 			else {
 				rnd_coord_t cx = curr->point[0], cy = curr->point[1];
+				rnd_vector_t isc;
+				int ir;
 
 				/* convex: add a corner */
 				switch(ct) {
@@ -140,6 +206,19 @@ static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coo
 						break;
 					case RND_PLINE_CORNER_FLAT:
 						rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
+						break;
+					case RND_PLINE_CORNER_SHARP:
+					case RND_PLINE_CORNER_SHARP2:
+						ir = pa_iline_inters2(curr->prev->prev->point, curr->prev->point, curr->next->point, curr->next->next->point, isc);
+
+						if (ct == RND_PLINE_CORNER_SHARP) {
+							rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->prev);
+							rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->next);
+						}
+
+						rnd_poly_vertex_include_force(curr->prev, rnd_poly_node_create(isc));
+						rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
+/*						rndo_trace(" ISC iline: ", Pint(ir), " ", Pvect(isc), "\n", 0);*/
 						break;
 					default:
 						assert(!"pline_dup_with_offset_corner(): invalid corner type");
