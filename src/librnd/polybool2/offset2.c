@@ -133,6 +133,7 @@ static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coo
 	rnd_pline_t *dst = calloc(sizeof(rnd_pline_t), 1);
 	rnd_vector_t isc1, isc2;
 	char dumpfn[128];
+	double offs2 = -1;
 
 	if (dst == NULL)
 		return NULL;
@@ -195,7 +196,7 @@ static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coo
 			else {
 				rnd_coord_t cx = curr->point[0], cy = curr->point[1];
 				rnd_vector_t isc;
-				int ir;
+				int ir, skip;
 
 				/* convex: add a corner */
 				switch(ct) {
@@ -211,12 +212,25 @@ static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coo
 					case RND_PLINE_CORNER_SHARP2:
 						ir = pa_iline_inters2(curr->prev->prev->point, curr->prev->point, curr->next->point, curr->next->next->point, isc);
 
-						if (ct == RND_PLINE_CORNER_SHARP) {
-							rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->prev);
-							rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->next);
+						/* special case: see offset03: almost parallel edges with offset so
+						   large that the intersection point gets too far away. The isc
+						   point can not be further from any offseted endpoint than offs */
+						if (offs2 < 0)
+							offs2 = (double)offs * (double)offs;
+						skip = 1;
+						if (rnd_vect_dist2(isc, curr->prev->point) < offs2) skip = 0;
+						if (skip && (rnd_vect_dist2(isc, curr->next->point) < offs2)) skip = 0;
+
+						if (!skip) {
+							if (ct == RND_PLINE_CORNER_SHARP) {
+								/* remove original offseted ends, close to the isc, to preserve number of corners */
+								rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->prev);
+								rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr->next);
+							}
+
+							rnd_poly_vertex_include_force(curr->prev, rnd_poly_node_create(isc));
 						}
 
-						rnd_poly_vertex_include_force(curr->prev, rnd_poly_node_create(isc));
 						rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
 /*						rndo_trace(" ISC iline: ", Pint(ir), " ", Pvect(isc), "\n", 0);*/
 						break;
