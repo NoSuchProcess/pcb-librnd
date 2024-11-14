@@ -123,7 +123,7 @@ typedef enum {
 	RND_PLINE_CORNER_ROUND = 1,
 	RND_PLINE_CORNER_SHARP,     /* sharp corner with only the intersection point of the two edges */
 	RND_PLINE_CORNER_SHARP2,    /* semi-sharp corner with the offseted original endpoints and the intersection point of the two edges; this keeps edge slopes intact but introduces 2 extra points */
-	RND_PLINE_CORNER_FLAT,      /* keep the offseted original endpoints and connect them with a straight line */
+	RND_PLINE_CORNER_FLAT       /* keep the offseted original endpoints and connect them with a straight line */
 } rnd_pline_corner_type;
 
 static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coord_t offs, rnd_pline_corner_type ct)
