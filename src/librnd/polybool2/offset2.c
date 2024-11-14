@@ -27,6 +27,7 @@
  *
  */
 
+#include <assert.h>
 #include "polygon1_gen.h"
 #include "pa_config.h"
 
@@ -56,7 +57,12 @@ RND_INLINE rnd_vnode_t *pl_append_xy(rnd_pline_t *dst, rnd_coord_t x, rnd_coord_
 	return vn;
 }
 
-rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t offs)
+typedef enum {
+	RND_PLINE_CORNER_ROUND = 1,
+	RND_PLINE_CORNER_FLAT,
+} rnd_pline_corner_type;
+
+static rnd_pline_t *pline_dup_with_offset_corner(const rnd_pline_t *src, rnd_coord_t offs, rnd_pline_corner_type ct)
 {
 	const rnd_vnode_t *curr, *next;
 	rnd_vnode_t *vnew, *discard;
@@ -123,11 +129,22 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 				free(discard);
 			}
 			else {
-				/* convex: add a rounded corner */
 				rnd_coord_t cx = curr->point[0], cy = curr->point[1];
-				rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
-				rnd_poly_frac_circle_to(dst, next->prev, cx, cy, next->prev->point, next->point, RND_POLY_FCT_SKIP_TINY | ((offs >= 0) ? 0 : RND_POLY_FCT_REVERSE));
-				free((rnd_vnode_t *)curr); /* curr is from dst now so it's safe to free it */
+
+				/* convex: add a corner */
+				switch(ct) {
+					case RND_PLINE_CORNER_ROUND:
+						rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
+						rnd_poly_frac_circle_to(dst, next->prev, cx, cy, next->prev->point, next->point, RND_POLY_FCT_SKIP_TINY | ((offs >= 0) ? 0 : RND_POLY_FCT_REVERSE));
+						free((rnd_vnode_t *)curr); /* curr is from dst now so it's safe to free it */
+						break;
+					case RND_PLINE_CORNER_FLAT:
+						rnd_poly_vertex_exclude(dst, (rnd_vnode_t *)curr);
+						break;
+					default:
+						assert(!"pline_dup_with_offset_corner(): invalid corner type");
+						abort();
+				}
 			}
 		}
 
@@ -143,3 +160,9 @@ rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t
 
 	return dst;
 }
+
+rnd_pline_t *rnd_pline_dup_with_offset_round(const rnd_pline_t *src, rnd_coord_t offs)
+{
+	return pline_dup_with_offset_corner(src, offs, RND_PLINE_CORNER_ROUND);
+}
+
