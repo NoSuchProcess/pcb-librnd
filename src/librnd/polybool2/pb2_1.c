@@ -116,7 +116,7 @@ RND_INLINE int pb2_1_ends_match(const pb2_isc_t *isc, const rnd_vector_t a1, con
 
 typedef struct {
 	pb2_ctx_t *ctx;
-	rnd_vector_t p1, p2;
+	pb2_seg_t seg; /* only ->bbox ->start, ->end, ->curve_type and ->curve are used */
 } isc_ctx_t;
 
 static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
@@ -132,7 +132,7 @@ static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree
 		return 0;
 
 	TODO("arc: this assumes seg is a line; move most of this into pb2_geo.c");
-	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->p1, ictx->p2, iscpt[0], iscpt[1], 0);
+	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
 	if (num_isc == 0)
 		return 0;
 
@@ -141,10 +141,10 @@ static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree
 	isc->num_isc = num_isc;
 	memcpy(isc->isc, iscpt, sizeof(iscpt));
 
-	p2b_split_at_new(ctx, rnd_vect_dist2(ictx->p1, iscpt[0]), iscpt[0]);
+	p2b_split_at_new(ctx, rnd_vect_dist2(ictx->seg.start, iscpt[0]), iscpt[0]);
 	if (num_isc > 1) {
 		assert(!Vequ2(iscpt[0], iscpt[1])); /* can not be the same coord */
-		p2b_split_at_new(ctx, rnd_vect_dist2(ictx->p1, iscpt[1]), iscpt[1]);
+		p2b_split_at_new(ctx, rnd_vect_dist2(ictx->seg.start, iscpt[1]), iscpt[1]);
 	}
 
 	return rnd_RTREE_DIR_FOUND;
@@ -265,7 +265,7 @@ static int cmp_split_cb(const void *A, const void *B)
 /* p1 and p2 are start and end point, ordered; there can be a shape in between,
    which is loaded into ictx. The caller also needs to compute the bbox for the
    shape. */
-static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, rnd_rtree_box_t *bbox, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
+static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 {
 	long n;
 	pb2_split_at_t *ss, *se;
@@ -274,9 +274,9 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, rnd_rtree_box_t *bbox
 	SPLITS->used = 0;
 	ss = vtsplit_alloc_append(SPLITS, 1);
 	ss->offs = 0;
-	Vcpy2(ss->isc, p1);
+	Vcpy2(ss->isc, ictx->seg.start);
 
-	rnd_rtree_search_obj(&ctx->seg_tree, bbox, pb2_1_isc_line_cb, ictx);
+	rnd_rtree_search_obj(&ctx->seg_tree, &ictx->seg.bbox, pb2_1_isc_line_cb, ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
 		int found = 0;
@@ -293,7 +293,7 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, rnd_rtree_box_t *bbox
 
 		se = vtsplit_alloc_append(SPLITS, 1);
 		se->offs = RND_COORD_MAX;
-		Vcpy2(se->isc, p2);
+		Vcpy2(se->isc, ictx->seg.end);
 
 		for(n = 0; n < SPLITS->used-1; n++) {
 			if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
@@ -307,12 +307,12 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, rnd_rtree_box_t *bbox
 			/* if we ended up creating only one segment and that is the original
 			   segment, that means it did not intersect with rounding so no further
 			   checking is needed */
-			if (Vequ2(p1, seg->start) && Vequ2(p2, seg->end))
+			if (Vequ2(ictx->seg.start, seg->start) && Vequ2(ictx->seg.end, seg->end))
 				seg->risky = 0;
 		}
 	}
 	else  {
-		pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2, poly_id);
+		pb2_seg_t *seg = pb2_seg_new(ctx, ictx->seg.start, ictx->seg.end, poly_id);
 		seg_inc_poly(seg, poly_id);
 	}
 }
@@ -323,13 +323,13 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 	isc_ctx_t ictx;
 
 	ictx.ctx = ctx;
-	ictx.p1[0] = p1[0]; ictx.p1[1] = p1[1];
-	ictx.p2[0] = p2[0]; ictx.p2[1] = p2[1];
+	ictx.seg.start[0] = p1[0]; ictx.seg.start[1] = p1[1];
+	ictx.seg.end[0] = p2[0]; ictx.seg.end[1] = p2[1];
 
-	bbox.x1 = pa_min(p1[0], p2[0]); bbox.y1 = pa_min(p1[1], p2[1]);
-	bbox.x2 = pa_max(p1[0], p2[0]); bbox.y2 = pa_max(p1[1], p2[1]);
+	ictx.seg.bbox.x1 = pa_min(p1[0], p2[0]); ictx.seg.bbox.y1 = pa_min(p1[1], p2[1]);
+	ictx.seg.bbox.x2 = pa_max(p1[0], p2[0]); ictx.seg.bbox.y2 = pa_max(p1[1], p2[1]);
 
-	pb2_1_map_any(ctx, &ictx, &bbox, p1, p2, poly_id);
+	pb2_1_map_any(ctx, &ictx, poly_id);
 }
 
 void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
