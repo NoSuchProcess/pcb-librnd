@@ -319,10 +319,10 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 
 void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
 {
-	rnd_rtree_box_t bbox;
-	isc_ctx_t ictx;
+	isc_ctx_t ictx = {0};
 
 	ictx.ctx = ctx;
+	ictx.seg.shape_type = RND_VNODE_LINE;
 	ictx.seg.start[0] = p1[0]; ictx.seg.start[1] = p1[1];
 	ictx.seg.end[0] = p2[0]; ictx.seg.end[1] = p2[1];
 
