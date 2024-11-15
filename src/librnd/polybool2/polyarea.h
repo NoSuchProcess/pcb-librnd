@@ -75,6 +75,7 @@ struct rnd_vnode_s {
 
 	/* fields above are binary-compatible with the old poly lib */
 
+	/* A curve indicates that vnode to vnode->next is not a straight line */
 	union {
 		struct { /* circular arc */
 			/* fields part of the specification: saved */
