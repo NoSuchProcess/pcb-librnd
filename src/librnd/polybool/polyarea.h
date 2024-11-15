@@ -289,7 +289,7 @@ void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_
 /* create a (rnd_rtree_t *) of each segment derived from a contour object of src */
 void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
-int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in);
+int pa_pline_is_vnode_inside(rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in);
 
 /* When true, do not run assert() autocheck after operations. Useful for
    autotest */

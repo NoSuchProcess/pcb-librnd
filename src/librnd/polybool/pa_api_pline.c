@@ -378,7 +378,7 @@ rnd_bool pa_is_vnode_in_pline_box(const rnd_pline_t *pl, const rnd_vnode_t *nd)
 	return 0;
 }
 
-int pa_pline_is_vnode_inside(const rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in)
+int pa_pline_is_vnode_inside(rnd_pline_t *pl, const rnd_vnode_t *nd, int point_on_edge_is_in)
 {
 	pa_cin_ctx_t ctx;
 	rnd_box_t ray;
