@@ -119,19 +119,14 @@ typedef struct {
 	pb2_seg_t seg; /* only ->bbox ->start, ->end, ->curve_type and ->curve are used */
 } isc_ctx_t;
 
-static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
 {
-	isc_ctx_t *ictx = udata;
-	pb2_seg_t *seg = obj;
 	pb2_ctx_t *ctx = ictx->ctx;
 	int num_isc;
 	rnd_vector_t iscpt[2];
 	pb2_isc_t *isc;
 
-	if (seg->discarded)
-		return 0;
 
-	TODO("arc: this assumes seg is a line; move most of this into pb2_geo.c");
 	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
 	if (num_isc == 0)
 		return 0;
@@ -149,6 +144,53 @@ static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_
 
 	return rnd_RTREE_DIR_FOUND;
 }
+
+static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *seg)
+{
+	abort();
+}
+
+
+static rnd_rtree_dir_t pb2_1_isc_al(isc_ctx_t *ictx, pb2_seg_t *seg)
+{
+	abort();
+}
+
+
+static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
+{
+	abort();
+}
+
+
+/* dispatch to shape dependent intersection function */
+static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+{
+	isc_ctx_t *ictx = udata;
+	pb2_seg_t *seg = obj;
+
+	if (seg->discarded)
+		return 0;
+
+	switch(ictx->seg.shape_type) {
+		case RND_VNODE_LINE:
+			switch(seg->shape_type) {
+				case RND_VNODE_LINE: return pb2_1_isc_ll(ictx, seg);
+				case RND_VNODE_ARC:  return pb2_1_isc_la(ictx, seg);
+			}
+			break;
+		case RND_VNODE_ARC:
+			switch(seg->shape_type) {
+				case RND_VNODE_LINE: return pb2_1_isc_al(ictx, seg);
+				case RND_VNODE_ARC:  return pb2_1_isc_aa(ictx, seg);
+			}
+			break;
+	}
+
+	/* wrong seg types */
+	return 0;
+}
+
 
 RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 {
