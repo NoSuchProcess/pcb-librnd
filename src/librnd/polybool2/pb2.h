@@ -211,7 +211,7 @@ extern int pb2_debug_dump_steps, pb2_debug_draw_steps;
 int pb2_exec(pb2_ctx_t *ctx, rnd_polyarea_t **res);
 
 /*** For filling up ctx with content ***/
-void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id, int isected);
+void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id);
 
 
 /*** For unit testing ***/

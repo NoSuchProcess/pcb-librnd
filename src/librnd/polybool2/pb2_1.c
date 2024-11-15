@@ -262,7 +262,7 @@ static int cmp_split_cb(const void *A, const void *B)
 	return (a->offs < b->offs) ? -1 : +1;
 }
 
-void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id, int isected)
+void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
 {
 	rnd_rtree_box_t bbox;
 	isc_ctx_t ictx;

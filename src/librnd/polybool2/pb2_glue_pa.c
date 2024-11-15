@@ -35,7 +35,7 @@ RND_INLINE void pb2_1_map_pline(pb2_ctx_t *ctx, const rnd_pline_t *pline, char p
 {
 	rnd_vnode_t *vn = pline->head;
 	do {
-		pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id, 0);
+		pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id);
 	} while((vn = vn->next) != pline->head);
 }
 
