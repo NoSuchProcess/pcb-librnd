@@ -323,6 +323,12 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 	}
 }
 
+void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
+{
+
+}
+
+
 RND_INLINE int pb2_new_split(pb2_ctx_t *ctx, pb2_seg_t *seg, rnd_vector_t ip0)
 {
 	pb2_seg_t *news;

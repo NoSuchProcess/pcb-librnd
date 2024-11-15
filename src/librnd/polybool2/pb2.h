@@ -211,7 +211,13 @@ extern int pb2_debug_dump_steps, pb2_debug_draw_steps;
 int pb2_exec(pb2_ctx_t *ctx, rnd_polyarea_t **res);
 
 /*** For filling up ctx with content ***/
+
+/* draw a straight line segment; order of p1 and p2 does not matter */
 void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id);
+
+/* draw a circular arc; order of p1 and p2 does matter; adir is the same as
+   adir in pb2_seg_s above */
+void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id);
 
 
 /*** For unit testing ***/
