@@ -119,7 +119,7 @@ typedef struct {
 	pb2_seg_t seg; /* only ->bbox ->start, ->end, ->curve_type and ->curve are used */
 } isc_ctx_t;
 
-static rnd_rtree_dir_t pb2_1_isc_line_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
 {
 	isc_ctx_t *ictx = udata;
 	pb2_seg_t *seg = obj;
@@ -276,7 +276,7 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 	ss->offs = 0;
 	Vcpy2(ss->isc, ictx->seg.start);
 
-	rnd_rtree_search_obj(&ctx->seg_tree, &ictx->seg.bbox, pb2_1_isc_line_cb, ictx);
+	rnd_rtree_search_obj(&ctx->seg_tree, &ictx->seg.bbox, pb2_1_isc_seg_cb, ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
 		int found = 0;
