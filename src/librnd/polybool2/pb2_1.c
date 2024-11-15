@@ -262,19 +262,13 @@ static int cmp_split_cb(const void *A, const void *B)
 	return (a->offs < b->offs) ? -1 : +1;
 }
 
-void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
+/* p1 and p2 are start and end point, ordered; there can be a shape in between,
+   which is loaded into ictx. The caller also needs to compute the bbox for the
+   shape. */
+static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, rnd_rtree_box_t *bbox, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
 {
-	rnd_rtree_box_t bbox;
-	isc_ctx_t ictx;
 	long n;
 	pb2_split_at_t *ss, *se;
-
-	ictx.ctx = ctx;
-	ictx.p1[0] = p1[0]; ictx.p1[1] = p1[1];
-	ictx.p2[0] = p2[0]; ictx.p2[1] = p2[1];
-
-	bbox.x1 = pa_min(p1[0], p2[0]); bbox.y1 = pa_min(p1[1], p2[1]);
-	bbox.x2 = pa_max(p1[0], p2[0]); bbox.y2 = pa_max(p1[1], p2[1]);
 
 	ISCS->used = 0;
 	SPLITS->used = 0;
@@ -282,7 +276,7 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 	ss->offs = 0;
 	Vcpy2(ss->isc, p1);
 
-	rnd_rtree_search_obj(&ctx->seg_tree, &bbox, pb2_1_isc_line_cb, &ictx);
+	rnd_rtree_search_obj(&ctx->seg_tree, bbox, pb2_1_isc_line_cb, ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
 		int found = 0;
@@ -321,6 +315,21 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 		pb2_seg_t *seg = pb2_seg_new(ctx, p1, p2, poly_id);
 		seg_inc_poly(seg, poly_id);
 	}
+}
+
+void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly_id)
+{
+	rnd_rtree_box_t bbox;
+	isc_ctx_t ictx;
+
+	ictx.ctx = ctx;
+	ictx.p1[0] = p1[0]; ictx.p1[1] = p1[1];
+	ictx.p2[0] = p2[0]; ictx.p2[1] = p2[1];
+
+	bbox.x1 = pa_min(p1[0], p2[0]); bbox.y1 = pa_min(p1[1], p2[1]);
+	bbox.x2 = pa_max(p1[0], p2[0]); bbox.y2 = pa_max(p1[1], p2[1]);
+
+	pb2_1_map_any(ctx, &ictx, &bbox, p1, p2, poly_id);
 }
 
 void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
