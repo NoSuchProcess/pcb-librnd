@@ -1,1 +1,5 @@
 3rd party software libs
+
+Note: gengeo2d does not need to be installed as it is all inlined locally
+(e.g. in polybool2)
+
