@@ -113,8 +113,20 @@ do { \
 	carc.delta = __seg__->shape.arc.delta; \
 } while(0)
 
+/* copy gengeo2d results to rnd outpout */
+#define ISC_OUT(num) \
+do { \
+	if (num > 0) { \
+		(iscpt[0])[0] = ip[0].x; \
+		(iscpt[0])[1] = ip[0].y; \
+	} \
+	if (num > 1) { \
+		(iscpt[1])[0] = ip[1].x; \
+		(iscpt[1])[1] = ip[1].y; \
+	} \
+} while(0)
 
-RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt1, rnd_vector_t iscpt2)
+RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt[])
 {
 	g2d_cline_t cline;
 	g2d_carc_t carc;
@@ -125,14 +137,21 @@ RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t is
 	SEG2CARC(carc, arc);
 
 	num = g2d_iscp_cline_carc(&cline, &carc,  ip,  NULL, 0);
-	if (num > 0) {
-		iscpt1[0] = ip[0].x;
-		iscpt1[1] = ip[0].y;
-	}
-	if (num > 1) {
-		iscpt2[0] = ip[1].x;
-		iscpt2[1] = ip[1].y;
-	}
+	ISC_OUT(num);
+	return num;
+}
+
+RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t iscpt[])
+{
+	g2d_carc_t carc1, carc2;
+	int num;
+	g2d_vect_t ip[2];
+
+	SEG2CARC(carc1, arc1);
+	SEG2CARC(carc2, arc2);
+
+	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  NULL);
+	ISC_OUT(num);
 	return num;
 }
 

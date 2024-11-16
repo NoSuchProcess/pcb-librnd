@@ -152,14 +152,24 @@ static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
 	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
 }
 
-static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *line, pb2_seg_t *arc)
+static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *seg, pb2_seg_t *line, pb2_seg_t *arc)
 {
-	abort();
+	pb2_ctx_t *ctx = ictx->ctx;
+	int num_isc;
+	rnd_vector_t iscpt[2];
+
+	num_isc = pb2_isc_line_arc(line, arc, iscpt);
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
 }
 
 static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
 {
-	abort();
+	pb2_ctx_t *ctx = ictx->ctx;
+	int num_isc;
+	rnd_vector_t iscpt[2];
+
+	num_isc = pb2_isc_arc_arc(&ictx->seg, seg, iscpt);
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
 }
 
 
@@ -176,12 +186,12 @@ static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_
 		case RND_VNODE_LINE:
 			switch(seg->shape_type) {
 				case RND_VNODE_LINE: return pb2_1_isc_ll(ictx, seg);
-				case RND_VNODE_ARC:  return pb2_1_isc_la(ictx, &ictx->seg, seg);
+				case RND_VNODE_ARC:  return pb2_1_isc_la(ictx, seg, &ictx->seg, seg);
 			}
 			break;
 		case RND_VNODE_ARC:
 			switch(seg->shape_type) {
-				case RND_VNODE_LINE: return pb2_1_isc_la(ictx, seg, &ictx->seg);
+				case RND_VNODE_LINE: return pb2_1_isc_la(ictx, seg, seg, &ictx->seg);
 				case RND_VNODE_ARC:  return pb2_1_isc_aa(ictx, seg);
 			}
 			break;
