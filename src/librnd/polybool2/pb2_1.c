@@ -376,7 +376,36 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 
 void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
 {
+	isc_ctx_t ictx = {0};
+	double sa, ea;
 
+	ictx.ctx = ctx;
+	ictx.seg.shape_type = RND_VNODE_ARC;
+	ictx.seg.start[0] = p1[0]; ictx.seg.start[1] = p1[1];
+	ictx.seg.end[0] = p2[0]; ictx.seg.end[1] = p2[1];
+
+	sa = atan2(p1[1] - center[1], p1[0] - center[0]);
+	ea = atan2(p2[1] - center[1], p2[0] - center[0]);
+	if (adir) {
+		/* Positive delta; CW in svg; CCW in gengeo and C */
+		if (ea < sa)
+			ea += 2 * G2D_PI;
+		ictx.seg.shape.arc.delta = ea - sa;
+	}
+	else {
+		/* Negative delta; CCW in svg; CW in gengeo and C */
+		if (ea > sa)
+			ea -= 2 * G2D_PI;
+		ictx.seg.shape.arc.delta = ea - sa;
+	}
+
+	ictx.seg.shape.arc.r = rnd_vect_dist2(p1, center);
+	if (ictx.seg.shape.arc.r != 0)
+		ictx.seg.shape.arc.r = sqrt(ictx.seg.shape.arc.r);
+
+	pb2_arc_bbox(&ictx.seg);
+
+	pb2_1_map_any(ctx, &ictx, poly_id);
 }
 
 

@@ -77,10 +77,15 @@ struct pb2_seg_s {
 			unsigned adir:1;  /* 0 means CCW around center which is also RND_PLF_INV, 1 means CW around center which is also RND_PLF_DIR (assuming SVG coord system: 0;0 on top left) */
 
 			/* cached fields (not saved) */
+#if 0
+			/* these are going to be used once we switch over to big coords */
 			rnd_ucoord_t r[6]; /* pa_big_coord_t really */
 			/* angle of point from the center [0..4); pa_big_coord_t aim = aim_int.aim_frac */
 			rnd_ucoord_t aim_frac[2]; /* fraction part of aim ("angle") for start and endpoint */
 			char aim_int[2]; /* integer part of the aim ("angle") for start and endpoint */
+#endif
+			double r;
+			double start, delta; /* angles in radian, in C and gengeo2d coord system */
 		} arc;
 	} shape;
 

@@ -27,6 +27,18 @@
  *
  */
 
+#include <stdlib.h>
+#include <librnd/rnd_config.h>
+
+#define G2D_INLINE RND_INLINE
+
+TODO("bignum: calc_t should be bignum, not double, especially with 64 bit coords")
+#include "typecfg_coord_double.h"
+#include <gengeo2d/cline.h>
+#include <gengeo2d/carc.h>
+#include <gengeo2d/intersect.h>
+
+
 /* returns 1 if sa and sb are in full overlap */
 RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 {
@@ -82,4 +94,58 @@ RND_INLINE int PB2_SLOPE_LT(pb2_slope_t a, pb2_slope_t b)
 	assert(b.dx != 0);
 	return a.s < b.s;
 }
+
+
+/*** arc ***/
+#define SEG2CLINE(cline, seg) \
+do { \
+	pb2_seg_t *__seg__ = seg; \
+	cline.p1.x = __seg__->start[0]; cline.p1.y = __seg__->start[1]; \
+	cline.p2.x = __seg__->end[0]; cline.p2.y = __seg__->end[1]; \
+} while(0)
+
+#define SEG2CARC(carc, seg) \
+do { \
+	pb2_seg_t *__seg__ = seg; \
+	carc.c.x = __seg__->shape.arc.center[0]; carc.c.y = __seg__->shape.arc.center[1]; \
+	carc.r = __seg__->shape.arc.r; \
+	carc.start = __seg__->shape.arc.start; \
+	carc.delta = __seg__->shape.arc.delta; \
+} while(0)
+
+
+RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt1, rnd_vector_t iscpt2)
+{
+	g2d_cline_t cline;
+	g2d_carc_t carc;
+	int num;
+	g2d_vect_t ip[2];
+
+	SEG2CLINE(cline, line);
+	SEG2CARC(carc, arc);
+
+	num = g2d_iscp_cline_carc(&cline, &carc,  ip,  NULL, 0);
+	if (num > 0) {
+		iscpt1[0] = ip[0].x;
+		iscpt1[1] = ip[0].y;
+	}
+	if (num > 1) {
+		iscpt2[0] = ip[1].x;
+		iscpt2[1] = ip[1].y;
+	}
+	return num;
+}
+
+
+RND_INLINE void pb2_arc_bbox(pb2_seg_t *arc)
+{
+	g2d_carc_t carc;
+	g2d_box_t bb;
+
+	SEG2CARC(carc, arc);
+	bb = g2d_carc_bbox(&carc);
+	arc->bbox.x1 = bb.p1.x; arc->bbox.y1 = bb.p1.y;
+	arc->bbox.x2 = bb.p2.x; arc->bbox.y2 = bb.p2.y;
+}
+
 
