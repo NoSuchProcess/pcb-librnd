@@ -119,43 +119,43 @@ typedef struct {
 	pb2_seg_t seg; /* only ->bbox ->start, ->end, ->curve_type and ->curve are used */
 } isc_ctx_t;
 
-static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
+/* create new intersection requests within seg1, noting offender seg2; no
+   splitting takes place here, only isc mapping */
+RND_INLINE rnd_rtree_dir_t pb2_1_isc_common(pb2_ctx_t *ctx, pb2_seg_t *seg1, pb2_seg_t *seg2, int num_isc, rnd_vector_t iscpt[])
 {
-	pb2_ctx_t *ctx = ictx->ctx;
-	int num_isc;
-	rnd_vector_t iscpt[2];
 	pb2_isc_t *isc;
 
-
-	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
 	if (num_isc == 0)
 		return 0;
 
 	isc = vtisc_alloc_append(ISCS, 1);
-	isc->seg = seg;
+	isc->seg = seg2;
 	isc->num_isc = num_isc;
-	memcpy(isc->isc, iscpt, sizeof(iscpt));
+	memcpy(isc->isc, iscpt, sizeof(rnd_vector_t[2]));
 
-	p2b_split_at_new(ctx, rnd_vect_dist2(ictx->seg.start, iscpt[0]), iscpt[0]);
+	p2b_split_at_new(ctx, rnd_vect_dist2(seg1->start, iscpt[0]), iscpt[0]);
 	if (num_isc > 1) {
 		assert(!Vequ2(iscpt[0], iscpt[1])); /* can not be the same coord */
-		p2b_split_at_new(ctx, rnd_vect_dist2(ictx->seg.start, iscpt[1]), iscpt[1]);
+		p2b_split_at_new(ctx, rnd_vect_dist2(seg1->start, iscpt[1]), iscpt[1]);
 	}
 
 	return rnd_RTREE_DIR_FOUND;
 }
 
-static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *seg)
+static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
+{
+	pb2_ctx_t *ctx = ictx->ctx;
+	int num_isc;
+	rnd_vector_t iscpt[2];
+
+	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
+}
+
+static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *line, pb2_seg_t *arc)
 {
 	abort();
 }
-
-
-static rnd_rtree_dir_t pb2_1_isc_al(isc_ctx_t *ictx, pb2_seg_t *seg)
-{
-	abort();
-}
-
 
 static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
 {
@@ -176,12 +176,12 @@ static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_
 		case RND_VNODE_LINE:
 			switch(seg->shape_type) {
 				case RND_VNODE_LINE: return pb2_1_isc_ll(ictx, seg);
-				case RND_VNODE_ARC:  return pb2_1_isc_la(ictx, seg);
+				case RND_VNODE_ARC:  return pb2_1_isc_la(ictx, &ictx->seg, seg);
 			}
 			break;
 		case RND_VNODE_ARC:
 			switch(seg->shape_type) {
-				case RND_VNODE_LINE: return pb2_1_isc_al(ictx, seg);
+				case RND_VNODE_LINE: return pb2_1_isc_la(ictx, seg, &ictx->seg);
 				case RND_VNODE_ARC:  return pb2_1_isc_aa(ictx, seg);
 			}
 			break;
