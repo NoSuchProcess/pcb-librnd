@@ -302,7 +302,7 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 	}
 
 	pa_trace("acr-arc split: ", Pint(num_isc), " ",
-		Pvect(*i1), " ", Pdouble(a1), "    ", Pvect(*i2), " ", Pdouble(a2), "\n");
+		Pvect(*i1), " ", Pdouble(a1), "    ", Pvect(*i2), " ", Pdouble(a2), "\n", 0);
 
 	TODO("arc: implement this for arcs; above is the line-only implementation");
 	assert(!"arc: implement this for arcs; above is the line-only implementation");
