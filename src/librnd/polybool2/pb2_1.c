@@ -424,9 +424,7 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 		}
 	}
 	else  {
-		pb2_seg_t *seg = pb2_seg_new(ctx, ictx->seg.start, ictx->seg.end, poly_id);
-		seg->shape_type = ictx->seg.shape_type;
-		memcpy(&seg->shape, &ictx->seg.shape, sizeof(ictx->seg.shape));
+		pb2_seg_t *seg = pb2_new_seg_from(ctx, &ictx->seg, poly_id);
 		seg_inc_poly(seg, poly_id);
 	}
 }

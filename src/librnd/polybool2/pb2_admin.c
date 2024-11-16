@@ -73,6 +73,15 @@ RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const r
 	return seg;
 }
 
+RND_INLINE pb2_seg_t *pb2_new_seg_from(pb2_ctx_t *ctx, const pb2_seg_t *src, char poly_id)
+{
+	pb2_seg_t *seg = pb2_seg_new(ctx, src->start, src->end, poly_id);
+	seg->shape_type = src->shape_type;
+	memcpy(&seg->shape, &src->shape, sizeof(src->shape));
+	return seg;
+}
+
+
 RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const pb2_seg_t *copy_from)
 {
 	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
