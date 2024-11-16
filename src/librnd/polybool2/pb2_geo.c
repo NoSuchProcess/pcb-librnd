@@ -124,6 +124,8 @@ do { \
 		(iscpt[1])[0] = ip[1].x; \
 		(iscpt[1])[1] = ip[1].y; \
 	} \
+	offs[0] = of[0]; \
+	offs[1] = of[1]; \
 } while(0)
 
 RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt[], double offs[], int offs_on_arc)
@@ -139,21 +141,21 @@ RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t is
 
 	num = g2d_iscp_cline_carc(&cline, &carc,  ip, of, offs_on_arc);
 	ISC_OUT(num);
-	offs[0] = of[0];
-	offs[1] = of[1];
 	return num;
 }
 
-RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t iscpt[])
+/* offs[] is on arc1 */
+RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t iscpt[], double offs[])
 {
 	g2d_carc_t carc1, carc2;
 	int num;
 	g2d_vect_t ip[2];
+	g2d_offs_t of[2];
 
 	SEG2CARC(carc1, arc1);
 	SEG2CARC(carc2, arc2);
 
-	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  NULL);
+	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  of);
 	ISC_OUT(num);
 	return num;
 }

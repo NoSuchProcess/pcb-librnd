@@ -174,9 +174,7 @@ static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
 	rnd_vector_t iscpt[2];
 	double offs[2];
 
-	num_isc = pb2_isc_arc_arc(&ictx->seg, seg, iscpt);
-	TODO("arc: need to fill in offsets on ictx->seg's arc");
-	abort();
+	num_isc = pb2_isc_arc_arc(&ictx->seg, seg, iscpt, offs);
 	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt, offs);
 }
 
