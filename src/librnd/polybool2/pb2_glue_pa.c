@@ -35,7 +35,13 @@ RND_INLINE void pb2_1_map_pline(pb2_ctx_t *ctx, const rnd_pline_t *pline, char p
 {
 	rnd_vnode_t *vn = pline->head;
 	do {
-		pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id);
+		switch(vn->flg.curve_type) {
+			case RND_VNODE_ARC: pb2_1_map_seg_arc(ctx, vn->point, vn->next->point, vn->curve.arc.center, vn->curve.arc.adir, poly_id); break;
+
+			case RND_VNODE_LINE:
+			default:  pb2_1_map_seg_line(ctx, vn->point, vn->next->point, poly_id); break;
+
+		}
 	} while((vn = vn->next) != pline->head);
 }
 
