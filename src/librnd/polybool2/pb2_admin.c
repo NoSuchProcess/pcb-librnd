@@ -85,6 +85,8 @@ RND_INLINE pb2_seg_t *pb2_new_seg_from(pb2_ctx_t *ctx, const pb2_seg_t *src, cha
 RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const pb2_seg_t *copy_from)
 {
 	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
+	seg->shape_type = copy_from->shape_type;
+	memcpy(&seg->shape, &copy_from->shape, sizeof(copy_from->shape));
 	seg->cntA = copy_from->cntA;
 	seg->cntB = copy_from->cntB;
 	seg->non0A = copy_from->non0A;
