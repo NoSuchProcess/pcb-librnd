@@ -201,50 +201,10 @@ static rnd_rtree_dir_t pb2_1_isc_seg_cb(void *udata, void *obj, const rnd_rtree_
 	return 0;
 }
 
-
-RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
+RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, int num_isc, rnd_vector_t ip0, rnd_vector_t ip1, rnd_vector_t orig_end)
 {
-	rnd_vector_t orig_end;
-	int isc1_bad = 0, isc2_bad = 0, num_isc;
-	rnd_vector_t ip0, ip1;
 	pb2_seg_t *news;
-	static int cnt = 0;
 
-	num_isc = isc->num_isc;
-	Vcpy2(orig_end, isc->seg->end);
-	Vcpy2(ip0, isc->isc[0]);
-	Vcpy2(ip1, isc->isc[1]);
-	cnt++;
-
-	if (Vequ2(ip0, isc->seg->start)) isc1_bad = 1;
-	else if (Vequ2(ip0, orig_end)) isc1_bad = 1;
-
-	/* don't split at endpoints: remove 1 or 2 bad intersections
-	   from num_isc:ip0:ip1 */
-	if (num_isc == 2) {
-		if (Vequ2(ip1, isc->seg->start)) isc2_bad = 1;
-		else if (Vequ2(ip1, orig_end)) isc2_bad = 1;
-
-		if (isc2_bad && isc1_bad)
-			return; /* 2 intersections at exactly the endpoints */
-
-		if (isc1_bad) {
-			/* ip0 is a bad intersection, drop it but preserve ip1 as that's still valid */
-			Vcpy2(ip0, ip1);
-			num_isc--;
-		}
-		else if (isc2_bad)
-			num_isc--;
-	}
-	else /* (num_isc == 1) */ {
-		if (isc1_bad)
-			return; /* 1 intersection at exactly one of the endpoints */
-	}
-
-
-	TODO("arc: implement this for arcs; below is the line-only implementation; move most of this in pb2_geo.c");
-
-	rnd_rtree_delete(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 	if (num_isc == 2) {
 		double d1, d2;
 		rnd_vector_t *i1, *i2;
@@ -303,8 +263,62 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 		}
 	}
 	else {
-		assert(!"invalid isc->num_isc");
+		assert(!"invalid isc->num_isc in split_line");
 		abort();
+	}
+}
+
+RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, int num_isc, rnd_vector_t ip0, rnd_vector_t ip1, rnd_vector_t orig_end)
+{
+	TODO("arc: implement this for arcs; above is the line-only implementation");
+	abort();
+}
+
+RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
+{
+	rnd_vector_t orig_end;
+	int isc1_bad = 0, isc2_bad = 0, num_isc;
+	rnd_vector_t ip0, ip1;
+	static int cnt = 0;
+
+	/* save original points */
+	num_isc = isc->num_isc;
+	Vcpy2(orig_end, isc->seg->end);
+	Vcpy2(ip0, isc->isc[0]);
+	Vcpy2(ip1, isc->isc[1]);
+	cnt++;
+
+	/* ip0 must exist (need at least one split point); it can't be at an endpoint */
+	if (Vequ2(ip0, isc->seg->start)) isc1_bad = 1;
+	else if (Vequ2(ip0, orig_end)) isc1_bad = 1;
+
+	/* don't split at endpoints: remove 1 or 2 bad intersections
+	   from num_isc:ip0:ip1 */
+	if (num_isc == 2) {
+		if (Vequ2(ip1, isc->seg->start)) isc2_bad = 1;
+		else if (Vequ2(ip1, orig_end)) isc2_bad = 1;
+
+		if (isc2_bad && isc1_bad)
+			return; /* 2 intersections at exactly the endpoints */
+
+		if (isc1_bad) {
+			/* ip0 is a bad intersection, drop it but preserve ip1 as that's still valid */
+			Vcpy2(ip0, ip1);
+			num_isc--;
+		}
+		else if (isc2_bad)
+			num_isc--;
+	}
+	else /* (num_isc == 1) */ {
+		if (isc1_bad)
+			return; /* 1 intersection at exactly one of the endpoints */
+	}
+
+	rnd_rtree_delete(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+
+	switch(isc->seg->shape_type) {
+		case RND_VNODE_LINE: pb2_1_split_line_at_iscs(ctx, isc, num_isc, ip0, ip1, orig_end); break;
+		case RND_VNODE_ARC: pb2_1_split_arc_at_iscs(ctx, isc, num_isc, ip0, ip1, orig_end); break;
 	}
 }
 
