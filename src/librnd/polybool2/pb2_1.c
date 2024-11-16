@@ -380,7 +380,19 @@ static pb2_seg_t *pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, cha
    seg if only a single segment is created, else returns NULL */
 static pb2_seg_t *pb2_1_create_partial_arc(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 {
-	abort();
+	long n, found = 0;
+	pb2_seg_t *seg;
+
+	for(n = 0; n < SPLITS->used-1; n++) {
+		if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
+			seg = pb2_seg_new_arc(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc, ictx->seg.shape.arc.center, ictx->seg.shape.arc.adir, poly_id);
+			seg->risky = 1;
+			seg_inc_poly(seg, poly_id);
+			found++;
+		}
+	}
+
+	return (found < 2) ? seg : NULL;
 }
 
 
