@@ -55,7 +55,7 @@ typedef struct {
 #include "pa_vect_inline.c"
 
 typedef struct {
-	double offs; /* distance^2 from the search object's starting point (for sorting) */
+	double offs; /* line: distance^2 from the search object's starting point; arc: delta angle from start (for sorting) */
 	rnd_vector_t isc;
 } pb2_split_at_t;
 
@@ -121,7 +121,7 @@ typedef struct {
 
 /* create new intersection requests within seg1, noting offender seg2; no
    splitting takes place here, only isc mapping */
-RND_INLINE rnd_rtree_dir_t pb2_1_isc_common(pb2_ctx_t *ctx, pb2_seg_t *seg1, pb2_seg_t *seg2, int num_isc, rnd_vector_t iscpt[])
+RND_INLINE rnd_rtree_dir_t pb2_1_isc_common(pb2_ctx_t *ctx, pb2_seg_t *seg1, pb2_seg_t *seg2, int num_isc, rnd_vector_t iscpt[], double offs[])
 {
 	pb2_isc_t *isc;
 
@@ -133,10 +133,10 @@ RND_INLINE rnd_rtree_dir_t pb2_1_isc_common(pb2_ctx_t *ctx, pb2_seg_t *seg1, pb2
 	isc->num_isc = num_isc;
 	memcpy(isc->isc, iscpt, sizeof(rnd_vector_t[2]));
 
-	p2b_split_at_new(ctx, rnd_vect_dist2(seg1->start, iscpt[0]), iscpt[0]);
+	p2b_split_at_new(ctx, offs[0], iscpt[0]);
 	if (num_isc > 1) {
 		assert(!Vequ2(iscpt[0], iscpt[1])); /* can not be the same coord */
-		p2b_split_at_new(ctx, rnd_vect_dist2(seg1->start, iscpt[1]), iscpt[1]);
+		p2b_split_at_new(ctx, offs[1], iscpt[1]);
 	}
 
 	return rnd_RTREE_DIR_FOUND;
@@ -147,19 +147,24 @@ static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
 	pb2_ctx_t *ctx = ictx->ctx;
 	int num_isc;
 	rnd_vector_t iscpt[2];
+	double offs[2];
 
 	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
-	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
+	offs[0] = rnd_vect_dist2(ictx->seg.start, iscpt[0]);
+	if (num_isc > 1) 
+		offs[1] = rnd_vect_dist2(ictx->seg.start, iscpt[1]);
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt, offs);
 }
 
 static rnd_rtree_dir_t pb2_1_isc_la(isc_ctx_t *ictx, pb2_seg_t *seg, pb2_seg_t *line, pb2_seg_t *arc)
 {
 	pb2_ctx_t *ctx = ictx->ctx;
-	int num_isc;
+	int num_isc, offs_on_arc = (&ictx->seg == arc);
 	rnd_vector_t iscpt[2];
+	double offs[2];
 
-	num_isc = pb2_isc_line_arc(line, arc, iscpt);
-	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
+	num_isc = pb2_isc_line_arc(line, arc, iscpt, offs, offs_on_arc);
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt, offs);
 }
 
 static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
@@ -167,9 +172,12 @@ static rnd_rtree_dir_t pb2_1_isc_aa(isc_ctx_t *ictx, pb2_seg_t *seg)
 	pb2_ctx_t *ctx = ictx->ctx;
 	int num_isc;
 	rnd_vector_t iscpt[2];
+	double offs[2];
 
 	num_isc = pb2_isc_arc_arc(&ictx->seg, seg, iscpt);
-	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt);
+	TODO("arc: need to fill in offsets on ictx->seg's arc");
+	abort();
+	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt, offs);
 }
 
 

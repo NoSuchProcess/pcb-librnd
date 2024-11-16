@@ -126,18 +126,21 @@ do { \
 	} \
 } while(0)
 
-RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt[])
+RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt[], double offs[], int offs_on_arc)
 {
 	g2d_cline_t cline;
 	g2d_carc_t carc;
 	int num;
 	g2d_vect_t ip[2];
+	g2d_offs_t of[2];
 
 	SEG2CLINE(cline, line);
 	SEG2CARC(carc, arc);
 
-	num = g2d_iscp_cline_carc(&cline, &carc,  ip,  NULL, 0);
+	num = g2d_iscp_cline_carc(&cline, &carc,  ip, of, offs_on_arc);
 	ISC_OUT(num);
+	offs[0] = of[0];
+	offs[1] = of[1];
 	return num;
 }
 
