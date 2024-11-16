@@ -81,6 +81,9 @@ RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, c
 	seg->non0A = copy_from->non0A;
 	seg->non0B = copy_from->non0B;
 	seg->discarded = copy_from->discarded;
+	seg->shape_type = copy_from->shape_type;
+	if (seg->shape_type > 0)
+		memcpy(&seg->shape, &copy_from->shape, sizeof(seg->shape));
 	return seg;
 }
 

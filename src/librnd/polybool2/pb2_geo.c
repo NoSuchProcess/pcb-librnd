@@ -167,4 +167,30 @@ RND_INLINE void pb2_arc_bbox(pb2_seg_t *arc)
 	arc->bbox.x2 = bb.p2.x; arc->bbox.y2 = bb.p2.y;
 }
 
+/* Make sure *ang is between start and start+delta of arc; returns 0 on
+   success */
+RND_INLINE int pb2_arc_angle_clamp(double *ang, pb2_seg_t *arc)
+{
+	double da = arc->shape.arc.delta, sa = arc->shape.arc.start, ea = sa + da;
 
+	if (da > 0) {
+		if (*ang < sa) *ang += 2*G2D_PI;
+		else if (*ang > ea) *ang -= 2*G2D_PI;
+	}
+	else {
+		if (*ang > sa) *ang -= 2*G2D_PI;
+		else if (*ang < ea) *ang += 2*G2D_PI;
+	}
+
+	if ((*ang < sa) || (*ang > ea))
+		return -1;
+	return 0;
+}
+
+RND_INLINE double pb2_arc_angle_dist(double ang, pb2_seg_t *arc)
+{
+	double da = arc->shape.arc.delta, sa = arc->shape.arc.start;
+	if (da > 0)
+		return ang - sa;
+	return sa - ang;
+}
