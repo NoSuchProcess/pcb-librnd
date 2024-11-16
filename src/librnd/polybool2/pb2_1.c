@@ -357,12 +357,12 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 	}
 }
 
-/* Create split-up ictx->seg: multiple line segments from SPLITS */
-static void pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
+/* Create split-up ictx->seg: multiple line segments from SPLITS. Returns
+   seg if only a single segment is created, else returns NULL */
+static pb2_seg_t *pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 {
-	long n;
+	long n, found = 0;
 	pb2_seg_t *seg;
-	int found = 0;
 
 	for(n = 0; n < SPLITS->used-1; n++) {
 		if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
@@ -372,16 +372,13 @@ static void pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly
 			found++;
 		}
 	}
-	if (found < 2) {
-		/* if we ended up creating only one segment and that is the original
-		   segment, that means it did not intersect with rounding so no further
-		   checking is needed */
-		if (Vequ2(ictx->seg.start, seg->start) && Vequ2(ictx->seg.end, seg->end))
-			seg->risky = 0;
-	}
+
+	return (found < 2) ? seg : NULL;
 }
 
-static void pb2_1_create_partial_arc(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
+/* Create split-up ictx->seg: multiple line segments from SPLITS. Returns
+   seg if only a single segment is created, else returns NULL */
+static pb2_seg_t *pb2_1_create_partial_arc(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 {
 	abort();
 }
@@ -411,6 +408,7 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 	rnd_rtree_search_obj(&ctx->seg_tree, &ictx->seg.bbox, pb2_1_isc_seg_cb, ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
+		pb2_seg_t *single_seg = NULL;
 
 		/* split up existing segments */
 		for(n = 0; n < ISCS->used; n++)
@@ -425,8 +423,16 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 		Vcpy2(se->isc, ictx->seg.end);
 
 		switch(ictx->seg.shape_type) {
-			case RND_VNODE_LINE: pb2_1_create_partial_line(ctx, ictx, poly_id); break;
-			case RND_VNODE_ARC:  pb2_1_create_partial_arc(ctx, ictx, poly_id); break;
+			case RND_VNODE_LINE: single_seg = pb2_1_create_partial_line(ctx, ictx, poly_id); break;
+			case RND_VNODE_ARC:  single_seg = pb2_1_create_partial_arc(ctx, ictx, poly_id); break;
+		}
+
+		if (single_seg != NULL) {
+			/* if we ended up creating only one segment (single_seg != NULL) and
+			   that is the original segment, that means it did not intersect with
+			   rounding so no further checking is needed */
+			if (Vequ2(ictx->seg.start, single_seg->start) && Vequ2(ictx->seg.end, single_seg->end))
+				single_seg->risky = 0;
 		}
 	}
 	else  {
