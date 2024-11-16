@@ -276,6 +276,7 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 
 RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, int num_isc, rnd_vector_t ip0, rnd_vector_t ip1, rnd_vector_t orig_end)
 {
+	pb2_seg_t *news;
 	double a1, a2; /* split angles */
 	rnd_vector_t *i1, *i2;
 	int r;
@@ -304,9 +305,53 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 	pa_trace("acr-arc split: ", Pint(num_isc), " ",
 		Pvect(*i1), " ", Pdouble(a1), "    ", Pvect(*i2), " ", Pdouble(a2), "\n", 0);
 
-	TODO("arc: implement this for arcs; above is the line-only implementation");
-	assert(!"arc: implement this for arcs; above is the line-only implementation");
-	abort();
+
+	if (num_isc == 2) {
+		/* reuse the original segment for the first part */
+		Vcpy2(isc->seg->end, *i1);
+		pb2_seg_arc_update_cache(ctx, isc->seg);
+		pb2_1_seg_bbox(isc->seg);
+		if (!pb2_1_ends_match(isc, isc->seg->start, *i1)) {
+			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+			isc->seg->risky = 1;
+		}
+		else
+			isc->seg->discarded = isc->seg->olap = 1;
+
+		/* two more segments after the two intersections */
+		if (!Vequ2(*i1, *i2)) {
+			news = pb2_seg_new_alike(ctx, *i1, *i2, isc->seg);
+			news->risky = 1;
+		}
+		if (!Vequ2(*i2, orig_end)) {
+			news = pb2_seg_new_alike(ctx, *i2, orig_end, isc->seg);
+			news->risky = 1;
+		}
+	}
+	else if (num_isc == 1) {
+		/* reuse the original segment for the first part */
+		Vcpy2(isc->seg->end, ip0);
+		pb2_seg_arc_update_cache(ctx, isc->seg);
+		pb2_1_seg_bbox(isc->seg);
+		if (!pb2_1_ends_match(isc, isc->seg->start, ip0)) {
+			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
+			isc->seg->risky = 1;
+		}
+		else
+			isc->seg->discarded = isc->seg->olap = 1;
+
+
+		/* plus add the extra segment */
+		if (!Vequ2(ip0, orig_end)) {
+			news = pb2_seg_new_alike(ctx, ip0, orig_end, isc->seg);
+			news->discarded = 0; /* isc->seg may be discarded already but this shouldn't affect the new segment, but pb2_seg_new_alike() copies that flag too; test case: S9 of pcb03 */
+			news->risky = 1;
+		}
+	}
+	else {
+		assert(!"invalid isc->num_isc in split_line");
+		abort();
+	}
 }
 
 RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
