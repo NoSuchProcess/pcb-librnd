@@ -27,23 +27,43 @@
  *
  */
 
+#define PB2_7_OUT_SHAPE(nd, seg) \
+do { \
+	switch(seg->shape_type) { \
+		case RND_VNODE_LINE: break; \
+		case RND_VNODE_ARC: \
+			nd->flg.curve_type = seg->shape_type; \
+			nd->curve.arc.center[0] = seg->shape.arc.center[0]; \
+			nd->curve.arc.center[1] = seg->shape.arc.center[1]; \
+			nd->curve.arc.adir = seg->shape.arc.adir; \
+			break; \
+	} \
+} while(0)
+
 RND_INLINE rnd_pline_t *pb2_7_mkpline(pb2_ctx_t *ctx, pb2_face_t *f, int positive)
 {
 	pb2_face_it_t it;
 	rnd_pline_t *pl;
 	rnd_vector_t pt;
 	long count;
+	pb2_seg_t *seg;
+	rnd_vnode_t *nd;
 
-	if (pb2_face_it_first(&it, f, NULL, pt, !positive) == NULL)
+	if ((seg = pb2_face_it_first(&it, f, NULL, pt, !positive)) == NULL)
 		return NULL;
 
 	pl = pa_pline_new(pt);
 	count = 1;
 
-	while(pb2_face_it_next(&it, NULL, pt) != NULL) {
-		TODO("arc: this assumes lines only; for arcs use the seg return of _next()");
-		if (rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(pt)) == 0)
+	nd = pl->head;
+	PB2_7_OUT_SHAPE(nd, seg);
+
+
+	while((seg = pb2_face_it_next(&it, NULL, pt)) != NULL) {
+		if (rnd_poly_vertex_include(pl->head->prev, (nd = rnd_poly_node_create(pt))) == 0) {
 			count++;
+			PB2_7_OUT_SHAPE(nd, seg);
+		}
 	}
 
 	/* Cheaper version of pa_pline_update(pl, 1), reusing fields of face: */
