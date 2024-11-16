@@ -356,7 +356,7 @@ static void pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly
 {
 	long n;
 	pb2_seg_t *seg;
-		int found = 0;
+	int found = 0;
 
 	for(n = 0; n < SPLITS->used-1; n++) {
 		if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
