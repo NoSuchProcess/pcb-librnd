@@ -351,6 +351,36 @@ RND_INLINE void pb2_1_split_seg_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc)
 	}
 }
 
+/* Create split-up ictx->seg: multiple line segments from SPLITS */
+static void pb2_1_create_partial_line(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
+{
+	long n;
+	pb2_seg_t *seg;
+		int found = 0;
+
+	for(n = 0; n < SPLITS->used-1; n++) {
+		if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
+			seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc, poly_id);
+			seg->risky = 1;
+			seg_inc_poly(seg, poly_id);
+			found++;
+		}
+	}
+	if (found < 2) {
+		/* if we ended up creating only one segment and that is the original
+		   segment, that means it did not intersect with rounding so no further
+		   checking is needed */
+		if (Vequ2(ictx->seg.start, seg->start) && Vequ2(ictx->seg.end, seg->end))
+			seg->risky = 0;
+	}
+}
+
+static void pb2_1_create_partial_arc(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
+{
+	abort();
+}
+
+
 static int cmp_split_cb(const void *A, const void *B)
 {
 	const pb2_split_at_t *a = A, *b = B;
@@ -359,7 +389,8 @@ static int cmp_split_cb(const void *A, const void *B)
 
 /* p1 and p2 are start and end point, ordered; there can be a shape in between,
    which is loaded into ictx. The caller also needs to compute the bbox for the
-   shape. */
+   shape. This function finds intersections and creates one or more segments
+   of ictx->seg and marks already existing objects for splitting later */
 static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 {
 	long n;
@@ -374,8 +405,6 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 	rnd_rtree_search_obj(&ctx->seg_tree, &ictx->seg.bbox, pb2_1_isc_seg_cb, ictx);
 
 	if (SPLITS->used > 1) { /* intersected */
-		int found = 0;
-		pb2_seg_t *seg;
 
 		/* split up existing segments */
 		for(n = 0; n < ISCS->used; n++)
@@ -385,29 +414,19 @@ static void pb2_1_map_any(pb2_ctx_t *ctx, isc_ctx_t *ictx, char poly_id)
 
 		/* create a new segment for each part of the input segment that has
 		   intersections thus has at least 2 parts */
-
 		se = vtsplit_alloc_append(SPLITS, 1);
 		se->offs = RND_COORD_MAX;
 		Vcpy2(se->isc, ictx->seg.end);
 
-		for(n = 0; n < SPLITS->used-1; n++) {
-			if (!Vequ2(SPLITS->array[n].isc, SPLITS->array[n+1].isc)) {
-				seg = pb2_seg_new(ctx, SPLITS->array[n].isc, SPLITS->array[n+1].isc, poly_id);
-				seg->risky = 1;
-				seg_inc_poly(seg, poly_id);
-				found++;
-			}
-		}
-		if (found < 2) {
-			/* if we ended up creating only one segment and that is the original
-			   segment, that means it did not intersect with rounding so no further
-			   checking is needed */
-			if (Vequ2(ictx->seg.start, seg->start) && Vequ2(ictx->seg.end, seg->end))
-				seg->risky = 0;
+		switch(ictx->seg.shape_type) {
+			case RND_VNODE_LINE: pb2_1_create_partial_line(ctx, ictx, poly_id); break;
+			case RND_VNODE_ARC:  pb2_1_create_partial_arc(ctx, ictx, poly_id); break;
 		}
 	}
 	else  {
 		pb2_seg_t *seg = pb2_seg_new(ctx, ictx->seg.start, ictx->seg.end, poly_id);
+		seg->shape_type = ictx->seg.shape_type;
+		memcpy(&seg->shape, &ictx->seg.shape, sizeof(ictx->seg.shape));
 		seg_inc_poly(seg, poly_id);
 	}
 }
