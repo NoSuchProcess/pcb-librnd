@@ -38,8 +38,15 @@ RND_INLINE int pb2_seg_nonzero(pb2_seg_t *seg)
 
 RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
 {
-	seg->bbox.x1 = pa_min(seg->start[0], seg->end[0]);   seg->bbox.y1 = pa_min(seg->start[1], seg->end[1]);
-	seg->bbox.x2 = pa_max(seg->start[0], seg->end[0])+1; seg->bbox.y2 = pa_max(seg->start[1], seg->end[1])+1;
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE:
+			seg->bbox.x1 = pa_min(seg->start[0], seg->end[0]);   seg->bbox.y1 = pa_min(seg->start[1], seg->end[1]);
+			seg->bbox.x2 = pa_max(seg->start[0], seg->end[0])+1; seg->bbox.y2 = pa_max(seg->start[1], seg->end[1])+1;
+			break;
+		case RND_VNODE_ARC:
+			pb2_arc_bbox(seg);
+			break;
+	}
 }
 
 /* does not set shape */
