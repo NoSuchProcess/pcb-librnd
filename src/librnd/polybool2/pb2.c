@@ -47,8 +47,8 @@
 #include "pa_prints.h"
 #include "pb2_debug_txt.c"
 #include "pb2_debug_svg.c"
-#include "pb2_admin.c"
 #include "pb2_geo.c"
+#include "pb2_admin.c"
 
 #include "pb2_1.c"
 #include "pb2_2.c"

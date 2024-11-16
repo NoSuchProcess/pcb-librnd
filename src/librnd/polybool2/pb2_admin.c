@@ -42,6 +42,7 @@ RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
 	seg->bbox.x2 = pa_max(seg->start[0], seg->end[0])+1; seg->bbox.y2 = pa_max(seg->start[1], seg->end[1])+1;
 }
 
+/* does not set shape */
 RND_INLINE pb2_seg_t *pb2_seg_new_(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2)
 {
 	pb2_seg_t *seg = calloc(sizeof(pb2_seg_t), 1);
@@ -56,10 +57,8 @@ RND_INLINE pb2_seg_t *pb2_seg_new_(pb2_ctx_t *ctx, const rnd_vector_t p1, const 
 	return seg;
 }
 
-RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly)
+RND_INLINE pb2_seg_t *pb2_seg_new_common(pb2_ctx_t *ctx, pb2_seg_t *seg, char poly)
 {
-	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
-
 	switch(poly) {
 		case 'B':
 			seg->non0B = pb2_seg_nonzero(seg);
@@ -69,13 +68,53 @@ RND_INLINE pb2_seg_t *pb2_seg_new(pb2_ctx_t *ctx, const rnd_vector_t p1, const r
 			seg->non0A = pb2_seg_nonzero(seg);
 			break;
 	}
-
 	return seg;
+}
+
+RND_INLINE pb2_seg_t *pb2_seg_new_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly)
+{
+	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
+	return pb2_seg_new_common(ctx, seg, poly);
+}
+
+RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
+{
+	double sa, ea;
+
+	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
+	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
+	if (seg->shape.arc.adir) {
+		/* Positive delta; CW in svg; CCW in gengeo and C */
+		if (ea < sa)
+			ea += 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+	else {
+		/* Negative delta; CCW in svg; CW in gengeo and C */
+		if (ea > sa)
+			ea -= 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+
+	seg->shape.arc.r = rnd_vect_dist2(seg->start, seg->shape.arc.center);
+	if (seg->shape.arc.r != 0)
+		seg->shape.arc.r = sqrt(seg->shape.arc.r);
+}
+
+RND_INLINE pb2_seg_t *pb2_seg_new_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly)
+{
+	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
+	seg->shape_type = RND_VNODE_ARC;
+	seg->shape.arc.center[0] = center[0];
+	seg->shape.arc.center[1] = center[1];
+	seg->shape.arc.adir = adir;
+	pb2_seg_arc_update_cache(ctx, seg);
+	return pb2_seg_new_common(ctx, seg, poly);
 }
 
 RND_INLINE pb2_seg_t *pb2_new_seg_from(pb2_ctx_t *ctx, const pb2_seg_t *src, char poly_id)
 {
-	pb2_seg_t *seg = pb2_seg_new(ctx, src->start, src->end, poly_id);
+	pb2_seg_t *seg = pb2_seg_new_line(ctx, src->start, src->end, poly_id);
 	seg->shape_type = src->shape_type;
 	memcpy(&seg->shape, &src->shape, sizeof(src->shape));
 	return seg;
