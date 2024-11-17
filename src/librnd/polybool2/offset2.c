@@ -32,6 +32,8 @@
 #include "pa_config.h"
 #include "pa_math.c"
 
+TODO("arc: upgrade this code to deal with arcs in input");
+
 int rnd_vertices_are_coaxial(rnd_vnode_t *node);
 void pa_dump_pl(rnd_pline_t *pl, const char *fn);
 

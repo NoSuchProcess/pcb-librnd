@@ -32,6 +32,8 @@
 #include "offset.h"
 #include "pa_prints.h"
 
+TODO("arc: upgrade this code to deal with arcs in input");
+
 #if 1
 #define rndo_trace pa_trace
 #else
