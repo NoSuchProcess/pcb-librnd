@@ -108,6 +108,15 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		seg->shape.arc.r = sqrt(seg->shape.arc.r);
 }
 
+RND_INLINE void pb2_seg_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE: break;
+		case RND_VNODE_ARC: pb2_seg_arc_update_cache(ctx, seg); break;
+	}
+}
+
+
 RND_INLINE pb2_seg_t *pb2_seg_new_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly)
 {
 	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
@@ -141,6 +150,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, c
 	seg->shape_type = copy_from->shape_type;
 	if (seg->shape_type > 0)
 		memcpy(&seg->shape, &copy_from->shape, sizeof(seg->shape));
+	pb2_seg_update_cache(ctx, seg);
 	return seg;
 }
 
