@@ -49,20 +49,26 @@ RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
 	}
 }
 
-/* does not set shape */
+/* does not set shape, does not calculate bbox, does not register in rtree or ctx  */
 RND_INLINE pb2_seg_t *pb2_seg_new_(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2)
 {
 	pb2_seg_t *seg = calloc(sizeof(pb2_seg_t), 1);
 	PB2_UID_SET(seg);
 	memcpy(seg->start, p1, sizeof(rnd_vector_t));
 	memcpy(seg->end, p2, sizeof(rnd_vector_t));
-	pb2_1_seg_bbox(seg);
-	rnd_rtree_insert(&ctx->seg_tree, seg, &seg->bbox);
 	assert((p1[0] != p2[0]) || (p1[1] != p2[1])); /* 0 length seg is bad */
-	seg->next_all = ctx->all_segs;
-	ctx->all_segs = seg;
+	/* caller needs to fill in shape and call pb2_seg_new_bbox_and_reg_() */
 	return seg;
 }
+
+RND_INLINE pb2_seg_t *pb2_seg_new_bbox_and_reg_(pb2_ctx_t *ctx, pb2_seg_t *seg)
+{
+	pb2_1_seg_bbox(seg);
+	rnd_rtree_insert(&ctx->seg_tree, seg, &seg->bbox);
+	seg->next_all = ctx->all_segs;
+	ctx->all_segs = seg;
+}
+
 
 RND_INLINE pb2_seg_t *pb2_seg_new_common(pb2_ctx_t *ctx, pb2_seg_t *seg, char poly)
 {
@@ -81,6 +87,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new_common(pb2_ctx_t *ctx, pb2_seg_t *seg, char po
 RND_INLINE pb2_seg_t *pb2_seg_new_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, char poly)
 {
 	pb2_seg_t *seg = pb2_seg_new_(ctx, p1, p2);
+	pb2_seg_new_bbox_and_reg_(ctx, seg);
 	return pb2_seg_new_common(ctx, seg, poly);
 }
 
@@ -125,14 +132,17 @@ RND_INLINE pb2_seg_t *pb2_seg_new_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, con
 	seg->shape.arc.center[1] = center[1];
 	seg->shape.arc.adir = adir;
 	pb2_seg_arc_update_cache(ctx, seg);
+	pb2_seg_new_bbox_and_reg_(ctx, seg);
 	return pb2_seg_new_common(ctx, seg, poly);
 }
 
 RND_INLINE pb2_seg_t *pb2_new_seg_from(pb2_ctx_t *ctx, const pb2_seg_t *src, char poly_id)
 {
-	pb2_seg_t *seg = pb2_seg_new_line(ctx, src->start, src->end, poly_id);
+	pb2_seg_t *seg = pb2_seg_new_(ctx, src->start, src->end);
 	seg->shape_type = src->shape_type;
 	memcpy(&seg->shape, &src->shape, sizeof(src->shape));
+	pb2_seg_new_common(ctx, seg, poly_id);
+	pb2_seg_new_bbox_and_reg_(ctx, seg);
 	return seg;
 }
 
@@ -151,6 +161,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new_alike(pb2_ctx_t *ctx, const rnd_vector_t p1, c
 	if (seg->shape_type > 0)
 		memcpy(&seg->shape, &copy_from->shape, sizeof(seg->shape));
 	pb2_seg_update_cache(ctx, seg);
+	pb2_seg_new_bbox_and_reg_(ctx, seg);
 	return seg;
 }
 
