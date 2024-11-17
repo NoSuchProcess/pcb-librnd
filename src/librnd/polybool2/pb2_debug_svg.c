@@ -222,8 +222,11 @@ static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
 	v = pl->head;
 	fprintf(F, "\n	M %ld,%ld L", (long)v->point[0], (long)v->point[1]);
 	do {
+		TODO("arc: need to draw arcs, see tester");
 		fprintf(F, "    %ld,%ld", (long)v->point[0], (long)v->point[1]);
 	} while((v = v->next) != pl->head);
+
+	TODO("arc: make sure last segment is drawn too, z would complete poly with a line but it may be an arc, see tester");
 	fprintf(F, "z");
 }
 
