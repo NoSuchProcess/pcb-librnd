@@ -151,7 +151,7 @@ static rnd_rtree_dir_t pb2_1_isc_ll(isc_ctx_t *ictx, pb2_seg_t *seg)
 
 	num_isc = pa_vect_inters2(seg->start, seg->end, ictx->seg.start, ictx->seg.end, iscpt[0], iscpt[1], 0);
 	offs[0] = rnd_vect_dist2(ictx->seg.start, iscpt[0]);
-	if (num_isc > 1) 
+	if (num_isc > 1)
 		offs[1] = rnd_vect_dist2(ictx->seg.start, iscpt[1]);
 	return pb2_1_isc_common(ctx, &ictx->seg, seg, num_isc, iscpt, offs);
 }
