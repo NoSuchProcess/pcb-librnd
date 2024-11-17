@@ -213,26 +213,26 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 
 	if (num_isc == 2) {
 		double d1, d2;
-		rnd_vector_t *i1, *i2;
+		rnd_coord_t *i1, *i2;
 		
 		/* order iscs to this: seg->start .. isc[0] .. isc[1] .. orig_end */
 		d1 = rnd_vect_dist2(isc->seg->start, ip0);
 		d2 = rnd_vect_dist2(isc->seg->start, ip1);
 		if (d2 > d1) {
 			/* normal order */
-			i1 = &ip0;
-			i2 = &ip1;
+			i1 = ip0;
+			i2 = ip1;
 		}
 		else {
 			/* reverse order */
-			i1 = &ip1;
-			i2 = &ip0;
+			i1 = ip1;
+			i2 = ip0;
 		}
 
 		/* reuse the original segment for the first part */
-		Vcpy2(isc->seg->end, *i1);
+		Vcpy2(isc->seg->end, i1);
 		pb2_1_seg_bbox(isc->seg);
-		if (!pb2_1_ends_match(isc, isc->seg->start, *i1)) {
+		if (!pb2_1_ends_match(isc, isc->seg->start, i1)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
 		}
@@ -240,12 +240,12 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 			isc->seg->discarded = isc->seg->olap = 1;
 
 		/* two more segments after the two intersections */
-		if (!Vequ2(*i1, *i2)) {
-			news = pb2_seg_new_alike(ctx, *i1, *i2, isc->seg);
+		if (!Vequ2(i1, i2)) {
+			news = pb2_seg_new_alike(ctx, i1, i2, isc->seg);
 			news->risky = 1;
 		}
-		if (!Vequ2(*i2, orig_end)) {
-			news = pb2_seg_new_alike(ctx, *i2, orig_end, isc->seg);
+		if (!Vequ2(i2, orig_end)) {
+			news = pb2_seg_new_alike(ctx, i2, orig_end, isc->seg);
 			news->risky = 1;
 		}
 	}
@@ -277,8 +277,8 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, int num_isc, rnd_vector_t ip0, rnd_vector_t ip1, rnd_vector_t orig_end)
 {
 	pb2_seg_t *news;
-	double a1, a2; /* split angles */
-	rnd_vector_t *i1, *i2;
+	double a1, a2 = 100; /* split angles */
+	rnd_coord_t *i1, *i2; /* these are [2] and will point to rnd_vector_t ip0 and ip1 */
 	int r;
 
 	/* compute split angles */
@@ -293,25 +293,24 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 
 	/* order splits from start angle to end angle */
 	if ((num_isc > 1) && (pb2_arc_angle_dist(a1, isc->seg) > pb2_arc_angle_dist(a2, isc->seg))) {
-		i1 = &ip1;
-		i2 = &ip0;
+		i1 = ip1;
+		i2 = ip0;
 		pa_swap(double, a1, a2);
 	}
 	else {
-		i1 = &ip0;
-		i2 = &ip1;
+		i1 = ip0;
+		i2 = ip1;
 	}
 
-	pa_trace("acr-arc split: ", Pint(num_isc), " ",
-		Pvect(*i1), " ", Pdouble(a1), "    ", Pvect(*i2), " ", Pdouble(a2), "\n", 0);
-
+	pa_trace("arc split: ", Pint(num_isc), " ",
+		Pvect(i1), " ", Pdouble(a1), "    ", Pvect(i2), " ", Pdouble(a2), "\n", 0);
 
 	if (num_isc == 2) {
 		/* reuse the original segment for the first part */
-		Vcpy2(isc->seg->end, *i1);
+		Vcpy2(isc->seg->end, i1);
 		pb2_seg_arc_update_cache(ctx, isc->seg);
 		pb2_1_seg_bbox(isc->seg);
-		if (!pb2_1_ends_match(isc, isc->seg->start, *i1)) {
+		if (!pb2_1_ends_match(isc, isc->seg->start, i1)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
 		}
@@ -319,12 +318,12 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 			isc->seg->discarded = isc->seg->olap = 1;
 
 		/* two more segments after the two intersections */
-		if (!Vequ2(*i1, *i2)) {
-			news = pb2_seg_new_alike(ctx, *i1, *i2, isc->seg);
+		if (!Vequ2(i1, i2)) {
+			news = pb2_seg_new_alike(ctx, i1, i2, isc->seg);
 			news->risky = 1;
 		}
-		if (!Vequ2(*i2, orig_end)) {
-			news = pb2_seg_new_alike(ctx, *i2, orig_end, isc->seg);
+		if (!Vequ2(i2, orig_end)) {
+			news = pb2_seg_new_alike(ctx, i2, orig_end, isc->seg);
 			news->risky = 1;
 		}
 	}
