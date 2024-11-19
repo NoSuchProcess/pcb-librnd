@@ -124,8 +124,10 @@ do { \
 		(iscpt[1])[0] = ip[1].x; \
 		(iscpt[1])[1] = ip[1].y; \
 	} \
-	offs[0] = of[0]; \
-	offs[1] = of[1]; \
+	if (offs != NULL) { \
+		offs[0] = of[0]; \
+		offs[1] = of[1]; \
+	} \
 } while(0)
 
 RND_INLINE int pb2_isc_line_arc(pb2_seg_t *line, pb2_seg_t *arc, rnd_vector_t iscpt[], double offs[], int offs_on_arc)
