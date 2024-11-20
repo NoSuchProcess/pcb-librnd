@@ -107,7 +107,7 @@ do { \
 #define SEG2CARC(carc, seg) \
 do { \
 	pb2_seg_t *__seg__ = seg; \
-	carc.c.x = __seg__->shape.arc.center[0]; carc.c.y = __seg__->shape.arc.center[1]; \
+	carc.c.x = __seg__->shape.arc.cx; carc.c.y = __seg__->shape.arc.cy; \
 	carc.r = __seg__->shape.arc.r; \
 	carc.start = __seg__->shape.arc.start; \
 	carc.delta = __seg__->shape.arc.delta; \

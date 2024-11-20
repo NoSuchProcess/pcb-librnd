@@ -93,7 +93,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new_line(pb2_ctx_t *ctx, const rnd_vector_t p1, co
 
 RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 {
-	double sa, ea;
+	double sa, ea, r1, r2, ravg, cx, cy;
 
 	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
 	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
@@ -110,9 +110,47 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		seg->shape.arc.delta = ea - sa;
 	}
 
-	seg->shape.arc.r = rnd_vect_dist2(seg->start, seg->shape.arc.center);
-	if (seg->shape.arc.r != 0)
-		seg->shape.arc.r = sqrt(seg->shape.arc.r);
+	r1 = rnd_vect_dist2(seg->start, seg->shape.arc.center);
+	if (r1 != 0)
+		r1 = sqrt(r1);
+
+	if (!Vequ2(seg->start, seg->end)) {
+		r2 = rnd_vect_dist2(seg->end, seg->shape.arc.center);
+		if (r2 != 0)
+			r2 = sqrt(r2);
+	}
+
+	/* endpoints may not be on the arc with the original center due to rounding
+	   errors on intersections that created the new integer endpoints;
+	   calculate a new accurate center */
+	if (fabs(r1-r2) > 0.001) {
+		double dx, dy, dl, hdl, nx, ny, mx, my, cx, cy, h;
+
+		ravg = (r1+r2)/2.0;
+
+		dx = seg->end[0] - seg->start[0]; dy = seg->end[1] - seg->start[1];
+		dl = sqrt(dx*dx + dy*dy); hdl = dl/2.0;
+		dx /= dl; dy /= dl;
+		mx = (double)(seg->end[0] + seg->start[0])/2.0; my = (double)(seg->end[1] + seg->start[1])/2.0;
+
+		nx = -dy;
+		ny = dx;
+		h = sqrt(ravg*ravg - hdl*hdl); /* distance from midpoint to center */
+
+		seg->shape.arc.r = ravg;
+		seg->shape.arc.cx = mx + nx*h;
+		seg->shape.arc.cy = my + ny*h;
+
+		pa_trace(" Uarc r ", Pdouble(r1), " ", Pdouble(r2), " ", Pdouble(ravg), 0);
+		pa_trace(" mid: ", Pdouble(mx), " ", Pdouble(my), " n: ", Pdouble(nx), " ", Pdouble(ny), " h: ", Pdouble(h), 0);
+		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
+	}
+	else {
+		/* original integer center is accurate enough */
+		seg->shape.arc.r =r1;
+		seg->shape.arc.cx = seg->shape.arc.center[0];
+		seg->shape.arc.cy = seg->shape.arc.center[1];
+	}
 }
 
 RND_INLINE void pb2_seg_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
