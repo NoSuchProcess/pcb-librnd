@@ -84,6 +84,7 @@ struct pb2_seg_s {
 			rnd_ucoord_t aim_frac[2]; /* fraction part of aim ("angle") for start and endpoint */
 			char aim_int[2]; /* integer part of the aim ("angle") for start and endpoint */
 #endif
+			double cx, cy; /* accurate center point */
 			double r;
 			double start, delta; /* angles in radian, in C and gengeo2d coord system */
 		} arc;
