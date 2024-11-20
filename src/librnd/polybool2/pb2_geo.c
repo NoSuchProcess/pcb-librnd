@@ -117,12 +117,12 @@ do { \
 #define ISC_OUT(num) \
 do { \
 	if (num > 0) { \
-		(iscpt[0])[0] = ip[0].x; \
-		(iscpt[0])[1] = ip[0].y; \
+		(iscpt[0])[0] = rnd_round(ip[0].x); \
+		(iscpt[0])[1] = rnd_round(ip[0].y); \
 	} \
 	if (num > 1) { \
-		(iscpt[1])[0] = ip[1].x; \
-		(iscpt[1])[1] = ip[1].y; \
+		(iscpt[1])[0] = rnd_round(ip[1].x); \
+		(iscpt[1])[1] = rnd_round(ip[1].y); \
 	} \
 	if (offs != NULL) { \
 		offs[0] = of[0]; \
@@ -170,8 +170,8 @@ RND_INLINE void pb2_arc_bbox(pb2_seg_t *arc)
 
 	SEG2CARC(carc, arc);
 	bb = g2d_carc_bbox(&carc);
-	arc->bbox.x1 = bb.p1.x; arc->bbox.y1 = bb.p1.y;
-	arc->bbox.x2 = bb.p2.x; arc->bbox.y2 = bb.p2.y;
+	arc->bbox.x1 = floor(bb.p1.x); arc->bbox.y1 = floor(bb.p1.y);
+	arc->bbox.x2 = ceil(bb.p2.x); arc->bbox.y2 = ceil(bb.p2.y);
 }
 
 /* Make sure *ang is between start and start+delta of arc; returns 0 on
