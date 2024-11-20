@@ -302,7 +302,7 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 		i2 = ip1;
 	}
 
-	pa_trace("arc split: ", Pint(num_isc), " ",
+	pa_trace("arc split: #", Plong(PB2_UID_GET(isc->seg)), " ", Pint(num_isc), " ",
 		Pvect(i1), " ", Pdouble(a1), "    ", Pvect(i2), " ", Pdouble(a2), "\n", 0);
 
 	if (num_isc == 2) {
@@ -579,12 +579,30 @@ RND_INLINE void pb2_1_handle_olap(pb2_ctx_t *ctx, pb2_seg_t *s1)
 	}
 }
 
+RND_INLINE int pb2_1_isc_seg_seg(pb2_ctx_t *ctx, pb2_seg_t *s1, pb2_seg_t *s2, rnd_vector_t iscpt[2])
+{
+	switch(s1->shape_type) {
+		case RND_VNODE_LINE:
+			switch(s2->shape_type) {
+				case RND_VNODE_LINE: return pa_vect_inters2(s1->start, s1->end, s2->start, s2->end, iscpt[0], iscpt[1], 0);
+				case RND_VNODE_ARC:  return pb2_isc_line_arc(s1, s2, iscpt, NULL, 0);
+			}
+			break;
+		case RND_VNODE_ARC:
+			switch(s2->shape_type) {
+				case RND_VNODE_LINE: return pb2_isc_line_arc(s2, s1, iscpt, NULL, 0);
+				case RND_VNODE_ARC:  return pb2_isc_arc_arc(s1, s2, iscpt, NULL);
+			}
+			break;
+	}
+	return 0; /* invalid shape type */
+}
 
 RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 {
 	rnd_rtree_it_t its;
 	pb2_seg_t *s1, *s2;
-	rnd_vector_t isc1, isc2;
+	rnd_vector_t iscpt[2];
 	rnd_vector_t *s1_ins1, *s1_ins2, *s2_ins1, *s2_ins2; /* points to insert in s1 */
 
 	restart:;
@@ -600,7 +618,7 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 
 			if ((s1 == s2 || s2->discarded)) continue;
 
-			num_isc = pa_vect_inters2(s1->start, s1->end, s2->start, s2->end, isc1, isc2, 0);
+			num_isc = pb2_1_isc_seg_seg(ctx, s1, s2, iscpt);
 			if (num_isc == 0) continue;
 
 			/* ignore simple endpoint-endpoint isc */
@@ -629,19 +647,19 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 			s1_ins1 = s1_ins2 = s2_ins1 = s2_ins2 = NULL;
 
 			/* collect intersection points */
-			if (!Vequ2(isc1, s1->start) && !Vequ2(isc1, s1->end))
-				s1_ins1 = &isc1;
-			if (!Vequ2(isc1, s2->start) && !Vequ2(isc1, s2->end))
-				s2_ins1 = &isc1;
+			if (!Vequ2(iscpt[0], s1->start) && !Vequ2(iscpt[0], s1->end))
+				s1_ins1 = &iscpt[0];
+			if (!Vequ2(iscpt[0], s2->start) && !Vequ2(iscpt[0], s2->end))
+				s2_ins1 = &iscpt[0];
 
 			if (num_isc == 2) {
-				if (!Vequ2(isc2, s1->start) && !Vequ2(isc2, s1->end)) {
-					if (s1_ins1 == NULL) s1_ins1 = &isc2;
-					else s1_ins2 = &isc2;
+				if (!Vequ2(iscpt[1], s1->start) && !Vequ2(iscpt[1], s1->end)) {
+					if (s1_ins1 == NULL) s1_ins1 = &iscpt[1];
+					else s1_ins2 = &iscpt[1];
 				}
-				if (!Vequ2(isc2, s2->start) && !Vequ2(isc2, s2->end)) {
-					if (s2_ins1 == NULL) s2_ins1 = &isc2;
-					else s2_ins2 = &isc2;
+				if (!Vequ2(iscpt[1], s2->start) && !Vequ2(iscpt[1], s2->end)) {
+					if (s2_ins1 == NULL) s2_ins1 = &iscpt[1];
+					else s2_ins2 = &iscpt[1];
 				}
 			}
 
