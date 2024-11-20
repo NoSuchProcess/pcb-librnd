@@ -6,7 +6,7 @@
 #include <librnd/core/globalconst.h>
 #include <librnd/core/compat_misc.h>
 
-typedef funcops rnd_coord_t g2d_coord_t;
+typedef funcops double g2d_coord_t;
 typedef funcops double g2d_calc_t;
 typedef funcops double g2d_offs_t;
 typedef funcops double g2d_angle_t;
