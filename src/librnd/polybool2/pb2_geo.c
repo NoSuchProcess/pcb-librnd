@@ -42,12 +42,27 @@ TODO("bignum: calc_t should be bignum, not double, especially with 64 bit coords
 /* returns 1 if sa and sb are in full overlap */
 RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 {
-	TODO("arc: this is only for line at the moment");
-	if (Vequ2(sa->start, sb->start) && Vequ2(sa->end, sb->end))
-		return 1;
-	if (Vequ2(sa->start, sb->end) && Vequ2(sa->end, sb->start))
-		return 1;
-	return 0;
+	if (sa->shape_type != sb->shape_type)
+		return 0;
+
+	/* endpoints must match, regardless of the shape */
+	if (!Vequ2(sa->start, sb->start) || !Vequ2(sa->end, sb->end))
+		return 0;
+	if (!Vequ2(sa->start, sb->end) || !Vequ2(sa->end, sb->start))
+		return 0;
+
+	switch(sa->shape_type) {
+		case RND_VNODE_LINE: break; /*matching endpoints is enough to check */
+		case RND_VNODE_ARC:
+			/* need to have same endpoints, same center */
+			if (fabs(sa->shape.arc.cx - sb->shape.arc.cx) > 0.5)
+				return 0;
+			if (fabs(sa->shape.arc.cy - sb->shape.arc.cy) > 0.5)
+				return 0;
+			break;
+	}
+
+	return 1;
 }
 
 /* swap start and end of a segment (reverse orientation); rtree doesn't change */
