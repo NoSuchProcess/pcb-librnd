@@ -76,6 +76,7 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 					seg->shape.arc.r, seg->shape.arc.r, large, sweep,
 					(long)seg->end[0], (long)seg->end[1],
 					ANNOT(0.02), dash);
+				pb2_arc_get_midpoint_dbl(seg, &labx, &laby);
 				break;
 			default: abort();
 		}

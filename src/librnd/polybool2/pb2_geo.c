@@ -216,3 +216,10 @@ RND_INLINE double pb2_arc_angle_dist(double ang, pb2_seg_t *arc)
 		return ang - sa;
 	return sa - ang;
 }
+
+RND_INLINE void pb2_arc_get_midpoint_dbl(pb2_seg_t *arc, double *mx, double *my)
+{
+	double ang = arc->shape.arc.start + arc->shape.arc.delta/2.0;
+	*mx = arc->shape.arc.cx + cos(ang) * arc->shape.arc.r;
+	*my = arc->shape.arc.cy + sin(ang) * arc->shape.arc.r;
+}

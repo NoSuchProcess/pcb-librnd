@@ -44,6 +44,9 @@
 		(r)[1] = (a)[1] - (b)[1]; \
 	} while(0)
 
+RND_INLINE void pb2_arc_get_midpoint_dbl(pb2_seg_t *arc, double *mx, double *my);
+
+
 #include "pa_prints.h"
 #include "pb2_debug_txt.c"
 #include "pb2_debug_svg.c"
