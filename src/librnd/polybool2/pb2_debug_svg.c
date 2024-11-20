@@ -224,16 +224,51 @@ static void pb2_draw_faces(pb2_ctx_t *ctx, FILE *F)
 		draw_face(ctx, f, F);
 }
 
+static void svg_print_poly_contour_node(FILE *F, const rnd_vnode_t *v)
+{
+	int large, sweep;
+
+	switch(v->prev->flg.curve_type) {
+		case RND_VNODE_LINE:
+			fprintf(F, "    L %ld,%ld", (long)v->point[0], (long)v->point[1]);
+			break;
+		case RND_VNODE_ARC:
+			{
+				rnd_vnode_t *vp = v->prev;
+				double r, dx, dy;
+				int large, sweep = vp->curve.arc.adir;
+
+				dx = vp->curve.arc.center[0] - v->point[0];
+				dy = vp->curve.arc.center[1] - v->point[1];
+				r = dx*dx + dy*dy;
+				if (r == 0)
+					break;
+				r = sqrt(r);
+
+				TODO("arc: this should be: large = delta_angle > 180");
+				large = 0;
+
+				fprintf(F, " A %.1f,%.1f 0 %d %d %ld,%ld", r, r, large, sweep, (long)v->point[0], (long)v->point[1]);
+			}
+			break;
+	}
+}
+
 static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
 {
 	const rnd_vnode_t *v;
 
 	v = pl->head;
-	fprintf(F, "\n	M %ld,%ld L", (long)v->point[0], (long)v->point[1]);
+	fprintf(F, "\n	M %ld,%ld", (long)v->point[0], (long)v->point[1]);
+	v = v->next;
 	do {
-		TODO("arc: need to draw arcs, see tester");
-		fprintf(F, "    %ld,%ld", (long)v->point[0], (long)v->point[1]);
+		svg_print_poly_contour_node(F, v);
 	} while((v = v->next) != pl->head);
+
+	/* draw last segment returning to first point, don't let 'z' do that, because
+	   it may be an arc */
+	svg_print_poly_contour_node(F, v);
+
 
 	TODO("arc: make sure last segment is drawn too, z would complete poly with a line but it may be an arc, see tester");
 	fprintf(F, "z");
