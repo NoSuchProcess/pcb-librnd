@@ -55,11 +55,12 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 	fprintf(F, "\n<!-- segments -->\n");
 	for(seg = rnd_rtree_all_first(&it, &ctx->seg_tree); seg != NULL; seg = rnd_rtree_all_next(&it)) {
 		double labx, laby;
+		int large, sweep;
+		const char *dash = (seg->discarded ? "stroke-dasharray=\"0.25\"" : "");
 
 		switch(seg->shape_type) {
 			case RND_VNODE_LINE:
 				{
-					const char *dash = (seg->discarded ? "stroke-dasharray=\"0.25\"" : "");
 					fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"grey\" %s/>\n",
 						(long)seg->start[0], (long)seg->start[1], (long)seg->end[0], (long)seg->end[1], ANNOT(0.02), dash);
 					labx = (double)(seg->start[0] + seg->end[0])/2.0;
@@ -67,7 +68,15 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 				}
 				break;
 
-			case RND_VNODE_ARC:  abort(); break;
+			case RND_VNODE_ARC:
+				large = fabs(seg->shape.arc.delta) > 180.0;
+				sweep = seg->shape.arc.adir;
+				fprintf(F, " <path d=\"M %ld %ld A %f,%f 0 %d %d %ld,%ld\" fill=\"none\" stroke-width=\"%.3f\" stroke=\"grey\" %s/>",
+					(long)seg->start[0], (long)seg->start[1],
+					seg->shape.arc.r, seg->shape.arc.r, large, sweep,
+					(long)seg->end[0], (long)seg->end[1],
+					ANNOT(0.02), dash);
+				break;
 			default: abort();
 		}
 
