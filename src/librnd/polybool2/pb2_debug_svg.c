@@ -85,18 +85,9 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 	}
 }
 
-RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
+
+RND_INLINE void draw_curve_line(pb2_ctx_t *ctx, pb2_seg_t *seg, FILE *F, pb2_seg_t *fs, pb2_seg_t *ls, const char *dash)
 {
-	pb2_seg_t *seg, *fs, *ls;
-	const char *dash = (curve->pruned ? "stroke-dasharray=\"0.35\"" : "");
-
-
-	fs = gdl_first(&curve->segs);
-	ls = gdl_last(&curve->segs);
-
-
-
-	for(seg = fs; seg != NULL; seg = gdl_next(&curve->segs, seg)) {
 		double x1 = seg->start[0], y1 = seg->start[1], x2 = seg->end[0], y2 = seg->end[1];
 		double vx, vy, len;
 
@@ -123,6 +114,39 @@ RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
 
 		fprintf(F, " <line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" stroke-width=\"%.3f\" stroke=\"purple\" %s/>\n",
 			x1, y1, x2, y2, ANNOT(0.05), dash);
+}
+
+RND_INLINE void draw_curve_arc(pb2_ctx_t *ctx, pb2_seg_t *seg, FILE *F, pb2_seg_t *fs, pb2_seg_t *ls, const char *dash)
+{
+	double x1 = seg->start[0], y1 = seg->start[1], x2 = seg->end[0], y2 = seg->end[1];
+	int large, sweep;
+
+	if (seg == fs)
+		pb2_arc_shift_end_dbl(seg, 1, 0.7, &x1, &y1);
+	if (seg == ls)
+		pb2_arc_shift_end_dbl(seg, 2, 0.7, &x2, &y2);
+
+	large = fabs(seg->shape.arc.delta) > 180.0;
+	sweep = seg->shape.arc.adir;
+	fprintf(F, " <path d=\"M %.2f %.2f A %f,%f 0 %d %d %.2f,%.2f\" fill=\"none\" stroke-width=\"%.3f\" stroke=\"purple\" %s/>",
+		x1, y1, seg->shape.arc.r, seg->shape.arc.r, large, sweep, x2, y2,
+		ANNOT(0.05), dash);
+}
+
+RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
+{
+	pb2_seg_t *seg, *fs, *ls;
+	const char *dash = (curve->pruned ? "stroke-dasharray=\"0.35\"" : "");
+
+
+	fs = gdl_first(&curve->segs);
+	ls = gdl_last(&curve->segs);
+
+	for(seg = fs; seg != NULL; seg = gdl_next(&curve->segs, seg)) {
+		switch(seg->shape_type) {
+			case RND_VNODE_LINE: draw_curve_line(ctx, seg, F, fs, ls, dash); break;
+			case RND_VNODE_ARC: draw_curve_arc(ctx, seg, F, fs, ls, dash); break;
+		}
 	}
 
 	fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"purple\" font-size=\"0.5px\">C%ld</text>\n",

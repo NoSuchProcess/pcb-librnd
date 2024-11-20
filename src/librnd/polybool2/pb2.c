@@ -45,6 +45,7 @@
 	} while(0)
 
 RND_INLINE void pb2_arc_get_midpoint_dbl(pb2_seg_t *arc, double *mx, double *my);
+RND_INLINE void pb2_arc_shift_end_dbl(pb2_seg_t *arc, int end_idx, double offs, double *xout, double *yout);
 
 
 #include "pa_prints.h"

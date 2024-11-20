@@ -223,3 +223,20 @@ RND_INLINE void pb2_arc_get_midpoint_dbl(pb2_seg_t *arc, double *mx, double *my)
 	*mx = arc->shape.arc.cx + cos(ang) * arc->shape.arc.r;
 	*my = arc->shape.arc.cy + sin(ang) * arc->shape.arc.r;
 }
+
+/* Compute endpoint with an offset from a given endpoint (1 or 2) toward the
+   mid of the arc */
+RND_INLINE void pb2_arc_shift_end_dbl(pb2_seg_t *arc, int end_idx, double offs, double *xout, double *yout)
+{
+	double da, ang, mid_ang = arc->shape.arc.start + arc->shape.arc.delta/2.0;
+	switch(end_idx) {
+		case 1: ang = arc->shape.arc.start; da = 1; break;
+		case 2: ang = arc->shape.arc.start + arc->shape.arc.delta; da = -1; break;
+	}
+	if (arc->shape.arc.delta < 0)
+		da = -da;
+	ang += da * offs/arc->shape.arc.r;
+
+	*xout = arc->shape.arc.cx + cos(ang) * arc->shape.arc.r;
+	*yout = arc->shape.arc.cy + sin(ang) * arc->shape.arc.r;
+}
