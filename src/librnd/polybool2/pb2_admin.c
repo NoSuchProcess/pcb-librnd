@@ -61,7 +61,7 @@ RND_INLINE pb2_seg_t *pb2_seg_new_(pb2_ctx_t *ctx, const rnd_vector_t p1, const 
 	return seg;
 }
 
-RND_INLINE pb2_seg_t *pb2_seg_new_bbox_and_reg_(pb2_ctx_t *ctx, pb2_seg_t *seg)
+RND_INLINE void pb2_seg_new_bbox_and_reg_(pb2_ctx_t *ctx, pb2_seg_t *seg)
 {
 	pb2_1_seg_bbox(seg);
 	rnd_rtree_insert(&ctx->seg_tree, seg, &seg->bbox);
