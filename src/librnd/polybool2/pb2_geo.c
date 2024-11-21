@@ -38,6 +38,14 @@ TODO("bignum: calc_t should be bignum, not double, especially with 64 bit coords
 #include <gengeo2d/carc.h>
 #include <gengeo2d/intersect.h>
 
+RND_INLINE int seg_seg_end_match(pb2_seg_t *sa, pb2_seg_t *sb)
+{
+	if (Vequ2(sa->start, sb->start) && Vequ2(sa->end, sb->end))
+		return 1;
+	if (Vequ2(sa->start, sb->end) && Vequ2(sa->end, sb->start))
+		return 1;
+	return 0;
+}
 
 /* returns 1 if sa and sb are in full overlap */
 RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
@@ -46,9 +54,7 @@ RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 		return 0;
 
 	/* endpoints must match, regardless of the shape */
-	if (!Vequ2(sa->start, sb->start) || !Vequ2(sa->end, sb->end))
-		return 0;
-	if (!Vequ2(sa->start, sb->end) || !Vequ2(sa->end, sb->start))
+	if (!seg_seg_end_match(sa, sb))
 		return 0;
 
 	switch(sa->shape_type) {
