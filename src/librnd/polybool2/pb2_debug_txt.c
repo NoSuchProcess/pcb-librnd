@@ -48,8 +48,13 @@ static void pb2_dump_segs(pb2_ctx_t *ctx)
 	for(seg = rnd_rtree_all_first(&it, &ctx->seg_tree); seg != NULL; seg = rnd_rtree_all_next(&it)) {
 		pa_trace("  S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), (seg->discarded ? " DISCARDED:" : ":"), " cntA=", Pint(seg->cntA), " cntB=", Pint(seg->cntB), " non0A=", Pint(seg->non0A), " non0B=", Pint(seg->non0B), 0);
 		switch(seg->shape_type) {
-			case RND_VNODE_LINE: pa_trace(" line\n", 0); break;
-			case RND_VNODE_ARC:  pa_trace(" arc\n", 0); break;
+			case RND_VNODE_LINE:
+				pa_trace(" line\n", 0);
+				break;
+			case RND_VNODE_ARC:
+				pa_trace(" arc c=", Pvect(seg->shape.arc.center), " adir=", Pint(seg->shape.arc.adir), 0);
+				pa_trace(" | c=", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), " r=", Pdouble(seg->shape.arc.r), " sa=", Pdouble(seg->shape.arc.start), " da=", Pdouble(seg->shape.arc.delta), "\n", 0);
+				break;
 			default: pa_trace("??? unknown type ", Pint(seg->shape_type), "\n", 0);
 		}
 	}
