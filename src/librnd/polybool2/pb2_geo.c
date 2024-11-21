@@ -172,6 +172,13 @@ RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t is
 	SEG2CARC(carc1, arc1);
 	SEG2CARC(carc2, arc2);
 
+	/* special case: arcs on the same circle; ignore high resolution centers in that case */
+	if (Vequ2(arc1->shape.arc.center, arc2->shape.arc.center) && (fabs(arc1->shape.arc.r - arc2->shape.arc.r) < 0.5)) {
+		carc1.c.x = carc2.c.x = arc1->shape.arc.center[0];
+		carc1.c.y = carc2.c.y = arc1->shape.arc.center[1];
+		carc1.r = carc2.r = arc1->shape.arc.r;
+	}
+
 	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  of);
 	ISC_OUT(num);
 	return num;
