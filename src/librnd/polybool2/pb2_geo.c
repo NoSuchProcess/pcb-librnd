@@ -86,7 +86,22 @@ RND_INLINE void seg_reverse(pb2_seg_t *s)
 {
 	pa_swap(rnd_coord_t, s->start[0], s->end[0]);
 	pa_swap(rnd_coord_t, s->start[1], s->end[1]);
-	TODO("arc: also need to swap angles");
+
+	switch(s->shape_type) {
+		case RND_VNODE_LINE:
+			break;
+		case RND_VNODE_ARC:
+			{
+				double ea = s->shape.arc.start + s->shape.arc.delta;
+				if (ea < 0) ea += 2 * G2D_PI;
+				else if (ea > 2 * G2D_PI) ea -= 2 * G2D_PI;
+				s->shape.arc.start = ea;
+				s->shape.arc.delta = -s->shape.arc.delta;
+				s->shape.arc.adir = !s->shape.arc.adir;
+rnd_trace("ARC REV!--------------------------------------\n");
+			}
+			break;
+	}
 }
 
 RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
