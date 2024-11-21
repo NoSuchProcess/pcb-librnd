@@ -233,14 +233,11 @@ RND_INLINE int pb2_arc_angle_clamp(double *ang, pb2_seg_t *arc)
 {
 	double da = arc->shape.arc.delta, sa = arc->shape.arc.start, ea = sa + da;
 
-	if (da > 0) {
-		if (*ang < sa) *ang += 2*G2D_PI;
-		else if (*ang > ea) *ang -= 2*G2D_PI;
-	}
-	else {
-		if (*ang > sa) *ang -= 2*G2D_PI;
-		else if (*ang < ea) *ang += 2*G2D_PI;
-	}
+	if (da < 0)
+		pa_swap(double, sa, ea);
+
+	if (*ang < sa) *ang += 2*G2D_PI;
+	else if (*ang > ea) *ang -= 2*G2D_PI;
 
 	if ((*ang < sa) || (*ang > ea))
 		return -1;
