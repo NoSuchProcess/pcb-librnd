@@ -294,8 +294,6 @@ static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
 	   it may be an arc */
 	svg_print_poly_contour_node(F, v);
 
-
-	TODO("arc: make sure last segment is drawn too, z would complete poly with a line but it may be an arc, see tester");
 	fprintf(F, "z");
 }
 
