@@ -29,6 +29,7 @@
 
 RND_INLINE int pb2_seg_nonzero(pb2_seg_t *seg)
 {
+	TODO("arc: this assumes lines");
 	if (seg->start[1] == seg->end[1])
 		return 0;
 	if (seg->start[1] > seg->end[1])

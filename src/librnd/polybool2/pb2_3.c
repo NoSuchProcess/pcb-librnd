@@ -178,6 +178,8 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 			break;
 	}
 
+	TODO("arc: the code below assumes lines");
+
 	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
 	   non-discarded seg counts as 1 as we have already remvoed stubs*/
 
