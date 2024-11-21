@@ -284,12 +284,13 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 	/* compute split angles */
 	a1 = atan2(ip0[1] - isc->seg->shape.arc.center[1], ip0[0] - isc->seg->shape.arc.center[0]);
 	r = pb2_arc_angle_clamp(&a1, isc->seg);
+	assert(r == 0);
 	if (num_isc > 1) {
 		a2 = atan2(ip1[1] - isc->seg->shape.arc.center[1], ip1[0] - isc->seg->shape.arc.center[0]);
 		r |= pb2_arc_angle_clamp(&a2, isc->seg);
+		assert(r == 0);
 	}
 
-	assert(r == 0);
 
 	/* order splits from start angle to end angle */
 	if ((num_isc > 1) && (pb2_arc_angle_dist(a1, isc->seg) > pb2_arc_angle_dist(a2, isc->seg))) {
