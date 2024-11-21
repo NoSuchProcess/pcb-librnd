@@ -66,6 +66,7 @@ RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 				return 0;
 			if (fabs(sa->shape.arc.cy - sb->shape.arc.cy) > 0.5)
 				return 0;
+			TODO("arc: also need to check mid angle/point or diretion because of the () case");
 			break;
 	}
 
