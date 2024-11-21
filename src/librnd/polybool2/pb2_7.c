@@ -27,7 +27,7 @@
  *
  */
 
-#define PB2_7_OUT_SHAPE(nd, seg) \
+#define PB2_7_OUT_SHAPE(nd, seg, positive) \
 do { \
 	switch(seg->shape_type) { \
 		case RND_VNODE_LINE: break; \
@@ -35,7 +35,7 @@ do { \
 			nd->flg.curve_type = seg->shape_type; \
 			nd->curve.arc.center[0] = seg->shape.arc.center[0]; \
 			nd->curve.arc.center[1] = seg->shape.arc.center[1]; \
-			nd->curve.arc.adir = seg->shape.arc.adir; \
+			nd->curve.arc.adir = positive ? seg->shape.arc.adir : !seg->shape.arc.adir; \
 			break; \
 	} \
 } while(0)
@@ -56,13 +56,13 @@ RND_INLINE rnd_pline_t *pb2_7_mkpline(pb2_ctx_t *ctx, pb2_face_t *f, int positiv
 	count = 1;
 
 	nd = pl->head;
-	PB2_7_OUT_SHAPE(nd, seg);
+	PB2_7_OUT_SHAPE(nd, seg, positive);
 
 
 	while((seg = pb2_face_it_next(&it, NULL, pt)) != NULL) {
 		if (rnd_poly_vertex_include(pl->head->prev, (nd = rnd_poly_node_create(pt))) == 0) {
 			count++;
-			PB2_7_OUT_SHAPE(nd, seg);
+			PB2_7_OUT_SHAPE(nd, seg, positive);
 		}
 	}
 
