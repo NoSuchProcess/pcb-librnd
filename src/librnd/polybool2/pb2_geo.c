@@ -51,6 +51,8 @@ RND_INLINE int seg_seg_end_match(pb2_seg_t *sa, pb2_seg_t *sb)
 /* returns 1 if sa and sb are in full overlap */
 RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 {
+	double mid1, mid2;
+
 	if (sa->shape_type != sb->shape_type)
 		return 0;
 
@@ -66,7 +68,13 @@ RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 				return 0;
 			if (fabs(sa->shape.arc.cy - sb->shape.arc.cy) > 0.5)
 				return 0;
-			TODO("arc: also need to check mid angle/point or diretion because of the () case");
+
+			/* also need to check that mid angles are the same because of the () case */
+			mid1 = sa->shape.arc.start + sa->shape.arc.delta/2.0;
+			mid2 = sb->shape.arc.start + sb->shape.arc.delta/2.0;
+			if (fabs(mid1 - mid2) > 0.001)
+				return 0;
+
 			break;
 	}
 
