@@ -309,6 +309,8 @@ RND_INLINE int pb2_arc_points_ordered(const pb2_seg_t *arc, const rnd_vector_t p
 }
 
 /*** common ***/
+
+/* Returns 1 if p1 is closer to startpoint of seg than p2 */
 RND_INLINE int pb2_seg_points_ordered(const pb2_seg_t *seg, const rnd_vector_t p1, const rnd_vector_t p2)
 {
 	switch(seg->shape_type) {
