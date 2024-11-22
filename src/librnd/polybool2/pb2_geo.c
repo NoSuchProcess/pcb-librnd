@@ -143,7 +143,7 @@ RND_INLINE int PB2_SLOPE_LT(pb2_slope_t a, pb2_slope_t b)
 /*** line ***/
 
 /* Returns 1 if p1 is closer to startpoint of line than p2 */
-RND_INLINE int pb2_line_points_ordered(const pb2_seg_t *line, const rnd_vector_t p1, const rnd_vector_t p2)
+RND_INLINE int pb2_line_points_ordered(pb2_seg_t *line, rnd_vector_t p1, rnd_vector_t p2)
 {
 	return (rnd_vect_dist2(line->start, p1) < rnd_vect_dist2(line->start, p2));
 }
@@ -283,7 +283,7 @@ RND_INLINE void pb2_arc_shift_end_dbl(pb2_seg_t *arc, int end_idx, double offs, 
 }
 
 /* Returns 1 if p1 is closer to startpoint of arc than p2 */
-RND_INLINE int pb2_arc_points_ordered(const pb2_seg_t *arc, const rnd_vector_t p1, const rnd_vector_t p2)
+RND_INLINE int pb2_arc_points_ordered(pb2_seg_t *arc, rnd_vector_t p1, rnd_vector_t p2)
 {
 	pa_angle_t as, a1, a2;
 
@@ -421,7 +421,7 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 /*** common ***/
 
 /* Returns 1 if p1 is closer to startpoint of seg than p2 */
-RND_INLINE int pb2_seg_points_ordered(const pb2_seg_t *seg, const rnd_vector_t p1, const rnd_vector_t p2)
+RND_INLINE int pb2_seg_points_ordered(pb2_seg_t *seg, rnd_vector_t p1, rnd_vector_t p2)
 {
 	switch(seg->shape_type) {
 		case RND_VNODE_LINE: return pb2_line_points_ordered(seg, p1, p2);
