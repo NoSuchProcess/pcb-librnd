@@ -269,7 +269,7 @@ RND_INLINE void pb2_arc_get_midpoint_dbl(pb2_seg_t *arc, double *mx, double *my)
    mid of the arc */
 RND_INLINE void pb2_arc_shift_end_dbl(pb2_seg_t *arc, int end_idx, double offs, double *xout, double *yout)
 {
-	double da, ang, mid_ang = arc->shape.arc.start + arc->shape.arc.delta/2.0;
+	double da, ang;
 	switch(end_idx) {
 		case 1: ang = arc->shape.arc.start; da = 1; break;
 		case 2: ang = arc->shape.arc.start + arc->shape.arc.delta; da = -1; break;
@@ -344,7 +344,7 @@ RND_INLINE void pb2_arc_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t
 
 RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 {
-	double sa, ea, r1, r2, ravg, cx, cy;
+	double sa, ea, r1, r2, ravg;
 
 	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
 	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
@@ -376,7 +376,7 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 	   errors on intersections that created the new integer endpoints;
 	   calculate a new accurate center */
 	if (fabs(r1-r2) > 0.001) {
-		double dx, dy, dl, hdl, nx, ny, mx, my, cx, cy, h;
+		double dx, dy, dl, hdl, nx, ny, mx, my, h;
 
 		ravg = (r1+r2)/2.0;
 
