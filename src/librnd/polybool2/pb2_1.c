@@ -665,7 +665,7 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 			}
 
 			/* if there are two intersections, order them from start to end */
-			TODO("arc: this should be done by offset, not distance");
+			TODO("arc: this should be done by offset, not distance; use pb2_arc_angle_dist()");
 			if (s1_ins2 != NULL)
 				if (rnd_vect_dist2(s1->start, *s1_ins2) < rnd_vect_dist2(s1->start, *s1_ins1))
 					pa_swap(rnd_vector_t *, s1_ins1, s1_ins2);
