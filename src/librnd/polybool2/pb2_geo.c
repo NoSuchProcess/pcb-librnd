@@ -98,7 +98,6 @@ RND_INLINE void seg_reverse(pb2_seg_t *s)
 				s->shape.arc.start = ea;
 				s->shape.arc.delta = -s->shape.arc.delta;
 				s->shape.arc.adir = !s->shape.arc.adir;
-rnd_trace("ARC REV!--------------------------------------\n");
 			}
 			break;
 	}
