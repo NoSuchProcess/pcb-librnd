@@ -277,35 +277,21 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, int num_isc, rnd_vector_t ip0, rnd_vector_t ip1, rnd_vector_t orig_end)
 {
 	pb2_seg_t *news;
-	double a1, a2 = 100; /* split angles */
 	rnd_coord_t *i1, *i2; /* these are [2] and will point to rnd_vector_t ip0 and ip1 */
 	int r;
 
-	/* compute split angles */
-	a1 = atan2(ip0[1] - isc->seg->shape.arc.cy, ip0[0] - isc->seg->shape.arc.cx);
-TODO("arc: it's enough to check angle ordering, no need to compute actual angles; use pb2_arc_points_ordered()");
-	r = pb2_arc_angle_clamp(&a1, isc->seg);
-	assert(r == 0);
-	if (num_isc > 1) {
-		a2 = atan2(ip1[1] - isc->seg->shape.arc.cy, ip1[0] - isc->seg->shape.arc.cx);
-		r = pb2_arc_angle_clamp(&a2, isc->seg);
-		assert(r == 0);
-	}
-
+	/* default order */
+	i1 = ip0;
+	i2 = ip1;
 
 	/* order splits from start angle to end angle */
-	if ((num_isc > 1) && (pb2_arc_angle_dist(a1, isc->seg) > pb2_arc_angle_dist(a2, isc->seg))) {
+	if ((num_isc > 1) && !pb2_seg_points_ordered(isc->seg, ip0, ip1)) {
 		i1 = ip1;
 		i2 = ip0;
-		pa_swap(double, a1, a2);
-	}
-	else {
-		i1 = ip0;
-		i2 = ip1;
 	}
 
 	pa_trace("arc split: S", Plong(PB2_UID_GET(isc->seg)), " ", Pint(num_isc), " ",
-		Pvect(i1), " ", Pdouble(a1), "    ", Pvect(i2), " ", Pdouble(a2), "\n", 0);
+		Pvect(i1), " ", "    ", Pvect(i2), " ", "\n", 0);
 
 	if (num_isc == 2) {
 		/* reuse the original segment for the first part */
