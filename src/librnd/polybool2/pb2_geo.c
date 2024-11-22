@@ -450,7 +450,7 @@ RND_INLINE void pb2_seg_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 	}
 }
 
-RND_INLINE void pb2_1_seg_bbox(pb2_seg_t *seg)
+RND_INLINE void pb2_seg_bbox(pb2_seg_t *seg)
 {
 	switch(seg->shape_type) {
 		case RND_VNODE_LINE:

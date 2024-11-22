@@ -231,7 +231,7 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 
 		/* reuse the original segment for the first part */
 		Vcpy2(isc->seg->end, i1);
-		pb2_1_seg_bbox(isc->seg);
+		pb2_seg_bbox(isc->seg);
 		if (!pb2_1_ends_match(isc, isc->seg->start, i1)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
@@ -252,7 +252,7 @@ RND_INLINE void pb2_1_split_line_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, i
 	else if (num_isc == 1) {
 		/* reuse the original segment for the first part */
 		Vcpy2(isc->seg->end, ip0);
-		pb2_1_seg_bbox(isc->seg);
+		pb2_seg_bbox(isc->seg);
 		if (!pb2_1_ends_match(isc, isc->seg->start, ip0)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
@@ -297,7 +297,7 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 		/* reuse the original segment for the first part */
 		Vcpy2(isc->seg->end, i1);
 		pb2_seg_arc_update_cache(ctx, isc->seg);
-		pb2_1_seg_bbox(isc->seg);
+		pb2_seg_bbox(isc->seg);
 		if (!pb2_1_ends_match(isc, isc->seg->start, i1)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
@@ -319,7 +319,7 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 		/* reuse the original segment for the first part */
 		Vcpy2(isc->seg->end, ip0);
 		pb2_seg_arc_update_cache(ctx, isc->seg);
-		pb2_1_seg_bbox(isc->seg);
+		pb2_seg_bbox(isc->seg);
 		if (!pb2_1_ends_match(isc, isc->seg->start, ip0)) {
 			rnd_rtree_insert(&ctx->seg_tree, isc->seg, &isc->seg->bbox);
 			isc->seg->risky = 1;
@@ -532,7 +532,7 @@ RND_INLINE int pb2_new_split(pb2_ctx_t *ctx, pb2_seg_t *seg, rnd_vector_t ip0)
 	/* reuse the original segment for the first part */
 	rnd_rtree_delete(&ctx->seg_tree, seg, &seg->bbox);
 	Vcpy2(seg->end, ip0);
-	pb2_1_seg_bbox(seg);
+	pb2_seg_bbox(seg);
 	rnd_rtree_insert(&ctx->seg_tree, seg, &seg->bbox);
 	seg->risky = 1;
 
