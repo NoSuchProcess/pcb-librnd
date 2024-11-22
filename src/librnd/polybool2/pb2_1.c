@@ -283,6 +283,7 @@ RND_INLINE void pb2_1_split_arc_at_iscs(pb2_ctx_t *ctx, const pb2_isc_t *isc, in
 
 	/* compute split angles */
 	a1 = atan2(ip0[1] - isc->seg->shape.arc.cy, ip0[0] - isc->seg->shape.arc.cx);
+TODO("arc: it's enough to check angle ordering, no need to compute actual angles; use pb2_arc_points_ordered()");
 	r = pb2_arc_angle_clamp(&a1, isc->seg);
 	assert(r == 0);
 	if (num_isc > 1) {
@@ -669,14 +670,11 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 			}
 
 			/* if there are two intersections, order them from start to end */
-			TODO("arc: this should be done by offset, not distance; use pb2_arc_angle_dist()");
-			if (s1_ins2 != NULL)
-				if (rnd_vect_dist2(s1->start, *s1_ins2) < rnd_vect_dist2(s1->start, *s1_ins1))
-					pa_swap(rnd_vector_t *, s1_ins1, s1_ins2);
+			if ((s1_ins2 != NULL) && !pb2_seg_points_ordered(s1, *s1_ins1, *s1_ins2))
+				pa_swap(rnd_vector_t *, s1_ins1, s1_ins2);
 
-			if (s2_ins2 != NULL)
-				if (rnd_vect_dist2(s2->start, *s2_ins2) < rnd_vect_dist2(s2->start, *s2_ins1))
-					pa_swap(rnd_vector_t *, s2_ins1, s2_ins2);
+			if ((s2_ins2 != NULL) && !pb2_seg_points_ordered(s2, *s2_ins1, *s2_ins2))
+				pa_swap(rnd_vector_t *, s2_ins1, s2_ins2);
 
 			/* insert points in the right order: first the one that's farhter from
 			   start (*ins2) so that the closer one (ins1) still falls on the

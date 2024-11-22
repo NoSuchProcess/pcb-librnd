@@ -106,6 +106,7 @@ RND_INLINE void seg_reverse(pb2_seg_t *s)
 RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
 {
 	TODO("bignum: this is not correct: for 64 bits we need higher precision angles than doubles");
+	TODO("arc: does it work for arcs?");
 	if (Vequ2(seg->start, from))
 		pa_calc_angle_nn(dst, from, seg->end);
 	else
@@ -140,6 +141,13 @@ RND_INLINE int PB2_SLOPE_LT(pb2_slope_t a, pb2_slope_t b)
 	return a.s < b.s;
 }
 
+/*** line ***/
+
+/* Returns 1 if p1 is closer to startpoint of line than p2 */
+RND_INLINE int pb2_line_points_ordered(const pb2_seg_t *line, const rnd_vector_t p1, const rnd_vector_t p2)
+{
+	return (rnd_vect_dist2(line->start, p1) < rnd_vect_dist2(line->start, p2));
+}
 
 /*** arc ***/
 #define SEG2CLINE(cline, seg) \
@@ -274,3 +282,40 @@ RND_INLINE void pb2_arc_shift_end_dbl(pb2_seg_t *arc, int end_idx, double offs, 
 	*xout = arc->shape.arc.cx + cos(ang) * arc->shape.arc.r;
 	*yout = arc->shape.arc.cy + sin(ang) * arc->shape.arc.r;
 }
+
+/* Returns 1 if p1 is closer to startpoint of arc than p2 */
+RND_INLINE int pb2_arc_points_ordered(const pb2_seg_t *arc, const rnd_vector_t p1, const rnd_vector_t p2)
+{
+	pa_angle_t as, a1, a2;
+
+	pa_calc_angle_nn(&as, arc->shape.arc.center, arc->start);
+	pa_calc_angle_nn(&a1, arc->shape.arc.center, p1);
+	pa_calc_angle_nn(&a2, arc->shape.arc.center, p2);
+
+	if (arc->shape.arc.delta >= 0) {
+		if (a1 < as)
+			a1 += 4;
+		if (a2 < as)
+			a2 += 4;
+	}
+	else {
+		if (a1 > as)
+			a1 -= 4;
+		if (a2 > as)
+			a2 -= 4;
+	}
+
+	return (a1 - as) < (a2 - as);
+}
+
+/*** common ***/
+RND_INLINE int pb2_seg_points_ordered(const pb2_seg_t *seg, const rnd_vector_t p1, const rnd_vector_t p2)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE: return pb2_line_points_ordered(seg, p1, p2);
+		case RND_VNODE_ARC: return pb2_arc_points_ordered(seg, p1, p2);
+	}
+	abort(); /* internal error: invalid seg shape_type */
+	return -1;
+}
+
