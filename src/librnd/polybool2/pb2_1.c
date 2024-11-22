@@ -535,6 +535,10 @@ RND_INLINE int pb2_new_split(pb2_ctx_t *ctx, pb2_seg_t *seg, rnd_vector_t ip0)
 	pb2_seg_t *news;
 	rnd_vector_t orig_end;
 
+	/* no split if ip0 is at the end */
+	if (Vequ2(seg->start, ip0) || Vequ2(seg->end, ip0))
+		return;
+
 	orig_end[0] = seg->end[0];
 	orig_end[1] = seg->end[1];
 
