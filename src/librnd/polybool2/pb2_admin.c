@@ -144,7 +144,7 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		seg->shape.arc.cy = my + ny*h;
 
 #if 0
-		pa_trace(" Uarc #", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
+		pa_trace(" Uarc S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
 		pa_trace(" r ", Pdouble(r1), " ", Pdouble(r2), " ", Pdouble(ravg), 0);
 		pa_trace(" mid: ", Pdouble(mx), " ", Pdouble(my), " n: ", Pdouble(nx), " ", Pdouble(ny), " h: ", Pdouble(h), 0);
 		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
@@ -157,7 +157,7 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		seg->shape.arc.cy = seg->shape.arc.center[1];
 
 #if 0
-		pa_trace(" uarc #", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
+		pa_trace(" uarc S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
 		pa_trace(" r ", Pdouble(r1), 0);
 		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
 #endif
