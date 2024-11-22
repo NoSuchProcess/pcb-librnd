@@ -139,6 +139,10 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		ny = dx;
 		h = sqrt(ravg*ravg - hdl*hdl); /* distance from midpoint to center */
 
+		/* ccw: mirror normal by mirroring h distance */
+		if (seg->shape.arc.adir == 0)
+			h = -h;
+
 		seg->shape.arc.r = ravg;
 		seg->shape.arc.cx = mx + nx*h;
 		seg->shape.arc.cy = my + ny*h;
