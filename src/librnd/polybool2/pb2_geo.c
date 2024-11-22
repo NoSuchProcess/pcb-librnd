@@ -342,6 +342,82 @@ RND_INLINE void pb2_arc_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t
 	pa_calc_angle_nn(dst, from, tang);
 }
 
+RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
+{
+	double sa, ea, r1, r2, ravg, cx, cy;
+
+	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
+	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
+	seg->shape.arc.start = sa;
+	if (seg->shape.arc.adir) {
+		/* Positive delta; CW in svg; CCW in gengeo and C */
+		if (ea < sa)
+			ea += 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+	else {
+		/* Negative delta; CCW in svg; CW in gengeo and C */
+		if (ea > sa)
+			ea -= 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+
+	r1 = rnd_vect_dist2(seg->start, seg->shape.arc.center);
+	if (r1 != 0)
+		r1 = sqrt(r1);
+
+	if (!Vequ2(seg->start, seg->end)) {
+		r2 = rnd_vect_dist2(seg->end, seg->shape.arc.center);
+		if (r2 != 0)
+			r2 = sqrt(r2);
+	}
+
+	/* endpoints may not be on the arc with the original center due to rounding
+	   errors on intersections that created the new integer endpoints;
+	   calculate a new accurate center */
+	if (fabs(r1-r2) > 0.001) {
+		double dx, dy, dl, hdl, nx, ny, mx, my, cx, cy, h;
+
+		ravg = (r1+r2)/2.0;
+
+		dx = seg->end[0] - seg->start[0]; dy = seg->end[1] - seg->start[1];
+		dl = sqrt(dx*dx + dy*dy); hdl = dl/2.0;
+		dx /= dl; dy /= dl;
+		mx = (double)(seg->end[0] + seg->start[0])/2.0; my = (double)(seg->end[1] + seg->start[1])/2.0;
+
+		nx = -dy;
+		ny = dx;
+		h = sqrt(ravg*ravg - hdl*hdl); /* distance from midpoint to center */
+
+		/* ccw: mirror normal by mirroring h distance */
+		if (seg->shape.arc.adir == 0)
+			h = -h;
+
+		seg->shape.arc.r = ravg;
+		seg->shape.arc.cx = mx + nx*h;
+		seg->shape.arc.cy = my + ny*h;
+
+#if 0
+		pa_trace(" Uarc S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
+		pa_trace(" r ", Pdouble(r1), " ", Pdouble(r2), " ", Pdouble(ravg), 0);
+		pa_trace(" mid: ", Pdouble(mx), " ", Pdouble(my), " n: ", Pdouble(nx), " ", Pdouble(ny), " h: ", Pdouble(h), 0);
+		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
+#endif
+	}
+	else {
+		/* original integer center is accurate enough */
+		seg->shape.arc.r = r1;
+		seg->shape.arc.cx = seg->shape.arc.center[0];
+		seg->shape.arc.cy = seg->shape.arc.center[1];
+
+#if 0
+		pa_trace(" uarc S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
+		pa_trace(" r ", Pdouble(r1), 0);
+		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
+#endif
+	}
+}
+
 /*** common ***/
 
 /* Returns 1 if p1 is closer to startpoint of seg than p2 */
@@ -363,4 +439,13 @@ RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t fro
 		case RND_VNODE_ARC: pb2_arc_angle_from(dst, seg, from); return;
 	}
 	abort(); /* internal error: invalid seg shape_type */
+}
+
+/* recompute cache fields for a seg using input/config fields of the seg */
+RND_INLINE void pb2_seg_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE: break;
+		case RND_VNODE_ARC: pb2_seg_arc_update_cache(ctx, seg); break;
+	}
 }
