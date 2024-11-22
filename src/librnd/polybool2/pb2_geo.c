@@ -103,10 +103,9 @@ RND_INLINE void seg_reverse(pb2_seg_t *s)
 	}
 }
 
-RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+RND_INLINE void pb2_line_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
 {
 	TODO("bignum: this is not correct: for 64 bits we need higher precision angles than doubles");
-	TODO("arc: does it work for arcs?");
 	if (Vequ2(seg->start, from))
 		pa_calc_angle_nn(dst, from, seg->end);
 	else
@@ -308,6 +307,41 @@ RND_INLINE int pb2_arc_points_ordered(const pb2_seg_t *arc, const rnd_vector_t p
 	return (a1 - as) < (a2 - as);
 }
 
+/* Return tangential "angle" at endpoint "from" */
+RND_INLINE void pb2_arc_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+{
+	rnd_vector_t spoke, norm, tang;
+	int inv;
+
+	/* radial direction */
+	spoke[0] = from[0] - seg->shape.arc.center[0];
+	spoke[1] = from[1] - seg->shape.arc.center[1];
+
+	/* normal vector of radial direction */
+	norm[0] = -spoke[1];
+	norm[1] = spoke[0];
+
+	/* inverse direction on CCW */
+	inv = (seg->shape.arc.adir == 0);
+
+	/* inverse direction when computing for endpoint */
+	if (Vequ2(from, seg->end))
+		inv = !inv;
+
+	/* a tangent vector at "from" */
+	if (inv) {
+		tang[0] = from[0] - norm[0];
+		tang[1] = from[1] - norm[1];
+	}
+	else {
+		tang[0] = from[0] + norm[0];
+		tang[1] = from[1] + norm[1];
+	}
+
+
+	pa_calc_angle_nn(dst, from, tang);
+}
+
 /*** common ***/
 
 /* Returns 1 if p1 is closer to startpoint of seg than p2 */
@@ -321,3 +355,12 @@ RND_INLINE int pb2_seg_points_ordered(const pb2_seg_t *seg, const rnd_vector_t p
 	return -1;
 }
 
+/* Fill in dst with the slope "angle" of the segment at its endpoint "from" */
+RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE: pb2_line_angle_from(dst, seg, from); return;
+		case RND_VNODE_ARC: pb2_arc_angle_from(dst, seg, from); return;
+	}
+	abort(); /* internal error: invalid seg shape_type */
+}
