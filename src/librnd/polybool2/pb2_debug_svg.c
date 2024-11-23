@@ -45,6 +45,20 @@ do { \
 
 #define ANNOT(x)  ((double)x * ctx->annot_scale)
 
+static void pb2_annot_seg_midpt(pb2_seg_t *seg, double *labx, double *laby)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE:
+			*labx = (double)(seg->start[0] + seg->end[0])/2.0;
+			*laby = (double)(seg->start[1] + seg->end[1])/2.0;
+			break;
+
+		case RND_VNODE_ARC:
+			pb2_arc_get_midpoint_dbl(seg, labx, laby);
+			break;
+	}
+}
+
 static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 {
 	rnd_rtree_it_t it;
@@ -60,12 +74,8 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 
 		switch(seg->shape_type) {
 			case RND_VNODE_LINE:
-				{
-					fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"grey\" %s/>\n",
-						(long)seg->start[0], (long)seg->start[1], (long)seg->end[0], (long)seg->end[1], ANNOT(0.02), dash);
-					labx = (double)(seg->start[0] + seg->end[0])/2.0;
-					laby = (double)(seg->start[1] + seg->end[1])/2.0;
-				}
+				fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"grey\" %s/>\n",
+					(long)seg->start[0], (long)seg->start[1], (long)seg->end[0], (long)seg->end[1], ANNOT(0.02), dash);
 				break;
 
 			case RND_VNODE_ARC:
@@ -76,11 +86,11 @@ static void pb2_draw_segs(pb2_ctx_t *ctx, FILE *F)
 					seg->shape.arc.r, seg->shape.arc.r, large, sweep,
 					(long)seg->end[0], (long)seg->end[1],
 					ANNOT(0.02), dash);
-				pb2_arc_get_midpoint_dbl(seg, &labx, &laby);
 				break;
 			default: abort();
 		}
 
+		pb2_annot_seg_midpt(seg, &labx, &laby);
 		fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"grey\" font-size=\"0.5px\">S%ld:%d:%d</text>\n", labx, laby, PB2_UID_GET(seg), seg->cntA, seg->cntB);
 	}
 }
@@ -136,6 +146,7 @@ RND_INLINE void draw_curve_arc(pb2_ctx_t *ctx, pb2_seg_t *seg, FILE *F, pb2_seg_
 RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
 {
 	pb2_seg_t *seg, *fs, *ls;
+	double labx, laby;
 	const char *dash = (curve->pruned ? "stroke-dasharray=\"0.35\"" : "");
 
 
@@ -149,13 +160,17 @@ RND_INLINE void draw_curve(pb2_ctx_t *ctx, pb2_curve_t *curve, FILE *F)
 		}
 	}
 
+	pb2_annot_seg_midpt(fs, &labx, &laby);
+	laby -= 0.4;
 	fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"purple\" font-size=\"0.5px\">C%ld</text>\n",
-		(double)(fs->start[0] + fs->end[0])/2.0, ((double)(fs->start[1] + fs->end[1])/2.0)-0.4, curve->uid);
+		labx, laby, curve->uid);
 
-	if (fs != ls)
+	if (fs != ls) {
+		pb2_annot_seg_midpt(ls, &labx, &laby);
+		laby -= 0.4;
 		fprintf(F, " <text x=\"%.2f\" y=\"%.2f\" stroke=\"none\" fill=\"purple\" font-size=\"0.5px\">C%ld</text>\n",
-			(double)(ls->start[0] + ls->end[0])/2.0, ((double)(ls->start[1] + ls->end[1])/2.0)-0.4, curve->uid);
-
+			labx, laby, curve->uid);
+	}
 }
 
 static void pb2_draw_curves(pb2_ctx_t *ctx, FILE *F)
