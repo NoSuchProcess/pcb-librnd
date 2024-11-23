@@ -251,9 +251,6 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 
 	if (pb2_face_polarity_at_verbose) pa_trace("Polarity test from ", Pvect(pt), " dir ", Pvect(direction), " in poly ", Pchar(poly), "\n", 0);
 
-	assert(direction[0] <= 0);
-	assert(direction[1] != 0);
-
 	pctx.cnt = 0;
 	pctx.cnt_non0 = 0;
 	pctx.poly = poly;
@@ -316,72 +313,94 @@ int pb2_face_polarity_at(pb2_ctx_t *ctx, rnd_vector_t pt, rnd_vector_t direction
 RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 {
 	pb2_face_it_t it;
-	rnd_vector_t first, last, best, curr, dir_end, best_left, best_right;
-	int save_right, best_has_left, best_has_right;
+	rnd_vector_t best, curr, dir_end, best_left, best_right, tmpr, tmpl;
+	pb2_seg_t *seg, *last_seg, *seg1, *seg2 = NULL;
+	int need_norm;
 
-	pb2_face_it_first(&it, f, NULL, first, 0);
-	last[0] = first[0];
-	last[1] = first[1];
-
-	/* first point is the best (so far) */
-	best[0] = first[0];
-	best[1] = first[1];
-	save_right = 1;
-	best_has_left = 0;
-	best_has_right = 0;
-
-	while(pb2_face_it_next(&it, NULL, curr) != NULL) {
-		if (save_right) {
-			best_right[0] = curr[0];
-			best_right[1] = curr[1];
-			best_has_right = 1;
-			save_right = 0;
-		}
+	seg1 = last_seg = pb2_face_it_first(&it, f, NULL, best, 0);
+	while((seg = pb2_face_it_next(&it, NULL, curr)) != NULL) {
 		if (curr[0] >= best[0]) {
 			best[0] = curr[0];
 			best[1] = curr[1];
-			best_left[0] = last[0];
-			best_left[1] = last[1];
-			best_has_left = 1;
-			best_has_right = 0;
-			save_right = 1;
+			seg1 = last_seg;
+			seg2 = seg;
 		}
-		last[0] = curr[0];
-		last[1] = curr[1];
+		last_seg = seg;
 	}
 
-	if (!best_has_left) {
-		/* best was the first point - left side would be the last point seen */
-		best_left[0] = last[0];
-		best_left[1] = last[1];
-	}
-
-	if (!best_has_right) {
-		/* best was the last point - right side is the first point */
-		best_right[0] = first[0];
-		best_right[1] = first[1];
-	}
+	/* if first point was the best we do not have a previous segment (seg2);
+	   last_seg happens to be that once we arrived back to the starting point */
+	if (seg2 == NULL)
+		seg2 = last_seg;
 
 	if (pb2_face_polarity_at_verbose) pa_trace("pb2_3_face_find_polarity_pt: F", Plong(PB2_UID_GET(f)), " ", Pvect(best_left), " -> ", Pvect(best), " -> ", Pvect(best_right), "\n", 0);
 
 	f->polarity_pt[0] = best[0];
 	f->polarity_pt[1] = best[1];
 
-	/* This would be dir_end/2 - best to have an average for the mid point
-	   but that would fail if left and right were too close, e.g. corners
-	   of an 1*1 sqaure, so rather just multiply everything by 2 - the scale
-	   of the direction vector doesn't matter */
-	TODO("bignum: this will require wider integers");
-	dir_end[0] = (best_left[0] + best_right[0]);
-	dir_end[1] = (best_left[1] + best_right[1]);
-	f->polarity_dir[0] = (dir_end[0] - best[0]*2);
-	f->polarity_dir[1] = (dir_end[1] - best[1]*2);
+	/* if any of the segments is not a straight line we are going to need to normalize the vectors */
+	need_norm = (seg1->shape_type != RND_VNODE_LINE) || (seg2->shape_type != RND_VNODE_LINE);
 
-	/* Corner case: all three points (best_left, best, best_right) are on the
-	   same vertical line; make sure the direction vector is pointing left.
-	   Test case: fixedy3, upper left part */
-	if ((best[0] == best_left[0]) && (best[0] == best_right[0]))
-		f->polarity_dir[0] = -1;
+	/* compute far end of tangent vectors from best along seg1 and seg2 */
+	pb2_seg_tangent_from(tmpl, seg2, best);
+	pb2_seg_tangent_from(tmpr, seg1, best);
+
+
+	if (!need_norm) {
+		/* optimization: line-line corner, cheaper method with no normalization */
+		best_left[0] = best[0] + tmpl[0];
+		best_left[1] = best[1] + tmpl[1];
+
+		best_right[0] = best[0] + tmpr[0];
+		best_right[1] = best[1] + tmpr[1];
+
+		/* This would be dir_end/2 - best to have an average for the mid point
+		   but that would fail if left and right were too close, e.g. corners
+		   of an 1*1 sqaure, so rather just multiply everything by 2 - the scale
+		   of the direction vector doesn't matter */
+		TODO("bignum: this will require wider integers");
+		dir_end[0] = (best_left[0] + best_right[0]);
+		dir_end[1] = (best_left[1] + best_right[1]);
+		f->polarity_dir[0] = (dir_end[0] - best[0]*2);
+		f->polarity_dir[1] = (dir_end[1] - best[1]*2);
+
+		/* Corner case: all three points (best_left, best, best_right) are on the
+		   same vertical line; make sure the direction vector is pointing left.
+		   Test case: fixedy3, upper left part */
+		if ((best[0] == best_left[0]) && (best[0] == best_right[0]))
+			f->polarity_dir[0] = -1;
+	}
+	else {
+		/* expensive method: normalize the two tangent vectors */
+		double ldx, ldy, llen, rdx, rdy, rlen, olen;
+
+		ldx = tmpl[0]; ldy = tmpl[1];
+
+		llen = sqrt(ldx*ldx + ldy*ldy);
+		if (llen != 0) {
+			ldx /= llen;
+			ldy /= llen;
+		}
+
+		rdx = tmpr[0]; rdy = tmpr[1];
+		rlen = sqrt(rdx*rdx + rdy*rdy);
+		if (rlen != 0) {
+			rdx /= rlen;
+			rdy /= rlen;
+		}
+
+		/* vertical vectors; point left */
+		if ((rdx == 0) && (ldx == 0)) {
+			f->polarity_dir[0] = -1000000;
+			f->polarity_dir[1] = -1;
+		}
+		else {
+		/* This would be average, (ld+rd)/2, but that would fail for with small
+		   numbers (normalized vectors) so scale it up; length of the direction vector doesn't matter */
+			f->polarity_dir[0] = (ldx + rdx) * 100000;
+			f->polarity_dir[1] = (ldy + rdy) * 100000;
+		}
+	}
 
 	/* horizontal direction vector is invalid, the ray has to be shifted a tiny
 	   bit up or down */
@@ -391,6 +410,13 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 	}
 
 	if (pb2_face_polarity_at_verbose) pa_trace("  dir_end=", Pvect(dir_end), " dir=", Pvect(f->polarity_dir), "\n", 0);
+
+	if (!need_norm) {
+		/* with arcs it's possible to get a positive vector here */
+		assert(f->polarity_dir[0] <= 0);
+	}
+
+	assert(f->polarity_dir[1] != 0);
 }
 
 /* Map faces between curves */
