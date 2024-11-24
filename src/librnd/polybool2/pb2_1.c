@@ -511,6 +511,8 @@ void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t
 	ictx.seg.shape.arc.center[0] = center[0]; ictx.seg.shape.arc.center[1] = center[1];
 	ictx.seg.shape.arc.adir = adir;
 
+	TODO("arc: split up vcrossing arcs into non-vcrossing arcs");
+
 	pb2_seg_arc_update_cache(ctx, &ictx.seg);
 	pb2_arc_bbox(&ictx.seg);
 	pb2_1_map_any(ctx, &ictx, poly_id);

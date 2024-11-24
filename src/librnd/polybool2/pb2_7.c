@@ -60,6 +60,7 @@ RND_INLINE rnd_pline_t *pb2_7_mkpline(pb2_ctx_t *ctx, pb2_face_t *f, int positiv
 
 
 	while((seg = pb2_face_it_next(&it, NULL, pt)) != NULL) {
+TODO("arc: optimize: merge adjacent arcs that are on the same circle, but avoid single-arc full-circle");
 		if (rnd_poly_vertex_include(pl->head->prev, (nd = rnd_poly_node_create(pt))) == 0) {
 			count++;
 			PB2_7_OUT_SHAPE(nd, seg, positive);
