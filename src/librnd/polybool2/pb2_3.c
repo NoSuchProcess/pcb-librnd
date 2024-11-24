@@ -137,51 +137,11 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 	if (pb2_face_polarity_at_verbose) pa_trace("     cnt=", Plong(pctx->cnt), "\n", 0);
 }
 
-static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+/* check if the horizontal ray (from pctx) hits the line segment seg and call
+   pb2_3_seg_hit() if it does */
+RND_INLINE rnd_rtree_dir_t pb2_3_hray_line(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
 {
-	pb2_3_face_polarity_t *pctx = udata;
-	pb2_seg_t *seg = obj;
 	rnd_vector_t p1, p2;
-
-	if (seg->discarded) {
-/*		if (pb2_face_polarity_at_verbose) pa_trace(" seg ignore: ", Plong(PB2_UID_GET(seg)), "\n", 0);*/
-		return 0;
-	}
-
-	/* optimization (early exit) */
-	switch(pctx->rule) {
-		case PB2_RULE_NON0:
-			/* adds both when poly is ' '*/
-			if (pctx->poly == 'A') {
-				if (seg->non0A == 0)
-					return 0;
-			}
-			else if (pctx->poly == 'B') {
-				if (seg->non0B == 0)
-					return 0;
-			}
-			else {
-				if ((seg->non0A + seg->non0B) == 0)
-					return 0;
-			}
-			break;
-
-		case PB2_RULE_EVEN_ODD:
-		default:
-			/* even number of overlapping edges (of the target poly) crossed is no-op;
-			   this happens with overlapping edges, e.g. on stubs. An odd number
-			   of overlaps (most typically 1 edge) matters */
-			if ((pctx->poly == 'A') && ((seg->cntA % 2)  == 0))
-				return 0;
-			if ((pctx->poly == 'B') && ((seg->cntB % 2) == 0))
-				return 0;
-			break;
-	}
-
-	TODO("arc: the code below assumes lines");
-
-	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
-	   non-discarded seg counts as 1 as we have already remvoed stubs*/
 
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
@@ -240,6 +200,56 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n  cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
 
 	return 0;
+}
+
+static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
+{
+	pb2_3_face_polarity_t *pctx = udata;
+	pb2_seg_t *seg = obj;
+
+	if (seg->discarded) {
+/*		if (pb2_face_polarity_at_verbose) pa_trace(" seg ignore: ", Plong(PB2_UID_GET(seg)), "\n", 0);*/
+		return 0;
+	}
+
+	/* optimization (early exit) */
+	switch(pctx->rule) {
+		case PB2_RULE_NON0:
+			/* adds both when poly is ' '*/
+			if (pctx->poly == 'A') {
+				if (seg->non0A == 0)
+					return 0;
+			}
+			else if (pctx->poly == 'B') {
+				if (seg->non0B == 0)
+					return 0;
+			}
+			else {
+				if ((seg->non0A + seg->non0B) == 0)
+					return 0;
+			}
+			break;
+
+		case PB2_RULE_EVEN_ODD:
+		default:
+			/* even number of overlapping edges (of the target poly) crossed is no-op;
+			   this happens with overlapping edges, e.g. on stubs. An odd number
+			   of overlaps (most typically 1 edge) matters */
+			if ((pctx->poly == 'A') && ((seg->cntA % 2)  == 0))
+				return 0;
+			if ((pctx->poly == 'B') && ((seg->cntB % 2) == 0))
+				return 0;
+			break;
+	}
+
+	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
+	   non-discarded seg counts as 1 as we have already removed stubs*/
+
+	switch(seg->shape_type) {
+		case RND_VNODE_ARC: /* return pb2_3_hray_arc(pctx, seg); */
+		case RND_VNODE_LINE: return pb2_3_hray_line(pctx, seg);
+	}
+	return 0; /* invalid seg-:shape_type */
 }
 
 
