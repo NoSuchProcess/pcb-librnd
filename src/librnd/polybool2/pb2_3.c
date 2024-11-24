@@ -146,7 +146,7 @@ RND_INLINE rnd_rtree_dir_t pb2_3_hray_line(pb2_3_face_polarity_t *pctx, pb2_seg_
 	p1[0] = seg->start[0]; p1[1] = seg->start[1];
 	p2[0] = seg->end[0];   p2[1] = seg->end[1];
 
-	if (pb2_face_polarity_at_verbose) pa_trace(" seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " non0A=", Pint(seg->non0A), " non0B=", Pint(seg->non0B), " uid=S", Plong(PB2_UID_GET(seg)), "\n", 0);
+	if (pb2_face_polarity_at_verbose) pa_trace(" line seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " non0A=", Pint(seg->non0A), " non0B=", Pint(seg->non0B), " uid=S", Plong(PB2_UID_GET(seg)), "\n", 0);
 
 	/* ignore horizontal segs - it is enough to hiot its non-horizontal neighbors */
 	if (p1[1] == p2[1]) {
@@ -176,6 +176,7 @@ RND_INLINE rnd_rtree_dir_t pb2_3_hray_line(pb2_3_face_polarity_t *pctx, pb2_seg_
 	if ((p1[0] < pctx->pt[0]) && (p2[0] < pctx->pt[0]))
 		return 0; /* miss in x */
 
+	/* more expensive check for a potential mid point intersection */
 	{
 		rnd_vector_t v1, v2;
 		double cross;
@@ -212,10 +213,11 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 		return 0;
 	}
 
-	/* optimization (early exit) */
+	/* optimization: early exit for segments that are not interesting for
+	   the given rule or cancel themselves due to overlaps */
 	switch(pctx->rule) {
 		case PB2_RULE_NON0:
-			/* adds both when poly is ' '*/
+			/* adds both when poly is ' ' */
 			if (pctx->poly == 'A') {
 				if (seg->non0A == 0)
 					return 0;
@@ -243,7 +245,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	}
 
 	/* (pctx->poly == 'F') means: operate on faces, not input polygons; any
-	   non-discarded seg counts as 1 as we have already removed stubs*/
+	   non-discarded seg counts as 1 as we have already removed stubs */
 
 	switch(seg->shape_type) {
 		case RND_VNODE_ARC: /* return pb2_3_hray_arc(pctx, seg); */
