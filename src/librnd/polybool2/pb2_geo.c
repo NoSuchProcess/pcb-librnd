@@ -131,7 +131,17 @@ typedef struct {
 	double s;
 } pb2_slope_t;
 
-RND_INLINE pb2_slope_t pb2_slope(const rnd_vector_t origin, const rnd_vector_t other)
+RND_INLINE int PB2_SLOPE_LT(pb2_slope_t a, pb2_slope_t b)
+{
+	/* slope value is invalid for vertical vectors */
+	assert(a.dx != 0);
+	assert(b.dx != 0);
+	return a.s < b.s;
+}
+
+/*** line ***/
+
+RND_INLINE pb2_slope_t pb2_slope_line(const rnd_vector_t origin, const rnd_vector_t other)
 {
 	pb2_slope_t slp;
 
@@ -145,15 +155,6 @@ RND_INLINE pb2_slope_t pb2_slope(const rnd_vector_t origin, const rnd_vector_t o
 	return slp;
 }
 
-RND_INLINE int PB2_SLOPE_LT(pb2_slope_t a, pb2_slope_t b)
-{
-	/* slope value is invalid for vertical vectors */
-	assert(a.dx != 0);
-	assert(b.dx != 0);
-	return a.s < b.s;
-}
-
-/*** line ***/
 
 /* Returns 1 if p1 is closer to startpoint of line than p2 */
 RND_INLINE int pb2_line_points_ordered(pb2_seg_t *line, rnd_vector_t p1, rnd_vector_t p2)
@@ -232,6 +233,14 @@ RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t is
 	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  of);
 	ISC_OUT(num);
 	return num;
+}
+
+/* return 1 if a horizontal ray from pt to the right crosses arc */
+RND_INLINE int pb2_arc_hray_isect(const pb2_seg_t *arc, const rnd_vector_t pt)
+{
+	g2d_carc_t carc;
+	SEG2CARC(carc, arc);
+	return g2d__iscp_carc_hcline(&carc, pt[1], pt[0], RND_COORD_MAX, NULL, NULL) > 0;
 }
 
 
@@ -320,7 +329,10 @@ RND_INLINE int pb2_arc_points_ordered(pb2_seg_t *arc, rnd_vector_t p1, rnd_vecto
 	return (a1 - as) < (a2 - as);
 }
 
-/* Return tangential vector at endpoint "from" (not normalized) */
+/* Return tangential vector at endpoint "from" (not normalized); tangent is
+   pointing in opposite direction of the line that would continue the contour
+   at the end of the arc. In other words the tangent from an endpoint shows
+   the direction of the arc going out from that endpoint. */
 RND_INLINE void pb2_arc_tangent_from(rnd_vector_t dst, pb2_seg_t *seg, rnd_vector_t from)
 {
 	rnd_vector_t spoke;
@@ -329,7 +341,6 @@ RND_INLINE void pb2_arc_tangent_from(rnd_vector_t dst, pb2_seg_t *seg, rnd_vecto
 	/* radial direction */
 	spoke[0] = from[0] - seg->shape.arc.center[0];
 	spoke[1] = from[1] - seg->shape.arc.center[1];
-
 
 	/* inverse direction on CCW */
 	inv = (seg->shape.arc.adir == 0);
@@ -360,6 +371,24 @@ RND_INLINE void pb2_arc_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t
 	tang[1] = from[1] + norm[1];
 
 	pa_calc_angle_nn(dst, from, tang);
+}
+
+
+RND_INLINE pb2_slope_t pb2_slope_arc(pb2_seg_t *seg, rnd_vector_t from)
+{
+	pb2_slope_t slp;
+	rnd_vector_t tmp;
+
+	pb2_arc_tangent_from(tmp, seg, from);
+
+	slp.dx = tmp[0];
+	slp.dy = tmp[1];
+	TODO("bignum: double is not enough for 64 bit coords; this large number should be inf really");
+	if (slp.dx != 0)
+		slp.s = (double)slp.dy / (double)slp.dx;
+	else
+		slp.s = 0;
+	return slp;
 }
 
 
@@ -472,6 +501,16 @@ RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t fro
 	}
 	abort(); /* internal error: invalid seg shape_type */
 }
+
+RND_INLINE pb2_slope_t pb2_slope(pb2_seg_t *seg, rnd_vector_t origin, rnd_vector_t other)
+{
+	switch(seg->shape_type) {
+		case RND_VNODE_LINE: return pb2_slope_line(origin, other);
+		case RND_VNODE_ARC:  return pb2_slope_arc(seg, origin);
+	}
+	abort(); /* invalid shape type */
+}
+
 
 /* recompute cache fields for a seg using input/config fields of the seg */
 RND_INLINE void pb2_seg_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)

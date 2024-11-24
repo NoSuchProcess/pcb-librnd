@@ -64,8 +64,6 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 {
 	if (pb2_face_polarity_at_verbose) pa_trace("  endpoint hit at ", Pvect(p), "\n", 0);
 
-	TODO("arc: think over other_end: for arcs it should probably be the tangent from p, the actual endpoint is probably not used below");
-
 	/* miss in x */
 	if (p[0] < pctx->pt[0]) {
 		if (pb2_face_polarity_at_verbose) pa_trace("   ignore: miss in x: ", Pcoord(p[0]), "<", Pcoord(pctx->pt[0]), "\n", 0);
@@ -85,7 +83,7 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 	/* if we are starting on a shared endpoint: verify angles; if dir is bending
 	   back to the left faster, the ray is starting to the left of    */
 	if ((p[0] == pctx->pt[0]) && (p[1] == pctx->pt[1])) {
-		pb2_slope_t slp_seg = pb2_slope(p, other_end);
+		pb2_slope_t slp_seg = pb2_slope(seg, p, other_end);
 		if (pb2_face_polarity_at_verbose) pa_trace("   slope: dir=", Pdbl(pctx->dir_slope.s), " seg=", Pdbl(slp_seg.s), "\n", 0);
 
 		/* special case testing on vertical vetors where slope would be infinite */
@@ -203,6 +201,54 @@ RND_INLINE rnd_rtree_dir_t pb2_3_hray_line(pb2_3_face_polarity_t *pctx, pb2_seg_
 	return 0;
 }
 
+/* check if the horizontal ray (from pctx) hits the arc segment seg and call
+   pb2_3_seg_hit() if it does */
+RND_INLINE rnd_rtree_dir_t pb2_3_hray_arc(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
+{
+	rnd_vector_t p1, p2;
+	rnd_coord_t aminy, amaxy, amaxx;
+
+	p1[0] = seg->start[0]; p1[1] = seg->start[1];
+	p2[0] = seg->end[0];   p2[1] = seg->end[1];
+	aminy = seg->bbox.y1;  amaxy = seg->bbox.y2;  amaxx = seg->bbox.x2;
+
+	if (pb2_face_polarity_at_verbose) pa_trace(" arc seg found: ", Pvect(p1), " .. ", Pvect(p2), " cntA=", Plong(seg->cntA), " cntB=", Plong(seg->cntB), " non0A=", Pint(seg->non0A), " non0B=", Pint(seg->non0B), " uid=S", Plong(PB2_UID_GET(seg)), "\n", 0);
+
+	/* This code assumes arcs are not crossing vertical axis through their
+	   center; such arcs need to be split up at the PI/2 and 3*PI/2 */
+
+	/* hit a seg endpoint */
+	if (p1[1] == pctx->pt[1]) {
+		if (pb2_face_polarity_at_verbose) pa_trace("  (end p1)\n", 0);
+		pb2_3_fp_at_endp(pctx, p1, p2, seg);
+		return 0;
+	}
+	if (p2[1] == pctx->pt[1]) {
+		if (pb2_face_polarity_at_verbose) pa_trace("  (end p2)\n", 0);
+		pb2_3_fp_at_endp(pctx, p2, p1, seg);
+		return 0;
+	}
+
+	/* quick exit: miss the bbox in x or y */
+	if ((pctx->pt[0] > amaxx) || (pctx->pt[1] < aminy) || (pctx->pt[1] > amaxy)) {
+		if (pb2_face_polarity_at_verbose) pa_trace("  (bbox miss)\n", 0);
+		return 0;
+	}
+
+	/* ray start point is within the bbox or left to the bbox but within y range;
+	   double check we really have an intersection */
+	if (!pb2_arc_hray_isect(seg, pctx->pt)) {
+		if (pb2_face_polarity_at_verbose) pa_trace("  (mid cross miss)\n", 0);
+		return 0;
+	}
+
+	pb2_3_seg_hit(pctx, seg);
+	if (pb2_face_polarity_at_verbose) pa_trace("  midpoint hit\n  cnt=", Plong(pctx->cnt), ":", Plong(pctx->cnt_non0), "\n", 0);
+
+	return 0;
+}
+
+
 static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t *box)
 {
 	pb2_3_face_polarity_t *pctx = udata;
@@ -248,7 +294,7 @@ static rnd_rtree_dir_t pb2_3_fp_cb(void *udata, void *obj, const rnd_rtree_box_t
 	   non-discarded seg counts as 1 as we have already removed stubs */
 
 	switch(seg->shape_type) {
-		case RND_VNODE_ARC: /* return pb2_3_hray_arc(pctx, seg); */
+		case RND_VNODE_ARC:  return pb2_3_hray_arc(pctx, seg);
 		case RND_VNODE_LINE: return pb2_3_hray_line(pctx, seg);
 	}
 	return 0; /* invalid seg-:shape_type */
@@ -268,7 +314,7 @@ RND_INLINE int pb2_3_ray_cast(pb2_ctx_t *ctx, rnd_vector_t pt, char poly, rnd_ve
 	pctx.poly = poly;
 	pctx.dir[0] = direction[0]; pctx.dir[1] = direction[1];
 	pctx.pt[0] = pt[0]; pctx.pt[1] = pt[1];
-	pctx.dir_slope = pb2_slope(pzero, direction);
+	pctx.dir_slope = pb2_slope_line(pzero, direction);
 	pctx.seg_hit = seg_hit_cb;
 	pctx.udata = udata;
 	pctx.rule = rule;
