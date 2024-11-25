@@ -146,9 +146,25 @@ rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
 
 rnd_bool_t pa_is_node_on_line(rnd_vnode_t *node, rnd_vnode_t *l1, rnd_vnode_t *l2)
 {
-	TODO("Implement me");
+	TODO("arc: Implement me");
 	return 0;
 }
+
+rnd_bool_t pa_is_node_on_arc(rnd_vnode_t *node, rnd_vnode_t *arc)
+{
+	TODO("arc: Implement me");
+	return 0;
+}
+
+rnd_bool_t pa_is_node_on_seg(rnd_vnode_t *node, rnd_vnode_t *seg)
+{
+	switch(seg->flg.curve_type) {
+		case RND_VNODE_LINE: return pa_is_node_on_line(node, seg, seg->next);
+		case RND_VNODE_ARC: return pa_is_node_on_arc(node, seg);
+	}
+	return rnd_false;
+}
+
 
 void pa_calc_angle_nn(pa_angle_t *dst, rnd_vector_t PT, rnd_vector_t OTHER)
 {

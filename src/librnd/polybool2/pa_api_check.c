@@ -220,19 +220,49 @@ RND_INLINE int pa_chk_loop_polarity(rnd_vnode_t *start, int dir)
 
 RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 {
+	/* we are always checking the overlap on a1->prev ~ a1 ~ a1->next; so the
+	   curves are a1->prev and a1; if they don't have the same shape they
+	   can not overlap */
+	if (a1->flg.curve_type != a1->prev->flg.curve_type)
+		return rnd_false;
+
 	/* Stubs are invalid; see test case gixedm*; first the cheap test: full overlap;
-	   this checks the two segs going out from a1 (prev and next) */
+	   this checks the two segs going out from a1 (a1 and a1->prev) */
 	if ((a1->prev->point[0] == a1->next->point[0]) && (a1->prev->point[1] == a1->next->point[1])) {
-		PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-		PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
-		return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (full)", 0);
+		int bad = 0;
+		switch(a1->flg.curve_type) {
+			case RND_VNODE_LINE:
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+				bad = 1;
+				break;
+			case RND_VNODE_ARC:
+				if ((a1->curve.arc.center[0] == a1->prev->curve.arc.center[0]) && (a1->curve.arc.center[1] == a1->prev->curve.arc.center[1]) && (a1->curve.arc.adir == -a1->prev->curve.arc.adir)) {
+					TODO("arc: these should be PA_CHK_ARC()");
+					PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+					PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+					bad = 1;
+				}
+				break;
+		}
+		if (bad)
+			return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (full)", 0);
 	}
 
 	/* More expensive test: partly overlapping adjacent lines; checks if a1->next
 	   or a1->prev is on the other seg */
-	if (pa_is_node_on_line(a1->next, a1, a1->prev) || pa_is_node_on_line(a1->prev, a1, a1->next)) {
-		PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-		PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+	if (pa_is_node_on_seg(a1->next, a1->prev) || pa_is_node_on_seg(a1->prev, a1)) {
+		switch(a1->flg.curve_type) {
+			case RND_VNODE_LINE:
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+				break;
+			case RND_VNODE_ARC:
+				TODO("arc: these should be PA_CHK_ARC()");
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+				PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+				break;
+		}
 		return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (partial)", 0);
 	}
 
