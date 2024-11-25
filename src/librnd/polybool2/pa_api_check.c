@@ -218,6 +218,27 @@ RND_INLINE int pa_chk_loop_polarity(rnd_vnode_t *start, int dir)
 
 /*** Contour check ***/
 
+RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
+{
+	/* Stubs are invalid; see test case gixedm*; first the cheap test: full overlap;
+	   this checks the two segs going out from a1 (prev and next) */
+	if ((a1->prev->point[0] == a1->next->point[0]) && (a1->prev->point[1] == a1->next->point[1])) {
+		PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+		PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+		return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (full)", 0);
+	}
+
+	/* More expensive test: partly overlapping adjacent lines; checks if a1->next
+	   or a1->prev is on the other seg */
+	if (pa_is_node_on_line(a1->next, a1, a1->prev) || pa_is_node_on_line(a1->prev, a1, a1->next)) {
+		PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+		PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+		return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (partial)", 0);
+	}
+
+	return rnd_false;
+}
+
 /* returns rnd_true if contour is invalid: a self-touching contour is valid, but
    a self-intersecting contour is not. */
 RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
@@ -255,22 +276,10 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 	do {
 		a2 = a1;
 
-		/* Stubs are invalid; see test case gixedm*; first the cheap test: full overlap */
-		if ((a1->prev->point[0] == a1->next->point[0]) && (a1->prev->point[1] == a1->next->point[1])) {
-			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
-			return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (full)", 0);
-		}
-
-		/* More expensive test: partly overlapping adjacent lines */
-		if (pa_is_node_on_line(a1->next, a1, a1->prev) || pa_is_node_on_line(a1->prev, a1, a1->next)) {
-			PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-			PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
-			return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (partial)", 0);
-		}
+		if (pa_pline_check_stub(a1, res))
+			return rnd_true;
 
 		do {
-
 			/* count invalid intersections */
 			if (pa_are_nodes_neighbours(a1, a2)) continue; /* neighbors are okay to intersect */
 			icnt = rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2);
