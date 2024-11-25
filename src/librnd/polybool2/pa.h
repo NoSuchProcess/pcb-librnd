@@ -86,6 +86,9 @@ RND_INLINE void pa_pline_box_bump_pt(rnd_pline_t *pl, const rnd_vector_t pt)
 	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
 
+/* coming from pb2_geo.c */
+void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir);
+
 RND_INLINE void pa_pline_box_bump_curve(rnd_pline_t *pl, rnd_vnode_t *v)
 {
 	rnd_rtree_box_t bb;
@@ -116,7 +119,6 @@ do { \
 	b = __tmp__; \
 } while(0)
 
-void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir);
 
 
 #endif
