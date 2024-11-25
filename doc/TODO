@@ -1,4 +1,8 @@
 1. For the upcoming release ===============================================================================
+	- polybool2 arc:
+		- pb2_seg_nonzero(): this may fail for v shaped arcs; maybe split those at the bottom?
+		- implement test for the 'B' case of polarity point from a concave arc-arc point
+		- implement test case for validity check on arc stubs (full and partial)
 
 2. For later releases ===============================================================================
 	- librnd 4.4 (API additions):
