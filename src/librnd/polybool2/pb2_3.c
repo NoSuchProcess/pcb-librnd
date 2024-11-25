@@ -112,6 +112,11 @@ RND_INLINE void pb2_3_fp_at_endp(pb2_3_face_polarity_t *pctx, rnd_vector_t p, rn
 			return;
 		}
 
+		if ((slp_seg.dx < 0) && (pctx->dir_slope.dx > 0)) {
+			if (pb2_face_polarity_at_verbose) pa_trace("   slope dir: seg going left, pt dir going right\n", 0);
+			return;
+		}
+
 		if (pctx->dir[1] < 0) { /* dir pointing up */
 			if ((slp_seg.s < 0) || PB2_SLOPE_LT(pctx->dir_slope, slp_seg)) {
 				pb2_3_seg_hit(pctx, seg);
