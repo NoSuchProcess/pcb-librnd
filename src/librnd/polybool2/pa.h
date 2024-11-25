@@ -79,6 +79,7 @@ rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 /* Update the bbox of pl using pt's coords */
 RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 {
+	TODO("arc: bbox: the code below works only for lines");
 	if (pt[0]     < pl->xmin) pl->xmin = pt[0];
 	if ((pt[0]+1) > pl->xmax) pl->xmax = pt[0]+1;
 	if (pt[1]     < pl->ymin) pl->ymin = pt[1];

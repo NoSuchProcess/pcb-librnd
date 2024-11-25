@@ -39,7 +39,7 @@ rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 /* Recalculate bbox of the segment from current coords */
 RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 {
-	TODO("arc: the code below works only for lines");
+	TODO("arc: bbox: the code below works only for lines");
 	s->box.X1 = pa_min(s->v->point[0], s->v->next->point[0]);
 	s->box.X2 = pa_max(s->v->point[0], s->v->next->point[0]) + 1;
 	s->box.Y1 = pa_min(s->v->point[1], s->v->next->point[1]);
