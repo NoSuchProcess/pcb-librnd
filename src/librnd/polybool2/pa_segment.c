@@ -39,11 +39,22 @@ rnd_vnode_t *rnd_pline_seg2vnode(void *box)
 /* Recalculate bbox of the segment from current coords */
 RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 {
-	TODO("arc: bbox: the code below works only for lines");
-	s->box.X1 = pa_min(s->v->point[0], s->v->next->point[0]);
-	s->box.X2 = pa_max(s->v->point[0], s->v->next->point[0]) + 1;
-	s->box.Y1 = pa_min(s->v->point[1], s->v->next->point[1]);
-	s->box.Y2 = pa_max(s->v->point[1], s->v->next->point[1]) + 1;
+	switch(s->v->flg.curve_type) {
+		case RND_VNODE_LINE:
+			s->box.X1 = pa_min(s->v->point[0], s->v->next->point[0]);
+			s->box.X2 = pa_max(s->v->point[0], s->v->next->point[0]) + 1;
+			s->box.Y1 = pa_min(s->v->point[1], s->v->next->point[1]);
+			s->box.Y2 = pa_max(s->v->point[1], s->v->next->point[1]) + 1;
+			break;
+		case RND_VNODE_ARC:
+			{
+				rnd_rtree_box_t bb;
+				pb2_raw_arc_bbox(&bb, s->v->point, s->v->next->point, s->v->curve.arc.center, s->v->curve.arc.adir);
+				s->box.X1 = bb.x1; s->box.Y1 = bb.y1;
+				s->box.X2 = bb.x2; s->box.Y2 = bb.y2;
+			}
+			break;
+	}
 }
 
 void *rnd_poly_make_edge_tree(rnd_pline_t *pl)
