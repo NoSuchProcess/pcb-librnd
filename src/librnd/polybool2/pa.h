@@ -99,4 +99,7 @@ do { \
 	b = __tmp__; \
 } while(0)
 
+void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir);
+
+
 #endif

@@ -255,6 +255,7 @@ RND_INLINE void pb2_arc_bbox(pb2_seg_t *arc)
 	arc->bbox.x2 = ceil(bb.p2.x); arc->bbox.y2 = ceil(bb.p2.y);
 }
 
+
 /* Make sure *ang is between start and start+delta of arc; returns 0 on
    success */
 RND_INLINE int pb2_arc_angle_clamp(double *ang, pb2_seg_t *arc)
@@ -533,3 +534,26 @@ RND_INLINE void pb2_seg_bbox(pb2_seg_t *seg)
 			break;
 	}
 }
+
+
+/*** helpers for pa ***/
+void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir)
+{
+	pb2_seg_t seg;
+	g2d_carc_t carc;
+	g2d_box_t bb;
+
+	seg.shape_type = RND_VNODE_ARC;
+	seg.start[0] = p1[0]; seg.start[1] = p1[1];
+	seg.end[0] = p2[0]; seg.end[1] = p2[1];
+	seg.shape.arc.center[0] = center[0]; seg.shape.arc.center[1] = center[1];
+	seg.shape.arc.adir = adir;
+
+	pb2_seg_arc_update_cache(NULL, &seg);
+	SEG2CARC(carc, &seg);
+
+	bb = g2d_carc_bbox(&carc);
+	dst->x1 = floor(bb.p1.x); dst->y1 = floor(bb.p1.y);
+	dst->x2 = ceil(bb.p2.x); dst->y2 = ceil(bb.p2.y);
+}
+
