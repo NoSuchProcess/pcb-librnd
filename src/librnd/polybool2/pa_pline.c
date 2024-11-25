@@ -119,7 +119,7 @@ rnd_pline_t *pa_pline_new(const rnd_vector_t pt)
 	if (pt != NULL) {
 		res->head->next = res->head->prev = res->head;
 		Vcpy2(res->head->point, pt);
-		pa_pline_box_bump(res, pt);
+		pa_pline_box_bump_pt(res, pt);
 	}
 
 	return res;
@@ -192,8 +192,9 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 	if (c != p) {
 		do {
 			/* calculate area for orientation */
+			TODO("arc: area compensation? or just approx with middle point?");
 			area += ((double)p->point[0] - (double)c->point[0]) * ((double)p->point[1] + (double)c->point[1]);
-			pa_pline_box_bump(pl, c->point);
+			pa_pline_box_bump_curve(pl, c);
 			pl->Count++;
 		}
 		while ((c = (p = c)->next) != pl->head);

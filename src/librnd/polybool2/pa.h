@@ -77,7 +77,7 @@ void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src);
 rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
 
 /* Update the bbox of pl using pt's coords */
-RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
+RND_INLINE void pa_pline_box_bump_pt(rnd_pline_t *pl, const rnd_vector_t pt)
 {
 	TODO("arc: bbox: the code below works only for lines");
 	if (pt[0]     < pl->xmin) pl->xmin = pt[0];
@@ -85,6 +85,23 @@ RND_INLINE void pa_pline_box_bump(rnd_pline_t *pl, const rnd_vector_t pt)
 	if (pt[1]     < pl->ymin) pl->ymin = pt[1];
 	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
+
+RND_INLINE void pa_pline_box_bump_curve(rnd_pline_t *pl, rnd_vnode_t *v)
+{
+	rnd_rtree_box_t bb;
+
+	switch(v->flg.curve_type) {
+		case RND_VNODE_LINE: pa_pline_box_bump_pt(pl, v->point); break;
+		case RND_VNODE_ARC:
+			pb2_raw_arc_bbox(&bb, v->point, v->next->point, v->curve.arc.center, v->curve.arc.adir);
+			if (bb.x1 < pl->xmin) pl->xmin = bb.x1;
+			if (bb.y1 < pl->ymin) pl->ymin = bb.y1;
+			if (bb.x2 > pl->xmax) pl->xmax = bb.x2;
+			if (bb.y2 > pl->ymax) pl->ymax = bb.y2;
+			break;
+	}
+}
+
 
 int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op);
 
