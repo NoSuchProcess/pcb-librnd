@@ -208,6 +208,12 @@ RND_INLINE void pb2_6_insert_face(pb2_ctx_t *ctx, pb2_face_t *newf)
 	int is_implicit;
 	pb2_face_t *bestf = pb2_wrapping_face(ctx, newf, &is_implicit, !newf->out);
 
+	if (bestf == NULL) {
+		TODO("test case: arc10, modify script to do a xor");
+		if_trace("pb2_6_insert_face: skip F", Plong(PB2_UID_GET(newf)), ": no wrapper\n", 0);
+		return;
+	}
+
 	/* Omit a hole child face if it has an explicit shared curve with its
 	   parent and that parent is not omitted; test case: pcb01's F43 */
 	if ((bestf->parent != NULL) && pb2_face_face_have_shared_curve(ctx, newf, bestf)) {
