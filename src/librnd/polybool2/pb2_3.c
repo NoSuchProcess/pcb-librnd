@@ -56,6 +56,8 @@ RND_INLINE void pb2_3_seg_hit(pb2_3_face_polarity_t *pctx, pb2_seg_t *seg)
 	else
 		pctx->cnt_non0 += seg->non0A + seg->non0B;
 
+	if (pb2_face_polarity_at_verbose) pa_trace("   => SEG HIT S", Plong(PB2_UID_GET(seg)), "\n", 0);
+
 	if (pctx->seg_hit != NULL)
 		pctx->seg_hit(pctx->udata, seg);
 }
