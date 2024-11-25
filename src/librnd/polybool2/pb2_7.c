@@ -35,7 +35,8 @@ do { \
 			nd->flg.curve_type = seg->shape_type; \
 			nd->curve.arc.center[0] = seg->shape.arc.center[0]; \
 			nd->curve.arc.center[1] = seg->shape.arc.center[1]; \
-			nd->curve.arc.adir = positive ? seg->shape.arc.adir : !seg->shape.arc.adir; \
+			nd->curve.arc.adir = seg->shape.arc.adir; \
+			if (!Vequ2(seg->start, nd->point)) nd->curve.arc.adir = !nd->curve.arc.adir; \
 			break; \
 	} \
 } while(0)
