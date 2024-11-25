@@ -232,8 +232,23 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 
 	assert(a != NULL);
 
-	if (a->Count < 3)
-		return PA_CHK_ERROR(res, "pline with points too few at ", Pvnodep(a->head), 0);
+	if (a->Count < 3) {
+		int has_arc = 0;
+
+		/* with arcs only 2 object is required */
+		if (a->Count == 2) {
+			a1 = a->head;
+			do {
+				if (a1->flg.curve_type == RND_VNODE_ARC) {
+					has_arc = 1;
+					break;
+				}
+			} while((a1 = a1->next) != a->head);
+		}
+
+		if (!has_arc)
+			return PA_CHK_ERROR(res, "pline with points too few at ", Pvnodep(a->head), 0);
+	}
 
 	a1 = a->head;
 	do {
