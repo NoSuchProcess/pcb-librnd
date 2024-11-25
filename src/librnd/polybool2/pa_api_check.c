@@ -77,6 +77,7 @@ typedef struct {
 
 
 #ifndef NDEBUG
+/* error reporting: remember offending objects */
 #define PA_CHK_MARK(x_, y_) \
 do { \
 	if (res->marks < sizeof(res->x) / sizeof(res->x[0])) { \
