@@ -328,7 +328,7 @@ TODO("arc: extend this check for arcs");
 
 			/* two intersections; must be overlapping lines - we have to accept that, see test case fixedy3 */
 #if 0
-			if (icnt > 1) { 
+			if (icnt > 1) {
 				PA_CHK_MARK(a1->point[0], a1->point[1]);
 				PA_CHK_MARK(a2->point[0], a2->point[1]);
 				return PA_CHK_ERROR(res, "icnt > 1 (", Pint(icnt) ,") at ", Pnodep(a1), " or ",  Pnodep(a2), 0);
