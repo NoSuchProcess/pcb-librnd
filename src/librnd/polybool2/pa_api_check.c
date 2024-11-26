@@ -110,6 +110,7 @@ do { \
 #else
 #define PA_CHK_MARK(x, y)
 #define PA_CHK_LINE(x1, y1, x2, y2)
+#define PA_CHK_ARC(arc)
 #endif
 
 
