@@ -150,10 +150,12 @@ rnd_bool_t pa_is_node_on_line(rnd_vnode_t *node, rnd_vnode_t *l1, rnd_vnode_t *l
 	return 0;
 }
 
+/* this is coming from pb2_geo.c */
+int pb2_raw_pt_on_arc(rnd_vector_t pt,  rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir);
+
 rnd_bool_t pa_is_node_on_arc(rnd_vnode_t *node, rnd_vnode_t *arc)
 {
-	TODO("arc: Implement me");
-	return 0;
+	return pb2_raw_pt_on_arc(node->point, arc->point, arc->next->point, arc->curve.arc.center, arc->curve.arc.adir);
 }
 
 rnd_bool_t pa_is_node_on_seg(rnd_vnode_t *node, rnd_vnode_t *seg)

@@ -557,3 +557,48 @@ void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rn
 	dst->x2 = ceil(bb.p2.x); dst->y2 = ceil(bb.p2.y);
 }
 
+int pb2_raw_pt_on_arc(rnd_vector_t pt,  rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir)
+{
+	pb2_seg_t seg;
+	g2d_carc_t carc;
+	g2d_cvect_t gpt;
+	g2d_angle_t pang;
+	double pr, sa, ea;
+
+	/* cheap common case: endpoint match */
+	if (Vequ2(pt, p1) || Vequ2(pt, p2))
+		return 0;
+
+	seg.shape_type = RND_VNODE_ARC;
+	seg.start[0] = p1[0]; seg.start[1] = p1[1];
+	seg.end[0] = p2[0]; seg.end[1] = p2[1];
+	seg.shape.arc.center[0] = center[0]; seg.shape.arc.center[1] = center[1];
+	seg.shape.arc.adir = adir;
+
+	pb2_seg_arc_update_cache(NULL, &seg);
+	SEG2CARC(carc, &seg);
+
+	pr = rnd_vect_dist2(pt, center);
+	if (pr != 0)
+		pr = sqrt(pr);
+
+	/* check if point is on the circle */
+	if (fabs(pr - seg.shape.arc.r) > 0.5)
+		return 0;
+
+	/* figure point's angle */
+	gpt.x = pt[0]; gpt.y = pt[1];
+	pang = g2d__ang_carc_pt(&carc, gpt);
+
+	/* figure ordered start and end angle */
+	sa = carc.start;
+	ea = carc.start + carc.delta;
+	if (sa > ea) {
+		double tmp = sa;
+		sa = ea;
+		ea = tmp;
+	}
+
+	return g2d_is_between_angles(pang, sa, ea);
+}
+
