@@ -237,7 +237,7 @@ RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 				bad = 1;
 				break;
 			case RND_VNODE_ARC:
-				if ((a1->curve.arc.center[0] == a1->prev->curve.arc.center[0]) && (a1->curve.arc.center[1] == a1->prev->curve.arc.center[1]) && (a1->curve.arc.adir == -a1->prev->curve.arc.adir)) {
+				if ((a1->curve.arc.center[0] == a1->prev->curve.arc.center[0]) && (a1->curve.arc.center[1] == a1->prev->curve.arc.center[1]) && (a1->curve.arc.adir == !a1->prev->curve.arc.adir)) {
 					TODO("arc: these should be PA_CHK_ARC()");
 					PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
 					PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
