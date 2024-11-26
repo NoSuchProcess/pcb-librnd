@@ -172,7 +172,7 @@ RND_INLINE void pa_tweak_isc(rnd_vector_t v1a, rnd_vector_t v1b, rnd_vector_t v2
 RND_INLINE int pa_isc_edge_edge_(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t *isc1, rnd_vector_t *isc2)
 {
 	int res;
-	TODO("arc: this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
+	TODO("arc: check()-only; this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
 	res = pa_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, *isc1, *isc2, 1);
 
 	if (res > 0) pa_tweak_isc(v1a->point, v1b->point, v2a->point, v2b->point, *isc1);
