@@ -67,10 +67,11 @@ static rnd_bool pa_vect_inside_sect(rnd_vnode_t *pn, rnd_vector_t p2)
 
 /*** pa_chk: remember coords where the contour broke to ease debugging ***/
 typedef struct {
-	int marks, lines;
+	int marks, lines, arcs;
 #ifndef NDEBUG
-	rnd_coord_t x[8], y[8];
-	rnd_coord_t x1[8], y1[8], x2[8], y2[8];
+	rnd_coord_t x[8], y[8]; /* marks */
+	rnd_coord_t x1[8], y1[8], x2[8], y2[8]; /* lines */
+	rnd_coord_t cx[9], cy[8]; double r[8]; /* arcs */
 	char msg[256];
 #endif
 } pa_chk_res_t;
@@ -94,6 +95,16 @@ do { \
 		res->x2[res->lines] = x2_; \
 		res->y2[res->lines] = y2_; \
 		res->lines++; \
+	} \
+} while(0)
+#define PA_CHK_ARC(arc_) \
+do { \
+	if (res->arcs < sizeof(res->cx) / sizeof(res->cx[0])) { \
+		res->cx[res->arcs] = arc_->curve.arc.center[0]; \
+		res->cy[res->arcs] = arc_->curve.arc.center[1]; \
+		res->r[res->arcs] = rnd_vect_dist2(arc_->curve.arc.center, arc_->point); \
+		if (res->r[res->arcs] != 0) res->r[res->arcs] = sqrt(res->r[res->arcs]); \
+		res->arcs++; \
 	} \
 } while(0)
 #else
@@ -238,9 +249,8 @@ RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 				break;
 			case RND_VNODE_ARC:
 				if ((a1->curve.arc.center[0] == a1->prev->curve.arc.center[0]) && (a1->curve.arc.center[1] == a1->prev->curve.arc.center[1]) && (a1->curve.arc.adir == !a1->prev->curve.arc.adir)) {
-					TODO("arc: these should be PA_CHK_ARC()");
-					PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-					PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+					PA_CHK_ARC(a1->prev);
+					PA_CHK_ARC(a1);
 					bad = 1;
 				}
 				break;
@@ -258,9 +268,8 @@ RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 				PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
 				break;
 			case RND_VNODE_ARC:
-				TODO("arc: these should be PA_CHK_ARC()");
-				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
-				PA_CHK_LINE(a1->point[0], a1->point[1], a1->prev->point[0], a1->prev->point[1]);
+				PA_CHK_ARC(a1->prev);
+				PA_CHK_ARC(a1);
 				break;
 		}
 		return PA_CHK_ERROR(res, "lines overlap at stub ", Pvnodep(a1), " (partial)", 0);
@@ -430,6 +439,7 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 	v = pl;
 	do {
 		n = v->next;
+TODO("arc: draw contour arcs");
 #ifdef RND_API_VER
 		if (!small)
 			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
@@ -477,6 +487,18 @@ static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t 
 			else
 #endif
 				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x1[n], (long)chk->y1[n], (long)chk->x2[n], (long)chk->y2[n]);
+	}
+
+	if ((chk != NULL) && (chk->arcs > 0)) {
+		int n;
+		fprintf(stderr, "color #990000\n");
+		for(n = 0; n < chk->arcs; n++)
+#ifdef RND_API_VER
+			if (!small)
+				rnd_fprintf(stderr, "circle %#mm %#mm %#mm 20\n", chk->cx[n], chk->cy[n], (rnd_coord_t)chk->r[n]);
+			else
+#endif
+				fprintf(stderr, "circle %ld %ld %.2f 20\n", (long)chk->cx[n], (long)chk->cy[n], chk->r[n]);
 	}
 
 	fprintf(stderr, "flush\n");
