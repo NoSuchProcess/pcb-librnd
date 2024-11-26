@@ -159,7 +159,7 @@ rnd_vnode_t *pa_check_find_close_node(rnd_vector_t intersection, rnd_vnode_t *pn
 /* There's an intersection at isc, caused by pt or pt->next or pt->prev.
    Returns 1 if either outgoing edge of isc overlaps with
    either outgoing edge of other. Such cases are accepted as non-error
-   becausew of test case fixedy3 that would be very expensive to detect */
+   because of test case fixedy3 that would be very expensive to detect */
 RND_INLINE int pa_chk_ll_olap(rnd_vnode_t *isc, rnd_vnode_t *pt, rnd_vnode_t *other)
 {
 	rnd_vector_t tmp1, tmp2;
