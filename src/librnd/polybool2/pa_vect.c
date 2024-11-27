@@ -201,6 +201,24 @@ RND_INLINE int pa_curves_isc(rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vector_t i1, 
 	return 0; /* invalid curve type */
 }
 
+RND_INLINE void pa_curve_tangent(rnd_vector_t dst, rnd_vnode_t *vn, int which)
+{
+	rnd_vnode_t *cvn = (which < 0) ? vn->prev : vn; /* vn that provides curve fields */
+
+	switch(cvn->flg.curve_type) {
+		case RND_VNODE_LINE:
+			if (which < 0)
+				Vsub2(dst, vn->point, vn->prev->point);      /* vn to vn prev */
+			else
+				Vsub2(dst, vn->next->point, vn->point);      /* vn next to vn */
+			return;
+		case RND_VNODE_ARC:
+			pb2_raw_tangent_from_arc(dst, cvn->point, cvn->next->point, cvn->curve.arc.center, cvn->curve.arc.adir, vn->point);
+			return;
+	}
+	/* invalid curve type */
+	dst[0] = dst[1] = 0;
+}
 
 
 void pa_calc_angle_nn(pa_angle_t *dst, rnd_vector_t PT, rnd_vector_t OTHER)

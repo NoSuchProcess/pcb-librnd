@@ -38,13 +38,11 @@ static rnd_bool pa_vect_inside_sect(rnd_vnode_t *pn, rnd_vector_t p2)
 	rnd_vector_t cdir, ndir, pdir;
 	int cdir_above_prev, cdir_above_next, poly_edge_pos;
 
-	TODO("arc: extend this to work with arcs");
-
 	assert(pn != NULL);
 
 	Vsub2(cdir, p2,              pn->point);            /* p2 to pn */
-	Vsub2(pdir, pn->point,       pn->prev->point);      /* pn to pn prev */
-	Vsub2(ndir, pn->next->point, pn->point);            /* pn next to pn */
+	pa_curve_tangent(pdir, pn, -1);
+	pa_curve_tangent(ndir, pn, +1);
 
 	/* Whether target vector (cdir) is "above" previous and next edge vectors */
 	cdir_above_prev = rnd_vect_det2(pdir, cdir) >= 0;

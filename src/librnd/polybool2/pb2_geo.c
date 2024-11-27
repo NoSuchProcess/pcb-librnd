@@ -671,3 +671,16 @@ int pb2_raw_isc_arc_arc(rnd_vector_t a1p1, rnd_vector_t a1p2, rnd_vector_t a1cen
 	ISC_OUT(num);
 	return num;
 }
+
+void pb2_raw_tangent_from_arc(rnd_vector_t dst, rnd_vector_t ap1, rnd_vector_t ap2, rnd_vector_t center, int adir, rnd_vector_t from)
+{
+	pb2_seg_t aseg;
+
+	aseg.shape_type = RND_VNODE_ARC;
+	aseg.start[0] = ap1[0]; aseg.start[1] = ap1[1];
+	aseg.end[0] = ap2[0]; aseg.end[1] = ap2[1];
+	aseg.shape.arc.center[0] = center[0]; aseg.shape.arc.center[1] = center[1];
+	aseg.shape.arc.adir = adir;
+
+	pb2_arc_tangent_from(dst, &aseg, from);
+}
