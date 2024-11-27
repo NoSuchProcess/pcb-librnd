@@ -322,7 +322,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 		do {
 			/* count invalid intersections */
 			if (pa_are_nodes_neighbours(a1, a2)) continue; /* neighbors are okay to intersect */
-TODO("arc: extend this check for arcs");
+
 			icnt = pa_curves_isc(a1, a2, i1, i2);
 			if (icnt == 0) continue;
 
