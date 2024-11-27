@@ -631,8 +631,9 @@ int pb2_raw_isc_arc_line(rnd_vector_t ap1, rnd_vector_t ap2, rnd_vector_t center
 	aseg.end[0] = ap2[0]; aseg.end[1] = ap2[1];
 	aseg.shape.arc.center[0] = center[0]; aseg.shape.arc.center[1] = center[1];
 	aseg.shape.arc.adir = adir;
+	pb2_seg_arc_update_cache(NULL, &aseg);
 
-	lseg.shape_type = RND_VNODE_ARC;
+	lseg.shape_type = RND_VNODE_LINE;
 	lseg.start[0] = lp1[0]; lseg.start[1] = lp1[1];
 	lseg.end[0] = lp2[0]; lseg.end[1] = lp2[1];
 
@@ -656,13 +657,14 @@ int pb2_raw_isc_arc_arc(rnd_vector_t a1p1, rnd_vector_t a1p2, rnd_vector_t a1cen
 	a1seg.end[0] = a1p2[0]; a1seg.end[1] = a1p2[1];
 	a1seg.shape.arc.center[0] = a1center[0]; a1seg.shape.arc.center[1] = a1center[1];
 	a1seg.shape.arc.adir = a1adir;
+	pb2_seg_arc_update_cache(NULL, &a1seg);
 
 	a2seg.shape_type = RND_VNODE_ARC;
 	a2seg.start[0] = a2p1[0]; a2seg.start[1] = a2p1[1];
 	a2seg.end[0] = a2p2[0]; a2seg.end[1] = a2p2[1];
 	a2seg.shape.arc.center[0] = a2center[0]; a2seg.shape.arc.center[1] = a2center[1];
 	a2seg.shape.arc.adir = a2adir;
-
+	pb2_seg_arc_update_cache(NULL, &a2seg);
 
 	SEG2CARC(carc1, &a1seg);
 	SEG2CARC(carc2, &a2seg);
@@ -681,6 +683,7 @@ void pb2_raw_tangent_from_arc(rnd_vector_t dst, rnd_vector_t ap1, rnd_vector_t a
 	aseg.end[0] = ap2[0]; aseg.end[1] = ap2[1];
 	aseg.shape.arc.center[0] = center[0]; aseg.shape.arc.center[1] = center[1];
 	aseg.shape.arc.adir = adir;
+	pb2_seg_arc_update_cache(NULL, &aseg);
 
 	pb2_arc_tangent_from(dst, &aseg, from);
 }
