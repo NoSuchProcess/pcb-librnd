@@ -164,6 +164,44 @@ rnd_bool_t pa_is_node_on_curve(rnd_vnode_t *node, rnd_vnode_t *seg)
 	return rnd_false;
 }
 
+RND_INLINE int pa_curve_isc_arc_line(rnd_vnode_t *arc, rnd_vnode_t *line, rnd_vector_t i1, rnd_vector_t i2)
+{
+	return pb2_raw_isc_arc_line(
+		arc->point, arc->next->point, arc->curve.arc.center, arc->curve.arc.adir,
+		line->point, line->next->point,
+		i1, i2);
+}
+
+RND_INLINE int pa_curve_isc_arc_arc(rnd_vnode_t *arc1, rnd_vnode_t *arc2, rnd_vector_t i1, rnd_vector_t i2)
+{
+	return pb2_raw_isc_arc_arc(
+		arc1->point, arc1->next->point, arc1->curve.arc.center, arc1->curve.arc.adir,
+		arc2->point, arc2->next->point, arc2->curve.arc.center, arc2->curve.arc.adir,
+		i1, i2);
+}
+
+RND_INLINE int pa_curves_isc(rnd_vnode_t *a1, rnd_vnode_t *a2, rnd_vector_t i1, rnd_vector_t i2)
+{
+	switch(a1->flg.curve_type) {
+		case RND_VNODE_LINE:
+			switch(a2->flg.curve_type) {
+				case RND_VNODE_LINE: return rnd_vect_inters2(a1->point, a1->next->point, a2->point, a2->next->point, i1, i2);
+				case RND_VNODE_ARC: return pa_curve_isc_arc_line(a2, a1, i1, i2);
+			}
+			break;
+
+		case RND_VNODE_ARC:
+			switch(a2->flg.curve_type) {
+				case RND_VNODE_LINE: return pa_curve_isc_arc_line(a1, a2, i1, i2);
+				case RND_VNODE_ARC: return pa_curve_isc_arc_arc(a1, a2, i1, i2);
+			}
+			break;
+	}
+
+	return 0; /* invalid curve type */
+}
+
+
 
 void pa_calc_angle_nn(pa_angle_t *dst, rnd_vector_t PT, rnd_vector_t OTHER)
 {
