@@ -604,3 +604,70 @@ int pb2_raw_pt_on_arc(rnd_vector_t pt,  rnd_vector_t p1, rnd_vector_t p2, rnd_ve
 	return g2d_is_between_angles(pang, sa, ea);
 }
 
+/* copy gengeo2d results to rnd outpout */
+#undef ISC_OUT
+#define ISC_OUT(num) \
+do { \
+	if (num > 0) { \
+		isc_out1[0] = rnd_round(ip[0].x); \
+		isc_out1[1] = rnd_round(ip[0].y); \
+	} \
+	if (num > 1) { \
+		isc_out2[0] = rnd_round(ip[1].x); \
+		isc_out2[1] = rnd_round(ip[1].y); \
+	} \
+} while(0)
+
+int pb2_raw_isc_arc_line(rnd_vector_t ap1, rnd_vector_t ap2, rnd_vector_t center, int adir, rnd_vector_t lp1, rnd_vector_t lp2, rnd_vector_t isc_out1, rnd_vector_t isc_out2)
+{
+	pb2_seg_t aseg, lseg;
+	g2d_cline_t cline;
+	g2d_carc_t carc;
+	int num;
+	g2d_vect_t ip[2];
+
+	aseg.shape_type = RND_VNODE_ARC;
+	aseg.start[0] = ap1[0]; aseg.start[1] = ap1[1];
+	aseg.end[0] = ap2[0]; aseg.end[1] = ap2[1];
+	aseg.shape.arc.center[0] = center[0]; aseg.shape.arc.center[1] = center[1];
+	aseg.shape.arc.adir = adir;
+
+	lseg.shape_type = RND_VNODE_ARC;
+	lseg.start[0] = lp1[0]; lseg.start[1] = lp1[1];
+	lseg.end[0] = lp2[0]; lseg.end[1] = lp2[1];
+
+	SEG2CARC(carc, &aseg);
+	SEG2CLINE(cline, &lseg);
+
+	num = g2d_iscp_cline_carc(&cline, &carc,  ip, NULL, 0);
+	ISC_OUT(num);
+	return num;
+}
+
+int pb2_raw_isc_arc_arc(rnd_vector_t a1p1, rnd_vector_t a1p2, rnd_vector_t a1center, int a1adir, rnd_vector_t a2p1, rnd_vector_t a2p2, rnd_vector_t a2center, int a2adir, rnd_vector_t isc_out1, rnd_vector_t isc_out2)
+{
+	pb2_seg_t a1seg, a2seg;
+	g2d_carc_t carc1, carc2;
+	int num;
+	g2d_vect_t ip[2];
+
+	a1seg.shape_type = RND_VNODE_ARC;
+	a1seg.start[0] = a1p1[0]; a1seg.start[1] = a1p1[1];
+	a1seg.end[0] = a1p2[0]; a1seg.end[1] = a1p2[1];
+	a1seg.shape.arc.center[0] = a1center[0]; a1seg.shape.arc.center[1] = a1center[1];
+	a1seg.shape.arc.adir = a1adir;
+
+	a2seg.shape_type = RND_VNODE_ARC;
+	a2seg.start[0] = a2p1[0]; a2seg.start[1] = a2p1[1];
+	a2seg.end[0] = a2p2[0]; a2seg.end[1] = a2p2[1];
+	a2seg.shape.arc.center[0] = a2center[0]; a2seg.shape.arc.center[1] = a2center[1];
+	a2seg.shape.arc.adir = a2adir;
+
+
+	SEG2CARC(carc1, &a1seg);
+	SEG2CARC(carc2, &a2seg);
+
+	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip, NULL);
+	ISC_OUT(num);
+	return num;
+}
