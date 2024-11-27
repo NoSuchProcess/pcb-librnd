@@ -277,6 +277,13 @@ RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 	return rnd_false;
 }
 
+RND_INLINE rnd_bool both_endpoints_match(rnd_vnode_t *a1, rnd_vnode_t *a2)
+{
+	if (Vequ2(a1->point, a2->point) && Vequ2(a1->next->point, a2->next->point)) return 1;
+	if (Vequ2(a1->point, a2->next->point) && Vequ2(a1->next->point, a2->point)) return 1;
+	return 0;
+}
+
 /* returns rnd_true if contour is invalid: a self-touching contour is valid, but
    a self-intersecting contour is not. */
 RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
@@ -317,14 +324,59 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 		if (pa_pline_check_stub(a1, res))
 			return rnd_true;
 
+		/* check for invalid intersections */
 		do {
-			/* count invalid intersections */
-			if (pa_are_nodes_neighbours(a1, a2)) continue; /* neighbors are okay to intersect */
+			int neigh;
+
+			if (a1 == a2) continue;
+
+			neigh = pa_are_nodes_neighbours(a1, a2);
+			if (neigh && ((a1->flg.curve_type == RND_VNODE_LINE) && (a2->flg.curve_type == RND_VNODE_LINE)))
+				continue; /* neighboring lines are okay to intersect once or twice (overlap) so don't run expensive tests */
 
 			icnt = pa_curves_isc(a1, a2, i1, i2);
-			if (icnt == 0) continue;
+/*rnd_trace("@@@ icnt=%d types=%d %d\n", icnt, a1->flg.curve_type, a2->flg.curve_type);*/
 
-			/* two intersections; must be overlapping lines - we have to accept that, see test case fixedy3 */
+			if (icnt == 0) continue;
+			if ((icnt == 1) && neigh) continue; /* normal endpoint-endpoint isc */
+
+			if (icnt > 1) {
+				int bad = 0;
+
+				if ((a1->flg.curve_type == RND_VNODE_LINE) && (a2->flg.curve_type == RND_VNODE_LINE)) {
+					/* two intersections: (partially) overlapping lines - we have to accept that, see test case fixedy3 */
+				}
+				else if ((a1->flg.curve_type == RND_VNODE_ARC) && (a2->flg.curve_type == RND_VNODE_ARC)) {
+					/* arc-arc: */
+					if (!Vequ2(a1->curve.arc.center, a2->curve.arc.center)) {
+						/* two arcs intersecting in two points */
+						if (!both_endpoints_match(a1, a2)) /* O shaped case; test case: arc16 */
+							bad = 1;
+					}
+					else {
+						/* arcs on the same circle -> overlap, have to accept */
+					}
+				}
+				else {
+					/* line-arc */
+					if (!both_endpoints_match(a1, a2)) /* D shaped case; test case: arc16 */
+						bad = 1;
+				}
+
+				if (bad) {
+					if (a1->flg.curve_type == RND_VNODE_LINE)
+						PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
+					else
+						PA_CHK_ARC(a1);
+
+					if (a2->flg.curve_type == RND_VNODE_LINE)
+						PA_CHK_LINE(a2->point[0], a2->point[1], a2->next->point[0], a2->next->point[1]);
+					else
+						PA_CHK_ARC(a2);
+
+					return PA_CHK_ERROR(res, "neighbor curves intersect ", Pvnodep(a1), " and ", Pvnodep(a2), 0);
+				}
+			}
 #if 0
 			if (icnt > 1) {
 				PA_CHK_MARK(a1->point[0], a1->point[1]);
@@ -332,6 +384,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 				return PA_CHK_ERROR(res, "icnt > 1 (", Pint(icnt) ,") at ", Pnodep(a1), " or ",  Pnodep(a2), 0);
 			}
 #endif
+
 
 			/* we have one intersection; figure if it happens on a node next to a1
 			   or a2 and store them in hit1 and hit2 */
