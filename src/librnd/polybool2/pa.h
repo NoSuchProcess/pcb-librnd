@@ -70,6 +70,7 @@ typedef struct pa_seg_s {
 
 void rnd_poly_copy_edge_tree(rnd_pline_t *dst, const rnd_pline_t *src);
 
+#include "pb2_geo_raw.h"
 
 /* Returns whether pl intersects with the line segment specified in lx;ly; if
    it does, and cx and cy are not NULL, fill in cx;cy with the first
@@ -85,9 +86,6 @@ RND_INLINE void pa_pline_box_bump_pt(rnd_pline_t *pl, const rnd_vector_t pt)
 	if (pt[1]     < pl->ymin) pl->ymin = pt[1];
 	if ((pt[1]+1) > pl->ymax) pl->ymax = pt[1]+1;
 }
-
-/* coming from pb2_geo.c */
-void pb2_raw_arc_bbox(rnd_rtree_box_t *dst, rnd_vector_t p1, rnd_vector_t p2, rnd_vector_t center, int adir);
 
 RND_INLINE void pa_pline_box_bump_curve(rnd_pline_t *pl, rnd_vnode_t *v)
 {

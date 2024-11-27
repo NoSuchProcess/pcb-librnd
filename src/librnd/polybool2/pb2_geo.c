@@ -38,6 +38,8 @@ TODO("bignum: calc_t should be bignum, not double, especially with 64 bit coords
 #include <gengeo2d/carc.h>
 #include <gengeo2d/intersect.h>
 
+#include "pb2_geo_raw.h"
+
 /* returns 1 if sa's and sb's endpoints match (even if sa or sb is reversed) */
 RND_INLINE int seg_seg_end_match(pb2_seg_t *sa, pb2_seg_t *sb)
 {
