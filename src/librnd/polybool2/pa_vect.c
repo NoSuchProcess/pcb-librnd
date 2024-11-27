@@ -155,7 +155,7 @@ rnd_bool_t pa_is_node_on_arc(rnd_vnode_t *node, rnd_vnode_t *arc)
 	return pb2_raw_pt_on_arc(node->point, arc->point, arc->next->point, arc->curve.arc.center, arc->curve.arc.adir);
 }
 
-rnd_bool_t pa_is_node_on_seg(rnd_vnode_t *node, rnd_vnode_t *seg)
+rnd_bool_t pa_is_node_on_curve(rnd_vnode_t *node, rnd_vnode_t *seg)
 {
 	switch(seg->flg.curve_type) {
 		case RND_VNODE_LINE: return pa_is_node_on_line(node, seg, seg->next);

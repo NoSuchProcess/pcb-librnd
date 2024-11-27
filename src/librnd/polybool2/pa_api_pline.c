@@ -218,7 +218,7 @@ int pa_pline_is_point_inside(const rnd_pline_t *pl, rnd_vector_t pt)
 	return ctx.f;
 }
 
-int pa_pline_is_point_on_seg(pa_seg_t *s, rnd_vector_t pt)
+int pa_pline_is_point_on_curve(pa_seg_t *s, rnd_vector_t pt)
 {
 	pa_cin_ctx_t ctx;
 #define ON_EDGE_COOKIE 1234

@@ -106,7 +106,7 @@ RND_INLINE void pa_pline_box_bump_curve(rnd_pline_t *pl, rnd_vnode_t *v)
 
 int rnd_polyarea_boolean_free_nochk(rnd_polyarea_t *a_, rnd_polyarea_t *b_, rnd_polyarea_t **res, int op);
 
-int pa_pline_is_point_on_seg(pa_seg_t *s, rnd_vector_t pt);
+int pa_pline_is_point_on_curve(pa_seg_t *s, rnd_vector_t pt);
 
 void pa_calc_angle_nn(pa_angle_t *dst, rnd_vector_t PT, rnd_vector_t OTHER);
 

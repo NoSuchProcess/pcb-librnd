@@ -262,7 +262,7 @@ RND_INLINE rnd_bool pa_pline_check_stub(rnd_vnode_t *a1, pa_chk_res_t *res)
 
 	/* More expensive test: partly overlapping adjacent lines; checks if a1->next
 	   or a1->prev is on the other seg */
-	if (pa_is_node_on_seg(a1->next, a1->prev) || pa_is_node_on_seg(a1->prev, a1)) {
+	if (pa_is_node_on_curve(a1->next, a1->prev) || pa_is_node_on_curve(a1->prev, a1)) {
 		switch(a1->flg.curve_type) {
 			case RND_VNODE_LINE:
 				PA_CHK_LINE(a1->point[0], a1->point[1], a1->next->point[0], a1->next->point[1]);
