@@ -214,6 +214,10 @@ RND_INLINE void pa_curve_tangent(rnd_vector_t dst, rnd_vnode_t *vn, int which)
 			return;
 		case RND_VNODE_ARC:
 			pb2_raw_tangent_from_arc(dst, cvn->point, cvn->next->point, cvn->curve.arc.center, cvn->curve.arc.adir, vn->point);
+			if (which < 0) { /* preserve continous flow of directions, like for lines above */
+				dst[0] = -dst[0];
+				dst[1] = -dst[1];
+			}
 			return;
 	}
 	/* invalid curve type */
