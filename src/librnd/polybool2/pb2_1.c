@@ -489,6 +489,9 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 {
 	isc_ctx_t ictx = {0};
 
+	if (Vequ2(p1, p2))
+		return; /* don't create zero length line */
+
 	ictx.ctx = ctx;
 	ictx.seg.shape_type = RND_VNODE_LINE;
 	ictx.seg.start[0] = p1[0]; ictx.seg.start[1] = p1[1];
@@ -500,9 +503,33 @@ void pb2_1_map_seg_line(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_
 	pb2_1_map_any(ctx, &ictx, poly_id);
 }
 
-void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
+/* return whether ang is within the range (exclusive) described by start and
+   delta angles; also modifies ang to be between sa and ea */
+RND_INLINE int ang_sd_between(double *ang, double sa, double da)
+{
+	double ea = sa+da;
+
+	if (da > 0) {
+		if ((*ang) < sa) (*ang) += M_PI * 2.0;
+		return ((*ang) > sa) && ((*ang) < ea);
+	}
+	else {
+		if ((*ang) > sa) (*ang) -= M_PI * 2.0;
+		return ((*ang) < sa) && ((*ang) > ea);
+	}
+}
+
+typedef struct {
+	double ang;
+	rnd_vector_t pt;
+} sect_t;
+
+RND_INLINE void pb2_1_map_seg_arc_(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id, int need_check)
 {
 	isc_ctx_t ictx = {0};
+
+	if (Vequ2(p1, p2))
+		return; /* don't create zero length arc */
 
 	ictx.ctx = ctx;
 	ictx.seg.shape_type = RND_VNODE_ARC;
@@ -510,12 +537,70 @@ void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t
 	ictx.seg.end[0] = p2[0]; ictx.seg.end[1] = p2[1];
 	ictx.seg.shape.arc.center[0] = center[0]; ictx.seg.shape.arc.center[1] = center[1];
 	ictx.seg.shape.arc.adir = adir;
-
-	TODO("arc: split up vcrossing arcs into non-vcrossing arcs");
-
 	pb2_seg_arc_update_cache(ctx, &ictx.seg);
+
+	if (need_check) {
+		double sa = ictx.seg.shape.arc.start, da = ictx.seg.shape.arc.delta, r = ictx.seg.shape.arc.r;
+		const double bot = M_PI/2.0, top = M_PI*3.0/2.0;
+		sect_t sect[4];
+		int num_sects;
+
+		/* prepare to create 2, 3 or 4 sector endpoints, starting with p1, ending with p2 */
+		Vcpy2(sect[0].pt, p1);
+		sect[0].ang = sa;
+		num_sects = 1;
+
+		if (ang_sd_between(&bot, sa, da)) { /* hits bottom */
+			sect[num_sects].pt[0] = center[0];
+			sect[num_sects].pt[1] = center[1]+r;
+			sect[num_sects].ang = bot;
+			num_sects++;
+		}
+
+		if (ang_sd_between(&top, sa, da)) { /* hits top */
+			sect[num_sects].pt[0] = center[0];
+			sect[num_sects].pt[1] = center[1]-r;
+			sect[num_sects].ang = top;
+			num_sects++;
+		}
+
+		Vcpy2(sect[num_sects].pt, p2);
+		sect[num_sects].ang = sa+da;
+		num_sects++;
+
+		if (num_sects == 3) {
+			int need_swap = 0;
+			/* make sure top and bottom are ordered from start to end; this is the
+			   only place where angles can be out-of-order */
+			if (da > 0)
+				need_swap = (sect[1].ang > sect[2].ang);
+			else
+				need_swap = (sect[1].ang < sect[2].ang);
+
+			if (need_swap) {
+				SWAP(rnd_coord_t, sect[1].pt[0], sect[2].pt[0]);
+				SWAP(rnd_coord_t, sect[1].pt[1], sect[2].pt[1]);
+				SWAP(double, sect[1].ang, sect[2].ang);
+			}
+		}
+
+		assert(num_sects > 1);
+		assert(num_sects < 4);
+		if (num_sects > 1) pb2_1_map_seg_arc_(ctx, sect[0].pt, sect[1].pt, center, adir, poly_id, 0);
+		if (num_sects > 2) pb2_1_map_seg_arc_(ctx, sect[1].pt, sect[2].pt, center, adir, poly_id, 0);
+		if (num_sects > 3) pb2_1_map_seg_arc_(ctx, sect[2].pt, sect[3].pt, center, adir, poly_id, 0);
+		return;
+	}
+
+/*rnd_trace("arc add: %f..%f: %ld;%ld -> %ld;%ld\n", ictx.seg.shape.arc.start, ictx.seg.shape.arc.start + ictx.seg.shape.arc.delta, p1[0], p1[1], p2[0], p2[1]);*/
+
 	pb2_arc_bbox(&ictx.seg);
 	pb2_1_map_any(ctx, &ictx, poly_id);
+}
+
+void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t p2, const rnd_vector_t center, int adir, char poly_id)
+{
+	pb2_1_map_seg_arc_(ctx, p1, p2, center, adir, poly_id, 1);
 }
 
 
