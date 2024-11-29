@@ -710,11 +710,8 @@ RND_INLINE void pb2_1_handle_new_iscs(pb2_ctx_t *ctx)
 
 			/* remove one of two fully overlapping segments (merge them) */
 			if (num_isc == 2) {
-				int same = 0;
-				if (Vequ2(s1->start, s2->start) && Vequ2(s1->end, s2->end)) same = 1;
-				else if (Vequ2(s1->end, s2->start) && Vequ2(s1->start, s2->end)) same = 1;
 
-				if (same) {
+				if (seg_seg_olap(s1, s2)) {
 					/*pa_trace("  NEW ISC full overlap S", Plong(s1->uid), " S", Plong(s2->uid), ", discard S", Plong(s2->uid), "\n", 0);*/
 					seg_merge_into(s1, s2);
 					goto restart;
