@@ -71,6 +71,10 @@ RND_INLINE int pa_vertices_are_coaxial(rnd_vnode_t *node)
 	if ((node->prev->prev == node) || (node->prev == node))
 		return 0; /* less than 3 points in the polyline, can't be coaxial */
 
+	/* only lines could be coaxial */
+	if ((node->prev->flg.curve_type != RND_VNODE_LINE) || (node->prev->prev->flg.curve_type != RND_VNODE_LINE))
+		return 0;
+
 	dy = node->point[1] - node->prev->prev->point[1];
 	dx = node->prev->point[0] - node->prev->prev->point[0];
 	a = dx * dy;
