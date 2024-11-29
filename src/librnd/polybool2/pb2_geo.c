@@ -467,9 +467,6 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 #endif
 	}
 
-	assert(fabs(seg->shape.arc.cx - seg->shape.arc.center[0]) < 2);
-	assert(fabs(seg->shape.arc.cy - seg->shape.arc.center[1]) < 2);
-
 	sa = atan2((double)seg->start[1] - seg->shape.arc.cy, (double)seg->start[0] - seg->shape.arc.cx);
 	ea = atan2((double)seg->end[1] - seg->shape.arc.cy, (double)seg->end[0] - seg->shape.arc.cx);
 	seg->shape.arc.start = sa;
