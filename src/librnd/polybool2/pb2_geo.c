@@ -181,6 +181,15 @@ do { \
 	carc.delta = __seg__->shape.arc.delta; \
 } while(0)
 
+#define SEG2CARC_ORIGC(carc, seg) \
+do { \
+	pb2_seg_t *__seg__ = seg; \
+	carc.c.x = __seg__->shape.arc.cx; carc.c.y = __seg__->shape.arc.cy; \
+	carc.r = __seg__->shape.arc.r; \
+	carc.start = __seg__->shape.arc.start_origc; \
+	carc.delta = __seg__->shape.arc.delta_origc; \
+} while(0)
+
 /* copy gengeo2d results to rnd outpout */
 #define ISC_OUT(num) \
 do { \
@@ -227,9 +236,13 @@ RND_INLINE int pb2_isc_arc_arc(pb2_seg_t *arc1, pb2_seg_t *arc2, rnd_vector_t is
 
 	/* special case: arcs on the same circle; ignore high resolution centers in that case */
 	if (Vequ2(arc1->shape.arc.center, arc2->shape.arc.center) && (fabs(arc1->shape.arc.r - arc2->shape.arc.r) < 0.5)) {
-		carc1.c.x = carc2.c.x = arc1->shape.arc.center[0];
-		carc1.c.y = carc2.c.y = arc1->shape.arc.center[1];
-		carc1.r = carc2.r = arc1->shape.arc.r;
+		SEG2CARC_ORIGC(carc1, arc1);
+		SEG2CARC_ORIGC(carc2, arc2);
+		carc1.r = carc2.r = (arc1->shape.arc.r + arc2->shape.arc.r)/2.0;
+	}
+	else {
+		SEG2CARC(carc1, arc1);
+		SEG2CARC(carc2, arc2);
 	}
 
 	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip,  of);
@@ -399,22 +412,6 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 {
 	double sa, ea, r1, r2, ravg;
 
-	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
-	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
-	seg->shape.arc.start = sa;
-	if (seg->shape.arc.adir) {
-		/* Positive delta; CW in svg; CCW in gengeo and C */
-		if (ea < sa)
-			ea += 2 * G2D_PI;
-		seg->shape.arc.delta = ea - sa;
-	}
-	else {
-		/* Negative delta; CCW in svg; CW in gengeo and C */
-		if (ea > sa)
-			ea -= 2 * G2D_PI;
-		seg->shape.arc.delta = ea - sa;
-	}
-
 	r1 = rnd_vect_dist2(seg->start, seg->shape.arc.center);
 	if (r1 != 0)
 		r1 = sqrt(r1);
@@ -469,6 +466,47 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		pa_trace(" cent: ", Pdouble(seg->shape.arc.cx), " ", Pdouble(seg->shape.arc.cy), "\n",  0);
 #endif
 	}
+
+	assert(fabs(seg->shape.arc.cx - seg->shape.arc.center[0]) < 2);
+	assert(fabs(seg->shape.arc.cy - seg->shape.arc.center[1]) < 2);
+
+	sa = atan2((double)seg->start[1] - seg->shape.arc.cy, (double)seg->start[0] - seg->shape.arc.cx);
+	ea = atan2((double)seg->end[1] - seg->shape.arc.cy, (double)seg->end[0] - seg->shape.arc.cx);
+	seg->shape.arc.start = sa;
+	if (seg->shape.arc.adir) {
+		/* Positive delta; CW in svg; CCW in gengeo and C */
+		if (ea < sa)
+			ea += 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+	else {
+		/* Negative delta; CCW in svg; CW in gengeo and C */
+		if (ea > sa)
+			ea -= 2 * G2D_PI;
+		seg->shape.arc.delta = ea - sa;
+	}
+
+	/* compute the same thing for the original center as well, for the coaxial arc-arc intersection case */
+	sa = atan2(seg->start[1] - seg->shape.arc.center[1], seg->start[0] - seg->shape.arc.center[0]);
+	ea = atan2(seg->end[1] - seg->shape.arc.center[1], seg->end[0] - seg->shape.arc.center[0]);
+	seg->shape.arc.start_origc = sa;
+	if (seg->shape.arc.adir) {
+		/* Positive delta; CW in svg; CCW in gengeo and C */
+		if (ea < sa)
+			ea += 2 * G2D_PI;
+		seg->shape.arc.delta_origc = ea - sa;
+	}
+	else {
+		/* Negative delta; CCW in svg; CW in gengeo and C */
+		if (ea > sa)
+			ea -= 2 * G2D_PI;
+		seg->shape.arc.delta_origc = ea - sa;
+	}
+
+#if 0
+	rnd_trace("arc ends: %ld;%ld    %f;%f\n", seg->start[0], seg->start[1], seg->shape.arc.cx + cos(sa) * seg->shape.arc.r, seg->shape.arc.cy + sin(sa) * seg->shape.arc.r);
+	rnd_trace("          %ld;%ld    %f;%f\n", seg->end[0], seg->end[1], seg->shape.arc.cx + cos(ea) * seg->shape.arc.r, seg->shape.arc.cy + sin(ea) * seg->shape.arc.r);
+#endif
 }
 
 /*** common ***/
@@ -666,8 +704,15 @@ int pb2_raw_isc_arc_arc(rnd_vector_t a1p1, rnd_vector_t a1p2, rnd_vector_t a1cen
 	a2seg.shape.arc.adir = a2adir;
 	pb2_seg_arc_update_cache(NULL, &a2seg);
 
-	SEG2CARC(carc1, &a1seg);
-	SEG2CARC(carc2, &a2seg);
+	if (Vequ2(a1seg.shape.arc.center, a2seg.shape.arc.center) && (fabs(a1seg.shape.arc.r - a2seg.shape.arc.r) < 0.5)) {
+		SEG2CARC_ORIGC(carc1, &a1seg);
+		SEG2CARC_ORIGC(carc2, &a2seg);
+		carc1.r = carc2.r = (a1seg.shape.arc.r + a2seg.shape.arc.r)/2.0;
+	}
+	else {
+		SEG2CARC(carc1, &a1seg);
+		SEG2CARC(carc2, &a2seg);
+	}
 
 	num = g2d_iscp_carc_carc(&carc1, &carc2,  ip, NULL);
 	ISC_OUT(num);

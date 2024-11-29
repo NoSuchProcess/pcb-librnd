@@ -87,6 +87,7 @@ struct pb2_seg_s {
 			double cx, cy; /* accurate center point */
 			double r;
 			double start, delta; /* angles in radian, in C and gengeo2d coord system */
+			double start_origc, delta_origc; /* same angles but from the original, integer centers */
 		} arc;
 	} shape;
 
