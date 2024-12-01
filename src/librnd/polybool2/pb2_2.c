@@ -128,6 +128,10 @@ RND_INLINE pb2_face_t *pb2_2_map_faces(pb2_ctx_t *ctx, pb2_cgout_t *start)
 	} while(o != start);
 
 	area = pb2_2_prelim_face_area_bbox(&ctx->outtmp, &bbox, &count);
+	if (area == 0) {
+		assert(!"pb2_2_map_faces(): face area can not be zero since overlapping segments got removed");
+		return NULL;
+	}
 
 	if (area < 0)
 		return NULL; /* ignore the outer face */
