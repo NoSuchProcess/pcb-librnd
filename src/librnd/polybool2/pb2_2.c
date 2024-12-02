@@ -27,20 +27,9 @@
  *
  */
 
-RND_INLINE void pb2_2_prelim_face_area_bbox_(rnd_vector_t *p, rnd_vector_t *c, rnd_rtree_box_t *bbox, double *area)
-{
-	*area += ((double)(*p)[0] - (double)(*c)[0]) * ((double)(*p)[1] + (double)(*c)[1]);
-
-	if ((*c)[0]     < bbox->x1) bbox->x1 = (*c)[0];
-	if (((*c)[0]+1) > bbox->x2) bbox->x2 = (*c)[0]+1;
-	if ((*c)[1]     < bbox->y1) bbox->y1 = (*c)[1];
-	if (((*c)[1]+1) > bbox->y2) bbox->y2 = (*c)[1]+1;
-}
-
 RND_INLINE double pb2_2_prelim_face_area_bbox(vtp0_t *outs, rnd_rtree_box_t *bbox, long *count_out)
 {
 	long n, count = 0;
-	rnd_vector_t *p = NULL, *c, *first = NULL;
 	double area = 0;
 
 	if (outs->used == 0)
@@ -55,21 +44,21 @@ RND_INLINE double pb2_2_prelim_face_area_bbox(vtp0_t *outs, rnd_rtree_box_t *bbo
 
 		start = o->reverse ? gdl_last(&o->curve->segs) : gdl_first(&o->curve->segs);
 		for(s = start; s != NULL; s = o->reverse ? gdl_prev(&o->curve->segs, s) : gdl_next(&o->curve->segs, s)) {
-			c = o->reverse ? &s->end : &s->start;
+			double a = ((double)(s->start[0]) - (double)(s->end[0])) * ((double)(s->start)[1] + (double)(s->end[1]));
 
-			if (p != NULL) /* we don't have prev (p) on first iteration (n==0 and s==start) */
-				pb2_2_prelim_face_area_bbox_(p, c, bbox, &area);
+			if (o->reverse)
+				area -= a;
+			else
+				area += a;
+
+			if (s->bbox.x1  < bbox->x1) bbox->x1 = s->bbox.x1;
+			if (s->bbox.y1  < bbox->y1) bbox->y1 = s->bbox.y1;
+			if (s->bbox.x2  > bbox->x2) bbox->x2 = s->bbox.x2;
+			if (s->bbox.y2  > bbox->y2) bbox->y2 = s->bbox.y2;
 
 			count++;
-			p = c;
-			if (first == NULL)
-				first = c;
 		}
 	}
-
-	/* we didn't have prev (p) on first iteration - but now we have the
-	   last point in p==c and still remember the first */
-	pb2_2_prelim_face_area_bbox_(p, first, bbox, &area);
 
 	*count_out = count;
 	return area;
