@@ -410,7 +410,8 @@ RND_INLINE pb2_slope_t pb2_slope_arc(pb2_seg_t *seg, rnd_vector_t from)
 
 RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 {
-	double sa, ea, r1, r2, ravg;
+	double sa, ea, r1, r2, ravg, posdelta;
+	int side;
 
 	r1 = rnd_vect_dist2(seg->start, seg->shape.arc.center);
 	if (r1 != 0)
@@ -459,6 +460,7 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 		seg->shape.arc.r = r1;
 		seg->shape.arc.cx = seg->shape.arc.center[0];
 		seg->shape.arc.cy = seg->shape.arc.center[1];
+		ravg = r1; /* used in area computation below */
 
 #if 0
 		pa_trace(" uarc S", Plong(PB2_UID_GET(seg)), " ", Pvect(seg->start), " -> ", Pvect(seg->end), 0);
@@ -499,6 +501,15 @@ RND_INLINE void pb2_seg_arc_update_cache(pb2_ctx_t *ctx, pb2_seg_t *seg)
 			ea -= 2 * G2D_PI;
 		seg->shape.arc.delta_origc = ea - sa;
 	}
+
+	/* sector area is used to compensate polyline area which is computed as if
+	   there was a straight line between start and end;  */
+	posdelta = seg->shape.arc.delta > 0 ? seg->shape.arc.delta : -seg->shape.arc.delta;
+	seg->shape.arc.sect_area = ravg*ravg/2 * (posdelta - sin(posdelta));
+
+	/* CCW always means it's cutting into the poly -> negative area */
+	if (seg->shape.arc.adir == 0)
+		seg->shape.arc.sect_area = -seg->shape.arc.sect_area;
 
 #if 0
 	rnd_trace("arc ends: %ld;%ld    %f;%f\n", seg->start[0], seg->start[1], seg->shape.arc.cx + cos(sa) * seg->shape.arc.r, seg->shape.arc.cy + sin(sa) * seg->shape.arc.r);

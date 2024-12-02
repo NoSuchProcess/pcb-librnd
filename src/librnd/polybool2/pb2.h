@@ -88,6 +88,7 @@ struct pb2_seg_s {
 			double r;
 			double start, delta; /* angles in radian, in C and gengeo2d coord system */
 			double start_origc, delta_origc; /* same angles but from the original, integer centers */
+			double sect_area; /* signed area (negative if arc sector cuts away from the polyline area, bending inward) */
 		} arc;
 	} shape;
 
