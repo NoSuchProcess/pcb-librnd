@@ -193,6 +193,7 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 		do {
 			/* calculate area for orientation */
 			TODO("arc: area compensation? or just approx with middle point?");
+			TODO("missing /2");
 			area += ((double)p->point[0] - (double)c->point[0]) * ((double)p->point[1] + (double)c->point[1]);
 			pa_pline_box_bump_curve(pl, c);
 			pl->Count++;

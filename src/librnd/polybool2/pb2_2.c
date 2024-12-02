@@ -44,7 +44,7 @@ RND_INLINE double pb2_2_prelim_face_area_bbox(vtp0_t *outs, rnd_rtree_box_t *bbo
 
 		start = o->reverse ? gdl_last(&o->curve->segs) : gdl_first(&o->curve->segs);
 		for(s = start; s != NULL; s = o->reverse ? gdl_prev(&o->curve->segs, s) : gdl_next(&o->curve->segs, s)) {
-			double a = ((double)(s->start[0]) - (double)(s->end[0])) * ((double)(s->start)[1] + (double)(s->end[1]));
+			double a = ((double)(s->start[0]) - (double)(s->end[0])) * ((double)(s->start)[1] + (double)(s->end[1])) / 2.0;
 
 			/* curve area compensation */
 			switch(s->shape_type) {
