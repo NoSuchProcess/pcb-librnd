@@ -176,14 +176,17 @@ void pa_pline_optimize(rnd_pline_t *pl)
 
 RND_INLINE double pa_vnode_curve_area(rnd_vnode_t *v)
 {
+	double a;
+
 	switch(v->flg.curve_type) {
 		case RND_VNODE_LINE: return 0;
 		case RND_VNODE_ARC:
-			return pa_sect_area(
+			a = pa_sect_area(
 				v->point[0], v->point[1],
 				v->next->point[0], v->next->point[1],
 				v->curve.arc.center[0], v->curve.arc.center[1],
 				v->curve.arc.adir);
+			return (v->curve.arc.adir == 0) ? -a : +a;
 	}
 	return 0;
 }
