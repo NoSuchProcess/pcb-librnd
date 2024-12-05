@@ -872,11 +872,29 @@ RND_INLINE void curve_glue_segs(pb2_ctx_t *ctx, pb2_seg_t *sa, pb2_seg_t *sb)
 static int cmp_cgout_angle(const void *a_, const void *b_)
 {
 	const pb2_cgout_t *a = a_, *b = b_;
+	pa_angle_t anga = a->angle, angb = b->angle;
 
-	/* no overlapping curves: overlapping segs are all removed already */
-	assert(a->angle != b->angle);
+	/* overlapping segs are already removed, matching angle can happen only
+	   on line-arc relation; use the arc's second angle in that case, which
+	   is curving inside */
+	if (anga == angb) {
+		pb2_seg_t *sega, *segb;
 
-	return (a->angle < b->angle) ? -1 : +1;
+		/* this is possible because of #anchor1 below */
+		sega = a->node;
+		segb = b->node;
+
+		if (sega->shape_type == RND_VNODE_ARC)
+			anga = a->angle2;
+		else if (segb->shape_type == RND_VNODE_ARC)
+			angb = b->angle2;
+		else {
+			assert(!"line-line angle match; should not have overlapping lines here");
+		}
+	}
+
+
+	return (anga < angb) ? -1 : +1;
 }
 
 /* Create a new node from a list of segments starting or ending at that node.
@@ -916,10 +934,10 @@ RND_INLINE pb2_cgnode_t *cg_create_node_from_segs(pb2_ctx_t *ctx, rnd_vector_t a
 		if (Vequ2(seg->end, at)) seg->gr_end = 1;
 		assert(seg->gr_start || seg->gr_end);
 
-		node->edges[n].node = (pb2_cgnode_t *)seg; /* temporarily store the segment for postprocessing */
+		node->edges[n].node = (pb2_cgnode_t *)seg; /* temporarily store the segment for postprocessing (#anchor1) */
 		PB2_UID_SET(node->edges+n);
 
-		seg_angle_from(&node->edges[n].angle, seg, at);
+		seg_angles_from(&node->edges[n].angle, &node->edges[n].angle2, seg, at);
 	}
 
 	qsort(node->edges, node->num_edges, sizeof(pb2_cgout_t), cmp_cgout_angle);

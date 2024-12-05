@@ -118,13 +118,14 @@ RND_INLINE void pb2_line_tangent_from(rnd_vector_t dst, pb2_seg_t *seg, rnd_vect
 	}
 }
 
-RND_INLINE void pb2_line_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+RND_INLINE void pb2_line_angles_from(pa_angle_t *dst1, pa_angle_t *dst2, pb2_seg_t *seg, rnd_vector_t from)
 {
 	TODO("bignum: this is not correct: for 64 bits we need higher precision angles than doubles");
 	if (Vequ2(seg->start, from))
-		pa_calc_angle_nn(dst, from, seg->end);
+		pa_calc_angle_nn(dst1, from, seg->end);
 	else
-		pa_calc_angle_nn(dst, from, seg->start);
+		pa_calc_angle_nn(dst1, from, seg->start);
+	*dst2 = -4242; /* shall not be used */
 }
 
 /* vector slope used to compare direction vector to segment in step 3 point-in-poly */
@@ -377,16 +378,24 @@ RND_INLINE void pb2_arc_tangent_from(rnd_vector_t dst, pb2_seg_t *seg, rnd_vecto
 }
 
 /* Return tangential "angle" at endpoint "from" */
-RND_INLINE void pb2_arc_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+RND_INLINE void pb2_arc_angles_from(pa_angle_t *dst1, pa_angle_t *dst2, pb2_seg_t *seg, rnd_vector_t from)
 {
-	rnd_vector_t norm, tang;
+	rnd_vector_t norm, tang, radial, between;
 
 	pb2_arc_tangent_from(norm, seg, from);
 
 	tang[0] = from[0] + norm[0];
 	tang[1] = from[1] + norm[1];
 
-	pa_calc_angle_nn(dst, from, tang);
+	/* first angle is tangential */
+	pa_calc_angle_nn(dst1, from, tang);
+
+	/* second angle is something in between tangential and radial, always pointing inside the arc area */
+	radial[0] = from[0] - seg->shape.arc.center[0];
+	radial[1] = from[1] - seg->shape.arc.center[1];
+	between[0] = (radial[0] + tang[0])/2;
+	between[1] = (radial[1] + tang[1])/2;
+	pa_calc_angle_nn(dst2, from, between);
 }
 
 
@@ -542,11 +551,11 @@ RND_INLINE void pb2_seg_tangent_from(rnd_vector_t dst, pb2_seg_t *seg, rnd_vecto
 
 
 /* Fill in dst with the slope "angle" of the segment at its endpoint "from" */
-RND_INLINE void seg_angle_from(pa_angle_t *dst, pb2_seg_t *seg, rnd_vector_t from)
+RND_INLINE void seg_angles_from(pa_angle_t *dst1, pa_angle_t *dst2, pb2_seg_t *seg, rnd_vector_t from)
 {
 	switch(seg->shape_type) {
-		case RND_VNODE_LINE: pb2_line_angle_from(dst, seg, from); return;
-		case RND_VNODE_ARC: pb2_arc_angle_from(dst, seg, from); return;
+		case RND_VNODE_LINE: pb2_line_angles_from(dst1, dst2, seg, from); return;
+		case RND_VNODE_ARC: pb2_arc_angles_from(dst1, dst2, seg, from); return;
 	}
 	abort(); /* internal error: invalid seg shape_type */
 }

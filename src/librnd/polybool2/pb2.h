@@ -108,7 +108,8 @@ struct pb2_cgout_s { /* outgoing edge from a node; not allocated separately, par
 	unsigned reverse:1;     /* when 1, end->start so this out is part of curve->out_end */
 	unsigned corner_mark:1; /* when 1, the corner/angle between this curve and the next is marked */
 	int nd_idx;             /* index of this out within cgnode->edges[] */
-	pa_angle_t angle;
+	pa_angle_t angle;       /* tangential angle of the segment going out from this node */
+	pa_angle_t angle2;      /* arc segments: angle in between tangential and radial, always pointing inward the seg */
 	PB2_UID
 };
 
