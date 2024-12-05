@@ -25,10 +25,10 @@
  *
  */
 
+#include <librnd/rnd_config.h>
 #include <assert.h>
+#include <math.h>
 
-#include <librnd/core/config.h>
-#include <librnd/core/math_helper.h>
 
 #include "arc_area.h"
 #include "arc_area_factor.h"

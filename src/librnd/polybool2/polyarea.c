@@ -16,6 +16,7 @@
 #include "pa.h"
 #include "pa_prints.h"
 
+#include "arc_area.c"
 #include "pa_math.c"
 #include "pa_vect.c"
 #include "pa_debug.c"
