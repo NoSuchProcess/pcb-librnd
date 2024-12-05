@@ -174,6 +174,20 @@ void pa_pline_optimize(rnd_pline_t *pl)
 	}
 }
 
+RND_INLINE double pa_vnode_curve_area(rnd_vnode_t *v)
+{
+	switch(v->flg.curve_type) {
+		case RND_VNODE_LINE: return 0;
+		case RND_VNODE_ARC:
+			return pa_sect_area(
+				v->point[0], v->point[1],
+				v->next->point[0], v->next->point[1],
+				v->curve.arc.center[0], v->curve.arc.center[1],
+				v->curve.arc.adir);
+	}
+	return 0;
+}
+
 void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 {
 	double area = 0;
@@ -191,9 +205,11 @@ void pa_pline_update(rnd_pline_t *pl, rnd_bool optimize)
 	p = (c = pl->head)->prev;
 	if (c != p) {
 		do {
-			/* calculate area for orientation */
-			TODO("arc: area compensation? or just approx with middle point?");
+			/* calculate area for orientation, including curve type extras */
 			area += ((double)p->point[0] - (double)c->point[0]) * ((double)p->point[1] + (double)c->point[1]) / 2.0;
+			area += pa_vnode_curve_area(p);
+
+			/* update bbox and corner count */
 			pa_pline_box_bump_curve(pl, c);
 			pl->Count++;
 		}
