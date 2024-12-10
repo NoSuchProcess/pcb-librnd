@@ -38,7 +38,7 @@ librnd_includes: librnd_includes.o librnd_objs
 
 librd_includes.o: librnd_includes.c includes
 
-$(LIBRND) includes: ../../src/Makefile
+$(LIBRND_A) includes: ../../src/Makefile
 	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 clean:
