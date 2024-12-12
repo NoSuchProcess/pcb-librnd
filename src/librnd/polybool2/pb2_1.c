@@ -547,6 +547,11 @@ RND_INLINE void pb2_1_map_seg_arc_(pb2_ctx_t *ctx, const rnd_vector_t p1, const 
 		sect_t sect[4];
 		int num_sects;
 
+		if (sa < 0)
+			sa += M_PI*2;
+		else if (sa > M_PI*2)
+			sa -= M_PI*2;
+
 		/* prepare to create 2, 3 or 4 sector endpoints, starting with p1, ending with p2 */
 		Vcpy2(sect[0].pt, p1);
 		sect[0].ang = sa;
@@ -570,7 +575,7 @@ RND_INLINE void pb2_1_map_seg_arc_(pb2_ctx_t *ctx, const rnd_vector_t p1, const 
 		sect[num_sects].ang = sa+da;
 		num_sects++;
 
-		if (num_sects == 3) {
+		if (num_sects == 4) {
 			int need_swap = 0;
 			/* make sure top and bottom are ordered from start to end; this is the
 			   only place where angles can be out-of-order */
@@ -587,7 +592,7 @@ RND_INLINE void pb2_1_map_seg_arc_(pb2_ctx_t *ctx, const rnd_vector_t p1, const 
 		}
 
 		assert(num_sects > 1);
-		assert(num_sects < 4);
+		assert(num_sects < 5);
 		if (num_sects > 1) pb2_1_map_seg_arc_(ctx, sect[0].pt, sect[1].pt, center, adir, poly_id, 0);
 		if (num_sects > 2) pb2_1_map_seg_arc_(ctx, sect[1].pt, sect[2].pt, center, adir, poly_id, 0);
 		if (num_sects > 3) pb2_1_map_seg_arc_(ctx, sect[2].pt, sect[3].pt, center, adir, poly_id, 0);
