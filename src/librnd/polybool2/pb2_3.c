@@ -374,6 +374,38 @@ int pb2_face_polarity_at(pb2_ctx_t *ctx, rnd_vector_t pt, rnd_vector_t direction
 	return res;
 }
 
+/* returns whether seg is a right curving arc from pt */
+RND_INLINE int right_curving_arc(pb2_seg_t *seg, rnd_vector_t pt)
+{
+	/* accept arcs that have a point right to pt; as pt must be the rightmost
+	   corner of the face, this is possible only if the arc is curving right
+	   of pt */
+	return (seg->shape_type == RND_VNODE_ARC) && seg->shape.arc.right_curving;
+}
+
+/* polarity vector for a right curving arc is its tangent vector modified to
+   slightly point in */
+RND_INLINE void polarity_pt_right_curving_arc(pb2_face_t *f, pb2_seg_t *seg, rnd_vector_t tang, rnd_vector_t pt)
+{
+	assert(tang[0] >= 0);
+
+	f->polarity_dir[0] = tang[0]*1000-1;
+	f->polarity_dir[1] = tang[1]*1000;
+
+	if (f->polarity_dir[1] == 0) {
+		if (seg->bbox.y2 > pt[1])
+			f->polarity_dir[1] = 1;
+		else if (seg->bbox.y1 < pt[1])
+			f->polarity_dir[1] = -1;
+		else {
+			assert(!"zero length arc");
+			f->polarity_dir[0] = -1000;
+			f->polarity_dir[1] = 0;
+		}
+	}
+
+}
+
 /* Find the lowest rightmost point of f and put it in f->polarity_pt and f->polarity_dir */
 RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 {
@@ -410,7 +442,25 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 	pb2_seg_tangent_from(tmpl, seg2, best);
 	pb2_seg_tangent_from(tmpr, seg1, best);
 
-
+	/* we are at a right-most corner, but right curving arcs still can cause
+	   a concave corner, handle that differently */
+	if (right_curving_arc(seg1, best)) {
+		if (right_curving_arc(seg2, best)) {
+			/* both are right curving; pick the rightmost one */
+			if (seg1->bbox.x2 > seg2->bbox.x2)
+				polarity_pt_right_curving_arc(f, seg1, tmpr, best);
+			else
+				polarity_pt_right_curving_arc(f, seg2, tmpl, best);
+		}
+		else {
+			/* seg1 is the only right curving arc */
+			polarity_pt_right_curving_arc(f, seg1, tmpr, best);
+		}
+	}
+	else if (right_curving_arc(seg2, best)) {
+		polarity_pt_right_curving_arc(f, seg2, tmpl, best);
+	}
+	else { /* normal cases where tangent-mid will have an usable result */
 	if (!need_norm) {
 		/* optimization: line-line corner, cheaper method with no normalization */
 		best_left[0] = best[0] + tmpl[0];
@@ -466,13 +516,15 @@ RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 			f->polarity_dir[1] = (ldy + rdy) * 100000;
 		}
 	}
-
 	/* horizontal direction vector is invalid, the ray has to be shifted a tiny
 	   bit up or down */
 	if (f->polarity_dir[1] == 0) {
 		f->polarity_dir[0] = -1000000;
 		f->polarity_dir[1] = 1;
 	}
+
+	}
+
 
 	if (pb2_face_polarity_at_verbose) pa_trace("  dir_end=", Pvect(dir_end), " dir=", Pvect(f->polarity_dir), "\n", 0);
 
