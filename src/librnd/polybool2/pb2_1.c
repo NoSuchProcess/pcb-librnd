@@ -881,8 +881,8 @@ static int cmp_cgout_angle(const void *a_, const void *b_)
 		pb2_seg_t *sega, *segb;
 
 		/* this is possible because of #anchor1 below */
-		sega = a->node;
-		segb = b->node;
+		sega = (pb2_seg_t *)a->node;
+		segb = (pb2_seg_t *)b->node;
 
 		if (sega->shape_type == RND_VNODE_ARC)
 			anga = a->angle2;
