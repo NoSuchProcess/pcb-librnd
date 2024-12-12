@@ -267,6 +267,19 @@ RND_INLINE void pb2_arc_bbox(pb2_seg_t *arc)
 
 	SEG2CARC(carc, arc);
 	bb = g2d_carc_bbox(&carc);
+
+	/* compute .right_curving; the only way an arc can be right curving is
+	   that it has the point for angle 0 in between the start and stop angles.
+	   In any other setup either of the endpoints would be the rightmost point. */
+	if (carc.start < 0) carc.start += 2*G2D_PI;
+	else if (carc.start > 2*G2D_PI) carc.start -= 2*G2D_PI;
+	if (carc.delta > 0)
+		arc->shape.arc.right_curving = ((carc.start+carc.delta) > 2*G2D_PI);
+	else if (carc.delta < 0)
+		arc->shape.arc.right_curving = ((carc.start+carc.delta) < 0);
+	else /* delta == 0 */
+		arc->shape.arc.right_curving = 0;
+
 	arc->bbox.x1 = floor(bb.p1.x); arc->bbox.y1 = floor(bb.p1.y);
 	arc->bbox.x2 = ceil(bb.p2.x); arc->bbox.y2 = ceil(bb.p2.y);
 }
