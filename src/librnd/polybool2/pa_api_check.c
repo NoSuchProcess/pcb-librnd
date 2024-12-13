@@ -455,78 +455,51 @@ rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a)
 }
 
 #ifndef NDEBUG
-static void rnd_poly_valid_report(rnd_pline_t *c, rnd_vnode_t *pl, pa_chk_res_t *chk)
+static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 {
-	rnd_vnode_t *v, *n;
 	rnd_coord_t minx = RND_COORD_MAX, miny = RND_COORD_MAX, maxx = -RND_COORD_MAX, maxy = -RND_COORD_MAX;
-	int small;
+	int small, MR;
+	FILE *F;
+	double fill_opacity=0.4, poly_bloat = 1, SW;
+	const char *clr = "green";
+
+
+	F = stderr;
 
 #define is_small(v)  (((v) > -100000) && ((v) < 100000))
 #define update_minmax(min, max, val) \
 	if (val < min) min = val; \
 	if (val > max) max = val;
+
+	fprintf(F, "<?xml version=\"1.0\"?>\n");
+	fprintf(F, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"1000\" height=\"1000\" viewBox=\"0 0 1000 1000\">\n");
+
 	if (chk != NULL)
-		fprintf(stderr, "Details: %s\n", chk->msg);
-	fprintf(stderr, "!!!animator start\n");
-	v = pl;
-	do {
-		n = v->next;
-		update_minmax(minx, maxx, v->point[0]);
-		update_minmax(miny, maxy, v->point[1]);
-		update_minmax(minx, maxx, n->point[0]);
-		update_minmax(miny, maxy, n->point[1]);
-	} while ((v = v->next) != pl);
+		fprintf(stderr, "<!-- Details: %s -->\n", chk->msg);
 
 	small = is_small(minx) && is_small(miny) && is_small(maxx) && is_small(maxy);
 
-	fprintf(stderr, "scale 1 -1\n");
-
-#ifdef RND_API_VER
-	if (!small)
-		rnd_fprintf(stderr, "viewport %mm %mm - %mm %mm\n", minx, miny, maxx, maxy);
-	else
-#endif
-		fprintf(stderr, "viewport %ld %ld - %ld %ld\n", (long)minx, (long)miny, (long)maxx, (long)maxy);
-
-	fprintf(stderr, "frame\n");
-	v = pl;
-	do {
-		n = v->next;
-TODO("arc: draw contour arcs");
-#ifdef RND_API_VER
-		if (!small)
-			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", v->point[0], v->point[1], n->point[0], n->point[1]);
-		else
-#endif
-			fprintf(stderr, "line %ld %ld %ld %ld\n", (long)v->point[0], (long)v->point[1], (long)n->point[0], (long)n->point[1]);
-	}
-	while ((v = v->next) != pl);
-
-	if ((chk != NULL) && (chk->marks > 0)) {
-		int n, MR;
-
+	fprintf(F, "\n<g fill-rule=\"even-odd\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\" fill-opacity=\"%.3f\" stroke-opacity=\"%.3f\">\n<path d=\"", poly_bloat, clr, clr, fill_opacity, fill_opacity*2);
+	pb2_svg_print_pline(F, c);
+	fprintf(F, "\n\"/></g>\n");
 
 #ifdef RND_API_VER
 		MR = small ? 100 : RND_MM_TO_COORD(0.05);
+		SW = small ? 10 : RND_MM_TO_COORD(0.005);
 #else
 		MR = small ? 100 : 1000;
+		SW = small ? 10 : 100;
 #endif
 
-		fprintf(stderr, "color #770000\n");
+	if ((chk != NULL) && (chk->marks > 0)) {
+		int n;
+
 		for(n = 0; n < chk->marks; n++) {
-#ifdef RND_API_VER
-			if (!small) {
-				rnd_fprintf(stderr, "! X at %#mm %#mm\n", (long)chk->x[n], (long)chk->y[n]);
-				rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);
-				rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]+MR, chk->x[n]+MR, chk->y[n]-MR);
-			}
-			else
-#endif
-			{
-				fprintf(stderr, "! X at %ld %ld\n", (long)chk->x[n], (long)chk->y[n]);
-				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]-MR, (long)chk->x[n]+MR, (long)chk->y[n]+MR);
-				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x[n]-MR, (long)chk->y[n]+MR, (long)chk->x[n]+MR, (long)chk->y[n]-MR);
-			}
+			rnd_fprintf(F, "<!-- X at %#mm %#mm-->\n", (long)chk->x[n], (long)chk->y[n]);
+			fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"red\"/>\n",
+				(long)chk->x[n]-MR, (long)chk->y[n]-MR, (long)chk->x[n]+MR, (long)chk->y[n]+MR, SW);
+			fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"red\"/>\n",
+				(long)chk->x[n]-MR, (long)chk->y[n]+MR, (long)chk->x[n]+MR, (long)chk->y[n]-MR, SW);
 		}
 	}
 
@@ -534,28 +507,18 @@ TODO("arc: draw contour arcs");
 		int n;
 		fprintf(stderr, "color #990000\n");
 		for(n = 0; n < chk->lines; n++)
-#ifdef RND_API_VER
-			if (!small)
-				rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x1[n], chk->y1[n], chk->x2[n], chk->y2[n]);
-			else
-#endif
-				fprintf(stderr, "line %ld %ld %ld %ld\n", (long)chk->x1[n], (long)chk->y1[n], (long)chk->x2[n], (long)chk->y2[n]);
+			fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"purple\"/>\n",
+				(long)chk->x1[n], (long)chk->y1[n], (long)chk->x2[n], (long)chk->y2[n], SW);
 	}
 
 	if ((chk != NULL) && (chk->arcs > 0)) {
 		int n;
-		fprintf(stderr, "color #990000\n");
 		for(n = 0; n < chk->arcs; n++)
-#ifdef RND_API_VER
-			if (!small)
-				rnd_fprintf(stderr, "circle %#mm %#mm %#mm 20\n", chk->cx[n], chk->cy[n], (rnd_coord_t)chk->r[n]);
-			else
-#endif
-				fprintf(stderr, "circle %ld %ld %.2f 20\n", (long)chk->cx[n], (long)chk->cy[n], chk->r[n]);
+			fprintf(F, " <circle cx=\"%ld\" cy=\"%ld\" r=\"%ld\" stroke=\"none\" fill=\"purple\" />\n",
+				(long)chk->cx[n], (long)chk->cy[n], (long)chk->r[n]);
 	}
 
-	fprintf(stderr, "flush\n");
-	fprintf(stderr, "!!!animator end\n");
+	fprintf(F, "</svg>\n");
 
 #undef update_minmax
 #undef is_small
@@ -593,7 +556,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	if (p->contours->flg.orient == RND_PLF_INV) {
 #ifndef NDEBUG
 		fprintf(stderr, "Invalid Outer pline: wrong orientation (shall be positive)\n");
-		rnd_poly_valid_report(p->contours, p->contours->head, NULL);
+		rnd_poly_valid_report(p->contours, NULL);
 #endif
 		return rnd_false;
 	}
@@ -608,7 +571,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	if (pa_pline_check_(p->contours, &chk)) {
 #ifndef NDEBUG
 		fprintf(stderr, "Invalid Outer pline: self-intersection\n");
-		rnd_poly_valid_report(p->contours, p->contours->head, &chk);
+		rnd_poly_valid_report(p->contours, &chk);
 #endif
 		return rnd_false;
 	}
@@ -618,7 +581,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 		if (n->flg.orient == RND_PLF_DIR) {
 #ifndef NDEBUG
 			fprintf(stderr, "Invalid Inner (hole): pline orient (shall be negative)\n");
-			rnd_poly_valid_report(n, n->head, NULL);
+			rnd_poly_valid_report(n, NULL);
 #endif
 			return rnd_false;
 		}
@@ -631,14 +594,14 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 		if (pa_pline_check_(n, &chk)) {
 #ifndef NDEBUG
 			fprintf(stderr, "Invalid Inner (hole): self-intersection\n");
-			rnd_poly_valid_report(n, n->head, &chk);
+			rnd_poly_valid_report(n, &chk);
 #endif
 			return rnd_false;
 		}
 		if ((p->contours->tree != NULL) && (!pa_pline_inside_pline(p->contours, n))) {
 #ifndef NDEBUG
 			fprintf(stderr, "Invalid Inner (hole): overlap with outer\n");
-			rnd_poly_valid_report(n, n->head, NULL);
+			rnd_poly_valid_report(n, NULL);
 #endif
 			return rnd_false;
 		}
@@ -656,7 +619,7 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 			if ((ires == PA_ISLAND_ISC_CROSS) || (ires == PA_ISLAND_ISC_IN)) {
 #ifndef NDEBUG
 				fprintf(stderr, "Invalid Inner (hole): overlaps with another hole\n");
-				rnd_poly_valid_report(n, n->head, NULL);
+				rnd_poly_valid_report(n, NULL);
 #endif
 				return rnd_false;
 			}
