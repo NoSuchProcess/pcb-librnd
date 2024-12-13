@@ -523,7 +523,6 @@ static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 
 	if ((chk != NULL) && (chk->lines > 0)) {
 		int n;
-		fprintf(stderr, "color #990000\n");
 		for(n = 0; n < chk->lines; n++)
 			fprintf(F, " <line x1=\"%ld\" y1=\"%ld\" x2=\"%ld\" y2=\"%ld\" stroke-width=\"%.3f\" stroke=\"purple\"/>\n",
 				(long)chk->x1[n], (long)chk->y1[n], (long)chk->x2[n], (long)chk->y2[n], SW);
