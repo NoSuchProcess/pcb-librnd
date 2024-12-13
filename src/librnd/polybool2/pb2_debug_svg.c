@@ -275,7 +275,7 @@ static void svg_print_poly_contour_node(FILE *F, const rnd_vnode_t *v)
 		case RND_VNODE_ARC:
 			{
 				rnd_vnode_t *vp = v->prev;
-				double r, dx, dy;
+				double r, dx, dy, sx, sy, ex, ey, cx, cy, cp;
 				int large, sweep = vp->curve.arc.adir;
 
 				dx = vp->curve.arc.center[0] - v->point[0];
@@ -285,8 +285,14 @@ static void svg_print_poly_contour_node(FILE *F, const rnd_vnode_t *v)
 					break;
 				r = sqrt(r);
 
-				TODO("arc: this should be: large = delta_angle > 180");
-				large = 0;
+				/* decide if sweep is larger than 180 deg: e.g. if center is
+				   right-of start-end and it's CCW it is large */
+				sx = vp->point[0]; sy = vp->point[1];
+				ex = v->point[0]; ey = v->point[1];
+				cx = vp->curve.arc.center[0]; cy = vp->curve.arc.center[1];
+
+				cp = (ex - sx)*(cy - sy) - (ey - sy)*(cx - sx);
+				large = ((cp > 0) != sweep);
 
 				fprintf(F, " A %.1f,%.1f 0 %d %d %ld,%ld", r, r, large, sweep, (long)v->point[0], (long)v->point[1]);
 			}
