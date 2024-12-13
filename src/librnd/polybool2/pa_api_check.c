@@ -74,6 +74,7 @@ typedef struct {
 #endif
 } pa_chk_res_t;
 
+#define CHK_RES_INIT(chk) chk.msg[0] = chk.marks = chk.lines = chk.arcs = 0
 
 #ifndef NDEBUG
 /* error reporting: remember offending objects */
@@ -451,6 +452,7 @@ RND_INLINE rnd_bool pa_pline_check_(rnd_pline_t *a, pa_chk_res_t *res)
 rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a)
 {
 	pa_chk_res_t res;
+	CHK_RES_INIT(res);
 	return pa_pline_check_(a, &res);
 }
 
@@ -532,6 +534,8 @@ rnd_bool rnd_poly_valid_island(rnd_polyarea_t *p)
 	rnd_rtree_it_t it;
 	rnd_rtree_box_t bbox;
 	pa_chk_res_t chk;
+
+	CHK_RES_INIT(chk);
 
 	/* Broken cyclic list: if p's prev or next is itself, then the other neighbour
 	   ptr needs to be itself too */
