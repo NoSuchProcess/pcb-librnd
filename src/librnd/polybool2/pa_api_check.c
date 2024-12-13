@@ -503,10 +503,10 @@ static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 
 #ifdef RND_API_VER
 		MR = small ? 100 : RND_MM_TO_COORD(0.05);
-		SW = small ? 10 : RND_MM_TO_COORD(0.005);
+		SW = small ? 0.1 : RND_MM_TO_COORD(0.005);
 #else
 		MR = small ? 100 : 1000;
-		SW = small ? 10 : 100;
+		SW = small ? 0.1 : 100;
 #endif
 
 	if ((chk != NULL) && (chk->marks > 0)) {
