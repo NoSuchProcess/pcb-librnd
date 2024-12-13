@@ -146,8 +146,14 @@ rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q)
 
 rnd_bool_t pa_is_node_on_line(rnd_vnode_t *node, rnd_vnode_t *l1, rnd_vnode_t *l2)
 {
-	TODO("arc: Implement me");
-	return 0;
+	/* check if out of bbox */
+	if ((node->point[0] < l1->point[0]) && (node->point[0] < l2->point[0])) return 0;
+	if ((node->point[0] > l1->point[0]) && (node->point[0] > l2->point[0])) return 0;
+	if ((node->point[1] < l1->point[1]) && (node->point[1] < l2->point[1])) return 0;
+	if ((node->point[1] > l1->point[1]) && (node->point[1] > l2->point[1])) return 0;
+	if (Vequ2(node->point, l1->point) || Vequ2(node->point, l2->point)) return 0;
+
+	return (double)(node->point[0] - l2->point[0])*(double)(l2->point[1] - l1->point[1]) == (double)(l2->point[0] - l1->point[0])*(double)(node->point[1] - l2->point[1]);
 }
 
 rnd_bool_t pa_is_node_on_arc(rnd_vnode_t *node, rnd_vnode_t *arc)
