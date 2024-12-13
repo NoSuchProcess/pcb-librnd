@@ -464,6 +464,7 @@ rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a)
 #ifndef NDEBUG
 static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 {
+	rnd_vnode_t *vn;
 	rnd_coord_t minx = RND_COORD_MAX, miny = RND_COORD_MAX, maxx = -RND_COORD_MAX, maxy = -RND_COORD_MAX;
 	int small, MR;
 	FILE *F;
@@ -474,9 +475,19 @@ static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 	F = stderr;
 
 #define is_small(v)  (((v) > -100000) && ((v) < 100000))
+
 #define update_minmax(min, max, val) \
 	if (val < min) min = val; \
 	if (val > max) max = val;
+
+	vn = c->head;
+	do {
+		update_minmax(minx, maxx, vn->point[0]);
+		update_minmax(miny, maxy, vn->point[1]);
+	} while((vn = vn->next) != c->head);
+
+#undef update_minmax
+
 
 	fprintf(F, "<?xml version=\"1.0\"?>\n");
 	fprintf(F, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"1000\" height=\"1000\" viewBox=\"0 0 1000 1000\">\n");
@@ -527,7 +538,6 @@ static void rnd_poly_valid_report(rnd_pline_t *c, pa_chk_res_t *chk)
 
 	fprintf(F, "</svg>\n");
 
-#undef update_minmax
 #undef is_small
 }
 #endif
