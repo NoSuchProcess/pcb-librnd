@@ -300,7 +300,7 @@ static void svg_print_poly_contour_node(FILE *F, const rnd_vnode_t *v)
 	}
 }
 
-static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
+void pb2_svg_print_pline(FILE *F, const rnd_pline_t *pl)
 {
 	const rnd_vnode_t *v;
 
@@ -318,7 +318,7 @@ static void svg_print_poly_contour(FILE *F, const rnd_pline_t *pl)
 	fprintf(F, "z");
 }
 
-RND_INLINE void pb2_draw_polyarea(pb2_ctx_t *ctx, FILE *F, const rnd_polyarea_t *pa, const char *clr, double fill_opacity)
+void pb2_draw_polyarea(pb2_ctx_t *ctx, FILE *F, const rnd_polyarea_t *pa, const char *clr, double fill_opacity)
 {
 	const rnd_pline_t *pl;
 	const rnd_polyarea_t *pn = pa;
@@ -333,11 +333,11 @@ RND_INLINE void pb2_draw_polyarea(pb2_ctx_t *ctx, FILE *F, const rnd_polyarea_t 
 		pl = pn->contours;
 		if (pl != NULL) {
 			/* iterate over the vectors of the contour */
-			svg_print_poly_contour(F, pl);
+			pb2_svg_print_pline(F, pl);
 
 			/* iterate over all holes within this island */
 			for(pl = pl->next; pl != NULL; pl = pl->next)
-				svg_print_poly_contour(F, pl);
+				pb2_svg_print_pline(F, pl);
 		}
 	} while ((pn = pn->f) != pa);
 	fprintf(F, "\n\"/></g>\n");

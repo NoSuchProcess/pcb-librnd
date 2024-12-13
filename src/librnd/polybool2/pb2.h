@@ -234,3 +234,8 @@ void pb2_1_map_seg_arc(pb2_ctx_t *ctx, const rnd_vector_t p1, const rnd_vector_t
 extern int pb2_face_polarity_at_verbose;
 int pb2_face_polarity_at(pb2_ctx_t *ctx, rnd_vector_t pt, rnd_vector_t direction);
 
+#ifndef NDEBUG
+void pb2_draw_polyarea(pb2_ctx_t *ctx, FILE *F, const rnd_polyarea_t *pa, const char *clr, double fill_opacity);
+void pb2_svg_print_pline(FILE *F, const rnd_pline_t *pl);
+#endif
+
