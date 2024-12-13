@@ -74,7 +74,12 @@ typedef struct {
 #endif
 } pa_chk_res_t;
 
+
+#ifndef NDEBUG
 #define CHK_RES_INIT(chk) chk.msg[0] = chk.marks = chk.lines = chk.arcs = 0
+#else
+#define CHK_RES_INIT(chk) chk.marks = chk.lines = chk.arcs = 0
+#endif
 
 #ifndef NDEBUG
 /* error reporting: remember offending objects */
