@@ -63,7 +63,7 @@ RND_INLINE int seg_seg_olap(pb2_seg_t *sa, pb2_seg_t *sb)
 		return 0;
 
 	switch(sa->shape_type) {
-		case RND_VNODE_LINE: break; /*matching endpoints is enough to check */
+		case RND_VNODE_LINE: break; /* matching endpoints is enough to check */
 		case RND_VNODE_ARC:
 			/* need to have same endpoints, same center */
 			if (fabs(sa->shape.arc.cx - sb->shape.arc.cx) > 0.5)
