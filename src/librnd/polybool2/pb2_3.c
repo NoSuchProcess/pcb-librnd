@@ -29,6 +29,8 @@
 
 int pb2_face_polarity_at_verbose = DEBUG_STEP3_FACE_POLARITY_VERBOSE;
 
+#define PB2_MAX(a,b) (((a) > (b)) ? (a) : (b))
+
 typedef struct {
 	long cnt, cnt_non0;
 	char poly;
@@ -410,15 +412,29 @@ RND_INLINE void polarity_pt_right_curving_arc(pb2_face_t *f, pb2_seg_t *seg, rnd
 RND_INLINE void pb2_3_face_find_polarity_pt(pb2_face_t *f)
 {
 	pb2_face_it_t it;
+	rnd_coord_t bestx;
 	rnd_vector_t best, curr, dir_end, best_left, best_right, tmpr, tmpl;
 	pb2_seg_t *seg, *last_seg, *seg1, *seg2 = NULL;
 	int need_norm;
 
+	/* find the rightmost point (best[]); keep track of rightmost x (bestx)
+	   separately because on right curving arc the rightmost point is further
+	   out. See test case arc21 and arc22: the rightmost corner is the '>' shaped
+	   line-line intersection (concave!) but the arc extends beyond that so we
+	   need to pick one of the arc corners */
+
 	seg1 = last_seg = pb2_face_it_first(&it, f, NULL, best, 0);
+	bestx = (right_curving_arc(seg1, best)) ? PB2_MAX(seg1->bbox.x2-1, best[0]) : best[0];
+	/*rnd_trace("bestx==%ld (%ld) rc=%d F%ld\n", (long)bestx, (long)best[0], right_curving_arc(seg1, best), f->uid);*/
+
 	while((seg = pb2_face_it_next(&it, NULL, curr)) != NULL) {
-		if (curr[0] >= best[0]) {
+		rnd_coord_t right = (right_curving_arc(seg, curr)) ? PB2_MAX(seg->bbox.x2-1, curr[0]) : curr[0];
+		/*rnd_trace(" right=%ld (%ld) rc=%d\n", (long)right, (long)curr[0], right_curving_arc(seg, best));*/
+
+		if (right >= bestx) {
 			best[0] = curr[0];
 			best[1] = curr[1];
+			bestx = right;
 			seg1 = last_seg;
 			seg2 = seg;
 		}
