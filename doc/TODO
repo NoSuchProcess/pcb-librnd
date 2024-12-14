@@ -1,7 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool2 arc:
 		- arc18: arc update cache ran 7 times, check why
-	- polybool2: test case for partial line-line overlap: pa_is_node_on_line()
+		- arc19: arc direction flips
 
 2. For later releases ===============================================================================
 	- librnd 4.4 (API additions):
