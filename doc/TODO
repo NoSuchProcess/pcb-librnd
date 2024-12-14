@@ -1,6 +1,5 @@
 1. For the upcoming release ===============================================================================
 	- polybool2 arc:
-		- implement test for the 'B' case of polarity point from a concave arc-arc point
 		- arc18: arc update cache ran 7 times, check why
 	- polybool2: test case for partial line-line overlap: pa_is_node_on_line()
 
