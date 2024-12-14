@@ -177,17 +177,10 @@ RND_INLINE int pa_chk_ll_olap(rnd_vnode_t *isc, rnd_vnode_t *pt, rnd_vnode_t *ot
 		);
 */
 
-	if (pa_isc_edge_edge(other->prev, other, isc, isc->next, &tmp1, &tmp2) == 2)
-		return 1;
-
-	if (pa_isc_edge_edge(other->prev, other, isc, isc->prev, &tmp1, &tmp2) == 2)
-		return 1;
-
-	if (pa_isc_edge_edge(other->next, other, isc, isc->next, &tmp1, &tmp2) == 2)
-		return 1;
-
-	if (pa_isc_edge_edge(other->next, other, isc, isc->prev, &tmp1, &tmp2) == 2)
-		return 1;
+	if (pa_seg_seg_olap_(other->prev, isc)) return 1;
+	if (pa_seg_seg_olap_(other->prev, isc->prev)) return 1;
+	if (pa_seg_seg_olap_(other, isc)) return 1;
+	if (pa_seg_seg_olap_(other, isc->prev)) return 1;
 
 	return 0;
 }

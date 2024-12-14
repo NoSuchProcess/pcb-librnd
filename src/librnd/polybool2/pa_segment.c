@@ -141,20 +141,28 @@ RND_INLINE int man_dist_2(rnd_vector_t a, rnd_vector_t b)
 	return dx*dx + dy*dy;
 }
 
-
-RND_INLINE int pa_isc_edge_edge_(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t *isc1, rnd_vector_t *isc2)
+/* return if seg1 and seg2 overlap */
+RND_INLINE int pa_seg_seg_olap_(rnd_vnode_t *seg1, rnd_vnode_t *seg2)
 {
-	int res;
-	TODO("arc: check()-only; this is where an arc-arc or line-arc or arc-line intersection would be detected then new point added");
-	res = pa_vect_inters2(v1a->point, v1b->point, v2a->point, v2b->point, *isc1, *isc2, 1);
+	rnd_vector_t tmp1, tmp2;
 
-	return res;
+	if (seg1->flg.curve_type != seg2->flg.curve_type)
+		return 0; /* different curve shapes can not overlap */
+
+	switch(seg1->flg.curve_type) {
+		case RND_VNODE_LINE:
+			return pa_vect_inters2(seg1->point, seg1->next->point, seg2->point, seg2->next->point, tmp1, tmp2, 1) == 2;
+		case RND_VNODE_ARC:
+			if (!Vequ2(seg1->curve.arc.center, seg2->curve.arc.center))
+				return 0;
+			return pb2_raw_isc_arc_arc(
+				seg1->point, seg1->next->point, seg1->curve.arc.center, seg1->curve.arc.adir,
+				seg2->point, seg2->next->point, seg2->curve.arc.center, seg2->curve.arc.adir,
+				tmp1, tmp2) == 2;
+	}
+	return 0;
 }
 
-int pa_isc_edge_edge(rnd_vnode_t *v1a, rnd_vnode_t *v1b, rnd_vnode_t *v2a, rnd_vnode_t *v2b, rnd_vector_t *isc1, rnd_vector_t *isc2)
-{
-	return pa_isc_edge_edge_(v1a, v1b, v2a, v2b, isc1, isc2);
-}
 
 /* Cancels the search and sets ctx->s if b is the same as ctx->v. Usefule
    for finding the segment for a node */
