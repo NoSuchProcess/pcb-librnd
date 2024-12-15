@@ -348,15 +348,15 @@ RND_INLINE int pb2_arc_points_ordered(pb2_seg_t *arc, rnd_vector_t p1, rnd_vecto
 			a1 += 4;
 		if (a2 < as)
 			a2 += 4;
+		return (a1 - as) < (a2 - as);
 	}
 	else {
 		if (a1 > as)
 			a1 -= 4;
 		if (a2 > as)
 			a2 -= 4;
+			return (as - a1) < (as - a2);
 	}
-
-	return (a1 - as) < (a2 - as);
 }
 
 /* Return tangential vector at endpoint "from" (not normalized); tangent is
