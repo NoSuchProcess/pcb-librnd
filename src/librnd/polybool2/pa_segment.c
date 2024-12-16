@@ -51,7 +51,7 @@ RND_INLINE void pa_seg_update_bbox(pa_seg_t *s)
 				rnd_rtree_box_t bb;
 				pb2_raw_arc_bbox(&bb, s->v->point, s->v->next->point, s->v->curve.arc.center, s->v->curve.arc.adir);
 				s->box.X1 = bb.x1; s->box.Y1 = bb.y1;
-				s->box.X2 = bb.x2; s->box.Y2 = bb.y2;
+				s->box.X2 = bb.x2 + 1; s->box.Y2 = bb.y2 + 1;
 			}
 			break;
 	}
