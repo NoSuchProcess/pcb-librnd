@@ -1,6 +1,7 @@
 1. For the upcoming release ===============================================================================
 	- polybool2 arc:
 		- arc18: arc update cache ran 7 times, check why
+		- revise pa_ calls like rnd_pline_isect_circ(), they may assume straight line edges
 
 2. For later releases ===============================================================================
 	- librnd 4.4 (API additions):
