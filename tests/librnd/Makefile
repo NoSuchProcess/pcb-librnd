@@ -36,7 +36,7 @@ librnd_test.o: librnd_test.c includes
 librnd_includes: librnd_includes.o librnd_objs
 	$(CC) -o librnd_includes librnd_includes.o  obj/hid/*.o obj/core/*.o obj/font2/*.o obj/poly/*.o  obj/3rd/*.o $(LDFLAGS)
 
-librd_includes.o: librnd_includes.c includes
+librnd_includes.o: librnd_includes.c includes
 
 # $(LIBRND_A) has multiple files; "flatten" this into a single rule so that
 # make -j12 won't attempt to run them parallel
