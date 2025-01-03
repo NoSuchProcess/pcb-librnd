@@ -12,11 +12,8 @@ LIBRND_A = include/$(HL_LIBDIR)/librnd-font2.a include/$(HL_LIBDIR)/librnd-poly.
 
 all: librnd_test librnd_includes
 
-# do not use $(MAKE) here, these steps need to be executed sequentially:
-test:
-	make librnd_test
+test: librnd_test librnd_includes
 	./librnd_test --gui batch
-	make librnd_includes
 	./librnd_includes
 
 librnd_objs: $(LIBRND_A)
