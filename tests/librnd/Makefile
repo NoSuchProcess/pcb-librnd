@@ -38,7 +38,12 @@ librnd_includes: librnd_includes.o librnd_objs
 
 librd_includes.o: librnd_includes.c includes
 
-$(LIBRND_A) includes: ../../src/Makefile
+# $(LIBRND_A) has multiple files; "flatten" this into a single rule so that
+# make -j12 won't attempt to run them parallel
+$(LIBRND_A): includes
+
+# install all binaries and includes to $$TDIR/include
+includes: ../../src/Makefile
 	TDIR=`pwd` && cd ../../src && $(MAKE) && $(MAKE) install HOW="install -f" DESTDIR=$$TDIR/include PREFIX=
 
 clean:
