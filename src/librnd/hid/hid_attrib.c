@@ -268,7 +268,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 		   one filename for now */
 
 		if (filenames > MAX_FILENAMES) {
-			rnd_message(RND_MSG_ERROR, "Too manu filenames specified. Overflow at filename: %s\n", (*argv)[0]);
+			rnd_message(RND_MSG_ERROR, "Too many filenames specified. Overflow at filename: %s\n", (*argv)[0]);
 			return -1;
 		}
 		if (!rnd_app.multi_design && (filenames > 0)) {
