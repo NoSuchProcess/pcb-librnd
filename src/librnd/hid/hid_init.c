@@ -766,7 +766,7 @@ static int rnd_pcbhl_main_arg_match(const char *in, const char *shrt, const char
 void rnd_main_args_init(rnd_main_args_t *ga, int argc, const char **action_args)
 {
 	memset(ga, 0, sizeof(rnd_main_args_t));
-	ga->hid_argv_orig = ga->hid_argv = calloc(sizeof(char *), argc);
+	ga->hid_argv_orig = ga->hid_argv = calloc(sizeof(char *), argc*4);
 	vtp0_init(&ga->plugin_cli_conf);
 	ga->action_args = action_args;
 	ga->autopick_gui = -1;
