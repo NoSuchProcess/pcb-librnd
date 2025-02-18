@@ -3,6 +3,11 @@
 		- revise pa_ calls like rnd_pline_isect_circ(), they may assume straight line edges
 
 2. For later releases ===============================================================================
+	- CLEANUP/BUG: rnd_hid_parse_command_line() at the end when copying back filenames:
+		- try with sch-rnd -x ps with 10+ filenames
+		- it is not really copying back from argv[0] but appending at the end
+		- where filename[i] is set argv is also modified
+		- test what happens with pcb-rnd and camv-rnd, why we have this at all
 	- librnd 4.4 (API additions):
 		- revise expose_preview; in sch-rnd and camv-rnd they are almost the same and pcb-rnd probably has the same in the middle; maybe have a central librnd call for this
 	- polybool: (probably WONTFIX as polybool2 works much better)
