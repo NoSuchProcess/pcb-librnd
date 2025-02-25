@@ -1,3 +1,57 @@
+librnd 4.3.2 (r37791)
+~~~~~~~~~~~~~~~~~~~~~
+	[doc]
+		-Update: web IRC pointing to our own implementation
+		-Add: list new download options (distrib packages, repology link)
+		-Add: 'why use' section on main page
+
+	[hid]
+		-Add: over-allocate temporary argv[] to make room for shuffling filenames around
+
+	[lib_hid_common]
+		-Fix: fileselect dialog "get_path" poke: set res string to NULL on failure, just to be on the safe side
+
+	[libuirc]
+		-Fix: trace to stderr, not stdout
+		-Fix: don't start polling or reading the socket if the socket is invalid (disconnected)
+		-Fix: set irc socket to -1 after closing it so that no further polling or reading happens on it
+		-Add: API for bypassing local poll()
+		-Add: API comments; mention that ->nick needs to be malloc()'d
+		-Add: optional on_rawin callback to let the client implementation do custom command processing for extra commands
+
+	[polybool]
+		-Change: make pa_pline_is_vnode_inside() compatible with the API of polybool2
+
+	[polybool2]
+		-Fix: sharp corner offset2: detect and evade corner case of short edge swapping sides near long edge (test case: offset03)
+		-Fix: step 6: don't crash if there's no wrapper found for whatever reason
+		-Fix: uninitialized memory in pa check debug draw
+		-Cleanup: remove unused 'isected' arg from pb2_1_map_seg_line() in internal API
+		-Cleanup: move seg-create-from-copy to pb2_admin so the code is simpler at caller side
+		-Cleanup: move seg bbox computation from admin to geo (as it depends on segment shape geometry only)
+		-Cleanup: rename pb2_1_seg_bbox() to pb2_seg_bbox() - it's not in step 1's code
+		-Cleanup: rename _seg functions to _curve() fuctions for a terminology consistent with the old poly lib
+		-Clenaup: simpify pb2_2_prelim_face_area_bbox() by not going vertex by vertex but segment by segment; this also makes possible to introduce curve area compensation later
+		-Cleanup: remove tweak_isc: it was a workround in polybool that never got any use in polybool2
+		-Add: implement low level arc support in bool code
+		-Add: arc spec needs one more bit CW/CCW to avoid ambiguity
+		-Add: make offset output optional in gengeo2d intersection glue
+		-Add: segment tangential vector function (implemented for both line and arc)
+		-Add: rewrite pb2_3_face_find_polarity_pt() so it uses tangent vectors and works with arcs
+		-Add: step 3 debug trace: announce segment hit on polarity point ray tracing
+		-Add: expose pb2_raw API through a .h that is also included from the implementation to ensure fucntion prototypes match
+		-Add: step 2: extra check on face area: can not be zero because overlapping segments are removed
+		-Add: implement pa_is_node_on_line()
+		-Add: expose svg debug draw (pa will need it)
+		-Change: checker's debug draw is in svg format, not in animator format, because of better arc support
+
+	[tests]
+		-Fix: typo in librnd build test Makefile dependencies broke the build with -j; introduced in r34364 (2 years ago)
+		-Fix: flatten the rule for installing includes and binaries to avoid parallel installations
+		-Fix: typo caused a missing dependency that in turn ruined parallel build
+		-Fix: missing explicit rule on librnd_includes.o - might be a problem with non-gnu-make
+
+
 librnd 4.3.1 (r37514)
 ~~~~~~~~~~~~~~~~~~~~~
 	[core]
